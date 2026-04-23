@@ -1,0 +1,41 @@
+
+C:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\page.tsx
+  20:10  warning  'HousingEstate' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\system-a-navsteva\page.tsx
+    5:18  warning  'AnimatePresence' is defined but never used                      @typescript-eslint/no-unused-vars
+    8:3   warning  'Info' is defined but never used                                 @typescript-eslint/no-unused-vars
+   12:3   warning  'CheckCircle2' is defined but never used                         @typescript-eslint/no-unused-vars
+   24:46  warning  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   62:51  warning  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  138:96  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\HousingEstate.tsx
+  7:8  warning  'Image' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\MobileCompass.tsx
+  86:6  warning  React Hook useEffect has a missing dependency: 'handleToggle'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Profiles.tsx
+    5:10  warning  'CalendarDays' is defined but never used               @typescript-eslint/no-unused-vars
+    5:24  warning  'Languages' is defined but never used                  @typescript-eslint/no-unused-vars
+    5:35  warning  'Sparkles' is defined but never used                   @typescript-eslint/no-unused-vars
+  116:3   warning  't' is defined but never used                          @typescript-eslint/no-unused-vars
+  119:11  warning  Unexpected any. Specify a different type               @typescript-eslint/no-explicit-any
+  123:6   warning  Unexpected any. Specify a different type               @typescript-eslint/no-explicit-any
+  416:10  warning  'highlightedIndex' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  425:10  warning  'hoveredTomas' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  425:24  warning  'setHoveredTomas' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  426:10  warning  'hoveredNella' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  426:24  warning  'setHoveredNella' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+C:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Services.tsx
+    10:10  warning  'HousingEstate' is defined but never used                              @typescript-eslint/no-unused-vars
+  1029:5   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1034:29  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1034:63  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1035:29  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1035:64  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1133:56  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+✖ 27 problems (1 error, 26 warnings)

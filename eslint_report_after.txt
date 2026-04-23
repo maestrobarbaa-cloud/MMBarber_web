@@ -1,0 +1,231 @@
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\api\availability\route.ts[24m[0m
+[0m  [2m80:26[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m88:19[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\kariera\page.tsx[24m[0m
+[0m  [2m101:39[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m103:52[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\moje-cesta\page.tsx[24m[0m
+[0m    [2m5:10[22m  [33mwarning[39m  'ChevronRight' is defined but never used                                                                                                                                                                                                                                                 [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m46:11[22m  [33mwarning[39m  't' is assigned a value but never used                                                                                                                                                                                                                                                   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m147:21[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m  [2m177:13[22m  [31merror[39m    Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages                                                                                                                                    [2m@next/next/no-html-link-for-pages[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\not-found.tsx[24m[0m
+[0m  [2m26:13[22m   [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m26:137[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\obchodni-podminky\page.tsx[24m[0m
+[0m  [2m2:35[22m  [33mwarning[39m  'User' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\ochrana-osobnich-udaju\page.tsx[24m[0m
+[0m  [2m12:3[22m  [33mwarning[39m  'FileText' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m13:3[22m  [33mwarning[39m  'Info' is defined but never used      [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\payment\page.tsx[24m[0m
+[0m    [2m7:23[22m  [33mwarning[39m  'Landmark' is defined but never used                             [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m7:47[22m  [33mwarning[39m  'ShieldCheck' is defined but never used                          [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m7:72[22m  [33mwarning[39m  'X' is defined but never used                                    [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m174:11[22m  [31merror[39m    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m174:37[22m  [31merror[39m    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\provozni-rad\page.tsx[24m[0m
+[0m    [2m5:75[22m  [33mwarning[39m  'Info' is defined but never used                                                                                                                                                                                                                                                         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m74:47[22m  [33mwarning[39m  Unexpected any. Specify a different type                                                                                                                                                                                                                                                 [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m125:17[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\seznamka\page.tsx[24m[0m
+[0m    [2m4:10[22m   [33mwarning[39m  'Heart' is defined but never used                                [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m4:42[22m   [33mwarning[39m  'ArrowRight' is defined but never used                           [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m4:81[22m   [33mwarning[39m  'MessageSquareHeart' is defined but never used                   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m4:101[22m  [33mwarning[39m  'Sparkles' is defined but never used                             [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m4:111[22m  [33mwarning[39m  'Gamepad2' is defined but never used                             [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m6:20[22m   [33mwarning[39m  'useEffect' is defined but never used                            [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m6:31[22m   [33mwarning[39m  'useCallback' is defined but never used                          [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m68:13[22m   [31merror[39m    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m   [2m68:38[22m   [31merror[39m    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m171:29[22m   [31merror[39m    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m171:54[22m   [31merror[39m    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\app\vip-club\page.tsx[24m[0m
+[0m    [2m5:10[22m  [33mwarning[39m  'Timer' is defined but never used                  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m23:14[22m  [33mwarning[39m  'lang' is assigned a value but never used          [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m129:9[22m   [33mwarning[39m  'handleLogout' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Atmosphere.tsx[24m[0m
+[0m  [2m6:10[22m  [33mwarning[39m  'mounted' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\BarberGame.tsx[24m[0m
+[0m    [2m4:49[22m  [33mwarning[39m  'Clover' is defined but never used               [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m4:57[22m  [33mwarning[39m  'Egg' is defined but never used                  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m4:75[22m  [33mwarning[39m  'Sparkles' is defined but never used             [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m4:93[22m  [33mwarning[39m  'ArrowRight' is defined but never used           [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m7:26[22m  [33mwarning[39m  'ThemeType' is defined but never used            [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m57:14[22m  [33mwarning[39m  'lang' is assigned a value but never used        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m70:32[22m  [33mwarning[39m  Unexpected any. Specify a different type         [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m70:64[22m  [33mwarning[39m  Unexpected any. Specify a different type         [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m193:14[22m  [33mwarning[39m  'e' is defined but never used                    [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m196:9[22m   [33mwarning[39m  'toggleGame' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m248:21[22m  [33mwarning[39m  Unexpected any. Specify a different type         [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\BottomArt.tsx[24m[0m
+[0m   [2m4:8[22m  [33mwarning[39m  'Image' is defined but never used              [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m38:9[22m  [33mwarning[39m  'artworks' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\ClientWrapper.tsx[24m[0m
+[0m  [2m12:7[22m  [33mwarning[39m  'MobileActions' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Contact.tsx[24m[0m
+[0m  [2m4:18[22m  [33mwarning[39m  'Clock' is defined but never used         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m4:61[22m  [33mwarning[39m  'ChevronRight' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\CookieBanner.tsx[24m[0m
+[0m  [2m18:55[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m19:20[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m33:53[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m34:18[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\CustomCursor.tsx[24m[0m
+[0m  [2m47:6[22m  [33mwarning[39m  React Hook useEffect has missing dependencies: 'mouseX' and 'mouseY'. Either include them or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\EarthProtocol.tsx[24m[0m
+[0m  [2m5:20[22m  [33mwarning[39m  'Shield' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\EnvironmentSlider.tsx[24m[0m
+[0m  [2m5:13[22m  [33mwarning[39m  'Maximize2' is defined but never used                                                                                                                                                                                                                                                                                                                                                     [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m5:24[22m  [33mwarning[39m  'Info' is defined but never used                                                                                                                                                                                                                                                                                                                                                          [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m9:11[22m  [31merror[39m    An empty interface declaration allows any non-nullish value, including literals like `0` and `""`.[0m
+[0m- If that's what you want, disable this lint rule with an inline comment or configure the 'allowInterfaces' rule option.[0m
+[0m- If you want a type meaning "any object", you probably want `object` instead.[0m
+[0m- If you want a type meaning "any value", you probably want `unknown` instead  [2m@typescript-eslint/no-empty-object-type[22m[0m
+[0m  [2m9:11[22m  [33mwarning[39m  'EnvironmentSliderProps' is defined but never used                                                                                                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\ErrorBoundary.tsx[24m[0m
+[0m  [2m55:15[22m  [31merror[39m  Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  [2m@next/next/no-html-link-for-pages[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Events.tsx[24m[0m
+[0m   [2m4:20[22m  [33mwarning[39m  'useRef' is defined but never used                                                                                   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m76:6[22m   [33mwarning[39m  React Hook useEffect has a missing dependency: 'generateCalendar'. Either include it or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\FloatingScissors.tsx[24m[0m
+[0m  [2m204:6[22m  [33mwarning[39m  React Hook useEffect has missing dependencies: 'init' and 'update'. Either include them or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Footer.tsx[24m[0m
+[0m  [2m7:10[22m  [33mwarning[39m  'Scissors' is defined but never used      [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m7:20[22m  [33mwarning[39m  'Construction' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m7:68[22m  [33mwarning[39m  'Star' is defined but never used          [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Gallery.tsx[24m[0m
+[0m   [2m62:6[22m   [33mwarning[39m  React Hook useEffect has a missing dependency: 'changeSlide'. Either include it or remove the dependency array                                                                                                                                                                           [2mreact-hooks/exhaustive-deps[22m[0m
+[0m  [2m127:13[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Header.tsx[24m[0m
+[0m    [2m8:23[22m  [33mwarning[39m  'Instagram' is defined but never used                       [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m8:34[22m  [33mwarning[39m  'Facebook' is defined but never used                        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m48:10[22m  [33mwarning[39m  'isScrolled' is assigned a value but never used             [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m58:10[22m  [33mwarning[39m  'isEarthProtocolActive' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m249:9[22m   [33mwarning[39m  'headerVisible' is assigned a value but never used          [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Hero.tsx[24m[0m
+[0m  [2m12:10[22m  [33mwarning[39m  'mounted' is assigned a value but never used           [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m27:9[22m   [33mwarning[39m  'handleHeroChange' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\HolidayCountdown.tsx[24m[0m
+[0m  [2m11:9[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Intro.tsx[24m[0m
+[0m   [2m4:18[22m  [33mwarning[39m  'AnimatePresence' is defined but never used          [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m13:10[22m  [33mwarning[39m  'isFadingOut' is assigned a value but never used     [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m13:23[22m  [33mwarning[39m  'setIsFadingOut' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\MinigameToggle.tsx[24m[0m
+[0m   [2m4:10[22m  [33mwarning[39m  'Gamepad2' is defined but never used            [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m4:20[22m  [33mwarning[39m  'X' is defined but never used                   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m5:18[22m  [33mwarning[39m  'AnimatePresence' is defined but never used     [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m12:10[22m  [33mwarning[39m  'isHovered' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\MobileActions.tsx[24m[0m
+[0m   [2m4:10[22m  [33mwarning[39m  'Menu' is defined but never used           [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m12:14[22m  [33mwarning[39m  'lang' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\MobileCompass.tsx[24m[0m
+[0m    [2m4:10[22m  [33mwarning[39m  'Compass' is defined but never used        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m12:14[22m  [33mwarning[39m  'lang' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m23:43[22m  [33mwarning[39m  Unexpected any. Specify a different type   [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m79:35[22m  [33mwarning[39m  Unexpected any. Specify a different type   [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m101:43[22m  [33mwarning[39m  Unexpected any. Specify a different type   [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m102:34[22m  [33mwarning[39m  Unexpected any. Specify a different type   [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\OperativeModal.tsx[24m[0m
+[0m  [2m103:21[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m103:35[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m162:33[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m162:53[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Partners.tsx[24m[0m
+[0m  [2m3:8[22m  [33mwarning[39m  'Link' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\RozpisSluzeb.tsx[24m[0m
+[0m    [2m3:31[22m   [33mwarning[39m  'useRef' is defined but never used        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m4:10[22m   [33mwarning[39m  'Clock' is defined but never used         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m71:20[22m   [33mwarning[39m  'e' is defined but never used             [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m127:47[22m   [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m139:105[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m140:105[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m145:76[22m   [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\ScrollIndicator.tsx[24m[0m
+[0m  [2m38:9[22m  [33mwarning[39m  'offsetProgress' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\Services.tsx[24m[0m
+[0m    [2m4:27[22m  [33mwarning[39m  'DollarSign' is defined but never used                                                                                                                                                                                                                                                   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m4:39[22m  [33mwarning[39m  'Euro' is defined but never used                                                                                                                                                                                                                                                         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m10:8[22m   [33mwarning[39m  'Link' is defined but never used                                                                                                                                                                                                                                                         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m94:51[22m  [33mwarning[39m  Unexpected any. Specify a different type                                                                                                                                                                                                                                                 [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m675:31[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m  [2m700:31[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\StyleDefinition.tsx[24m[0m
+[0m  [2m17:54[22m  [33mwarning[39m  'delay' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\VipControlBar.tsx[24m[0m
+[0m   [2m22:3[22m   [33mwarning[39m  'Eye' is defined but never used                    [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m24:3[22m   [33mwarning[39m  'ThermometerSnowflake' is defined but never used   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m34:11[22m  [33mwarning[39m  't' is assigned a value but never used             [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m40:10[22m  [33mwarning[39m  'activeTheme' is assigned a value but never used   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m42:10[22m  [33mwarning[39m  'heroOverride' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m143:9[22m   [33mwarning[39m  'setTheme' is assigned a value but never used      [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m155:9[22m   [33mwarning[39m  'setHero' is assigned a value but never used       [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m313:30[22m  [33mwarning[39m  Unexpected any. Specify a different type           [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\components\WelcomeLetters.tsx[24m[0m
+[0m  [2m5:10[22m  [33mwarning[39m  'Mail' is defined but never used         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m5:16[22m  [33mwarning[39m  'MailOpen' is defined but never used     [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m5:29[22m  [33mwarning[39m  'ShieldAlert' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\hooks\useTranslation.ts[24m[0m
+[0m  [2m30:30[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m30:61[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\lib\holidays.ts[24m[0m
+[0m   [2m4:10[22m  [33mwarning[39m  'getEaster' is defined but never used      [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m20:10[22m  [33mwarning[39m  'normalizeDate' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m33:9[22m   [33mwarning[39m  'year' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\lib\weather.ts[24m[0m
+[0m  [2m30:12[22m  [33mwarning[39m  'error' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m68:12[22m  [33mwarning[39m  'error' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m87:12[22m  [33mwarning[39m  'e' is defined but never used      [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\utils\analytics.ts[24m[0m
+[0m  [2m2:71[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m3:51[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m4:16[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\micka\.gemini\antigravity\scratch\MMBarber\src\utils\availability.ts[24m[0m
+[0m  [2m86:26[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[31m[1m✖ 137 problems (15 errors, 122 warnings)[22m[39m[0m
+[0m[31m[1m[22m[39m[0m

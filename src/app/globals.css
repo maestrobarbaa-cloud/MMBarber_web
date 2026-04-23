@@ -1,0 +1,1153 @@
+@import "tailwindcss";
+
+@property --user-accent-color {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c5a059;
+}
+
+@property --user-glow-color {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: rgba(197, 160, 89, 0.4);
+}
+
+@property --user-glow-radius {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 20px;
+}
+
+/* ANTI-COPY & PROTECTION MEASURES */
+html, body {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Exception for addresses and specific info */
+.allow-copy, .allow-copy * {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+html[data-graphics-tier='low'] body {
+  background: #000000 !important;
+}
+
+html[data-graphics-tier='low'] body,
+html[data-graphics-tier='low'] *,
+html[data-graphics-tier='low'] *::before,
+html[data-graphics-tier='low'] *::after {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+html[data-graphics-tier='low'] *,
+html[data-graphics-tier='low'] *::before,
+html[data-graphics-tier='low'] *::after {
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  animation: none !important;
+  transition: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+html[data-graphics-tier='low'] [class*='parallax'] {
+  transform: none !important;
+  transition: none !important;
+}
+
+html[data-graphics-tier='low'] .logo-neon,
+html[data-graphics-tier='medium'] .logo-neon {
+  animation: none !important;
+  text-shadow: 0 0 5px var(--user-accent-color) !important;
+}
+
+html.disable-grain .film-grain-container,
+html[data-graphics-tier='low'] .film-grain-container {
+  display: none !important;
+}
+
+html[data-graphics-tier='low'] [class*='parallax'],
+html[data-graphics-tier='medium'] [class*='parallax'] {
+  transform: none !important;
+  transition: none !important;
+}
+
+html[data-graphics-tier='low'] .backdrop-blur-md,
+html[data-graphics-tier='low'] .backdrop-blur-xl,
+html[data-graphics-tier='low'] .backdrop-blur-2xl,
+html[data-graphics-tier='low'] .atmosphere-container,
+html[data-graphics-tier='low'] .film-grain-container,
+html[data-graphics-tier='low'] .custom-cursor,
+html[data-graphics-tier='low'] .scroll-indicator-mm,
+html[data-graphics-tier='low'] .global-web-frame {
+  display: none !important;
+  backdrop-filter: none !important;
+  background-color: #000000 !important;
+}
+
+/* ADVANCED GRAPHICS EFFECTS */
+html {
+  --user-sharpness: 0.5;
+  image-rendering: auto;
+}
+
+html[style*='--user-sharpness: 1'] {
+  image-rendering: crisp-edges;
+}
+
+/* Vignette Effect */
+html.vignette-active body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+  z-index: 10008;
+}
+
+/* Chromatic Aberration Simulation */
+html.chromatic-active body {
+  text-shadow: 1px 0 0 rgba(255,0,0,0.2), -1px 0 0 rgba(0,255,255,0.2);
+}
+
+/* Cinematic Letterbox (21:9) */
+html.letterbox-active body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10vh;
+  background: #000;
+  z-index: 10008;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+}
+
+html.letterbox-animate body::before {
+  animation: cinematic-in-top 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Custom Range Input Styling */
+.custom-range-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--user-accent-color);
+  border: 2px solid black;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--user-glow-color);
+  transition: all 0.3s ease;
+}
+
+.custom-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px var(--user-accent-color);
+}
+
+.custom-range-input::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--user-accent-color);
+  border: 2px solid black;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--user-glow-color);
+  border-radius: 0;
+}
+
+html.letterbox-active body::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10vh;
+  background: #000;
+  z-index: 10008;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+}
+
+html.letterbox-animate body::after {
+  animation: cinematic-in-bottom 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes cinematic-in-top {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes cinematic-in-bottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* Cinematic Color Grade */
+html.letterbox-active {
+  filter: contrast(1.15) saturate(1.1) brightness(0.85) sepia(0.05) hue-rotate(-5deg) !important;
+}
+
+/* Sharpness control via contrast/brightness filter if needed */
+html {
+  filter: contrast(calc(1 + (var(--user-sharpness) - 0.5) * 0.2)) brightness(calc(1 - (var(--user-sharpness) - 0.5) * 0.05));
+}
+
+@theme {
+  --font-sans: "Courier New", Courier, monospace;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-heading: var(--font-playfair), serif;
+  --font-script: var(--font-great-vibes), cursive;
+  --font-mono: "Courier New", Courier, monospace;
+  --font-modern: var(--font-inter), sans-serif;
+  
+  --color-mafia-black: #0a0a0a;
+  --color-mafia-dark: #121212;
+  --color-mafia-sepia: #704214;
+  --color-mafia-gold: var(--user-accent-color, #c5a059);
+  --color-mafia-gold-accent: var(--user-accent-color);
+  --color-mafia-red: var(--user-red-color, #8b0000);
+  --color-neon-yellow: #fdfd96;
+  --color-smoke-white: #e5e4e2;
+}
+
+:root {
+  --user-accent-color: #c5a059;
+  --user-accent-color-rgb: 197, 160, 89;
+  --user-glow-intensity: 1;
+  --user-font-sans: "Courier New", Courier, monospace;
+  
+  /* Derived Dynamic Properties */
+  --user-glow-radius: calc(25px * var(--user-glow-intensity));
+  --user-glow-color: rgba(var(--user-accent-color-rgb), calc(0.4 * var(--user-glow-intensity)));
+  --user-glow-shadow: 0 0 var(--user-glow-radius) var(--user-glow-color);
+  
+  --background: var(--color-mafia-black);
+  --foreground: var(--color-smoke-white);
+  --color-mafia-gold-glow: var(--user-glow-color);
+  color-scheme: dark;
+}
+
+body {
+  --color-mafia-gold: var(--user-accent-color);
+  font-family: var(--user-font-sans) !important;
+}
+
+.logo-neon {
+  text-shadow: 0 0 calc(10px * var(--user-glow-intensity)) var(--user-accent-color);
+}
+
+html.noir-mode:not(.theme-blood) {
+  filter: grayscale(100%) contrast(1.1) brightness(1);
+}
+
+html.noir-mode {
+  --color-mafia-gold: #e2e2e2; /* Bright silver */
+  --color-mafia-gold-rgb: 226, 226, 226;
+  --color-mafia-gold-glow: rgba(226, 226, 226, 0.3);
+  --user-accent-color: #e2e2e2;
+  --user-accent-color-rgb: 226, 226, 226;
+  --color-mafia-sepia: #888888; /* Silver sepia */
+  --user-red-color: #aaaaaa;   /* Silvered red details by default */
+  --user-glow-radius: 25px; /* Consistent glow */
+  --user-glow-color: rgba(255, 255, 255, 0.3);
+}
+
+html.noir-mode.theme-blood {
+  --user-red-color: #8b0000; /* Vivid Red details in Blood Mode */
+}
+
+html.noir-mode.theme-blood img:not([class*="flag"]),
+html.noir-mode.theme-blood img.barber-photo-img,
+html.noir-mode.theme-blood .bg-cover,
+html.noir-mode.theme-blood [style*="background-image"] {
+  filter: grayscale(1) contrast(1.1) brightness(0.9) !important;
+}
+
+html.noir-mode img:not([class*="flag"]),
+html.noir-mode img.barber-photo-img,
+html.noir-mode .bg-cover,
+html.noir-mode [style*="background-image"] {
+  filter: grayscale(1) brightness(1.1) contrast(1.1) !important;
+}
+
+html.noir-mode img[src*="logo.png"] {
+  filter: grayscale(1) brightness(1.8) contrast(1.2) drop-shadow(0 0 8px rgba(255,255,255,0.4)) !important;
+}
+
+/* Header Hiding Utility */
+html.hide-header-mm header {
+  display: none !important;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+html.noir-mode #hero-background.animate-glitch {
+  filter: grayscale(0) brightness(1) contrast(1.2) hue-rotate(0deg) !important;
+}
+
+/* Theme Presets */
+html.theme-emerald {
+  --color-mafia-gold: #50c878;
+  --color-mafia-gold-rgb: 80, 200, 120;
+}
+html.theme-crimson {
+  --color-mafia-gold: #dc143c;
+  --color-mafia-gold-rgb: 220, 20, 60;
+}
+html.theme-ocean {
+  --color-mafia-gold: #0077be;
+  --color-mafia-gold-rgb: 0, 119, 190;
+}
+html.theme-silver {
+  --color-mafia-gold: #e2e2e2; /* Bright silver */
+  --color-mafia-gold-rgb: 226, 226, 226;
+  --color-mafia-gold-glow: rgba(226, 226, 226, 0.3);
+  --user-accent-color: #e2e2e2;
+  --user-accent-color-rgb: 226, 226, 226;
+  --color-mafia-sepia: #888888; /* Silver sepia */
+  --color-mafia-red: #aaaaaa;   /* Silver red */
+  --user-glow-radius: 25px; /* Consistent glow */
+  --user-glow-color: rgba(255, 255, 255, 0.3);
+  --neon-glow-color: #fff; /* White flicker for Noir Silver */
+}
+
+html.theme-blood {
+  --color-mafia-gold: #e2e2e2; /* Back to silver base */
+  --color-mafia-gold-rgb: 226, 226, 226;
+  --color-mafia-gold-glow: rgba(226, 226, 226, 0.3);
+  --user-accent-color: #e2e2e2;
+  --user-accent-color-rgb: 226, 226, 226;
+  --color-mafia-sepia: #888888; /* Silver sepia */
+  --color-mafia-red: #8b0000;   /* Blood red detail - preserved! */
+  --user-glow-radius: 25px;
+  --user-glow-color: rgba(255, 255, 255, 0.3);
+  --neon-glow-color: #8b0000; /* Red flicker for Blood mode! */
+}
+
+/* Image Overrides for Silver Theme - Applying globally now */
+html.theme-silver img:not([class*="flag"]),
+html.theme-blood img:not([class*="flag"]),
+html.theme-silver .bg-cover,
+html.theme-blood .bg-cover,
+html.theme-silver [style*="background-image"],
+html.theme-blood [style*="background-image"] {
+  filter: grayscale(1) brightness(1.1) contrast(1.1) !important;
+}
+
+/* Also ensure hero background div with direct inline style is handled */
+/* Removed hero-background override to allow global grayscale */
+
+html.theme-silver img[src*="logo.png"] {
+  filter: grayscale(1) brightness(1.8) contrast(1.2) drop-shadow(0 0 8px rgba(255,255,255,0.4)) !important;
+}
+
+/* Specifically for Hero background when glitching (if we want to keep glitch silver, but here we want color) */
+html.theme-silver #hero-background.animate-glitch {
+  filter: grayscale(0) brightness(1) contrast(1.2) hue-rotate(0deg) !important;
+}
+
+html.theme-vaporwave {
+  --color-mafia-gold: #ff71ce;
+  --color-mafia-gold-rgb: 255, 113, 206;
+  --background: #050505;
+}
+
+/* Visual Modes */
+html.mode-crt::after,
+html.crt-active::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 10008;
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+}
+
+html.mode-crt body {
+  animation: crt-flicker 0.15s infinite;
+}
+
+@keyframes crt-flicker {
+  0% { opacity: 0.99; }
+  100% { opacity: 1; }
+}
+
+html.mode-matrix {
+  filter: hue-rotate(80deg) brightness(0.8) contrast(1.2);
+  --color-mafia-gold: #00ff41; /* Iconic Matrix neon green */
+  --color-mafia-gold-glow: rgba(0, 255, 65, 0.4);
+}
+
+html.mode-matrix body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.03) 0px, rgba(0, 255, 0, 0.03) 1px, transparent 1px, transparent 2px);
+  z-index: 99998;
+  pointer-events: none;
+}
+
+html.mode-pixelate {
+  image-rendering: pixelated;
+}
+
+html.mode-chaos .animate-float-subtle {
+  animation: float-subtle 1s ease-in-out infinite !important;
+}
+
+/* Holiday Visual Modes */
+html.mode-valentine {
+  filter: sepia(0.2) hue-rotate(325deg) brightness(0.9) contrast(1.1);
+  --color-mafia-gold: #ff3366;
+  --color-mafia-gold-glow: rgba(255, 51, 102, 0.5);
+}
+
+html.mode-valentine .logo-neon {
+  animation: valentine-pulse 2s ease-in-out infinite alternate !important;
+}
+
+@keyframes valentine-pulse {
+  from { text-shadow: 0 0 10px #ff3366, 0 0 20px #ff3366; }
+  to { text-shadow: 0 0 20px #ff3366, 0 0 40px #ff3366, 0 0 60px #ff3366; }
+}
+
+html.mode-st-patricks {
+  filter: contrast(1.1) brightness(0.95);
+  --color-mafia-gold: #00ff41; /* Emerald Green */
+  --color-mafia-gold-glow: rgba(0, 255, 65, 0.5);
+}
+
+html.mode-st-patricks .logo-neon {
+  animation: patricks-glow 2s ease-in-out infinite alternate !important;
+  color: #fff !important;
+}
+
+@keyframes patricks-glow {
+  from { text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41; }
+  to { text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41, 0 0 60px #c5a059; }
+}
+
+html.mode-st-patricks body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(0, 255, 65, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+html.mode-halloween {
+  filter: brightness(0.7) contrast(1.4) sepia(0.4) hue-rotate(10deg);
+  --color-mafia-gold: #ff6600;
+  --color-mafia-gold-glow: rgba(255, 102, 0, 0.6);
+}
+
+html.mode-halloween body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+  z-index: 9999;
+  animation: halloween-flicker 4s infinite;
+}
+
+@keyframes halloween-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+  52% { opacity: 1; }
+  54% { opacity: 0.9; }
+}
+
+html.mode-christmas {
+  filter: contrast(1.1) brightness(1.1);
+  --color-mafia-gold: #2e7d32;
+  --color-mafia-gold-glow: rgba(46, 125, 50, 0.5);
+}
+
+html.mode-christmas body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(4px 4px at 20px 30px, #fff, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(5px 5px at 150px 160px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 290px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 330px 80px, #fff, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 460px 120px, #fff, rgba(0,0,0,0));
+  background-size: 600px 600px;
+  animation: snow-fall-large 12s linear infinite;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.6;
+}
+
+html.mode-christmas body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(2px 2px at 150px 300px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 340px 170px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 550px 260px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 190px 440px, #fff, rgba(0,0,0,0));
+  background-size: 800px 800px;
+  animation: snow-fall-small 25s linear infinite;
+  pointer-events: none;
+  z-index: 9997;
+  opacity: 0.3;
+}
+
+@keyframes snow-fall-large {
+  from { background-position: 0 0; }
+  to { background-position: 50px 600px; }
+}
+
+@keyframes snow-fall-small {
+  from { background-position: 0 0; }
+  to { background-position: -30px 800px; }
+}
+
+html.mode-newyear {
+  filter: contrast(1.2) brightness(1.2) saturate(1.3);
+  --color-mafia-gold: #ffca28;
+  --color-mafia-gold-glow: rgba(255, 202, 40, 0.7);
+}
+
+html.mode-newyear .logo-neon {
+  animation: newyear-sparkle 1.5s ease-in-out infinite alternate !important;
+  color: #fff !important;
+}
+
+@keyframes newyear-sparkle {
+  0% { text-shadow: 0 0 10px #ffca28, 0 0 20px #ffca28; filter: brightness(1); }
+  100% { text-shadow: 0 0 20px #ffca28, 0 0 40px #ffca28, 0 0 60px #ffffff; filter: brightness(1.5); }
+}
+
+html.mode-czech {
+  filter: contrast(1.1);
+  --color-mafia-gold: #11457e; /* Czech Blue */
+  --color-mafia-gold-glow: rgba(17, 69, 126, 0.4);
+}
+
+html.mode-czech .logo-neon {
+  animation: czech-pulse 3s infinite alternate !important;
+  color: #fff !important;
+}
+
+@keyframes czech-pulse {
+  0% { text-shadow: 0 0 10px #fff, 0 0 20px #d7141a; }
+  50% { text-shadow: 0 0 15px #fff, 0 0 25px #11457e; }
+  100% { text-shadow: 0 0 20px #fff, 0 0 30px #d7141a; }
+}
+
+html.mode-czech body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(17,69,126,0.02) 50%, rgba(215,20,26,0.02) 100%);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* CHILDREN'S DAY / MODERN MODE */
+html.mode-childrens-day {
+  filter: contrast(1.05) saturate(1.5);
+  --color-mafia-gold: #00E5FF; /* Electric Cyan */
+  --color-mafia-gold-glow: rgba(0, 229, 255, 0.6);
+  --user-accent-color: #00E5FF;
+  --user-font-sans: "Inter", sans-serif !important;
+}
+
+html.mode-childrens-day body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(45deg, rgba(255, 0, 127, 0.05) 0%, rgba(0, 229, 255, 0.05) 100%);
+  pointer-events: none;
+  z-index: 9998;
+}
+
+html.mode-childrens-day .logo-neon {
+  animation: modern-pulse 2s ease-in-out infinite alternate !important;
+  color: #fff !important;
+  font-family: "Inter", sans-serif !important;
+  letter-spacing: -1px;
+}
+
+@keyframes modern-pulse {
+  from { text-shadow: 0 0 10px #00E5FF, 0 0 20px #00E5FF; }
+  to { text-shadow: 0 0 20px #FF007F, 0 0 40px #FF007F; }
+}
+
+/* POPPY MODE: VETERANS / REMEMBRANCE DAY */
+html.mode-poppy {
+  filter: contrast(1.15) saturate(0.8) sepia(0.2);
+  --color-mafia-gold: #e2062c; /* Poppy Red */
+  --color-mafia-gold-glow: rgba(226, 6, 44, 0.6);
+  --user-accent-color: #e2062c;
+  --background: #111311; /* Dark subtle olive/black */
+}
+
+html.mode-poppy body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at center, transparent 30%, rgba(226, 6, 44, 0.05) 100%),
+    linear-gradient(rgba(226, 6, 44, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 4px;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+html.mode-poppy .logo-neon {
+  animation: poppy-glow 3s ease-in-out infinite alternate !important;
+  color: #fff !important;
+  letter-spacing: 0.2em;
+}
+
+@keyframes poppy-glow {
+  from { text-shadow: 0 0 10px #e2062c, 0 0 20px #e2062c; }
+  to { text-shadow: 0 0 20px #e2062c, 0 0 40px #e2062c, 0 0 60px #fff; }
+}
+
+/* Falling poppies effect - Background Layer (Slower, smaller, deeper) */
+html.mode-poppy body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cg id='p'%3E%3Ccircle cx='-12' cy='-12' r='14' fill='%23e2062c'/%3E%3Ccircle cx='12' cy='-12' r='14' fill='%23b00016'/%3E%3Ccircle cx='-12' cy='12' r='14' fill='%23b00016'/%3E%3Ccircle cx='12' cy='12' r='14' fill='%23e2062c'/%3E%3Ccircle cx='0' cy='0' r='7' fill='%23111'/%3E%3C/g%3E%3C/defs%3E%3Cg transform='translate(250,150) scale(0.5)'%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='10s' repeatCount='indefinite'/%3E%3Cuse href='%23p'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(150,300) scale(0.4)'%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='360' to='0' dur='14s' repeatCount='indefinite'/%3E%3Cuse href='%23p'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(400,200) scale(0.35)'%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='11s' repeatCount='indefinite'/%3E%3Cuse href='%23p'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(100,50) scale(0.45)'%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='360' to='0' dur='16s' repeatCount='indefinite'/%3E%3Cuse href='%23p'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 500px 500px;
+  animation: snow-fall-small 40s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+  filter: blur(2px) drop-shadow(0 0 3px rgba(0,0,0,0.8));
+}
+
+/* Falling poppies effect - Foreground Layer (Faster, larger, spinning) */
+html.mode-poppy::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cg id='p'%3E%3Ccircle cx='-12' cy='-12' r='14' fill='%23e2062c'/%3E%3Ccircle cx='12' cy='-12' r='14' fill='%23b00016'/%3E%3Ccircle cx='-12' cy='12' r='14' fill='%23b00016'/%3E%3Ccircle cx='12' cy='12' r='14' fill='%23e2062c'/%3E%3Cpath d='M0 0L-8 -8M0 0L8 -8M0 0L-8 8M0 0L8 8' stroke='%23111' stroke-width='1.5' stroke-dasharray='1,2'/%3E%3Ccircle cx='0' cy='0' r='7' fill='%23111'/%3E%3Ccircle cx='0' cy='0' r='3' fill='%23333'/%3E%3C/g%3E%3C/defs%3E%3Cg transform='translate(100,100) scale(0.8)'%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='15s' repeatCount='indefinite'/%3E%3Cuse href='%23p'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(350,80) scale(1.1)'%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='360' to='0' dur='18s' repeatCount='indefinite'/%3E%3Cuse href='%23p'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(220,250) scale(0.6)'%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='12s' repeatCount='indefinite'/%3E%3Cuse href='%23p'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(400,350) scale(0.9)'%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='360' to='0' dur='20s' repeatCount='indefinite'/%3E%3Cuse href='%23p'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(80,400) scale(1)'%3E%3Cg%3E%3CanimateTransform attributeName='transform' type='rotate' from='0' to='360' dur='25s' repeatCount='indefinite'/%3E%3Cuse href='%23p'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 600px 600px;
+  animation: snow-fall-large 25s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  filter: drop-shadow(0 0 5px rgba(0,0,0,1));
+}
+
+/* SECRET MODE: CRIMSON UNDERWORLD */
+html.mode-secret {
+  filter: contrast(1.2) brightness(0.9);
+  --color-mafia-gold: #8a0707; /* Crimson / Blood Red */
+  --color-mafia-gold-glow: rgba(138, 7, 7, 0.4);
+}
+
+html.mode-secret .logo-neon {
+  animation: secret-glitch 0.5s infinite alternate !important;
+  color: #fff !important;
+}
+
+@keyframes secret-glitch {
+  0% { text-shadow: 0 0 10px #8a0707, 0 0 20px #8a0707; transform: skew(0.5deg); }
+  50% { text-shadow: 2px 0 15px #c5a059, -2px 0 15px #8a0707; transform: skew(-0.25deg); }
+  100% { text-shadow: 0 0 25px #8a0707, 0 0 45px #c5a059; transform: skew(0.5deg); opacity: 0.95; }
+}
+
+html.mode-secret body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(138, 7, 7, 0.1) 100%);
+  pointer-events: none;
+  z-index: 9999;
+  animation: secret-pulse 4s ease-in-out infinite;
+}
+
+@keyframes secret-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+html.mode-secret .btn-mafia-gold {
+  border-color: #8a0707 !important;
+  box-shadow: 0 0 15px rgba(138, 7, 7, 0.3);
+}
+
+/* FRIDAY THE 13TH MODE: CURSED BARBER */
+html.mode-friday13 {
+  filter: contrast(1.3) brightness(0.8) sepia(0.2) hue-rotate(-10deg);
+  --color-mafia-gold: #b30000; /* Blood Red */
+  --color-mafia-gold-glow: rgba(179, 0, 0, 0.6);
+  --color-mafia-gold-rgb: 179, 0, 0;
+}
+
+html.mode-friday13 body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(138, 7, 7, 0.15) 0%, transparent 20%),
+    radial-gradient(circle at 80% 70%, rgba(138, 7, 7, 0.1) 0%, transparent 25%),
+    radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 100%);
+  pointer-events: none;
+  z-index: 9999;
+  animation: friday-flicker 5s infinite;
+}
+
+/* Cracked glass effect */
+html.mode-friday13 body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath d='M0,0 L1000,1000 M1000,0 L0,1000 M500,0 L500,1000 M0,500 L1000,500' stroke='rgba(255,255,255,0.05)' stroke-width='1' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: cover;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.4;
+}
+
+html.mode-friday13 .logo-neon {
+  animation: friday-glitch 0.3s infinite alternate !important;
+  color: #ff0000 !important;
+}
+
+@keyframes friday-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.4; }
+  94% { opacity: 0.9; }
+  95% { opacity: 0.2; }
+  96% { opacity: 1; }
+}
+
+@keyframes friday-glitch {
+  0% { text-shadow: 2px 0 0 rgba(255,0,0,0.5), -2px 0 0 rgba(0,255,255,0.5); transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(-2px, -1px); }
+  60% { transform: translate(2px, 1px); }
+  80% { transform: translate(2px, -1px); }
+  100% { text-shadow: -2px 0 0 rgba(255,0,0,0.5), 2px 0 0 rgba(0,255,255,0.5); transform: translate(0); }
+}
+
+html.mode-friday13 .btn-mafia-gold {
+  background: rgba(138, 7, 7, 0.2) !important;
+  border-color: #b30000 !important;
+  box-shadow: 0 0 15px rgba(179, 0, 0, 0.4);
+}
+
+html.mode-friday13 .btn-mafia-gold:hover {
+  background: #b30000 !important;
+  color: #fff !important;
+  box-shadow: 0 0 30px rgba(179, 0, 0, 0.8);
+}
+
+html.mode-easter {
+  filter: contrast(1.1) brightness(1.05);
+  --color-mafia-gold: #ffeb3b; /* Spring Yellow */
+  --color-mafia-gold-glow: rgba(255, 235, 59, 0.5);
+}
+
+html.mode-easter body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 235, 59, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* WITCHES' NIGHT MODE: PÁLENÍ ČARODĚJNIC */
+html.mode-witches {
+  filter: contrast(1.1) saturate(1.2);
+  --color-mafia-gold: #ff6600; /* Fire Orange */
+  --color-mafia-gold-glow: rgba(255, 69, 0, 0.6);
+}
+
+html.mode-witches body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 50% 120%, rgba(255, 69, 0, 0.15) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+html.mode-witches .btn-mafia-gold {
+  border-color: #ff4500 !important;
+  color: #ff4500 !important;
+  box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
+}
+
+html.mode-witches .btn-mafia-gold:hover {
+  background: #ff4500 !important;
+  color: #000 !important;
+  box-shadow: 0 0 30px rgba(255, 69, 0, 0.8);
+}
+
+/* LEGACY MODE: ROYAL AMBER FOUNDER EDITION */
+html.mode-legacy {
+  filter: contrast(1.15) brightness(0.9) sepia(0.3) hue-rotate(-5deg);
+  --color-mafia-gold: #ffb700;
+  --color-mafia-gold-glow: rgba(255, 183, 0, 0.4);
+}
+
+/* VICTORY DAY MODE: DEN VÍTĚZSTVÍ */
+html.mode-victory {
+  filter: contrast(1.1) brightness(1.05) saturate(0.9);
+  --color-mafia-gold: #ffd700; /* Pure Triumphant Gold */
+  --color-mafia-gold-glow: rgba(255, 215, 0, 0.6);
+  --user-accent-color: #ffd700;
+}
+
+html.mode-victory body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(circle at center, transparent 30%, rgba(197, 160, 89, 0.1) 100%),
+    linear-gradient(rgba(255, 215, 0, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 3px;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+html.mode-victory .logo-neon {
+  animation: victory-glow 2.5s ease-in-out infinite alternate !important;
+  color: #fff !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+}
+
+@keyframes victory-glow {
+  from { text-shadow: 0 0 15px #ffd700, 0 0 30px #ffd700; }
+  to { text-shadow: 0 0 30px #ffd700, 0 0 60px #ffd700, 0 0 90px #fff; }
+}
+
+html.mode-legacy .logo-neon {
+  animation: legacy-shimmer 3s ease-in-out infinite alternate !important;
+  color: #fff !important;
+}
+
+@keyframes legacy-shimmer {
+  0% { text-shadow: 0 0 10px #ffb700, 0 0 20px #c5a059; letter-spacing: normal; }
+  100% { text-shadow: 0 0 30px #ffb700, 0 0 60px #ffb700, 0 0 80px #fff; letter-spacing: 0.1em; }
+}
+
+html.mode-legacy body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(circle at center, transparent 30%, rgba(255, 183, 0, 0.08) 100%),
+    url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noise)" opacity="0.1"/%3E%3C/svg%3E');
+  pointer-events: none;
+  z-index: 9999;
+}
+
+html.mode-legacy body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(1.5px 1.5px at 25% 25%, #ffb700, transparent),
+                    radial-gradient(2px 2px at 75% 50%, #fff, transparent),
+                    radial-gradient(1px 1px at 50% 80%, #ffb700, transparent);
+  background-size: 300px 300px;
+  animation: legacy-embers 15s linear infinite;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.3;
+}
+
+@keyframes legacy-embers {
+  from { background-position: 0 0; }
+  to { background-position: 100px -300px; }
+}
+
+/* FALCO MODE: IMPERIAL VIENNA */
+html.mode-falco {
+  filter: contrast(1.1) brightness(1.1);
+  --color-mafia-gold: #ff0000; /* Austrian Red */
+  --color-mafia-gold-glow: rgba(255, 0, 0, 0.5);
+  --user-accent-color: #ff0000;
+  --user-font-sans: "Courier New", Courier, monospace;
+}
+
+html.mode-falco body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 0, 0, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at center, transparent 30%, rgba(255, 0, 0, 0.02) 100%);
+  background-size: 100% 40px, 100% 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+html.mode-falco .logo-neon {
+  animation: amadeus-glow 1.5s ease-in-out infinite alternate !important;
+  color: #fff !important;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+}
+
+@keyframes amadeus-glow {
+  from { text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; }
+  to { text-shadow: 0 0 20px #ff0000, 0 0 40px #fff; }
+}
+
+
+/* VINTAGE MODE */
+html.mode-vintage {
+  filter: sepia(0.6) contrast(1.1) brightness(0.9);
+}
+html.mode-vintage .logo-neon {
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.5), 0 0 10px #c5a059 !important;
+}
+
+/* COLD NOIR */
+html.mode-noirblue {
+  filter: hue-rotate(180deg) brightness(0.8) contrast(1.2) saturate(0.5);
+}
+
+/* CRIMSON NOIR */
+html.mode-noirred {
+  filter: saturate(0) contrast(1.4) brightness(0.8);
+}
+html.mode-noirred body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(138, 7, 7, 0.15) 100%);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Lighten interactive elements on hover in Noir Mode */
+html.noir-mode a:hover,
+html.noir-mode button:hover,
+html.noir-mode [role="button"]:hover {
+  filter: brightness(1.5) contrast(1.1);
+  transition: filter 0.3s ease;
+}
+
+html {
+  font-size: 13px; /* Tighter mobile base */
+  transition: filter 0.8s ease-in-out, font-size 0.3s ease;
+}
+
+/* Global scaling for high-resolution screens to ensure content doesn't feel overwhelming */
+@media (min-width: 1280px) {
+  html {
+    font-size: 12.5px; 
+  }
+}
+
+@media (min-width: 1920px) {
+  html {
+    font-size: 12px; /* 75% scaling exactly (12/16) */
+  }
+}
+
+@media (min-width: 2560px) {
+  html {
+    font-size: 11px;
+  }
+}
+
+
+/* Base font settings to fix Firefox inheritance & rendering */
+* {
+  font-optical-sizing: auto;
+}
+
+#hero, #operativi, #sluzby, #footer, section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1000px;
+}
+
+body {
+  /* Ultra-soft decent gradient to minimize banding */
+  background: radial-gradient(circle at 50% 50%, #0c0c0c 0%, #000000 100%);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Micro-dither grain to prevent circular banding (kruhy) - barely visible at 3% */
+  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.03"/%3E%3C/svg%3E');
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--color-mafia-gold, #c5a059);
+  color: var(--color-mafia-black);
+}
+
+/* Hide scrollbar for a fully immersive luxury vibe */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none;
+}
+
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(2deg); }
+  66% { transform: translateY(5px) rotate(-1deg); }
+}
+
+.animate-float-subtle {
+  animation: float-subtle 8s ease-in-out infinite;
+}
+
+@keyframes neon-flicker-rhythmic {
+  /* Peaks: 0.1, 0.57, 1.08, 1.75, 2.0, 2.7, 3.45, 3.85, 4.37, 5.35, 5.65 (s) */
+  /* Base state: off/dim */
+  0%, 1.5%, 1.8%, 9.4%, 9.7%, 17.9%, 18.2%, 29.0%, 29.3%, 33.2%, 33.5%, 44.9%, 45.2%, 57.4%, 57.7%, 64.0%, 64.3%, 72.7%, 73.0%, 89.0%, 89.3%, 94.0%, 94.3%, 100% {
+    text-shadow: none;
+    color: rgba(255,255,255,0.2);
+    opacity: 0.4;
+  }
+  /* On states */
+  1.6%, 9.5%, 18.0%, 29.1%, 33.3%, 45.0%, 57.5%, 64.1%, 72.8%, 89.1%, 94.1% {
+    text-shadow: 
+      0 0 4px #fff,
+      0 0 12px rgba(255, 255, 255, 0.9),
+      0 0 25px var(--neon-glow-color, var(--color-mafia-gold));
+    color: #fff;
+    opacity: 1;
+  }
+}
+
+.noir-mode .logo-neon {
+  animation: neon-flicker-rhythmic 6s infinite !important;
+}
+
+.noir-mode .header-booking-btn,
+.noir-mode .header-booking-btn-text {
+  color: #c0c0c0 !important;
+  border-color: #c0c0c0 !important;
+}
+
+.noir-mode .header-booking-btn div {
+  background-color: #c0c0c0 !important;
+}
+
+.noir-mode .header-booking-btn:hover span {
+  color: #000 !important;
+}
+
+.theme-blood .logo-neon {
+  color: #fff !important;
+}
+
+/* Specific subtle red accents for Blood Mode */
+.theme-blood .header-booking-btn-text {
+  color: #c0c0c0 !important;
+}
+
+.theme-blood .header-booking-btn:hover {
+  border-color: #8b0000 !important;
+}
+
+.theme-blood .card-symbol-front {
+  color: #aaaaaa !important;
+  opacity: 0.25 !important;
+}
+
+.theme-blood .card-symbol-back-red {
+  color: #8b0000 !important;
+  opacity: 0.8 !important;
+}
+
+.theme-blood .evasive-button-custom {
+  box-shadow: 0 0 50px rgba(139, 0, 0, 0.6) !important;
+  border-color: #8b0000 !important;
+}
+
+.theme-blood .card-symbol-back-gray {
+  color: #8b0000 !important;
+  opacity: 0.8 !important;
+}
+
+.theme-blood .hero-slogan,
+.theme-blood .barber-dialogue-text,
+.theme-blood .flavor-text {
+  color: #8b0000 !important;
+  text-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+}
+
+.theme-blood .section-underline {
+  background: linear-gradient(to right, transparent, #8b0000, transparent) !important;
+  box-shadow: 0 0 20px rgba(139, 0, 0, 0.6) !important;
+}
+
+.theme-blood .address-side-bar {
+  border-color: #8b0000 !important;
+}
+
+.theme-blood .map-target,
+.theme-blood .map-target-ring,
+.theme-blood .map-target-x {
+  color: #8b0000 !important;
+  filter: drop-shadow(0 0 10px rgba(139, 0, 0, 0.8));
+}
+
+.theme-blood .compass-ring,
+.theme-blood .compass-mark,
+.theme-blood .compass-x {
+  border-color: rgba(139, 0, 0, 0.4) !important;
+  color: #8b0000 !important;
+}
+
+.theme-blood .barber-booking-text {
+  color: #8b0000 !important;
+  text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+}
+
+.theme-silver .logo-neon {
+  animation: neon-flicker 2s infinite alternate;
+  color: #fff !important;
+}
