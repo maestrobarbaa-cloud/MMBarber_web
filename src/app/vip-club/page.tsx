@@ -52,7 +52,7 @@ export default function VipClub() {
 
     // Initial fade in
     gsap.to("body", { opacity: 1, duration: 1 });
-    
+
     // Check local storage for session
     const auth = localStorage.getItem("mmbarber_vip_auth");
     if (auth === "true") {
@@ -71,7 +71,7 @@ export default function VipClub() {
     const newMode = !isNoirMode;
     setIsNoirMode(newMode);
     localStorage.setItem("mmbarber_noir_mode", String(newMode));
-    
+
     if (newMode) {
       document.documentElement.classList.add("noir-mode");
     } else {
@@ -81,11 +81,11 @@ export default function VipClub() {
 
   const handleUnlock = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    
+
     const p1 = password.trim().toUpperCase();
     const p2 = datePassword.trim().toLowerCase();
 
-    if (p1 === "OMERTA" && p2 === "mmbarber") {
+    if (p1 === "omerta" && p2 === "mmbarber") {
       // Correct passwords
       const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--color-mafia-gold').trim();
       const tl = gsap.timeline();
@@ -100,14 +100,16 @@ export default function VipClub() {
     } else {
       // Incorrect passwords
       playSound("/sounds/vrong.mp3", 0.5);
-      
+
       setError(true);
-      gsap.fromTo(".safe-prompt", 
-        { x: -10 }, 
-        { x: 10, duration: 0.1, repeat: 5, yoyo: true, onComplete: () => {
-          setPassword("");
-          setDatePassword("");
-        } }
+      gsap.fromTo(".safe-prompt",
+        { x: -10 },
+        {
+          x: 10, duration: 0.1, repeat: 5, yoyo: true, onComplete: () => {
+            setPassword("");
+            setDatePassword("");
+          }
+        }
       );
       setTimeout(() => setError(false), 2000);
     }
@@ -142,7 +144,7 @@ export default function VipClub() {
 
   return (
     <div className="fixed inset-0 z-[100] bg-mafia-black flex flex-col items-center justify-center p-6 select-none overflow-hidden">
-      
+
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,160,89,0.08)_0%,rgba(5,5,5,1)_70%)] pointer-events-none"></div>
 
       {/* Countdown Timer HUD style */}
@@ -154,11 +156,11 @@ export default function VipClub() {
       </div>
 
       <div className="safe-prompt relative z-10 max-w-md w-full flex flex-col items-center text-center">
-        
+
         <h2 className="text-2xl md:text-3xl font-heading font-black text-smoke-white uppercase tracking-widest mb-4 px-4 bg-mafia-gold/10 py-3 rounded border border-mafia-gold/20">
           {t.club.loginTitle}
         </h2>
-        
+
         <p className="text-mafia-gold/60 font-sans text-xs md:text-base mb-12 uppercase tracking-[0.3em] font-black">
           {t.club.loginSubtitle}
         </p>
@@ -169,7 +171,7 @@ export default function VipClub() {
               <KeyRound size={20} className="absolute left-0 bottom-3 text-mafia-gold/30" />
               {/* Hidden username field for accessibility/password managers */}
               <input type="text" name="username" value="vip-member" readOnly className="hidden" aria-hidden="true" />
-              <input 
+              <input
                 ref={inputRef}
                 type="password"
                 name="password"
@@ -182,7 +184,7 @@ export default function VipClub() {
 
             <div className="relative border-b-2 border-mafia-gold/30 focus-within:border-mafia-gold transition-colors">
               <KeyRound size={20} className="absolute left-0 bottom-3 text-mafia-gold/30" />
-              <input 
+              <input
                 type="password"
                 autoComplete="new-password"
                 value={datePassword}
@@ -191,8 +193,8 @@ export default function VipClub() {
               />
             </div>
           </div>
-          
-          <button 
+
+          <button
             type="submit"
             className="w-full bg-mafia-gold text-mafia-black font-heading font-black py-4 uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-2 group relative overflow-hidden transition-all duration-700 shadow-[0_5px_30px_rgba(197,160,89,0.3)]"
           >
@@ -204,7 +206,7 @@ export default function VipClub() {
 
         {error && (
           <AnimatePresence>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
