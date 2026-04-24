@@ -190,7 +190,19 @@ export function Header() {
   const [isCompassActive, setIsCompassActive] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
 
+  const [visitCount, setVisitCount] = useState(0);
+
   useEffect(() => {
+    const count = parseInt(localStorage.getItem('mmbarber_visit_count') || '0');
+    setVisitCount(count);
+
+    const handleVisitUpdate = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setVisitCount(detail || parseInt(localStorage.getItem('mmbarber_visit_count') || '0'));
+    };
+
+    window.addEventListener('mmbarber-visit-count-update', handleVisitUpdate as EventListener);
+    
     setIsCompassActive(localStorage.getItem("mmbarber_compass_enabled") === "true");
     setIsMobileEffectsEnabled(localStorage.getItem("mmbarber_mobile_effects_enabled") === "true");
 
@@ -217,6 +229,7 @@ export function Header() {
     window.addEventListener('mmbarber-theme-update', checkNoirMode);
     
     return () => {
+      window.removeEventListener('mmbarber-visit-count-update', handleVisitUpdate as EventListener);
       window.removeEventListener('mmbarber-compass-state', handleCompassStateChange as EventListener);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsStateChange as EventListener);
       window.removeEventListener('mmbarber-theme-update', checkNoirMode);
@@ -778,6 +791,16 @@ export function Header() {
             </Link>
 
             {/* VIP link removed per user request - access via 'VIP' keyword in search */}
+            {visitCount >= 5 && (
+              <Link 
+                href="/vip-club" 
+                onClick={() => trackEvent("nav_link_click", { label: "vip-club-visiting" })} 
+                className="text-mafia-gold font-black transition-all duration-300 flex items-center gap-2 hover:scale-110 drop-shadow-[0_0_8px_rgba(197,160,89,0.5)] ml-4"
+              >
+                <Sparkles size={16} className="animate-pulse" />
+                VIP CLUB
+              </Link>
+            )}
 
           {/* Advanced Game-style Search Bar & Action Icons */}
           <div className="relative flex items-center h-full gap-2 ml-4">
@@ -1088,6 +1111,21 @@ export function Header() {
               </Link>
 
               {/* VIP link removed per user request - access via 'VIP' keyword in search */}
+              {visitCount >= 5 && (
+                <Link 
+                  href="/vip-club" 
+                  onClick={handleNavLinkClick} 
+                  className="bg-mafia-gold/10 border border-mafia-gold/30 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
+                >
+                  <div className="text-mafia-gold">
+                     <Sparkles size={28} />
+                  </div>
+                  <div className="flex flex-col">
+                     <span className="text-[10px] font-mono text-mafia-gold uppercase tracking-widest">EXKLUZIVNÍ PŘÍSTUP</span>
+                     <span className="text-sm font-sans font-black text-mafia-gold uppercase">VIP CLUB</span>
+                  </div>
+                </Link>
+              )}
 
               {/* COMPASS TOGGLE TILE */}
               <button 

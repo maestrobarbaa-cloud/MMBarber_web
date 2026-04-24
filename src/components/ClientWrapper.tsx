@@ -228,6 +228,18 @@ export function ClientWrapper() {
     }
   }, [pathname, mounted, themeRevision]);
 
+  // Visit Count Logic
+  useEffect(() => {
+    if (!mounted) return;
+    
+    const totalVisits = parseInt(localStorage.getItem('mmbarber_visit_count') || '0');
+    const newCount = totalVisits + 1;
+    localStorage.setItem('mmbarber_visit_count', newCount.toString());
+    // Dispatch event so Header can update if needed
+    window.dispatchEvent(new CustomEvent('mmbarber-visit-count-update', { detail: newCount }));
+  }, [mounted]);
+
+
 
 
   if (!mounted) return null;
