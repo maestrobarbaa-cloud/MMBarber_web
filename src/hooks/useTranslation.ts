@@ -44,9 +44,7 @@ export function useTranslation() {
         header: { ...translations.cs.header, ...(translations.boss as typeof translations.cs).header },
         hero: { ...translations.cs.hero, ...(translations.boss as typeof translations.cs).hero },
         services: { ...translations.cs.services, ...(translations.boss as typeof translations.cs).services },
-        operatives: { ...translations.cs.operatives, ...(translations.boss as typeof translations.cs).operatives },
-        others: { ...translations.cs.others, ...(translations.boss as typeof translations.cs).others },
-        footer: { ...translations.cs.footer, ...(translations.boss as typeof translations.cs).footer }
+        operatives: { ...translations.cs.operatives, ...(translations.boss as typeof translations.cs).operatives }
       };
     }
     if (lang === 'falco') {
@@ -56,8 +54,6 @@ export function useTranslation() {
         hero: { ...translations.cs.hero, ...(translations.falco as typeof translations.cs).hero },
         services: { ...translations.cs.services, ...(translations.falco as typeof translations.cs).services },
         operatives: { ...translations.cs.operatives, ...(translations.falco as typeof translations.cs).operatives },
-        others: { ...translations.cs.others, ...(translations.falco as typeof translations.cs).others },
-        footer: { ...translations.cs.footer, ...(translations.falco as typeof translations.cs).footer },
         intro: { ...translations.cs.intro, ...(translations.falco as typeof translations.cs).intro },
         theCode: { ...translations.cs.theCode, ...(translations.falco as typeof translations.cs).theCode }
       };

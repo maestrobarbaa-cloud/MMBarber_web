@@ -70,7 +70,7 @@ export const translations = {
     },
     services: {
       title: "Ceník služeb",
-      subtitle: "Vyber si odhadnutý čas podle toho, co znáš z jiných barbershopů, a společně u křesla se domluvíme, co vybereš příště.",
+      subtitle: "Vyber si odhadnutý čas podle toho, co znáš z jiných barbershopů, a společně u křesla se domluvíme, co vybereš příště. Večerní termíny jsou dostupné i pro ženy.",
       score: "Mise skóre",
       bookBtn: "Rezervovat",
       detailsBtn: "Detaily",
@@ -223,7 +223,31 @@ export const translations = {
       cheatActivated: "KÓD PŘIJAT",
       cheatHint: "Hledej v inteligentním vyhledávači...",
       close: "ZAVŘÍT",
-      vipClub: "V.I.P. KLUB"
+      vipClub: "V.I.P. KLUB",
+      followUs: "Sledujte nás"
+    },
+    rodina: {
+      title: "MM BARBER RODINA",
+      list: "Seznam",
+      network: "Síť Spojení",
+      divisions: "DIVIZE",
+      backToHq: "Zpět na základnu",
+      partnersTrust: "Podniky a živnostníci, kterým věříme.",
+      youForUs: "Vy pro nás. My pro Vás.",
+      weAreFamily: "MMBarber není jen o vlasech. Je to o lidech, kteří tvoří kvalitu napříč obory. Jsme Rodina.",
+      closeNetwork: "ZAVŘÍT SÍŤ",
+      cameraFollows: "Kamera sleduje tvůj pohyb",
+      headquarters: "CENTRÁLA"
+    },
+    sidliste: {
+      title: "SÍDLIŠTĚ",
+      sector: "SÍDLIŠTĚ // SEKTOR VII",
+      return: "NÁVRAT NA ÚSTŘEDÍ",
+      subtitle: "Přidej se k lidem, co chtějí víc než jen sedět na místě.",
+      description: "V rámci sídliště tvoříme komunitu, kde se rodí ty nejlepší nápady. Tady se nehraje na efekt, ale na loajalitu a společné vize.",
+      ideaTitle: "Máš vlastní nápad?",
+      ideaText: "Bylo by fajn se zde domluvit na nějaké společné akci. Pokud máš vizi, kterou stojí za to realizovat, ozvi se nám.",
+      proposeBtn: "NAVRHNOUT AKCI"
     },
     newspaper: {
       masthead: "Denní Rozkaz",
@@ -303,7 +327,9 @@ export const translations = {
         phoneLabel: "Tapeta mobilu 1080x1920px",
         downloadBtn: "STÁHNOUT ODMĚNU",
         passwordLabel: "VSTUPOVÉ HESLO",
-        passwordHint: "Pro heslo musíš zajít k barberovi, hlavně nechoď vedle, ten ho nezná..."
+        passwordHint: "Pro heslo musíš zajít k barberovi, hlavně nechoď vedle, ten ho nezná...",
+        unlock: "ODEMKNOUT",
+        denied: "Přístup odepřen"
       },
       systemVisit: {
         title: "Systém a návštěva",
@@ -687,7 +713,7 @@ export const translations = {
     },
     services: {
       title: "Service Menu",
-      subtitle: "Choose the estimated time based on what you know from other barbershops.",
+      subtitle: "Choose the estimated time based on what you know from other barbershops. Evening slots are also available for women.",
       score: "Mission score",
       revolutNotice: "",
       currencyLabel: "Currency",
@@ -839,7 +865,31 @@ export const translations = {
       cheatActivated: "CODE ACCEPTED",
       cheatHint: "Search for secrets...",
       close: "CLOSE",
-      vipClub: "V.I.P. CLUB"
+      vipClub: "V.I.P. CLUB",
+      followUs: "Follow us"
+    },
+    rodina: {
+      title: "MM BARBER FAMILY",
+      list: "List",
+      network: "Network",
+      divisions: "DIVISIONS",
+      backToHq: "Back to HQ",
+      partnersTrust: "Partners We Trust.",
+      youForUs: "You for us. We for you.",
+      weAreFamily: "MMBarber isn't just about hair. It's about people creating quality across industries. We are Family.",
+      closeNetwork: "CLOSE NETWORK",
+      cameraFollows: "Camera follows your movement",
+      headquarters: "HEADQUARTERS"
+    },
+    sidliste: {
+      title: "THE BLOCKS",
+      sector: "THE BLOCKS // SECTOR VII",
+      return: "RETURN TO HQ",
+      subtitle: "Join the people who want more than just sitting around.",
+      description: "Within the blocks, we create a community where the best ideas are born. We don't play for effect, but for loyalty and shared visions.",
+      ideaTitle: "Got your own idea?",
+      ideaText: "It would be great to arrange some joint events here. If you have a vision worth realizing, let us know.",
+      proposeBtn: "PROPOSE EVENT"
     },
     newspaper: {
       masthead: "Daily Order",
@@ -1138,7 +1188,9 @@ export const translations = {
         phoneLabel: "Mobile Wallpaper 1080x1920px",
         downloadBtn: "DOWNLOAD REWARD",
         passwordLabel: "ACCESS PASSWORD",
-        passwordHint: "For the password you must go to the barber, especially do not go next door, he does not know it..."
+        passwordHint: "For the password you must go to the barber, especially do not go next door, he does not know it...",
+        unlock: "UNLOCK",
+        denied: "Access denied"
       },
       systemVisit: {
         title: "System & Visit",

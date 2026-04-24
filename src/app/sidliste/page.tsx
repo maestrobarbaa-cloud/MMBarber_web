@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 
 export default function HousingEstatePage() {
-  const { lang } = useTranslation();
+  const { t, lang } = useTranslation();
 
   return (
     <div className="min-h-screen bg-black text-smoke-white overflow-hidden relative selection:bg-mafia-gold selection:text-mafia-black">
@@ -32,7 +32,7 @@ export default function HousingEstatePage() {
           className="group flex items-center gap-4 text-mafia-gold/40 hover:text-mafia-gold transition-colors font-mono text-xs tracking-[0.4em] uppercase"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform" />
-          {lang === 'cs' ? "NÁVRAT NA ÚSTŘEDÍ" : "RETURN TO HQ"}
+          {t.sidliste.return}
         </Link>
         <div className="w-12 h-12 border border-mafia-gold/20 flex items-center justify-center">
             <Building2 size={24} className="text-mafia-gold opacity-50" />
@@ -51,26 +51,22 @@ export default function HousingEstatePage() {
           >
             <div className="text-mafia-gold font-mono text-[10px] uppercase tracking-[0.8em] mb-10 flex items-center gap-4">
                <div className="h-[1px] w-12 bg-mafia-gold/30"></div>
-               {lang === 'cs' ? "SÍDLIŠTĚ // SEKTOR VII" : "THE BLOCKS // SECTOR VII"}
+               {t.sidliste.sector}
                <div className="h-[1px] w-12 bg-mafia-gold/30"></div>
             </div>
 
             <h1 className="text-8xl md:text-[12rem] font-heading font-black uppercase tracking-tighter italic leading-none mb-16 drop-shadow-[0_20px_50px_rgba(0,0,0,1)]">
-              SÍDL<span className="text-mafia-gold">IŠTĚ</span>
+              {t.sidliste.title.slice(0, -4)}<span className="text-mafia-gold">{t.sidliste.title.slice(-4)}</span>
             </h1>
             
             <p className="text-3xl md:text-6xl font-heading text-smoke-white leading-tight uppercase tracking-tight mb-12 max-w-4xl">
-              {lang === 'cs' 
-                ? "Přidej se k lidem, co chtějí víc než jen sedět na místě." 
-                : "Join the people who want more than just sitting around."}
+              {t.sidliste.subtitle}
             </p>
 
             <div className="w-24 h-px bg-mafia-gold/40 mb-12"></div>
 
             <p className="text-xl md:text-2xl font-sans text-smoke-white/50 leading-relaxed italic max-w-2xl mb-24">
-              {lang === 'cs' 
-                ? "V rámci sídliště tvoříme komunitu, kde se rodí ty nejlepší nápady. Tady se nehraje na efekt, ale na loajalitu a společné vize."
-                : "Within the blocks, we create a community where the best ideas are born. We don't play for effect, but for loyalty and shared visions."}
+              {t.sidliste.description}
             </p>
 
             {/* CTA Section */}
@@ -85,12 +81,10 @@ export default function HousingEstatePage() {
 
                 <div className="relative z-10 flex flex-col items-center">
                    <h2 className="text-4xl md:text-7xl font-heading font-black text-smoke-white uppercase tracking-tighter mb-8 italic">
-                      {lang === 'cs' ? "Máš vlastní nápad?" : "Got your own idea?"}
+                      {t.sidliste.ideaTitle}
                    </h2>
                    <p className="text-xl md:text-3xl font-sans text-mafia-gold/70 leading-relaxed mb-16 italic max-w-2xl">
-                      {lang === 'cs'
-                        ? "Bylo by fajn se zde domluvit na nějaké společné akci. Pokud máš vizi, kterou stojí za to realizovat, ozvi se nám."
-                        : "It would be great to arrange some joint events here. If you have a vision worth realizing, let us know."}
+                      {t.sidliste.ideaText}
                    </p>
                    
                    <motion.div className="flex flex-col items-center gap-12">
@@ -104,7 +98,7 @@ export default function HousingEstatePage() {
                             <ChevronRight size={32} />
                          </div>
                          <span className="text-mafia-gold font-heading font-black text-2xl md:text-4xl uppercase tracking-[0.4em] group-hover/cta:text-smoke-white transition-colors">
-                           {lang === 'cs' ? "NAVRHNOUT AKCI" : "PROPOSE EVENT"}
+                           {t.sidliste.proposeBtn}
                          </span>
                       </motion.button>
 

@@ -296,8 +296,8 @@ export default function FamilyPage() {
       {/* View Mode Toggle - Only visible on Desktop */}
       <div className="fixed bottom-12 right-12 z-[100] hidden md:flex flex-col items-end gap-4">
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-mafia-black/80 backdrop-blur-xl border border-mafia-gold/20 p-2 flex gap-2 shadow-2xl">
-          <button onClick={() => { setViewMode("grid"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'grid' ? 'bg-mafia-gold text-mafia-black' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>Seznam</button>
-          <button onClick={() => { setViewMode("network"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'network' ? 'bg-mafia-gold text-mafia-black shadow-[0_0_20px_rgba(197,160,89,0.4)]' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>Síť Spojení</button>
+          <button onClick={() => { setViewMode("grid"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'grid' ? 'bg-mafia-gold text-mafia-black' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.list}</button>
+          <button onClick={() => { setViewMode("network"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'network' ? 'bg-mafia-gold text-mafia-black shadow-[0_0_20px_rgba(197,160,89,0.4)]' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.network}</button>
         </motion.div>
       </div>
 
@@ -319,7 +319,7 @@ export default function FamilyPage() {
         {viewMode === 'grid' && (
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="mb-12">
             <Link href="/" className="group flex items-center gap-3 text-mafia-gold/60 hover:text-mafia-gold transition-colors font-mono text-xs uppercase tracking-[0.3em]">
-              <ChevronLeft size={16} /> {lang === 'cs' ? "Zpět na základnu" : "Back to HQ"}
+              <ChevronLeft size={16} /> {t.rodina.backToHq}
             </Link>
           </motion.div>
         )}
@@ -327,8 +327,8 @@ export default function FamilyPage() {
         {viewMode === 'grid' && (
           <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="text-center mb-16 max-w-4xl mx-auto">
-              <h1 className="text-4xl md:text-6xl font-heading font-black text-smoke-white uppercase mb-4">{lang === 'cs' ? "Podniky a živnostníci, kterým věříme." : "Partners We Trust."}</h1>
-              <p className="text-mafia-gold font-heading text-xl uppercase tracking-[0.2em] italic font-black">{lang === 'cs' ? "Vy pro nás. My pro Vás." : "You for us. We for you."}</p>
+              <h1 className="text-4xl md:text-6xl font-heading font-black text-smoke-white uppercase mb-4">{t.rodina.title}</h1>
+              <p className="text-mafia-gold font-heading text-xl uppercase tracking-[0.2em] italic font-black">{t.rodina.youForUs}</p>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-16">
@@ -337,7 +337,7 @@ export default function FamilyPage() {
                   <div className="flex items-center gap-4 mb-10">
                     <div className="w-16 h-1.5 bg-mafia-gold"></div>
                     <h2 className="text-4xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-widest italic">
-                      {lang === 'cs' ? "DIVIZE" : "DIVISIONS"}
+                      {t.rodina.divisions}
                     </h2>
                   </div>
 
@@ -366,7 +366,7 @@ export default function FamilyPage() {
 
                   <div className="mt-12 p-6 border border-mafia-gold/10 bg-mafia-gold/5 backdrop-blur-sm">
                     <p className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-[0.2em] leading-relaxed italic">
-                      {lang === 'cs' ? "MMBarber není jen o vlasech. Je to o lidech, kteří tvoří kvalitu napříč obory. Jsme Rodina." : "MMBarber isn't just about hair. It's about people creating quality across industries. We are Family."}
+                      {t.rodina.weAreFamily}
                     </p>
                   </div>
                 </div>
@@ -405,7 +405,7 @@ export default function FamilyPage() {
                 </div>
                 <span className="text-[12px] font-mono text-mafia-gold/40 uppercase tracking-[0.8em] mb-2">BONUS CONTENT</span>
                 <span className="text-2xl md:text-3xl font-heading font-black text-mafia-gold uppercase tracking-widest group-hover:text-smoke-white transition-colors duration-500">
-                  {lang === 'cs' ? "Zeď podpory členů" : "Member Support Wall"}
+                  {t.rodina.list === 'Seznam' ? "Zeď podpory členů" : "Member Support Wall"}
                 </span>
               </button>
             </div>
@@ -426,7 +426,7 @@ export default function FamilyPage() {
                           {lang === 'cs' ? "INTERNÍ ARCHIV // DIVIZE PODPORY" : "INTERNAL ARCHIVE // SUPPORT DIVISION"}
                         </div>
                         <h4 className="text-3xl md:text-5xl font-heading font-black text-mafia-gold uppercase tracking-tighter italic">
-                          {lang === 'cs' ? "Zeď podpory členů" : "Member Support Wall"}
+                          {t.rodina.list === 'Seznam' ? "Zeď podpory členů" : "Member Support Wall"}
                         </h4>
                       </div>
                       <div className="border border-mafia-gold/20 text-mafia-gold/60 px-6 py-2 text-sm font-black uppercase tracking-[0.4em]">
@@ -500,7 +500,7 @@ export default function FamilyPage() {
                 onClick={() => { setViewMode('grid'); }}
                 className="group flex items-center gap-3 text-mafia-gold hover:text-smoke-white transition-all font-mono text-[11px] font-black uppercase tracking-[0.5em] bg-mafia-gold/10 backdrop-blur-xl px-8 py-4 border-2 border-mafia-gold shadow-[0_0_30px_rgba(197,160,89,0.2)] hover:shadow-[0_0_50px_rgba(197,160,89,0.4)]"
               >
-                <ChevronLeft size={16} /> {lang === 'cs' ? "ZAVŘÍT SÍŤ" : "CLOSE NETWORK"}
+                <ChevronLeft size={16} /> {t.rodina.closeNetwork}
               </button>
             </div>
 
@@ -520,7 +520,7 @@ export default function FamilyPage() {
                 />
               </div>
               <p className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] text-center leading-relaxed">
-                {lang === 'cs' ? "Kamera sleduje tvůj pohyb" : "Camera follows your movement"}
+                {t.rodina.cameraFollows}
               </p>
             </motion.div>
 
@@ -588,7 +588,7 @@ export default function FamilyPage() {
                     <Image src="/logo.png" alt="MMBarber" width={160} height={160} className="w-48 h-48 object-contain drop-shadow-[0_0:30px_rgba(197,160,89,0.6)]" priority />
                   </motion.div>
                   <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-mafia-gold text-mafia-black px-8 py-1 font-heading font-black text-[10px] uppercase tracking-[0.5em] shadow-xl">
-                    {lang === 'cs' ? "CENTRÁLA" : "HEADQUARTERS"}
+                    {t.rodina.headquarters}
                   </div>
                 </div>
 

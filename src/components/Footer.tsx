@@ -499,7 +499,7 @@ export function Footer() {
           {/* Column 3: Sleduj nás - Modern Premium Grid */}
           <div className="flex flex-col space-y-6 flex-1 min-w-[200px]">
             <h3 className="font-sans font-black text-white uppercase tracking-[0.2em] text-[10px] mb-2 border-b border-mafia-gold/20 pb-2">
-              Sledujte nás
+              {t.footer.followUs}
             </h3>
 
             <div className="grid grid-cols-1 gap-4">

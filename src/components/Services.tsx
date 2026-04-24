@@ -111,14 +111,14 @@ export function Services() {
             },
             { 
               id: 'members',
-              title: t.others.members.title,
+              title: t.rodina.title,
               icon: <Scissors size={48} className="text-mafia-gold" />,
               description: lang === 'cs' ? 'POZNEJTE NÁŠ TÝM' : 'MEET OUR TEAM',
               onClick: () => { router.push('/rodina'); trackEvent("open_family_page"); }
             },
             { 
               id: 'housing',
-              title: lang === 'cs' ? 'SÍDLIŠTĚ' : 'HOUSING ESTATE',
+              title: t.sidliste.title,
               icon: <Building2 size={48} className="text-mafia-gold" />,
               description: lang === 'cs' ? 'LOKÁLNÍ KOMUNITA A PŘÍBĚHY' : 'LOCAL COMMUNITY AND STORIES',
               onClick: () => { router.push('/sidliste'); trackEvent("open_housing_estate_page"); }
@@ -182,13 +182,13 @@ export function Services() {
             },
             { 
               id: 'members',
-              title: lang === 'cs' ? 'RODINA' : 'FAMILY',
+              title: t.rodina.list === 'Seznam' ? 'RODINA' : 'FAMILY',
               icon: <Scissors size={32} className="text-mafia-gold" />,
               onClick: () => { router.push('/rodina'); trackEvent("open_family_page"); }
             },
             { 
               id: 'housing',
-              title: lang === 'cs' ? 'SÍDLIŠTĚ' : 'HOUSING',
+              title: t.sidliste.title,
               icon: <Building2 size={32} className="text-mafia-gold" />,
               onClick: () => { router.push('/sidliste'); trackEvent("open_housing_estate_page"); }
             },
@@ -535,7 +535,7 @@ export function Services() {
                         className={`w-full bg-mafia-black/60 border ${passwordError ? 'border-mafia-red/50' : 'border-mafia-gold/30'} p-4 text-center font-mono text-mafia-gold tracking-widest focus:outline-none focus:border-mafia-gold transition-all duration-300`}
                       />
                       {passwordError && (
-                        <p className="text-mafia-red text-xs uppercase tracking-widest animate-pulse">Přístup odepřen</p>
+                        <p className="text-mafia-red text-xs uppercase tracking-widest animate-pulse">{t.others.support.denied}</p>
                       )}
                       <button 
                          onClick={() => {
@@ -548,7 +548,7 @@ export function Services() {
                          }}
                          className="w-full py-4 bg-mafia-gold text-mafia-black font-black uppercase tracking-widest hover:bg-white transition-colors duration-300"
                       >
-                         ODEMKNOUT
+                         {t.others.support.unlock}
                       </button>
                     </div>
                   </div>
