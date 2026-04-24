@@ -139,15 +139,19 @@ export function MobileCompass() {
     };
 
     if (typeof window !== 'undefined') {
-      if ('ondeviceorientationabsolute' in window) {
-        window.addEventListener("deviceorientationabsolute", handleOrientation, true);
-      } else if ('DeviceOrientationEvent' in window) {
-        window.addEventListener("deviceorientation", handleOrientation, true);
+      const win = window as any;
+      if ('ondeviceorientationabsolute' in win) {
+        win.addEventListener("deviceorientationabsolute", handleOrientation, true);
+      } else if ('DeviceOrientationEvent' in win) {
+        win.addEventListener("deviceorientation", handleOrientation, true);
       }
     }
     return () => {
-      window.removeEventListener("deviceorientationabsolute", handleOrientation);
-      window.removeEventListener("deviceorientation", handleOrientation);
+      const win = window as any;
+      if (typeof win !== 'undefined') {
+        win.removeEventListener("deviceorientationabsolute", handleOrientation);
+        win.removeEventListener("deviceorientation", handleOrientation);
+      }
     };
   }, [isEnabled, isVisible]);
 
