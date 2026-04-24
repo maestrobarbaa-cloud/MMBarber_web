@@ -100,7 +100,7 @@ export function MobileCompass() {
           const d = R * c;
           
           let dDisplay = "";
-          if (d < 15) {
+          if (d < 50) {
             dDisplay = lang === 'cs' ? 'V CÍLI' : 'ARRIVED';
           } else {
             dDisplay = d > 1000 ? `${(d / 1000).toFixed(1)} km` : `${Math.round(d)} m`;

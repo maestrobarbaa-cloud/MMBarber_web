@@ -134,6 +134,47 @@ const barbers: BarberProfile[] = [
   }
 ];
 
+const MissionLoading = ({ isHovered }: { isHovered: boolean }) => (
+  <AnimatePresence>
+    {isHovered && (
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 overflow-hidden pointer-events-none"
+      >
+        {/* Scanning Line */}
+        <motion.div
+          initial={{ y: "-100%" }}
+          animate={{ y: "100%" }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+          className="w-full h-1/3 bg-gradient-to-b from-transparent via-mafia-gold/40 to-transparent z-10"
+        />
+        
+        {/* Binary/Data Overlay */}
+        <div className="absolute inset-0 flex flex-wrap content-start opacity-20 text-[6px] font-mono leading-none p-1 gap-1">
+          {Array(40).fill(0).map((_, i) => (
+            <motion.span 
+              key={i}
+              animate={{ opacity: [0.2, 1, 0.2] }}
+              transition={{ duration: Math.random() * 2 + 1, repeat: Infinity }}
+            >
+              {Math.random() > 0.5 ? '1' : '0'}
+            </motion.span>
+          ))}
+        </div>
+
+        {/* Glitch Overlay */}
+        <motion.div 
+          animate={{ opacity: [0, 0.1, 0] }}
+          transition={{ duration: 0.2, repeat: Infinity, repeatDelay: Math.random() * 5 }}
+          className="absolute inset-0 bg-white mix-blend-overlay"
+        />
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
 function BarberCard({ 
   barber, 
   isActive, 
@@ -382,13 +423,16 @@ function BarberCard({
                 </div>
             </div>
 
-            {!isHidden && (
-              <div className="w-full flex justify-center relative z-[60] mt-auto pb-10">
-                  <div className="w-full max-w-[260px] h-16 relative flex items-center justify-center border-2 border-mafia-gold bg-mafia-black text-mafia-gold font-heading uppercase tracking-[0.6em] font-black text-lg">
-                      {lang === 'cs' ? "REZERVACE" : "BOOKING"}
-                  </div>
-              </div>
-            )}
+              {!isHidden && (
+                <div className="w-full flex justify-center relative z-[60] mt-auto pb-10">
+                    <div className="w-full max-w-[260px] h-16 relative flex items-center justify-center border-2 border-mafia-gold bg-mafia-black text-mafia-gold font-heading uppercase tracking-[0.6em] font-black text-lg overflow-hidden group">
+                        <MissionLoading isHovered={isHovered} />
+                        <span className="relative z-20 transition-all duration-300 group-hover:tracking-[0.8em]">
+                          {lang === 'cs' ? "REZERVACE" : "BOOKING"}
+                        </span>
+                    </div>
+                </div>
+              )}
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
           </motion.div>
         </motion.div>
@@ -692,7 +736,7 @@ export function Profiles() {
     localStorage.setItem("mmbarber_profiles_seen", "true");
     trackEvent("cta_randomize_barber");
 
-    const availableBarbers = barbers;
+    const availableBarbers = barbers.filter(b => b.name !== "Nella");
 
     setIsRandomizing(true);
     let ticks = 0;
@@ -702,8 +746,15 @@ export function Profiles() {
       ticks++;
       if (ticks >= maxTicks) {
         clearInterval(interval);
+        // Find the index of the winner in the ORIGINAL barbers array for the booking link
+        // Actually, availableBarbers[winner] is already from the filtered list, but we need slotIndex to match the visual if we use slotIndex for rendering.
+        // Wait, slotIndex is used to render the card.
         const winner = Math.floor(Math.random() * availableBarbers.length);
-        setSlotIndex(winner);
+        
+        // Find the index in the original barbers array
+        const originalIndex = barbers.findIndex(b => b.name === availableBarbers[winner].name);
+        
+        setSlotIndex(originalIndex);
         setIsRandomizing(false);
         setIsDecided(true);
         setTimeout(() => {

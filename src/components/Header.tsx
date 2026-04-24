@@ -78,7 +78,11 @@ export function Header() {
     const observer = new MutationObserver(checkModes);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
   }, []);
   const [isMobile, setIsMobile] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -586,10 +590,12 @@ export function Header() {
 
       if (isIntroActive) return;
 
-      if (currentScrollY > 10) {
-        setIsVisible(false);
-      } else {
+      if (currentScrollY <= 10) {
         setIsVisible(true);
+      } else if (currentScrollY > lastScrollY.current + 5) {
+        setIsVisible(false); // Scrolling down
+      } else if (currentScrollY < lastScrollY.current - 10) {
+        setIsVisible(true); // Scrolling up
       }
       
       if (!isMobile && !hasVisited && currentScrollY > window.innerHeight * 0.4) {
@@ -607,7 +613,17 @@ export function Header() {
     };
   }, [pathname, isIntroActive, isVisible, isMobile]);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => {
+    const newState = !isMenuOpen;
+    setIsMenuOpen(newState);
+    if (newState) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+  };
 
   const handleLogoClick = () => {
     // Increment clicks for the VIP easter egg regardless of path
@@ -638,7 +654,11 @@ export function Header() {
     }
   }, [clicks, router]);
 
-  const handleNavLinkClick = () => setIsMenuOpen(false);
+  const handleNavLinkClick = () => {
+    setIsMenuOpen(false);
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  };
 
 
 
@@ -646,7 +666,7 @@ export function Header() {
     <>
       <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-20 md:h-24 block'}`} aria-hidden="true" />
       <header
-        className={`w-full left-0 z-[10010] bg-gradient-to-b from-mafia-black/95 via-mafia-black/70 to-transparent py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-20 md:h-24' : (isMobile ? 'fixed top-0 bg-mafia-black/80 backdrop-blur-md' : 'absolute top-0')} ${isIntroActive ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'} ${(!isVisible && !isMenuOpen) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
+        className={`w-full left-0 z-[10010] bg-gradient-to-b from-mafia-black/95 via-mafia-black/70 to-transparent py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top))] ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : (isMobile ? 'fixed top-0 bg-mafia-black/80 backdrop-blur-md h-24' : 'absolute top-0')} ${isIntroActive ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'} ${(!isVisible && !isMenuOpen) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
       >
         <div className="flex items-center gap-8">
           <button
@@ -1020,7 +1040,7 @@ export function Header() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-mafia-black z-[250] overflow-y-auto px-4 py-6"
+            className="fixed inset-0 bg-mafia-black z-[20000] overflow-y-auto px-4 py-6 overscroll-contain"
           >
             {/* Header in Overlay */}
             <div className="flex items-center justify-between mb-8 overflow-hidden shrink-0">
@@ -1041,7 +1061,7 @@ export function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={lang === 'cs' ? "ZADEJTE CÍL..." : "SEARCH TARGET..."}
-                  className="w-full bg-white/5 border-2 border-mafia-gold/30 text-white text-sm font-mono px-6 py-4 outline-none focus:border-mafia-gold transition-all tracking-[0.2em] uppercase"
+                  className="w-full bg-white/5 border-2 border-mafia-gold/30 text-white text-base font-mono px-6 py-4 outline-none focus:border-mafia-gold transition-all tracking-[0.2em] uppercase"
                 />
                 <div className="absolute top-0 right-0 h-full flex items-center pr-6 pointer-events-none">
                   <Search size={20} className="text-mafia-gold/40" />

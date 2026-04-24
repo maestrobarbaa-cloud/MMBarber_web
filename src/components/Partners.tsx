@@ -18,7 +18,7 @@ const PARTNERS = [
   { name: "Dvůr pod Starýma Horama", url: "https://dvurpodstarymahorama.cz/", img: "/loga_partneri/DvurPodHorama.png" },
   { name: "Sluneční Reality", url: "https://slunecnireality.cz/", img: "/loga_partneri/slunecniReality.png" },
   { name: "Dětský domov UH", url: "https://www.detskydomovuh.cz/", img: "/loga_partneri/detskydomov.png" },
-  { name: "O Kolečkovič", url: "https://www.okoleckovic.cz/", img: "/loga_partneri/o kolečko víc.png" }
+  { name: "O Kolečkovič", url: "https://www.okoleckovic.cz/", img: "/loga_partneri/okoleckovic.png" }
 ];
 
 export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
