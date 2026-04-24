@@ -704,15 +704,9 @@ export function Profiles() {
 
   useEffect(() => {
     setIsMounted(true);
-    const hasVisited = localStorage.getItem("mmbarber_profiles_seen");
     
-    const availableBarbers = barbers;
-
-    if (!hasVisited && availableBarbers.length > 1) {
-      setIsFirstVisit(true);
-    } else {
-      setIsFirstVisit(false);
-    }
+    // Lottery is currently disabled per user request - skipping directly to profiles
+    setIsFirstVisit(false);
 
     const savedRevealed = localStorage.getItem("mmbarber_revealed_barbers");
     if (savedRevealed) {
