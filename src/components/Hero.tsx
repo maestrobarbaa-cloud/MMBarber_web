@@ -434,81 +434,20 @@ export function Hero() {
                       wordBreak: "break-word"
                     }}
                   >
-                    {isMounted && displayText && displayText.split("").map((char, i) => (
-                      <motion.span
-                        key={`mob-${displayText}-${i}`}
-                        initial={{ opacity: 0, filter: "blur(10px)", scale: 1.1 }}
-                        animate={{ 
-                          opacity: 0.75, 
-                          filter: "blur(0px)", 
-                          scale: 1,
-                          textShadow: "0 0 10px rgba(197,160,89,0.2)"
-                        }}
-                        exit={{ 
-                          opacity: 0, 
-                          filter: "blur(40px) brightness(4)",
-                          scaleY: 2.0,
-                          scaleX: 0.8,
-                          transition: { duration: 1.2, delay: i * 0.01 }
-                        }}
-                        transition={{ 
-                          duration: 0.8, 
-                          delay: i * 0.03, 
-                          ease: "easeOut" 
-                        }}
-                        className="inline-block"
+                    {isMounted && displayText && (
+                      <motion.div
+                        initial={{ opacity: 0, filter: "blur(10px)" }}
+                        animate={{ opacity: 0.85, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, filter: "blur(20px)" }}
+                        transition={{ duration: 0.8 }}
                       >
-                        {char === " " ? "\u00A0" : char}
-                      </motion.span>
-                    ))}
+                        {displayText}
+                      </motion.div>
+                    )}
                   </motion.h1>
 
                   {/* Mobile Perfect Mirror Reflection - Grouped for Sync */}
-                  <div className="absolute top-full left-0 w-full pointer-events-none select-none mt-10 flex justify-center">
-                    <motion.div
-                      animate={{ opacity: isMobile ? 0.2 : (isSloganHovered ? 0.5 : 0) }}
-                      transition={{ duration: 1 }}
-                      className="w-full flex justify-center overflow-visible"
-                      style={{ 
-                        transformOrigin: "top center",
-                        transform: "scaleY(-1)",
-                        maskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.5) 35%, transparent 95%)",
-                        WebkitMaskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.5) 35%, transparent 95%)",
-                      }}
-                    >
-                      <h2 
-                        className={`text-3xl sm:text-5xl md:text-6xl tracking-normal leading-[1.3] w-full max-w-[95vw] text-center ${isEasterEgg ? 'text-mafia-gold' : 'text-white/50'}`}
-                        style={{ fontFamily: "var(--font-great-vibes), cursive" }}
-                      >
-                        {isMounted && displayText && displayText.split("").map((char, i) => (
-                          <motion.span
-                            key={`mob-reflect-sync-${displayText}-${i}`}
-                            initial={{ opacity: 0, filter: "blur(10px)", scale: 1.1 }}
-                            animate={{ 
-                              opacity: 1,
-                              filter: "blur(0px)",
-                              scale: 1
-                            }}
-                            exit={{ 
-                              opacity: 0, 
-                              filter: "blur(40px) brightness(4)",
-                              scaleY: 2.0,
-                              scaleX: 0.8,
-                              transition: { duration: 1.2, delay: i * 0.01 }
-                            }}
-                            transition={{ 
-                              duration: 0.8, 
-                              delay: i * 0.03, 
-                              ease: "easeOut" 
-                            }}
-                            className="inline-block"
-                          >
-                            {char === " " ? "\u00A0" : char}
-                          </motion.span>
-                        ))}
-                      </h2>
-                    </motion.div>
-                  </div>
+                  {/* Mobile Reflection disabled for performance */}
                 </motion.div>
               </AnimatePresence>
             </div>

@@ -27,6 +27,11 @@ html, body {
   -webkit-touch-callout: none !important;
   -webkit-tap-highlight-color: transparent;
   -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
+  touch-action: pan-y;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 button, a {
@@ -112,6 +117,10 @@ html[data-graphics-tier='low'] .global-web-frame {
 html {
   --user-sharpness: 0.5;
   image-rendering: auto;
+  /* Disable root filters on mobile for massive scroll performance gain */
+  @media (max-width: 1024px) {
+    filter: none !important;
+  }
 }
 
 html[style*='--user-sharpness: 1'] {
@@ -210,9 +219,11 @@ html.letterbox-active {
   filter: contrast(1.15) saturate(1.1) brightness(0.85) sepia(0.05) hue-rotate(-5deg) !important;
 }
 
-/* Sharpness control via contrast/brightness filter if needed */
-html {
-  filter: contrast(calc(1 + (var(--user-sharpness) - 0.5) * 0.2)) brightness(calc(1 - (var(--user-sharpness) - 0.5) * 0.05));
+/* Sharpness control via contrast/brightness filter if needed - Disabled on mobile */
+@media (min-width: 1025px) {
+  html {
+    filter: contrast(calc(1 + (var(--user-sharpness) - 0.5) * 0.2)) brightness(calc(1 - (var(--user-sharpness) - 0.5) * 0.05));
+  }
 }
 
 @theme {
@@ -1023,6 +1034,7 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transform: translate3d(0,0,0); /* Force GPU */
   
   /* Micro-dither grain to prevent circular banding (kruhy) - barely visible at 3% */
   background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.03"/%3E%3C/svg%3E');

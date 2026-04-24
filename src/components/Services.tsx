@@ -725,15 +725,18 @@ const MenuCard = React.memo(function MenuCard({
       onMouseLeave={() => { if (!isMobile) { setLocalHover(false); onHoverEnd(); } }}
       onClick={handleCardClick}
       className={`menu-card ${variant === 'fanned' ? 'absolute' : 'relative flex-shrink-0'} cursor-pointer transition-all duration-300 transform-gpu overflow-visible`}
-      style={variant === 'fanned' ? { 
-        left: 'calc(50% - 112px)',
-        transform: `translateX(${xOffset}px) rotate(${rotation}deg)`,
-        transformOrigin: "50% 150%",
-        zIndex: active ? 1000 : (localHover ? 1100 : index + 100),
-        height: '384px',
-        width: '256px',
-        perspective: "2000px"
-      } : { zIndex: 100, perspective: "2000px", height: isMobile ? (className?.includes('aspect-square') ? 'auto' : '220px') : '384px', width: isMobile ? '100%' : '256px' }}
+      style={{
+        willChange: 'transform, opacity',
+        ...(variant === 'fanned' ? { 
+          left: 'calc(50% - 112px)',
+          transform: `translateX(${xOffset}px) rotate(${rotation}deg)`,
+          transformOrigin: "50% 150%",
+          zIndex: active ? 1000 : (localHover ? 1100 : index + 100),
+          height: '384px',
+          width: '256px',
+          perspective: "2000px"
+        } : { zIndex: 100, perspective: "2000px", height: isMobile ? (className?.includes('aspect-square') ? 'auto' : '220px') : '384px', width: isMobile ? '100%' : '256px' })
+      }}
     >
       <motion.div 
         animate={{ 

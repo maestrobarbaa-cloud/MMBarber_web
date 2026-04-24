@@ -6,15 +6,17 @@ export function Atmosphere() {
   const [isLowTier, setIsLowTier] = useState(false);
 
   useEffect(() => {
-    const tier = document.documentElement.getAttribute('data-graphics-tier');
-    setIsLowTier(tier === 'low');
-    
-    const handleUpdate = () => {
-      const newTier = document.documentElement.getAttribute('data-graphics-tier');
-      setIsLowTier(newTier === 'low');
+    const checkMobile = () => {
+      setIsLowTier(document.documentElement.getAttribute('data-graphics-tier') === 'low' || window.innerWidth < 1024);
     };
-    window.addEventListener('mmbarber-graphics-update', handleUpdate);
-    return () => window.removeEventListener('mmbarber-graphics-update', handleUpdate);
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    window.addEventListener('mmbarber-graphics-update', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('mmbarber-graphics-update', checkMobile);
+    };
   }, []);
 
   if (isLowTier) return null;
