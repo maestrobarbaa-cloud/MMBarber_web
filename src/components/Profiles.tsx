@@ -267,14 +267,16 @@ function BarberCard({
           >
             <div className="w-full flex justify-between items-start">
               <div className="flex flex-col items-center gap-0 text-mafia-gold">
-                  <span className="font-heading font-black text-4xl mb-1 card-symbol-front">
+                  <span className="font-heading font-black text-4xl leading-none card-symbol-front">
                     {barber.symbol}
                   </span>
-                  {barber.name === 'Tomáš' ? (
-                    <Clover size={24} strokeWidth={3} className="opacity-80" />
-                  ) : (
-                    <Heart size={24} strokeWidth={3} fill="currentColor" className="opacity-80" />
-                  )}
+                  <div className="mt-1">
+                    {barber.symbol === 'A' ? (
+                      <Clover size={24} strokeWidth={3} className="opacity-80" />
+                    ) : (
+                      <Heart size={24} strokeWidth={3} fill="currentColor" className="opacity-80" />
+                    )}
+                  </div>
               </div>
               <div className="text-right relative">
                   <h3 className="text-4xl font-heading font-black uppercase text-mafia-gold tracking-widest relative">
@@ -293,28 +295,8 @@ function BarberCard({
             </div>
 
             <div className="flex-grow flex flex-col items-center justify-center text-center px-4">
-              <div className="mb-6 relative w-full h-[120px] flex items-center justify-center">
-                  <Sparkles className={`absolute -top-6 -left-6 text-mafia-gold/20 animate-pulse transition-opacity duration-700 ${isActive ? "opacity-100" : "opacity-0"}`} size={40} />
-                  <AnimatePresence mode="wait">
-                    {isActive && (
-                      <motion.div 
-                        key={`${barber.name}-${dialogueIndex}`}
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 0.8, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-smoke-white font-sans text-lg md:text-xl leading-relaxed italic flex items-center justify-center w-full h-full relative"
-                      >
-                        &quot;{barber.desc}&quot;
-                        {isHidden && (
-                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 bg-mafia-black/90 border border-mafia-gold/10 z-10 flex items-center justify-center text-[10px] tracking-[0.5em] text-mafia-gold font-mono uppercase">
-                            
-                          </motion.div>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <Sparkles className={`absolute -bottom-6 -right-6 text-mafia-gold/20 animate-pulse [animation-delay:1000ms] transition-opacity duration-700 ${isActive ? "opacity-100" : "opacity-0"}`} size={40} />
+              <div className="mb-6 relative w-full h-[20px] flex items-center justify-center">
+                  {/* Dialogues hidden per user request */}
               </div>
 
               <div className="space-y-3 w-full">
@@ -582,9 +564,9 @@ function ChairWithCard({
           <div className="h-px w-8 bg-gradient-to-l from-transparent to-mafia-gold/30 ml-4"></div>
         </motion.div>
         <motion.div 
-          animate={{ y: 0 }}
+          animate={{ y: 0, scaleX: side === 'left' ? -1 : 1 }}
           transition={{ duration: 0.5 }}
-          className={`w-full h-full relative ${isNella ? 'scale-x-[-1]' : ''}`}
+          className="w-full h-full relative"
         >
           {/* Subtle Parallax Background behind the chair */}
           <motion.div 
@@ -594,7 +576,7 @@ function ChairWithCard({
           />
 
           <Image 
-            src="/obr/křeslo.png" 
+            src="/obr/kreslo.png" 
             alt={`Barber Chair ${barber.name}`}
             fill 
             sizes="(max-width: 768px) 100vw, 50vw"
@@ -604,8 +586,8 @@ function ChairWithCard({
           <div 
             className="absolute inset-0 pointer-events-none z-10"
             style={{ 
-              maskImage: `url('/obr/křeslo.png')`,
-              WebkitMaskImage: `url('/obr/křeslo.png')`,
+              maskImage: `url('/obr/kreslo.png')`,
+              WebkitMaskImage: `url('/obr/kreslo.png')`,
               maskSize: 'contain',
               WebkitMaskSize: 'contain',
               maskPosition: 'center',

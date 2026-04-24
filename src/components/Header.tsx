@@ -530,10 +530,15 @@ export function Header() {
     );
 
     if (match) {
-      const el = document.getElementById(match.id);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        trackEvent("header_search", { query, matched: match.id });
+      if (match.id === "services") {
+        router.push("/cenik");
+        trackEvent("header_search", { query, matched: "cenik_page" });
+      } else {
+        const el = document.getElementById(match.id);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          trackEvent("header_search", { query, matched: match.id });
+        }
       }
     } else {
       playSound("/sounds/vrong.mp3", 0.5);
@@ -660,37 +665,17 @@ export function Header() {
           </button>
         </div>
         
-        {/* Mobile Center - Compass */}
-        {isMobile && !isCompassActive && (
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-            <button 
-              onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
-              className="flex items-center gap-3 px-6 py-4 border-2 border-mafia-gold bg-mafia-black/90 backdrop-blur-md rounded-none transition-all duration-300 hover:border-white hover:bg-mafia-gold/10 group active:scale-95 shadow-[0_0_30px_rgba(197,160,89,0.4)]"
-            >
-              <Compass size={32} className="text-mafia-gold animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
-              <span className="text-xs font-heading font-black text-mafia-gold tracking-[0.2em] uppercase whitespace-nowrap">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
-            </button>
-          </div>
-        )}
-
         {/* Mobile Actions (Top Right) */}
         {isMobile && (
-          <div className="flex items-center gap-2">
-            {/* Search Button for Mobile */}
-            {!isMenuOpen && (
-              <button
-                onClick={() => {
-                   setIsMenuOpen(true);
-                   // Give it a tiny delay to ensure the menu is open before focusing
-                   setTimeout(() => {
-                      const input = document.querySelector('input[type="text"]') as HTMLInputElement;
-                      input?.focus();
-                   }, 300);
-                }}
-                className="p-2.5 bg-mafia-black/80 border border-mafia-gold/30 text-mafia-gold hover:bg-mafia-gold/20 transition-all duration-300"
-                aria-label="Search"
+          <div className="flex items-center gap-2 relative z-20">
+            {/* Compass integrated into the bar */}
+            {!isCompassActive && !isMenuOpen && (
+              <button 
+                onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
+                className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)]"
               >
-                <Search size={22} />
+                <Compass size={24} className="text-mafia-gold animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] font-heading font-black text-mafia-gold tracking-[0.1em] uppercase whitespace-nowrap hidden min-[380px]:inline">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
               </button>
             )}
 
@@ -1184,22 +1169,7 @@ export function Header() {
                 </div>
               </button>
 
-              {/* ELITA GAME TILE */}
-              <button 
-                onClick={() => {
-                  window.dispatchEvent(new Event('mmbarber-elita-game-open'));
-                  setIsMenuOpen(false);
-                }}
-                className="bg-mafia-red/5 border border-mafia-red/30 px-6 py-6 flex items-center justify-start gap-5 active:scale-95 transition-transform"
-              >
-                <div className="w-12 h-12 rounded-full border border-mafia-red/30 flex items-center justify-center bg-mafia-red/10">
-                   <Target size={28} className="text-mafia-red animate-pulse" />
-                </div>
-                <div className="flex flex-col items-start text-left">
-                   <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">ELITA HRA</span>
-                   <span className="text-[10px] font-mono text-mafia-red/60 uppercase tracking-widest">PŘIPOJ SE K ELITĚ</span>
-                </div>
-              </button>
+
 
               {/* SOUNDS TOGGLE TILE */}
               <button 

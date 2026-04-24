@@ -125,8 +125,8 @@ export default function SpecialMissionPage() {
               <div 
                 className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none"
                 style={{ 
-                  backgroundImage: `url('/vintage_paper_texture_1776711404358.png')`,
-                  backgroundSize: 'cover',
+                  backgroundImage: `url('https://www.transparenttextures.com/patterns/black-paper.png')`,
+                  backgroundSize: 'auto',
                   backgroundPosition: 'center'
                 }}
               />

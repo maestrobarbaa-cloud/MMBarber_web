@@ -62,18 +62,21 @@ export function ElitaGame() {
 
   const [isGunSoundEnabled, setIsGunSoundEnabled] = useState(false);
 
+  // Difficulty multiplier (increases as score goes up)
+  const difficultyMultiplier = 1 + (score / 20000); 
+
   const getRank = (s: number) => {
     if (lang === 'cs') {
-      if (s < 2000) return "Nováček";
-      if (s < 5000) return "Střelec";
-      if (s < 7500) return "Voják";
-      if (s < 10000) return "Boss";
+      if (s < 5000) return "Nováček";
+      if (s < 15000) return "Střelec";
+      if (s < 30000) return "Voják";
+      if (s < 50000) return "Boss";
       return "Kingpin";
     }
-    if (s < 2000) return "Rookie";
-    if (s < 5000) return "Shooter";
-    if (s < 7500) return "Soldier";
-    if (s < 10000) return "Boss";
+    if (s < 5000) return "Rookie";
+    if (s < 15000) return "Shooter";
+    if (s < 30000) return "Soldier";
+    if (s < 50000) return "Boss";
     return "Kingpin";
   };
 
@@ -83,21 +86,21 @@ export function ElitaGame() {
     
     const newTarget: GameTarget = {
       id: Date.now() + Math.random(),
-      x: Math.random() * 80 + 10, // 10-90%
-      y: Math.random() * 60 + 20, // 20-80%
-      size: Math.random() * 20 + 70, // 70-90px
-      speed: Math.random() * 1.5 + 1.2,
+      x: Math.random() * 65 + 17.5, // 17.5-82.5% (safer for mobile/notches)
+      y: Math.random() * 45 + 27.5, // 27.5-72.5% (safer for mobile/notches)
+      size: Math.random() * 15 + 45, // Smaller targets: 45-60px (down from 70-90px)
+      speed: (Math.random() * 1.8 + 1.5) * difficultyMultiplier,
       type,
       points: type === 'meme' ? 150 : (type === 'mullet' ? 100 : 50)
     };
 
     setTargets(prev => [...prev, newTarget]);
 
-    // Auto-remove target after some time
+    // Auto-remove target after some time (faster as speed increases)
     setTimeout(() => {
       setTargets(prev => prev.filter(t => t.id !== newTarget.id));
-    }, 3000 / newTarget.speed);
-  }, []);
+    }, 2200 / newTarget.speed);
+  }, [difficultyMultiplier]);
 
   const startGame = async () => {
     // Advanced Anti-Cheat: IP Check Simulation
@@ -131,15 +134,17 @@ export function ElitaGame() {
     setTargets([]);
     setUnlockedCode(null);
     setGameState('playing');
-    playSound("/sounds/success.mp3", 0.4);
+    playSound("/sounds/kasa.mp3", 0.4);
   };
 
   useEffect(() => {
     if (gameState === 'playing') {
-      const interval = setInterval(spawnTarget, 400); 
+      // Faster spawn as difficulty increases
+      const spawnRate = Math.max(120, 320 / difficultyMultiplier);
+      const interval = setInterval(spawnTarget, spawnRate); 
       return () => clearInterval(interval);
     }
-  }, [gameState, spawnTarget]);
+  }, [gameState, spawnTarget, difficultyMultiplier]);
 
   const endGame = useCallback(() => {
     setGameState('ended');
@@ -159,8 +164,8 @@ export function ElitaGame() {
     setLeaderboard(currentLeaderboard);
     localStorage.setItem('mmbarber_elita_leaderboard', JSON.stringify(currentLeaderboard));
 
-    // Check if score is high enough for code (10,000+)
-    if (score >= 10000) {
+    // Check if score is high enough for code (50,000+)
+    if (score >= 50000) {
       const usedCodes = JSON.parse(localStorage.getItem('mmbarber_elita_used_codes') || '[]');
       const availableCode = ELITA_CODES.find(c => !usedCodes.includes(c));
       
@@ -172,7 +177,7 @@ export function ElitaGame() {
       }
     }
     
-    playSound("/sounds/finish.mp3", 0.5);
+    playSound("/sounds/neon.mp3", 0.5);
   }, [score, leaderboard]);
 
   useEffect(() => {
@@ -186,7 +191,7 @@ export function ElitaGame() {
     }
   }, [gameState, timeLeft, endGame]);
 
-  const handleShot = (targetId: number, e: React.MouseEvent) => {
+  const handleShot = (targetId: number, e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     const target = targets.find(t => t.id === targetId);
     if (!target) return;
@@ -195,9 +200,9 @@ export function ElitaGame() {
     const now = Date.now();
     let pointsToAdd = target.points;
     
-    if (now - lastHitTime < 1000) {
+    if (now - lastHitTime < 700) { // Tighter combo window
       setCombo(prev => prev + 1);
-      pointsToAdd *= (1 + combo * 0.1);
+      pointsToAdd *= (1 + combo * 0.2); // Better combo scaling
     } else {
       setCombo(0);
     }
@@ -208,15 +213,15 @@ export function ElitaGame() {
 
     // Quips
     const quips = lang === 'cs' 
-      ? ["Čistý zásah.", "Bez milosti.", "Respekt získán.", "V systému."]
-      : ["Clean shot.", "No mercy.", "Respect earned.", "In the system."];
+      ? ["Čistý zásah.", "Bez milosti.", "Respekt získán.", "V systému.", "Elita.", "Mafioso."]
+      : ["Clean shot.", "No mercy.", "Respect earned.", "In the system.", "Elite.", "Mafioso."];
     setShowPopup(quips[Math.floor(Math.random() * quips.length)]);
-    setTimeout(() => setShowPopup(null), 1000);
+    setTimeout(() => setShowPopup(null), 800);
 
     if (isGunSoundEnabled) {
       playSound("/sounds/magnum.mp3", 0.3);
     } else {
-      playSound("/sounds/scissors.mp3", 0.4);
+      playSound("/sounds/břitva.mp3", 0.4);
     }
   };
 
@@ -241,48 +246,48 @@ export function ElitaGame() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[10010] flex items-center justify-center bg-black/98 backdrop-blur-2xl overflow-hidden select-none"
+        className="fixed inset-0 z-[10010] flex items-center justify-center bg-black/98 backdrop-blur-2xl overflow-hidden select-none touch-none"
         onClick={handleMiss}
       >
         <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute inset-0 bg-[url('/grid.png')] opacity-10" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.05)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20" />
         </div>
 
         {/* Close Button */}
         <button 
           onClick={() => setIsOpen(false)}
-          className="absolute top-8 right-8 text-white/30 hover:text-mafia-gold transition-colors z-50 p-2"
+          className="absolute top-6 right-6 md:top-8 md:right-8 text-white/30 hover:text-mafia-gold transition-colors z-50 p-2"
         >
           <X size={32} />
         </button>
 
         {gameState === 'idle' && (
-          <div className="text-center space-y-8 max-w-xl px-6">
+          <div className="text-center space-y-8 max-w-xl px-6 py-12 overflow-y-auto max-h-screen">
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
             >
-              <h1 className="text-5xl md:text-7xl font-heading font-black text-white tracking-[0.2em] uppercase">
+              <h1 className="text-4xl md:text-7xl font-heading font-black text-white tracking-[0.2em] uppercase">
                 ELITA <span className="text-mafia-gold">SHOT</span>
               </h1>
-              <p className="text-mafia-gold/60 font-mono text-sm tracking-[0.3em] mt-4 uppercase">
+              <p className="text-mafia-gold/60 font-mono text-[10px] md:text-sm tracking-[0.3em] mt-4 uppercase">
                 {lang === 'cs' ? "ELIMINACE ŠPATNÝCH ÚČESŮ" : "MMBARBER TARGET ACQUISITION"}
               </p>
             </motion.div>
 
-            <div className="p-8 border border-white/10 bg-white/5 space-y-6">
-              <p className="text-white/70 text-sm leading-relaxed uppercase tracking-wider font-sans">
+            <div className="p-6 md:p-8 border border-white/10 bg-white/5 space-y-6">
+              <p className="text-white/70 text-[10px] md:text-sm leading-relaxed uppercase tracking-wider font-sans">
                 {lang === 'cs' 
-                  ? "Zlikviduj špatné účesy dřív, než ovládnou ulice. Máš 30 sekund na to, abys dokázal, že patříš k elitě. Jen skóre nad 10 000 ti zajistí místo ve hře o Kingpina sezóny."
-                  : "Eliminate bad haircuts before they take over the streets. You have 30 seconds to prove you belong to the elite. Only score over 10,000 secures your spot for Kingpin of the season."}
+                  ? "Zlikviduj špatné účesy dřív, než ovládnou ulice. Máš 30 sekund na to, abys dokázal, že patříš k elitě. Jen skóre nad 50 000 ti zajistí místo ve hře o Kingpina sezóny."
+                  : "Eliminate bad haircuts before they take over the streets. You have 30 seconds to prove you belong to the elite. Only score over 50,000 secures your spot for Kingpin of the season."}
               </p>
               
-              <div className="grid grid-cols-2 gap-4 text-[10px] font-mono text-mafia-gold">
+              <div className="grid grid-cols-2 gap-4 text-[9px] md:text-[10px] font-mono text-mafia-gold">
                 <div className="flex items-center gap-2 border border-mafia-gold/20 p-3">
                   <Timer size={14} /> 30 {lang === 'cs' ? 'SEKUND' : 'SECONDS'}
                 </div>
                 <div className="flex items-center gap-2 border border-mafia-gold/20 p-3">
-                  <Trophy size={14} /> 10 000+ {lang === 'cs' ? 'PRO KÓD' : 'FOR CODE'}
+                  <Trophy size={14} /> 50 000+ {lang === 'cs' ? 'PRO KÓD' : 'FOR CODE'}
                 </div>
               </div>
 
@@ -303,13 +308,13 @@ export function ElitaGame() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={(e) => { e.stopPropagation(); startGame(); }}
-                className="px-12 py-5 bg-mafia-gold text-mafia-black font-heading font-black text-lg uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(197,160,89,0.3)]"
+                className="px-8 md:px-12 py-4 md:py-5 bg-mafia-gold text-mafia-black font-heading font-black text-base md:text-lg uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(197,160,89,0.3)]"
               >
                 {lang === 'cs' ? "ZAHÁJIT PALBU" : "START MISSION"}
               </button>
               <button 
                 onClick={(e) => { e.stopPropagation(); setGameState('leaderboard'); }}
-                className="px-8 py-5 border border-white/20 text-white font-heading font-black text-lg uppercase tracking-[0.3em] hover:bg-white/5 transition-all"
+                className="px-6 md:px-8 py-4 md:py-5 border border-white/20 text-white font-heading font-black text-base md:text-lg uppercase tracking-[0.3em] hover:bg-white/5 transition-all"
               >
                 {lang === 'cs' ? "ŽEBŘÍČEK" : "LEADERBOARD"}
               </button>
@@ -320,17 +325,17 @@ export function ElitaGame() {
         {gameState === 'playing' && (
           <div className="w-full h-full relative cursor-crosshair">
             {/* HUD */}
-            <div className="absolute top-12 left-12 right-12 flex justify-between items-start pointer-events-none">
+            <div className="absolute top-6 left-6 right-6 md:top-12 md:left-12 md:right-12 flex justify-between items-start pointer-events-none">
               <div className="space-y-1">
-                <p className="text-mafia-gold/40 text-[10px] font-mono tracking-widest uppercase">
+                <p className="text-mafia-gold/40 text-[8px] md:text-[10px] font-mono tracking-widest uppercase">
                   {lang === 'cs' ? 'SKÓRE_OPERATIVCE' : 'OPERATIVE_SCORE'}
                 </p>
-                <h3 className="text-4xl font-heading font-black text-white tracking-widest">{score.toString().padStart(6, '0')}</h3>
+                <h3 className="text-2xl md:text-4xl font-heading font-black text-white tracking-widest">{score.toString().padStart(6, '0')}</h3>
                 {combo > 0 && (
                   <motion.div 
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="text-mafia-red font-black text-xl italic"
+                    className="text-mafia-red font-black text-sm md:text-xl italic"
                   >
                     COMBO X{combo + 1}
                   </motion.div>
@@ -338,19 +343,19 @@ export function ElitaGame() {
               </div>
               
               <div className="text-center">
-                 <p className="text-mafia-gold/40 text-[10px] font-mono tracking-widest uppercase">
+                 <p className="text-mafia-gold/40 text-[8px] md:text-[10px] font-mono tracking-widest uppercase">
                    {lang === 'cs' ? 'ZBÝVAJÍCÍ_ČAS' : 'TIME_REMAINING'}
                  </p>
-                 <h3 className={`text-6xl font-heading font-black tracking-tighter ${timeLeft < 10 ? 'text-mafia-red animate-pulse' : 'text-white'}`}>
+                 <h3 className={`text-4xl md:text-6xl font-heading font-black tracking-tighter ${timeLeft < 10 ? 'text-mafia-red animate-pulse' : 'text-white'}`}>
                     {timeLeft}s
                  </h3>
               </div>
 
               <div className="text-right space-y-1">
-                <p className="text-mafia-gold/40 text-[10px] font-mono tracking-widest uppercase">
+                <p className="text-mafia-gold/40 text-[8px] md:text-[10px] font-mono tracking-widest uppercase">
                    {lang === 'cs' ? 'AKTUÁLNÍ_HODNOST' : 'CURRENT_RANK'}
-                </p>
-                <h3 className="text-xl font-heading font-black text-mafia-gold tracking-widest uppercase">{getRank(score)}</h3>
+                 </p>
+                <h3 className="text-xs md:text-xl font-heading font-black text-mafia-gold tracking-widest uppercase">{getRank(score)}</h3>
               </div>
             </div>
 
@@ -363,7 +368,7 @@ export function ElitaGame() {
                 exit={{ scale: 0, opacity: 0 }}
                 className="absolute flex items-center justify-center group"
                 style={{ left: `${target.x}%`, top: `${target.y}%`, width: target.size, height: target.size }}
-                onClick={(e) => handleShot(target.id, e)}
+                onPointerDown={(e) => handleShot(target.id, e)}
               >
                 <div className="relative w-full h-full">
                   <div className="absolute inset-0 border-2 border-mafia-gold/30 rounded-full animate-spin-slow" />
@@ -376,7 +381,7 @@ export function ElitaGame() {
                     {target.type === 'meme' && <Star className="text-white w-2/3 h-2/3 animate-bounce" />}
                   </div>
 
-                  <div className="absolute -top-4 -right-4 bg-mafia-gold text-mafia-black text-[10px] font-black px-1.5 py-0.5 shadow-xl">
+                  <div className="absolute -top-4 -right-4 bg-mafia-gold text-mafia-black text-[8px] md:text-[10px] font-black px-1.5 py-0.5 shadow-xl">
                     +{target.points}
                   </div>
                 </div>
@@ -391,7 +396,7 @@ export function ElitaGame() {
                   exit={{ opacity: 0, y: -20 }}
                   className="fixed bottom-24 inset-x-0 flex items-center justify-center pointer-events-none"
                 >
-                  <span className="text-3xl md:text-5xl font-heading font-black text-mafia-gold italic tracking-tighter uppercase [text-shadow:0_5px_15px_rgba(0,0,0,0.5)]">
+                  <span className="text-2xl md:text-5xl font-heading font-black text-mafia-gold italic tracking-tighter uppercase [text-shadow:0_5px_15px_rgba(0,0,0,0.5)]">
                     {showPopup}
                   </span>
                 </motion.div>
@@ -401,47 +406,47 @@ export function ElitaGame() {
         )}
 
         {gameState === 'ended' && (
-          <div className="text-center space-y-8 max-w-2xl px-6">
+          <div className="text-center space-y-8 max-w-2xl px-6 py-12 overflow-y-auto max-h-screen">
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-              <h2 className="text-mafia-gold font-mono text-sm tracking-[0.4em] uppercase mb-2">
+              <h2 className="text-mafia-gold font-mono text-[10px] md:text-sm tracking-[0.4em] uppercase mb-2">
                 {lang === 'cs' ? 'MISE_DOKONČENA' : 'MISSION_COMPLETE'}
               </h2>
-              <h1 className="text-6xl md:text-8xl font-heading font-black text-white tracking-widest uppercase">{score}</h1>
-              <p className="text-white/40 font-mono text-xs uppercase tracking-[0.2em] mt-2">
+              <h1 className="text-5xl md:text-8xl font-heading font-black text-white tracking-widest uppercase">{score}</h1>
+              <p className="text-white/40 font-mono text-[8px] md:text-xs uppercase tracking-[0.2em] mt-2">
                  {lang === 'cs' ? 'CELKOVÉ_DOSAŽENÉ_SKÓRE' : 'TOTAL_SCORE_ACCUMULATED'}
               </p>
             </motion.div>
 
-            <div className="p-10 bg-white/5 border border-white/10 relative overflow-hidden">
+            <div className="p-6 md:p-10 bg-white/5 border border-white/10 relative overflow-hidden">
                {unlockedCode ? (
                  <div className="space-y-6">
                     <div className="flex justify-center mb-4">
-                      <Trophy size={64} className="text-mafia-gold animate-bounce" />
+                      <Trophy size={48} className="text-mafia-gold animate-bounce" />
                     </div>
-                    <h3 className="text-2xl font-heading font-black text-white uppercase tracking-widest">
+                    <h3 className="text-xl md:text-2xl font-heading font-black text-white uppercase tracking-widest">
                       {lang === 'cs' ? "PATŘÍŠ MEZI ELITU" : "YOU BELONG TO THE ELITE"}
                     </h3>
-                    <p className="text-white/60 text-sm uppercase tracking-wider">
+                    <p className="text-white/60 text-[10px] md:text-sm uppercase tracking-wider">
                       {lang === 'cs' 
                         ? "Ulož si tenhle kód. Rozhodne o tvém postavení." 
                         : "Save this code. It will decide your standing."}
                     </p>
-                    <div className="bg-mafia-black border-2 border-mafia-gold p-6 inline-block">
-                      <span className="text-4xl md:text-5xl font-mono font-black text-mafia-gold tracking-[0.3em]">{maskCode(unlockedCode)}</span>
+                    <div className="bg-mafia-black border-2 border-mafia-gold p-4 md:p-6 inline-block">
+                      <span className="text-2xl md:text-5xl font-mono font-black text-mafia-gold tracking-[0.3em]">{maskCode(unlockedCode)}</span>
                     </div>
-                    <p className="text-[10px] text-mafia-gold/40 uppercase font-mono mt-4">
+                    <p className="text-[8px] md:text-[10px] text-mafia-gold/40 uppercase font-mono mt-4">
                       {lang === 'cs' ? "UKAŽ KÓD V MMBARBER" : "SHOW CODE AT MMBARBER"}
                     </p>
                  </div>
                ) : (
                  <div className="space-y-4">
-                   <h3 className="text-2xl font-heading font-black text-white/80 uppercase tracking-widest">
-                     {score < 2000 ? (lang === 'cs' ? "ZATÍM NEJSI NIKDO." : "YOU ARE NOBODY YET.") : 
-                      score < 7500 ? (lang === 'cs' ? "MÁŠ POTENCIÁL." : "YOU HAVE POTENTIAL.") : 
+                   <h3 className="text-lg md:text-2xl font-heading font-black text-white/80 uppercase tracking-widest">
+                     {score < 5000 ? (lang === 'cs' ? "ZATÍM NEJSI NIKDO." : "YOU ARE NOBODY YET.") : 
+                      score < 30000 ? (lang === 'cs' ? "MÁŠ POTENCIÁL." : "YOU HAVE POTENTIAL.") : 
                       (lang === 'cs' ? "BLÍŽÍŠ SE ELITĚ." : "CLOSING IN ON THE ELITE.")}
                    </h3>
-                   <p className="text-white/40 text-xs uppercase tracking-widest">
-                     {lang === 'cs' ? "Potřebuješ 10 000+ pro získání kódu. Zkus to znovu zítra." : "You need 10,000+ to claim your code. Try again tomorrow."}
+                   <p className="text-white/40 text-[10px] md:text-xs uppercase tracking-widest">
+                     {lang === 'cs' ? "Potřebuješ 50 000+ pro získání kódu. Zkus to znovu zítra." : "You need 50,000+ to claim your code. Try again tomorrow."}
                    </p>
                  </div>
                )}
@@ -450,13 +455,13 @@ export function ElitaGame() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={(e) => { e.stopPropagation(); setGameState('idle'); }}
-                className="px-12 py-5 border border-white/20 text-white font-heading font-black text-lg uppercase tracking-[0.3em] hover:bg-white/5 transition-all"
+                className="px-8 md:px-12 py-4 md:py-5 border border-white/20 text-white font-heading font-black text-base md:text-lg uppercase tracking-[0.3em] hover:bg-white/5 transition-all"
               >
                 {lang === 'cs' ? "HLAVNÍ MENU" : "MAIN MENU"}
               </button>
               <button 
                 onClick={(e) => { e.stopPropagation(); setGameState('leaderboard'); }}
-                className="px-12 py-5 bg-mafia-gold text-mafia-black font-heading font-black text-lg uppercase tracking-[0.3em] hover:scale-105 transition-all"
+                className="px-8 md:px-12 py-4 md:py-5 bg-mafia-gold text-mafia-black font-heading font-black text-base md:text-lg uppercase tracking-[0.3em] hover:scale-105 transition-all"
               >
                 {lang === 'cs' ? "MMBARBER ELITA" : "THE ELITE"}
               </button>
@@ -465,47 +470,49 @@ export function ElitaGame() {
         )}
 
         {gameState === 'leaderboard' && (
-          <div className="w-full max-w-2xl px-6 space-y-8">
+          <div className="w-full max-w-2xl px-6 space-y-8 py-12 overflow-y-auto max-h-screen">
             <div className="text-center">
-              <h2 className="text-mafia-gold font-mono text-sm tracking-[0.4em] uppercase mb-2">
+              <h2 className="text-mafia-gold font-mono text-[10px] md:text-sm tracking-[0.4em] uppercase mb-2">
                  {lang === 'cs' ? 'GLOBÁLNÍ_ŽEBŘÍČEK' : 'GLOBAL_RANKINGS'}
               </h2>
-              <h1 className="text-4xl md:text-6xl font-heading font-black text-white tracking-[0.2em] uppercase">MMBARBER ELITA</h1>
+              <h1 className="text-3xl md:text-6xl font-heading font-black text-white tracking-[0.2em] uppercase">MMBARBER ELITA</h1>
             </div>
 
             <div className="bg-white/5 border border-white/10 p-1 md:p-4">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-white/10 text-[10px] font-mono text-mafia-gold/40 uppercase tracking-[0.2em]">
-                    <th className="p-4">{lang === 'cs' ? 'POŘADÍ' : 'RANK'}</th>
-                    <th className="p-4">{lang === 'cs' ? 'HODNOST' : 'LEVEL'}</th>
-                    <th className="p-4">{lang === 'cs' ? 'SKÓRE' : 'SCORE'}</th>
-                    <th className="p-4 text-right">{lang === 'cs' ? 'DATUM' : 'DATE'}</th>
-                  </tr>
-                </thead>
-                <tbody className="font-mono">
-                  {leaderboard.length > 0 ? leaderboard.map((entry, i) => (
-                    <tr key={i} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${i === 0 ? 'text-mafia-gold bg-mafia-gold/5' : 'text-white/70'}`}>
-                      <td className="p-4 font-black">#{i + 1}</td>
-                      <td className="p-4 text-[10px] uppercase tracking-widest">{entry.rank}</td>
-                      <td className="p-4 text-xl font-heading">{entry.score}</td>
-                      <td className="p-4 text-right text-[10px] opacity-40">{entry.date}</td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[400px]">
+                  <thead>
+                    <tr className="border-b border-white/10 text-[8px] md:text-[10px] font-mono text-mafia-gold/40 uppercase tracking-[0.2em]">
+                      <th className="p-2 md:p-4">{lang === 'cs' ? 'POŘADÍ' : 'RANK'}</th>
+                      <th className="p-2 md:p-4">{lang === 'cs' ? 'HODNOST' : 'LEVEL'}</th>
+                      <th className="p-2 md:p-4">{lang === 'cs' ? 'SKÓRE' : 'SCORE'}</th>
+                      <th className="p-2 md:p-4 text-right">{lang === 'cs' ? 'DATUM' : 'DATE'}</th>
                     </tr>
-                  )) : (
-                    <tr>
-                      <td colSpan={4} className="p-12 text-center text-white/20 uppercase tracking-[0.3em] text-xs">
-                         {lang === 'cs' ? 'Čekám na kandidáty...' : 'Waiting for candidates...'}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="font-mono">
+                    {leaderboard.length > 0 ? leaderboard.map((entry, i) => (
+                      <tr key={i} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${i === 0 ? 'text-mafia-gold bg-mafia-gold/5' : 'text-white/70'}`}>
+                        <td className="p-2 md:p-4 font-black">#{i + 1}</td>
+                        <td className="p-2 md:p-4 text-[8px] md:text-[10px] uppercase tracking-widest">{entry.rank}</td>
+                        <td className="p-2 md:p-4 text-sm md:text-xl font-heading">{entry.score}</td>
+                        <td className="p-2 md:p-4 text-right text-[8px] md:text-[10px] opacity-40">{entry.date}</td>
+                      </tr>
+                    )) : (
+                      <tr>
+                        <td colSpan={4} className="p-12 text-center text-white/20 uppercase tracking-[0.3em] text-xs">
+                           {lang === 'cs' ? 'Čekám na kandidáty...' : 'Waiting for candidates...'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <div className="flex justify-center">
               <button 
                 onClick={(e) => { e.stopPropagation(); setGameState('idle'); }}
-                className="px-12 py-5 border border-white/20 text-white font-heading font-black text-lg uppercase tracking-[0.3em] hover:bg-white/5 transition-all"
+                className="px-8 md:px-12 py-4 md:py-5 border border-white/20 text-white font-heading font-black text-base md:text-lg uppercase tracking-[0.3em] hover:bg-white/5 transition-all"
               >
                 {lang === 'cs' ? "ZPĚT" : "BACK"}
               </button>
@@ -516,3 +523,4 @@ export function ElitaGame() {
     </AnimatePresence>
   );
 }
+

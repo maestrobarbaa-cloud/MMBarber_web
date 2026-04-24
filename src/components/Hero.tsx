@@ -244,7 +244,7 @@ export function Hero() {
     "/obr/hero-3.png";
 
   return (
-    <section id="hero" data-no-click-effect="true" className="relative w-full min-h-0 xl:min-h-screen flex flex-col items-center justify-start xl:justify-center px-0 xl:px-4 pt-20 xl:pt-20 pb-0 overflow-x-hidden">
+    <section id="hero" data-no-click-effect="true" className="relative w-full min-h-[100dvh] xl:min-h-screen flex flex-col items-center justify-start xl:justify-center px-0 xl:px-4 pt-20 xl:pt-20 pb-0 overflow-x-hidden">
       
       {/* CINEMATIC GAMING TRANSITION - HIGH-END SHUTTER (Desktop only) */}
       <AnimatePresence mode="wait">
@@ -354,7 +354,7 @@ export function Hero() {
 
       {/* PREMIUM GAMING ARROWS HIDDEN PER USER REQUEST */}
 
-      <div className="relative w-full aspect-[4/3] md:aspect-video xl:aspect-auto xl:absolute xl:inset-0 xl:h-full xl:-z-10 pointer-events-none overflow-hidden flex flex-col justify-center xl:rounded-none">
+      <div className="absolute inset-0 w-full h-[100dvh] xl:h-full xl:-z-10 pointer-events-none overflow-hidden flex flex-col justify-center xl:rounded-none">
         {/* Main background image with Clean Transition */}
         <AnimatePresence mode="wait">
           <motion.div 

@@ -76,7 +76,7 @@ export const translations = {
       detailsBtn: "Detaily",
       revolutNotice: "",
       currencyLabel: "Měna",
-      mainTitle: "Hlavní služby",
+      mainTitle: "Časový tarif",
       addonsTitle: "Doplňkové služby",
       independentTitle: "Nezávislé služby",
       specialTitle: "Noční mise",
@@ -93,19 +93,20 @@ export const translations = {
         { time: "1 h", name: "PREMIUM KOMBO", desc: "Hladký expres: Vlasy, vousy a odpočinek.", price: "1 000 Kč", priceValue: 1000 }
       ],
       addons: [
-        { id: "add1", name: "Epilace nosu", priceValue: 80, desc: "Rychlá vosková epilace" },
-        { id: "add2", name: "Epilace uší", priceValue: 80, desc: "Rychlá vosková epilace" },
-        { id: "add3", name: "Metoda horký ručník", priceValue: 200, desc: "Tradiční napaření a ošetření" },
+        { id: "add1", name: "Depilace nosu", priceValue: 40, desc: "Rychlá vosková epilace" },
+        { id: "add2", name: "Epilace uší", priceValue: 40, desc: "Rychlá vosková epilace" },
+        { id: "add3", name: "Metoda horký ručník", priceValue: 100, desc: "Tradiční napaření a ošetření" },
+        { id: "add6", name: "Mytí vlasů", priceValue: 100, desc: "Profesionální mytí a masáž hlavy" },
         { id: "add4", name: "Napařování vousů", priceValue: 70, desc: "Příprava vousů a pokožky" },
-        { id: "add5", name: "Opalování uší", priceValue: 20, desc: "Tradiční odstranění chloupků ohněm" }
+        { id: "add5", name: "Opalování uší", priceValue: 20, desc: "Klidně si dojdi opálit jen uši" }
       ],
       independent: [
-        { id: "ind1", name: "15 min masážní křeslo", priceValue: 100, time: 15, desc: "Uvolňující masáž těla" },
-        { id: "ind2", name: "30 min relaxační křeslo", priceValue: 180, time: 30, desc: "Klid a svalová tělesná relaxace" }
+        { id: "ind1", name: "15 min masážní křeslo", priceValue: 100, time: 15, desc: "Klidně si dojdi jen odpočinout" },
+        { id: "ind2", name: "30 min relaxační křeslo", priceValue: 180, time: 30, desc: "Klidně si dojdi jen odpočinout" }
       ],
       special: [
-        { id: "sp1", name: "Noční střih", priceValue: 1500, time: "dle domluvy", desc: "Exkluzivní služba mimo běžnou pracovní dobu." },
         { id: "sp2", name: "Celkový servis", priceValue: 3000, time: "1 h", desc: "Kompletní péče a relaxace v nočních hodinách. Dle domluvy." },
+        { id: "sp1", name: "Noční střih", priceValue: 1500, time: "dle domluvy", desc: "Exkluzivní služba mimo běžnou pracovní dobu." },
         { id: "sp3", name: "Večerní / Noční střih při svíčkách", priceValue: 1600, time: "30 min", desc: "Jedinečná atmosféra a klid při světle svíček. Dle domluvy." }
       ]
     },
@@ -680,7 +681,7 @@ export const translations = {
       currencyLabel: "Currency",
       bookBtn: "Book Now",
       detailsBtn: "Details",
-      mainTitle: "Main Services",
+      mainTitle: "Time Tariff",
       addonsTitle: "Additional Services",
       independentTitle: "Independent Services",
       specialTitle: "Night Missions",
@@ -697,20 +698,21 @@ export const translations = {
         { time: "1 h", name: "PREMIUM KOMBO", desc: "Smooth Express: Hair, beard, and relax.", price: "1 000 CZK", priceValue: 1000 }
       ],
       addons: [
-        { id: "add1", name: "Nose waxing", priceValue: 80, desc: "Quick hot wax hair removal" },
-        { id: "add2", name: "Ear waxing", priceValue: 80, desc: "Quick hot wax hair removal" },
-        { id: "add3", name: "Hot towel method", priceValue: 200, desc: "Traditional steam and treatment" },
         { id: "add4", name: "Beard steaming", priceValue: 70, desc: "Beard and skin preparation" },
-        { id: "add5", name: "Ear singeing", priceValue: 20, desc: "Traditional ear hair removal with fire" }
+        { id: "add2", name: "Ear epilation", priceValue: 40, desc: "Quick hot wax hair removal" },
+        { id: "add5", name: "Ear singeing", priceValue: 20, desc: "Feel free to come just to get your ears singed" },
+        { id: "add6", name: "Hair wash", priceValue: 100, desc: "Professional wash and head massage" },
+        { id: "add3", name: "Hot towel method", priceValue: 100, desc: "Traditional steam and treatment" },
+        { id: "add1", name: "Nose depilation", priceValue: 40, desc: "Quick hot wax hair removal" }
       ],
       independent: [
-        { id: "ind1", name: "15 min massage chair", priceValue: 100, time: 15, desc: "Full body relaxation" },
-        { id: "ind2", name: "30 min relax chair", priceValue: 180, time: 30, desc: "Muscle and body relaxation" }
+        { id: "ind1", name: "15 min massage chair", priceValue: 100, time: 15, desc: "Feel free to come just to relax" },
+        { id: "ind2", name: "30 min relax chair", priceValue: 180, time: 30, desc: "Feel free to come just to relax" }
       ],
       special: [
-        { id: "sp1", name: "Night cut", priceValue: 1500, time: "by agreement", desc: "Exclusive service outside regular hours." },
+        { id: "sp3", name: "Evening / Night cut by candlelight", priceValue: 1600, time: "30 min", desc: "Unique atmosphere and peace by candlelight. By agreement." },
         { id: "sp2", name: "Full service", priceValue: 3000, time: "1 h", desc: "Complete care and relaxation during night hours. By agreement." },
-        { id: "sp3", name: "Evening / Night cut by candlelight", priceValue: 1600, time: "30 min", desc: "Unique atmosphere and peace by candlelight. By agreement." }
+        { id: "sp1", name: "Night cut", priceValue: 1500, time: "by agreement", desc: "Exclusive service outside regular hours." }
       ]
     },
     operatives: {

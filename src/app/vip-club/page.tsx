@@ -18,28 +18,41 @@ export default function VipClub() {
   const [countdown, setCountdown] = useState(60);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const tickingAudioRef = useRef<HTMLAudioElement | null>(null);
   const { t } = useTranslation();
 
   useEffect(() => {
     if (isAuthorized) return;
 
     if (countdown === 0) {
+      if (tickingAudioRef.current) {
+        tickingAudioRef.current.pause();
+        tickingAudioRef.current.currentTime = 0;
+      }
       router.push("/");
       return;
     }
 
     const timer = setInterval(() => {
       setCountdown((prev) => {
-        if (prev === 1) {
-          // Play final tick or something?
-        }
         return prev > 0 ? prev - 1 : 0;
       });
-      playSound("/sounds/time.mp3", 0.3);
+      
+      const isSoundEnabled = localStorage.getItem("mmbarber_sound_enabled") === "true";
+      if (isSoundEnabled) {
+        const audio = new Audio("/sounds/time.mp3");
+        audio.volume = 0.3;
+        tickingAudioRef.current = audio;
+        audio.play().catch(() => {});
+      }
     }, 1000);
 
     return () => {
       clearInterval(timer);
+      if (tickingAudioRef.current) {
+        tickingAudioRef.current.pause();
+        tickingAudioRef.current.currentTime = 0;
+      }
     };
   }, [isAuthorized, router, countdown]);
 

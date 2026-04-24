@@ -542,11 +542,11 @@ export function Footer() {
             <span>© {t.footer.copyright}</span>
             <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">Verze 3.0</span>
           </div>
-          <div className="flex flex-col items-center mt-4 mb-2">
-            <h2 className="font-sans text-[11px] md:text-xs text-mafia-gold/[0.04] max-md:text-[#050505] uppercase tracking-[0.3em] font-bold text-center">
+          <div className="sr-only">
+            <h2>
               Pánské holičství & Barbershop Uherské Hradiště
             </h2>
-            <p className="font-sans text-[9px] text-smoke-white/[0.02] max-md:text-[#050505] uppercase tracking-widest text-center max-w-2xl mt-1">
+            <p>
               Nejlepší péče o vlasy a vousy v regionu Slovácka. Profesionální střihy, tradiční holení břitvou a unikátní noir atmosféra v srdci Uherského Hradiště.
             </p>
           </div>

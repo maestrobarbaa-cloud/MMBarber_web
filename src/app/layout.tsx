@@ -78,7 +78,7 @@ export default function RootLayout({
         `}} />
       </head>
       <body 
-        className={`${playfair.variable} ${inter.variable} ${greatVibes.variable} antialiased selection:bg-mafia-gold selection:text-mafia-black min-h-screen relative bg-mafia-black`}
+        className={`${playfair.variable} ${inter.variable} ${greatVibes.variable} antialiased selection:bg-mafia-gold selection:text-mafia-black min-h-screen relative bg-mafia-black overflow-x-hidden`}
         suppressHydrationWarning
       >
         <ErrorBoundary>

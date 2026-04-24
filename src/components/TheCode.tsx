@@ -7,8 +7,8 @@ import Image from "next/image";
 
 const DETAIL_PICS = [
   "/obr/prostredi/0793ccfb-06cc-4f51-9a97-91be0c3fc9ae.jfif.jpg",
-  "/obr/prostredi/57ae066d-1bf8-466d-8e47-ff24118f6d89.jfif.jpg",
-  "/obr/prostredi/996e3bd3-376c-48c0-bc66-384df94cc139.jfif.jpg"
+  "/obr/prostredi/1c475788-6939-438d-8f05-909eced05770.jfif.jpg",
+  "/obr/prostredi/DZZ_2471.jpg"
 ];
 
 export function TheCode() {
@@ -18,7 +18,7 @@ export function TheCode() {
     <section id="the-code" className="relative py-32 bg-[#050505] overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(20,20,20,1)_0%,rgba(5,5,5,1)_100%)]" />
-      <div className="absolute inset-0 opacity-[0.03] bg-[url('/textures/paper-noise.png')] pointer-events-none" />
+      <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
