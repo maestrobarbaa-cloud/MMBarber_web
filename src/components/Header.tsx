@@ -590,12 +590,12 @@ export function Header() {
 
       if (isIntroActive) return;
 
-      if (currentScrollY <= 10) {
+      if (currentScrollY <= 20) {
         setIsVisible(true);
-      } else if (currentScrollY > lastScrollY.current + 5) {
-        setIsVisible(false); // Scrolling down
-      } else if (currentScrollY < lastScrollY.current - 10) {
-        setIsVisible(true); // Scrolling up
+      } else if (currentScrollY > lastScrollY.current + 10) {
+        setIsVisible(false); // Scrolling down - more threshold for mobile
+      } else if (currentScrollY < lastScrollY.current - 15) {
+        setIsVisible(true); // Scrolling up - more threshold for mobile
       }
       
       if (!isMobile && !hasVisited && currentScrollY > window.innerHeight * 0.4) {
@@ -666,7 +666,7 @@ export function Header() {
     <>
       <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-20 md:h-24 block'}`} aria-hidden="true" />
       <header
-        className={`w-full left-0 z-[10010] bg-gradient-to-b from-mafia-black/95 via-mafia-black/70 to-transparent py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top))] ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : (isMobile ? 'fixed top-0 bg-mafia-black/80 backdrop-blur-md h-24' : 'absolute top-0')} ${isIntroActive ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'} ${(!isVisible && !isMenuOpen) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
+        className={`w-full left-0 z-[100100] bg-gradient-to-b from-mafia-black/95 via-mafia-black/70 to-transparent py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : (isMobile ? 'fixed top-0 bg-mafia-black/90 backdrop-blur-xl h-24' : 'absolute top-0')} ${isIntroActive ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'} ${(!isVisible && !isMenuOpen) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
       >
         <div className="flex items-center gap-8">
           <button

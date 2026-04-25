@@ -32,13 +32,13 @@ export default function HiddenPlacesPage() {
         <div className="mb-12">
             <Link 
               href="/#services" 
-              className="inline-flex items-center gap-2 text-mafia-gold/50 hover:text-mafia-gold transition-colors font-mono text-xs uppercase tracking-widest group"
+              className="inline-flex items-center gap-2 text-mafia-gold/50 hover:text-mafia-gold transition-colors font-mono text-[10px] md:text-xs uppercase tracking-widest group"
               onClick={() => trackEvent("hidden_places_back_click")}
             >
                <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                {lang === 'cs' ? "Zpět k filtrům" : "Back to filters"}
             </Link>
-            <div className="flex items-center gap-4 mt-8 font-mono text-[9px] uppercase tracking-[0.5em] text-mafia-gold/30">
+            <div className="flex items-center gap-4 mt-8 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-[0.5em] text-mafia-gold/30">
                <div className="w-1 h-1 bg-mafia-gold/30 rounded-full"></div>
                <span className="text-mafia-gold/40">SYSTÉM: MM_OS_ZABEZPEČENO</span>
             </div>
@@ -58,21 +58,20 @@ export default function HiddenPlacesPage() {
              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-mafia-gold/30"></div>
              
              <div className="flex flex-col items-center">
-                <span className="text-mafia-gold/40 font-mono text-[10px] uppercase tracking-[1em] mb-4 ml-[1em]">
-                  {lang === 'cs' ? "ZABEZPEČENÝ_PŘÍSTUP_NAVÁZÁN" : "SECURE_ACCESS_ESTABLISHED"}
-                </span>
-                
-                <h1 className="text-6xl md:text-8xl lg:text-9xl font-heading font-black text-white italic tracking-tighter leading-[0.85] mb-2 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-                   {lang === 'cs' ? (
-                     <>SKRYTÁ <span className="text-mafia-gold">MÍSTA</span></>
-                   ) : (
-                     <>HIDDEN <span className="text-mafia-gold">PLACES</span></>
-                   )}
-                </h1>
-                
-                <h2 className="text-2xl md:text-4xl font-heading font-black text-white/20 uppercase tracking-[0.4em] italic leading-none">
-                   {lang === 'cs' ? "MĚSTA" : "CITY"}
-                </h2>
+                 <span className="text-mafia-gold/40 font-mono text-[9px] md:text-[10px] uppercase tracking-widest md:tracking-[1em] mb-4 ml-0 md:ml-[1em]">
+                   {lang === 'cs' ? "ZABEZPEČENÝ_PŘÍSTUP_NAVÁZÁN" : "SECURE_ACCESS_ESTABLISHED"}
+                 </span>
+                                <h1 className="text-4xl md:text-8xl lg:text-9xl font-heading font-black text-white italic tracking-tighter leading-[0.85] mb-2 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                    {lang === 'cs' ? (
+                      <>SKRYTÁ <span className="text-mafia-gold">MÍSTA</span></>
+                    ) : (
+                      <>HIDDEN <span className="text-mafia-gold">PLACES</span></>
+                    )}
+                 </h1>
+                 
+                 <h2 className="text-xl md:text-4xl font-heading font-black text-white/20 uppercase tracking-[0.2em] md:tracking-[0.4em] italic leading-none">
+                    {lang === 'cs' ? "MĚSTA" : "CITY"}
+                 </h2>
              </div>
           </motion.div>
         </div>
@@ -113,9 +112,9 @@ export default function HiddenPlacesPage() {
                  </div>
               </div>
 
-              <div className="absolute top-3 left-3 p-1.5 font-mono text-[7px] text-mafia-gold/50 bg-black/80 border border-mafia-gold/10 backdrop-blur-md hidden md:block z-30 tracking-tight">
-                 {lang === 'cs' ? "LOKACE" : "LOCATION"}: KOMFORT_LOUNGE_BAR
-              </div>
+               <div className="absolute top-3 left-3 p-1.5 font-mono text-[9px] text-mafia-gold/50 bg-black/80 border border-mafia-gold/10 backdrop-blur-md z-30 tracking-tight">
+                  {lang === 'cs' ? "LOKACE" : "LOCATION"}: KOMFORT_LOUNGE_BAR
+               </div>
             </motion.div>
 
             <div className="lg:col-span-12 xl:col-span-5 p-6 md:p-8 flex flex-col justify-center relative bg-mafia-black/60 backdrop-blur-xl border-l border-mafia-gold/10 overflow-hidden">
@@ -128,7 +127,7 @@ export default function HiddenPlacesPage() {
                  viewport={{ once: true }}
                  className="relative z-10"
                >
-                  <div className="flex items-center gap-3 mb-3 text-mafia-gold/30 font-mono text-[8px] uppercase tracking-[0.2em]">
+                  <div className="flex items-center gap-3 mb-3 text-mafia-gold/30 font-mono text-[9px] md:text-[8px] uppercase tracking-[0.2em]">
                      <span>STATUS: {lang === 'cs' ? "AKTIVNÍ" : "ACTIVE"}</span>
                      <div className="h-px flex-1 bg-mafia-gold/10"></div>
                   </div>
@@ -137,7 +136,7 @@ export default function HiddenPlacesPage() {
                     {t.others.hiddenPlaces.name}
                   </h2>
                   
-                  <div className="flex items-start gap-4 text-smoke-white/40 mb-5 font-mono text-[9px] uppercase tracking-[0.2em]">
+                  <div className="flex items-start gap-4 text-smoke-white/40 mb-5 font-mono text-[10px] md:text-[9px] uppercase tracking-[0.2em]">
                      <MapPin size={12} className="text-mafia-red mt-0.5 shrink-0" />
                      <span className="border-b border-mafia-gold/20 pb-0.5">
                         {t.others.hiddenPlaces.address}
@@ -151,10 +150,10 @@ export default function HiddenPlacesPage() {
                   <div className="relative mb-6 border border-mafia-gold/10 bg-black/40 backdrop-blur-xl p-4 flex items-center gap-5">
                     <Target size={18} className="text-mafia-gold/50" />
                     <div className="flex-1">
-                      <div className="text-[8px] font-mono text-mafia-gold/40 uppercase tracking-[0.2em]">
+                      <div className="text-[10px] md:text-[8px] font-mono text-mafia-gold/40 uppercase tracking-[0.2em]">
                         {lang === 'cs' ? "OPERATIVNÍ CÍL" : "OPERATIONAL GOAL"}
                       </div>
-                      <div className="text-lg font-black text-white italic uppercase tracking-tighter">
+                      <div className="text-base md:text-lg font-black text-white italic uppercase tracking-tighter">
                         {lang === 'cs' ? "VODNÍ DÝMKA A NÁPOJE" : "SHISHA & DRINKS"}
                       </div>
                     </div>
@@ -182,11 +181,11 @@ export default function HiddenPlacesPage() {
         <section className="max-w-5xl mx-auto">
            <div className="text-center mb-24">
               <div className="inline-flex flex-col items-center">
-                 <h4 className="text-mafia-gold font-heading font-black text-3xl md:text-5xl uppercase tracking-[0.3em] mb-4 italic">
+                 <h4 className="text-mafia-gold font-heading font-black text-2xl md:text-5xl uppercase tracking-[0.2em] md:tracking-[0.3em] mb-4 italic">
                    {t.others.hiddenPlaces.slotsTitle}
                  </h4>
                  <div className="w-24 h-1 bg-mafia-gold mb-6 shadow-[0_0_15px_var(--user-glow-color)]"></div>
-                 <p className="text-white/40 text-[10px] md:text-xs uppercase tracking-[0.5em] italic font-sans max-w-2xl leading-relaxed">
+                 <p className="text-white/40 text-[9px] md:text-xs uppercase tracking-[0.3em] md:tracking-[0.5em] italic font-sans max-w-2xl leading-relaxed">
                    {lang === 'cs' 
                      ? "PŘÍSTUP PRO ČLENY RODINY. PRIORITNÍ STATUS." 
                      : "FAMILY MEMBER ACCESS. PRIORITY STATUS."}
@@ -211,11 +210,11 @@ export default function HiddenPlacesPage() {
                     <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-mafia-gold/20 group-hover/slot:border-mafia-gold transition-colors duration-500"></div>
                     <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-mafia-gold/20 group-hover/slot:border-mafia-gold transition-colors duration-500"></div>
                     
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] font-black text-white/[0.02] select-none group-hover/slot:text-mafia-gold/[0.04] transition-all duration-700 pointer-events-none">{i}</div>
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[8rem] md:text-[12rem] font-black text-white/[0.02] select-none group-hover/slot:text-mafia-gold/[0.04] transition-all duration-700 pointer-events-none">{i}</div>
                     
-                    <Users size={48} className="text-mafia-gold/30 group-hover/slot:text-mafia-gold group-hover/slot:scale-125 transition-all duration-700 z-10" />
+                    <Users size={32} className="md:size-12 text-mafia-gold/30 group-hover/slot:text-mafia-gold group-hover/slot:scale-125 transition-all duration-700 z-10" />
                     <div className="flex flex-col items-center gap-1 z-10 transition-transform duration-700 group-hover/slot:translate-y-2">
-                       <span className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em] group-hover/slot:text-mafia-gold/60">{lang === 'cs' ? "MÍSTO" : "SLOT"}_{i}</span>
+                       <span className="text-[9px] md:text-[10px] font-mono text-white/20 uppercase tracking-[0.2em] md:tracking-[0.4em] group-hover/slot:text-mafia-gold/60">{lang === 'cs' ? "MÍSTO" : "SLOT"}_{i}</span>
                        <div className="w-8 h-0.5 bg-mafia-gold/10 group-hover/slot:w-16 group-hover/slot:bg-mafia-gold/40 transition-all duration-700"></div>
                     </div>
                     
@@ -237,7 +236,7 @@ export default function HiddenPlacesPage() {
                 className="inline-block relative"
               >
                  <Image src="/logo.png" alt="MMBarber" width={100} height={100} className="mx-auto grayscale opacity-10 hover:opacity-50 transition-all duration-1000 filter invert hover:invert-0" />
-                 <div className="mt-12 text-mafia-gold/20 font-mono text-[9px] uppercase tracking-[1.5em] font-black transition-all duration-500 hover:text-mafia-gold/60 hover:tracking-[1.8em]">
+                 <div className="mt-12 text-mafia-gold/20 font-mono text-[9px] uppercase tracking-[0.5em] md:tracking-[1.5em] font-black transition-all duration-500 hover:text-mafia-gold/60 hover:tracking-[1.8em]">
                     {lang === 'cs' ? "MM_NET_CENTRÁLNÍ_SÍŤ" : "MM_NET_CENTRAL_NETWORK"}
                  </div>
               </motion.div>
