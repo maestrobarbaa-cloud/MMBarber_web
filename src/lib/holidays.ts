@@ -30,6 +30,14 @@ export type ThemeType = 'default' | 'matrix' | 'valentine' | 'st-patricks' | 'ha
  * Rules: 3 days before the event, until 1 day after the event.
  */
 export function getActiveTheme(currentDate: Date = new Date()): ThemeType {
+  const dayOfWeek = currentDate.getDay(); // 0-6 (0=Sunday, 6=Saturday)
+  const isSaturday = dayOfWeek === 6;
+
+  // No special themes/games on Saturdays
+  if (isSaturday) {
+    return 'default';
+  }
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1; // 1-12
   const day = currentDate.getDate();

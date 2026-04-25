@@ -1040,7 +1040,7 @@ export function Header() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-mafia-black z-[20000] overflow-y-auto px-4 py-6 overscroll-contain"
+            className="fixed inset-0 h-[100dvh] bg-mafia-black z-[20000] overflow-y-auto touch-pan-y px-4 py-6 pb-24 overscroll-contain"
           >
             {/* Header in Overlay */}
             <div className="flex items-center justify-between mb-8 overflow-hidden shrink-0">
@@ -1098,17 +1098,6 @@ export function Header() {
                    <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.payment}</span>
                 </div>
               </Link>
-
-              <button 
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  router.push("/rodina");
-                }}
-                className="bg-mafia-gold px-6 py-6 flex items-center justify-start gap-5 active:scale-95 transition-transform"
-              >
-                <Users size={36} className="text-mafia-black" />
-                <span className="text-lg font-sans font-black text-mafia-black uppercase tracking-[0.2em]">{lang === 'cs' ? "Rodina MMBarberu" : "MMBarber Family"}</span>
-              </button>
 
               <Link 
                 href="/#kontakt" 

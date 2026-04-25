@@ -26,39 +26,57 @@ import { MafiaClickEffects } from "@/components/MafiaClickEffects";
 export default function Home() {
   const [showContent, setShowContent] = useState(false);
   const [isIntroDismissed, setIsIntroDismissed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
 
   useEffect(() => {
-    // Prevent browser from restoring scroll position
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    window.scrollTo(0, 0);
-    setTimeout(() => window.scrollTo(0, 0), 100);
-    setTimeout(() => window.scrollTo(0, 0), 500);
-
     // Check if intro was already dismissed in a previous session or if on mobile/tablet
     const hasVisited = localStorage.getItem("mmbarber_visited") === "true";
     if (hasVisited || window.innerWidth < 1280) {
       setShowContent(true);
       setIsIntroDismissed(true);
     }
+
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    const initialEffectsState = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
+    setIsMobileEffectsEnabled(initialEffectsState);
+
+    const handleMobileEffectsUpdate = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setIsMobileEffectsEnabled(detail);
+    };
+    window.addEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
+    };
   }, []);
 
-  const SectionReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 80, filter: "blur(25px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
-      transition={{ 
-        duration: 2.5, 
-        delay,
-        ease: [0.16, 1, 0.3, 1] 
-      }}
-      className="w-full"
-    >
-      {children}
-    </motion.div>
-  );
+  const SectionReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => {
+    if (isMobile && !isMobileEffectsEnabled) {
+      return <div className="w-full">{children}</div>;
+    }
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 80, filter: "blur(25px)" }}
+        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
+        transition={{ 
+          duration: 2.5, 
+          delay,
+          ease: [0.16, 1, 0.3, 1] 
+        }}
+        className="w-full"
+      >
+        {children}
+      </motion.div>
+    );
+  };
 
   return (
     <div className="flex flex-col min-h-screen relative overflow-x-hidden">
@@ -73,11 +91,11 @@ export default function Home() {
       <AnimatePresence>
         {showContent && (
           <motion.div
-            initial={{ opacity: 0, y: 100, scale: 0.98 }}
+            initial={isMobile ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 100, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ 
-              duration: 1.2, 
-              ease: [0.16, 1, 0.3, 1], // Custom cinematic ease
+              duration: isMobile ? 0 : 1.2, 
+              ease: [0.16, 1, 0.3, 1], 
             }}
             className="flex flex-col w-full"
           >

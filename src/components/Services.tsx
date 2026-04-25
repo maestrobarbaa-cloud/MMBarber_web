@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Scissors, Clock, Globe, X, ChevronRight, Target, Star, Heart, Lock, Camera, Building2, Ticket, Scale, Info } from "lucide-react";
+import { Scissors, Clock, Globe, X, ChevronRight, Target, Star, Heart, Lock, Camera, Building2, Ticket, Scale, Info, Users } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
@@ -49,6 +49,19 @@ export function Services() {
   return (
     <section id="services" className="relative w-full pt-12 pb-24 xl:py-36 px-4 md:px-12 bg-transparent overflow-hidden">
       <div className="max-w-6xl mx-auto relative z-10">
+        <div className="xl:hidden flex justify-center mb-16 px-4">
+          <button 
+            onClick={() => {
+              router.push('/rodina');
+              trackEvent("cta_main_rodina");
+            }}
+            className="w-full max-w-sm py-5 bg-mafia-gold text-mafia-black font-heading font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 shadow-[0_0_20px_rgba(197,160,89,0.3)] border-2 border-mafia-gold hover:bg-mafia-black hover:text-mafia-gold transition-all duration-300"
+          >
+            <Users size={24} />
+            {lang === 'cs' ? "Rodina MMBarberu" : "MMBarber Family"}
+          </button>
+        </div>
+        
         <div className="text-center mb-16 md:mb-24">
           <h2 className="text-4xl md:text-6xl font-heading font-black text-smoke-white mb-4 tracking-[0.3em] uppercase">
             {t.header.services}

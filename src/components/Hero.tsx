@@ -417,11 +417,8 @@ export function Hero() {
           >
             <div className="relative">
               <AnimatePresence mode="wait">
-                <motion.div
+                <div
                   key={displayText}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0, transition: { duration: 1.2 } }}
                   className="flex flex-col items-center"
                 >
                   <motion.h1
@@ -435,88 +432,42 @@ export function Hero() {
                     }}
                   >
                     {isMounted && displayText && (
-                      <motion.div
-                        initial={{ opacity: 0, filter: "blur(10px)" }}
-                        animate={{ opacity: 0.85, filter: "blur(0px)" }}
-                        exit={{ opacity: 0, filter: "blur(20px)" }}
-                        transition={{ duration: 0.8 }}
-                      >
+                      <div className="opacity-[0.85]">
                         {displayText}
-                      </motion.div>
+                      </div>
                     )}
                   </motion.h1>
 
                   {/* Mobile Perfect Mirror Reflection - Grouped for Sync */}
                   {/* Mobile Reflection disabled for performance */}
-                </motion.div>
+                </div>
               </AnimatePresence>
             </div>
           </div>
 
           <div className="min-h-[60px] flex items-center justify-center">
-            <AnimatePresence mode="wait">
-              {!isMissionReady ? (
-                <motion.div 
-                  key="mob-mission-loading"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="flex flex-col items-center justify-center gap-1.5"
-                >
-                  <div className="flex gap-1 mb-0.5">
-                    {[1,2,3].map(i => (
-                      <motion.div 
-                        key={i}
-                        animate={{ opacity: [0.4, 1, 0.4] }}
-                        transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity }}
-                        className="w-1.5 h-1.5 bg-mafia-gold"
-                      />
-                    ))}
-                  </div>
-                  <span className="text-mafia-gold font-mono text-[10px] tracking-[1em] uppercase font-black ml-[1em]">
-                    NAČÍTÁNÍ...
-                  </span>
-                </motion.div>
-              ) : (
-                <motion.a
-                  key="mob-mission-ready"
-                  initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                  href="#operativi"
-                  onClick={(e) => { 
-                    trackEvent("cta_hero_booking");
-                    playRazorSound();
-                  }}
-                  onMouseEnter={playRazorSound}
-                  className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-8 py-3.5 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(197,160,89,0.2)] flex items-center justify-center w-fit mx-auto"
-                >
-                  <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
-                  <span className="relative z-10 text-mafia-gold font-sans text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center" style={{ textShadow: "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
-                    {t.hero.bookBtn}
-                  </span>
-                </motion.a>
-              )}
-            </AnimatePresence>
+            <motion.a
+              key="mob-mission-ready"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              href="#operativi"
+              onClick={(e) => { 
+                trackEvent("cta_hero_booking");
+                playRazorSound();
+              }}
+              onMouseEnter={playRazorSound}
+              className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-8 py-3.5 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(197,160,89,0.2)] flex items-center justify-center w-fit mx-auto"
+            >
+              <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
+              <span className="relative z-10 text-mafia-gold font-sans text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center" style={{ textShadow: "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
+                {t.hero.bookBtn}
+              </span>
+            </motion.a>
           </div>
 
           {/* MOBILE GOLD MOTTO - MOVED TO BOTTOM */}
-          <div className="absolute bottom-8 left-0 right-0 text-mafia-gold font-mono text-[9px] tracking-[0.2em] uppercase text-center px-6">
-            {isMounted && selectedMotto.split("").map((char: string, i: number) => {
-              const firstPeriodIndex = selectedMotto.indexOf('.');
-              const isSecondSentence = firstPeriodIndex !== -1 && i > firstPeriodIndex;
-              const pauseDelay = isSecondSentence ? 2.5 : 0;
-              
-              return (
-                <motion.span
-                  key={`mob-motto-${i}`}
-                  initial={{ opacity: 0, filter: "blur(8px)" }}
-                  animate={{ opacity: 0.7, filter: "blur(0px)" }}
-                  transition={{ duration: 1, delay: 1.5 + pauseDelay + i * 0.04, ease: "easeOut" }}
-                >
-                  {char}
-                </motion.span>
-              );
-            })}
+          <div className="absolute bottom-8 left-0 right-0 text-mafia-gold/70 font-mono text-[9px] tracking-[0.2em] uppercase text-center px-6">
+            {isMounted && selectedMotto}
           </div>
         </div>
       </div>

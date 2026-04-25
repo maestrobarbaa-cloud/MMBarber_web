@@ -33,6 +33,14 @@ button, a {
   touch-action: manipulation;
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Exception for addresses and specific info */
 .allow-copy, .allow-copy * {
   user-select: text !important;
@@ -46,7 +54,6 @@ img {
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
-  user-drag: none;
   pointer-events: none;
 }
 
@@ -212,7 +219,7 @@ html.letterbox-active {
 
 /* Sharpness control via contrast/brightness filter if needed */
 html {
-  filter: contrast(calc(1 + (var(--user-sharpness) - 0.5) * 0.2)) brightness(calc(1 - (var(--user-sharpness) - 0.5) * 0.05));
+  filter: contrast(calc(1 + (var(--user-sharpness, 0.5) - 0.5) * 0.2)) brightness(calc(1 - (var(--user-sharpness, 0.5) - 0.5) * 0.05));
 }
 
 @theme {

@@ -57,7 +57,7 @@ export function EnvironmentSlider() {
       </div>
 
       {/* Moving Gallery - Simple approach */}
-      <div className="relative w-full flex overflow-hidden bg-mafia-black/40 py-8 md:py-14 group border-y border-mafia-gold/5">
+      <div className={`relative w-full flex ${!isMobile ? 'overflow-hidden' : 'overflow-x-auto scrollbar-hide'} bg-mafia-black/40 py-8 md:py-14 group border-y border-mafia-gold/5 snap-x snap-mandatory`}>
         
         {/* Very Subtle Gold Sheen at the edges */}
         <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-mafia-gold/5 to-transparent z-10 pointer-events-none"></div>
@@ -74,11 +74,11 @@ export function EnvironmentSlider() {
         <div className="absolute inset-y-0 left-0 w-32 md:w-80 bg-gradient-to-r from-mafia-black to-transparent z-20 pointer-events-none"></div>
         <div className="absolute inset-y-0 right-0 w-32 md:w-80 bg-gradient-to-l from-mafia-black to-transparent z-20 pointer-events-none"></div>
 
-        <div className="flex w-max animate-scroll-gallery group-hover:[animation-play-state:paused] transition-all duration-300">
-          {[...DETAIL_PICS, ...DETAIL_PICS].map((pic, i) => (
+        <div className={`flex w-max ${!isMobile ? 'animate-scroll-gallery group-hover:[animation-play-state:paused]' : ''} transition-all duration-300`}>
+          {(!isMobile ? [...DETAIL_PICS, ...DETAIL_PICS] : DETAIL_PICS).map((pic, i) => (
             <div 
                 key={`${pic}-${i}`} 
-                className="group/img flex-shrink-0 w-64 md:w-[380px] h-48 md:h-64 mx-3 relative overflow-hidden border border-mafia-gold/20 shadow-[0_0_15px_rgba(197,160,89,0.15)] cursor-pointer hover:border-mafia-gold/50 transition-all duration-700"
+                className="group/img flex-shrink-0 w-80 md:w-[380px] h-56 md:h-64 mx-3 relative overflow-hidden border border-mafia-gold/20 shadow-[0_0_15px_rgba(197,160,89,0.15)] cursor-pointer hover:border-mafia-gold/50 transition-all duration-700 snap-center"
                 onClick={() => setSelectedImage(pic)}
             >
                 {/* HUD Overlay on Hover */}

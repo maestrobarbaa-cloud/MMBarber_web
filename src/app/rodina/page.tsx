@@ -289,7 +289,7 @@ export default function FamilyPage() {
   const filteredMembers = members.filter(m => (activeDivision === 'all' || m.div === activeDivision) && m.div !== 'team');
 
   return (
-    <main className="min-h-screen bg-mafia-black text-smoke-white pt-32 pb-24 px-6 relative overflow-hidden cursor-crosshair">
+    <section className="min-h-screen bg-mafia-black text-smoke-white pt-32 pb-24 px-6 relative overflow-x-hidden lg:cursor-crosshair touch-pan-y">
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,20,20,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none"></div>
 
@@ -333,7 +333,7 @@ export default function FamilyPage() {
 
             <div className="flex flex-col lg:flex-row gap-16">
               <aside className="w-full lg:w-[400px] shrink-0">
-                <div className="sticky top-32">
+                <div className="lg:sticky lg:top-32">
                   <div className="flex items-center gap-4 mb-10">
                     <div className="w-16 h-1.5 bg-mafia-gold"></div>
                     <h2 className="text-4xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-widest italic">
@@ -343,24 +343,43 @@ export default function FamilyPage() {
 
                   <nav className="flex flex-col gap-2">
                     {divisions.map((div) => (
-                      <button
-                        key={div.id}
-                        onClick={() => {
-                          setActiveDivision(div.id);
-                          playDoorbell();
-                        }}
-                        className={`w-full group relative overflow-hidden border-2 p-6 text-left transition-all duration-500 ${activeDivision === div.id ? 'border-mafia-gold bg-mafia-gold/10 shadow-[0_0_40px_rgba(197,160,89,0.3)]' : 'border-white/5 bg-white/[0.02] hover:border-mafia-gold/40'
-                          }`}
-                      >
-                        <div className="relative z-10 flex items-center justify-between">
-                          <span className={`font-heading font-bold text-lg uppercase tracking-widest transition-colors ${activeDivision === div.id ? 'text-mafia-gold' : 'text-smoke-white/60 group-hover:text-smoke-white'}`}>
-                            {lang === 'cs' ? div.name : div.nameEn}
-                          </span>
-                          <div className={activeDivision === div.id ? 'text-mafia-gold' : 'text-smoke-white/20'}>
-                            {div.icon && <div className="scale-125">{div.icon}</div>}
+                      <div key={div.id}>
+                        <button
+                          onClick={() => {
+                            setActiveDivision(activeDivision === div.id ? "" : div.id);
+                            playDoorbell();
+                          }}
+                          className={`w-full group relative overflow-hidden border-2 p-6 text-left transition-all duration-500 cursor-pointer ${activeDivision === div.id ? 'border-mafia-gold bg-mafia-gold/10 shadow-[0_0_40px_rgba(197,160,89,0.3)]' : 'border-white/5 bg-white/[0.02] hover:border-mafia-gold/40'
+                            }`}
+                        >
+                          <div className="relative z-10 flex items-center justify-between">
+                            <span className={`font-heading font-bold text-lg uppercase tracking-widest transition-colors ${activeDivision === div.id ? 'text-mafia-gold' : 'text-smoke-white/60 group-hover:text-smoke-white'}`}>
+                              {lang === 'cs' ? div.name : div.nameEn}
+                            </span>
+                            <div className={activeDivision === div.id ? 'text-mafia-gold' : 'text-smoke-white/20'}>
+                              {div.icon && <div className="scale-125">{div.icon}</div>}
+                            </div>
                           </div>
-                        </div>
-                      </button>
+                        </button>
+
+                        {/* Mobile Accordion Content */}
+                        <AnimatePresence>
+                          {activeDivision === div.id && (
+                            <motion.div 
+                              initial={{ height: 0, opacity: 0 }} 
+                              animate={{ height: "auto", opacity: 1 }} 
+                              exit={{ height: 0, opacity: 0 }}
+                              className="lg:hidden mt-4 flex flex-row gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide"
+                            >
+                              {members.filter(m => (div.id === 'all' || m.div === div.id)).map(m => (
+                                <div key={m.name} className="min-w-[280px] snap-center">
+                                  <MemberCard m={m} lang={lang} />
+                                </div>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     ))}
                   </nav>
 
@@ -372,7 +391,7 @@ export default function FamilyPage() {
                 </div>
               </aside>
 
-              <div className="flex-grow">
+              <div className="hidden lg:block flex-grow">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeDivision}
@@ -713,6 +732,6 @@ export default function FamilyPage() {
         @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .animate-spin-slow { animation: spin-slow 12s linear infinite; }
       `}</style>
-    </main>
+    </section>
   );
 }

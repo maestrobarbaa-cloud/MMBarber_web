@@ -22,11 +22,10 @@ export function MinigameToggle() {
       const theme = getActiveTheme();
       const isForced = localStorage.getItem("mmbarber_game_forced") === "true";
       
-      // Events (Easter, Matrix, etc.) or Saturday (Hair Cutting)
+      // Events (Easter, Matrix, etc.)
       const isEvent = theme !== 'default';
-      const isSaturdayGame = day === 6 && hour >= 6 && hour < 23;
       
-      setIsVisible(isEvent || isSaturdayGame || isForced);
+      setIsVisible(isEvent || isForced);
       setIsEnabled(localStorage.getItem("mmbarber_game_enabled") === "true");
     };
 

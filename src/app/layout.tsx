@@ -66,8 +66,6 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: `
           try {
-            if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-            window.scrollTo(0, 0);
             const storedNoir = localStorage.getItem('mmbarber_noir_mode');
             const hour = new Date().getHours();
             const isNight = hour >= 19 || hour < 6;
@@ -114,7 +112,6 @@ export default function RootLayout({
               {children}
             </main>
 
-            <ScrollIndicator />
             <ClientWrapper />
             
             {/* Global Web Frame - PC/Desktop Only (Subtle Yellow Border & Glow) */}
@@ -125,6 +122,7 @@ export default function RootLayout({
               <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-mafia-gold/30" />
             </div>
 
+            <ScrollIndicator />
             <CustomCursor />
           </SecurityProvider>
         </ErrorBoundary>

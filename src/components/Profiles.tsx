@@ -213,7 +213,7 @@ function BarberCard({
   return (
     <>
       {/* MOBILE VERSION: Simple, Static, No effects */}
-      <div className="xl:hidden w-[320px] h-auto min-h-[500px] bg-[#0c0c0c] border-2 border-mafia-gold/20 p-6 rounded-2xl flex flex-col items-center gap-6 shadow-2xl overflow-hidden relative">
+      <div className="xl:hidden w-full max-w-[340px] h-auto min-h-[500px] bg-[#0c0c0c] border-2 border-mafia-gold/20 p-6 rounded-2xl flex flex-col items-center gap-6 shadow-2xl overflow-hidden relative">
         <div className="w-48 h-48 border-2 border-mafia-gold/20 overflow-hidden bg-black/40 flex-shrink-0 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
           {barber.image === "question-mark" ? (
             <div className="text-mafia-gold/30 font-heading text-9xl animate-pulse italic drop-shadow-[0_0_15px_rgba(197,160,89,0.2)]">?</div>
@@ -225,7 +225,7 @@ function BarberCard({
               height={192} 
               priority 
               quality={100}
-              className="w-full h-full object-cover grayscale" 
+              className="w-full h-full object-cover" 
             />
           )}
         </div>
@@ -233,19 +233,13 @@ function BarberCard({
         <div className="text-center space-y-1 relative">
           <h3 className="text-3xl font-heading font-black uppercase text-mafia-gold tracking-widest leading-none relative">
             {barber.name}
-            {isHidden && (
-              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black border border-mafia-gold/20 z-20 origin-left" />
-            )}
           </h3>
           <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
             {barber.role}
-            {isHidden && (
-              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
-            )}
           </span>
         </div>
 
-        {!isHidden && (
+        {!barber.isHidden && (
           <button 
             onClick={() => {
               trackEvent("cta_barber_booking_mobile", { barber: barber.name });
@@ -801,7 +795,6 @@ export function Profiles() {
   const translatedBarbers = useMemo(() => {
     return barbers.map(b => {
       const isTomas = b.name === 'Tomáš';
-      const isHidden = !isTomas; // Nella is now hidden again
       
       const staticDesc = isTomas 
         ? (t.operatives?.barbers?.tomas as { story?: string })?.story 
@@ -810,7 +803,7 @@ export function Profiles() {
       const currentDialogue = BARBER_DIALOGUES[dialogueIndex];
       const dialogueText = isTomas ? currentDialogue?.tomas : currentDialogue?.nella;
 
-      const base = {
+      return {
         ...b,
         name: isTomas ? t.operatives?.barbers?.tomas?.name : t.operatives?.barbers?.nella?.name,
         role: isTomas ? t.operatives?.barbers?.tomas?.role : t.operatives?.barbers?.nella?.role,
@@ -823,131 +816,34 @@ export function Profiles() {
         englishSpeaking: isTomas 
           ? (t.operatives?.barbers?.tomas as { englishSpeaking?: string })?.englishSpeaking 
           : (t.operatives?.barbers?.nella as { englishSpeaking?: string })?.englishSpeaking ?? undefined,
-        symbol: b.symbol
+        symbol: b.symbol,
+        isHidden: false
       };
-
-      if (isHidden) {
-        return {
-          ...base,
-          name: "",
-          role: "",
-          image: "question-mark", // Keep the mark for visual interest or make "" if truly empty
-          desc: "",
-          motto: "",
-          specializations: [],
-          bookingLink: "#",
-          isHidden: true,
-          symbol: ""
-        };
-      }
-
-      return base;
     });
   }, [dialogueIndex, t]);
 
   return (
-    <motion.section 
+    <section 
       id="operativi" 
-      onViewportEnter={() => setIsSectionVisible(true)}
-      onViewportLeave={() => {
-        setIsSectionVisible(false);
-        setActiveSpeaker(null);
-      }}
       className="relative w-full py-10 md:py-20 px-4 md:px-12 bg-transparent border-t-8 border-mafia-dark flex flex-col items-center scroll-mt-32"
     >
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/black-paper.png')" }}></div>
       <div className="relative z-10 w-full flex flex-col items-center">
         <div className="max-w-6xl mx-auto w-full">
-          <AnimatePresence mode="wait">
-            {isMounted && isFirstVisit ? (
-              <motion.div 
-                key="slot-machine-view"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.1 }}
-                className="w-full flex flex-col items-center px-4 mb-8"
-              >
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl md:text-6xl font-heading font-black text-smoke-white mb-3 md:mb-4 tracking-[0.3em] uppercase">
-                        {lang === 'cs' ? "Zkus štěstí hned na začátku." : "Try your luck right at the start."}
-                    </h2>
-                    <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-[#a67c52] to-[#a67c52] mx-auto mb-4 md:mb-6"></div>
-                    <p className="text-smoke-white/60 font-sans tracking-widest uppercase text-[10px] md:text-sm px-4">
-                        {lang === 'cs' ? "Ponech výběr na osudu nebo si zvol svého specialistu" : "Leave the choice to fate or choose your specialist"}
-                    </p>
+            <div className="w-full">
+                <div className="text-center mb-16 md:mb-24">
+                    <h2 className="text-3xl md:text-5xl font-heading font-black text-smoke-white mb-3 md:mb-4 tracking-[0.3em] uppercase">{t.operatives.title}</h2>
+                    <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-4 md:mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
+                    <div className="text-smoke-white/60 font-sans tracking-widest uppercase text-[10px] md:text-sm px-4 mb-4 flex flex-col items-center gap-1 md:gap-2 cursor-default group">
+                        <span className="group-hover:text-white transition-colors duration-500">
+                            {t.operatives.subtitle.split('.')[0]}.
+                        </span>
+                    </div>
                 </div>
-                <div className="relative w-64 md:w-80 h-[180px] md:h-[260px] bg-mafia-black border-[12px] border-mafia-gold shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] mb-6 overflow-hidden">
-                  <SlotReel isRandomizing={isRandomizing} isDecided={isDecided} winnerIndex={slotIndex} revealedBarbers={revealedBarbers} />
-                  <div className="absolute bottom-3 right-3 flex gap-1 pointer-events-none z-30">
-                    <div className="w-1.5 h-1.5 bg-mafia-gold/40 animate-pulse" />
-                    <div className="w-1.5 h-1.5 bg-mafia-gold/40 animate-pulse [animation-delay:200ms]" />
-                    <div className="w-1.5 h-1.5 bg-mafia-gold/40 animate-pulse [animation-delay:400ms]" />
-                  </div>
+                <div className="flex flex-wrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full max-w-[1400px] mx-auto py-4 xl:py-8">
+                    <ChairWithCard barber={translatedBarbers[0]} activeSpeaker={activeSpeaker === 'tomas'} dialogueIndex={dialogueIndex} lang={lang} t={t} playCardSound={playCardSound} side="left" />
                 </div>
-                <AnimatePresence>
-                  {isDecided && (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 text-center">
-                      <h3 className="text-2xl md:text-3xl font-heading font-black text-mafia-gold uppercase tracking-tighter mb-1">
-                        {translatedBarbers.filter(b => !b.isHidden)[slotIndex]?.name}
-                      </h3>
-                      <div className="text-smoke-white font-mono text-[10px] uppercase tracking-widest opacity-60">
-                        {translatedBarbers.filter(b => !b.isHidden)[slotIndex]?.role}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <div className="flex flex-col items-center gap-6">
-                    <div className="text-mafia-gold font-mono text-[9px] mb-1 tracking-[0.4em] uppercase opacity-60">
-                        {lang === 'cs' ? "SYSTÉM NÁHODNÉHO VÝBĚRU" : "RANDOM SELECTION SYSTEM"}
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <button onClick={handleRandomize} disabled={isRandomizing || isDecided} className={`relative overflow-hidden group border-2 px-10 py-5 transition-all duration-500 font-heading font-black tracking-[0.3em] uppercase text-sm md:text-lg min-w-[280px] flex items-center justify-center ${isDecided ? "border-mafia-gold bg-mafia-gold text-mafia-black cursor-default scale-105 shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]" : isRandomizing ? "border-[#a67c52] text-smoke-white bg-[#a67c52]/20" : "border-mafia-gold text-mafia-gold bg-transparent hover:bg-mafia-gold hover:text-mafia-black hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]"}`}>
-                        <span className="relative z-10 whitespace-nowrap">{isDecided ? (lang === 'cs' ? "Vylosováno" : "SELECTED") : isRandomizing ? (lang === 'cs' ? "LOSOVÁNÍ..." : "RANDOMIZING...") : (lang === 'cs' ? "LOSOVÁNÍ BARBERA" : "BARBER LOTTERY")}</span>
-                        </button>
-                        {!isRandomizing && !isDecided && (
-                            <button onClick={() => { localStorage.setItem("mmbarber_profiles_seen", "true"); setIsFirstVisit(false); }} className="relative overflow-hidden group border-2 border-[#a67c52]/30 px-10 py-5 transition-all duration-500 font-heading font-black tracking-[0.3em] uppercase text-sm md:text-lg min-w-[280px] flex items-center justify-center text-[#a67c52]/60 hover:text-white hover:bg-[#a67c52] hover:border-[#a67c52] hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]">
-                                <span className="relative z-10 whitespace-nowrap">{lang === 'cs' ? "VÍM ZA KÝM JDU" : "I KNOW MY TARGET"}</span>
-                            </button>
-                        )}
-                    </div>
-                    <p className="text-smoke-white/30 font-mono text-[9px] mt-2 uppercase tracking-widest italic text-center max-w-sm leading-relaxed">
-                      {lang === 'cs' ? "*Tato nabídka se zobrazuje pouze novým rekrutům. Při příští návštěvě uvidíte profily přímo." : "*This offer is only visible to new recruits. Profiles will be shown directly on next visit."}
-                    </p>
-                </div>
-              </motion.div>
-            ) : (
-                <motion.div key="regular-grid-view" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full">
-                    <div className="text-center mb-16 md:mb-24">
-                        <h2 className="text-3xl md:text-5xl font-heading font-black text-smoke-white mb-3 md:mb-4 tracking-[0.3em] uppercase">{t.operatives.title}</h2>
-                        <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-4 md:mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
-                        <motion.div whileHover={{ scale: 1.02 }} className="text-smoke-white/60 font-sans tracking-widest uppercase text-[10px] md:text-sm px-4 mb-4 flex flex-col items-center gap-1 md:gap-2 cursor-default group">
-                            <motion.span initial={{ opacity: 0, y: 5 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="group-hover:text-white transition-colors duration-500">
-                                {t.operatives.subtitle.split('.')[0]}.
-                            </motion.span>
-                        </motion.div>
-                    </div>
-                    <div className="flex flex-wrap xl:flex-nowrap xl:flex-row justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full max-w-[1400px] mx-auto py-4 xl:py-8">
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          whileInView={{ opacity: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.8, delay: 0.2 }}
-                        >
-                          <ChairWithCard barber={translatedBarbers[0]} activeSpeaker={activeSpeaker === 'tomas'} dialogueIndex={dialogueIndex} lang={lang} t={t} playCardSound={playCardSound} side="left" />
-                        </motion.div>
-
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          whileInView={{ opacity: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.8, delay: 0.4 }}
-                        >
-                          <ChairWithCard barber={translatedBarbers[1]} activeSpeaker={activeSpeaker === 'nella'} dialogueIndex={dialogueIndex} lang={lang} t={t} playCardSound={playCardSound} side="right" />
-                        </motion.div>
-                    </div>
-                </motion.div>
-            )}
-          </AnimatePresence>
+            </div>
         </div>
       </div>
       <style jsx global>{`
@@ -971,6 +867,6 @@ export function Profiles() {
           animation: glitch-text-anim 1s step-end infinite;
         }
       `}</style>
-    </motion.section>
+    </section>
   );
 }
