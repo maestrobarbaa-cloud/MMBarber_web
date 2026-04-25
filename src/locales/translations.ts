@@ -9,6 +9,7 @@ export const translations = {
       theCode: "Informace",
       more: "Více",
       career: "Kariéra",
+      franchise: "FRANCHISE",
       startMission: "JAK TO U NÁS CHODÍ",
       compass: "KOMPAS",
       web: "WEB",
@@ -622,6 +623,50 @@ export const translations = {
       writeUs: "NAPIŠTE NÁM",
       callUs: "ZAVOLEJTE NÁM"
     },
+    franchisePage: {
+      back: "ZPĚT NA ÚSTŘEDÍ",
+      title: "MMBARBER",
+      subtitle: "FRANCHISE",
+      heroDesc: "Chceš vlastní barbershop pod silnou značkou? MMBARBER ti dá základ, na kterém můžeš stavět.",
+      sections: {
+        about: {
+          title: "O NÁS",
+          label: "MMBARBER",
+          desc: "MMBARBER je barbershop z Uherského Hradiště. Stavíme na kvalitě, stylu a přístupu k lidem.",
+          motto: "Nejde jen o střih. Jde o celkový dojem."
+        },
+        benefits: {
+          title: "CO ZÍSKÁŠ",
+          items: [
+            "neustále se rozvíjející koncept",
+            "jméno, které už lidi znají",
+            "pomoc se startem",
+            "nastavení fungování",
+            "podporu do začátku"
+          ]
+        },
+        who: {
+          title: "PRO KOHO TO JE",
+          desc: "Pro lidi, co chtějí podnikat. Ne pro ty, co čekají, že to půjde samo.",
+          motto: "Musíš chtít makat, řešit věci a posouvat to dál."
+        },
+        how: {
+          title: "JAK TO FUNGUJE",
+          steps: [
+            "Ozveš se.",
+            "Probereme detaily.",
+            "Když to bude dávat smysl, můžeš jet pod MMBARBER."
+          ]
+        }
+      },
+      contact: {
+        title: "KONTAKT",
+        desc: "Máš zájem? Napiš nám na Instagram nebo mail.",
+        email: "E-MAIL",
+        instagram: "INSTAGRAM"
+      },
+      footer: "Jednoduchý. Funkční. Kvalita."
+    },
     cityGuide: {
       compass: {
         label: "Kompas do barbershopu",
@@ -652,6 +697,7 @@ export const translations = {
       theCode: "Information",
       more: "More",
       career: "Career",
+      franchise: "FRANCHISE",
       startMission: "HOW IT WORKS",
       compass: "COMPASS",
       web: "WEB",
@@ -1283,7 +1329,51 @@ export const translations = {
         slavnostiVina: { name: "Wine Festival", desc: "Tradition, wine, and folklore in the heart of Moravia." },
         christmas: { name: "Christmas", desc: "Tradition in the circle of Family." }
       }
-    }
+    },
+    franchisePage: {
+      back: "BACK TO HQ",
+      title: "MMBARBER",
+      subtitle: "FRANCHISE",
+      heroDesc: "Want your own barbershop under a strong brand? MMBARBER gives you the foundation you can build on.",
+      sections: {
+        about: {
+          title: "ABOUT US",
+          label: "MMBARBER",
+          desc: "MMBARBER is a barbershop from Uherské Hradiště. We build on quality, style, and approach to people.",
+          motto: "It's not just about the cut. It's about the overall impression."
+        },
+        benefits: {
+          title: "WHAT YOU GET",
+          items: [
+            "constantly evolving concept",
+            "name that people already know",
+            "help with the start",
+            "operations setup",
+            "support from the beginning"
+          ]
+        },
+        who: {
+          title: "WHO IS IT FOR",
+          desc: "For people who want to do business. Not for those who expect it to go by itself.",
+          motto: "You must want to work hard, solve things and move it forward."
+        },
+        how: {
+          title: "HOW IT WORKS",
+          steps: [
+            "Get in touch.",
+            "We'll discuss the details.",
+            "When it makes sense, you can run under MMBARBER."
+          ]
+        }
+      },
+      contact: {
+        title: "CONTACT",
+        desc: "Interested? Message us on Instagram or email.",
+        email: "EMAIL",
+        instagram: "INSTAGRAM"
+      },
+      footer: "Simple. Functional. Quality."
+    },
   },
   boss: {
     header: {

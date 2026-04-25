@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
-import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, LayoutGrid, Menu, Volume2, VolumeX, Palette, Sparkles, Radio, Briefcase, CreditCard, MapPin, Monitor, Settings, Target } from "lucide-react";
+import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, LayoutGrid, Menu, Volume2, VolumeX, Palette, Sparkles, Radio, Briefcase, CreditCard, MapPin, Monitor, Settings, Target, Handshake } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import dynamic from "next/dynamic";
@@ -781,6 +781,10 @@ export function Header() {
               <Briefcase size={16} style={{ color: userAccentColor }} />
               {t.header.career}
             </Link>
+            <Link href="/franchise" onClick={() => trackEvent("nav_link_click", { label: "franchise" })} className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2">
+              <Handshake size={16} style={{ color: userAccentColor }} />
+              {t.header.franchise}
+            </Link>
             <Link href="/payment" onClick={() => trackEvent("nav_link_click", { label: "payment" })} className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2">
               <CreditCard size={16} style={{ color: userAccentColor }} />
               {t.header.payment}
@@ -1081,11 +1085,21 @@ export function Header() {
 
               <Link href="/kariera" onClick={handleNavLinkClick} className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left">
                 <div className="text-mafia-gold/60">
-                   <Search size={28} />
+                   <Briefcase size={28} />
                 </div>
                 <div className="flex flex-col">
                    <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest">{lang === 'cs' ? 'KARIÉRA' : 'CAREER'}</span>
                    <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header?.career || 'KARIÉRA'}</span>
+                </div>
+              </Link>
+
+              <Link href="/franchise" onClick={handleNavLinkClick} className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left">
+                <div className="text-mafia-gold/60">
+                   <Handshake size={28} />
+                </div>
+                <div className="flex flex-col">
+                   <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest">{lang === 'cs' ? 'PODNIKÁNÍ' : 'BUSINESS'}</span>
+                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header?.franchise || 'FRANCHISE'}</span>
                 </div>
               </Link>
 

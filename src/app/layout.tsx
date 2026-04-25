@@ -34,21 +34,48 @@ const greatVibes = Great_Vibes({
 });
 
 export const metadata: Metadata = {
-  title: "MMBARBER | Barber shop Uherské Hradiště | Pánské holičství",
-  description: "Exkluzivní pánské holičství MMBarber v Uherském Hradišti. Profesionální střihy, úprava vousů a relaxace v rodinné atmosféře. Rezervujte si svůj termín online.",
-  keywords: ["barber shop Uherské Hradiště", "pánské holičství", "holič", "střih vlasů", "úprava vousů", "barbershop", "MMBarber"],
+  title: "MMBARBER | Modern Grooming & Lifestyle | Heritage Barbershop",
+  description: "MMBarber is a premium grooming & lifestyle destination. Experience traditional heritage barbering, modern grooming rituals, and a unique community atmosphere. Global quality, local soul.",
+  keywords: [
+    "modern grooming Uherské Hradiště", 
+    "international barbershop experience", 
+    "heritage grooming club", 
+    "men's lifestyle destination", 
+    "premium barber Europe", 
+    "MMBarber",
+    "traditional shaving rituals",
+    "men's grooming community",
+    "luxury barbershop brand",
+    "lifestyle hub for men"
+  ],
   authors: [{ name: "Tomáš Mička" }],
+  alternates: {
+    canonical: "https://mmbarber.cz",
+    languages: {
+      "cs-CZ": "https://mmbarber.cz",
+      "en-US": "https://mmbarber.cz/en",
+    },
+  },
+  icons: {
+    icon: [
+      { url: "/icon.png?v=1", type: "image/png" },
+      { url: "/logo.png?v=1", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon.png?v=1", type: "image/png" },
+    ],
+    shortcut: ["/icon.png?v=1"],
+  },
   openGraph: {
-    title: "MMBARBER | Barber shop Uherské Hradiště",
-    description: "Profesionální střihy a vousy v srdci Uherského Hradiště.",
+    title: "MMBARBER | Modern Grooming & Lifestyle Destination",
+    description: "Premium grooming, heritage style, and unique community hub. Experience the global standard of male grooming.",
     url: "https://mmbarber.cz",
     siteName: "MMBARBER",
-    locale: "cs_CZ",
+    locale: "en_US",
+    alternateLocale: ["cs_CZ"],
     type: "website",
   },
-};
-
-export const viewport: Viewport = {
+};export const viewport: Viewport = {
   themeColor: "#0a0a0a",
   colorScheme: "dark",
   width: "device-width",

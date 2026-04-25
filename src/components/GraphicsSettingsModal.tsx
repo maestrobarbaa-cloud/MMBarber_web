@@ -25,6 +25,7 @@ interface GraphicsConfig {
   chromaticAberration: boolean;
   letterboxEnabled: boolean;
   sharpness: number; // 0 to 1
+  autoDetectEnabled: boolean;
 }
 
 export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModalProps) {
@@ -41,7 +42,8 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
     vignetteEnabled: false,
     chromaticAberration: false,
     letterboxEnabled: false,
-    sharpness: 0.2
+    sharpness: 0.2,
+    autoDetectEnabled: true
   });
 
   useEffect(() => {
@@ -54,9 +56,10 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
         applyConfigToDOM(parsed, false);
       } catch (e) {}
     } else {
-        // Apply default LOW on first visit
-        applyConfigToDOM(config);
+        // Run auto-detect on first visit
+        autoDetectSettings();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const applyConfigToDOM = (newConfig: GraphicsConfig, isManual = false) => {
@@ -95,28 +98,32 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
         newConfig = { 
             tier, grainEnabled: false, blurEnabled: false, parallaxEnabled: false, 
             animationsEnabled: false, crtEnabled: false, glowIntensity: 0.2, 
-            vignetteEnabled: false, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.2 
+            vignetteEnabled: false, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.2,
+            autoDetectEnabled: false
         };
         break;
       case 'medium':
         newConfig = { 
             tier, grainEnabled: true, blurEnabled: false, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.6, 
-            vignetteEnabled: true, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.5 
+            vignetteEnabled: true, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.5,
+            autoDetectEnabled: false
         };
         break;
       case 'high':
         newConfig = { 
             tier, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.8, 
-            vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 0.7 
+            vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 0.7,
+            autoDetectEnabled: false
         };
         break;
       case 'ultra':
         newConfig = { 
             tier, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 1.0, 
-            vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: true, sharpness: 1.0 
+            vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: true, sharpness: 1.0,
+            autoDetectEnabled: false
         };
         break;
     }
@@ -156,7 +163,43 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
       recommended = 'low';
     }
 
-    applyTier(recommended);
+    let newConfig: GraphicsConfig;
+    switch (recommended) {
+      case 'low':
+        newConfig = { 
+            tier: recommended, grainEnabled: false, blurEnabled: false, parallaxEnabled: false, 
+            animationsEnabled: false, crtEnabled: false, glowIntensity: 0.2, 
+            vignetteEnabled: false, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.2,
+            autoDetectEnabled: true
+        };
+        break;
+      case 'medium':
+        newConfig = { 
+            tier: recommended, grainEnabled: true, blurEnabled: false, parallaxEnabled: true, 
+            animationsEnabled: true, crtEnabled: false, glowIntensity: 0.6, 
+            vignetteEnabled: true, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.5,
+            autoDetectEnabled: true
+        };
+        break;
+      case 'high':
+        newConfig = { 
+            tier: recommended, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
+            animationsEnabled: true, crtEnabled: false, glowIntensity: 0.8, 
+            vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 0.7,
+            autoDetectEnabled: true
+        };
+        break;
+      case 'ultra':
+        newConfig = { 
+            tier: recommended, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
+            animationsEnabled: true, crtEnabled: false, glowIntensity: 1.0, 
+            vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: true, sharpness: 1.0,
+            autoDetectEnabled: true
+        };
+        break;
+    }
+    
+    saveConfig(newConfig!);
     playSound("/sounds/naboje.mp3", 0.4);
   };
 
@@ -189,7 +232,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                   <h2 className="text-xl font-heading font-black text-white uppercase tracking-[0.3em]">
                     {lang === 'cs' ? 'Grafické Rozhraní' : 'Graphics Engine'}
                   </h2>
-                  <p className="text-[9px] font-mono text-mafia-gold/40 uppercase tracking-widest mt-1">Version 2.4.0 // Performance Management</p>
+                  <p className="text-[9px] font-mono text-mafia-gold/40 uppercase tracking-widest mt-1">Version 2.5.0 // Adaptive Optimization</p>
                 </div>
               </div>
               <button onClick={onClose} className="text-white/20 hover:text-white transition-colors p-2">
@@ -207,21 +250,17 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                         <SectionLabel icon={<Layers size={14}/>} label={lang === 'cs' ? 'Systémové Presety' : 'System Presets'} />
                         <div className="flex items-center gap-2">
                             <button 
-                                onClick={autoDetectSettings}
-                                className="flex items-center gap-2 px-3 py-1 bg-mafia-gold/10 border border-mafia-gold/30 text-mafia-gold text-[9px] font-black uppercase tracking-widest hover:bg-mafia-gold hover:text-mafia-black transition-all"
-                            >
-                                <Scan size={12} />
-                                {lang === 'cs' ? 'Auto-Detekce' : 'Auto-Detect'}
-                            </button>
-                            <button 
                                 onClick={() => {
-                                    onClose();
-                                    setTimeout(() => window.dispatchEvent(new Event('mmbarber-elita-game-open')), 300);
+                                    if (!config.autoDetectEnabled) {
+                                        autoDetectSettings();
+                                    } else {
+                                        saveConfig({ ...config, autoDetectEnabled: false });
+                                    }
                                 }}
-                                className="flex items-center gap-2 px-3 py-1 bg-mafia-red/10 border border-mafia-red/30 text-mafia-red text-[9px] font-black uppercase tracking-widest hover:bg-mafia-red hover:text-white transition-all"
+                                className={`flex items-center gap-2 px-3 py-1 border text-[9px] font-black uppercase tracking-widest transition-all ${config.autoDetectEnabled ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.3)]' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
                             >
-                                <Target size={12} className="animate-pulse" />
-                                {lang === 'cs' ? 'MMBARBER ELITA' : 'MMBARBER ELITE'}
+                                <Scan size={12} className={config.autoDetectEnabled ? 'animate-pulse' : ''} />
+                                {lang === 'cs' ? (config.autoDetectEnabled ? 'Auto-Detekce AKTIVNÍ' : 'Auto-Detekce VYPNUTA') : (config.autoDetectEnabled ? 'Auto-Detect ACTIVE' : 'Auto-Detect OFF')}
                             </button>
                         </div>
                     </div>
@@ -229,8 +268,9 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                       {(['low', 'medium', 'high', 'ultra'] as GraphicsTier[]).map((t) => (
                         <button
                           key={t}
+                          disabled={config.autoDetectEnabled}
                           onClick={() => applyTier(t)}
-                          className={`py-4 text-[10px] font-black uppercase tracking-widest transition-all border ${config.tier === t ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_20px_rgba(197,160,89,0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'}`}
+                          className={`py-4 text-[10px] font-black uppercase tracking-widest transition-all border ${config.tier === t ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_20px_rgba(197,160,89,0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'} ${config.autoDetectEnabled ? 'opacity-20 cursor-not-allowed' : ''}`}
                         >
                           {t}
                         </button>
@@ -245,12 +285,12 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                         <RangeInput 
                             label={lang === 'cs' ? "Intenzita Záře (Bloom)" : "Glow Intensity (Bloom)"}
                             value={config.glowIntensity}
-                            onChange={(v) => saveConfig({...config, glowIntensity: v, tier: 'high'})}
+                            onChange={(v) => saveConfig({...config, glowIntensity: v, autoDetectEnabled: false})}
                         />
                         <RangeInput 
                             label={lang === 'cs' ? "Ostrost Obrazu (Sharpen)" : "Image Sharpness (Sharpen)"}
                             value={config.sharpness}
-                            onChange={(v) => saveConfig({...config, sharpness: v, tier: 'high'})}
+                            onChange={(v) => saveConfig({...config, sharpness: v, autoDetectEnabled: false})}
                         />
                     </div>
                   </section>
@@ -262,8 +302,8 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                             <div className="text-[10px] font-heading font-black text-white uppercase tracking-wider mb-1">Adaptive Performance</div>
                             <p className="text-[10px] text-white/40 leading-relaxed font-mono uppercase tracking-tighter">
                                 {lang === 'cs' 
-                                    ? "Při detekci nízké snímkové frekvence (pod 30 FPS) systém automaticky doporučuje přepnutí na 'LOW' profil."
-                                    : "Upon detection of low frame rate (below 30 FPS), the system automatically suggests switching to 'LOW' profile."}
+                                    ? "Systém automaticky optimalizuje grafiku pro váš hardware. Manuální změna vypne auto-detekci."
+                                    : "The system automatically optimizes graphics for your hardware. Manual changes will disable auto-detection."}
                             </p>
                         </div>
                     </div>
@@ -280,56 +320,56 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                             desc="Dither Noise"
                             active={config.grainEnabled}
                             icon={<Ghost size={16} />}
-                            onClick={() => saveConfig({...config, grainEnabled: !config.grainEnabled, tier: 'high'})}
+                            onClick={() => saveConfig({...config, grainEnabled: !config.grainEnabled, autoDetectEnabled: false})}
                         />
                         <SettingToggle 
                             label={lang === 'cs' ? "Motion Blur" : "Motion Blur"}
                             desc="Fluid Render"
                             active={config.blurEnabled}
                             icon={<Eye size={16} />}
-                            onClick={() => saveConfig({...config, blurEnabled: !config.blurEnabled, tier: 'high'})}
+                            onClick={() => saveConfig({...config, blurEnabled: !config.blurEnabled, autoDetectEnabled: false})}
                         />
                         <SettingToggle 
                             label={lang === 'cs' ? "Parallax" : "Parallax"}
                             desc="Depth Mapping"
                             active={config.parallaxEnabled}
                             icon={<Layers size={16} />}
-                            onClick={() => saveConfig({...config, parallaxEnabled: !config.parallaxEnabled, tier: 'high'})}
+                            onClick={() => saveConfig({...config, parallaxEnabled: !config.parallaxEnabled, autoDetectEnabled: false})}
                         />
                          <SettingToggle 
                             label={lang === 'cs' ? "Vinětace" : "Vignette"}
                             desc="Edge Darkening"
                             active={config.vignetteEnabled}
                             icon={<Maximize size={16} />}
-                            onClick={() => saveConfig({...config, vignetteEnabled: !config.vignetteEnabled, tier: 'high'})}
+                            onClick={() => saveConfig({...config, vignetteEnabled: !config.vignetteEnabled, autoDetectEnabled: false})}
                         />
                          <SettingToggle 
                             label={lang === 'cs' ? "Aberace" : "Aberration"}
                             desc="Lens Distortion"
                             active={config.chromaticAberration}
                             icon={<Sparkles size={16} />}
-                            onClick={() => saveConfig({...config, chromaticAberration: !config.chromaticAberration, tier: 'high'})}
+                            onClick={() => saveConfig({...config, chromaticAberration: !config.chromaticAberration, autoDetectEnabled: false})}
                         />
                          <SettingToggle 
                             label={lang === 'cs' ? "Kino Formát" : "Cinematic Form."}
                             desc="21:9 Letterbox"
                             active={config.letterboxEnabled}
                             icon={<Maximize size={16} />}
-                            onClick={() => saveConfig({...config, letterboxEnabled: !config.letterboxEnabled, tier: 'ultra'})}
+                            onClick={() => saveConfig({...config, letterboxEnabled: !config.letterboxEnabled, autoDetectEnabled: false})}
                         />
                         <SettingToggle 
                             label={lang === 'cs' ? "CRT Simulace" : "CRT Simulation"}
                             desc="Scanlines"
                             active={config.crtEnabled}
                             icon={<Monitor size={16} />}
-                            onClick={() => saveConfig({...config, crtEnabled: !config.crtEnabled, tier: 'ultra'})}
+                            onClick={() => saveConfig({...config, crtEnabled: !config.crtEnabled, autoDetectEnabled: false})}
                         />
                          <SettingToggle 
                             label={lang === 'cs' ? "Animace" : "Animations"}
                             desc="Transition Logic"
                             active={config.animationsEnabled}
                             icon={<Zap size={16} />}
-                            onClick={() => saveConfig({...config, animationsEnabled: !config.animationsEnabled, tier: 'high'})}
+                            onClick={() => saveConfig({...config, animationsEnabled: !config.animationsEnabled, autoDetectEnabled: false})}
                         />
                     </div>
                 </div>

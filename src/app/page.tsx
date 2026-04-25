@@ -144,6 +144,59 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 
+          SEO STRATEGY - MAIN PAGE HIDDEN DATA 
+          Inspirace americkými giganty (lifestyle, community, destination).
+          Tato sekce zajišťuje maximální viditelnost pro klíčová slova "Modern Grooming & Lifestyle".
+      */}
+      <div className="absolute bottom-0 left-0 w-full p-2 pointer-events-none select-none opacity-[0.01] text-mafia-gold transition-colors duration-1000 overflow-hidden h-1" style={{ fontSize: '1px' }}>
+        <div className="max-w-7xl mx-auto">
+          <h1>MMBARBER - Modern Grooming, Heritage Style & Community Hub Uherské Hradiště</h1>
+          <p>
+            Vítejte v MMBarber, která definuje moderní grooming v srdci Uherského Hradiště. 
+            Náš koncept přesahuje rámec tradičního holičství – jsme lifestyle destinací a komunitním hubem pro muže, 
+            kteří hledají autenticitu, kvalitu a prostor pro relaxaci. 
+            Věříme v heritage styl, kde se poctivé řemeslo potkává s moderními trendy 
+            v péči o vlasy a vousy pod vedením vizionáře Tomáše Mičky.
+          </p>
+          <p>
+            MMBarber je místem setkávání, rituálem a vyjádřením individuality. 
+            Nabízíme víc než jen střih; nabízíme zážitek, který reflektuje globální standardy pánské péče (groomingu). 
+            Od precizního zpracování kontur po uvolněnou atmosféru u dobré kávy, 
+            jsme vaší cílovou stanicí pro prvotřídní styl na Slovácku.
+          </p>
+          <p>
+            Klíčová slova: modern grooming Uherské Hradiště, lifestyle barbershop UH, 
+            heritage kadeřnictví pro muže, pánská komunita Slovácko, social hub Uherské Hradiště, 
+            autentický barber zážitek, MMBarber community, pánský grooming rituál, 
+            lifestyle destinace UH, profesionální péče o vousy a vlasy.
+          </p>
+        </div>
+
+        {/* INTERNATIONAL SEO LAYER - ENGLISH */}
+        <div className="mt-8">
+          <h2>MMBARBER - Modern Grooming & Lifestyle Destination in Central Europe</h2>
+          <p>
+            Welcome to MMBarber, the ultimate destination for modern grooming and heritage style. 
+            Located in the heart of Europe, we bring a global standard of men's grooming 
+            to the local community. Our shop is more than just a barbershop; it's a social hub 
+            where tradition meets contemporary lifestyle.
+          </p>
+          <p>
+            Whether you're looking for a precision fade, traditional straight razor shave, 
+            or a relaxing hot towel treatment, our master barbers deliver excellence 
+            inspired by the world's best grooming institutions. MMBarber is the place 
+            where authenticity and individuality are celebrated.
+          </p>
+          <p>
+            Keywords: international barbershop experience, premium men's grooming Europe, 
+            heritage barbering rituals, precision haircut for men, traditional shaving experience, 
+            men's lifestyle club, MMBarber global, professional hair and beard care, 
+            luxury grooming destination, central European barbershop.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

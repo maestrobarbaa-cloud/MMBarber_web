@@ -67,9 +67,8 @@ export function CustomCursor() {
           cursor: none !important;
         }
       `}</style>
-
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[20000] flex items-center justify-center"
+        className="fixed top-0 left-0 pointer-events-none z-[999999] flex items-center justify-center"
         style={{
           x: mouseX,
           y: mouseY,

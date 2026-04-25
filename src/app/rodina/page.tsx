@@ -35,9 +35,8 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
   return (
     <div key={m.name} className="group bg-mafia-black/80 border border-mafia-gold/20 p-8 flex flex-col items-center justify-center backdrop-blur-xl hover:border-mafia-gold transition-all relative overflow-hidden">
       <Image src={m.img} alt={m.name} width={100} height={100} className="w-24 h-24 object-contain mb-6 grayscale group-hover:grayscale-0 transition-all" />
-      <h3 className="text-xl font-heading font-black text-smoke-white uppercase mb-2">{m.name}</h3>
-      <p className="text-mafia-gold font-mono text-[9px] tracking-widest uppercase mb-6">{role}</p>
-
+      <h3 className="text-xl font-heading font-black text-smoke-white uppercase mb-2 text-center">{m.name}</h3>
+      <p className="text-mafia-gold font-mono text-[9px] tracking-widest uppercase mb-6 text-center">{role}</p>
       <div className="flex flex-col items-center w-full gap-4">
         <button
           onClick={() => setShowContact(!showContact)}
@@ -321,6 +320,9 @@ export default function FamilyPage() {
             <Link href="/" className="group flex items-center gap-3 text-mafia-gold/60 hover:text-mafia-gold transition-colors font-mono text-xs uppercase tracking-[0.3em]">
               <ChevronLeft size={16} /> {t.rodina.backToHq}
             </Link>
+            <div className="absolute top-0 right-0 w-12 h-12 border border-mafia-gold/10 flex items-center justify-center overflow-hidden p-1 opacity-40">
+               <Image src="/logo.png" alt="MM" width={40} height={40} className="w-full h-full object-contain" />
+            </div>
           </motion.div>
         )}
 
@@ -727,6 +729,60 @@ export default function FamilyPage() {
           </div>
         )}
       </AnimatePresence>
+      {/* 
+          SEO STRATEGY - HIDDEN DATA LAYER 
+          Tato sekce zajišťuje indexaci klíčových slov pro Uherské Hradiště a okolí.
+          Vizuálně je pro uživatele neviditelná, ale botům poskytuje kontext o službách.
+      */}
+      <div className="absolute bottom-0 left-0 w-full p-4 pointer-events-none select-none opacity-[0.02] text-mafia-gold transition-colors duration-1000 overflow-hidden" style={{ fontSize: '2px', lineHeight: '1' }}>
+        <div className="max-w-7xl mx-auto">
+          <h2>Prověření živnostníci a služby Uherské Hradiště - MMBarber Rodina</h2>
+          <p>
+            Hledáte prověřené řemeslníky a profesionály v Uherském Hradišti? Naše komunita MMBarber Rodina sdružuje mistry svého oboru v regionu Slovácko. 
+            Vodaři a topenáři Uherské Hradiště (Vodo Topo Jahoda, Zdeněk Mička Bílovice), 
+            elektrikáři a revize elektro (Roman Jakubčák), 
+            gastronomie a poctivé restaurace v UH (O Shawarma Beef, Poe Poe, Dvůr pod Starýma Horama), 
+            profesionální fotografové (Malina Photo), 
+            umělci a DJové (Šimon Král, Argema), 
+            realitní kanceláře a odborníci na reality (Sluneční Reality), 
+            stínící technika, okna a vrata (Kudielka), 
+            obaly a krabice (Kofipack), 
+            účetnictví a daně (Romana Mičková), 
+            prodej a mistrovský servis jízdních kol (O Kolečko víc).
+          </p>
+          <p>
+            Služby a řemesla Uherské Hradiště, Kunovice, Staré Město, Bílovice a okolí. 
+            Důraz na kvalitu, lokální partneři a poctivé reference. 
+            Barber shop Uherské Hradiště jako centrum komunity a mistrovské péče.
+            Kadeřnictví Uherské Hradiště, pánský střih, tradiční úprava vousů a regionální spolupráce.
+          </p>
+          <p>
+            Živnostníci Uherské Hradiště, drobní podnikatelé Slovácko, stavební práce, 
+            instalace, odborné opravy, kultura a podpora dětí (Dětský domov UH).
+          </p>
+        </div>
+
+        {/* INTERNATIONAL SEO LAYER - ENGLISH */}
+        <div className="mt-8">
+          <h2>MMBarber Family - Trusted Professionals & Local Services Network</h2>
+          <p>
+            Looking for reliable craftsmen and professionals in Central Europe? 
+            Our MMBarber Family community brings together the masters of their craft in the Slovácko region. 
+            Plumbers, electricians, real estate experts, and gastronomy professionals - 
+            all under one roof of trust and excellence.
+          </p>
+          <p>
+            From professional photography and music events to accounting and cycling services, 
+            we promote local craftsmanship and honest work. 
+            Discover the network of partners that define the quality of life in Uherské Hradiště.
+          </p>
+          <p>
+            Keywords: trusted local professionals, European craftsmanship network, 
+            Slovácko regional services, business community Czech Republic, 
+            professional tradesmen network, MMBarber partners, local business hub Europe.
+          </p>
+        </div>
+      </div>
 
       <style jsx global>{`
         @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

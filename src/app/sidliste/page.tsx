@@ -4,11 +4,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "@/hooks/useTranslation";
 import { 
-  Building2, 
   ArrowLeft, 
-  ChevronRight
+  ChevronRight 
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HousingEstatePage() {
   const { t, lang } = useTranslation();
@@ -34,8 +34,8 @@ export default function HousingEstatePage() {
           <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform" />
           {t.sidliste.return}
         </Link>
-        <div className="w-12 h-12 border border-mafia-gold/20 flex items-center justify-center">
-            <Building2 size={24} className="text-mafia-gold opacity-50" />
+        <div className="w-12 h-12 border border-mafia-gold/20 flex items-center justify-center overflow-hidden p-1">
+            <Image src="/logo.png" alt="MM" width={40} height={40} className="w-full h-full object-contain opacity-80" />
         </div>
       </nav>
 
