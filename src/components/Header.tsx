@@ -666,7 +666,7 @@ export function Header() {
     <>
       <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-20 md:h-24 block'}`} aria-hidden="true" />
       <header
-        className={`w-full left-0 z-[100100] bg-gradient-to-b from-mafia-black/95 via-mafia-black/70 to-transparent py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : (isMobile ? 'fixed top-0 bg-mafia-black/90 backdrop-blur-xl h-24' : 'absolute top-0')} ${isIntroActive ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'} ${(!isVisible && !isMenuOpen) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
+        className={`w-full left-0 z-[30000] bg-gradient-to-b from-mafia-black/95 via-mafia-black/70 to-transparent py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : (isMobile ? 'fixed top-0 bg-mafia-black/90 backdrop-blur-xl h-24' : 'absolute top-0')} ${isIntroActive ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'} ${(!isVisible && !isMenuOpen) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
       >
         <div className="flex items-center gap-8">
           <button
@@ -700,7 +700,7 @@ export function Header() {
         
         {/* Mobile Actions (Top Right) */}
         {isMobile && (
-          <div className="flex items-center gap-2 relative z-20">
+          <div className="flex items-center gap-2 relative z-[30001]">
             {/* Compass integrated into the bar */}
             {!isCompassActive && !isMenuOpen && (
               <button 
@@ -718,7 +718,7 @@ export function Header() {
               aria-label="Open Hamburger Menu"
             >
               <div className="flex flex-col items-end">
-                <span className={`text-[10px] font-black tracking-[0.2em] uppercase leading-none ${isMenuOpen ? 'text-mafia-black' : 'text-mafia-gold'}`}>{isMenuOpen ? (lang === 'cs' ? 'ZAVŘÍT' : 'X') : 'MENU'}</span>
+                <span className={`text-[10px] font-black tracking-[0.2em] uppercase leading-none ${isMenuOpen ? 'text-mafia-black' : 'text-mafia-gold'}`}>{isMenuOpen ? (lang === 'cs' ? 'ZAVŘÍT' : '') : 'MENU'}</span>
               </div>
               {!isMenuOpen ? (
                 <Menu size={24} className="text-mafia-gold transition-all duration-700 group-hover:scale-110" />
@@ -1048,15 +1048,12 @@ export function Header() {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="fixed inset-0 h-[100dvh] bg-mafia-black z-[20000] overflow-y-auto touch-pan-y px-4 py-6 pb-24 overscroll-contain"
           >
-            {/* Header in Overlay */}
             <div className="flex items-center justify-between mb-8 overflow-hidden shrink-0">
                <div className="flex items-center">
                   <Image src="/logo.png" alt="MM" width={40} height={32} className="w-10 h-8 object-contain" />
                   <span className="text-xl font-heading font-black text-mafia-gold tracking-widest ml-2">MMBARBER</span>
                </div>
-               <button onClick={toggleMenu} className="p-3 bg-mafia-dark/50 rounded-full border border-mafia-gold/30 text-mafia-gold hover:bg-mafia-gold hover:text-mafia-black transition-colors">
-                  <X size={40} />
-               </button>
+               {/* Close button removed here because the main header button now stays on top */}
             </div>
 
             {/* Search Bar in Mobile Menu */}
