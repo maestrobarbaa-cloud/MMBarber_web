@@ -6,6 +6,7 @@ import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "../utils/audio";
 import { WeatherOverlay } from "./WeatherOverlay";
+import NextImage from "next/image";
 import Image from "./OptimizedImage";
 
 const LATIN_SLOGANS: Record<string, string> = {
@@ -374,12 +375,14 @@ export function Hero() {
             }}
             className={`absolute inset-0 w-full h-full z-0 overflow-hidden ${isGlitching ? 'animate-glitch' : ''}`}
           >
-            <Image
+            <NextImage
               src={heroImage}
               alt="MMBARBER Background"
               fill
               priority
-              quality={100} // This is now the default/max handled by OptimizedImage
+              loading="eager"
+              {...({ fetchPriority: "high" } as any)}
+              quality={90}
               className="object-cover xl:object-cover object-center"
               sizes="100vw"
             />

@@ -31,7 +31,35 @@ html, body {
 
 button, a {
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
+
+/* PERFORMANCE BOOST FOR MOBILE BROWSERS */
+.section-optimize {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+}
+
+.gpu-accelerate {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* SAFARI SPECIFIC FIXES */
+@supports (-webkit-hyphens:none) {
+  .safari-blur-fix {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

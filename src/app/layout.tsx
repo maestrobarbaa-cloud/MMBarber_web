@@ -92,8 +92,27 @@ export default function RootLayout({
   return (
     <html lang="cs" className="dark" suppressHydrationWarning>
       <head>
+        <link rel="preload" href="/obr/main-hero.png" as="image" type="image/png" fetchPriority="high" />
+        <link rel="preload" href="/logo.png" as="image" type="image/png" />
         <script dangerouslySetInnerHTML={{ __html: `
           try {
+            // Early detection for mobile and graphics tier to prevent layout shifts
+            const isMobile = window.innerWidth < 1280;
+            if (isMobile) {
+              document.documentElement.classList.add('is-mobile-device');
+            }
+            
+            const savedConfig = localStorage.getItem("mmbarber_graphics_config");
+            if (savedConfig) {
+              const tier = JSON.parse(savedConfig).tier;
+              document.documentElement.setAttribute('data-graphics-tier', tier);
+            } else {
+              // Quick heuristic for first visit
+              const cores = navigator.hardwareConcurrency || 4;
+              const tier = (isMobile ? (cores >= 8 ? 'medium' : 'low') : (cores >= 8 ? 'ultra' : 'high'));
+              document.documentElement.setAttribute('data-graphics-tier', tier);
+            }
+
             const storedNoir = localStorage.getItem('mmbarber_noir_mode');
             const hour = new Date().getHours();
             const isNight = hour >= 19 || hour < 6;

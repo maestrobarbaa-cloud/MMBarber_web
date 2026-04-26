@@ -32,9 +32,16 @@ export default function Home() {
   useEffect(() => {
     // Check if intro was already dismissed in a previous session or if on mobile/tablet
     const hasVisited = localStorage.getItem("mmbarber_visited") === "true";
-    if (hasVisited || window.innerWidth < 1280) {
+    const isMobileView = window.innerWidth < 1280;
+
+    if (hasVisited || isMobileView) {
       setShowContent(true);
       setIsIntroDismissed(true);
+      
+      // If it's a mobile view, mark as visited so they don't see it even if they switch to desktop mode/larger screen
+      if (isMobileView && !hasVisited) {
+        localStorage.setItem("mmbarber_visited", "true");
+      }
     }
 
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
@@ -57,20 +64,35 @@ export default function Home() {
   }, []);
 
   const SectionReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => {
+    // Disable heavy effects on low-tier or if user disabled them
     if (isMobile && !isMobileEffectsEnabled) {
       return <div className="w-full">{children}</div>;
     }
 
     return (
       <motion.div
-        initial={{ opacity: 0, y: 80, filter: "blur(25px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
+        initial={{ 
+          opacity: 0, 
+          y: isMobile ? 40 : 80, 
+          filter: isMobile ? "blur(10px)" : "blur(25px)",
+          scale: isMobile ? 1 : 0.98
+        }}
+        whileInView={{ 
+          opacity: 1, 
+          y: 0, 
+          filter: "blur(0px)",
+          scale: 1
+        }}
+        viewport={{ 
+          once: true, 
+          margin: isMobile ? "-10% 0px -10% 0px" : "-20% 0px -20% 0px" 
+        }}
         transition={{ 
-          duration: 2.5, 
-          delay,
+          duration: isMobile ? 1.5 : 2.5, 
+          delay: isMobile ? delay * 0.5 : delay,
           ease: [0.16, 1, 0.3, 1] 
         }}
+        style={{ willChange: "transform, opacity, filter", transform: "translateZ(0)" }}
         className="w-full"
       >
         {children}
@@ -104,42 +126,58 @@ export default function Home() {
             <CinematicSequence737 />
             <Hero />
             
-            <div className="relative bg-transparent w-full">
+            <div className="relative bg-transparent w-full section-optimize">
               <div className="hidden xl:block">
                 <FloatingScissors position="absolute" />
               </div>
               
               <SectionReveal>
-                <Services />
+                <div className="section-optimize">
+                  <Services />
+                </div>
               </SectionReveal>
 
               <SectionReveal>
-                <Profiles />
+                <div className="section-optimize">
+                  <Profiles />
+                </div>
               </SectionReveal>
 
               <SectionReveal>
-                <HolidayCountdown />
+                <div className="section-optimize">
+                  <HolidayCountdown />
+                </div>
               </SectionReveal>
 
               <SectionReveal>
-                <StyleDefinition />
+                <div className="section-optimize">
+                  <StyleDefinition />
+                </div>
               </SectionReveal>
 
               <SectionReveal>
-                <EnvironmentSlider />
+                <div className="section-optimize">
+                  <EnvironmentSlider />
+                </div>
               </SectionReveal>
             </div>
 
             <SectionReveal>
-              <Contact />
+              <div className="section-optimize">
+                <Contact />
+              </div>
             </SectionReveal>
 
             <SectionReveal>
-              <Partners />
+              <div className="section-optimize">
+                <Partners />
+              </div>
             </SectionReveal>
 
             <SectionReveal>
-              <Footer />
+              <div className="section-optimize">
+                <Footer />
+              </div>
             </SectionReveal>
           </motion.div>
         )}

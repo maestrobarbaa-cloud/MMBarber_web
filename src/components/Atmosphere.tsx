@@ -7,7 +7,7 @@ export function Atmosphere() {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsLowTier(document.documentElement.getAttribute('data-graphics-tier') === 'low' || window.innerWidth < 1024);
+      setIsLowTier(document.documentElement.getAttribute('data-graphics-tier') === 'low' || window.innerWidth < 1280);
     };
     
     checkMobile();

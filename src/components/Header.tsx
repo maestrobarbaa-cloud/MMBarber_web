@@ -592,9 +592,9 @@ export function Header() {
 
       if (currentScrollY <= 20) {
         setIsVisible(true);
-      } else if (currentScrollY > lastScrollY.current + 10) {
+      } else if (currentScrollY > lastScrollY.current + (isMobile ? 30 : 10)) {
         setIsVisible(false); // Scrolling down - more threshold for mobile
-      } else if (currentScrollY < lastScrollY.current - 15) {
+      } else if (currentScrollY < lastScrollY.current - (isMobile ? 40 : 15)) {
         setIsVisible(true); // Scrolling up - more threshold for mobile
       }
       
@@ -666,7 +666,7 @@ export function Header() {
     <>
       <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-20 md:h-24 block'}`} aria-hidden="true" />
       <header
-        className={`w-full left-0 z-[100100] bg-gradient-to-b from-mafia-black/95 via-mafia-black/70 to-transparent py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : (isMobile ? 'fixed top-0 bg-mafia-black/90 backdrop-blur-xl h-24' : 'absolute top-0')} ${isIntroActive ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'} ${(!isVisible && !isMenuOpen) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
+        className={`w-full left-0 z-[100100] bg-gradient-to-b from-mafia-black/95 via-mafia-black/70 to-transparent py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : (isMobile ? 'fixed top-0 bg-mafia-black/90 backdrop-blur-xl h-24' : 'absolute top-0')} ${isIntroActive ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'} ${(!isVisible && !isMenuOpen) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
       >
         <div className="flex items-center gap-8">
           <button
@@ -977,16 +977,18 @@ export function Header() {
               </AnimatePresence>
             </div>
 
-            {/* Standalone ELITA Game Launcher */}
             <button
                 onClick={() => window.dispatchEvent(new Event('mmbarber-elita-game-open'))}
                 className="p-2 transition-all duration-500 rounded-full hover:bg-white/5 group relative hover:scale-125 ml-1"
-                aria-label={lang === 'cs' ? "ELITA Hra" : "ELITA Game"}
+                aria-label={lang === 'cs' ? "ELITNÍ STŘELBA" : "ELITE SHOOTING"}
             >
                 <Target 
                   size={24} 
-                  className="relative z-10 text-mafia-red animate-pulse" 
-                  style={{ filter: `drop-shadow(0 0 10px rgba(255,0,0,0.5))` }} 
+                  className="relative z-10 animate-pulse" 
+                  style={{ 
+                    color: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor,
+                    filter: `drop-shadow(0 0 10px ${(typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? 'rgba(139,0,0,0.5)' : (userAccentColor + '80')})`
+                  }} 
                 />
             </button>
           </div>
@@ -1179,24 +1181,32 @@ export function Header() {
                 </div>
               </button>
 
-              {/* ELITA GAME TILE (Mobile Only Launcher) */}
+              {/* ELITNÍ STŘELBA TILE (Mobile Only Launcher) */}
               <button 
                 onClick={() => {
                   setIsMenuOpen(false);
                   window.dispatchEvent(new Event('mmbarber-elita-game-open'));
                 }}
-                className="bg-mafia-red/10 border border-mafia-red/30 px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 hover:bg-mafia-red/20"
+                className="bg-white/5 border border-white/10 px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 hover:bg-white/10"
+                style={{
+                  borderColor: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? 'rgba(139,0,0,0.3)' : undefined,
+                  backgroundColor: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? 'rgba(139,0,0,0.05)' : undefined
+                }}
               >
                 <div className="flex items-center gap-5">
-                  <div className="w-12 h-12 rounded-full border border-mafia-red/50 flex items-center justify-center bg-mafia-red/10">
-                    <Target size={28} className="text-mafia-red animate-pulse" />
+                  <div className="w-12 h-12 rounded-full border flex items-center justify-center bg-white/5"
+                    style={{ borderColor: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor }}
+                  >
+                    <Target size={28} className="animate-pulse" 
+                      style={{ color: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor }}
+                    />
                   </div>
                   <div className="flex flex-col items-start text-left">
-                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'ELITA HRA' : 'ELITE GAME'}</span>
-                    <span className="text-[10px] font-mono text-mafia-red/60 uppercase">{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
+                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'ELITNÍ STŘELBA' : 'ELITE SHOOTING'}</span>
+                    <span className="text-[10px] font-mono uppercase" style={{ color: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor }}>{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
                   </div>
                 </div>
-                <ChevronRight size={20} className="text-mafia-red" />
+                <ChevronRight size={20} style={{ color: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor }} />
               </button>
 
               {/* EFFECTS TOGGLE TILE */}

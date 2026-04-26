@@ -764,8 +764,8 @@ const MenuCard = React.memo(function MenuCard({
           damping: 25,
           mass: 1.2
         }}
-        className={`relative h-full w-full ${className || ""} antialiased transform-gpu`}
-        style={{ transformStyle: "preserve-3d" }}
+        className={`relative h-full w-full ${className || ""} antialiased transform-gpu gpu-accelerate`}
+        style={{ transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d" }}
       >
         {/* FRONT SIDE */}
         <div 
@@ -773,7 +773,8 @@ const MenuCard = React.memo(function MenuCard({
           style={{ 
             backfaceVisibility: "hidden", 
             WebkitBackfaceVisibility: "hidden",
-            transform: "translateZ(1px)" 
+            transform: "translateZ(1px)",
+            WebkitTransform: "translateZ(1px)"
           }}
         >
           <div className="absolute inset-0 bg-black/40 pointer-events-none z-0"></div>

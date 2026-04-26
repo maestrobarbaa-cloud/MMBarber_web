@@ -253,10 +253,10 @@ export function ElitaGame() {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.05)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20" />
         </div>
 
-        {/* Close Button */}
+        {/* Close Button - Moved to left and further down to clear HUD */}
         <button 
           onClick={() => setIsOpen(false)}
-          className="absolute top-6 right-6 md:top-8 md:right-8 text-white/30 hover:text-mafia-gold transition-colors z-50 p-2"
+          className="absolute top-32 left-6 md:top-48 md:left-12 text-white/30 hover:text-mafia-gold transition-colors z-50 p-2"
         >
           <X size={32} />
         </button>
@@ -268,10 +268,10 @@ export function ElitaGame() {
               animate={{ y: 0, opacity: 1 }}
             >
               <h1 className="text-4xl md:text-7xl font-heading font-black text-white tracking-[0.2em] uppercase">
-                ELITA <span className="text-mafia-gold">SHOT</span>
+                ELITNÍ <span className="text-mafia-gold">STŘELBA</span>
               </h1>
               <p className="text-mafia-gold/60 font-mono text-[10px] md:text-sm tracking-[0.3em] mt-4 uppercase">
-                {lang === 'cs' ? "ELIMINACE ŠPATNÝCH ÚČESŮ" : "MMBARBER TARGET ACQUISITION"}
+                {lang === 'cs' ? "ELIMINACE ŠPATNÝCH ÚČESŮ" : "TARGET ACQUISITION"}
               </p>
             </motion.div>
 
