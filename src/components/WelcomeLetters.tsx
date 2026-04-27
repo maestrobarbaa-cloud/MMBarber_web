@@ -55,6 +55,13 @@ export function WelcomeLetters() {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
+    
+    // Skip for mobile immediately
+    if (window.innerWidth < 1280) {
+      localStorage.setItem("mmbarber_welcome_letters_seen_v13", "true");
+      return;
+    }
+
     // Unique version v13 to reset for all users who had issues
     const hasSeen = localStorage.getItem("mmbarber_welcome_letters_seen_v13"); 
     if (!hasSeen) {

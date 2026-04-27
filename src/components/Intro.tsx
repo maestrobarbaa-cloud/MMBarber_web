@@ -30,6 +30,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
     // Check if on mobile (intros are for desktop immersion)
     if (window.innerWidth < 1280) {
       localStorage.setItem("mmbarber_visited", "true");
+      onDismiss();
       return;
     }
 

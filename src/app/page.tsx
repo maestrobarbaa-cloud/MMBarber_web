@@ -41,10 +41,12 @@ export default function Home() {
       // If it's a mobile view, mark as visited so they don't see it even if they switch to desktop mode/larger screen
       if (isMobileView && !hasVisited) {
         localStorage.setItem("mmbarber_visited", "true");
+        // Also set a specific mobile flag for consistency
+        localStorage.setItem("mmbarber_mobile_skip", "true");
       }
     }
 
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    const checkMobile = () => setIsMobile(window.innerWidth < 1280);
     checkMobile();
     window.addEventListener('resize', checkMobile);
 
