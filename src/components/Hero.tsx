@@ -425,7 +425,7 @@ export function Hero() {
                   className="flex flex-col items-center"
                 >
                   <motion.h1
-                    className={`hero-slogan text-3xl sm:text-5xl md:text-6xl tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white'}`}
+                    className={`hero-slogan text-2xl xs:text-3xl sm:text-5xl md:text-6xl tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white'}`}
                     style={{
                       fontFamily: "var(--font-great-vibes), cursive",
                       filter: isEasterEgg 
@@ -462,7 +462,7 @@ export function Hero() {
               className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-8 py-3.5 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(197,160,89,0.2)] flex items-center justify-center w-fit mx-auto"
             >
               <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
-              <span className="relative z-10 text-mafia-gold font-sans text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center" style={{ textShadow: "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
+              <span className="relative z-10 text-mafia-gold font-sans text-sm sm:text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center" style={{ textShadow: "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
                 {t.hero.bookBtn}
               </span>
             </motion.a>

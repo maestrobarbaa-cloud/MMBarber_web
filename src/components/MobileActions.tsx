@@ -65,7 +65,7 @@ export function MobileActions() {
       id: 'gallery',
       label: 'GALERIE', 
       icon: <Info size={24} />, 
-      href: '/seznamka' 
+      href: '/galerie' 
     },
     { 
       id: 'contact',
@@ -137,10 +137,10 @@ export function MobileActions() {
                       trackEvent(`mobile_tile_${tile.id}`); 
                       playBulletHit();
                     }}
-                    className={`${tile.span || 'col-span-1'} ${tile.color || 'bg-white/5 border border-white/10'} p-6 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform`}
+                    className={`${tile.span || 'col-span-1'} ${tile.color || 'bg-white/5 border border-white/10'} p-4 md:p-6 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform`}
                   >
-                    <div className={tile.textColor || 'text-mafia-gold'}>{tile.icon}</div>
-                    <span className={`text-[10px] font-sans font-black tracking-widest uppercase ${tile.textColor || 'text-white'}`}>
+                    <div className={`${tile.textColor || 'text-mafia-gold'} scale-90 md:scale-100`}>{tile.icon}</div>
+                    <span className={`text-[9px] md:text-[10px] font-sans font-black tracking-widest uppercase ${tile.textColor || 'text-white'}`}>
                       {tile.label}
                     </span>
                   </Link>
@@ -153,10 +153,10 @@ export function MobileActions() {
                       trackEvent(`mobile_tile_${tile.id}`); 
                       playBulletHit();
                     }}
-                    className={`${tile.span || 'col-span-1'} ${tile.color || 'bg-white/5 border border-white/10'} p-6 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform`}
+                    className={`${tile.span || 'col-span-1'} ${tile.color || 'bg-white/5 border border-white/10'} p-4 md:p-6 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform`}
                   >
-                    <div className={tile.textColor || 'text-mafia-gold'}>{tile.icon}</div>
-                    <span className={`text-[10px] font-sans font-black tracking-widest uppercase ${tile.textColor || 'text-white'}`}>
+                    <div className={`${tile.textColor || 'text-mafia-gold'} scale-90 md:scale-100`}>{tile.icon}</div>
+                    <span className={`text-[9px] md:text-[10px] font-sans font-black tracking-widest uppercase ${tile.textColor || 'text-white'}`}>
                       {tile.label}
                     </span>
                   </button>

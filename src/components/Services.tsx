@@ -748,7 +748,7 @@ const MenuCard = React.memo(function MenuCard({
           height: '384px',
           width: '256px',
           perspective: "2000px"
-        } : { zIndex: 100, perspective: "2000px", height: isMobile ? (className?.includes('aspect-square') ? 'auto' : '220px') : '384px', width: isMobile ? '100%' : '256px' })
+        } : { zIndex: 100, perspective: "2000px", height: isMobile ? (className?.includes('aspect-square') ? 'auto' : '160px') : '384px', width: isMobile ? '100%' : '256px' })
       }}
     >
       <motion.div 
@@ -769,7 +769,7 @@ const MenuCard = React.memo(function MenuCard({
       >
         {/* FRONT SIDE */}
         <div 
-          className={`absolute inset-0 bg-[#0c0c0c] border border-mafia-gold/30 rounded-lg flex flex-col items-center justify-center p-8 text-center overflow-hidden transition-all duration-500 ${isFlipped ? 'pointer-events-none' : 'pointer-events-auto'} ${isMobile && isMobileEffectsEnabled ? 'shadow-[0_0_20px_rgba(197,160,89,0.3)] border-mafia-gold/50' : 'shadow-2xl'}`}
+          className={`absolute inset-0 bg-[#0c0c0c] border border-mafia-gold/30 rounded-lg flex flex-col items-center justify-center p-4 md:p-8 text-center overflow-hidden transition-all duration-500 ${isFlipped ? 'pointer-events-none' : 'pointer-events-auto'} ${isMobile && isMobileEffectsEnabled ? 'shadow-[0_0_20px_rgba(197,160,89,0.3)] border-mafia-gold/50' : 'shadow-2xl'}`}
           style={{ 
             backfaceVisibility: "hidden", 
             WebkitBackfaceVisibility: "hidden",
@@ -779,14 +779,14 @@ const MenuCard = React.memo(function MenuCard({
         >
           <div className="absolute inset-0 bg-black/40 pointer-events-none z-0"></div>
           
-          <div className="relative z-10 flex flex-col items-center gap-4 md:gap-8 justify-center w-full">
-            <div className={`p-4 md:p-6 border rounded-sm transition-all duration-500 ${isMobile && isMobileEffectsEnabled ? 'border-mafia-gold/50 bg-mafia-black/60 shadow-[0_0_15px_rgba(197,160,89,0.2)]' : 'border-mafia-gold/20 bg-mafia-black/40'}`}>
-               <div className="scale-110 md:scale-125 origin-center text-mafia-gold/50">
+          <div className="relative z-10 flex flex-col items-center gap-2 md:gap-8 justify-center w-full">
+            <div className={`p-3 md:p-6 border rounded-sm transition-all duration-500 ${isMobile && isMobileEffectsEnabled ? 'border-mafia-gold/50 bg-mafia-black/60 shadow-[0_0_15px_rgba(197,160,89,0.2)]' : 'border-mafia-gold/20 bg-mafia-black/40'}`}>
+               <div className="scale-100 md:scale-125 origin-center text-mafia-gold/50">
                  {icon}
                </div>
             </div>
             
-            <h3 className={`text-xl md:text-2xl font-heading font-black uppercase tracking-[0.2em] leading-tight transition-colors duration-500 ${isMobile && isMobileEffectsEnabled ? 'text-mafia-gold drop-shadow-[0_0_8px_rgba(197,160,89,0.5)]' : 'text-mafia-gold/60'}`}>
+            <h3 className={`text-lg md:text-2xl font-heading font-black uppercase tracking-[0.2em] leading-tight transition-colors duration-500 ${isMobile && isMobileEffectsEnabled ? 'text-mafia-gold drop-shadow-[0_0_8px_rgba(197,160,89,0.5)]' : 'text-mafia-gold/60'}`}>
               {title}
             </h3>
           </div>

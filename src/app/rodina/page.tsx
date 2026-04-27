@@ -32,15 +32,19 @@ import { playSound } from "@/utils/audio";
 function MemberCard({ m, lang }: { m: any, lang: string }) {
   const [showContact, setShowContact] = useState(false);
   const role = lang === 'cs' ? m.role : m.roleEn;
+  const link = m.link || "";
+  const isPhone = link.startsWith('tel:');
+  const isInternal = link.startsWith('/rodina/');
+
   return (
-    <div key={m.name} className="group bg-mafia-black/80 border border-mafia-gold/20 p-8 flex flex-col items-center justify-center backdrop-blur-xl hover:border-mafia-gold transition-all relative overflow-hidden">
-      <Image src={m.img} alt={m.name} width={100} height={100} className="w-24 h-24 object-contain mb-6 grayscale group-hover:grayscale-0 transition-all" />
-      <h3 className="text-xl font-heading font-black text-smoke-white uppercase mb-2 text-center">{m.name}</h3>
-      <p className="text-mafia-gold font-mono text-[9px] tracking-widest uppercase mb-6 text-center">{role}</p>
-      <div className="flex flex-col items-center w-full gap-4">
+    <div key={m.name} className="group bg-mafia-black/80 border border-mafia-gold/20 p-3 md:p-8 flex flex-col items-center justify-center backdrop-blur-xl hover:border-mafia-gold transition-all relative overflow-hidden">
+      <Image src={m.img} alt={m.name} width={100} height={100} className="w-12 h-12 md:w-24 md:h-24 object-contain mb-3 md:mb-6 grayscale group-hover:grayscale-0 transition-all" />
+      <h3 className="text-sm md:text-xl font-heading font-black text-smoke-white uppercase mb-1 md:mb-2 text-center leading-tight">{m.name}</h3>
+      <p className="text-mafia-gold font-mono text-[7px] md:text-[9px] tracking-widest uppercase mb-3 md:mb-6 text-center">{role}</p>
+      <div className="flex flex-col items-center w-full gap-2 md:gap-4">
         <button
           onClick={() => setShowContact(!showContact)}
-          className="px-10 py-3 border border-mafia-gold text-mafia-gold font-black text-[10px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-all"
+          className="px-6 py-2 md:px-10 md:py-3 border border-mafia-gold text-mafia-gold font-black text-[8px] md:text-[10px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-all"
         >
           {showContact ? (lang === 'cs' ? "ZAVŘÍT" : "CLOSE") : (lang === 'cs' ? "ZOBRAZIT" : "SHOW")}
         </button>
@@ -51,28 +55,28 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="w-full bg-mafia-gold/5 border-t border-mafia-gold/20 mt-4 pt-4 flex flex-col items-center gap-3 overflow-hidden"
+              className="w-full bg-mafia-gold/5 border-t border-mafia-gold/20 mt-2 md:mt-4 pt-2 md:pt-4 flex flex-col items-center gap-2 md:gap-3 overflow-hidden"
             >
               {/* Phone number if available */}
-              {(m.phone || m.link.startsWith('tel:')) && (
+              {(m.phone || isPhone) && (
                 <div className="flex flex-col items-center gap-1">
-                  <p className="text-mafia-gold font-heading text-lg font-black">{m.phone || m.link.replace('tel:', '')}</p>
-                  <a href={`tel:${m.phone || m.link.replace('tel:', '')}`} className="text-[9px] font-mono text-white/40 hover:text-white uppercase tracking-widest border-b border-white/10 pb-1">ZAVOLAT</a>
+                  <p className="text-mafia-gold font-heading text-base md:text-lg font-black">{m.phone || link.replace('tel:', '')}</p>
+                  <a href={`tel:${m.phone || link.replace('tel:', '')}`} className="text-[8px] md:text-[9px] font-mono text-white/40 hover:text-white uppercase tracking-widest border-b border-white/10 pb-1">ZAVOLAT</a>
                 </div>
               )}
 
               {/* Internal CV Link */}
-              {m.link.startsWith('/rodina/') && (
-                <Link href={m.link} className="text-[9px] font-mono text-mafia-gold hover:text-white uppercase tracking-[0.2em] border border-mafia-gold/30 px-6 py-2 bg-mafia-gold/10">
-                  {lang === 'cs' ? "ZOBRAZIT ŽIVOTOPIS" : "VIEW RESUME"}
+              {isInternal && (
+                <Link href={link} className="text-[8px] md:text-[9px] font-mono text-mafia-gold hover:text-white uppercase tracking-[0.2em] border border-mafia-gold/30 px-4 md:px-6 py-1 md:py-2 bg-mafia-gold/10">
+                  {lang === 'cs' ? "ŽIVOTOPIS" : "RESUME"}
                 </Link>
               )}
 
               {/* External Link */}
-              {!m.link.startsWith('tel:') && !m.link.startsWith('/rodina/') && (
+              {!isPhone && !isInternal && link && (
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-white/60 font-mono text-[10px] break-all px-4 text-center">{m.link}</p>
-                  <a href={m.link} target="_blank" rel="noreferrer" className="text-[9px] font-mono text-mafia-gold hover:text-white uppercase tracking-[0.2em] border border-mafia-gold/30 px-4 py-2">NAVŠTÍVIT WEB</a>
+                  <p className="text-white/60 font-mono text-[8px] md:text-[10px] break-all px-2 md:px-4 text-center">{link}</p>
+                  <a href={link} target="_blank" rel="noreferrer" className="text-[8px] md:text-[9px] font-mono text-mafia-gold hover:text-white uppercase tracking-[0.2em] border border-mafia-gold/30 px-3 md:px-4 py-1 md:py-2">WEB</a>
                 </div>
               )}
             </motion.div>
@@ -199,14 +203,6 @@ const members = [
     name: "Tomáš Mička",
     div: "team",
     role: "Web designer | Grafik", roleEn: "Web Designer | Graphic Designer",
-    img: "/logo.png",
-    link: "tel:+420577544073",
-    year: 2025
-  },
-  {
-    name: "Matěj Prášil",
-    div: "team",
-    role: "C# developer", roleEn: "C# Developer",
     img: "/logo.png",
     link: "tel:+420577544073",
     year: 2025
@@ -371,12 +367,10 @@ export default function FamilyPage() {
                               initial={{ height: 0, opacity: 0 }} 
                               animate={{ height: "auto", opacity: 1 }} 
                               exit={{ height: 0, opacity: 0 }}
-                              className="lg:hidden mt-4 flex flex-row gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide"
+                              className="lg:hidden mt-6 grid grid-cols-2 gap-3 pb-6"
                             >
                               {members.filter(m => (div.id === 'all' || m.div === div.id)).map(m => (
-                                <div key={m.name} className="min-w-[280px] snap-center">
-                                  <MemberCard m={m} lang={lang} />
-                                </div>
+                                <MemberCard key={m.name} m={m} lang={lang} />
                               ))}
                             </motion.div>
                           )}
@@ -460,12 +454,12 @@ export default function FamilyPage() {
                         const currentMonthIdx = new Date().getMonth();
                         const isReleased = idx <= currentMonthIdx;
                         return (
-                          <motion.div
+                          <motion.div 
                             key={idx}
                             className={`p-4 border transition-all duration-500 ${isReleased ? 'border-mafia-gold/30 bg-white/[0.01] hover:bg-mafia-gold/5' : 'border-white/5 opacity-10'}`}
                           >
                             <div className="flex justify-between items-center mb-3">
-                              <span className="text-[9px] font-black tracking-widest text-mafia-gold/40 uppercase">{month}</span>
+                              <span className="text-mafia-gold/40 uppercase text-[9px] font-black tracking-widest">{month}</span>
                               {isReleased && <Star size={8} className="fill-mafia-gold text-mafia-gold" />}
                             </div>
                             <div className="flex flex-col items-center">
@@ -561,145 +555,142 @@ export default function FamilyPage() {
 
                 {/* SVG Connections (Strings) */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                    {members.filter(m => m.div !== 'team').map((member, i, arr) => {
+                      const angle = (i / arr.length) * 2 * Math.PI;
+                      const distance = 450 + (Math.sin(i * 13) * 150) + (i * 15);
+                      const x = 50 + (Math.cos(angle) * distance / 35);
+                      const y = 50 + (Math.sin(angle) * distance / 25);
+                      const isHovered = hoveredNode === member.name;
+
+                      return (
+                        <motion.line
+                          key={`string-${member.name}`}
+                          initial={{ pathLength: 0, opacity: 0 }}
+                          animate={{
+                            pathLength: 1,
+                            opacity: isHovered ? 0.9 : 0.25,
+                            strokeWidth: isHovered ? 2 : 1
+                          }}
+                          style={{ strokeWidth: isHovered ? 2 : 1 }}
+                          transition={{ duration: 0.4 }}
+                          x1="50%"
+                          y1="50%"
+                          x2={`${x}%`}
+                          y2={`${y}%`}
+                          stroke={isHovered ? "#c5a059" : "#c5a059"}
+                          strokeDasharray={isHovered ? "0" : "6,6"}
+                        />
+                      );
+                    })}
+                  </svg>
+
+                  {/* Center Node (MMBarber) - Perfectly Central */}
+                  <div className="absolute z-30 w-64 h-64 flex items-center justify-center pointer-events-auto -translate-x-1/2 -translate-y-1/2" style={{ left: '50%', top: '50%' }}>
+                    <motion.div
+                      animate={{
+                        scale: hoveredNode ? 1.2 : 1,
+                        opacity: hoveredNode ? 0.4 : 0.15
+                      }}
+                      className="absolute inset-0 bg-mafia-gold rounded-full blur-3xl animate-pulse"
+                    />
+                    <motion.div
+                      animate={{
+                        borderColor: hoveredNode ? "rgba(197, 160, 89, 0.8)" : "rgba(197, 160, 89, 0.4)",
+                        boxShadow: hoveredNode ? "0 0 60px rgba(197, 160, 89, 0.6)" : "0 0 100px rgba(197, 160, 89, 0.2)"
+                      }}
+                      className="relative w-full h-full bg-mafia-black border-2 rounded-full flex items-center justify-center p-10 transition-all duration-500"
+                    >
+                      <Image src="/logo.png" alt="MMBarber" width={160} height={160} className="w-48 h-48 object-contain drop-shadow-[0_0:30px_rgba(197,160,89,0.6)]" priority />
+                    </motion.div>
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-mafia-gold text-mafia-black px-8 py-1 font-heading font-black text-[10px] uppercase tracking-[0.5em] shadow-xl">
+                      {t.rodina.headquarters}
+                    </div>
+                  </div>
+
+                  {/* Partner Nodes (Spread out to avoid Centrála overlap) */}
                   {members.filter(m => m.div !== 'team').map((member, i, arr) => {
                     const angle = (i / arr.length) * 2 * Math.PI;
                     const distance = 450 + (Math.sin(i * 13) * 150) + (i * 15);
                     const x = 50 + (Math.cos(angle) * distance / 35);
                     const y = 50 + (Math.sin(angle) * distance / 25);
-                    const isHovered = hoveredNode === member.name;
 
                     return (
-                      <motion.line
-                        key={`string-${member.name}`}
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{
-                          pathLength: 1,
-                          opacity: isHovered ? 0.9 : 0.25,
-                          strokeWidth: isHovered ? 2 : 1
+                      <motion.div
+                        key={`node-${member.name}`}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.03 }}
+                        onMouseEnter={() => setHoveredNode(member.name)}
+                        onMouseLeave={() => setHoveredNode(null)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (member.link.startsWith('tel:')) {
+                            setContactModal({ name: member.name, phone: member.link.replace('tel:', '') });
+                          } else {
+                            window.open(member.link, "_blank", "noopener,noreferrer");
+                          }
                         }}
-                        style={{ strokeWidth: isHovered ? 2 : 1 }}
-                        transition={{ duration: 0.4 }}
-                        x1="50%"
-                        y1="50%"
-                        x2={`${x}%`}
-                        y2={`${y}%`}
-                        stroke={isHovered ? "#c5a059" : "#c5a059"}
-                        strokeDasharray={isHovered ? "0" : "6,6"}
-                      />
+                        className="absolute z-20 w-56 h-56 flex flex-col items-center justify-center group pointer-events-auto -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                        style={{ left: `${x}%`, top: `${y}%` }}
+                      >
+                        <div className="relative w-40 h-40 mb-2 group-hover:scale-125 transition-transform duration-700 ease-out">
+                          <div className="absolute inset-0 bg-white/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          <Image
+                            src={member.img}
+                            alt={member.name}
+                            width={200}
+                            height={200}
+                            className="w-full h-full object-contain grayscale opacity-50 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000"
+                          />
+                        </div>
+
+                        <div className="text-center opacity-30 group-hover:opacity-100 group-hover:translate-y-2 transition-all duration-500">
+                          <p className="text-[12px] font-mono font-black text-smoke-white uppercase tracking-[0.2em] leading-none mb-1 drop-shadow-lg">{member.name}</p>
+                          <p className="text-[8px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] italic mb-1">{lang === 'cs' ? member.role : member.roleEn}</p>
+
+                          {/* Joining Year with Sand/Wind Effect */}
+                          <AnimatePresence mode="wait">
+                            {hoveredNode === member.name && (
+                              <motion.div
+                                initial="initial"
+                                animate="animate"
+                                exit="exit"
+                                className="flex justify-center"
+                              >
+                                <div className="relative">
+                                  <span className="text-[14px] font-heading font-black text-mafia-gold tracking-[0.2em]">
+                                    {member.year}
+                                  </span>
+                                  {/* Sand Particle Effects */}
+                                  {[...Array(6)].map((_, pi) => (
+                                    <motion.div
+                                      key={pi}
+                                      variants={{
+                                        initial: { opacity: 0, x: 0, y: 0 },
+                                        animate: {
+                                          opacity: [0, 1, 0],
+                                          x: (Math.random() - 0.5) * 40,
+                                          y: (Math.random() - 0.5) * 40,
+                                          scale: [0, 1, 0]
+                                        }
+                                      }}
+                                      transition={{ duration: 1.5, repeat: Infinity, delay: pi * 0.2 }}
+                                      className="absolute top-1/2 left-1/2 w-1 h-1 bg-mafia-gold/60 rounded-full blur-[1px]"
+                                    />
+                                  ))}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </motion.div>
                     );
                   })}
-                </svg>
-
-                {/* Center Node (MMBarber) - Perfectly Central */}
-                <div className="absolute z-30 w-64 h-64 flex items-center justify-center pointer-events-auto -translate-x-1/2 -translate-y-1/2" style={{ left: '50%', top: '50%' }}>
-                  <motion.div
-                    animate={{
-                      scale: hoveredNode ? 1.2 : 1,
-                      opacity: hoveredNode ? 0.4 : 0.15
-                    }}
-                    className="absolute inset-0 bg-mafia-gold rounded-full blur-3xl animate-pulse"
-                  />
-                  <motion.div
-                    animate={{
-                      borderColor: hoveredNode ? "rgba(197, 160, 89, 0.8)" : "rgba(197, 160, 89, 0.4)",
-                      boxShadow: hoveredNode ? "0 0 60px rgba(197, 160, 89, 0.6)" : "0 0 100px rgba(197, 160, 89, 0.2)"
-                    }}
-                    className="relative w-full h-full bg-mafia-black border-2 rounded-full flex items-center justify-center p-10 transition-all duration-500"
-                  >
-                    <Image src="/logo.png" alt="MMBarber" width={160} height={160} className="w-48 h-48 object-contain drop-shadow-[0_0:30px_rgba(197,160,89,0.6)]" priority />
-                  </motion.div>
-                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-mafia-gold text-mafia-black px-8 py-1 font-heading font-black text-[10px] uppercase tracking-[0.5em] shadow-xl">
-                    {t.rodina.headquarters}
-                  </div>
-                </div>
-
-                {/* Partner Nodes (Spread out to avoid Centrála overlap) */}
-                {members.filter(m => m.div !== 'team').map((member, i, arr) => {
-                  const angle = (i / arr.length) * 2 * Math.PI;
-                  const distance = 450 + (Math.sin(i * 13) * 150) + (i * 15);
-                  const x = 50 + (Math.cos(angle) * distance / 35);
-                  const y = 50 + (Math.sin(angle) * distance / 25);
-
-                  return (
-                    <motion.div
-                      key={`node-${member.name}`}
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.03 }}
-                      onMouseEnter={() => setHoveredNode(member.name)}
-                      onMouseLeave={() => setHoveredNode(null)}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (member.link.startsWith('tel:')) {
-                          setContactModal({ name: member.name, phone: member.link.replace('tel:', '') });
-                        } else {
-                          window.open(member.link, "_blank", "noopener,noreferrer");
-                        }
-                      }}
-                      className="absolute z-20 w-56 h-56 flex flex-col items-center justify-center group pointer-events-auto -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                      style={{ left: `${x}%`, top: `${y}%` }}
-                    >
-                      <div className="relative w-40 h-40 mb-2 group-hover:scale-125 transition-transform duration-700 ease-out">
-                        <div className="absolute inset-0 bg-white/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <Image
-                          src={member.img}
-                          alt={member.name}
-                          width={200}
-                          height={200}
-                          className="w-full h-full object-contain grayscale opacity-50 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000"
-                        />
-                      </div>
-
-                      <div className="text-center opacity-30 group-hover:opacity-100 group-hover:translate-y-2 transition-all duration-500">
-                        <p className="text-[12px] font-mono font-black text-smoke-white uppercase tracking-[0.2em] leading-none mb-1 drop-shadow-lg">{member.name}</p>
-                        <p className="text-[8px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] italic mb-1">{lang === 'cs' ? member.role : member.roleEn}</p>
-
-                        {/* Joining Year with Sand/Wind Effect */}
-                        <AnimatePresence mode="wait">
-                          {hoveredNode === member.name && (
-                            <motion.div
-                              initial="initial"
-                              animate="animate"
-                              exit="exit"
-                              className="flex justify-center"
-                            >
-                              <div className="relative">
-                                <span className="text-[14px] font-heading font-black text-mafia-gold tracking-[0.2em]">
-                                  {member.year}
-                                </span>
-                                {/* Sand Particle Effects */}
-                                {[...Array(6)].map((_, pi) => (
-                                  <motion.div
-                                    key={pi}
-                                    variants={{
-                                      initial: { opacity: 0, x: 0, y: 0 },
-                                      animate: {
-                                        opacity: [0, 1, 0],
-                                        x: (Math.random() - 0.5) * 40,
-                                        y: (Math.random() - 0.5) * 40,
-                                        scale: [0, 1, 0]
-                                      }
-                                    }}
-                                    transition={{ duration: 1.5, repeat: Infinity, delay: pi * 0.2 }}
-                                    className="absolute top-1/2 left-1/2 w-1 h-1 bg-mafia-gold/60 rounded-full blur-[1px]"
-                                  />
-                                ))}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-
               </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-
 
       {/* Modals */}
       <AnimatePresence>

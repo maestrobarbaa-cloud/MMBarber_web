@@ -84,7 +84,7 @@ export function Header() {
       document.documentElement.style.overflow = '';
     };
   }, []);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 1280 : false);
   const [isVisible, setIsVisible] = useState(true);
   const [isIntroActive, setIsIntroActive] = useState(false);
   
@@ -287,7 +287,7 @@ export function Header() {
   }, []);
 
   const searchIndex = [
-    { keywords: ["barber", "tomáš", "tomas", "nella", "specialista", "specialist", "rezerv", "book", "kadeřník", "holič"], id: "operativi" },
+    { keywords: ["barber", "tomáš", "tomas", "nella", "specialista", "specialist", "rezerv", "book", "kadeřník", "holič", "operativci"], id: "operativi" },
     { keywords: ["informace", "info", "pravidla", "platba", "cash", "parkování", "parking", "vlasy", "hair", "gel", "umyt", "wash", "svátky", "holiday", "calend", "kalendář"], id: "holidays" },
     { keywords: ["kontakt", "contact", "adresa", "address", "telefon", "phone", "mapa", "map", "najít", "find"], id: "kontakt" },
     { keywords: ["ceník", "cena", "price", "services", "služby", "střih", "cut", "vous", "beard", "kombo", "combo", "exclusive", "premium", "fade", "basic"], id: "services" },
@@ -673,7 +673,10 @@ export function Header() {
     <>
       <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-20 md:h-24 block'}`} aria-hidden="true" />
       <header
-        className={`w-full left-0 z-[30000] bg-gradient-to-b from-mafia-black/95 via-mafia-black/70 to-transparent py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : (isMobile ? 'fixed top-0 bg-mafia-black/90 backdrop-blur-xl h-24' : 'absolute top-0')} ${(isIntroActive && !isMobile) ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'} ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
+        className={`w-full left-0 z-[30000] py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate 
+          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : 'fixed xl:absolute top-0 bg-mafia-black/90 xl:bg-transparent backdrop-blur-xl xl:backdrop-blur-none h-24 xl:h-auto'} 
+          ${(isIntroActive) ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none' : 'opacity-100 translate-y-0'} 
+          ${(!isVisible && !isMenuOpen) ? 'max-xl:translate-y-0 -translate-y-full shadow-none' : 'translate-y-0'}`}
       >
         <div className="flex items-center gap-8">
           <button
@@ -706,39 +709,36 @@ export function Header() {
         </div>
         
         {/* Mobile Actions (Top Right) */}
-        {isMobile && (
-          <div className="flex items-center gap-2 relative z-[30001]">
-            {/* Compass integrated into the bar */}
-            {!isCompassActive && !isMenuOpen && (
-              <button 
-                onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
-                className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)]"
-              >
-                <Compass size={24} className="text-mafia-gold animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] font-heading font-black text-mafia-gold tracking-[0.1em] uppercase whitespace-nowrap hidden min-[380px]:inline">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
-              </button>
-            )}
-
-            <button
-              onClick={toggleMenu}
-              className={`flex items-center gap-2 px-4 py-2.5 shadow-[0_0_20px_rgba(197,160,89,0.3)] border-2 transition-all duration-500 ${isMenuOpen ? 'bg-mafia-gold border-white' : 'bg-mafia-black border-mafia-gold group hover:bg-mafia-gold/20'}`}
-              aria-label="Open Hamburger Menu"
+        <div className="xl:hidden flex items-center gap-2 relative z-[30001]">
+          {/* Compass integrated into the bar */}
+          {!isCompassActive && !isMenuOpen && (
+            <button 
+              onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
+              className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)]"
             >
-              <div className="flex flex-col items-end">
-                <span className={`text-[10px] font-black tracking-[0.2em] uppercase leading-none ${isMenuOpen ? 'text-mafia-black' : 'text-mafia-gold'}`}>{isMenuOpen ? (lang === 'cs' ? 'ZAVŘÍT' : '') : 'MENU'}</span>
-              </div>
-              {!isMenuOpen ? (
-                <Menu size={24} className="text-mafia-gold transition-all duration-700 group-hover:scale-110" />
-              ) : (
-                <X size={24} className="text-mafia-black transition-all duration-700 group-hover:scale-110" />
-              )}
+              <Compass size={24} className="text-mafia-gold animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-heading font-black text-mafia-gold tracking-[0.1em] uppercase whitespace-nowrap hidden min-[380px]:inline">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
             </button>
-          </div>
-        )}
+          )}
+
+          <button
+            onClick={toggleMenu}
+            className={`flex items-center gap-2 px-4 py-2.5 shadow-[0_0_20px_rgba(197,160,89,0.3)] border-2 transition-all duration-500 ${isMenuOpen ? 'bg-mafia-gold border-white' : 'bg-mafia-black border-mafia-gold group hover:bg-mafia-gold/20'}`}
+            aria-label="Open Hamburger Menu"
+          >
+            <div className="flex flex-col items-end">
+              <span className={`text-[10px] font-black tracking-[0.2em] uppercase leading-none ${isMenuOpen ? 'text-mafia-black' : 'text-mafia-gold'}`}>{isMenuOpen ? (lang === 'cs' ? 'ZAVŘÍT' : '') : 'MENU'}</span>
+            </div>
+            {!isMenuOpen ? (
+              <Menu size={24} className="text-mafia-gold transition-all duration-700 group-hover:scale-110" />
+            ) : (
+              <X size={24} className="text-mafia-black transition-all duration-700 group-hover:scale-110" />
+            )}
+          </button>
+        </div>
 
         {/* Desktop Navigation */}
-        {!isMobile && (
-          <nav className="flex items-center gap-8 font-sans text-sm tracking-widest uppercase text-smoke-white/70">
+        <nav className="hidden xl:flex items-center gap-8 font-sans text-sm tracking-widest uppercase text-smoke-white/70">
             {/* Weapon Selector - Only when sound is on */}
             <AnimatePresence>
               {isSoundEnabled && (
@@ -1042,7 +1042,6 @@ export function Header() {
             </span>
           </button>
         </nav>
-        )}
       </header>
 
       {/* Mobile Navigation Overlay - Windows Mobile inspired tile menu */}
@@ -1053,7 +1052,7 @@ export function Header() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 h-[100dvh] bg-mafia-black z-[20000] overflow-y-auto touch-pan-y px-4 py-6 pb-24 overscroll-contain"
+            className="fixed inset-0 h-[100dvh] bg-mafia-black z-[20000] overflow-y-auto touch-pan-y px-4 py-4 pb-24 overscroll-contain"
           >
             <div className="flex items-center justify-between mb-8 overflow-hidden shrink-0">
                <div className="flex items-center">

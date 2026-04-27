@@ -213,8 +213,8 @@ function BarberCard({
   return (
     <>
       {/* MOBILE VERSION: Simple, Static, No effects */}
-      <div className="xl:hidden w-full max-w-[340px] h-auto min-h-[500px] bg-[#0c0c0c] border-2 border-mafia-gold/20 p-6 rounded-2xl flex flex-col items-center gap-6 shadow-2xl overflow-hidden relative">
-        <div className="w-48 h-48 border-2 border-mafia-gold/20 overflow-hidden bg-black/40 flex-shrink-0 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
+      <div className="xl:hidden w-full max-w-[340px] h-auto min-h-[420px] bg-[#0c0c0c] border-2 border-mafia-gold/20 p-5 rounded-2xl flex flex-col items-center gap-4 shadow-2xl overflow-hidden relative">
+        <div className="w-36 h-36 border-2 border-mafia-gold/20 overflow-hidden bg-black/40 flex-shrink-0 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
           {barber.image === "question-mark" ? (
             <div className="text-mafia-gold/30 font-heading text-9xl animate-pulse italic drop-shadow-[0_0_15px_rgba(197,160,89,0.2)]">?</div>
           ) : (
@@ -841,7 +841,18 @@ export function Profiles() {
                     </div>
                 </div>
                 <div className="flex flex-wrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full max-w-[1400px] mx-auto py-4 xl:py-8">
-                    <ChairWithCard barber={translatedBarbers[0]} activeSpeaker={activeSpeaker === 'tomas'} dialogueIndex={dialogueIndex} lang={lang} t={t} playCardSound={playCardSound} side="left" />
+                    {translatedBarbers.map((barber, index) => (
+                      <ChairWithCard 
+                        key={barber.name}
+                        barber={barber} 
+                        activeSpeaker={activeSpeaker === (barber.name === 'Tomáš' ? 'tomas' : 'nella')} 
+                        dialogueIndex={dialogueIndex} 
+                        lang={lang} 
+                        t={t} 
+                        playCardSound={playCardSound} 
+                        side={index % 2 === 0 ? "left" : "right"} 
+                      />
+                    ))}
                 </div>
             </div>
         </div>
