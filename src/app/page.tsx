@@ -118,7 +118,7 @@ export default function Home() {
             initial={isMobile ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 100, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ 
-              duration: isMobile ? 0 : 1.2, 
+              duration: isMobile ? 0.01 : 1.2, 
               ease: [0.16, 1, 0.3, 1], 
             }}
             className="flex flex-col w-full"

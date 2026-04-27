@@ -9,6 +9,10 @@ import { Copy, MapPin } from "lucide-react";
 
 export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
   const { t, lang } = useTranslation();
+  
+  // Mobile check for early return
+  const [isActuallyMobile, setIsActuallyMobile] = useState(false);
+
   const [showIntro, setShowIntro] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -19,6 +23,14 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
   const flickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Check if on mobile (intros are for desktop immersion)
+    if (window.innerWidth < 1280) {
+      setIsActuallyMobile(true);
+      localStorage.setItem("mmbarber_visited", "true");
+      onDismiss?.();
+      return;
+    }
+
     // Check for low graphics tier
     const tier = document.documentElement.getAttribute('data-graphics-tier');
     if (tier === 'low') {
@@ -27,13 +39,6 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
         return;
     }
     
-    // Check if on mobile (intros are for desktop immersion)
-    if (window.innerWidth < 1280) {
-      localStorage.setItem("mmbarber_visited", "true");
-      onDismiss();
-      return;
-    }
-
     // Check if visited before
     const hasVisited = localStorage.getItem("mmbarber_visited") === "true";
     if (!hasVisited) {
@@ -42,7 +47,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
     
     return () => {
     };
-  }, []);
+  }, [onDismiss]);
 
   useEffect(() => {
       if (!showIntro || isDismissed) return;
@@ -81,7 +86,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
   }, [showIntro, isDismissed]);
 
   // If already dismissed, don't render anything to avoid pushing content
-  if (!showIntro || isDismissed || isLowTier) return null;
+  if (!showIntro || isDismissed || isLowTier || isActuallyMobile) return null;
 
   return (
     <>

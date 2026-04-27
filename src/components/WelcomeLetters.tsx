@@ -57,7 +57,8 @@ export function WelcomeLetters() {
     setIsMounted(true);
     
     // Skip for mobile immediately
-    if (window.innerWidth < 1280) {
+    if (typeof window !== 'undefined' && window.innerWidth < 1280) {
+      setIsVisible(false);
       localStorage.setItem("mmbarber_welcome_letters_seen_v13", "true");
       return;
     }

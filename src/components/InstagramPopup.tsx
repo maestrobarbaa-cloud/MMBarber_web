@@ -13,6 +13,12 @@ export function InstagramPopup() {
   const INACTIVITY_LIMIT = 30000; // 30 seconds
 
   useEffect(() => {
+    // Check if on mobile - DISABLE popups for mobile per user request
+    if (window.innerWidth < 1280) {
+      setHasBeenShown(true);
+      return;
+    }
+
     // Check if user has already seen the popup in previous sessions
     const previouslyShown = localStorage.getItem('mmbarber_instagram_shown') === 'true';
     if (previouslyShown) {
