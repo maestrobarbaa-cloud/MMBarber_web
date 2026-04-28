@@ -78,6 +78,7 @@ export const translations = {
       revolutNotice: "",
       currencyLabel: "Měna",
       mainTitle: "Časový tarif",
+      timeTariffNote: "Dívej se na čas, za jak dlouho tě zvládnu ostříhat. Ceny nastavuju férově podle toho, co skutečně potřebuješ.",
       addonsTitle: "Doplňkové služby",
       independentTitle: "Nezávislé služby",
       specialTitle: "Noční mise",
@@ -98,16 +99,25 @@ export const translations = {
       surchargeChristmas: "Vánoční ráno (+50%)",
       bookingNote: "Pracujeme dle rezervačního systému. Vidíš volno? Místo si můžeš zarezervovat.",
       switchDate: "Simulovat datum",
+      pricingModes: {
+        workday: "Pracovní den",
+        saturday: "Sobota",
+        sunday: "Neděle",
+        holiday: "Svátek",
+        night: "Mimo prov. dobu"
+      },
       items: [
-        { time: "15 m", name: "RYCHLÝ FADE", desc: "Strojkem, jednoduché střihy, do ztracena + návaznost, opalování, obočí, úprava (bez mytí).", price: "280 Kč", priceValue: 280 },
+        { time: "5 m", name: "RYCHLÁ OPERACE", desc: "Rychlý výtrat kontur nebo detailů. Stačí jen skočit na židli.", price: "100 Kč", priceValue: 100 },
+        { time: "10 m", name: "EXPRES SERVIS", desc: "Bez shaveru, náročnější výtraty, navázání nebo úprava, co nepočká.", price: "180 Kč", priceValue: 180 },
+        { time: "15 m", name: "QUICK FADE", desc: "Buzzcut, střih strojkem, jednoduché úpravy, fade + prostříhání.", price: "280 Kč", priceValue: 280 },
         { time: "20 m", name: "BASIC STŘIH", desc: "Pokročilé dětské střihy nebo jednodušší střihy pro dospělé, opalování, kolínská, úprava (bez mytí).", price: "320 Kč", priceValue: 320 },
-        { time: "30 m", name: "KLASIK STŘIH", desc: "Precizní střih bez mytí, opalování, kolínská, úprava.", price: "450 Kč", priceValue: 450 },
-        { time: "45 m", name: "NEVÍŠ? DOPORUČUJI...", desc: "Vlasy s mytím, káva + plná péče a osobní konzultace.", price: "650 Kč", priceValue: 650 },
+        { time: "30 m", name: "KLASIK STŘIH", desc: "Precizní střih bez mytí. Někdy stihnu i vlasy + vousy – záleží na tobě.", price: "450 Kč", priceValue: 450 },
+        { time: "45 m", name: "NEVÍŠ? ZASTAV SE...", desc: "Kompletní péče s mytím a zaholováním. Nevíš? Zastav se, vyřešíme to.", price: "650 Kč", priceValue: 650 },
         { time: "1 h", name: "PREMIUM KOMBO", desc: "Hladký expres: Vlasy, vousy a odpočinek.", price: "1 000 Kč", priceValue: 1000 }
       ],
       addons: [
-        { id: "add1", name: "Depilace nosu", priceValue: 40, desc: "Rychlá vosková epilace" },
-        { id: "add2", name: "Epilace uší", priceValue: 40, desc: "Rychlá vosková epilace" },
+        { id: "add1", name: "Depilace nosu", priceValue: 30, desc: "Rychlá vosková epilace" },
+        { id: "add2", name: "Epilace uší", priceValue: 30, desc: "Rychlá vosková epilace" },
         { id: "add3", name: "Metoda horký ručník", priceValue: 100, desc: "Tradiční napaření a ošetření" },
         { id: "add6", name: "Mytí vlasů", priceValue: 100, desc: "Profesionální mytí a masáž hlavy" },
         { id: "add4", name: "Napařování vousů", priceValue: 70, desc: "Příprava vousů a pokožky" },
@@ -118,9 +128,10 @@ export const translations = {
         { id: "ind2", name: "30 min relaxační křeslo", priceValue: 180, time: 30, desc: "Klidně si dojdi jen odpočinout" }
       ],
       special: [
-        { id: "sp2", name: "Celkový servis", priceValue: 3000, time: "1 h", desc: "Kompletní péče a relaxace v nočních hodinách. Dle domluvy." },
-        { id: "sp1", name: "Noční střih", priceValue: 1500, time: "dle domluvy", desc: "Exkluzivní služba mimo běžnou pracovní dobu." },
-        { id: "sp3", name: "Večerní / Noční střih při svíčkách", priceValue: 1600, time: "30 min", desc: "Jedinečná atmosféra a klid při světle svíček. Dle domluvy." }
+        { id: "sp2", name: "Celkový servis", priceValue: 2500, time: "1 h", desc: "Kompletní péče a relaxace v nočních hodinách. Dle domluvy." },
+        { id: "sp1", name: "Noční střih (45 min)", priceValue: 1300, time: "45 min", desc: "Exkluzivní služba mimo běžnou pracovní dobu. Dle domluvy." },
+        { id: "sp4", name: "Noční střih (30 min)", priceValue: 900, time: "30 min", desc: "Rychlý noční servis pro ty, co spěchají. Dle domluvy." },
+        { id: "sp3", name: "Večerní / Noční střih při svíčkách", priceValue: 1800, time: "30 min", desc: "Jedinečná atmosféra a klid při světle svíček. Dle domluvy." }
       ]
     },
     operatives: {
@@ -136,17 +147,7 @@ export const translations = {
           story: "Zakladatel, stratég a člověk, který ví, že detaily dělají celek. Nehledá zkratky, ale poctivou cestu.",
           schedule: "Út-Pá 9:00 - 18:00 | So-Ne 9:00 - 12:00",
           englishSpeaking: "Anglicky mluvící",
-          specializations: ["Přísně tajné", "Barber není všechno"]
-        },
-        nella: {
-          name: "Nella",
-          role: "Mladé ucho",
-          motto: "Ochoč si svoji barberku",
-          desc: "Každý střih je chirurgický zákrok. Břitva v jejích rukou nezná slitování.",
-          favorites: "",
-          schedule: "Individuální režim práce.",
-          englishSpeaking: "Anglicky mluvící",
-          specializations: ["Barvení", "Trvalá ondulace", "Stříhání pánské", "Stříhání dámské", "Děti"]
+          specializations: ["Primárně pánské", "ale zvládnu i dámy"]
         }
       }
     },
@@ -225,6 +226,7 @@ export const translations = {
       cheatHint: "Hledej v inteligentním vyhledávači...",
       close: "ZAVŘÍT",
       vipClub: "V.I.P. KLUB",
+      partnerships: "Partnerství & Platba",
       followUs: "Sledujte nás"
     },
     rodina: {
@@ -293,7 +295,7 @@ export const translations = {
         {
           year: "2024",
           title: "Nová éra",
-          desc: "Mladé ucho Nella doplňuje rodinu. Tradice se potkává s dravou modernou.",
+          desc: "Centrála MMBarber se rozrůstá o nové služby a technologie.",
           side: "right"
         }
       ]
@@ -358,7 +360,7 @@ export const translations = {
       closeImage: "ZAVŘÍT SNÍMEK"
     },
     seznamka: {
-      description: "Vstupte do světa, kde výběr barbera není jen o střihu, ale o charakteru.",
+      description: "Seznamka z reálného světa.\nNe každej má čas nebo chuť být online.\nTohle je jiný. Přijdeš. Sedneš si… a věci se dějí.",
       protocolTitle: "PROTOKOL SEZNAMENÍ",
       acknowledge: "ROZUMÍM",
       successTitle: "MISE KOMPLETNÍ",
@@ -766,6 +768,7 @@ export const translations = {
       bookBtn: "Book Now",
       detailsBtn: "Details",
       mainTitle: "Time Tariff",
+      timeTariffNote: "Look at the time it takes me to cut your hair. I set prices fairly based on what you actually need.",
       addonsTitle: "Additional Services",
       independentTitle: "Independent Services",
       specialTitle: "Night Missions",
@@ -786,29 +789,39 @@ export const translations = {
       surchargeChristmas: "Christmas Morning (+50%)",
       bookingNote: "We work according to the booking system. See a free slot? You can book your spot.",
       switchDate: "Simulate Date",
+      pricingModes: {
+        workday: "Workday",
+        saturday: "Saturday",
+        sunday: "Sunday",
+        holiday: "Holiday",
+        night: "After Hours"
+      },
       items: [
+        { time: "5 m", name: "FLASH OPERATION", desc: "Quick trim of contours or details. Just hop on the chair.", price: "100 CZK", priceValue: 100 },
+        { time: "10 m", name: "EXPRESS SERVICE", desc: "No shaver, advanced fades, blending or an adjustment that won't wait.", price: "180 CZK", priceValue: 180 },
         { time: "15 m", name: "QUICK FADE", desc: "Buzzcut, simple cuts, fade + blending.", price: "280 CZK", priceValue: 280 },
         { time: "20 m", name: "BASIC CUT", desc: "Advanced kids cuts or simpler adult cuts.", price: "320 CZK", priceValue: 320 },
-        { time: "30 m", name: "CLASSIC CUT", desc: "Precision cut without wash.", price: "450 CZK", priceValue: 450 },
-        { time: "45 m", name: "NOT SURE? I RECOMMEND...", desc: "Hair with wash, coffee + full service.", price: "650 CZK", priceValue: 650 },
+        { time: "30 m", name: "CLASSIC CUT", desc: "Precision cut without wash. Sometimes covers hair + beard – depends on you.", price: "450 CZK", priceValue: 450 },
+        { time: "45 m", name: "NOT SURE? STOP BY...", desc: "Full care with wash and wet shave. Not sure? Stop by, we'll solve it.", price: "650 CZK", priceValue: 650 },
         { time: "1 h", name: "PREMIUM KOMBO", desc: "Smooth Express: Hair, beard, and relax.", price: "1 000 CZK", priceValue: 1000 }
       ],
       addons: [
-        { id: "add4", name: "Beard steaming", priceValue: 70, desc: "Beard and skin preparation" },
-        { id: "add2", name: "Ear epilation", priceValue: 40, desc: "Quick hot wax hair removal" },
-        { id: "add5", name: "Ear singeing", priceValue: 20, desc: "Feel free to come just to get your ears singed" },
-        { id: "add6", name: "Hair wash", priceValue: 100, desc: "Professional wash and head massage" },
+        { id: "add1", name: "Nose depilation", priceValue: 30, desc: "Quick hot wax hair removal" },
+        { id: "add2", name: "Ear epilation", priceValue: 30, desc: "Quick hot wax hair removal" },
         { id: "add3", name: "Hot towel method", priceValue: 100, desc: "Traditional steam and treatment" },
-        { id: "add1", name: "Nose depilation", priceValue: 40, desc: "Quick hot wax hair removal" }
+        { id: "add6", name: "Hair wash", priceValue: 100, desc: "Professional wash and head massage" },
+        { id: "add4", name: "Beard steaming", priceValue: 70, desc: "Beard and skin preparation" },
+        { id: "add5", name: "Ear singeing", priceValue: 20, desc: "Feel free to come just to get your ears singed" }
       ],
       independent: [
         { id: "ind1", name: "15 min massage chair", priceValue: 100, time: 15, desc: "Feel free to come just to relax" },
         { id: "ind2", name: "30 min relax chair", priceValue: 180, time: 30, desc: "Feel free to come just to relax" }
       ],
       special: [
-        { id: "sp3", name: "Evening / Night cut by candlelight", priceValue: 1600, time: "30 min", desc: "Unique atmosphere and peace by candlelight. By agreement." },
-        { id: "sp2", name: "Full service", priceValue: 3000, time: "1 h", desc: "Complete care and relaxation during night hours. By agreement." },
-        { id: "sp1", name: "Night cut", priceValue: 1500, time: "by agreement", desc: "Exclusive service outside regular hours." }
+        { id: "sp3", name: "Evening / Night cut by candlelight", priceValue: 1800, time: "30 min", desc: "Unique atmosphere and peace by candlelight. By agreement." },
+        { id: "sp2", name: "Full service", priceValue: 2500, time: "1 h", desc: "Complete care and relaxation during night hours. By agreement." },
+        { id: "sp1", name: "Night cut (45 min)", priceValue: 1300, time: "45 min", desc: "Exclusive service outside regular hours. By agreement." },
+        { id: "sp4", name: "Night cut (30 min)", priceValue: 900, time: "30 min", desc: "Quick night service for those in a hurry. By agreement." }
       ]
     },
     operatives: {
@@ -823,17 +836,7 @@ export const translations = {
           motto: "",
           schedule: "Tue-Fri 9:00 - 18:00 | Sat-Sun 9:00 - 12:00",
           englishSpeaking: "English Speaking",
-          specializations: ["TOP SECRET", "CONFIDENTIAL"]
-        },
-        nella: {
-          name: "Nella",
-          role: "The Specialist",
-          motto: "Tame your barber",
-          desc: "Every cut is a surgical procedure. The razor in her hands knows no mercy.",
-          favorites: "",
-          schedule: "Individual working hours.",
-          englishSpeaking: "English Speaking",
-          specializations: ["Coloring", "Perm", "Men's Cut", "Women's Cut", "Kids"]
+          specializations: ["Primarily Men", "But I handle ladies too"]
         }
       }
     },
@@ -912,7 +915,8 @@ export const translations = {
       cheatHint: "Search for secrets...",
       close: "CLOSE",
       vipClub: "V.I.P. CLUB",
-      followUs: "Follow us"
+      partnerships: "Partnerships & Info",
+      followUs: "Follow Us"
     },
     rodina: {
       title: "MM BARBER FAMILY",
@@ -980,7 +984,7 @@ export const translations = {
         {
           year: "2024",
           title: "New Era",
-          desc: "Young gun Nella joins the family. Tradition meets aggressive modern style.",
+          desc: "MMBarber headquarters expands with new services and technologies.",
           side: "right"
         }
       ]
@@ -1259,7 +1263,7 @@ export const translations = {
       }
     },
     seznamka: {
-      description: "Enter a world where choosing a barber is not just about the cut, but about character.",
+      description: "Real-world matchmaking.\nNot everyone has the time or mood to be online.\nThis is different. You come. You sit down... and things happen.",
       protocolTitle: "MATCHMAKING PROTOCOL",
       acknowledge: "I UNDERSTAND",
       successTitle: "MISSION COMPLETE",

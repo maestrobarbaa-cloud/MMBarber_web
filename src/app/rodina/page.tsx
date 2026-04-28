@@ -5,6 +5,7 @@ import Image from "@/components/OptimizedImage";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  Building2,
   ChevronLeft,
   Zap,
   Droplets,
@@ -38,7 +39,7 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
 
   return (
     <div key={m.name} className="group bg-mafia-black/80 border border-mafia-gold/20 p-3 md:p-8 flex flex-col items-center justify-center backdrop-blur-xl hover:border-mafia-gold transition-all relative overflow-hidden">
-      <Image src={m.img} alt={m.name} width={100} height={100} className="w-12 h-12 md:w-24 md:h-24 object-contain mb-3 md:mb-6 grayscale group-hover:grayscale-0 transition-all" />
+      <Image src={m.img} alt={m.name} width={100} height={100} className="w-12 h-12 md:w-24 md:h-24 object-contain mb-3 md:mb-6 grayscale group-hover:grayscale-0 transition-all" priority={m.year === 2025} />
       <h3 className="text-sm md:text-xl font-heading font-black text-smoke-white uppercase mb-1 md:mb-2 text-center leading-tight">{m.name}</h3>
       <p className="text-mafia-gold font-mono text-[7px] md:text-[9px] tracking-widest uppercase mb-3 md:mb-6 text-center">{role}</p>
       <div className="flex flex-col items-center w-full gap-2 md:gap-4">
@@ -90,10 +91,10 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
 const divisions = [
   { id: "voda", name: "Vodaři / Vodo-Topo", nameEn: "Plumbers", icon: <Droplets className="w-5 h-5" /> },
   { id: "elektro", name: "Elektrikáři", nameEn: "Electricians", icon: <Zap className="w-5 h-5" /> },
+  { id: "stavebnictvi", name: "Stavebnictví & Reality", nameEn: "Construction & Reality", icon: <Building2 className="w-5 h-5" /> },
   { id: "gastro", name: "Gastronomie", nameEn: "Gastronomy", icon: <UtensilsCrossed className="w-5 h-5" /> },
   { id: "kreativci", name: "Fotografové", nameEn: "Photographers", icon: <Camera className="w-5 h-5" /> },
   { id: "umelci", name: "Umělci", nameEn: "Artists", icon: <Music className="w-5 h-5" /> },
-  { id: "reality", name: "Reality", nameEn: "Real Estate", icon: <Home className="w-5 h-5" /> },
   { id: "okna-vrata", name: "Okna / Vrata", nameEn: "Windows & Gates", icon: <Hammer className="w-5 h-5" /> },
   { id: "obaly", name: "Obaly", nameEn: "Packaging", icon: <Package className="w-5 h-5" /> },
   { id: "support", name: "Podpora", nameEn: "Support", icon: <HeartHandshake className="w-5 h-5" /> },
@@ -144,6 +145,16 @@ const members = [
     specialHover: "Před pár lety jsme se setkali v Brně na Olympii, kde ji fotil. Netušil jsem, že bude ještě fotit i nás..",
     specialHoverEn: "A few years ago we met in Brno at Olympia where he photographed her. I had no idea he would be photographing us too.."
   },
+  {
+    name: "Comites",
+    div: "stavebnictvi",
+    role: "Stavebnictví / Reality / Finance", roleEn: "Construction / Reality / Finance",
+    img: "/loga_partneri/comites.png",
+    link: "https://comites.cz/",
+    year: 2025,
+    specialHover: "Zase ti kluci z Hradiště co dělají věci jinak. Od cihel až po pojištění tvého klidu.",
+    specialHoverEn: "Those guys from Hradiště who do things differently. From bricks to insuring your peace of mind."
+  },
   { name: "Šimon Král", div: "umelci", role: "Hudba & Eventy", roleEn: "Music & Events", img: "/loga_partneri/djKing.png", link: "https://simonkral.cz/", year: 2025 },
   {
     name: "Argema",
@@ -156,7 +167,7 @@ const members = [
     specialHoverEn: "I probably don't even need to introduce this..."
   },
   { name: "Kofipack", div: "obaly", role: "Obalová Řešení", roleEn: "Packaging Solutions", img: "/loga_partneri/kofipack.png", link: "https://kofipack.cz/", year: 2025 },
-  { name: "Sluneční Reality", div: "reality", role: "Reality s úsměvem", roleEn: "Real Estate Experts", img: "/loga_partneri/slunecniReality.png", link: "https://slunecnireality.cz/", year: 2025 },
+  { name: "Sluneční Reality", div: "stavebnictvi", role: "Reality s úsměvem", roleEn: "Real Estate Experts", img: "/loga_partneri/slunecniReality.png", link: "https://slunecnireality.cz/", year: 2025 },
   {
     name: "Dětský domov UH",
     div: "support",
@@ -265,6 +276,13 @@ export default function FamilyPage() {
     };
 
     window.addEventListener('mousemove', handleMouseMove);
+
+    // Force grid view on mobile/tablet to prevent getting stuck
+    const isMobileDevice = window.innerWidth < 1024;
+    if (isMobileDevice && viewMode === 'network') {
+      setViewMode('grid');
+      return;
+    }
 
     // Hide global header when in network mode
     if (viewMode === 'network') {
@@ -641,6 +659,7 @@ export default function FamilyPage() {
                             width={200}
                             height={200}
                             className="w-full h-full object-contain grayscale opacity-50 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000"
+                            priority={i < 10}
                           />
                         </div>
 

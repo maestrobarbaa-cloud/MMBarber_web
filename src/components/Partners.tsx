@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useTranslation } from "../hooks/useTranslation";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { playSound } from "../utils/audio";
 
 const PARTNERS = [
@@ -18,21 +18,33 @@ const PARTNERS = [
   { name: "Dvůr pod Starýma Horama", url: "https://dvurpodstarymahorama.cz/", img: "/loga_partneri/DvurPodHorama.png" },
   { name: "Sluneční Reality", url: "https://slunecnireality.cz/", img: "/loga_partneri/slunecniReality.png" },
   { name: "Dětský domov UH", url: "https://www.detskydomovuh.cz/", img: "/loga_partneri/detskydomov.png" },
-  { name: "O Kolečkovič", url: "https://www.okoleckovic.cz/", img: "/loga_partneri/okoleckovic.png" }
+  { name: "O Kolečkovič", url: "https://www.okoleckovic.cz/", img: "/loga_partneri/okoleckovic.png" },
+  { name: "Comites", url: "https://comites.cz/", img: "/loga_partneri/comites.png" }
 ];
 
 export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
   const { t, lang } = useTranslation();
   const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
   const [hasStarted, setHasStarted] = useState(false);
+  const [graphicsTier, setGraphicsTier] = useState<string>("low");
+
+  useEffect(() => {
+    const updateTier = () => {
+      const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
+      setGraphicsTier(tier);
+    };
+    updateTier();
+    window.addEventListener('mmbarber-graphics-update', updateTier);
+    return () => window.removeEventListener('mmbarber-graphics-update', updateTier);
+  }, []);
 
   const startShooting = () => {
     if (hasStarted) return;
     setHasStarted(true);
     
-    // Disable effects for mobile/tablet
+    // Disable effects for mobile/tablet or low graphics tier
     const isMobile = window.innerWidth < 1024;
-    if (isMobile) {
+    if (isMobile || graphicsTier === 'low') {
       setRevealedIndices(PARTNERS.map((_, i) => i));
       return;
     }
@@ -137,14 +149,16 @@ export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
                       </motion.div>
 
                       {/* Impact Flash - No permanent hole to keep logos visible */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                         <motion.div 
-                            initial={{ opacity: 1, scale: 0 }}
-                            animate={{ opacity: 0, scale: 4 }}
-                            transition={{ duration: 0.6 }}
-                            className="absolute inset-x-[-20px] inset-y-[-20px] bg-mafia-gold rounded-full blur-xl mix-blend-screen"
-                         />
-                      </div>
+                      {graphicsTier !== 'low' && (
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                           <motion.div 
+                              initial={{ opacity: 1, scale: 0 }}
+                              animate={{ opacity: 0, scale: 4 }}
+                              transition={{ duration: 0.6 }}
+                              className="absolute inset-x-[-20px] inset-y-[-20px] bg-mafia-gold rounded-full blur-xl mix-blend-screen"
+                           />
+                        </div>
+                      )}
                     </motion.div>
                    )}
                 </AnimatePresence>
@@ -159,14 +173,7 @@ export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
         </div>
       </div>
 
-      {/* Footer Dust/Smoke Particle Area */}
-      <div className="mt-6 md:mt-20 flex justify-center opacity-20 pointer-events-none">
-          <motion.div 
-            animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
-            transition={{ duration: 4, repeat: Infinity }}
-            className="w-64 h-32 bg-mafia-gold rounded-full blur-[80px]"
-          />
-      </div>
+      {/* Footer Dust/Smoke Particle Area removed by request */}
 
 
     </motion.section>

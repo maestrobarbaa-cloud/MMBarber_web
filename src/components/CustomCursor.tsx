@@ -17,11 +17,11 @@ export function CustomCursor() {
     setMounted(true);
     
     const tier = document.documentElement.getAttribute('data-graphics-tier');
-    setIsLowTier(tier === 'low');
+    setIsLowTier(tier === 'low' || tier === 'medium');
     
     const handleUpdate = () => {
       const newTier = document.documentElement.getAttribute('data-graphics-tier');
-      setIsLowTier(newTier === 'low');
+      setIsLowTier(newTier === 'low' || newTier === 'medium');
     };
     window.addEventListener('mmbarber-graphics-update', handleUpdate);
 

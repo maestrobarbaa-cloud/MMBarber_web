@@ -496,6 +496,15 @@ export function Footer() {
             </div>
           </div>
 
+          {/* Column 3: Partnerství & Info */}
+          <div className="flex flex-col space-y-3">
+            <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">
+              {t.footer?.partnerships || "Partnerství"}
+            </h3>
+            <FooterLink href="/franchise">{t.header.franchise}</FooterLink>
+            <FooterLink href="/payment">{t.header.payment}</FooterLink>
+          </div>
+
           {/* Column 3: Sleduj nás - Modern Premium Grid */}
           <div className="flex flex-col space-y-6 flex-1 min-w-[200px]">
             <h3 className="font-sans font-black text-white uppercase tracking-[0.2em] text-[10px] mb-2 border-b border-mafia-gold/20 pb-2">
@@ -542,7 +551,7 @@ export function Footer() {
         <div className="flex flex-col items-center gap-2">
           <div className="font-mono text-smoke-white/50 text-xs md:text-sm tracking-[0.2em] uppercase text-center flex flex-wrap items-center justify-center gap-2">
             <span>© {t.footer.copyright}</span>
-            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V 3.2.0</span>
+            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V 3.2.1</span>
           </div>
           <div className="sr-only">
             <h2>

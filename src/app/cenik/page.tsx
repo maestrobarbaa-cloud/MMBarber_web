@@ -92,7 +92,11 @@ export default function CenikPage() {
 
   const toggleAddon = (id: string) => {
     setSelectedAddons(prev => {
-      if (prev.includes(id)) {
+      const isSelected = prev.includes(id);
+      if (!isSelected && selectedSpecials.length > 0) {
+        setSelectedSpecials([]);
+      }
+      if (isSelected) {
         return prev.filter(x => x !== id);
       } else {
         let nxt = [...prev, id];
@@ -104,7 +108,13 @@ export default function CenikPage() {
   };
 
   const toggleIndependent = (id: string) => {
-    setSelectedIndependents(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+    setSelectedIndependents(prev => {
+      const isSelected = prev.includes(id);
+      if (!isSelected && selectedSpecials.length > 0) {
+        setSelectedSpecials([]);
+      }
+      return isSelected ? prev.filter(x => x !== id) : [...prev, id];
+    });
   };
 
   const toggleSpecial = (id: string) => {
@@ -112,29 +122,35 @@ export default function CenikPage() {
       const isSelecting = !prev.includes(id);
       if (isSelecting) {
         setSelectedMain(null);
+        setSelectedAddons([]);
+        setSelectedIndependents([]);
+        return [id];
       }
-      return isSelecting ? [...prev, id] : prev.filter(x => x !== id);
+      return [];
     });
   };
 
   const totalValue = useMemo(() => {
-    let total = 0;
+    let regularTotal = 0;
+    let specialTotal = 0;
+    
     if (selectedMain !== null && t.services.items[selectedMain]) {
-      total += t.services.items[selectedMain].priceValue;
+      regularTotal += t.services.items[selectedMain].priceValue;
     }
     selectedAddons.forEach(id => {
       const svc = (t.services.addons as { id: string, priceValue: number }[]).find(s => s.id === id);
-      if (svc) total += svc.priceValue;
+      if (svc) regularTotal += svc.priceValue;
     });
     selectedIndependents.forEach(id => {
       const svc = t.services.independent.find((s: { id: string, priceValue: number }) => s.id === id);
-      if (svc) total += svc.priceValue;
+      if (svc) regularTotal += svc.priceValue;
     });
     selectedSpecials.forEach(id => {
       const svc = t.services.special.find((s: { id: string, priceValue: number }) => s.id === id);
-      if (svc) total += svc.priceValue;
+      if (svc) specialTotal += svc.priceValue;
     });
-    return total * pricing.multiplier;
+
+    return (regularTotal * pricing.multiplier) + specialTotal;
   }, [selectedMain, selectedAddons, selectedIndependents, selectedSpecials, t.services, pricing.multiplier]);
 
   const estimatedTime = useMemo(() => {
@@ -238,43 +254,96 @@ export default function CenikPage() {
           </button>
         </div>
 
-        {/* Dynamic Pricing Info Bar */}
-        <div className="bg-mafia-gold/5 border-b border-mafia-gold/20 p-4 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-widest">{t.services.currentSurcharge}</span>
-              <span className="text-xl font-heading font-black text-mafia-gold">
-                {pricing.multiplier > 1 ? `+${Math.round((pricing.multiplier - 1) * 100)}%` : t.services.surchargeNone}
-              </span>
+        {/* Pricing Modes Selector */}
+        <div className="bg-mafia-gold/5 border-b border-mafia-gold/20 p-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center justify-between mb-4">
+               <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-[0.4em]">{t.services.dynamicPricingTitle}</span>
+               <div className="flex items-center gap-2">
+                 <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-widest">{t.services.currentSurcharge}:</span>
+                 <span className="text-sm font-black text-mafia-gold uppercase">
+                   {pricing.multiplier > 1 ? `+${Math.round((pricing.multiplier - 1) * 100)}%` : t.services.surchargeNone}
+                 </span>
+               </div>
             </div>
-            <div className="h-8 w-[1px] bg-mafia-gold/20 mx-2" />
-            <div className="flex flex-col">
-              <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-widest">{t.services.surchargeReason}</span>
-              <div className="flex gap-2">
-                {pricing.reasons.map(r => (
-                  <span key={r} className="text-xs font-sans font-bold text-smoke-white uppercase bg-mafia-gold/10 px-2 py-0.5 border border-mafia-gold/20">
-                    {(t.services as any)[r]}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-widest text-right">{t.services.switchDate}</span>
-              <button 
-                onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-                className="text-sm font-sans font-black text-mafia-gold hover:text-white transition-colors uppercase tracking-widest underline underline-offset-4"
-              >
-                {simulatedDate.toLocaleString(lang === 'cs' ? 'cs-CZ' : 'en-US', { 
-                  weekday: 'short', 
-                  day: 'numeric', 
-                  month: 'long', 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
-                })}
-              </button>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+              {[
+                { 
+                  id: 'workday', 
+                  label: t.services.pricingModes.workday, 
+                  date: (() => { const d = new Date(); d.setDate(d.getDate() + (1 - d.getDay() + 7) % 7); d.setHours(10, 0); return d; })(),
+                  icon: <Clock size={14} />
+                },
+                { 
+                  id: 'saturday', 
+                  label: t.services.pricingModes.saturday, 
+                  date: (() => { const d = new Date(); d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7); d.setHours(10, 0); return d; })(),
+                  icon: <Clock size={14} />
+                },
+                { 
+                  id: 'sunday', 
+                  label: t.services.pricingModes.sunday, 
+                  date: (() => { const d = new Date(); d.setDate(d.getDate() + (0 - d.getDay() + 7) % 7); d.setHours(10, 0); return d; })(),
+                  icon: <Clock size={14} />
+                },
+                { 
+                  id: 'holiday', 
+                  label: t.services.pricingModes.holiday, 
+                  date: new Date(new Date().getFullYear(), 4, 1, 10, 0),
+                  icon: <Clock size={14} />
+                },
+                { 
+                  id: 'night', 
+                  label: t.services.pricingModes.night, 
+                  date: (() => { const d = new Date(); d.setHours(20, 0); return d; })(),
+                  icon: <Clock size={14} />
+                }
+              ].map((mode) => {
+                const modePricing = getPricingDetails(mode.date);
+                const isActive = pricing.reasons.some(r => modePricing.reasons.includes(r)) || 
+                                (mode.id === 'workday' && pricing.multiplier === 1);
+
+                return (
+                  <button
+                    key={mode.id}
+                    onClick={() => {
+                      setSimulatedDate(mode.date);
+                      playSound("/sounds/click.mp3", 0.3);
+                    }}
+                    className={`relative flex flex-col items-center justify-center p-3 border transition-all duration-300 gap-1 ${
+                      isActive 
+                        ? "border-mafia-gold bg-mafia-gold/20 shadow-[0_0_15px_rgba(197,160,89,0.2)]" 
+                        : "border-mafia-gold/20 bg-mafia-black/40 hover:border-mafia-gold/50"
+                    }`}
+                  >
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${isActive ? 'text-mafia-gold' : 'text-smoke-white/40'}`}>
+                      {mode.label}
+                    </span>
+                    <span className={`text-[9px] font-mono ${isActive ? 'text-mafia-gold/60' : 'text-white/20'}`}>
+                      {modePricing.multiplier > 1 ? `+${Math.round((modePricing.multiplier - 1) * 100)}%` : 'Standard'}
+                    </span>
+                    {isActive && (
+                      <motion.div 
+                        layoutId="active-mode-indicator"
+                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-mafia-gold rotate-45"
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            
+            <div className="mt-4 flex items-center justify-center gap-4">
+                <div className="h-px bg-mafia-gold/10 flex-1"></div>
+                <button 
+                  onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+                  className="text-[9px] font-mono text-mafia-gold/40 hover:text-mafia-gold transition-colors uppercase tracking-[0.3em] flex items-center gap-2"
+                >
+                  <Clock size={10} />
+                  {lang === 'cs' ? 'VLASTNÍ ČAS' : 'CUSTOM TIME'}
+                </button>
+                <div className="h-px bg-mafia-gold/10 flex-1"></div>
             </div>
           </div>
         </div>
@@ -288,44 +357,6 @@ export default function CenikPage() {
               className="bg-mafia-black/80 border-b border-mafia-gold/10 overflow-hidden"
             >
               <div className="p-6 flex flex-wrap gap-4 justify-center">
-                {[
-                  { label: lang === 'cs' ? "TEĎ" : "NOW", date: new Date() },
-                  { label: lang === 'cs' ? "ZÍTRA" : "TOMORROW", date: new Date(Date.now() + 86400000) },
-                  { label: lang === 'cs' ? "SOBOTA" : "SATURDAY", date: (() => {
-                    const d = new Date();
-                    d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7);
-                    d.setHours(10, 0);
-                    return d;
-                  })() },
-                  { label: lang === 'cs' ? "SOBOTA NOC" : "SAT NIGHT", date: (() => {
-                    const d = new Date();
-                    d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7);
-                    d.setHours(20, 0);
-                    return d;
-                  })() },
-                  { label: lang === 'cs' ? "NEDĚLE" : "SUNDAY", date: (() => {
-                    const d = new Date();
-                    d.setDate(d.getDate() + (0 - d.getDay() + 7) % 7);
-                    d.setHours(10, 0);
-                    return d;
-                  })() },
-                  { label: lang === 'cs' ? "SVÁTEK" : "HOLIDAY", date: new Date(new Date().getFullYear(), 4, 1, 10, 0) },
-                  { label: lang === 'cs' ? "VÁNOCE RÁNO" : "XMAS AM", date: new Date(new Date().getFullYear(), 11, 24, 9, 0) },
-                  { label: lang === 'cs' ? "NOVÝ ROK" : "NEW YEAR", date: new Date(new Date().getFullYear() + 1, 0, 1, 14, 0) }
-                ].map((preset, i) => (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      setSimulatedDate(preset.date);
-                      setIsDatePickerOpen(false);
-                      playSound("/sounds/click.mp3", 0.3);
-                    }}
-                    className="px-4 py-2 border border-mafia-gold/30 text-[10px] font-black text-mafia-gold hover:bg-mafia-gold hover:text-mafia-black transition-all uppercase tracking-widest"
-                  >
-                    {preset.label}
-                  </button>
-                ))}
-                
                 <input 
                   type="datetime-local" 
                   className="bg-transparent border border-mafia-gold/30 text-mafia-gold px-4 py-2 text-xs font-mono outline-none focus:border-mafia-gold"
@@ -340,8 +371,13 @@ export default function CenikPage() {
 
         <div className="p-4 md:p-8 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-mafia-gold/20">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="flex flex-col gap-4">
-              <h4 className="text-xl font-heading font-black text-mafia-gold uppercase mb-2 border-b border-mafia-gold/20 pb-2">{t.services.mainTitle}</h4>
+            <div className={`flex flex-col gap-4 transition-opacity duration-500 ${selectedSpecials.length > 0 ? 'opacity-30 pointer-events-none' : ''}`}>
+              <div className="border-b border-mafia-gold/20 pb-2 mb-2">
+                <h4 className="text-xl font-heading font-black text-mafia-gold uppercase">{t.services.mainTitle}</h4>
+                <p className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-widest mt-1 italic leading-relaxed">
+                  {t.services.timeTariffNote}
+                </p>
+              </div>
               {t.services.items.map((svc: { time: string, desc: string, priceValue: number }, i: number) => {
                 const isSelected = selectedMain === i;
                 return (
@@ -375,7 +411,7 @@ export default function CenikPage() {
               })}
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className={`flex flex-col gap-4 transition-opacity duration-500 ${selectedSpecials.length > 0 ? 'opacity-30 pointer-events-none' : ''}`}>
               <h4 className="text-xl font-heading font-black text-mafia-gold uppercase mb-2 border-b border-mafia-gold/20 pb-2">{t.services.addonsTitle}</h4>
               {t.services.addons.map((svc: { id: string, name: string, desc: string, priceValue: number }) => {
                 const isSelected = selectedAddons.includes(svc.id);
@@ -398,7 +434,7 @@ export default function CenikPage() {
               })}
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className={`flex flex-col gap-4 transition-opacity duration-500 ${selectedSpecials.length > 0 ? 'opacity-30 pointer-events-none' : ''}`}>
               <h4 className="text-xl font-heading font-black text-mafia-gold uppercase mb-2 border-b border-mafia-gold/20 pb-2">{t.services.independentTitle}</h4>
               {t.services.independent.map((svc: { id: string, name: string, desc: string, priceValue: number }) => {
                 const isSelected = selectedIndependents.includes(svc.id);
@@ -421,8 +457,11 @@ export default function CenikPage() {
               })}
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className={`flex flex-col gap-4 transition-opacity duration-500 ${selectedMain !== null || selectedAddons.length > 0 || selectedIndependents.length > 0 ? 'opacity-30 pointer-events-none' : ''}`}>
               <h4 className="text-xl font-heading font-black text-mafia-gold uppercase mb-2 border-b border-mafia-gold/20 pb-2">{t.services.specialTitle}</h4>
+              <p className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-widest mb-2 italic">
+                {lang === 'cs' ? '* Pouze po předchozí domluvě. Fixní cena.' : '* Prior agreement only. Fixed price.'}
+              </p>
               {t.services.special.map((svc: { id: string, name: string, desc: string, priceValue: number, time: string }) => {
                 const isSelected = selectedSpecials.includes(svc.id);
                 return (
@@ -441,7 +480,7 @@ export default function CenikPage() {
                     </div>
                     <p className="text-smoke-white/40 text-xs font-sans mb-3 line-clamp-2">{svc.desc}</p>
                     <div className="text-lg font-bold font-sans text-mafia-gold text-right border-t border-white/5 pt-2">
-                      {lang === "cs" ? formatPrice(svc.priceValue * pricing.multiplier, currency) : formatDualPrice(svc.priceValue * pricing.multiplier)}
+                      {lang === "cs" ? formatPrice(svc.priceValue, currency) : formatDualPrice(svc.priceValue)}
                     </div>
                   </div>
                 );
@@ -482,10 +521,12 @@ export default function CenikPage() {
             
             <div className="flex flex-col gap-3">
               <motion.a
-                href="/#operativi"
+                href="https://mm.inthechair.com/micka"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => {
                   playSound("/sounds/razor.mp3", 0.5);
-                  trackEvent("cenik_booking_click");
+                  trackEvent("cenik_booking_click_tomas");
                 }}
                 className="group relative overflow-hidden bg-mafia-gold border border-mafia-gold px-8 py-3 transition-all duration-300 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] md:ml-auto"
               >

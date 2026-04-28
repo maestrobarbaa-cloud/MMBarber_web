@@ -89,13 +89,6 @@ html[data-graphics-tier='low'] body {
   background: #000000 !important;
 }
 
-html[data-graphics-tier='low'] body,
-html[data-graphics-tier='low'] *,
-html[data-graphics-tier='low'] *::before,
-html[data-graphics-tier='low'] *::after {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-}
-
 html[data-graphics-tier='low'] *,
 html[data-graphics-tier='low'] *::before,
 html[data-graphics-tier='low'] *::after {
@@ -132,15 +125,18 @@ html[data-graphics-tier='medium'] [class*='parallax'] {
 
 html[data-graphics-tier='low'] .backdrop-blur-md,
 html[data-graphics-tier='low'] .backdrop-blur-xl,
-html[data-graphics-tier='low'] .backdrop-blur-2xl,
+html[data-graphics-tier='low'] .backdrop-blur-2xl {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-color: rgba(0,0,0,0.95) !important;
+}
+
 html[data-graphics-tier='low'] .atmosphere-container,
 html[data-graphics-tier='low'] .film-grain-container,
 html[data-graphics-tier='low'] .custom-cursor,
 html[data-graphics-tier='low'] .scroll-indicator-mm,
 html[data-graphics-tier='low'] .global-web-frame {
   display: none !important;
-  backdrop-filter: none !important;
-  background-color: #000000 !important;
 }
 
 /* ADVANCED GRAPHICS EFFECTS */

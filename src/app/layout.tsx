@@ -107,9 +107,17 @@ export default function RootLayout({
               const tier = JSON.parse(savedConfig).tier;
               document.documentElement.setAttribute('data-graphics-tier', tier);
             } else {
-              // Quick heuristic for first visit
+              // Quick conservative heuristic for first visit
               const cores = navigator.hardwareConcurrency || 4;
-              const tier = (isMobile ? (cores >= 8 ? 'medium' : 'low') : (cores >= 8 ? 'ultra' : 'high'));
+              let tier = 'low';
+              if (isMobile) {
+                tier = (cores >= 8 ? 'medium' : 'low');
+              } else {
+                if (cores >= 12) tier = 'ultra';
+                else if (cores >= 8) tier = 'high';
+                else if (cores >= 6) tier = 'medium';
+                else tier = 'low';
+              }
               document.documentElement.setAttribute('data-graphics-tier', tier);
             }
 

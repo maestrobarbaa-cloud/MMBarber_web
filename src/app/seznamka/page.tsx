@@ -1,6 +1,6 @@
 "use client";
 
-import { Scissors, Users, Target, ShieldCheck, CheckCircle2, ChevronDown } from "lucide-react";
+import { Scissors, Users, Target, ShieldCheck, CheckCircle2, ChevronDown, ChevronLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -49,6 +49,17 @@ export default function SeznamkaPage() {
       
       {/* Hero Section */}
       <section className="relative pt-32 pb-16 px-4 md:px-12 flex flex-col items-center justify-center text-center">
+        {/* Mobile Back Button */}
+        <div className="absolute top-28 left-6 z-50 md:hidden">
+          <Link 
+            href="/"
+            className="flex items-center gap-2 text-mafia-gold/60 hover:text-mafia-gold transition-colors text-[10px] font-mono uppercase tracking-[0.2em] bg-black/40 backdrop-blur-md px-3 py-2 border border-mafia-gold/20"
+          >
+            <ChevronLeft size={14} />
+            <span>{lang === 'cs' ? 'ZPĚT' : 'BACK'}</span>
+          </Link>
+        </div>
+
         <div className="absolute inset-0 pointer-events-none opacity-5">
             <div className="absolute top-1/4 left-1/4 w-96 h-96 border border-mafia-gold rounded-full animate-pulse" style={{ borderColor: 'var(--user-accent-color)', filter: 'drop-shadow(0 0 var(--user-glow-radius) var(--user-glow-color))' }}></div>
             <div className="absolute bottom-1/4 right-1/4 w-64 h-64 border border-mafia-gold/20 rounded-full animate-pulse delay-700" style={{ borderColor: 'rgba(var(--user-accent-color-rgb), 0.2)', filter: 'drop-shadow(0 0 var(--user-glow-radius) var(--user-glow-color))' }}></div>
@@ -65,7 +76,7 @@ export default function SeznamkaPage() {
           
           <div className="w-24 h-1 bg-mafia-gold mx-auto mb-8 shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]"></div>
           
-          <p className="flavor-text max-w-2xl mx-auto text-smoke-white/60 font-sans text-lg md:text-xl leading-relaxed italic mb-12">
+          <p className="flavor-text max-w-2xl mx-auto text-smoke-white/60 font-sans text-lg md:text-xl leading-relaxed italic mb-12 whitespace-pre-line">
             {t.seznamka.description}
           </p>
         </motion.div>

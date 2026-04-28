@@ -84,7 +84,13 @@ export function Header() {
       document.documentElement.style.overflow = '';
     };
   }, []);
-  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 1280 : false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    setIsMobile(window.innerWidth < 1280);
+  }, []);
   const [isVisible, setIsVisible] = useState(true);
   const [isIntroActive, setIsIntroActive] = useState(false);
   
@@ -287,7 +293,7 @@ export function Header() {
   }, []);
 
   const searchIndex = [
-    { keywords: ["barber", "tomáš", "tomas", "nella", "specialista", "specialist", "rezerv", "book", "kadeřník", "holič", "operativci"], id: "operativi" },
+    { keywords: ["barber", "tomáš", "tomas", "specialista", "specialist", "rezerv", "book", "kadeřník", "holič", "operativci"], id: "operativi" },
     { keywords: ["informace", "info", "pravidla", "platba", "cash", "parkování", "parking", "vlasy", "hair", "gel", "umyt", "wash", "svátky", "holiday", "calend", "kalendář"], id: "holidays" },
     { keywords: ["kontakt", "contact", "adresa", "address", "telefon", "phone", "mapa", "map", "najít", "find"], id: "kontakt" },
     { keywords: ["ceník", "cena", "price", "services", "služby", "střih", "cut", "vous", "beard", "kombo", "combo", "exclusive", "premium", "fade", "basic"], id: "services" },
@@ -675,8 +681,8 @@ export function Header() {
       <header
         className={`w-full left-0 z-[30000] py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate 
           ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : 'fixed xl:absolute top-0 bg-mafia-black/90 xl:bg-transparent backdrop-blur-xl xl:backdrop-blur-none h-24 xl:h-auto'} 
-          ${(isIntroActive) ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none' : 'opacity-100 translate-y-0'} 
-          ${(!isVisible && !isMenuOpen) ? 'max-xl:translate-y-0 -translate-y-full shadow-none' : 'translate-y-0'}`}
+          ${(isIntroActive) ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} 
+          ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
       >
         <div className="flex items-center gap-8">
           <button
@@ -788,14 +794,7 @@ export function Header() {
               <Briefcase size={16} style={{ color: userAccentColor }} />
               {t.header.career}
             </Link>
-            <Link href="/franchise" onClick={() => trackEvent("nav_link_click", { label: "franchise" })} className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2">
-              <Handshake size={16} style={{ color: userAccentColor }} />
-              {t.header.franchise}
-            </Link>
-            <Link href="/payment" onClick={() => trackEvent("nav_link_click", { label: "payment" })} className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2">
-              <CreditCard size={16} style={{ color: userAccentColor }} />
-              {t.header.payment}
-            </Link>
+
             <Link 
               href="/#kontakt" 
               onClick={(e) => {
@@ -849,7 +848,9 @@ export function Header() {
                     <div className="relative">
                       <input
                         ref={searchInputRef}
+                        id="header-search-desktop"
                         type="text"
+                        aria-label={lang === 'cs' ? "Vyhledat" : "Search"}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={t.header.searchPlaceholder || (lang === 'cs' ? "VYHLEDAT CÍL..." : "LOCATE TARGET...")}
@@ -894,7 +895,7 @@ export function Header() {
               />
               {isSearchOpen && (
                 <motion.div
-                  layoutId="header-action-glow"
+                  key="search-glow"
                   className="absolute inset-0 rounded-full blur-md"
                   style={{ backgroundColor: `${userAccentColor}18` }}
                   initial={{ opacity: 0 }}
@@ -1028,11 +1029,11 @@ export function Header() {
                 playSound("/sounds/naboje.mp3", 0.2);
                 router.push("/rodina");
             }}
-            className={`group relative overflow-hidden bg-mafia-dark border px-4 md:px-6 py-2 transition-all duration-300 header-booking-btn flex items-center gap-2 ${(!isMobile || isMobileEffectsEnabled) && !activeMode ? 'animate-[pulse_1.5s_ease-in-out_infinite]' : ''}`}
+            className={`group relative overflow-hidden bg-mafia-dark border px-4 md:px-6 py-2 transition-all duration-300 header-booking-btn flex items-center gap-2 ${isMounted && (!isMobile || isMobileEffectsEnabled) && !activeMode ? 'animate-[pulse_1.5s_ease-in-out_infinite]' : ''}`}
             style={{ 
               borderColor: 'var(--user-accent-color)',
-              boxShadow: (isMobile && !isMobileEffectsEnabled) ? 'none' : (activeMode ? `0 0 10px var(--user-accent-color)` : '0 0 15px var(--user-accent-color), inset 0 0 10px var(--user-accent-color)'),
-              animation: (isMobile && !isMobileEffectsEnabled) || activeMode ? 'none' : undefined
+              boxShadow: !isMounted ? 'none' : (isMobile && !isMobileEffectsEnabled) ? 'none' : (activeMode ? `0 0 10px var(--user-accent-color)` : '0 0 15px var(--user-accent-color), inset 0 0 10px var(--user-accent-color)'),
+              animation: !isMounted || (isMobile && !isMobileEffectsEnabled) || activeMode ? 'none' : undefined
             }}
           >
             <div className="absolute inset-0 block -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0" style={{ backgroundColor: 'var(--user-accent-color)' }}></div>
@@ -1066,7 +1067,9 @@ export function Header() {
             <div className="mb-6 px-2">
               <form onSubmit={handleSearch} className="relative group">
                 <input
+                  id="header-search-mobile"
                   type="text"
+                  aria-label={lang === 'cs' ? "Vyhledat" : "Search"}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={lang === 'cs' ? "ZADEJTE CÍL..." : "SEARCH TARGET..."}
@@ -1098,25 +1101,7 @@ export function Header() {
                 </div>
               </Link>
 
-              <Link href="/franchise" onClick={handleNavLinkClick} className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left">
-                <div className="text-mafia-gold/60">
-                   <Handshake size={28} />
-                </div>
-                <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest">{lang === 'cs' ? 'PODNIKÁNÍ' : 'BUSINESS'}</span>
-                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header?.franchise || 'FRANCHISE'}</span>
-                </div>
-              </Link>
 
-              <Link href="/payment" onClick={handleNavLinkClick} className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left">
-                <div className="text-white/40">
-                   <ChevronDown size={28} />
-                </div>
-                <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{lang === 'cs' ? 'TRANSAKCE' : 'TRANSACTION'}</span>
-                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.payment}</span>
-                </div>
-              </Link>
 
               <Link 
                 href="/#kontakt" 

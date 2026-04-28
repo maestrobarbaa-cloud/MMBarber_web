@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface StoryNode {
   id: string;
@@ -124,6 +125,7 @@ const STORY_NODES: StoryNode[] = [
 
 export default function StoryPage() {
   const router = useRouter();
+  const { lang } = useTranslation();
   const [selectedNode, setSelectedNode] = useState<StoryNode | null>(STORY_NODES[0]);
   const [visitedNodes, setVisitedNodes] = useState<Set<string>>(new Set(["origin"]));
   const containerRef = useRef<HTMLDivElement>(null);
@@ -243,15 +245,15 @@ export default function StoryPage() {
         <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black via-black/20 to-transparent opacity-40"></div>
         
         {/* Header inside Diary */}
-        <div className="p-8 pb-4 flex items-center justify-between">
+        <div className="p-8 pt-24 lg:pt-8 pb-4 flex items-center justify-between">
           <motion.button 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             onClick={() => router.push('/')}
-            className="flex items-center gap-2 text-mafia-gold/60 hover:text-mafia-gold transition-colors text-[10px] font-mono uppercase tracking-[0.2em]"
+            className="flex items-center gap-2 text-mafia-gold/60 hover:text-mafia-gold transition-colors text-[10px] font-mono uppercase tracking-[0.2em] bg-black/40 backdrop-blur-md px-4 py-2 border border-mafia-gold/20"
           >
             <ChevronLeft size={14} />
-            <span>Zpět</span>
+            <span>{lang === 'cs' ? 'Zpět' : 'Back'}</span>
           </motion.button>
           <div className="text-mafia-gold/20 font-mono text-[8px] tracking-[0.5em] text-right">
             DOC_REF: MM_812<br/>

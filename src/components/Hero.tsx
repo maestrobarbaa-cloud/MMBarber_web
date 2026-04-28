@@ -71,12 +71,20 @@ export function Hero() {
   const [isMounted, setIsMounted] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
   const [selectedMotto, setSelectedMotto] = useState("");
+  const [graphicsTier, setGraphicsTier] = useState<string>("low");
 
   useEffect(() => {
     setIsMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 1280);
+    const updateTier = () => {
+      const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
+      setGraphicsTier(tier);
+    };
+
     checkMobile();
+    updateTier();
     window.addEventListener('resize', checkMobile);
+    window.addEventListener('mmbarber-graphics-update', updateTier);
 
     const initialEffectsState = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
     setIsMobileEffectsEnabled(initialEffectsState);
@@ -123,13 +131,14 @@ export function Hero() {
         }
         return currentHover;
       });
-    }, 15000);
+    }, (graphicsTier === 'low') ? 30000 : 15000);
 
     // Motto is now handled by activeHero effect
 
     return () => {
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
+      window.removeEventListener('mmbarber-graphics-update', updateTier);
       clearInterval(sloganInterval);
     };
   }, [t.hero.description, t.hero.easterEggSlogans, t.hero.nightSlogans, t.hero.deepNightSlogans, lang]);
@@ -220,9 +229,9 @@ export function Hero() {
   const [isSloganHovered, setIsSloganHovered] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsMissionReady(true), 1800);
+    const timer = setTimeout(() => setIsMissionReady(true), (graphicsTier === 'low') ? 0 : 1800);
     return () => clearTimeout(timer);
-  }, []);
+  }, [graphicsTier]);
 
   const handleBookingScroll = () => {
     if (!isMissionReady) return;
@@ -231,7 +240,7 @@ export function Hero() {
     if (element) {
       const headerOffset = window.innerWidth < 1280 ? 80 : 100;
       const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth'
@@ -249,7 +258,7 @@ export function Hero() {
       
       {/* CINEMATIC GAMING TRANSITION - HIGH-END SHUTTER (Desktop only) */}
       <AnimatePresence mode="wait">
-        {!isMobile && isGlitching && (
+        {!isMobile && isGlitching && graphicsTier !== 'low' && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -425,12 +434,12 @@ export function Hero() {
                   className="flex flex-col items-center"
                 >
                   <motion.h1
-                    className={`hero-slogan text-2xl xs:text-3xl sm:text-5xl md:text-6xl tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white'}`}
+                    className={`hero-slogan tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white'} text-2xl xs:text-3xl sm:text-5xl md:text-6xl`}
                     style={{
                       fontFamily: "var(--font-great-vibes), cursive",
-                      filter: isEasterEgg 
+                      filter: (graphicsTier === 'low') ? "none" : (isEasterEgg 
                         ? "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px var(--user-glow-radius) var(--user-glow-color))"
-                        : "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px 25px rgba(0,0,0,0.8))",
+                        : "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px 25px rgba(0,0,0,0.8))"),
                       wordBreak: "break-word"
                     }}
                   >
@@ -455,7 +464,8 @@ export function Hero() {
               animate={{ opacity: 1, scale: 1 }}
               href="#operativi"
               onClick={(e) => { 
-                trackEvent("cta_hero_booking");
+                e.preventDefault();
+                handleBookingScroll();
                 playRazorSound();
               }}
               onMouseEnter={playRazorSound}
@@ -501,94 +511,100 @@ export function Hero() {
               key={displayText}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 1.5 } }}
+              exit={{ opacity: 0, transition: { duration: (graphicsTier === 'low' || graphicsTier === 'medium') ? 0.5 : 1.5 } }}
               className="flex flex-col items-center"
             >
               <motion.h1
-                className={`hero-slogan text-5xl md:text-6xl tracking-normal mb-2 leading-[1.3] w-full max-w-none px-4 whitespace-nowrap transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white'}`}
+                className={`hero-slogan tracking-normal mb-2 leading-[1.3] w-full max-w-none px-4 whitespace-nowrap transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white'} text-5xl md:text-6xl`}
                 style={{
                   fontFamily: "var(--font-great-vibes), cursive",
-                  filter: isEasterEgg 
+                  filter: (graphicsTier === 'low') ? "none" : (isEasterEgg 
                     ? "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px var(--user-glow-radius) var(--user-glow-color))"
-                    : "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px 25px rgba(0,0,0,0.8))",
+                    : "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px 25px rgba(0,0,0,0.8))"),
                   wordBreak: "break-word"
                 }}
               >
-                {isMounted && displayText && displayText.split("").map((char, i) => (
-                  <motion.span
-                    key={`desk-${displayText}-${i}`}
-                    initial={{ opacity: 0, filter: "blur(12px)", scale: 1.1 }}
-                    animate={{ 
-                      opacity: 0.8, 
-                      filter: "blur(0px)", 
-                      scale: 1,
-                      textShadow: "0 0 15px rgba(197,160,89,0.3)"
-                    }}
-                    exit={{ 
-                      opacity: 0, 
-                      filter: "blur(50px) brightness(5)", 
-                      scaleY: 2.5,
-                      scaleX: 0.8,
-                      transition: { duration: 1.4, delay: i * 0.015, ease: "easeIn" }
-                    }}
-                    transition={{ 
-                      duration: 1, 
-                      delay: i * 0.03, 
-                      ease: "easeOut" 
-                    }}
-                    className="inline-block"
-                  >
-                    {char === " " ? "\u00A0" : char}
-                  </motion.span>
-                ))}
+                {(graphicsTier === 'low' || graphicsTier === 'medium') ? (
+                  isMounted && displayText
+                ) : (
+                  isMounted && displayText && displayText.split("").map((char, i) => (
+                    <motion.span
+                      key={`desk-${displayText}-${i}`}
+                      initial={{ opacity: 0, filter: "blur(12px)", scale: 1.1 }}
+                      animate={{ 
+                        opacity: 0.8, 
+                        filter: "blur(0px)", 
+                        scale: 1,
+                        textShadow: "0 0 15px rgba(197,160,89,0.3)"
+                      }}
+                      exit={{ 
+                        opacity: 0, 
+                        filter: "blur(50px) brightness(5)", 
+                        scaleY: 2.5, 
+                        scaleX: 0.8,
+                        transition: { duration: 1.4, delay: i * 0.015, ease: "easeIn" }
+                      }}
+                      transition={{ 
+                        duration: 1, 
+                        delay: i * 0.03, 
+                        ease: "easeOut" 
+                      }}
+                      className="inline-block"
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </motion.span>
+                  ))
+                )}
               </motion.h1>
 
-              {/* Perfect Mirror Reflection Effect - Synced via same parent AnimatePresence */}
-              <div className="absolute top-full left-0 w-full pointer-events-none select-none mt-20 flex justify-center">
-                <motion.div
-                  animate={{ opacity: isSloganHovered ? 0.6 : 0 }}
-                  transition={{ duration: 1 }}
-                  className="w-full flex justify-center overflow-visible"
-                  style={{ 
-                    transformOrigin: "top center",
-                    transform: "scaleY(-1)",
-                    maskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.6) 40%, transparent 95%)",
-                    WebkitMaskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.6) 40%, transparent 95%)",
-                  }}
-                >
-                  <h2 
-                    className={`text-5xl md:text-6xl tracking-normal leading-[1.3] whitespace-nowrap ${isEasterEgg ? 'text-mafia-gold' : 'text-white/60'}`}
-                    style={{ fontFamily: "var(--font-great-vibes), cursive" }}
+              {/* Perfect Mirror Reflection Effect - Disabled for Low/Medium Tiers */}
+              {graphicsTier !== 'low' && graphicsTier !== 'medium' && (
+                <div className="absolute top-full left-0 w-full pointer-events-none select-none mt-20 flex justify-center">
+                  <motion.div
+                    animate={{ opacity: isSloganHovered ? 0.6 : 0 }}
+                    transition={{ duration: 1 }}
+                    className="w-full flex justify-center overflow-visible"
+                    style={{ 
+                      transformOrigin: "top center",
+                      transform: "scaleY(-1)",
+                      maskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.6) 40%, transparent 95%)",
+                      WebkitMaskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.6) 40%, transparent 95%)",
+                    }}
                   >
-                    {isMounted && displayText && (LATIN_SLOGANS[displayText] || displayText).split("").map((char, i) => (
-                      <motion.span
-                        key={`reflect-sync-${displayText}-${i}`}
-                        initial={{ opacity: 0, filter: "blur(12px)", scale: 1.1 }}
-                        animate={{ 
-                          opacity: 1,
-                          filter: "blur(0px)",
-                          scale: 1
-                        }}
-                        exit={{ 
-                          opacity: 0, 
-                          filter: "blur(50px) brightness(5)", 
-                          scaleY: 2.5,
-                          scaleX: 0.8,
-                          transition: { duration: 1.4, delay: i * 0.015, ease: "easeIn" }
-                        }}
-                        transition={{ 
-                          duration: 1, 
-                          delay: i * 0.03, 
-                          ease: "easeOut" 
-                        }}
-                        className="inline-block"
-                      >
-                        {char === " " ? "\u00A0" : char}
-                      </motion.span>
-                    ))}
-                  </h2>
-                </motion.div>
-              </div>
+                    <h2 
+                      className={`text-5xl md:text-6xl tracking-normal leading-[1.3] whitespace-nowrap ${isEasterEgg ? 'text-mafia-gold' : 'text-white/60'}`}
+                      style={{ fontFamily: "var(--font-great-vibes), cursive" }}
+                    >
+                      {isMounted && displayText && (LATIN_SLOGANS[displayText] || displayText).split("").map((char, i) => (
+                        <motion.span
+                          key={`reflect-sync-${displayText}-${i}`}
+                          initial={{ opacity: 0, filter: "blur(12px)", scale: 1.1 }}
+                          animate={{ 
+                            opacity: 1,
+                            filter: "blur(0px)",
+                            scale: 1
+                          }}
+                          exit={{ 
+                            opacity: 0, 
+                            filter: "blur(50px) brightness(5)", 
+                            scaleY: 2.5,
+                            scaleX: 0.8,
+                            transition: { duration: 1.4, delay: i * 0.015, ease: "easeIn" }
+                          }}
+                          transition={{ 
+                            duration: 1, 
+                            delay: i * 0.03, 
+                            ease: "easeOut" 
+                          }}
+                          className="inline-block"
+                        >
+                          {char === " " ? "\u00A0" : char}
+                        </motion.span>
+                      ))}
+                    </h2>
+                  </motion.div>
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -678,7 +694,8 @@ export function Hero() {
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                 href="#operativi"
                 onClick={(e) => { 
-                  trackEvent("cta_hero_booking");
+                  e.preventDefault();
+                  handleBookingScroll();
                   playRazorSound();
                 }}
                 onMouseEnter={playRazorSound}

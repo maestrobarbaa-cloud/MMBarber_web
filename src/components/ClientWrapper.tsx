@@ -20,7 +20,6 @@ const MatrixBackground = dynamic(() => import("@/components/MatrixBackground").t
 const EarthProtocol = dynamic(() => import("@/components/EarthProtocol").then(mod => mod.EarthProtocol), { ssr: false });
 const BarberChat = dynamic(() => import("@/components/BarberChat").then(mod => mod.BarberChat), { ssr: false });
 const UserSettingsManager = dynamic(() => import("@/components/UserSettingsManager").then(mod => mod.UserSettingsManager), { ssr: false });
-const InstagramPopup = dynamic(() => import("@/components/InstagramPopup").then(mod => mod.InstagramPopup), { ssr: false });
 const ElitaGame = dynamic(() => import("@/components/ElitaGame").then(mod => mod.ElitaGame), { ssr: false });
 
 export function ClientWrapper() {
@@ -67,19 +66,17 @@ export function ClientWrapper() {
       
       let tier: "low" | "medium" | "high" | "ultra" = "low";
       
-      // If data saving or slow connection, always force low tier regardless of hardware
       if (isDataSaving || isSlowConnection) {
         return "low";
       }
 
       if (isMobileDevice) {
-        // Mobile defaults to low, medium only for high-end (e.g. 8 cores, 6GB+ RAM)
-        tier = (cores >= 8 && ram >= 6) ? "medium" : "low";
+        tier = (cores >= 8 && ram >= 8) ? "medium" : "low";
       } else {
-        // Desktop tiers
-        if (cores >= 8 && ram >= 8) tier = "ultra";
-        else if (cores >= 6 && ram >= 6) tier = "high";
-        else if (cores >= 4 && ram >= 4) tier = "medium";
+        // Desktop tiers - MORE RESTRICTIVE
+        if (cores >= 12 && ram >= 16) tier = "ultra";
+        else if (cores >= 8 && ram >= 12) tier = "high";
+        else if (cores >= 6 && ram >= 8) tier = "medium";
         else tier = "low";
       }
       return tier;
@@ -116,19 +113,19 @@ export function ClientWrapper() {
         const detectedTier = detectPerformance();
         currentTier = detectedTier;
         
-        // Create initial config
+        // Create initial config - MORE CONSERVATIVE
         const initialConfig = {
           tier: detectedTier,
-          grainEnabled: detectedTier !== "low",
-          blurEnabled: detectedTier === "high" || detectedTier === "ultra",
-          parallaxEnabled: detectedTier !== "low",
-          animationsEnabled: detectedTier !== "low",
+          grainEnabled: detectedTier === "ultra",
+          blurEnabled: detectedTier === "ultra",
+          parallaxEnabled: detectedTier === "high" || detectedTier === "ultra",
+          animationsEnabled: detectedTier === "high" || detectedTier === "ultra",
           crtEnabled: false,
-          glowIntensity: detectedTier === "low" ? 0.2 : 0.6,
-          vignetteEnabled: detectedTier !== "low",
-          chromaticAberration: detectedTier === "high" || detectedTier === "ultra",
+          glowIntensity: detectedTier === "low" ? 0.2 : 0.4,
+          vignetteEnabled: detectedTier === "high" || detectedTier === "ultra",
+          chromaticAberration: detectedTier === "ultra",
           letterboxEnabled: detectedTier === "ultra",
-          sharpness: detectedTier === "low" ? 0.2 : 0.5
+          sharpness: detectedTier === "low" ? 0.1 : 0.3
         };
         
         localStorage.setItem("mmbarber_graphics_config", JSON.stringify(initialConfig));
@@ -245,10 +242,11 @@ export function ClientWrapper() {
   if (!mounted) return null;
 
   const isRodinaPage = pathname === "/rodina";
-  const showEffects = (!isMobile || isMobileEffectsEnabled) && !isRodinaPage && graphicsTier !== "low";
+  const isActuallyMobile = isMobile || (typeof window !== 'undefined' && window.innerWidth < 1024);
+  const showEffects = !isActuallyMobile && !isRodinaPage && (graphicsTier === "high" || graphicsTier === "ultra");
 
   return (
-    <MotionConfig reducedMotion={graphicsTier === "low" ? "always" : "user"}>
+    <MotionConfig reducedMotion={isActuallyMobile || graphicsTier === "low" || graphicsTier === "medium" ? "always" : "user"}>
       {/* Games are currently disabled by request */}
       {/* {showEffects && <BarberGame />} */}
       {showEffects && <BarberChat isOpen={isBarberChatOpen} />}
@@ -261,7 +259,6 @@ export function ClientWrapper() {
       {showEffects && <MatrixBackground />}
       <UserSettingsManager />
       <EarthProtocol isOpen={isEarthProtocolOpen} onClose={() => setIsEarthProtocolOpen(false)} lang={lang} />
-      <InstagramPopup />
       <ElitaGame />
     </MotionConfig>
   );

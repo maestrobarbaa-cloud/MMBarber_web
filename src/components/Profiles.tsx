@@ -28,64 +28,49 @@ export interface BarberProfile {
 
 const BARBER_DIALOGUES = [
   { 
-    tomas: "Beru si inspiraci od lidí, co něco dokázali. A víš, co mě štve? Firmy, které nevidí potenciál v lidech hned na začátku. Přitom právě tam často je.", 
-    nella: "Možná jen chtějí jistotu." 
+    tomas: "Beru si inspiraci od lidí, co něco dokázali. A víš, co mě štve? Firmy, které nevidí potenciál v lidech hned na začátku. Přitom právě tam často je."
   },
   { 
-    tomas: "To chápu. Ale jistota bez šance nikoho neposune. A upřímně – u nás to nebylo vždy ideální. Dvakrát jsem tě propustil, jednou jsi odešla sama… a nakonec ses vrátila.", 
-    nella: "Jo… a nebylo to jednoduché si to přiznat. Dokonce jsem o tobě kdysi říkala, že jsi „novodobý otrokář“." 
+    tomas: "To chápu. Ale jistota bez šance nikoho neposune. A upřímně – u nás to nebylo vždy ideální. Dvakrát jsem tě propustil, jednou jsi odešla sama… a nakonec ses vrátila."
   },
   { 
-    tomas: "To si pamatuju. Ale víš co? Nešlo o to někoho dusit. Šlo o výsledky a o to, aby ses něco naučila.", 
-    nella: "Dneska to vidím jinak. Spíš jsem nebyla připravená na realitu." 
+    tomas: "To si pamatuju. Ale víš co? Nešlo o to někoho dusit. Šlo o výsledky a o to, aby ses něco naučila."
   },
   { 
-    tomas: "A to je přesně ono. Spousta lidí vyjde ze školy a čeká, že všechno půjde samo. Jenže praxe je jiná. Často musím lidi hodně věcí doučovat.", 
-    nella: "Máš pocit, že školy nestíhají realitu?" 
+    tomas: "A to je přesně ono. Spousta lidí vyjde ze školy a čeká, že všechno půjde samo. Jenže praxe je jiná. Často musím lidi hodně věcí doučovat."
   },
   { 
-    tomas: "Spíš jedou podle starších modelů. Učí se věci, které člověk skoro nepoužije, a ty důležité přijdou až v práci. A pak jsou z toho zbytečná očekávání.", 
-    nella: "Třeba u peněz?" 
+    tomas: "Spíš jedou podle starších modelů. Učí se věci, které člověk skoro nepoužije, a ty důležité přijdou až v práci. A pak jsou z toho zbytečná očekávání."
   },
   { 
-    tomas: "Přesně. Už jsem viděl hodně případů, kdy se mladým zdála nabídka nízká jen proto, že mají titul. Ale dovednosti tomu často neodpovídaly.", 
-    nella: "Takže jde víc o praxi než papír?" 
+    tomas: "Přesně. Už jsem viděl hodně případů, kdy se mladým zdála nabídka nízká jen proto, že mají titul. Ale dovednosti tomu často neodpovídaly."
   },
   { 
-    tomas: "Jednoznačně. A co je škoda – když s nimi chce šéf pracovat dlouhodobě, naučit je věci, tak někdy odejdou kvůli pár tisícům navíc jinam.", 
-    nella: "A pak zjistí, že to nebylo tak růžové?" 
+    tomas: "Jednoznačně. A co je škoda – když s nimi chce šéf pracovat dlouhodobě, naučit je věci, tak někdy odejdou kvůli pár tisícům navíc jinam."
   },
   { 
-    tomas: "Přesně tak. Někdy je lepší dívat se na to, co se naučíš, než jen na první výplatu.", 
-    nella: "A co investice a finance, o kterých jsi mluvil?" 
+    tomas: "Přesně tak. Někdy je lepší dívat se na to, co se naučíš, než jen na první výplatu."
   },
   { 
-    tomas: "Tam je to podobné. Lidi často reagují na emoce – nakupují, když je všechno drahé, místo aby přemýšleli dopředu. Přitom trpělivost dělá největší rozdíl.", 
-    nella: "Takže hlavně přemýšlet a nehnat se?" 
+    tomas: "Tam je to podobné. Lidi často reagují na emoce – nakupují, když je všechno drahé, místo aby přemýšleli dopředu. Přitom trpělivost dělá největší rozdíl."
   },
   { 
-    tomas: "Přesně. A u práce to platí taky. Když jsi přišla zpátky, věděl jsem, že to nebude o pohodlí. Ale o posunu.", 
-    nella: "To můžu potvrdit 😄 není to vždycky easy, ale dává mi to smysl." 
+    tomas: "Přesně. A u práce to platí taky. Když jsi přišla zpátky, věděl jsem, že to nebude o pohodlí. Ale o posunu."
   },
   { 
-    tomas: "A o to jde. Ne o „kafíčka a pohodičku“, ale o to, aby ses posouvala a něco z toho měla i do budoucna. A taky si občas přiznej, když ti něco nejde – od toho tu jsme, abychom to zlepšili.", 
-    nella: "To beru. Asi jsem dřív spíš dělala, že všechno zvládám." 
+    tomas: "A o to jde. Ne o „kafíčka a pohodičku“, ale o to, aby ses posouvala a něco z toho měla i do budoucna. A taky si občas přiznej, když ti něco nejde – od toho tu jsme, abychom to zlepšili."
   },
   { 
-    tomas: "To dělá hodně lidí. Ale právě tím se brzdí.", 
-    nella: "Tak jo… beru to jako novou šanci." 
+    tomas: "To dělá hodně lidí. Ale právě tím se brzdí."
   },
   { 
-    tomas: "A tu šanci máš. Teď ji jen využít.", 
-    nella: "Budu se snažit, šéfe." 
+    tomas: "A tu šanci máš. Teď ji jen využít."
   },
   { 
-    tomas: "Tak jo, a šup do práce 🙂 Postarej se o klienty – náš zákazník, náš pán. A hlavně se s nimi bav, když chtějí. O tom to celé je.", 
-    nella: "Rozkaz!" 
+    tomas: "Tak jo, a šup do práce 🙂 Postarej se o klienty – náš zákazník, náš pán. A hlavně se s nimi bav, když chtějí. O tom to celé je."
   },
   { 
-    tomas: "A ještě jedna věc – jestli tady uvidím někoho schovávat se za certifikáty místo reálné práce s lidmi, tak to není cesta, kterou jdeme. Tady rozhoduje praxe, přístup a výsledky, ne papíry za rámem.", 
-    nella: "S tím naprosto souhlasím." 
+    tomas: "A ještě jedna věc – jestli tady uvidím někoho schovávat se za certifikáty místo reálné práce s lidmi, tak to není cesta, kterou jdeme. Tady rozhoduje praxe, přístup a výsledky, ne papíry za rámem."
   }
 ];
 
@@ -103,12 +88,7 @@ const TOMAS_QUOTES_EN = [
   "Don't rely on others' wisdom.\nMost people just talk.\nYou must do."
 ];
 
-const NELLA_QUOTES_EN = [
-  "Sometimes I'm cheeky to the boss, but it's cool.",
-  "I love coffee and crunching the beans.",
-  "The boss's tools are just better.",
-  "Yeah... sure."
-];
+
 
 const barbers: BarberProfile[] = [
   {
@@ -118,19 +98,8 @@ const barbers: BarberProfile[] = [
     desc: "Mistr komunikace a hrubé síly. Tvůj vous zlomí k naprosté poslušnosti.",
     schedule: "Út-Pá 9:00 - 18:00 | So-Ne 9:00 - 12:00",
     bookingLink: "https://mm.inthechair.com/micka",
-    specializations: ["PŘÍSNĚ TAJNÉ", "Nechávám si pro sebe"],
+    specializations: ["Primárně pánské", "ale zvládnu i dámy"],
     symbol: "A"
-  },
-  {
-    name: "Nella",
-    role: "The Specialist",
-    image: "/obr/nellapelikanova.png",
-    desc: "Chirurgická přesnost a italský temperament. V jejím křesle jsi v bezpečí.",
-    schedule: "Po-Pá 8:00 - 17:00",
-    bookingLink: "https://mmbarberx.setmore.com/nella",
-    specializations: ["FADE GURU", "Latinské lekce zdarma"],
-    favorites: "Favorit: Silné espresso",
-    symbol: "Q"
   }
 ];
 
@@ -183,7 +152,8 @@ function BarberCard({
   t, 
   playCardSound,
   onBook,
-  onHoverChange
+  onHoverChange,
+  graphicsTier
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
   isActive: boolean, 
@@ -193,7 +163,8 @@ function BarberCard({
   t: any, 
   playCardSound: () => void,
   onBook: () => void,
-  onHoverChange?: (hovered: boolean) => void
+  onHoverChange?: (hovered: boolean) => void,
+  graphicsTier?: string
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -290,7 +261,9 @@ function BarberCard({
               opacity: { duration: 0.1, delay: isHovered ? 0.35 : 0 },
               visibility: { delay: isHovered ? 0.4 : 0 }
             }}
-            className={`absolute inset-0 bg-[#0c0c0c] border-2 p-8 flex flex-col items-center justify-between transition-all duration-300 rounded-2xl shadow-[0_45px_90px_-20px_rgba(0,0,0,1)] ${
+            className={`absolute inset-0 bg-[#0c0c0c] border-2 p-8 flex flex-col items-center justify-between rounded-2xl shadow-[0_45px_90px_-20px_rgba(0,0,0,1)] ${
+              graphicsTier === 'low' ? 'transition-none' : 'transition-all duration-300'
+            } ${
               isActive ? "border-mafia-gold shadow-[0_0_20px_rgba(197,160,89,0.3)]" : "border-mafia-gold/20"
             }`}
             style={{ 
@@ -515,7 +488,8 @@ function ChairWithCard({
   lang, 
   t, 
   playCardSound, 
-  side 
+  side,
+  graphicsTier
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
   activeSpeaker: boolean, 
@@ -524,12 +498,13 @@ function ChairWithCard({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: Record<string, any>, 
   playCardSound: () => void,
-  side: 'left' | 'right'
+  side: 'left' | 'right',
+  graphicsTier: string
 }) {
   const [isCardHovered, setIsCardHovered] = useState(false);
   const [isSitting, setIsSitting] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const isNella = barber.name === 'Nella';
+
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isCardHovered) return;
@@ -576,7 +551,7 @@ function ChairWithCard({
         transition={{ 
           y: isSitting ? { type: "spring", stiffness: 100, damping: 10 } : { type: "spring", stiffness: 150, damping: 15 },
           x: { type: "spring", stiffness: 150, damping: 15 },
-          opacity: { duration: 0.5 },
+          opacity: { duration: (graphicsTier === 'low') ? 0 : 0.5 },
           scale: { duration: isSitting ? 0.4 : 0.6, ease: "easeOut" }
         }}
         className="hidden xl:block w-[380px] h-[480px] relative z-0"
@@ -674,6 +649,7 @@ function ChairWithCard({
           playCardSound={playCardSound}
           onBook={handleBook}
           onHoverChange={(h) => setIsCardHovered(h)}
+          graphicsTier={graphicsTier}
         />
       </div>
     </div>
@@ -684,13 +660,14 @@ export function Profiles() {
   const { t, lang } = useTranslation();
   const [isRandomizing, setIsRandomizing] = useState(false);
   const [dialogueIndex, setDialogueIndex] = useState(BARBER_DIALOGUES.length - 1);
-  const [activeSpeaker, setActiveSpeaker] = useState<'tomas' | 'nella' | null>(null);
+  const [activeSpeaker, setActiveSpeaker] = useState<'tomas' | null>(null);
   const [isDecided, setIsDecided] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [slotIndex, setSlotIndex] = useState(0);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
   const [revealedBarbers, setRevealedBarbers] = useState<string[]>([]);
+  const [graphicsTier, setGraphicsTier] = useState<string>("low");
 
   const playCardSound = () => {
     playSound("/sounds/card.mp3", 0.9);
@@ -698,6 +675,12 @@ export function Profiles() {
 
   useEffect(() => {
     setIsMounted(true);
+    const updateTier = () => {
+      const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
+      setGraphicsTier(tier);
+    };
+    updateTier();
+    window.addEventListener('mmbarber-graphics-update', updateTier);
     
     // Lottery is currently disabled per user request - skipping directly to profiles
     setIsFirstVisit(false);
@@ -716,7 +699,10 @@ export function Profiles() {
     };
 
     window.addEventListener("mmbarber-reveal-barbers", handleReveal);
-    return () => window.removeEventListener("mmbarber-reveal-barbers", handleReveal);
+    return () => {
+      window.removeEventListener("mmbarber-reveal-barbers", handleReveal);
+      window.removeEventListener('mmbarber-graphics-update', updateTier);
+    };
   }, [revealedBarbers]);
 
   const handleRandomize = () => {
@@ -766,15 +752,11 @@ export function Profiles() {
       setActiveSpeaker('tomas');
       
       // Increased delays for longer text
-      const nellaDelay = 6000;
-      const endDelay = 12000;
-      
-      const t1 = setTimeout(() => setActiveSpeaker('nella'), nellaDelay);
-      const t2 = setTimeout(() => setActiveSpeaker(null), endDelay);
+      const tomasDelay = 6000;
+      const t1 = setTimeout(() => setActiveSpeaker(null), tomasDelay);
       
       return () => {
         clearTimeout(t1);
-        clearTimeout(t2);
       };
     };
 
@@ -798,24 +780,22 @@ export function Profiles() {
       
       const staticDesc = isTomas 
         ? (t.operatives?.barbers?.tomas as { story?: string })?.story 
-        : (t.operatives?.barbers?.nella as { desc?: string })?.desc;
+        : "";
 
       const currentDialogue = BARBER_DIALOGUES[dialogueIndex];
-      const dialogueText = isTomas ? currentDialogue?.tomas : currentDialogue?.nella;
+      const dialogueText = isTomas ? currentDialogue?.tomas : "";
 
       return {
         ...b,
-        name: isTomas ? t.operatives?.barbers?.tomas?.name : t.operatives?.barbers?.nella?.name,
-        role: isTomas ? t.operatives?.barbers?.tomas?.role : t.operatives?.barbers?.nella?.role,
-        motto: isTomas ? t.operatives?.barbers?.tomas?.motto : t.operatives?.barbers?.nella?.motto,
+        name: t.operatives?.barbers?.tomas?.name,
+        role: t.operatives?.barbers?.tomas?.role,
+        motto: t.operatives?.barbers?.tomas?.motto,
         staticDesc,
         desc: dialogueText ?? staticDesc ?? "",
-        schedule: isTomas ? t.operatives?.barbers?.tomas?.schedule : t.operatives?.barbers?.nella?.schedule,
-        favorites: isTomas ? undefined : t.operatives?.barbers?.nella?.favorites,
-        specializations: isTomas ? t.operatives?.barbers?.tomas?.specializations : t.operatives?.barbers?.nella?.specializations,
-        englishSpeaking: isTomas 
-          ? (t.operatives?.barbers?.tomas as { englishSpeaking?: string })?.englishSpeaking 
-          : (t.operatives?.barbers?.nella as { englishSpeaking?: string })?.englishSpeaking ?? undefined,
+        schedule: t.operatives?.barbers?.tomas?.schedule,
+        favorites: undefined,
+        specializations: t.operatives?.barbers?.tomas?.specializations,
+        englishSpeaking: (t.operatives?.barbers?.tomas as { englishSpeaking?: string })?.englishSpeaking,
         symbol: b.symbol,
         isHidden: false
       };
@@ -845,12 +825,13 @@ export function Profiles() {
                       <ChairWithCard 
                         key={barber.name}
                         barber={barber} 
-                        activeSpeaker={activeSpeaker === (barber.name === 'Tomáš' ? 'tomas' : 'nella')} 
+                        activeSpeaker={activeSpeaker === 'tomas'} 
                         dialogueIndex={dialogueIndex} 
                         lang={lang} 
                         t={t} 
                         playCardSound={playCardSound} 
                         side={index % 2 === 0 ? "left" : "right"} 
+                        graphicsTier={graphicsTier}
                       />
                     ))}
                 </div>

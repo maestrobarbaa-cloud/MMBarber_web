@@ -12,70 +12,42 @@ interface Message {
 
 const DIALOGUES: Message[][] = [
   [
-    { name: "Nella", text: "Proč zrovna tohle místo?" },
     { name: "Tomáš", text: "Protože některý věci musí být nad vším ostatním." }
   ],
   [
-    { name: "Nella", text: "Co zas děláš?" },
     { name: "Tomáš", text: "Mlč… hraju si s publikem. Počkej, až to začnou chápat." }
   ],
   [
-    { name: "Nella", text: "Ty si s nima hraješ, že jo?" },
     { name: "Tomáš", text: "Jen tak trošku… jinak by to byla nuda." }
   ],
   [
-    { name: "Nella", text: "Tenhle chce změnu." },
     { name: "Tomáš", text: "To říkají všichni… a pak chtějí to samý." }
   ],
   [
-    { name: "Nella", text: "Co když se mu to nebude líbit?" },
     { name: "Tomáš", text: "Tak přijde znova… a už bude vědět." }
   ],
   [
-    { name: "Nella", text: "Už jde další." },
     { name: "Tomáš", text: "Vsadím se, že řekne, udělej mi to jak minule." }
   ],
   [
-    { name: "Tomáš", text: "Chceš zase vyhodit?" },
-    { name: "Nella", text: "No jistě." },
-    { name: "Tomáš", text: "To znám… odejdeš dveřma a vlezeš zpátky oknem." }
-  ],
-  [
-    { name: "Tomáš", text: "Klid… ať se ti to začne plnit v rezervacích." },
-    { name: "Nella", text: "Pracuju na tom." },
-    { name: "Tomáš", text: "Jo, tak to bude dobrý." }
-  ],
-  [
-    { name: "Nella", text: "Sestra mi říkala, že sis ani nechtěl jet pro svůj vysokoškolský diplom." },
     { name: "Tomáš", text: "Jo, to má pravdu… museli mi poslat výzvu." },
     { name: "Tomáš", text: "Prý se na něj prášilo a byl tam chudáček úplně sám." },
     { name: "Tomáš", text: "Kdyby bylo na mně, nechám ho tam ještě další rok." },
     { name: "Tomáš", text: "Nakonec mi ho stejně vyzvedla ona." },
-    { name: "Nella", text: "A kde ho teď máš?" },
     { name: "Tomáš", text: "Hele… vyrovnávám s ním televizi." },
     { name: "Tomáš", text: "Byla totiž trochu křivá." }
   ],
   [
-    { name: "Nella", text: "Ty jsi barber?" },
-    { name: "Tomáš", text: "Ne." },
     { name: "Tomáš", text: "To by bylo moc jednoduchý." },
-    { name: "Nella", text: "Tak proč stříháš?" },
     { name: "Tomáš", text: "Nevím… ale funguje to." }
   ],
   [
-    { name: "Nella", text: "Ty jim dáváš styl… nebo sebevědomí?" },
-    { name: "Tomáš", text: "Rozdíl?" }
+    { name: "Tomáš", text: "Styl se nedá koupit." }
   ],
   [
-    { name: "Tomáš", text: "Styl se nedá koupit." },
-    { name: "Nella", text: "Ale u nás si ho můžeš nechat vytvořit." }
-  ],
-  [
-    { name: "Nella", text: "Tohle je barbershop nebo klub?" },
     { name: "Tomáš", text: "Podnikatelský klub… jen místo obleků máme pláště." }
   ],
   [
-    { name: "Nella", text: "Myslela jsem, že ses k tomu jen přimotal…" },
     { name: "Tomáš", text: "Já se nepřimotávám. Já určuju, kde to začíná." }
   ]
 ];
