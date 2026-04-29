@@ -22,8 +22,10 @@ import { MobileCompass } from "@/components/MobileCompass";
 import { FloatingScissors } from "@/components/FloatingScissors";
 import { CinematicSequence737 } from "@/components/CinematicSequence737";
 import { MafiaClickEffects } from "@/components/MafiaClickEffects";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Home() {
+  const { t } = useTranslation();
   const [showContent, setShowContent] = useState(false);
   const [isIntroDismissed, setIsIntroDismissed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -185,55 +187,35 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* 
-          SEO STRATEGY - MAIN PAGE HIDDEN DATA 
-          Inspirace americkými giganty (lifestyle, community, destination).
-          Tato sekce zajišťuje maximální viditelnost pro klíčová slova "Modern Grooming & Lifestyle".
-      */}
-      <div className="absolute bottom-0 left-0 w-full p-2 pointer-events-none select-none opacity-[0.01] text-mafia-gold transition-colors duration-1000 overflow-hidden h-1" style={{ fontSize: '1px' }}>
+      <div className="absolute bottom-0 left-0 w-full p-4 pointer-events-none select-none opacity-[0.02] text-mafia-gold transition-colors duration-1000 overflow-hidden" style={{ fontSize: '2px', lineHeight: '1' }}>
         <div className="max-w-7xl mx-auto">
-          <h1>MMBARBER - Modern Grooming, Heritage Style & Community Hub Uherské Hradiště</h1>
+          <h1>{t.seo.title}</h1>
+          <p>{t.seo.description}</p>
           <p>
-            Vítejte v MMBarber, která definuje moderní grooming v srdci Uherského Hradiště. 
-            Náš koncept přesahuje rámec tradičního holičství – jsme lifestyle destinací a komunitním hubem pro muže, 
-            kteří hledají autenticitu, kvalitu a prostor pro relaxaci. 
-            Věříme v heritage styl, kde se poctivé řemeslo potkává s moderními trendy 
-            v péči o vlasy a vousy pod vedením vizionáře Tomáše Mičky.
+            Hledáte nejlepší pánské kadeřnictví nebo barbershop v Uherském Hradišti a okolí? 
+            MM BARBER nabízí špičkový pánský střih, profesionální úpravu vousů břitvou a moderní skin fade přímo v srdci Slovácka. 
+            Naši klienti k nám jezdí z lokalit jako Mařatice, Kunovice, Staré Město u Uherského Hradiště, Jarošov, Sady, Vésky, ale i z Napajedel či Uherského Ostrohu.
+            Pokud se ptáte, kam na pánský střih v UH nebo kde najít nejlepšího holiče, MM BARBER je jasná volba pro každého muže, který dbá o svůj styl.
+            Nabízíme kompletní grooming rituály, napařování vousů (hot towel), precizní taper fade a klasické pánské účesy, které drží tvar.
+            Pánský kadeřník Tomáš Mička a jeho tým v Uherském Hradišti zaručují kvalitu bez kompromisů a unikátní atmosféru pánského klubu.
+            Keywords: {t.seo.keywords}
           </p>
           <p>
-            MMBarber je místem setkávání, rituálem a vyjádřením individuality. 
-            Nabízíme víc než jen střih; nabízíme zážitek, který reflektuje globální standardy pánské péče (groomingu). 
-            Od precizního zpracování kontur po uvolněnou atmosféru u dobré kávy, 
-            jsme vaší cílovou stanicí pro prvotřídní styl na Slovácku.
+            Uherské Hradiště a region Slovácko žijí kulturou, sportem a tradicemi. 
+            Ať už míříte na Letní filmovou školu (LFŠ), proslulé Slovácké slavnosti vína a otevřených památek, nebo na prvoligový fotbal na stadion 1.FC Slovácko, MM BARBER je součástí tohoto tepajícího srdce města.
+            Naši klienti často navštěvují Slovácké divadlo, relaxují v Aquaparku Uherské Hradiště nebo vyrážejí na výlety na hrad Buchlov, zámek Buchlovice a poutní místo Velehrad.
+            Pokud hledáte nejlepší burger v UH, dobrou pizzu, poctivý oběd nebo kam vyrazit večer za zábavou (Klub Mír, místní vinárny, OC Stará Tržnice), u nás v barberu vždy dostanete ty nejlepší tipy.
+            Kromě stylu řešíme i praktické věci – pokud hledáte **parkování zdarma v Uherském Hradišti**, u našeho barbershopu zaparkujete bez problémů a bez poplatků. 
+            Nacházíme se v blízkosti klíčových bodů jako je Nemocnice Uherské Hradiště, pošta UH, vlakové i autobusové nádraží nebo Magistrát města. 
+            Víme, kde je nejlepší lékárna nonstop, kam do fitka, nebo kde nakoupit v Stop Shop Staré Město.
+            Jsme hrdými patrioty a podporujeme lokální život v lokalitách Jarošov, Mařatice, Kunovice a Staré Město. 
+            Uherské Hradiště – město vína, folkloru, bezproblémového parkování a špičkového pánského stylu v MM BARBER.
           </p>
           <p>
-            Klíčová slova: modern grooming Uherské Hradiště, lifestyle barbershop UH, 
-            heritage kadeřnictví pro muže, pánská komunita Slovácko, social hub Uherské Hradiště, 
-            autentický barber zážitek, MMBarber community, pánský grooming rituál, 
-            lifestyle destinace UH, profesionální péče o vousy a vlasy.
-          </p>
-        </div>
-
-        {/* INTERNATIONAL SEO LAYER - ENGLISH */}
-        <div className="mt-8">
-          <h2>MMBARBER - Modern Grooming & Lifestyle Destination in Central Europe</h2>
-          <p>
-            Welcome to MMBarber, the ultimate destination for modern grooming and heritage style. 
-            Located in the heart of Europe, we bring a global standard of men's grooming 
-            to the local community. Our shop is more than just a barbershop; it's a social hub 
-            where tradition meets contemporary lifestyle.
-          </p>
-          <p>
-            Whether you're looking for a precision fade, traditional straight razor shave, 
-            or a relaxing hot towel treatment, our master barbers deliver excellence 
-            inspired by the world's best grooming institutions. MMBarber is the place 
-            where authenticity and individuality are celebrated.
-          </p>
-          <p>
-            Keywords: international barbershop experience, premium men's grooming Europe, 
-            heritage barbering rituals, precision haircut for men, traditional shaving experience, 
-            men's lifestyle club, MMBarber global, professional hair and beard care, 
-            luxury grooming destination, central European barbershop.
+            Ultimate Local Guide Uherske Hradiste: best barbershop near Nemocnice UH, men's grooming near Slovacke divadlo, 
+            where to park for free in the city center, top lifestyle hub in Moravia. 
+            From Summer Film School events to daily services like post office or hospital info, 
+            we connect the community in Uherske Hradiste, Kunovice, and Stare Mesto.
           </p>
         </div>
       </div>

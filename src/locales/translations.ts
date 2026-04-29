@@ -258,7 +258,7 @@ export const translations = {
       price: "CENA: LOAJALITA",
       headline: "Jak to u nás (ne)funguje",
       subheadline: "Tady nejde jen o střih. Očekávej něco jiného.",
-      p1: "U nás to nefunguje jako někde jinde. Přijdeš, posadíš se do křesla a my se postaráme o zbytek. Během toho pokecáme, probereme, co chceš – nebo co ani nevíš, že chceš. A když budeš mít chuť, klidně zůstaň. Sedni si, dej řeč s ostatníma. Tady se nikdo nehoní pryč.",
+      p1: "U nás to nefunguje jako někde jinde. Přijdeš, posadíš se do křesla a my se postaráme o zbytek. Během toho pokecáme, probereme, co chceš – nebo co ani nevíš, že chceš. And když budeš mít chuť, klidně zůstaň. Sedni si, dej řeč s ostatníma. Tady se nikdo nehoní pryč.",
       p2: "A nebo? Jdeš jen kolem? Klidně se zastav, sedni si na pokec, človíčku. Dveře jsou otevřené. Dáváme ti volnost. Tvůj styl, tvoje pravidla. Máš vlastní představu? Jedeme podle tebe. Nemáš? Navrhneme, co ti sedne. Tady se netvoří jen účesy, tady se tvoří atmosféra.",
       p3: "A ještě jedna věc – prostor je u nás dost soukromý na to, aby ses necítil jak ve vitríně. Klid, pohoda, žádný zbytečný oči navíc. Tady máš svůj kout na vypnutí od okolního hluku.",
       p4: "Náš časový tarif je především vhodný pro klienty, kteří vědí, co chtějí. Pokud si nejste jistí, řiďte se jednoduše tím, na co běžně chodíte ke svému barberovi – my už si s tím poradíme.",
@@ -505,126 +505,6 @@ export const translations = {
       step3Title: "VLASTNÍ KŘESLO A RESPEKT", step3Sub: "Odměna za disciplínu", step3Content: "U nás se o své lidi staráme jako o vlastní. Majitel ti ukáže cestu a dá ti všechno, co k růstu potřebuješ – mentoring, vybavení i klid na práci. Na oplátku ale vyžadujeme jediné: absolutní respekt k jeho vizi a pevné morální zásady.\n\nMusíš umět naslouchat a hrát podle pravidel naší rodiny. Pokud máš charakter a chuť se učit, čeká tě vlastní místo u našeho stolu a přístup k té nejlepší klientele.", step3Btn: "Jdu do toho",
       step4Title: "PŘIDEJ SE DO TÝMU", step4Sub: "Finální mise", step4Content: "Jsi připraven? Pošli nám pár slov o sobě a svých zkušenostech. Jakmile to zhodnotíme, my se ti ozveme.", step4Btn: "Otevřít spojení (E-mail)"
     },
-    game: {
-      default: {
-        hairTooltip: "Ostříhej mě!",
-        quips: ["Pašák!", "Mistr!", "Výborně!", "Precizní!", "Skvělá práce!", "MAFIA STYLE", "RESPECT+"],
-        ranks: [
-          { title: "Sběrač smetáků", desc: "Zatím jen uklízíš podlahu po mistrech." },
-          { title: "Mladé ucho", desc: "Teď už smíš držet nůžky, ale opatrně." },
-          { title: "Břitvový specialista", desc: "Tvoje ruka je jistá jako skalpel." },
-          { title: "Mistr Mafie", desc: "Tebe chceme do rodiny! Ovládáš křeslo i ulici." }
-        ],
-        scoreLabel: "Ostříháno",
-        rankLabel: "Hodnost hráče"
-      },
-      valentine: {
-        hairTooltip: "Zamiluj se!",
-        quips: ["AMOR!", "MILÁČEK!", "SRDCAŘ!", "LOAJALITA!", "ROMANCE!", "LOVE+", "VÁŠEŇ!"],
-        ranks: [
-          { title: "Zatoulaný amatér", desc: "Srdce ti bije, ale nůžky se třesou." },
-          { title: "Don Juan", desc: "Mafiánský milovník, co zná každou tvář." },
-          { title: "Valentýnský kmotr", desc: "Láska i styl jsou tvoje zbraně." }
-        ],
-        scoreLabel: "Srdcí",
-        rankLabel: "Status"
-      },
-      st_patrick: {
-        hairTooltip: "Seber mě!",
-        quips: ["Štěstí!", "Leprikón!", "Zlato!", "LUCK+", "IRSKO!", "PUB!"],
-        ranks: [{ title: "Irský Boss", desc: "Pán štěstěny a plných sklenic." }],
-        scoreLabel: "Čtyřlístků",
-        rankLabel: "Status"
-      },
-      easter: {
-        hairTooltip: "Seber vajíčko!",
-        quips: ["Kraslice!", "Zajíček!", "Vajíčko!", "POMLÁZKA!", "TRADICE!"],
-        ranks: [{ title: "Velikonoční Boss", desc: "Pán vajíček a jarních misí." }],
-        scoreLabel: "Vajíček",
-        rankLabel: "Status"
-      },
-      halloween: {
-        hairTooltip: "Boj se!",
-        quips: ["STRACH!", "DÝNĚ!", "DUCH!", "ZOMBIE!", "HOROR!", "KREV!", "RIP!"],
-        ranks: [
-          { title: "Oběť", desc: "První, kdo v hororu zmizí." },
-          { title: "Noční lovec", desc: "Stíny jsou tvoji spojenci." },
-          { title: "Mafiánský Duch", desc: "Pán podsvětí, kterého nikdo nespatří." }
-        ],
-        scoreLabel: "Duší",
-        rankLabel: "Status"
-      },
-      christmas: {
-        hairTooltip: "Rozbal mě!",
-        quips: ["DÁREK!", "VÁNOCE!", "KOLEDA!", "HO-HO-HO!", "KAPŘÍK!", "JEŽÍŠEK!", "GIFT+"],
-        ranks: [
-          { title: "Grinch", desc: "Dárky spíš kradeš, než rozdáváš." },
-          { title: "Pomocník Santa Bosse", desc: "Rozvážíš styl po celém městě." },
-          { title: "Vánoční Kmotr", desc: "Pod stromkem máš vždy nabitou břitvu." }
-        ],
-        scoreLabel: "Dárků",
-        rankLabel: "Status"
-      },
-      new_year: {
-        hairTooltip: "Odpálit!",
-        quips: ["BUM!", "NOVÝ ROK!", "RAKETA!", "OHŇOSTROJ!", "EXPLOZE!", "2026!", "ŠAMPAŇO!"],
-        ranks: [
-          { title: "Prskavka", desc: "Trochu to svítí, ale rachot nikde." },
-          { title: "Mafiánský Ohňostroj", desc: "Tvoje akce rozsvítí celou oblohu." },
-          { title: "Král Silvestra", desc: "Půlnoc patří tobě a tvé rodině." }
-        ],
-        scoreLabel: "Rachejtlí",
-        rankLabel: "Status"
-      },
-      czech: {
-        hairTooltip: "Vztyčit vlajku!",
-        quips: ["VLAST!", "HRDOST!", "TRIKOLORA!", "PATRIOT!", "STÁTNOST!", "MMBARBER CZ", "LEV!"],
-        ranks: [
-          { title: "Rekrut", desc: "Služba vlasti právě začíná." },
-          { title: "Vlastenec", desc: "Hájíš barvy trikolory s hrdostí." },
-          { title: "Český Lev", desc: "Král českého stylu a tradice." }
-        ],
-        scoreLabel: "Vlajek",
-        rankLabel: "Status"
-      },
-      matrix: {
-        hairTooltip: "Dešifrovat!",
-        quips: ["SYSTÉMOVÝ OVERRIDE", "PROBUĎ SE NEO", "DATA OBNOVENA", "DEŠIFROVÁNÍ...", "PŘÍSTUP POVOLEN"],
-        ranks: [{ title: "Vyvolený", desc: "Vidíš kód za realitou." }],
-        scoreLabel: "Dat",
-        rankLabel: "Status"
-      },
-      secret: {
-        hairTooltip: "Odemknout...",
-        quips: ["BLOOD!", "NOIR!", "DIAMOND!", "SECRET!", "LEGEND!", "KREV!", "TAJEMSTVÍ!"],
-        ranks: [
-          { title: "Stín", desc: "Zatím tě nikdo nezahlédl." },
-          { title: "Crimson Don", desc: "Vládce uliček po půlnoci." },
-          { title: "Diamantový Duch", desc: "Nejcennější člen rodiny." }
-        ],
-        scoreLabel: "Klíčů",
-        rankLabel: "Status"
-      },
-      "childrens-day": {
-        hairTooltip: "Pojď si hrát!",
-        quips: ["SRANDA!", "HRAČKA!", "DĚTI!", "MLADÁ KREV!", "SUPER!", "RADOST!", "JUPÍ!"],
-        ranks: [
-          { title: "Malý Rarášek", desc: "Zatím si tu jen tak poletuješ." },
-          { title: "Rošťák", desc: "Rozbijíš staré pořádky." },
-          { title: "Mladý Boss", desc: "Budoucnost Rodiny je v tvých rukou." }
-        ],
-        scoreLabel: "Hraček",
-        rankLabel: "Status"
-      }
-    },
-    specialProjects: {
-      division: "DIVIZE SPECIÁLNÍCH PROJEKTŮ",
-      title: "CHCETE TAKÉ WEB?",
-      likeTheWeb: "LÍBÍ SE TI WEB?",
-      description: "Neváhejte, napište na email nebo zavolejte do MMBarber. Všechno je možné. No tak teďka už víme, kdo to zas dělal... Zas on, tak mu nezapomeň cinknout.",
-      writeUs: "NAPIŠTE NÁM",
-      callUs: "ZAVOLEJTE NÁM"
-    },
     franchisePage: {
       back: "ZPĚT NA ÚSTŘEDÍ",
       title: "MMBARBER",
@@ -687,6 +567,11 @@ export const translations = {
         { title: "Právo na odmítnutí", text: "MMBarber si vyhrazuje právo odmítnout klienta, který vykazuje známky nevhodného chování nebo infekčního onemocnění. V naší rodině držíme úroveň." },
         { title: "Platba", text: "Platba probíhá ihned po skončení mise. Přijímáme hotovost a QR platby." }
       ]
+    },
+    seo: {
+      title: "MMBARBER Barber & Shop | Nejlepší Barbershop Uherské Hradiště | Pánské holičství",
+      description: "Hledáte nejlepší barbershop v Uherském Hradišti? MMBARBER Barber & Shop nabízí špičkový pánský střih, profesionální úpravu vousů břitvou a unikátní noir atmosféru. Moderní grooming, precizní skin fade a tradiční rituály pro opravdové muže. Rezervujte si své místo v nejlepším kadeřnictví v UH.",
+      keywords: "nejlepší barbershop Uherské Hradiště, MMBARBER, top barber UH, pánské kadeřnictví Uherské Hradiště, luxusní pánský střih, úprava vousů břitvou, profesionální holič, modern grooming, lifestyle barbershop, heritage kadeřnictví, pánská komunita Slovácko, autentický barber zážitek, MMBARBER community, pánský grooming rituál, profesionální péče o vousy a vlasy, nejlepší kadeřník UH, pánský střih vlasů, holení břitvou, hot towel service, napařování vousů, skin fade UH, taper fade, klasický pánský střih, moderní účesy pro muže, pánská kosmetika, pomáda na vlasy, olej na vousy, pánský relax, pánský klub, noir barbershop, Tomáš Mička, holičství Slovácko, kadeřnictví Kunovice, kadeřnictví Staré Město, pánský styl, tradiční holení, barber shop experience, pánské účesy 2024, pánské účesy 2025, dárkové poukazy pro muže, zážitkové stříhání, prémiový barber shop, kadeřnictví Uherské Hradiště, pánské stříhání, úprava vousů UH, barber shop Slovácko, nejlepší řemeslníci Uherské Hradiště, prověřený instalatér UH, top elektrikář Slovácko, profesionální fotograf UH, realitní makléř Hradiště, servis kol a elektrokol Slovácko, revize elektro UH, účetní služby pro firmy, okna a žaluzie Uherské Hradiště, gastro a restaurace UH, nejlepší barbershop franchisa, investice do podnikání, zisková franchisa kadeřnictví, master franchise příležitost, globální značka barbershop, MM BARBER expanze, kam na pánský střih v UH, nejlepší holič Uherské Hradiště, pánské kadeřnictví Mařatice, stříhání Uherské Hradiště, holičství Jarošov, barber Kunovice, kadeřník Staré Město u UH, pánské účesy Hradiště, holení břitvou cena, top barber Slovácko, Letní filmová škola LFŠ, 1.FC Slovácko fotbal, Slovácké slavnosti vína, Aquapark Uherské Hradiště, Slovácké divadlo, hrad Buchlov, zámek Buchlovice, Velehrad, nejlepší burger UH, kam v Hradišti, parkování zdarma Uherské Hradiště, bezplatné parkování UH, kde zaparkovat v Hradišti, Nemocnice Uherské Hradiště, vlakové nádraží UH, pošta Uherské Hradiště, OC Stará Tržnice."
     }
   },
   en: {
@@ -834,6 +719,7 @@ export const translations = {
           name: "Tomáš",
           role: "The Specialist",
           motto: "",
+          story: "Founder, strategist, and a man who knows that details make the whole. He doesn't look for shortcuts, but an honest path.",
           schedule: "Tue-Fri 9:00 - 18:00 | Sat-Sun 9:00 - 12:00",
           englishSpeaking: "English Speaking",
           specializations: ["Primarily Men", "But I handle ladies too"]
@@ -919,14 +805,14 @@ export const translations = {
       followUs: "Follow Us"
     },
     rodina: {
-      title: "MM BARBER FAMILY",
+      title: "MMBARBER FAMILY",
       list: "List",
       network: "Network",
       divisions: "DIVISIONS",
       backToHq: "Back to HQ",
       partnersTrust: "Partners We Trust.",
       youForUs: "You for us. We for you.",
-      weAreFamily: "MMBarber isn't just about hair. It's about people creating quality across industries. We are Family.",
+      weAreFamily: "MMBARBER isn't just about hair. It's about people creating quality across industries. We are Family.",
       closeNetwork: "CLOSE NETWORK",
       cameraFollows: "Camera follows your movement",
       headquarters: "HEADQUARTERS"
@@ -958,7 +844,7 @@ export const translations = {
     journey: {
       title: ["My", "Journey"],
       subtitle: "History / The Journey",
-      description: "From a small idea, a Legend was born. Look at how time passed at the MMBarber headquarters.",
+      description: "From a small idea, a Legend was born. Look at how time passed at the MMBARBER headquarters.",
       archiveShot: "Archive shot",
       footerTitle: "Today you are a part of it",
       footerCta: "Continue the mission",
@@ -966,7 +852,7 @@ export const translations = {
         {
           year: "2018",
           title: "First Shot",
-          desc: "Founding of MMBarber. The beginning of a mission that people started talking about quietly all over the city.",
+          desc: "Founding of MMBARBER. The beginning of a mission that people started talking about quietly all over the city.",
           side: "left"
         },
         {
@@ -984,7 +870,7 @@ export const translations = {
         {
           year: "2024",
           title: "New Era",
-          desc: "MMBarber headquarters expands with new services and technologies.",
+          desc: "MMBARBER headquarters expands with new services and technologies.",
           side: "right"
         }
       ]
@@ -1027,7 +913,6 @@ export const translations = {
         "05-08": "Liberation Day",
         "07-05": "Saints Cyril and Methodius Day",
         "07-06": "Jan Hus Day",
-        "09-28": "Statehood Day",
         "10-28": "Independence Day",
         "11-17": "Freedom & Democracy Day",
         "12-24": "Christmas Eve",
@@ -1037,263 +922,6 @@ export const translations = {
         "easterMonday": "Easter Monday",
         "sunday": "Sunday"
       }
-    },
-
-    environmentSlider: {
-      title: "GALLERY",
-      detailPhoto: "DETAIL PHOTO",
-      closeImage: "CLOSE IMAGE"
-    },
-    career: {
-      title: "Vacancies",
-      subtitle: "Join our family",
-      vacancyTitle: "Barber",
-      vacancySubtitle: "(M / F)",
-      location: "SADOVÁ 1383, MAŘATICE, 686 05 UHERSKÉ HRADIŠTĚ",
-      type: "DPP / IČO",
-      responsibilitiesTitle: "Job Description:",
-      responsibilities: [
-        "Performing men's haircuts and beard grooming",
-        "Working with classic and modern barbering techniques",
-        "Professional approach to clients and building long-term relationships",
-        "Compliance with sanitary and operating standards of the shop"
-      ],
-      requirementsTitle: "We Require:",
-      requirements: [
-        "Education or experience in barbering / hairdressing",
-        "Skill, precision and an eye for detail",
-        "Reliability, independence and professional behavior",
-        "Interest in the field and willingness to further develop"
-      ],
-      offersTitle: "We Offer:",
-      offers: [
-        "Stable work environment",
-        "Competitive financial compensation based on experience",
-        "Modern working environment",
-        "Possibility of professional growth and further education",
-        "Friendly and professional team"
-      ],
-      status: "ACTIVE RECRUITMENT",
-      contactMotive: "Interested in this mission? Get in touch.",
-      backToHq: "Back to HQ",
-      step1Title: "WANT TO BE ONE OF US?", step1Sub: "Test Protocol", step1Content: "Recruitment to MMBARBER isn't for everyone. We're looking for people who know the value of loyalty and honest craft. Find out if you'd even fit in among us.", step1Btn: "Start clearance",
-      step2Title: "WE'RE NOT JUST ANOTHER SHOP LIKE DOZENS AROUND", step2Sub: "CORE VALUES", step2Content: "We don't go for effects or trends where everyone holds a shavetta and calls it a craft. With us, it's about real work, precision in every detail, and respect for what we do. We are a team that takes it seriously – and sticks together.\n\nWe are looking for people who want more than just working a shift. People who want to work on themselves, move forward, and be part of something that has direction.\n\nThe boss has a clear vision and has already managed to build most of this place with his own hands. Now we are looking for someone who wants to be part of it further.\n\nDo you want to go differently than the others? Join us.", step2Btn: "I understand",
-      step3Title: "OWN CHAIR AND RESPECT", step3Sub: "Reward for discipline", step3Content: "Here, we take care of our own. The owner will show you the way and give you everything you need to grow – mentoring, equipment, and peace of mind. In return, we demand only one thing: absolute respect for his vision and strong moral principles.\n\nYou must be able to listen and play by the rules of our family. If you have character and a desire to learn, a seat at our table and access to the best clientele await you.", step3Btn: "I'm in",
-      step4Title: "JOIN THE TEAM", step4Sub: "Final Mission", step4Content: "Ready? Send us a few words about yourself and your experience. Once we evaluate it, we'll get back to you.", step4Btn: "Open connection (E-mail)"
-    },
-    game: {
-      default: {
-        hairTooltip: "Cut me!",
-        quips: ["Good job!", "Master!", "Excellent!", "Precision!", "Great Work!", "MAFIA STYLE", "RESPECT+"],
-        ranks: [
-          { title: "Floor Sweeper", desc: "You are just cleaning up after the masters." },
-          { title: "Rookie", desc: "Now you're allowed to hold scissors, but carefully." },
-          { title: "Blade Specialist", desc: "Your hand is as steady as a scalpel." },
-          { title: "Mafia Master", desc: "We want you in the family! You rule the chair and the street." }
-        ],
-        scoreLabel: "Cut Count",
-        rankLabel: "Player Rank"
-      },
-      valentine: {
-        hairTooltip: "Love me!",
-        quips: ["LOVE!", "AMOR!", "HEART!", "LOYALTY!", "ROMANCE!", "LOVE+", "PASSION!"],
-        ranks: [
-          { title: "Lost Amateur", desc: "Your heart beats, but the scissors shake." },
-          { title: "Don Juan", desc: "Mafia lover who knows every face." },
-          { title: "Valentine Godfather", desc: "Love and style are your weapons." }
-        ],
-        scoreLabel: "Hearts",
-        rankLabel: "Status"
-      },
-      st_patrick: {
-        hairTooltip: "Grab me!",
-        quips: ["Luck!", "Leprechaun!", "Gold!", "LUCK+", "IRELAND!", "PUB!"],
-        ranks: [{ title: "Irish Boss", desc: "Master of luck and full glasses." }],
-        scoreLabel: "Clovers",
-        rankLabel: "Status"
-      },
-      easter: {
-        hairTooltip: "Collect Egg!",
-        quips: ["Easter Egg!", "Bunny!", "Tradition!", "SPRING!"],
-        ranks: [{ title: "Easter Boss", desc: "Master of eggs and spring missions." }],
-        scoreLabel: "Eggs",
-        rankLabel: "Status"
-      },
-      halloween: {
-        hairTooltip: "Fear me!",
-        quips: ["FEAR!", "Ghost!", "ZOMBIE!", "HORROR!", "BLOOD!", "RIP!"],
-        ranks: [
-          { title: "Victim", desc: "The first one to disappear in a horror movie." },
-          { title: "Night Hunter", desc: "Shadows are your allies." },
-          { title: "Mafia Ghost", desc: "Underworld master no one can see." }
-        ],
-        scoreLabel: "Souls",
-        rankLabel: "Status"
-      },
-      christmas: {
-        hairTooltip: "Unwrap me!",
-        quips: ["GIFT!", "Christmas!", "HO-HO-HO!", "SANTA!", "GIFT+", "MAFIA XMAS"],
-        ranks: [
-          { title: "Grinch", desc: "You steal gifts rather than give them." },
-          { title: "Santa's Helper", desc: "Driving style all over town." },
-          { title: "Christmas Godfather", desc: "You always have a loaded razor under the tree." }
-        ],
-        scoreLabel: "Gifts",
-        rankLabel: "Status"
-      },
-      new_year: {
-        hairTooltip: "Ignite!",
-        quips: ["BOOM!", "New Year!", "Rocket!", "FIREWORKS!", "EXPLOSION!", "2026!", "CHAMPAGNE!"],
-        ranks: [
-          { title: "Sparkler", desc: "Lights up a bit, but no noise." },
-          { title: "Mafia Firework", desc: "Your actions light up the whole sky." },
-          { title: "NYE King", desc: "Midnight belongs to you and your family." }
-        ],
-        scoreLabel: "Rockets",
-        rankLabel: "Status"
-      },
-      czech: {
-        hairTooltip: "Raise Flag!",
-        quips: ["HERITAGE!", "PRIDE!", "TRICOLOR!", "PATRIOT!", "STATEHOOD!", "MMBARBER CZ", "LION!"],
-        ranks: [
-          { title: "Recruit", desc: "Service to the country is just beginning." },
-          { title: "Patriot", desc: "Defending tricolor colors with pride." },
-          { title: "Czech Lion", desc: "King of Czech style and tradition." }
-        ],
-        scoreLabel: "Flags",
-        rankLabel: "Status"
-      },
-      matrix: {
-        hairTooltip: "Decrypt!",
-        quips: ["SYSTEM OVERRIDE", "WAKE UP NEO", "DATA RECOVERED", "DECODING...", "ACCESS GRANTED"],
-        ranks: [{ title: "The Chosen One", desc: "You see the code behind reality." }],
-        scoreLabel: "Data",
-        rankLabel: "Status"
-      },
-      secret: {
-        hairTooltip: "Unlock...",
-        quips: ["BLOOD!", "NOIR!", "DIAMOND!", "SECRET!", "LEGEND!", "UNDERWORLD!"],
-        ranks: [
-          { title: "Shadow", desc: "No one has seen you yet." },
-          { title: "Crimson Don", desc: "Ruler of the back alleys after midnight." },
-          { title: "Diamond Ghost", desc: "Most valuable member of the Family." }
-        ],
-        scoreLabel: "Keys",
-        rankLabel: "Status"
-      },
-      "childrens-day": {
-        hairTooltip: "Come play!",
-        quips: ["FUN!", "TOY!", "KIDS!", "YOUNG BLOOD!", "SUPER!", "JOY!", "YAY!"],
-        ranks: [
-          { title: "Little Rascal", desc: "Just flying around for now." },
-          { title: "Troublemaker", desc: "Breaking the old rules." },
-          { title: "Young Boss", desc: "The future of the Family is in your hands." }
-        ],
-        scoreLabel: "Toys",
-        rankLabel: "Status"
-      }
-    },
-    specialProjects: {
-      division: "SPECIAL PROJECTS DIVISION",
-      title: "WANT A WEBSITE TOO?",
-      likeTheWeb: "DO YOU LIKE THE WEB?",
-      description: "Don't hesitate, write an email or call MMBarber. Everything is possible. Well, now we all know who did it again... Him again, so don't forget to give him a ring.",
-      writeUs: "WRITE US",
-      callUs: "CALL US"
-    },
-    cityGuide: {
-      compass: {
-        label: "Barbershop Compass",
-        locating: "LOCATING...",
-        distance: "{{distance}} LEFT"
-      }
-    },
-    others: {
-      title: "OTHERS",
-      hiddenPlaces: {
-        title: "HIDDEN CITY SPOTS",
-        name: "Komfort lounge in Uherské Hradiště",
-        address: "Leoše Janáčka 180, 686 01 Uherské Hradiště",
-        description: "Atmospheric shisha bar, the perfect place to relax with a water pipe, coffee, or quality drinks.",
-        slotsTitle: "FREE SLOTS",
-        cta: "JOIN US"
-      },
-      members: {
-        title: "FAMILY MEMBERS",
-        description: "Those who know where to look...",
-        employeeWall: {
-          title: "EMPLOYEE WALL",
-          year: "YEAR 2026",
-          employeeName: "Tomáš",
-          months: ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"],
-          invitation: "Want to be on our wall too? You should stop by so we know what nickname to write there!",
-          brandVision: "Some think a barbershop is just about hair. 99% of people see it that way, but there are others who see it differently. You can join and help me build the brand."
-        }
-      },
-      support: {
-        title: "FOR EVERYONE",
-        description: "",
-        reward: "Since I no longer give discounts and Black Friday every Friday. Want to support the barber? What stands behind it all? Then support him!",
-        pcLabel: "Desktop Wallpaper 1920x1080px.",
-        phoneLabel: "Mobile Wallpaper 1080x1920px",
-        downloadBtn: "DOWNLOAD REWARD",
-        passwordLabel: "ACCESS PASSWORD",
-        passwordHint: "For the password you must go to the barber, especially do not go next door, he does not know it...",
-        unlock: "UNLOCK",
-        denied: "Access denied"
-      },
-      systemVisit: {
-        title: "System & Visit",
-        description: "How to properly prepare for a barber visit.",
-        cta: "MORE INFO"
-      }
-    },
-    styleDefinition: {
-      defineStyle: {
-        title: ["Define", "Your Style"],
-        subtitle: "MMBARBER EXCLUSIVE /",
-        modalTitle: "Don't know which hairstyle fits your style?",
-        modalContent: "Together we'll find a cut that matches what you wear — and who you are. We'll discuss the details, fine-tune the look, and you'll step out with confidence. Like a king."
-      },
-      pairTherapy: {
-        title: ["Pair", "Therapy"],
-        subtitle: "MMBARBER SPECIAL /",
-        modalTitle: "Come together. Leave even more in sync.",
-        modalContent: "First, we'll fine-tune his style, then in the evening, her turn comes too. In the meantime, chill, conversation, and an atmosphere that draws you in. Because style is better when shared."
-      }
-    },
-    seznamka: {
-      description: "Real-world matchmaking.\nNot everyone has the time or mood to be online.\nThis is different. You come. You sit down... and things happen.",
-      protocolTitle: "MATCHMAKING PROTOCOL",
-      acknowledge: "I UNDERSTAND",
-      successTitle: "MISSION COMPLETE",
-      successText: "You are now ready for a personal encounter.",
-      finishBtn: "COMPLETE MISSION",
-      cancelBtn: "Cancel and return",
-      confirmedLabel: "Procedure confirmed",
-      steps: [
-        { title: "Send a friend", desc: "Send a friend to get a haircut" },
-        { title: "Take a girlfriend", desc: "Take a girlfriend to trim the ends" },
-        { title: "Recruit the brave", desc: "Or send someone who is not afraid" }
-      ]
-    },
-    welcome: {
-      l1: { title: "PAYMENT LETTER", content: "CONFIDENTIAL: We accept cash or QR code bank transfers." },
-      l2: { title: "PARKING LETTER", content: "CONFIDENTIAL: Free parking available directly in front of the shop. No problem in the morning. Do you use WAZE? then you'll hit the barber next door..." },
-      l3: { title: "LOUNGE LETTER", content: "CONFIDENTIAL: Feel free to stay and relax, nobody is kicking you out. We are family." },
-      authorized: "Authorized by MMBARBER"
-    },
-    rulesPage: {
-      title: "OPERATING RULES",
-      subtitle: "Rules and standards of MMBarber men's barbershop. Our mission requires discipline and mutual respect.",
-      backBtn: "BACK TO BASE",
-      sections: [
-        { title: "Reservations & Punctuality", text: "Please arrive for your mission on time. Delaying more than 10 minutes may result in cancellation without refund, so as not to limit the recruits after you." },
-        { title: "Cancellation", text: "Please announce a change or cancellation at least 24 hours in advance. We respect your time, please respect ours." },
-        { title: "Hygiene Standards", text: "We maintain surgical cleanliness. Every tool is sterilized after each use. Peace and safety are priorities." },
-        { title: "Right of Refusal", text: "MMBarber reserves the right to refuse a client who shows signs of inappropriate behavior or infectious disease. We keep the level in our family." },
-        { title: "Payment", text: "Payment takes place immediately after the end of the mission. We accept cash and QR payments." }
-      ]
     },
     holidayCountdown: {
       title: "Holiday Countdown",
@@ -1378,6 +1006,11 @@ export const translations = {
       },
       footer: "Simple. Functional. Quality."
     },
+    seo: {
+      title: "MMBARBER Barber & Shop | Best Barbershop Uherské Hradiště | Premium Men's Grooming",
+      description: "Looking for the best barbershop in Uherské Hradiště? MMBARBER Barber & Shop offers elite men's haircuts, professional straight razor beard styling, and a unique noir atmosphere. Modern grooming, precision skin fades, and traditional rituals for the modern man. Book your spot at the top-rated barbershop.",
+      keywords: "best barbershop Uherské Hradiště, MMBARBER, top barber UH, men's grooming Uherské Hradiště, luxury men's haircut, straight razor beard trim, professional barber, modern grooming rituals, lifestyle barbershop, heritage grooming club, men's community, authentic barber experience, MMBARBER community, premium hair and beard care, best hairdresser UH, men's hair styling, hot towel service, beard steaming, skin fade UH, classic men's haircut, modern hairstyles for men, men's cosmetics, hair pomade, beard oil, men's relaxation, men's lifestyle hub, noir barbershop, Tomas Micka, traditional shaving, barber shop experience 2024, men's hairstyles 2025, gift vouchers for men, experiential haircutting, international barbershop, best craftsmen Uherské Hradiště, professional plumbers and electricians, top real estate services, expert local tradesmen, professional event photography, reliable business partners Czech Republic, best barbershop franchise opportunity, global grooming brand expansion, premium barber business investment, master franchise rights, international brand licensing, profitable grooming concept, open a barbershop Europe, men's hair salon Uherske Hradiste, where to get a haircut in UH, best barber Slovacko, top-rated grooming center, professional men's styling Czech Republic, Mařatice barbershop, Kunovice men's grooming."
+    }
   },
   boss: {
     header: {
@@ -1462,20 +1095,14 @@ export const translations = {
         }
     },
     intro: {
-      welcome: "Vítejte v Imperial Edition. Alles klar!",
-      parking: "V.I.P. PARKING",
-      payment: "GELD / QR / CASH",
-      acceptMission: "REZERVACE SHOW"
-    },
-    theCode: {
-      title: "Wiener Kodex",
-      subtitle: "Upozornění pro návštěvníky:",
-      rules: [
-        { title: "Geld", description: "Přijímáme hotovost i QR platbu. Keine sorge." },
-        { title: "Standard", description: "Vstup povolen pouze se stylem. Brýle doporučeny i po půlnoci." },
-        { title: "Vienna", description: "Tady platí vídeňská pravidla. Preciznost a trocha té arogance k tomu patří." },
-        { title: "Elite", description: "Váš styl bude legenda. Imperial Standard." }
-      ]
+      welcome: "Willkommen im MMBARBER Imperial Territory.",
+      parking: "KOSTENLOSES PARKEN",
+      parkingHint: "Waze wird Sie vielleicht woanders hinschicken. Aber die Spieler wissen, wo die richtige Adresse ist.",
+      copyAddress: "ADRESSE KOPIEREN",
+      openMaps: "KARTEN ÖFFNEN",
+      payment: "BAR / QR-ZAHLUNG",
+      acknowledge: "ICH VERSTEHE",
+      acceptMission: "INSTRUKTIONEN AKZEPTIEREN"
     }
   }
 };

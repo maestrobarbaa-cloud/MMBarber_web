@@ -34,21 +34,47 @@ const greatVibes = Great_Vibes({
 });
 
 export const metadata: Metadata = {
-  title: "MMBARBER | Modern Grooming & Lifestyle | Heritage Barbershop",
-  description: "MMBarber is a premium grooming & lifestyle destination. Experience traditional heritage barbering, modern grooming rituals, and a unique community atmosphere. Global quality, local soul.",
+  metadataBase: new URL("https://mmbarber.cz"),
+  title: "MMBARBER Barber & Shop | Nejlepší Barbershop Uherské Hradiště | Pánské holičství",
+  description: "Zažijte prémiovou péči v MMBARBER Barber & Shop. Moderní barbershop, heritage styl a unikátní atmosféra v srdci Uherského Hradiště. Nechte se ostříhat od mistrů v oboru – skin fade, úprava vousů břitvou, parkování zdarma.",
   keywords: [
-    "modern grooming Uherské Hradiště", 
+    "MMBARBER",
+    "Barbershop Uherské Hradiště",
+    "Pánské holičství Uherské Hradiště",
+    "nejlepší holič UH",
+    "pánský kadeřník Slovácko",
+    "stříhání vlasů Uherské Hradiště",
+    "úprava vousů břitvou",
+    "skin fade UH",
+    "parkování zdarma Uherské Hradiště",
+    "barbershop Mařatice",
+    "kadeřnictví Kunovice",
+    "holič Staré Město",
+    "franchisa barbershop",
+    "investice do podnikání",
+    "MM BARBER rodina",
+    "instalatér Uherské Hradiště",
+    "elektrikář Slovácko",
+    "fotograf UH",
+    "LFŠ Uherské Hradiště",
+    "1.FC Slovácko",
+    "Slavnosti vína UH",
+    "modern grooming", 
     "international barbershop experience", 
-    "heritage grooming club", 
-    "men's lifestyle destination", 
-    "premium barber Europe", 
-    "MMBarber",
-    "traditional shaving rituals",
-    "men's grooming community",
-    "luxury barbershop brand",
-    "lifestyle hub for men"
+    "heritage grooming club"
   ],
   authors: [{ name: "Tomáš Mička" }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   alternates: {
     canonical: "https://mmbarber.cz",
     languages: {
@@ -67,15 +93,36 @@ export const metadata: Metadata = {
     shortcut: ["/icon.png?v=1"],
   },
   openGraph: {
-    title: "MMBARBER | Modern Grooming & Lifestyle Destination",
-    description: "Premium grooming, heritage style, and unique community hub. Experience the global standard of male grooming.",
+    title: "MMBARBER Barber & Shop | Barbershop | Pánské holičství",
+    description: "Premium grooming, heritage style, and unique community hub in Uherské Hradiště. Experience the global standard of male grooming.",
     url: "https://mmbarber.cz",
     siteName: "MMBARBER",
-    locale: "en_US",
-    alternateLocale: ["cs_CZ"],
+    images: [
+      {
+        url: "/obr/main-hero.png",
+        width: 1200,
+        height: 630,
+        alt: "MMBARBER Barber & Shop Uherské Hradiště",
+      },
+    ],
+    locale: "cs_CZ",
+    alternateLocale: ["en_US"],
     type: "website",
   },
-};export const viewport: Viewport = {
+  twitter: {
+    card: "summary_large_image",
+    title: "MMBARBER Barber & Shop | Uherské Hradiště",
+    description: "Nejlepší barbershop a pánské kadeřnictví v Uherském Hradišti. Mistrovský střih a unikátní styl.",
+    images: ["/obr/main-hero.png"],
+  },
+  verification: {
+    google: "google-site-verification-placeholder", // User should replace with actual code
+  },
+  other: {
+    "seznam-wmt": "seznam-verification-placeholder", // User should replace with actual code
+  }
+};
+export const viewport: Viewport = {
   themeColor: "#0a0a0a",
   colorScheme: "dark",
   width: "device-width",

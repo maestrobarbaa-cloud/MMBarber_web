@@ -165,28 +165,38 @@ export default function FranchisePage() {
 
       {/* HIDDEN SEO LAYER - THEME AWARE & INTERNATIONAL */}
       <div 
-        className="absolute bottom-0 left-0 w-full p-4 pointer-events-none select-none opacity-[0.01] flex flex-col gap-2"
-        style={{ fontSize: '1px', color: 'var(--color-mafia-gold)' }}
+        className="absolute bottom-0 left-0 w-full p-4 pointer-events-none select-none opacity-[0.02] flex flex-col gap-2 overflow-hidden"
+        style={{ fontSize: '2px', color: 'var(--color-mafia-gold)', lineHeight: '1' }}
       >
-        <div className="flex flex-wrap gap-2">
-          <h2>MMBARBER FRANCHISE - Business Opportunity in Men's Grooming</h2>
+        <div className="max-w-7xl mx-auto">
+          <h2>MM BARBER FRANCHISE - Global Business Opportunity in Men's Grooming & Lifestyle</h2>
           <p>
-            Looking for a profitable barbershop franchise? MMBARBER offers a unique business model 
-            combining heritage style with modern grooming efficiency. Our franchise program 
-            is designed for entrepreneurs who value quality and community. 
-            Invest in a brand with a strong track record and global ambitions.
+            Are you looking for the best barbershop franchise opportunity in 2024 or 2025? 
+            MM BARBER offers a premium, high-ROI business model that combines heritage craft with modern noir aesthetics. 
+            Our international franchise program provides full support, professional training, and a proven system for success in the grooming industry. 
+            Join a globally expanding brand that redefines the men's lifestyle experience.
           </p>
           <p>
-            Keywords: international barbershop franchise, men's lifestyle business, 
-            premium grooming investment, start a barber business Europe, 
-            MMBarber partnership, profitable grooming concept, 
-            barbershop brand licensing, professional barber support.
+            Keywords: international barbershop franchise, best grooming business to start, 
+            premium men's salon investment, profitable franchise models Europe, 
+            master franchise rights available, MM BARBER global licensing, 
+            open a barbershop with support, barbershop startup costs and ROI, 
+            men's grooming brand expansion, high-end lifestyle business opportunity, 
+            noir barbershop concept franchise, professional barber training and know-how, 
+            top-rated franchise opportunities for entrepreneurs, global barber network.
           </p>
           <p>
-            Klíčová slova: franchisa barbershop, podnikání v barberu, 
-            investice do kadeřnictví, MMBarber franchise koncept, 
-            vlastní holičství pod značkou, podpora podnikání, 
-            úspěšný byznys model, pánský grooming franchisa.
+            Klíčová slova: nejlepší barbershop franchisa v ČR, podnikání v barberingu příležitost, 
+            investice do zavedené značky MM BARBER, ziskový franchisový koncept, 
+            jak otevřít vlastní barber shop, podpora pro nové podnikatele, 
+            licence na provozování barbershopu, zavedené know-how a školení, 
+            expanze značky do dalších měst, franchisová smlouva kadeřnictví, 
+            ziskový model podnikání pro investory, MM BARBER rodina a partnerství, 
+            pánský grooming byznys, nejúspěšnější barber franchisa na Slovácku.
+          </p>
+          <p>
+            Služby a lokality: Uherské Hradiště, Praha, Brno, Bratislava, Wien, 
+            Global Franchise Expansion, Master Franchise rights, International Brand Licensing.
           </p>
         </div>
       </div>
