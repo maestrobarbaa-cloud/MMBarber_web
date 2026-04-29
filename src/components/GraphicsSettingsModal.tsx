@@ -132,9 +132,9 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
 
   const autoDetectSettings = () => {
     // Basic heuristics for web performance tiers
-    const cores = navigator.hardwareConcurrency || 4;
+    const cores = navigator.hardwareConcurrency || 0;
     // @ts-expect-error - experimental API
-    const ram = navigator.deviceMemory || 4;
+    const ram = navigator.deviceMemory || 0;
     
     let gpu = "unknown";
     try {
@@ -150,18 +150,30 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
 
     console.log(`Auto-detecting: Cores=${cores}, RAM=${ram}, GPU=${gpu}`);
 
-    let recommended: GraphicsTier = 'medium';
+    let recommended: GraphicsTier = 'low'; // Conservative default
 
     const highEndGpus = ['nvidia', 'rtx', 'gtx', 'radeon', 'apple m', 'arc'];
     const isHighEndGpu = highEndGpus.some(term => gpu.includes(term));
+    const isMobile = window.innerWidth < 1280;
 
-    if (cores >= 8 && ram >= 8 && isHighEndGpu) {
-      recommended = 'ultra';
-    } else if (cores >= 4 && ram >= 4) {
-      recommended = 'high';
-    } else if (cores <= 2 || ram <= 2) {
-      recommended = 'low';
+    if (isMobile) {
+      if (cores >= 8 && ram >= 6) recommended = 'medium';
+      else recommended = 'low';
+    } else {
+      // PC/Desktop Deduction
+      if (cores >= 12 && ram >= 16 && isHighEndGpu) {
+        recommended = 'ultra';
+      } else if (cores >= 8 && ram >= 8 && isHighEndGpu) {
+        recommended = 'high';
+      } else if (cores >= 6 && ram >= 4) {
+        recommended = 'medium';
+      } else {
+        recommended = 'low';
+      }
     }
+
+    // Fallback for missing info
+    if (cores === 0 || ram === 0) recommended = 'low';
 
     let newConfig: GraphicsConfig;
     switch (recommended) {
