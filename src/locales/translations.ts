@@ -568,10 +568,32 @@ export const translations = {
         { title: "Platba", text: "Platba probíhá ihned po skončení mise. Přijímáme hotovost a QR platby." }
       ]
     },
-    seo: {
+      seo: {
       title: "MMBARBER Barber & Shop | Nejlepší Barbershop Uherské Hradiště | Pánské holičství",
       description: "Hledáte nejlepší barbershop v Uherském Hradišti? MMBARBER Barber & Shop nabízí špičkový pánský střih, profesionální úpravu vousů břitvou a unikátní noir atmosféru. Moderní grooming, precizní skin fade a tradiční rituály pro opravdové muže. Rezervujte si své místo v nejlepším kadeřnictví v UH.",
       keywords: "nejlepší barbershop Uherské Hradiště, MMBARBER, top barber UH, pánské kadeřnictví Uherské Hradiště, luxusní pánský střih, úprava vousů břitvou, profesionální holič, modern grooming, lifestyle barbershop, heritage kadeřnictví, pánská komunita Slovácko, autentický barber zážitek, MMBARBER community, pánský grooming rituál, profesionální péče o vousy a vlasy, nejlepší kadeřník UH, pánský střih vlasů, holení břitvou, hot towel service, napařování vousů, skin fade UH, taper fade, klasický pánský střih, moderní účesy pro muže, pánská kosmetika, pomáda na vlasy, olej na vousy, pánský relax, pánský klub, noir barbershop, Tomáš Mička, holičství Slovácko, kadeřnictví Kunovice, kadeřnictví Staré Město, pánský styl, tradiční holení, barber shop experience, pánské účesy 2024, pánské účesy 2025, dárkové poukazy pro muže, zážitkové stříhání, prémiový barber shop, kadeřnictví Uherské Hradiště, pánské stříhání, úprava vousů UH, barber shop Slovácko, nejlepší řemeslníci Uherské Hradiště, prověřený instalatér UH, top elektrikář Slovácko, profesionální fotograf UH, realitní makléř Hradiště, servis kol a elektrokol Slovácko, revize elektro UH, účetní služby pro firmy, okna a žaluzie Uherské Hradiště, gastro a restaurace UH, nejlepší barbershop franchisa, investice do podnikání, zisková franchisa kadeřnictví, master franchise příležitost, globální značka barbershop, MM BARBER expanze, kam na pánský střih v UH, nejlepší holič Uherské Hradiště, pánské kadeřnictví Mařatice, stříhání Uherské Hradiště, holičství Jarošov, barber Kunovice, kadeřník Staré Město u UH, pánské účesy Hradiště, holení břitvou cena, top barber Slovácko, Letní filmová škola LFŠ, 1.FC Slovácko fotbal, Slovácké slavnosti vína, Aquapark Uherské Hradiště, Slovácké divadlo, hrad Buchlov, zámek Buchlovice, Velehrad, nejlepší burger UH, kam v Hradišti, parkování zdarma Uherské Hradiště, bezplatné parkování UH, kde zaparkovat v Hradišti, Nemocnice Uherské Hradiště, vlakové nádraží UH, pošta Uherské Hradiště, OC Stará Tržnice."
+    },
+    game: {
+      default: {
+        ranks: [
+          { title: "Nováček", desc: "Teprve se učíš držet nůžky." },
+          { title: "Učeň", desc: "Základy už máš, ale krev ještě teče." },
+          { title: "Holič", desc: "Tvoje ruka je jistá, tvůj styl je vidět." },
+          { title: "Mistr", desc: "Vlasy tě poslouchají na slovo." },
+          { title: "Legenda", desc: "Stříháš i poslepu. Respekt." }
+        ],
+        quips: ["Pěkný střih!", "Precizní!", "Styl!", "Zásah!", "Ostrý!"],
+        hairTooltip: "OSTŘÍHAT",
+        rankLabel: "DOSAŽENÁ ÚROVEŇ"
+      }
+    },
+    specialProjects: {
+      likeTheWeb: "Líbí se ti tento web ?",
+      division: "DESIGN A VÝVOJOVÁ DIVIZE",
+      title: "TVOŘÍME DIGITÁLNÍ IDENTITY",
+      description: "Nejsme jen holičství. Jsme komunita lidí, co chtějí tvořit kvalitu. Pokud chceš web, který má duši a ne jen kód, dej nám vědět.",
+      writeUs: "Napište nám",
+      callUs: "Zavolejte nám"
     }
   },
   en: {
@@ -1010,6 +1032,176 @@ export const translations = {
       title: "MMBARBER Barber & Shop | Best Barbershop Uherské Hradiště | Premium Men's Grooming",
       description: "Looking for the best barbershop in Uherské Hradiště? MMBARBER Barber & Shop offers elite men's haircuts, professional straight razor beard styling, and a unique noir atmosphere. Modern grooming, precision skin fades, and traditional rituals for the modern man. Book your spot at the top-rated barbershop.",
       keywords: "best barbershop Uherské Hradiště, MMBARBER, top barber UH, men's grooming Uherské Hradiště, luxury men's haircut, straight razor beard trim, professional barber, modern grooming rituals, lifestyle barbershop, heritage grooming club, men's community, authentic barber experience, MMBARBER community, premium hair and beard care, best hairdresser UH, men's hair styling, hot towel service, beard steaming, skin fade UH, classic men's haircut, modern hairstyles for men, men's cosmetics, hair pomade, beard oil, men's relaxation, men's lifestyle hub, noir barbershop, Tomas Micka, traditional shaving, barber shop experience 2024, men's hairstyles 2025, gift vouchers for men, experiential haircutting, international barbershop, best craftsmen Uherské Hradiště, professional plumbers and electricians, top real estate services, expert local tradesmen, professional event photography, reliable business partners Czech Republic, best barbershop franchise opportunity, global grooming brand expansion, premium barber business investment, master franchise rights, international brand licensing, profitable grooming concept, open a barbershop Europe, men's hair salon Uherske Hradiste, where to get a haircut in UH, best barber Slovacko, top-rated grooming center, professional men's styling Czech Republic, Mařatice barbershop, Kunovice men's grooming."
+    },
+    career: {
+      title: "Vacancies",
+      subtitle: "Join our family",
+      vacancyTitle: "Barber",
+      vacancySubtitle: "(Barber / Barberette)",
+      location: "SADOVÁ 1383, MAŘATICE, 686 05 UHERSKÉ HRADIŠTĚ",
+      type: "DPP / IČO",
+      responsibilitiesTitle: "Job Description:",
+      responsibilities: [
+        "Performing men's haircuts and beard styling",
+        "Working with classic and modern barbering techniques",
+        "Professional approach to clients and building long-term relationships",
+        "Adhering to hygiene and work standards of the establishment"
+      ],
+      requirementsTitle: "Requirements:",
+      requirements: [
+        "Education or experience in the field of barbering / hairdressing",
+        "Skill, precision and attention to detail",
+        "Reliability, independence and professional behavior",
+        "Interest in the field and willingness to further develop"
+      ],
+      offersTitle: "We Offer:",
+      offers: [
+        "Stable working background",
+        "Appropriate financial evaluation based on experience",
+        "Modern working environment",
+        "Possibility of professional growth and further education",
+        "Friendly and professional team"
+      ],
+      status: "ACTIVE RECRUITMENT",
+      contactMotive: "Interested in this mission? Contact us.",
+      backToHq: "Back to HQ",
+      step1Title: "WANT TO BE ONE OF US?", 
+      step1Sub: "Trial Protocol", 
+      step1Content: "Recruitment to MMBARBER is not for everyone. We are looking for people who know the value of loyalty and honest craftsmanship. Find out if you would fit in with us at all.", 
+      step1Btn: "Start Check",
+      step2Title: "WE ARE NOT JUST ANOTHER BARBERSHOP LIKE DOZENS AROUND", 
+      step2Sub: "BASIC RULES", 
+      step2Content: "We don't go for effect or trends where everyone has a shavette in hand and calls it craftsmanship. For us, it's about real work, precision in every detail and respect for what we do. We are a team that takes it seriously – and at the same time sticks together.\n\nWe are looking for people who want more than just to work a shift. People who want to work on themselves, move forward and be part of something that has direction.\n\nThe boss has a clear vision and has already managed to build most of this place with his own hands. Now we are looking for someone who wants to be part of it further.\n\nWant to go differently than others? Join us.", 
+      step2Btn: "I understand",
+      step3Title: "OWN CHAIR AND RESPECT", 
+      step3Sub: "Reward for Discipline", 
+      step3Content: "Here we take care of our people like our own. The owner will show you the way and give you everything you need to grow – mentoring, equipment and peace for work. In return, however, we require only one thing: absolute respect for his vision and strong moral principles.\n\nYou must be able to listen and play by the rules of our family. If you have character and a desire to learn, a seat at our table and access to the best clientele awaits you.", 
+      step3Btn: "I'm in",
+      step4Title: "JOIN THE TEAM", 
+      step4Sub: "Final Mission", 
+      step4Content: "Are you ready? Send us a few words about yourself and your experiences. Once we evaluate it, we will contact you.", 
+      step4Btn: "Open Connection (E-mail)"
+    },
+    rulesPage: {
+      title: "OPERATING RULES",
+      subtitle: "Rules and standards of MMBarber men's barbershop. Our mission requires discipline and mutual respect.",
+      backBtn: "BACK TO HQ",
+      sections: [
+        { title: "Booking and Punctuality", text: "Please arrive for your mission on time. Arrival later than 10 minutes may mean cancellation of the appointment without compensation, so as not to limit the recruits after you." },
+        { title: "Appointment Cancellation", text: "Please announce a change or cancellation of the appointment at least 24 hours in advance. We respect your time, please respect ours." },
+        { title: "Hygiene Standards", text: "We maintain surgical cleanliness. Every tool is sterilized after each use. Peace and safety are priorities." },
+        { title: "Right of Refusal", text: "MMBarber reserves the right to refuse a client who shows signs of inappropriate behavior or infectious disease. We keep the level in our family." },
+        { title: "Payment", text: "Payment takes place immediately after the end of the mission. We accept cash and QR payments." }
+      ]
+    },
+    others: {
+      title: "MORE ABOUT THE BUSINESS",
+      hiddenPlaces: {
+        title: "HIDDEN PLACES OF THE CITY",
+        name: "Komfort Lounge Bar",
+        address: "L. Janáčka 180 686 01, Uherské Hradiště 1",
+        description: "Atmospheric shisha bar, ideal place to relax with a water pipe, coffee or quality drink.",
+        slotsTitle: "FREE SLOTS",
+        cta: "JOIN"
+      },
+      members: {
+        title: "FAMILY MEMBERS",
+        description: "Those who know where to look...",
+        employeeWall: {
+          title: "EMPLOYEE WALL",
+          year: "YEAR 2026",
+          employeeName: "Tomáš",
+          months: ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"],
+          invitation: "Want to be on our wall too? You should stop by so we know what nickname to write there!",
+          brandVision: "Some think a barbershop is just about hair. This is how 99% of people see it, but there are others who see it differently. You can join and help me build a brand."
+        }
+      },
+      support: {
+        title: "GRAPHICS",
+        description: "",
+        reward: "Since I don't give discounts and Black Friday every Friday. Want to support the barber? What stands behind it all? So support!",
+        pcLabel: "Desktop background 1920x1080px.",
+        phoneLabel: "Phone wallpaper 1080x1920px",
+        downloadBtn: "DOWNLOAD REWARD",
+        passwordLabel: "ACCESS PASSWORD",
+        passwordHint: "For the password you have to go to the barber, just don't go next door, he doesn't know it...",
+        unlock: "UNLOCK",
+        denied: "Access denied"
+      },
+      systemVisit: {
+        title: "System and Visit",
+        description: "How to properly prepare for a visit to the barber.",
+        cta: "MORE INFORMATION"
+      }
+    },
+    styleDefinition: {
+      defineStyle: {
+        title: ["Define", "Your Style"],
+        subtitle: "MMBARBER EXCLUSIVE /",
+        modalTitle: "Don't know what hairstyle fits your style?",
+        modalContent: "Together we'll find a cut that will harmonize with what you wear — and with who you are. We'll discuss details, fine-tune the look and you'll walk out with confidence. Like a king."
+      },
+      pairTherapy: {
+        title: ["Pair", "Therapy"],
+        subtitle: "MMBARBER SPECIAL /",
+        modalTitle: "Come together. Leave even more synchronized.",
+        modalContent: "First we'll fine-tune his style, in the evening it's her turn. Meanwhile, peace, conversation and atmosphere that draws you in. Because style is better when you share it."
+      }
+    },
+    environmentSlider: {
+      title: "GALLERY",
+      detailPhoto: "DETAIL PHOTO",
+      closeImage: "CLOSE SHOT"
+    },
+    seznamka: {
+      description: "Matchmaking from the real world.\nNot everyone has time or desire to be online.\nThis is different. You come. You sit down... and things happen.",
+      protocolTitle: "MATCHMAKING PROTOCOL",
+      acknowledge: "I UNDERSTAND",
+      successTitle: "MISSION COMPLETE",
+      successText: "Now you are ready for a personal meeting.",
+      finishBtn: "FINISH MISSION",
+      cancelBtn: "Cancel progress and return",
+      confirmedLabel: "Procedure confirmed",
+      steps: [
+        { title: "Send a friend", desc: "Send a friend to get a haircut" },
+        { title: "Take a girlfriend", desc: "Take a girlfriend to trim the ends" },
+        { title: "Recruit the brave", desc: "Or send someone known who is not afraid" }
+      ]
+    },
+    welcome: {
+      l1: { title: "LETTER ABOUT PAYMENT", content: "CONFIDENTIAL: With us you pay in cash or with a QR code of your banking." },
+      l2: { title: "LETTER ABOUT PARKING", content: "CONFIDENTIAL: Free parking directly in front of the premises. Mornings are completely without problem. Use WAZE? you'll hit the barber next door..." },
+      l3: { title: "LETTER ABOUT PEACE", content: "CONFIDENTIAL: You can sit with us, nobody's throwing you out. We are family." },
+      authorized: "Authorized by MMBARBER"
+    },
+    cityGuide: {
+      compass: {
+        label: "Compass to the barbershop",
+        locating: "LOCATING...",
+        distance: "{{distance}} REMAINING"
+      }
+    },
+    game: {
+      default: {
+        ranks: [
+          { title: "Rookie", desc: "You're just learning to hold the scissors." },
+          { title: "Apprentice", desc: "You have the basics, but blood still flows." },
+          { title: "Barber", desc: "Your hand is steady, your style is visible." },
+          { title: "Master", desc: "Hair obeys your every word." },
+          { title: "Legend", desc: "You cut even with your eyes closed. Respect." }
+        ],
+        quips: ["Nice cut!", "Precise!", "Style!", "Hit!", "Sharp!"],
+        hairTooltip: "CUT HAIR",
+        rankLabel: "ACHIEVED LEVEL"
+      }
+    },
+    specialProjects: {
+      likeTheWeb: "Do you like this web ?",
+      division: "DESIGN AND DEVELOPMENT DIVISION",
+      title: "WE CREATE DIGITAL IDENTITIES",
+      description: "We are not just a barbershop. We are a community of people who want to create quality. If you want a web that has a soul and not just code, let us know.",
+      writeUs: "Write us",
+      callUs: "Call us"
     }
   },
   boss: {

@@ -151,12 +151,15 @@ export function Header() {
       }
       
       // Fallback: read from CSS variable
-      const cssColor = getComputedStyle(document.documentElement).getPropertyValue("--user-accent-color").trim().toLowerCase();
-      if (cssColor) {
+      const cssColor = getComputedStyle(document.documentElement).getPropertyValue("--user-accent-color").trim();
+      if (cssColor && cssColor !== "" && !cssColor.includes("NaN")) {
+        // If it's an RGB string from computed style, that's fine for simple color props
+        // but we should avoid appending hex suffixes to it later.
         setUserAccentColor(cssColor);
-        const isActive = cssColor !== defaultHex && cssColor !== defaultRgb && cssColor !== "";
+        const isActive = cssColor.toLowerCase() !== defaultHex && cssColor !== defaultRgb;
         setIsCustomLookActive(isActive);
       } else {
+        setUserAccentColor(defaultHex);
         setIsCustomLookActive(false);
       }
     };
@@ -897,9 +900,9 @@ export function Header() {
                 <motion.div
                   key="search-glow"
                   className="absolute inset-0 rounded-full blur-md"
-                  style={{ backgroundColor: `${userAccentColor}18` }}
+                  style={{ backgroundColor: 'var(--user-glow-color)', opacity: 0.2 }}
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  animate={{ opacity: 0.2 }}
                 />
               )}
             </button>
@@ -915,7 +918,7 @@ export function Header() {
                 <Settings 
                   size={20} 
                   className={`relative z-10 ${isSettingsOpen ? 'rotate-90' : ''} transition-transform duration-500`}
-                  style={{ color: userAccentColor, filter: `drop-shadow(0 0 8px ${userAccentColor}40)` }} 
+                  style={{ color: userAccentColor, filter: `drop-shadow(0 0 8px var(--user-glow-color))` }} 
                 />
                 {(isRadioPlaying || isGameActive || isCustomLookActive) && !isSettingsOpen && (
                    <div className="absolute top-0 right-0 w-2 h-2 bg-mafia-gold rounded-full shadow-[0_0_8px_var(--color-mafia-gold)] z-20" />
@@ -995,7 +998,7 @@ export function Header() {
                   className="relative z-10 animate-pulse" 
                   style={{ 
                     color: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor,
-                    filter: `drop-shadow(0 0 10px ${(typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? 'rgba(139,0,0,0.5)' : (userAccentColor + '80')})`
+                    filter: `drop-shadow(0 0 10px ${(typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? 'rgba(139,0,0,0.5)' : 'var(--user-glow-color)'})`
                   }} 
                 />
             </button>

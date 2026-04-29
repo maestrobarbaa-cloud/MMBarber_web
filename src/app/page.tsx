@@ -212,7 +212,7 @@ export default function Home() {
             Uherské Hradiště – město vína, folkloru, bezproblémového parkování a špičkového pánského stylu v MM BARBER.
           </p>
           <p>
-            Ultimate Local Guide Uherske Hradiste: best barbershop near Nemocnice UH, men's grooming near Slovacke divadlo, 
+            Ultimate Local Guide Uherske Hradiste: best barbershop near Nemocnice UH, men&apos;s grooming near Slovacke divadlo, 
             where to park for free in the city center, top lifestyle hub in Moravia. 
             From Summer Film School events to daily services like post office or hospital info, 
             we connect the community in Uherske Hradiste, Kunovice, and Stare Mesto.

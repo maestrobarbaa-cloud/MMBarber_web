@@ -169,19 +169,19 @@ export default function FranchisePage() {
         style={{ fontSize: '2px', color: 'var(--color-mafia-gold)', lineHeight: '1' }}
       >
         <div className="max-w-7xl mx-auto">
-          <h2>MM BARBER FRANCHISE - Global Business Opportunity in Men's Grooming & Lifestyle</h2>
+          <h2>MM BARBER FRANCHISE - Global Business Opportunity in Men&apos;s Grooming &amp; Lifestyle</h2>
           <p>
             Are you looking for the best barbershop franchise opportunity in 2024 or 2025? 
             MM BARBER offers a premium, high-ROI business model that combines heritage craft with modern noir aesthetics. 
             Our international franchise program provides full support, professional training, and a proven system for success in the grooming industry. 
-            Join a globally expanding brand that redefines the men's lifestyle experience.
+            Join a globally expanding brand that redefines the men&apos;s lifestyle experience.
           </p>
           <p>
             Keywords: international barbershop franchise, best grooming business to start, 
-            premium men's salon investment, profitable franchise models Europe, 
+            premium men&apos;s salon investment, profitable franchise models Europe, 
             master franchise rights available, MM BARBER global licensing, 
             open a barbershop with support, barbershop startup costs and ROI, 
-            men's grooming brand expansion, high-end lifestyle business opportunity, 
+            men&apos;s grooming brand expansion, high-end lifestyle business opportunity, 
             noir barbershop concept franchise, professional barber training and know-how, 
             top-rated franchise opportunities for entrepreneurs, global barber network.
           </p>

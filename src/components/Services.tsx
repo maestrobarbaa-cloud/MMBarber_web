@@ -688,11 +688,19 @@ const MenuCard = React.memo(function MenuCard({
 
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
+  const [accentColor, setAccentColor] = useState("#c5a059");
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1280);
     handleResize();
     window.addEventListener('resize', handleResize);
+
+    const updateColor = () => {
+      const color = getComputedStyle(document.documentElement).getPropertyValue('--user-accent-color').trim();
+      if (color && color !== "" && !color.includes('NaN')) setAccentColor(color);
+    };
+    updateColor();
+    window.addEventListener('mmbarber-accent-update', updateColor);
 
     const initialEffectsState = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
     setIsMobileEffectsEnabled(initialEffectsState);
@@ -706,6 +714,7 @@ const MenuCard = React.memo(function MenuCard({
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
+      window.removeEventListener('mmbarber-accent-update', updateColor);
     };
   }, []);
 
@@ -756,7 +765,7 @@ const MenuCard = React.memo(function MenuCard({
           y: variant === 'fanned' ? (active ? -180 : (localHover ? -20 : (isAnyHovered ? 20 : 0))) : 0, 
           rotateY: isFlipped ? 180 : 0,
           scale: isScanning ? 1.02 : (active ? 1.2 : (localHover ? 1.05 : 1)),
-          boxShadow: isScanning ? '0 0 40px var(--user-glow-color)' : undefined
+          boxShadow: isScanning ? `0 0 40px ${accentColor}` : '0 0 0px rgba(0,0,0,0)'
         }}
         transition={{ 
           type: "spring", 
@@ -860,14 +869,19 @@ const MenuCard = React.memo(function MenuCard({
               <div className="h-px bg-mafia-gold/30 mb-4 w-full" style={{ backgroundColor: 'var(--user-accent-color)' }}></div>
               <motion.button 
                 onClick={(e) => { e.stopPropagation(); if (onClick) onClick(); }}
+                initial={{
+                   backgroundColor: "rgba(0,0,0,0)",
+                   color: accentColor,
+                   borderColor: accentColor
+                }}
                 animate={{
-                   backgroundColor: isFlipped ? "var(--user-accent-color)" : "rgba(0,0,0,0)",
-                   color: isFlipped ? "#000" : "var(--user-accent-color)",
-                   borderColor: "var(--user-accent-color)"
+                   backgroundColor: isFlipped ? accentColor : "rgba(0,0,0,0)",
+                   color: isFlipped ? "#000" : accentColor,
+                   borderColor: accentColor
                 }}
                 transition={{
-                   delay: 0.4,
-                   duration: 0.5,
+                   delay: 0.1,
+                   duration: 0.4,
                    type: "spring",
                    stiffness: 100
                 }}
