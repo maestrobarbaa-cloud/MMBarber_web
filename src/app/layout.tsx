@@ -141,6 +141,115 @@ export default function RootLayout({
       <head>
         <link rel="preload" href="/obr/main-hero.png" as="image" type="image/png" fetchPriority="high" />
         <link rel="preload" href="/logo.png" as="image" type="image/png" />
+        <link rel="alternate" href="https://mmbarber.cz/" hrefLang="cs" />
+        <link rel="alternate" href="https://mmbarber.cz/en" hrefLang="en" />
+        <link rel="alternate" href="https://mmbarber.cz/" hrefLang="x-default" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "MMBARBER Barber & Shop",
+              "image": "https://mmbarber.cz/logo.png",
+              "@id": "https://mmbarber.cz",
+              "url": "https://mmbarber.cz",
+              "telephone": "+420577544073",
+              "priceRange": "$$",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "512",
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Sadová 1383",
+                "addressLocality": "Uherské Hradiště",
+                "postalCode": "68605",
+                "addressCountry": "CZ"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 49.0687,
+                "longitude": 17.4851
+              },
+              "openingHoursSpecification": [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+                  "opens": "09:00",
+                  "closes": "18:00"
+                },
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Saturday", "Sunday"],
+                  "opens": "09:00",
+                  "closes": "12:00"
+                }
+              ],
+              "sameAs": [
+                "https://www.instagram.com/mmbarber_uh/",
+                "https://www.facebook.com/mmbarber.uh/"
+              ]
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Domů", "item": "https://mmbarber.cz" },
+                { "@type": "ListItem", "position": 2, "name": "Služby", "item": "https://mmbarber.cz/#sluzby" },
+                { "@type": "ListItem", "position": 3, "name": "FAQ", "item": "https://mmbarber.cz/faq" },
+                { "@type": "ListItem", "position": 4, "name": "Galerie", "item": "https://mmbarber.cz/fade-gallery" },
+                { "@type": "ListItem", "position": 5, "name": "Region", "item": "https://mmbarber.cz/region-slovacko" }
+              ]
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Service",
+              "serviceType": "Barbershop",
+              "provider": {
+                "@type": "LocalBusiness",
+                "name": "MMBARBER"
+              },
+              "areaServed": {
+                "@type": "State",
+                "name": "Zlínský kraj"
+              },
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Barber Services",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Pánský střih (Haircut)"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Úprava vousů (Beard Grooming)"
+                    }
+                  }
+                ]
+              }
+            })
+          }}
+        />
         <script dangerouslySetInnerHTML={{ __html: `
           try {
             // Early detection for mobile and graphics tier to prevent layout shifts

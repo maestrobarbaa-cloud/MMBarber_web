@@ -9,6 +9,7 @@ export const translations = {
       theCode: "Informace",
       more: "Více",
       career: "Kariéra",
+      aboutUs: "O Nás",
       franchise: "FRANCHISE",
       startMission: "JAK TO U NÁS CHODÍ",
       compass: "KOMPAS",
@@ -18,8 +19,59 @@ export const translations = {
       tracking: "SLEDUJI POLOHU",
       savingData: "ŠETŘÍ DATA",
       navigate: "NAVIGOVAT",
-      searchPlaceholder: "Ptej se právně."
+      searchPlaceholder: "Ptej se právně.",
+      reviews: "Recenze"
     },
+    intelligence: [
+      "Dnes je ideální tlak pro precizní skin fade. Vlhkost v UH odpovídá normě.",
+      "Systém detekoval zvýšený zájem o úpravu vousů na Slovácku. Kapacity se plní.",
+      "Pozor na vítr v Mařaticích. Doporučujeme silnější pomádu z naší výbavy.",
+      "Dnešní mise: Perfektní kontury. Barber je v plné pohotovosti.",
+      "Analýza trendů: Zlín a okolí přechází na kratší střihy. Buďte napřed.",
+      "Hlášení: Rezervační systém is.mmbarber.cz vykazuje vysokou aktivitu.",
+      "Doporučení dne: Napařování vousů horkým ručníkem pro maximální relax.",
+      "Stav centrály: Všechny systémy stabilní. Čas na váš nový styl.",
+      "Místní zpráva: V Uherském Hradišti dnes vládne styl. Buďte jeho součástí.",
+      "Technický tip: Olej na vousy aplikujte hned po sprše pro nejlepší efekt.",
+      "Monitorování: Klienti z Brodu a Veselí jsou na cestě k nám. Rezervujte včas.",
+      "Strategie dne: Neřešte, co bylo. Řešte, jak vypadáte teď.",
+      "Systémová zpráva: MM BARBER rodina se rozrůstá. Děkujeme za loajalitu.",
+      "Počasí v UH přeje krátkým vlasům. Přijďte si pro svůj taper fade.",
+      "Hlášení z Mařatic: Parkování před centrálou je volné a připravené.",
+      "Nová data: Beard grooming je v roce 2026 základem každého úspěšného muže.",
+      "Detekce stylu: V okolí Kunovic byl zaznamenán extrémně ostrý střih od nás.",
+      "Záznam: Dnešní káva v centrále je stejně silná jako naše břitvy.",
+      "Aktualizace: Upravili jsme techniky pro ještě čistší přechody.",
+      "Zpráva pro rekruty: První návštěva? Nebojte se, postaráme se o vše.",
+      "Analýza: Styl noir není móda, je to postoj. Dnes je den pro postoj.",
+      "Monitoring: Letní filmová škola se blíží. Vypadejte skvěle v kinech.",
+      "Info: Slavnosti vína v UH vyžadují reprezentativní vizáž. Máte ji?",
+      "Důležité: Každý milimetr rozhoduje. My ty milimetry hlídáme.",
+      "Zpráva ze systému: Vaše loajalita je naše síla. Pokračujte v misi.",
+      "Technologie: Používáme nejostřejší břity na celém Slovácku. Ověřeno.",
+      "Hlášení: Barber Tomáš dnes ladí detaily s chirurgickou přesností.",
+      "Vzkaz: Nehledejte výmluvy, hledejte volný termín na is.mmbarber.cz.",
+      "Data: 99% mužů se cítí lépe po návštěvě u nás. Buďte to 1% co to ví.",
+      "Závěrečné hlášení: MM BARBER Uherské Hradiště – mise splněna."
+    ],
+    familyIntelligence: [
+      "Vodo Topo Jahoda hlásí 100% nasazení v terénu. Havárie v UH pod kontrolou.",
+      "Kofipack odeslal novou zásilku pro naši rodinu. Logistika v Mařaticích běží.",
+      "Malina Photo vyvolává nové důkazy ze včerejší akce. Očekávejte vizuální update.",
+      "Argema ladí zvuk pro další misi. Slovácko bude vibrovat.",
+      "Sluneční Reality detekovaly nové strategické objekty v centru Hradiště.",
+      "Comites hlásí stabilní růst. Finance naší rodiny jsou v bezpečí.",
+      "Šimon Král připravuje setlist, který nenechá nikoho v klidu. Ready?",
+      "O Shawarma Beef doplňuje zásoby nejlepšího masa ve městě. Mise: Oběd.",
+      "Dvůr pod Starýma Horama připravuje degustaci. Krev naší rodiny je víno.",
+      "Kudielka instaluje nové stínící systémy. Vaše soukromí je naší prioritou.",
+      "Dětský domov UH: Společně jsme dnes vykouzlili několik úsměvů. Dobrá práce.",
+      "O Kolečko víc hlásí: Sezóna v plném proudu, servisy jedou na maximum.",
+      "Zdeněk Mička Bílovice: Všechny trubky v regionu jsou v nejlepších rukou.",
+      "Romana Mičková: Daně a účty jsou srovnané s matematickou přesností.",
+      "Poe Poe: Rychlá jednotka občerstvení v UH je připravena k nasazení.",
+      "Analýza: Naše rodina se rozšiřuje o nové vlivné členy. Síla je v jednotě."
+    ],
     hero: {
       subtitle: "Holičství Uherské Hradiště",
       title: "Pánské holičství v Uherském Hradišti, o kterém se nemluví, ale každý tam chce patřit.",
@@ -227,7 +279,8 @@ export const translations = {
       close: "ZAVŘÍT",
       vipClub: "V.I.P. KLUB",
       partnerships: "Partnerství & Platba",
-      followUs: "Sledujte nás"
+      followUs: "Sledujte nás",
+      reviews: "Recenze"
     },
     rodina: {
       title: "MM BARBER RODINA",
@@ -606,6 +659,7 @@ export const translations = {
       theCode: "Information",
       more: "More",
       career: "Career",
+      aboutUs: "About Us",
       franchise: "FRANCHISE",
       startMission: "HOW IT WORKS",
       compass: "COMPASS",
@@ -615,8 +669,59 @@ export const translations = {
       tracking: "TRACKING POSITION",
       savingData: "SAVING DATA",
       navigate: "NAVIGATE",
-      searchPlaceholder: "LOCATE TARGET..."
+      searchPlaceholder: "LOCATE TARGET...",
+      reviews: "Reviews"
     },
+    intelligence: [
+      "Today's air pressure is ideal for a precise skin fade. Humidity in UH is within norms.",
+      "System detected increased interest in beard grooming in Slovácko. Capacities are filling up.",
+      "Watch out for wind in Mařatice. We recommend a stronger pomade from our selection.",
+      "Today's mission: Perfect contours. The barber is on high alert.",
+      "Trend analysis: Zlín area is switching to shorter cuts. Stay ahead.",
+      "Report: Booking system is.mmbarber.cz shows high activity.",
+      "Recommendation: Hot towel beard steaming for maximum relaxation.",
+      "Headquarters status: All systems stable. Time for your new style.",
+      "Local news: Style rules Uherské Hradiště today. Be a part of it.",
+      "Tech tip: Apply beard oil right after shower for the best effect.",
+      "Monitoring: Clients from Brod and Veselí are on their way. Book in time.",
+      "Today's strategy: Don't worry about the past. Worry about how you look now.",
+      "System message: MM BARBER family is growing. Thank you for your loyalty.",
+      "UH weather favors short hair. Come get your taper fade.",
+      "Report from Mařatice: Parking in front of the headquarters is free and ready.",
+      "New data: Beard grooming is the foundation of every successful man in 2026.",
+      "Style detection: Extremely sharp cut from us recorded near Kunovice.",
+      "Log: Today's coffee at the headquarters is as strong as our razors.",
+      "Update: We have refined our techniques for even cleaner transitions.",
+      "Message for recruits: First visit? Don't worry, we'll take care of everything.",
+      "Analysis: Noir style is not fashion, it's an attitude. Today is the day for attitude.",
+      "Monitoring: Summer Film Festival is approaching. Look great in the cinemas.",
+      "Info: Wine Festival in UH requires a representative look. Do you have it?",
+      "Important: Every millimeter counts. We are watching those millimeters.",
+      "Message from the system: Your loyalty is our strength. Continue the mission.",
+      "Technology: Using the sharpest blades in the whole of Slovácko. Verified.",
+      "Report: Barber Tomáš is tuning details with surgical precision today.",
+      "Message: Don't look for excuses, look for a free slot at is.mmbarber.cz.",
+      "Data: 99% of men feel better after visiting us. Be the 1% who knows.",
+      "Final report: MM BARBER Uherské Hradiště – mission accomplished."
+    ],
+    familyIntelligence: [
+      "Vodo Topo Jahoda reports 100% field deployment. Emergencies in UH under control.",
+      "Kofipack sent a new shipment for our family. Logistics in Mařatice active.",
+      "Malina Photo is developing new evidence from yesterday's event. Visual update expected.",
+      "Argema is tuning the sound for the next mission. Slovácko will vibrate.",
+      "Sluneční Reality detected new strategic objects in the center of Hradiště.",
+      "Comites reports stable growth. Our family's finances are secure.",
+      "Šimon Král is preparing a setlist that won't leave anyone at peace. Ready?",
+      "O Shawarma Beef is restocking the best meat in town. Mission: Lunch.",
+      "Dvůr pod Starýma Horama is preparing a tasting. Our family's blood is wine.",
+      "Kudielka is installing new shading systems. Your privacy is our priority.",
+      "Dětský domov UH: Together we conjured a few smiles today. Good job.",
+      "O Kolečko víc reports: Season in full swing, service running at maximum.",
+      "Zdeněk Mička Bílovice: All pipes in the region are in the best hands.",
+      "Romana Mičková: Taxes and accounts are balanced with mathematical precision.",
+      "Poe Poe: Quick refreshment unit in UH is ready for deployment.",
+      "Analysis: Our family is expanding with new influential members. Strength in unity."
+    ],
     hero: {
       subtitle: "Barber shop Uherské Hradiště",
       title: "A Men's Barbershop in Uherské Hradiště.",
@@ -824,7 +929,8 @@ export const translations = {
       close: "CLOSE",
       vipClub: "V.I.P. CLUB",
       partnerships: "Partnerships & Info",
-      followUs: "Follow Us"
+      followUs: "Follow Us",
+      reviews: "Reviews"
     },
     rodina: {
       title: "MMBARBER FAMILY",
@@ -1029,9 +1135,9 @@ export const translations = {
       footer: "Simple. Functional. Quality."
     },
     seo: {
-      title: "MMBARBER Barber & Shop | Best Barbershop Uherské Hradiště | Premium Men's Grooming",
-      description: "Looking for the best barbershop in Uherské Hradiště? MMBARBER Barber & Shop offers elite men's haircuts, professional straight razor beard styling, and a unique noir atmosphere. Modern grooming, precision skin fades, and traditional rituals for the modern man. Book your spot at the top-rated barbershop.",
-      keywords: "best barbershop Uherské Hradiště, MMBARBER, top barber UH, men's grooming Uherské Hradiště, luxury men's haircut, straight razor beard trim, professional barber, modern grooming rituals, lifestyle barbershop, heritage grooming club, men's community, authentic barber experience, MMBARBER community, premium hair and beard care, best hairdresser UH, men's hair styling, hot towel service, beard steaming, skin fade UH, classic men's haircut, modern hairstyles for men, men's cosmetics, hair pomade, beard oil, men's relaxation, men's lifestyle hub, noir barbershop, Tomas Micka, traditional shaving, barber shop experience 2024, men's hairstyles 2025, gift vouchers for men, experiential haircutting, international barbershop, best craftsmen Uherské Hradiště, professional plumbers and electricians, top real estate services, expert local tradesmen, professional event photography, reliable business partners Czech Republic, best barbershop franchise opportunity, global grooming brand expansion, premium barber business investment, master franchise rights, international brand licensing, profitable grooming concept, open a barbershop Europe, men's hair salon Uherske Hradiste, where to get a haircut in UH, best barber Slovacko, top-rated grooming center, professional men's styling Czech Republic, Mařatice barbershop, Kunovice men's grooming."
+      title: "MMBARBER Barber & Shop | Best Barbershop Uherské Hradiště | Men's Hairdressing",
+      description: "Looking for the best barbershop in Uherské Hradiště? MMBARBER Barber & Shop offers top men's haircuts, professional razor beard grooming, and a unique noir atmosphere. Modern grooming, precise skin fade, and traditional rituals for real men. Book your spot in the best hair salon in UH.",
+      keywords: "best barbershop Uherské Hradiště, MMBARBER, top barber UH, men's hairdressing Uherské Hradiště, luxury men's haircut, razor beard grooming, professional barber, modern grooming, lifestyle barbershop, heritage hairdressing, men's community Slovácko, authentic barber experience, MMBARBER community, men's grooming ritual, professional hair and beard care, best hairdresser UH, men's haircut, razor shaving, hot towel service, beard steaming, skin fade UH, taper fade, classic men's haircut, modern hairstyles for men, men's cosmetics, hair pomade, beard oil, men's relax, men's club, noir barbershop, Tomáš Mička, hairdressing Slovácko, Kunovice hairdressing, Staré Město hairdressing, men's style, traditional shaving, barber shop experience, men's hairstyles 2024, men's hairstyles 2025, gift vouchers for men, experiential hair cutting, premium barber shop, hairdressing Uherské Hradiště, men's cutting, beard grooming UH, barber shop Slovácko, best craftsmen Uherské Hradiště, verified plumber UH, top electrician Slovácko, professional photographer UH, real estate agent Hradiště, bike and e-bike service Slovácko, electrical inspection UH, accounting services for companies, windows and blinds Uherské Hradiště, gastro and restaurants UH, best barbershop franchise, business investment, profitable hairdressing franchise, master franchise opportunity, global barbershop brand, MM BARBER expansion, where to go for a men's haircut in UH, best barber Uherské Hradiště, men's hairdressing Mařatice, cutting Uherské Hradiště, hairdressing Jarošov, barber Kunovice, hairdresser Staré Město near UH, men's hairstyles Hradiště, razor shave price, top barber Slovácko, Summer Film School LFŠ, 1.FC Slovácko football, Slovácko Wine Festival, Aquapark Uherské Hradiště, Slovácko Theatre, Buchlov Castle, Buchlovice Castle, Velehrad, best burger UH, where to go in Hradiště, free parking Uherské Hradiště, free parking UH, where to park in Hradiště, Uherské Hradiště Hospital, UH train station, Uherské Hradiště post office, Old Marketplace Mall."
     },
     career: {
       title: "Vacancies",
@@ -1234,6 +1340,11 @@ export const translations = {
       subtitle: "Vyber si svýho specialistu.",
       openFile: "Složka",
       bookBarber: "Domluvit se s ním"
+    },
+    seo: {
+      title: "MMBARBER Barber & Shop | Teritorium Uherské Hradiště | Rezervace kšeftu",
+      description: "Vstup do světa naší rodiny v Uherském Hradišti. MM BARBER nabízí bezcitnou preciznost, loajalitu a styl, který si nekoupíš. Pánské holičství pro ty, co vědí, co chtějí.",
+      keywords: "MMBARBER rodina, šéf Tomáš, Uherské Hradiště, kšefty, nábor, noir styl, loajalita, řemeslo, břitva, výpalné."
     }
   },
   falco: {

@@ -285,6 +285,118 @@ export default function SystemVisitPage() {
            </div>
         </div>
       )
+    },
+    {
+      icon: <Layers size={28} />,
+      title: lang === 'cs' ? "Profesionální péče" : "Professional Care",
+      content: lang === 'cs' ? (
+        <div className="space-y-4">
+          <p className="text-sm">Základem je <span className="text-mafia-gold font-bold uppercase tracking-widest">správná chemie</span>. Profesionální kosmetika není o značce, ale o složení bez sulfátů a parabenů.</p>
+          <div className="grid grid-cols-1 gap-3">
+             <div className="p-3 border border-white/5 bg-white/[0.02]">
+                <p className="text-[10px] font-black uppercase text-mafia-gold mb-1">Vousy</p>
+                <p className="text-[11px] opacity-70">Olej pro hydrataci pokožky, balzám pro ochranu a tvar. Mytí pouze speciálním mýdlem na vousy (pH neutrální).</p>
+             </div>
+             <div className="p-3 border border-white/5 bg-white/[0.02]">
+                <p className="text-[10px] font-black uppercase text-mafia-gold mb-1">Vlasy</p>
+                <p className="text-[11px] opacity-70">Šampon podle typu pokožky, kondicionér pro uzavření vlasu. Styling (hlinka, pasta) nanášet do suchých nebo ručníkem vysušených vlasů.</p>
+             </div>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <p className="text-sm">The foundation is <span className="text-mafia-gold font-bold uppercase tracking-widest">proper chemistry</span>. Professional cosmetics is about sulfate-free and paraben-free formulas.</p>
+          <div className="grid grid-cols-1 gap-3">
+             <div className="p-3 border border-white/5 bg-white/[0.02]">
+                <p className="text-[10px] font-black uppercase text-mafia-gold mb-1">Beard</p>
+                <p className="text-[11px] opacity-70">Oil for skin hydration, balm for protection and shape. Wash only with special beard soap (pH neutral).</p>
+             </div>
+             <div className="p-3 border border-white/5 bg-white/[0.02]">
+                <p className="text-[10px] font-black uppercase text-mafia-gold mb-1">Hair</p>
+                <p className="text-[11px] opacity-70">Shampoo based on skin type, conditioner to close the hair. Apply styling (clay, paste) to dry or towel-dried hair.</p>
+             </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      icon: <Info size={28} />,
+      title: lang === 'cs' ? "Sezónní protokol" : "Seasonal Protocol",
+      content: (
+        <div className="space-y-4">
+          {(() => {
+            const month = new Date().getMonth();
+            const season = 
+              (month >= 2 && month <= 4) ? 'spring' :
+              (month >= 5 && month <= 7) ? 'summer' :
+              (month >= 8 && month <= 10) ? 'autumn' : 'winter';
+            
+            const tips = {
+              winter: {
+                cs: {
+                  title: "ZIMNÍ OCHRANA",
+                  desc: "Mráz a suchý vzduch z topení jsou nepřátelé č. 1. Pokožka pod vousy bývá podrážděná a suchá.",
+                  action: "Používejte hutnější balzámy a více oleje. Před odchodem ven nechte produkty 15 minut vstřebat."
+                },
+                en: {
+                  title: "WINTER PROTECTION",
+                  desc: "Frost and dry heating air are enemies #1. Skin under the beard gets irritated and dry.",
+                  action: "Use richer balms and more oil. Let products absorb for 15 mins before heading out."
+                }
+              },
+              spring: {
+                cs: {
+                  title: "JARNÍ RESTART",
+                  desc: "Po zimě je potřeba pokožku prokrvit a zbavit se odumřelých buněk.",
+                  action: "Doporučujeme peeling pokožky pod vousy a lehčí hydratační krémy místo hutných balzámů."
+                },
+                en: {
+                  title: "SPRING RESTART",
+                  desc: "After winter, skin needs blood circulation and removal of dead cells.",
+                  action: "We recommend beard peeling and lighter moisturizing creams instead of heavy balms."
+                }
+              },
+              summer: {
+                cs: {
+                  title: "LETNÍ HYDRATACE",
+                  desc: "Slunce, sůl a chlór vysušují vlas i vous. UV záření oslabuje strukturu.",
+                  action: "Používejte produkty s UV ochranou. Po koupání v moři/bazénu vždy opláchněte sladkou vodou a naneste olej."
+                },
+                en: {
+                  title: "SUMMER HYDRATION",
+                  desc: "Sun, salt and chlorine dry out hair and beard. UV radiation weakens the structure.",
+                  action: "Use products with UV protection. Always rinse with fresh water and apply oil after swimming."
+                }
+              },
+              autumn: {
+                cs: {
+                  title: "PODZIMNÍ REPARACE",
+                  desc: "Vlasy po létě potřebují hloubkovou výživu před příchodem prvních mrazů.",
+                  action: "Ideální čas na regenerační masky a vitamínové kúry pro podporu růstu a síly."
+                },
+                en: {
+                  title: "AUTUMN REPAIR",
+                  desc: "After summer, hair needs deep nourishment before the first frost arrives.",
+                  action: "Ideal time for regenerative masks and vitamin treatments to support growth."
+                }
+              }
+            };
+
+            const active = tips[season][lang as 'cs' | 'en'] || tips[season].cs;
+
+            return (
+              <div className="relative group/season">
+                <div className="text-mafia-gold font-mono text-[10px] uppercase tracking-[0.4em] mb-2">{active.title}</div>
+                <p className="text-xs mb-3 italic opacity-60">{active.desc}</p>
+                <div className="bg-mafia-gold/10 p-3 border-l-2 border-mafia-gold">
+                  <p className="text-[11px] font-bold uppercase">{active.action}</p>
+                </div>
+                <div className="mt-4 text-[8px] font-mono opacity-20 uppercase tracking-[0.3em]">Aktualizováno automaticky: {season}</div>
+              </div>
+            );
+          })()}
+        </div>
+      )
     }
   ];
 
@@ -367,7 +479,7 @@ export default function SystemVisitPage() {
                 className="text-lg md:text-2xl text-smoke-white/60 font-sans max-w-3xl mx-auto leading-relaxed font-light italic"
               >
                 {lang === 'cs' 
-                  ? "Dnešní svět pánského střihu stojí na dvou pilířích – klasickém holičství a moderním barbershopu. Każdý má svá pravidla. U nás se tyhle dva světy propojují."
+                  ? "Dnešní svět pánského střihu stojí na dvou pilířích – klasickém holičství a moderním barbershopu. Každý má svá pravidla. U nás se tyhle dva světy propojují."
                   : "Modern men's style stands on two pillars – classic barbering and modern barbershop. Each has its rules. Here, we bridge those two worlds."}
               </motion.p>
             </motion.div>

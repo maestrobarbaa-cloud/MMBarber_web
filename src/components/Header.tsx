@@ -793,9 +793,9 @@ export function Header() {
               <Compass size={16} style={{ color: userAccentColor }} />
               {t.header.startMission}
             </Link>
-            <Link href="/kariera" onClick={() => trackEvent("nav_link_click", { label: "kariera" })} className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2">
-              <Briefcase size={16} style={{ color: userAccentColor }} />
-              {t.header.career}
+            <Link href="/pribeh" onClick={() => trackEvent("nav_link_click", { label: "pribeh" })} className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2">
+              <Users size={16} style={{ color: userAccentColor }} />
+              {t.header.aboutUs}
             </Link>
 
             <Link 
@@ -1094,13 +1094,13 @@ export function Header() {
                 </div>
               </Link>
 
-              <Link href="/kariera" onClick={handleNavLinkClick} className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left">
+              <Link href="/pribeh" onClick={handleNavLinkClick} className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left">
                 <div className="text-mafia-gold/60">
-                   <Briefcase size={28} />
+                   <Users size={28} />
                 </div>
                 <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest">{lang === 'cs' ? 'KARIÉRA' : 'CAREER'}</span>
-                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header?.career || 'KARIÉRA'}</span>
+                   <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest">{lang === 'cs' ? 'NÁŠ PŘÍBĚH' : 'OUR STORY'}</span>
+                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.aboutUs}</span>
                 </div>
               </Link>
 

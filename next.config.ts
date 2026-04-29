@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.google.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.seznam.cz',
       }
     ],
     qualities: [60, 75, 85, 90, 100],

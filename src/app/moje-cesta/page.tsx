@@ -36,7 +36,6 @@ export default function MojeCesta() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-smoke-white selection:bg-mafia-gold selection:text-mafia-black overflow-hidden relative">
-      <Header />
       
       {/* Film Grain Layer */}
       <div 

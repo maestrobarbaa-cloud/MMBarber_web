@@ -29,6 +29,7 @@ import {
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackEvent } from "@/utils/analytics";
 import { playSound } from "@/utils/audio";
+import { FamilyIntelligence } from "@/components/FamilyIntelligence";
 
 function MemberCard({ m, lang }: { m: any, lang: string }) {
   const [showContact, setShowContact] = useState(false);
@@ -344,7 +345,11 @@ export default function FamilyPage() {
           <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="text-center mb-16 max-w-4xl mx-auto">
               <h1 className="text-4xl md:text-6xl font-heading font-black text-smoke-white uppercase mb-4">{t.rodina.title}</h1>
-              <p className="text-mafia-gold font-heading text-xl uppercase tracking-[0.2em] italic font-black">{t.rodina.youForUs}</p>
+              <p className="text-mafia-gold font-heading text-xl uppercase tracking-[0.2em] italic font-black mb-12">{t.rodina.youForUs}</p>
+              
+              <div className="max-w-2xl mx-auto opacity-80 hover:opacity-100 transition-opacity">
+                <FamilyIntelligence />
+              </div>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-16">

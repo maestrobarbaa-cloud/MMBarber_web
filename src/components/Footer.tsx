@@ -12,6 +12,7 @@ import {
   X
 } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
+import { DailyIntelligence } from "./DailyIntelligence";
 import { trackEvent } from "../utils/analytics";
 import { EvasiveButton } from "./EvasiveButton";
 
@@ -469,7 +470,6 @@ export function Footer() {
             </div>
 
             <div className="flex flex-col space-y-3">
-              <FooterLink href="/kariera" isBordered>{t.header.career}</FooterLink>
               <FooterLink href="/provozni-rad" isBordered>{t.footer.rules}</FooterLink>
               <FooterLink href="/obchodni-podminky" isBordered>{t.footer.terms}</FooterLink>
               <FooterLink href="/ochrana-osobnich-udaju" isBordered>{t.footer.privacy}</FooterLink>
@@ -503,6 +503,7 @@ export function Footer() {
             </h3>
             <FooterLink href="/franchise">{t.header.franchise}</FooterLink>
             <FooterLink href="/payment">{t.header.payment}</FooterLink>
+            <FooterLink href="/kariera">{t.header.career}</FooterLink>
           </div>
 
           {/* Column 3: Sleduj nás - Modern Premium Grid */}
@@ -548,14 +549,147 @@ export function Footer() {
       </div>
 
       <div className="border-t border-mafia-gold/10 pt-10 pb-4 flex flex-col items-center relative">
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-4">
           <div className="font-mono text-smoke-white/50 text-xs md:text-sm tracking-[0.2em] uppercase text-center flex flex-wrap items-center justify-center gap-2">
             <span>© {t.footer.copyright}</span>
-            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V 3.3</span>
+            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V 3.4</span>
+          </div>
+          <div className="w-full max-w-4xl opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 mb-8 px-6">
+             <DailyIntelligence />
+          </div>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 max-w-md">
+            <Link 
+              href="/zapisnik" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Archiv_01
+            </Link>
+            <Link 
+              href="/fade-gallery" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Gallery_01
+            </Link>
+            <Link 
+              href="/operativni-denik" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Diary_01
+            </Link>
+            <Link 
+              href="/faq" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              FAQ_01
+            </Link>
+            <Link 
+              href="/barbershop-uherske-hradiste" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Region_UH
+            </Link>
+            <Link 
+              href="/pansky-strih-uherske-hradiste" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Service_Cut
+            </Link>
+            <Link 
+              href="/akademie" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Academy_01
+            </Link>
+            <Link 
+              href="/lokalni-sit" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Local_Network
+            </Link>
+            <Link 
+              href="/barbershop-zlin" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Zlin_Connect
+            </Link>
+            <Link 
+              href="/barbershop-uhersky-brod" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Brod_Connect
+            </Link>
+            <Link 
+              href="/barbershop-veseli-nad-moravou" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Veseli_Connect
+            </Link>
+            <Link 
+              href="/barbershop-hodonin" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Hodonin_Connect
+            </Link>
+            <Link 
+              href="/barbershop-kyjov" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Kyjov_Connect
+            </Link>
+            <Link 
+              href="/barbershop-luhacovice" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Luhacovice_Connect
+            </Link>
+            <Link 
+              href="/region-slovacko" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Slovacko_Hub
+            </Link>
+            <Link 
+              href="/global-standards" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Global_Hub
+            </Link>
+            <Link 
+              href="https://www.firmy.cz/detail/13801488-mmbarber-uherske-hradiste-maratice.html" 
+              target="_blank"
+              rel="noopener"
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Firmy_Seznam_Sync
+            </Link>
+            <Link 
+              href="/uprava-vousu-uherske-hradiste" 
+              className="text-[8px] font-mono text-white/5 opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 uppercase tracking-[0.5em] select-none"
+              aria-hidden="true"
+            >
+              Service_Beard
+            </Link>
           </div>
           <div className="sr-only">
-            <h2>{t.seo.title}</h2>
-            <p>{t.seo.description}</p>
+            <h2>{t.seo?.title}</h2>
+            <p>{t.seo?.description}</p>
           </div>
         </div>
       </div>

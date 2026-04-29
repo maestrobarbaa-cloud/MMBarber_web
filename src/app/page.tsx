@@ -14,6 +14,7 @@ const Contact = dynamic(() => import("@/components/Contact").then(mod => mod.Con
 const Partners = dynamic(() => import("@/components/Partners").then(mod => mod.Partners), { ssr: false });
 const Footer = dynamic(() => import("@/components/Footer").then(mod => mod.Footer), { ssr: false });
 const StyleDefinition = dynamic(() => import("@/components/StyleDefinition").then(mod => mod.StyleDefinition), { ssr: false });
+const DailyIntelligence = dynamic(() => import("@/components/DailyIntelligence").then(mod => mod.DailyIntelligence), { ssr: false });
 
 import { CinematicIntro } from "@/components/Intro";
 import { Atmosphere } from "@/components/Atmosphere";
