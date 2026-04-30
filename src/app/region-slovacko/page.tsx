@@ -94,7 +94,7 @@ export default function RegionSlovackoPage() {
                  <li>• Žádné hledání parkování v centrech velkých měst (Zlín, Hodonín).</li>
                  <li>• Klidná rezidenční čtvrť Mařatice – soukromí zaručeno.</li>
                  <li>• Možnost platit QR kódem nebo hotovostí.</li>
-                 <li>• Atmosféra soukromého klubu, kterou v "kadeřnictví na náměstí" nezažijete.</li>
+                 <li>• Atmosféra soukromého klubu, kterou v &quot;kadeřnictví na náměstí&quot; nezažijete.</li>
               </ul>
            </div>
            <div className="flex flex-col justify-center items-center md:items-end">

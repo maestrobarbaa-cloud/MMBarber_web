@@ -76,10 +76,10 @@ export function WelcomeLetters() {
     setIsVisible(false);
   };
 
-  const letters: LetterData[] = [
-    { id: 'l1', title: t.welcome.l1.title, content: t.welcome.l1.content },
-    { id: 'l2', title: t.welcome.l2.title, content: t.welcome.l2.content },
-    { id: 'l3', title: t.welcome.l3.title, content: t.welcome.l3.content },
+  const letters = [
+    { id: 'l1', title: t?.welcome?.l1?.title || "Mission", content: t?.welcome?.l1?.content || "..." },
+    { id: 'l2', title: t?.welcome?.l2?.title || "Vision", content: t?.welcome?.l2?.content || "..." },
+    { id: 'l3', title: t?.welcome?.l3?.title || "Protocol", content: t?.welcome?.l3?.content || "..." },
   ];
 
   const handleOpen = (letter: LetterData) => {
@@ -221,7 +221,7 @@ export function WelcomeLetters() {
                   <FolderIcon size={40} />
                   <div>
                     <h3 className="text-mafia-black font-heading font-black text-2xl uppercase tracking-widest">{activeLetter.title}</h3>
-                    <span className="text-[10px] font-mono text-mafia-red font-black uppercase tracking-widest">{t.welcome.authorized}</span>
+                    <span className="text-[10px] font-mono text-mafia-red font-black uppercase tracking-widest">{t?.welcome?.authorized || "AUTHORIZED"}</span>
                   </div>
                 </div>
 

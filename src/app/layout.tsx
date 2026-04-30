@@ -9,6 +9,7 @@ import { FilmGrain } from "@/components/FilmGrain";
 import { SecurityProvider } from "@/components/SecurityProvider";
 import { ClientWrapper } from "@/components/ClientWrapper";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { FutureSEO } from "@/components/FutureSEO";
 
 import Script from "next/script";
 
@@ -335,6 +336,7 @@ export default function RootLayout({
 
             <Atmosphere />
             <FilmGrain />
+            <FutureSEO />
             <Header />
 
             <main className="relative z-10 flex-col flex flex-1">

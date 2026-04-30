@@ -93,7 +93,7 @@ export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
               whileInView={{ opacity: 1 }}
               className="text-4xl md:text-6xl font-heading font-black text-white tracking-[0.2em] md:tracking-[0.3em] uppercase"
             >
-              {t.partners.title}
+              {t?.partners?.title || (lang === 'cs' ? 'NAŠI KUMPÁNI' : 'OUR PARTNERS')}
             </motion.h2>
 
             {/* Right Gangster Stars */}

@@ -114,7 +114,6 @@ export function Header() {
    const [isGameActive, setIsGameActive] = useState(false);
    const [userAccentColor, setUserAccentColor] = useState<string>("#c5a059");
    const [isCustomLookActive, setIsCustomLookActive] = useState(false);
-   const [weaponType, setWeaponType] = useState<'pistol' | 'burst'>('pistol');
 
   useEffect(() => {
     const savedSound = localStorage.getItem("mmbarber_sound_enabled");
@@ -125,8 +124,6 @@ export function Header() {
       localStorage.setItem("mmbarber_sound_enabled", "false");
     }
 
-    const savedWeapon = localStorage.getItem("mmbarber_weapon_type") as 'pistol' | 'burst';
-    if (savedWeapon) setWeaponType(savedWeapon);
 
     // Read accent color from CSS variable or localStorage
     const readAccentColor = () => {
@@ -580,6 +577,8 @@ export function Header() {
     });
   };
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
   useEffect(() => {
     const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 1280;
     const hasVisited = typeof window !== 'undefined' && localStorage.getItem("mmbarber_visited") === "true";
@@ -596,6 +595,7 @@ export function Header() {
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 20);
 
       if (isIntroActive) return;
       
@@ -680,10 +680,10 @@ export function Header() {
 
   return (
     <>
-      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-20 md:h-24 block'}`} aria-hidden="true" />
+      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-20 md:h-24 xl:h-28 block'}`} aria-hidden="true" />
       <header
         className={`w-full left-0 z-[30000] py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate 
-          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : 'fixed xl:absolute top-0 bg-mafia-black/90 xl:bg-transparent backdrop-blur-xl xl:backdrop-blur-none h-24 xl:h-auto'} 
+          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : `fixed top-0 h-24 xl:h-28 ${isScrolled || pathname !== '/' ? 'bg-mafia-black/95 backdrop-blur-xl border-b border-white/5' : 'bg-transparent backdrop-blur-none border-b border-transparent'}`} 
           ${(isIntroActive) ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} 
           ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
       >
@@ -748,40 +748,6 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden xl:flex items-center gap-8 font-sans text-sm tracking-widest uppercase text-smoke-white/70">
-            {/* Weapon Selector - Only when sound is on */}
-            <AnimatePresence>
-              {isSoundEnabled && (
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="flex items-center gap-1 bg-mafia-black/40 border border-mafia-gold/20 p-1 rounded-none mr-4"
-                >
-                  <button
-                    onClick={() => {
-                      localStorage.setItem("mmbarber_weapon_type", "pistol");
-                      window.dispatchEvent(new CustomEvent('mmbarber-weapon-update', { detail: 'pistol' }));
-                      setWeaponType('pistol');
-                      playSound("/sounds/magnum.mp3", 0.3);
-                    }}
-                    className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest transition-all ${weaponType === 'pistol' ? 'bg-mafia-gold text-mafia-black' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}
-                  >
-                    Pistole
-                  </button>
-                  <button
-                    onClick={() => {
-                      localStorage.setItem("mmbarber_weapon_type", "burst");
-                      window.dispatchEvent(new CustomEvent('mmbarber-weapon-update', { detail: 'burst' }));
-                      setWeaponType('burst');
-                      playSound("/sounds/kulomet.mp3", 0.3);
-                    }}
-                    className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest transition-all ${weaponType === 'burst' ? 'bg-mafia-gold text-mafia-black' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}
-                  >
-                    Samopal
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             <Link 
               href="/jak-to-chodi" 

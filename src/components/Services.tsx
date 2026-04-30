@@ -64,7 +64,7 @@ export function Services() {
         
         <div className="text-center mb-16 md:mb-24">
           <h2 className="text-4xl md:text-6xl font-heading font-black text-smoke-white mb-4 tracking-[0.3em] uppercase">
-            {t.header.services}
+            {t?.header?.services}
           </h2>
           <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-4 md:mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
         </div>
@@ -72,7 +72,7 @@ export function Services() {
         <div className="grid grid-cols-2 lg:flex lg:flex-row items-center justify-center gap-3 lg:gap-16 max-w-4xl mx-auto mb-12">
           <MenuCard 
             variant="simple"
-            title={t.services.title}
+            title={t?.services?.title || (lang === 'cs' ? 'SLUŽBY' : 'SERVICES')}
             icon={<Target className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" size={32} />}
             onClick={() => {
               router.push('/cenik');
@@ -82,7 +82,7 @@ export function Services() {
           />
           <MenuCard 
             variant="simple"
-            title={t.header.seznamka}
+            title={t?.header?.seznamka || (lang === 'cs' ? 'SEZNAMKA' : 'DATING')}
             icon={<Heart size={32} className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" />}
             onClick={() => {
               router.push('/seznamka');
@@ -94,7 +94,7 @@ export function Services() {
 
         <div className="text-center mt-40 mb-16 md:mb-24">
           <h2 className="text-4xl md:text-6xl font-heading font-black text-smoke-white mb-4 tracking-[0.3em] uppercase">
-            {t.others.title}
+            {t?.others?.title || (lang === 'cs' ? 'OSTATNÍ' : 'OTHERS')}
           </h2>
           <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-4 md:mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
         </div>
@@ -117,37 +117,37 @@ export function Services() {
             },
             { 
               id: 'support',
-              title: t.others.support.title,
+              title: t?.others?.support?.title || (lang === 'cs' ? 'PODPORA' : 'SUPPORT'),
               icon: <Heart size={48} className="text-mafia-gold" />,
               description: lang === 'cs' ? 'PODPOŘTE NÁŠ SALON' : 'SUPPORT OUR SALON',
               onClick: () => { setShowSupport(true); trackEvent("open_support"); }
             },
             { 
               id: 'members',
-              title: t.rodina.title,
+              title: t?.rodina?.title || (lang === 'cs' ? 'RODINA' : 'FAMILY'),
               icon: <Scissors size={48} className="text-mafia-gold" />,
               description: lang === 'cs' ? 'POZNEJTE NÁŠ TÝM' : 'MEET OUR TEAM',
               onClick: () => { router.push('/rodina'); trackEvent("open_family_page"); }
             },
             { 
               id: 'housing',
-              title: t.sidliste.title,
+              title: t?.sidliste?.title || (lang === 'cs' ? 'SÍDLIŠTĚ' : 'HOUSING ESTATE'),
               icon: <Building2 size={48} className="text-mafia-gold" />,
               description: lang === 'cs' ? 'LOKÁLNÍ KOMUNITA A PŘÍBĚHY' : 'LOCAL COMMUNITY AND STORIES',
               onClick: () => { router.push('/sidliste'); trackEvent("open_housing_estate_page"); }
             },
             { 
               id: 'hidden',
-              title: t.others.hiddenPlaces.title,
+              title: t?.others?.hiddenPlaces?.title || (lang === 'cs' ? 'SKRYTÁ MÍSTA' : 'HIDDEN PLACES'),
               icon: <Globe size={48} className="text-mafia-gold" />,
               description: lang === 'cs' ? 'TAJEMNÉ KOUTY NAŠEHO MĚSTA' : 'DISCOVER HIDDEN URBEX SPOTS',
               onClick: () => { router.push('/skryta-mista'); trackEvent("open_hidden_places_page"); }
             },
             { 
               id: 'system',
-              title: t.others.systemVisit.title,
+              title: t?.others?.systemVisit?.title || (lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : 'SYSTEM & VISIT'),
               icon: <Info size={48} className="text-mafia-gold" />,
-              description: t.others.systemVisit.description,
+              description: t?.others?.systemVisit?.description,
               onClick: () => { router.push('/system-a-navsteva'); trackEvent("open_system_visit_page"); }
             }
           ].map((card, idx, arr) => (
@@ -195,13 +195,13 @@ export function Services() {
             },
             { 
               id: 'members',
-              title: t.rodina.list === 'Seznam' ? 'RODINA' : 'FAMILY',
+              title: t?.rodina?.list === 'Seznam' ? (lang === 'cs' ? 'RODINA' : 'FAMILY') : (lang === 'cs' ? 'RODINA' : 'FAMILY'),
               icon: <Scissors size={32} className="text-mafia-gold" />,
               onClick: () => { router.push('/rodina'); trackEvent("open_family_page"); }
             },
             { 
               id: 'housing',
-              title: t.sidliste.title,
+              title: t?.sidliste?.title || (lang === 'cs' ? 'SÍDLIŠTĚ' : 'HOUSING ESTATE'),
               icon: <Building2 size={32} className="text-mafia-gold" />,
               onClick: () => { router.push('/sidliste'); trackEvent("open_housing_estate_page"); }
             },
@@ -403,7 +403,7 @@ export function Services() {
               className="relative w-full max-w-2xl bg-mafia-dark/40 border border-mafia-gold/30 shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] overflow-y-auto scrollbar-thin scrollbar-thumb-mafia-gold/20 max-h-[95vh]"
             >
               <div className="sticky top-0 z-20 bg-mafia-black/90 backdrop-blur-md border-b border-mafia-gold/10 p-6 flex items-center justify-between">
-                <h3 className="text-2xl font-heading font-bold text-mafia-gold uppercase tracking-widest">{t.others.members.title}</h3>
+                <h3 className="text-2xl font-heading font-bold text-mafia-gold uppercase tracking-widest">{t?.others?.members?.title || (lang === 'cs' ? 'ČLENOVÉ' : 'MEMBERS')}</h3>
                 <button onClick={() => setShowMembers(false)} className="text-mafia-gold hover:text-mafia-red transition-colors"><X size={24} /></button>
               </div>
 

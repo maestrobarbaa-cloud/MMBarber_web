@@ -20,10 +20,10 @@ export function Contact() {
   };
 
   const categories = [
-    { id: "address" as const, icon: <MapPin size={40} />, label: t.contact.address },
-    { id: "connection" as const, icon: <Phone size={40} />, label: t.contact.connection },
-    { id: "parking" as const, icon: <Car size={40} />, label: t.contact.parking },
-    { id: "transit" as const, icon: <Bus size={40} />, label: t.contact.transit },
+    { id: "address" as const, icon: <MapPin size={40} />, label: t?.contact?.address || (lang === 'cs' ? 'Adresa' : 'Address') },
+    { id: "connection" as const, icon: <Phone size={40} />, label: t?.contact?.connection || (lang === 'cs' ? 'Spojení' : 'Connection') },
+    { id: "parking" as const, icon: <Car size={40} />, label: t?.contact?.parking || (lang === 'cs' ? 'Parkování' : 'Parking') },
+    { id: "transit" as const, icon: <Bus size={40} />, label: t?.contact?.transit || (lang === 'cs' ? 'MHD' : 'Transit') },
   ];
 
   const renderActiveInfo = () => {
@@ -37,7 +37,7 @@ export function Contact() {
           >
             <div className="flex items-center gap-3 text-mafia-gold">
                 <MapPin size={20} />
-                <h4 className="font-heading font-bold uppercase tracking-widest">{t.contact.address}</h4>
+                <h4 className="font-heading font-bold uppercase tracking-widest">{t?.contact?.address || (lang === 'cs' ? 'Adresa' : 'Address')}</h4>
             </div>
             <div className="address-side-bar font-mono text-xl md:text-2xl text-smoke-white border-y border-mafia-gold/20 py-4 px-8 allow-copy">
                 <p>Mařatice, Sadová 1383</p>
@@ -54,7 +54,7 @@ export function Contact() {
           >
             <div className="flex items-center gap-3 text-mafia-gold">
                 <Phone size={20} />
-                <h4 className="font-heading font-bold uppercase tracking-widest">{t.contact.connection}</h4>
+                <h4 className="font-heading font-bold uppercase tracking-widest">{t?.contact?.connection || (lang === 'cs' ? 'Spojení' : 'Connection')}</h4>
             </div>
             <div className="grid gap-4 w-full max-w-sm allow-copy">
                 <a href="tel:+420577544073" 
@@ -86,12 +86,12 @@ export function Contact() {
           >
             <div className="flex items-center gap-3 text-mafia-gold">
                 <Car size={20} />
-                <h4 className="font-heading font-bold uppercase tracking-widest">{t.contact.parking}</h4>
+                <h4 className="font-heading font-bold uppercase tracking-widest">{t?.contact?.parking || (lang === 'cs' ? 'Parkování' : 'Parking')}</h4>
             </div>
             
             <div className="space-y-4 font-sans text-smoke-white/80 leading-relaxed border-mafia-red border-l-4 md:border-l-4 pl-6 py-2">
-                <p className="text-xl font-bold text-smoke-white uppercase tracking-wider">{t.intro.parking}</p>
-                <p className="text-lg italic text-mafia-gold/90">{t.intro.parkingHint}</p>
+                <p className="text-xl font-bold text-smoke-white uppercase tracking-wider">{t?.intro?.parking || (lang === 'cs' ? 'PARKOVÁNÍ' : 'PARKING')}</p>
+                <p className="text-lg italic text-mafia-gold/90">{t?.intro?.parkingHint}</p>
             </div>
 
             <div className="flex flex-wrap justify-center gap-4 pt-2 w-full">
@@ -105,7 +105,7 @@ export function Contact() {
                   className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:border-mafia-gold transition-all text-xs font-bold uppercase tracking-widest group"
                 >
                   <Copy size={14} className={copied ? "text-green-500" : "text-mafia-gold group-hover:scale-110 transition-transform"} />
-                  <span className="text-smoke-white">{copied ? (lang === 'cs' ? "KOPÍROVÁNO" : "COPIED") : t.intro.copyAddress}</span>
+                  <span className="text-smoke-white">{copied ? (lang === 'cs' ? "KOPÍROVÁNO" : "COPIED") : (t?.intro?.copyAddress || "COPY ADDRESS")}</span>
                 </button>
                 
                 <a 
@@ -116,7 +116,7 @@ export function Contact() {
                   className="flex items-center gap-2 px-6 py-3 bg-mafia-gold/10 border border-mafia-gold/30 hover:bg-mafia-gold hover:text-mafia-black transition-all text-xs font-bold uppercase tracking-widest group"
                 >
                   <MapPin size={14} className="text-mafia-gold group-hover:text-mafia-black transition-colors" />
-                  <span className="text-smoke-white group-hover:text-mafia-black">{t.intro.openMaps}</span>
+                  <span className="text-smoke-white group-hover:text-mafia-black">{t?.intro?.openMaps || "OPEN MAPS"}</span>
                 </a>
             </div>
           </motion.div>
@@ -130,14 +130,14 @@ export function Contact() {
           >
             <div className="flex items-center gap-3 text-mafia-gold">
                 <Bus size={20} />
-                <h4 className="font-heading font-bold uppercase tracking-widest">{t.contact.transit}</h4>
+                <h4 className="font-heading font-bold uppercase tracking-widest">{t?.contact?.transit || (lang === 'cs' ? 'MHD' : 'Transit')}</h4>
             </div>
             <div className="p-6 bg-white/5 border-2 border-dashed border-mafia-gold/20 flex flex-col gap-4 w-full max-w-sm mx-auto">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-10 h-10 bg-mafia-gold shrink-0 flex items-center justify-center text-mafia-black font-black">ST</div>
                     <div>
-                        <p className="text-smoke-white font-bold text-lg uppercase tracking-widest">{t.contact.transitText1}</p>
-                        <p className="text-mafia-gold/60 font-mono text-sm uppercase mt-1">{t.contact.transitText2}</p>
+                        <p className="text-smoke-white font-bold text-lg uppercase tracking-widest">{t?.contact?.transitText1}</p>
+                        <p className="text-mafia-gold/60 font-mono text-sm uppercase mt-1">{t?.contact?.transitText2}</p>
                     </div>
                 </div>
             </div>
@@ -158,10 +158,10 @@ export function Contact() {
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16 md:mb-24">
           <h2 className="text-4xl md:text-6xl font-heading font-black text-smoke-white mb-4 tracking-[0.2em] uppercase">
-            {t.contact.title}
+            {t?.contact?.title || (lang === 'cs' ? 'KONTAKT' : 'CONTACT')}
           </h2>
           <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
-          <p className="text-smoke-white/40 font-mono tracking-[0.4em] uppercase text-xs md:text-sm">{t.contact.subtitle}</p>
+          <p className="text-smoke-white/40 font-mono tracking-[0.4em] uppercase text-xs md:text-sm">{t?.contact?.subtitle}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">

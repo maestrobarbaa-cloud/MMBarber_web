@@ -22,10 +22,10 @@ export function MinigameToggle() {
       const theme = getActiveTheme();
       const isForced = localStorage.getItem("mmbarber_game_forced") === "true";
       
-      // Events (Easter, Matrix, etc.)
+      // Normal days = show toggle, Events = hide toggle (per user request)
       const isEvent = theme !== 'default';
       
-      setIsVisible(isEvent || isForced);
+      setIsVisible(!isEvent || isForced);
       setIsEnabled(localStorage.getItem("mmbarber_game_enabled") === "true");
     };
 

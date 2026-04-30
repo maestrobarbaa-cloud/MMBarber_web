@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/uzivatel/', '/the-cheats/', '/vip-club/'],
+      disallow: ['/uzivatel/'],
     },
     sitemap: 'https://mmbarber.cz/sitemap.xml',
   };

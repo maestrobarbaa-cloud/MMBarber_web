@@ -8,52 +8,53 @@ import Image from "next/image";
 
 export default function FranchisePage() {
   const { t } = useTranslation();
-  const f = t.franchisePage;
+  const f = t?.franchisePage || {};
+  const fs = f?.sections || {};
 
 
   const sections = [
     {
-      title: f.sections.about.title,
+      title: fs?.about?.title || "ABOUT",
       content: (
         <div className="space-y-6">
-          <p className="text-mafia-gold font-mono text-[10px] tracking-[0.4em] uppercase">{f.sections.about.label}</p>
+          <p className="text-mafia-gold font-mono text-[10px] tracking-[0.4em] uppercase">{fs?.about?.label || "MM BARBER CONCEPT"}</p>
           <p className="text-xl md:text-2xl font-heading font-black text-smoke-white uppercase leading-relaxed">
-            {f.sections.about.desc}
+            {fs?.about?.desc}
           </p>
           <div className="flex items-center gap-4 py-4">
             <div className="h-px w-12 bg-mafia-gold"></div>
             <p className="text-mafia-gold italic font-heading text-xl uppercase tracking-widest font-black">
-              {f.sections.about.motto}
+              {fs?.about?.motto}
             </p>
           </div>
         </div>
       )
     },
     {
-      title: f.sections.benefits.title,
+      title: fs?.benefits?.title || "BENEFITS",
       icon: <LayoutGrid className="text-mafia-gold" size={24} />,
-      items: f.sections.benefits.items
+      items: fs?.benefits?.items || []
     },
     {
-      title: f.sections.who.title,
+      title: fs?.who?.title || "WHO IS IT FOR?",
       icon: <Users className="text-mafia-gold" size={24} />,
       content: (
         <div className="space-y-6">
           <p className="text-xl md:text-2xl font-heading font-black text-smoke-white uppercase">
-            {f.sections.who.desc}
+            {fs?.who?.desc}
           </p>
           <p className="text-sm font-mono text-white/60 tracking-wider leading-loose">
-            {f.sections.who.motto}
+            {fs?.who?.motto}
           </p>
         </div>
       )
     },
     {
-      title: f.sections.how.title,
+      title: fs?.how?.title || "HOW TO START?",
       icon: <TrendingUp className="text-mafia-gold" size={24} />,
       content: (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          {f.sections.how.steps.map((text: string, idx: number) => (
+          {fs?.how?.steps?.map((text: string, idx: number) => (
             <div key={idx} className="relative p-6 border border-white/5 bg-white/[0.02] backdrop-blur-sm">
               <span className="absolute top-2 right-4 text-4xl font-heading font-black text-mafia-gold/10">0{idx + 1}</span>
               <p className="text-smoke-white font-heading font-bold uppercase tracking-widest">{text}</p>
@@ -79,16 +80,16 @@ export default function FranchisePage() {
           className="mb-20"
         >
           <Link href="/" className="group flex items-center gap-3 text-mafia-gold/60 hover:text-mafia-gold transition-colors font-mono text-[10px] uppercase tracking-[0.3em] mb-12">
-            <ChevronLeft size={14} /> {f.back}
+            <ChevronLeft size={14} /> {f?.back || "BACK TO HQ"}
           </Link>
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-mafia-gold/20 pb-12">
             <div>
               <h1 className="text-5xl md:text-7xl font-heading font-black text-smoke-white uppercase tracking-tighter mb-4 italic">
-                {f.title}<br />{f.subtitle}
+                {f?.title || "FRANCHISE"}<br />{f?.subtitle || "OPPORTUNITY"}
               </h1>
               <p className="text-mafia-gold font-heading text-lg md:text-xl uppercase tracking-widest font-black max-w-xl">
-                {f.heroDesc}
+                {f?.heroDesc}
               </p>
             </div>
             <div className="hidden md:block">
@@ -139,17 +140,17 @@ export default function FranchisePage() {
           >
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-mafia-gold/10 blur-3xl rounded-full" />
             
-            <h2 className="text-3xl md:text-5xl font-heading font-black text-smoke-white uppercase mb-8 italic">{f.contact.title}</h2>
+            <h2 className="text-3xl md:text-5xl font-heading font-black text-smoke-white uppercase mb-8 italic">{f?.contact?.title || "CONTACT"}</h2>
             <p className="text-mafia-gold font-heading text-xl uppercase tracking-widest mb-12 font-black">
-              {f.contact.desc}
+              {f?.contact?.desc}
             </p>
             
             <div className="flex flex-col md:flex-row items-center justify-center gap-6">
               <a href="mailto:info@mmbarber.cz" className="w-full md:w-auto px-12 py-5 bg-mafia-gold text-mafia-black font-heading font-black text-xs uppercase tracking-[0.3em] hover:bg-smoke-white transition-all duration-500 flex items-center justify-center gap-3">
-                <Mail size={18} /> {f.contact.email}
+                <Mail size={18} /> {f?.contact?.email || "EMAIL"}
               </a>
               <a href="https://instagram.com/mmbarber" target="_blank" rel="noreferrer" className="w-full md:w-auto px-12 py-5 border-2 border-mafia-gold text-mafia-gold font-heading font-black text-xs uppercase tracking-[0.3em] hover:bg-mafia-gold hover:text-mafia-black transition-all duration-500 flex items-center justify-center gap-3">
-                <Instagram size={18} /> {f.contact.instagram}
+                <Instagram size={18} /> {f?.contact?.instagram || "INSTAGRAM"}
               </a>
             </div>
           </motion.section>
@@ -159,7 +160,7 @@ export default function FranchisePage() {
         <div className="mt-40 text-center space-y-4 opacity-40 hover:opacity-100 transition-opacity duration-1000">
            <div className="h-px w-20 bg-mafia-gold mx-auto mb-8"></div>
            <p className="text-3xl font-heading font-black text-smoke-white tracking-tighter">MMBARBER</p>
-           <p className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.6em]">{f.footer}</p>
+           <p className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.6em]">{f?.footer || "GLOBAL EXPANSION"}</p>
         </div>
       </div>
 

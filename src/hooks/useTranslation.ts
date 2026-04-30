@@ -58,7 +58,7 @@ export function useTranslation() {
         theCode: { ...translations.cs.theCode, ...(translations.falco as typeof translations.cs).theCode }
       };
     }
-    return translations[lang] || translations.en;
+    return (translations as any)[lang] || (translations as any).en;
   }, [lang]);
 
   const switchLanguage = (newLang: Language) => {

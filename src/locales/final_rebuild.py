@@ -1,4 +1,10 @@
-export const translations = {
+import os
+
+def final_rebuild_from_clean_source():
+    # The absolute best way: Redefine the WHOLE structure in the script.
+    # I'll use the pieces I have and assemble them.
+
+    header = """export const translations = {
   cs: {
     header: {
       services: "Služby",
@@ -362,16 +368,6 @@ export const translations = {
       keywords: "barbershop Uherské Hradiště, pánské holičství UH, skin fade Hradiště, úprava vousů Uherské Hradiště, holení břitvou Slovácko, MM BARBER Mařatice, pánský střih UH, kadeřnictví pro muže Hradiště, dárkový poukaz barber",
       extraContent: "Tady v Uherském Hradišti (lokalita Mařatice) nestavíme na trendech, ale na lidech. Každý střih, každý detail u křesla je odrazem naší loajality k řemeslu. Jsme MM BARBER rodina – komunita, která v UH definuje styl. Přijď si pro svůj poctivý servis a zažij atmosféru, o které se sice nemluví nahlas, ale každý ji v Hradišti hledá. Parkování zdarma přímo u nás je samozřejmostí."
     },
-    club: {
-      topSecret: "PŘÍSNĚ TAJNÉ // MM BARBER HQ",
-      title: "V.I.P. KLUB",
-      subtitle: "Místo pro ty, co vědí víc než ostatní.",
-      timeExpires: "PLATNOST SEANCE KONČÍ ZA:",
-      loginTitle: "ZADEJTE PŘÍSTUPOVÝ KÓD",
-      loginSubtitle: "POKUD SEM NEPATŘÍŠ, ODEJDI DOKUD MŮŽEŠ",
-      unlockButton: "AUTORIZOVAT PŘÍSTUP",
-      wrongPassword: "PŘÍSTUP ZAMÍTNUT // KÓD JE NEPLATNÝ"
-    },
     akademie: {
       title: "MM BARBER AKADEMIE",
       subtitle: "Učení u křesla / Individual Mentoring",
@@ -492,11 +488,11 @@ export const translations = {
       step1Btn: "Chci to zkusit",
       step2Title: "NEJSME JEN DALŠÍ BARBER V ŘADĚ", 
       step2Sub: "ZÁKLADNÍ PRAVIDLA", 
-      step2Content: "Nehrajeme si na trendy, kde má každý v ruce břitvu a říká si barber. U nás je to o tvrdé práci, preciznosti v každém detailu a respektu k řemeslu. Jsme tým, který to bere vážně – a zároveň drží při sobě.\n\nHledáme lidi, co chtějí víc než jen 'odkroutit' směnu. Lidi, co na sobě chtějí makat, posouvat se a být součástí něčeho, co má směr.\n\nŠéf má jasnou vizi a většinu tohohle místa dokázal vybudovat vlastníma rukama. Teď hledáme někoho, kdo v tom chce pokračovat s námi.\n\nChceš jít jinou cestou než ostatní? Přidej se.", 
+      step2Content: "Nehrajeme si na trendy, kde má každý v ruce břitvu a říká si barber. U nás je to o tvrdé práci, preciznosti v každém detailu a respektu k řemeslu. Jsme tým, který to bere vážně – a zároveň drží při sobě.\\n\\nHledáme lidi, co chtějí víc než jen 'odkroutit' směnu. Lidi, co na sobě chtějí makat, posouvat se a být součástí něčeho, co má směr.\\n\\nŠéf má jasnou vizi a většinu tohohle místa dokázal vybudovat vlastníma rukama. Teď hledáme někoho, kdo v tom chce pokračovat s námi.\\n\\nChceš jít jinou cestou než ostatní? Přidej se.", 
       step2Btn: "Rozumím a respektuji",
       step3Title: "VLASTNÍ KŘESLO A RESPEKT", 
       step3Sub: "Odměna za disciplínu", 
-      step3Content: "Tady se o své lidi staráme jako o vlastní. Majitel ti ukáže cestu a dá ti všechno, co k růstu potřebuješ – mentoring, vybavení a klid na práci. Na oplátku ale vyžadujeme jediné: absolutní respekt k jeho vizi a silné morální zásady.\n\nMusíš umět naslouchat a hrát podle pravidel naší rodiny. Pokud máš charakter a chuť se učit, čeká tě místo u našeho stolu a přístup k té nejlepší klientele.", 
+      step3Content: "Tady se o své lidi staráme jako o vlastní. Majitel ti ukáže cestu a dá ti všechno, co k růstu potřebuješ – mentoring, vybavení a klid na práci. Na oplátku ale vyžadujeme jediné: absolutní respekt k jeho vizi a silné morální zásady.\\n\\nMusíš umět naslouchat a hrát podle pravidel naší rodiny. Pokud máš charakter a chuť se učit, čeká tě místo u našeho stolu a přístup k té nejlepší klientele.", 
       step3Btn: "Jdu do toho",
       step4Title: "VÍTEJ V TÝMU", 
       step4Sub: "Poslední krok", 
@@ -575,7 +571,7 @@ export const translations = {
       closeImage: "ZÁBĚR ZBLÍZKA"
     },
     seznamka: {
-      description: "Matchmaking z reálného světa.\nNe každý má čas nebo chuť být online.\nTohle je jiné. Přijdeš. Sedneš si... a věci se dějí.",
+      description: "Matchmaking z reálného světa.\\nNe každý má čas nebo chuť být online.\\nTohle je jiné. Přijdeš. Sedneš si... a věci se dějí.",
       protocolTitle: "MATCHMAKING PROTOKOL",
       acknowledge: "ROZUMÍM",
       successTitle: "MISE KOMPLETNÍ",
@@ -614,44 +610,6 @@ export const translations = {
         quips: ["Pěkný střih!", "Precizní!", "Styl!", "Zásah!", "Ostrý!"],
         hairTooltip: "OSTŘÍHAT",
         rankLabel: "DOSAŽENÁ ÚROVEŇ"
-      }
-    },
-    holidayCountdown: {
-      title: "ODPOČET K UDÁLOSTEM",
-      subtitle: "Nenechávejte svůj styl na poslední chvíli.",
-      upcoming: "BLÍŽÍ SE:",
-      day: "DEN",
-      days: "DNÍ",
-      rightNow: "PRÁVĚ TEĎ",
-      today: "DNES",
-      showMore: "ZOBRAZIT VÍCE",
-      showLess: "SKRÝT",
-      footer: "TERMÍNY SE PLNÍ RYCHLE",
-      holidays: {
-        newYear: { name: "Nový rok", desc: "Nový rok, nový styl. Začněte s čistým štítem." },
-        valentine: { name: "Valentýn", desc: "Buďte připraveni na večer, na kterém záleží." },
-        goodFriday: { name: "Velký pátek", desc: "Velikonoční příprava začíná." },
-        womensDay: { name: "MDŽ", desc: "Nezapomeňte na ty, které dělají svět lepším." },
-        easter: { name: "Velikonoční pondělí", desc: "Tradice a poctivý sestřih jdou k sobě." },
-        laborDay: { name: "Svátek práce", desc: "Zasloužený odpočinek v křesle." },
-        witches: { name: "Pálení čarodějnic", desc: "Vypadejte skvěle i u ohně." },
-        victoryDay: { name: "Den vítězství", desc: "Oslavte svobodu se stylem." },
-        mothersDay: { name: "Den matek", desc: "Udělejte radost těm nejdůležitějším." },
-        childrensDay: { name: "Den dětí", desc: "I mladí rekruti potřebují svůj styl." },
-        fathersDay: { name: "Den otců", desc: "Den pro skutečné chlapy." },
-        saintsCyrilMethodius: { name: "Cyril a Metoděj", desc: "Svátek tradic a kořenů." },
-        janHus: { name: "Jan Hus", desc: "Odkaz, který přetrvává." },
-        summer: { name: "Start prázdnin", desc: "Letní sezóna vyžaduje svěží fade." },
-        backToSchool: { name: "Back to School", desc: "Vraťte se do lavic s respektem." },
-        statehoodDay: { name: "Den české státnosti", desc: "Hrdost a styl." },
-        independenceDay: { name: "Den nezávislosti", desc: "Oslava samostatnosti." },
-        halloween: { name: "Halloween", desc: "Děsivě dobrý sestřih." },
-        freedomDay: { name: "Den boje za svobodu", desc: "Pamatujeme na hodnoty." },
-        st_nicholas: { name: "Mikuláš", desc: "Buďte za fešáka, než přijde nadílka." },
-        vacationSeason: { name: "Dovolená", desc: "Na pláž jedině s čerstvým střihem." },
-        lfs: { name: "Letní Filmová Škola", desc: "Kulturní událost roku v Hradišti." },
-        slavnostiVina: { name: "Slavnosti vína", desc: "Vrchol sezóny na Slovácku." },
-        christmas: { name: "Štědrý den", desc: "To nejdůležitější pod stromečkem jste vy." }
       }
     },
     specialProjects: {
@@ -1007,11 +965,11 @@ export const translations = {
       step1Btn: "Want to try",
       step2Title: "WE ARE NOT JUST ANOTHER BARBERSHOP", 
       step2Sub: "BASIC RULES", 
-      step2Content: "We don't play trends where everyone has a razor and calls themselves a barber. Here it's about hard work, precision in every detail and respect for the craft. We're a team that takes it seriously - and sticks together.\n\nWe're looking for people who want more than just 'finishing' a shift. People who want to work on themselves, push forward and be part of something that has direction.\n\nThe boss has a clear vision and built most of this place with his own hands. Now we're looking for someone to continue with us.\n\nWant to go a different way? Join us.", 
+      step2Content: "We don't play trends where everyone has a razor and calls themselves a barber. Here it's about hard work, precision in every detail and respect for the craft. We're a team that takes it seriously - and sticks together.\\n\\nWe're looking for people who want more than just 'finishing' a shift. People who want to work on themselves, push forward and be part of something that has direction.\\n\\nThe boss has a clear vision and built most of this place with his own hands. Now we're looking for someone to continue with us.\\n\\nWant to go a different way? Join us.", 
       step2Btn: "Understand and respect",
       step3Title: "OWN CHAIR AND RESPECT", 
       step3Sub: "Reward for Discipline", 
-      step3Content: "Here we take care of our people like our own. The owner will show you the way and give you everything you need to grow - mentoring, gear and peace to work. In return we require one thing: absolute respect for his vision and strong moral principles.\n\nYou must be able to listen and play by the rules of our family. If you have character and desire to learn, a seat at our table and access to the best clientele awaits you.", 
+      step3Content: "Here we take care of our people like our own. The owner will show you the way and give you everything you need to grow - mentoring, gear and peace to work. In return we require one thing: absolute respect for his vision and strong moral principles.\\n\\nYou must be able to listen and play by the rules of our family. If you have character and desire to learn, a seat at our table and access to the best clientele awaits you.", 
       step3Btn: "I'm in",
       step4Title: "WELCOME TO THE TEAM", 
       step4Sub: "Last Step", 
@@ -1090,7 +1048,7 @@ export const translations = {
       closeImage: "CLOSE SHOT"
     },
     seznamka: {
-      description: "Real world matchmaking.\nNot everyone has time/desire to be online.\nThis is different. You come. Sit down... and things happen.",
+      description: "Real world matchmaking.\\nNot everyone has time/desire to be online.\\nThis is different. You come. Sit down... and things happen.",
       protocolTitle: "MATCHMAKING PROTOCOL",
       acknowledge: "I UNDERSTAND",
       successTitle: "MISSION COMPLETE",
@@ -1109,29 +1067,6 @@ export const translations = {
       l2: { title: "PARKING LETTER", content: "CONFIDENTIAL: Free parking right in front. Mornings completely fine. Using WAZE? You'll hit the barber next door..." },
       l3: { title: "PEACE LETTER", content: "CONFIDENTIAL: You can sit with us, nobody's throwing you out. We are family." },
       authorized: "Authorized by MMBARBER"
-    },
-    rodina: {
-      title: "MM BARBER FAMILY",
-      list: "List",
-      network: "Connection Network",
-      divisions: "DIVISIONS",
-      backToHq: "Back Home",
-      partnersTrust: "Companies and people we'd put our hand in the fire for.",
-      youForUs: "You for us. Us for you.",
-      weAreFamily: "MMBARBER is not just about cutting. It's about people who create quality across fields. We are one Family.",
-      closeNetwork: "CLOSE NETWORK",
-      cameraFollows: "Camera is following you",
-      headquarters: "HEADQUARTERS"
-    },
-    sidliste: {
-      title: "HOUSING ESTATE",
-      sector: "HOUSING ESTATE // SECTOR VII",
-      return: "BACK TO BASE",
-      subtitle: "Join people who don't just want to sit in one place.",
-      description: "In our housing estate, we create a community where the best ideas are born. Here we don't play for effect, but for loyalty and shared visions.",
-      ideaTitle: "Have your own idea?",
-      ideaText: "It would be nice to come up with some joint event here. If you have a vision that makes sense, let us know.",
-      proposeBtn: "PROPOSE EVENT"
     },
     cityGuide: {
       compass: {
@@ -1154,33 +1089,6 @@ export const translations = {
         rankLabel: "ACHIEVED LEVEL"
       }
     },
-    holidayCountdown: {
-      title: "EVENT COUNTDOWN",
-      subtitle: "Don't leave your style for the last minute.",
-      upcoming: "UPCOMING:",
-      day: "DAY",
-      days: "DAYS",
-      rightNow: "RIGHT NOW",
-      today: "TODAY",
-      showMore: "SHOW MORE",
-      showLess: "SHOW LESS",
-      footer: "BOOKINGS FILL UP FAST",
-      holidays: {
-        newYear: { name: "New Year", desc: "New year, new style. Start fresh." },
-        valentine: { name: "Valentine's Day", desc: "Be ready for the night that matters." },
-        st_patricks: { name: "St. Patrick's Day", desc: "Feeling lucky? Get a fresh cut." },
-        goodFriday: { name: "Good Friday", desc: "Easter preparations begin." },
-        easter: { name: "Easter Monday", desc: "Tradition and a sharp cut go together." },
-        mothersDay: { name: "Mother's Day", desc: "Make the most important ones happy." },
-        fathersDay: { name: "Father's Day", desc: "A day for real men." },
-        independenceDay: { name: "Independence Day", desc: "Celebrate freedom with style." },
-        halloween: { name: "Halloween", desc: "Scary good haircut." },
-        thanksgiving: { name: "Thanksgiving", desc: "Be grateful and well-groomed." },
-        lfs: { name: "Summer Film School", desc: "The cultural event of the year." },
-        slavnostiVina: { name: "Wine Festival", desc: "Peak season in the region." },
-        christmas: { name: "Christmas Day", desc: "The best gift under the tree is you." }
-      }
-    },
     specialProjects: {
       likeTheWeb: "Like this web?",
       division: "DESIGN AND DEVELOPMENT DIVISION",
@@ -1189,121 +1097,11 @@ export const translations = {
       writeUs: "Write us",
       callUs: "Call us"
     },
-
-    devPanel: {
-      title: "SYSTEM OVERRIDE",
-      accent: "ACCENT COLOR",
-      atmosphere: "ATMOSPHERE",
-      tools: "TOOLS",
-      filters: "VISUAL FILTERS",
-      game: "MINIGAME"
-    },
-
-    radio: {
-      playMe: "Play Me"
-    },
-    newspaper: {
-      masthead: "Daily Order",
-      circulation: "CIRCULATION: LIMITED",
-      price: "PRICE: LOYALTY",
-      headline: "How we (don't) work",
-      subheadline: "It's not just about the cut. Expect something else.",
-      p1: "We don't run like a typical hair salon. You come, sit in the chair, and we take care of the rest. We discuss life, plans, or just stay silent – it's up to you. And if you don't want to go home, feel free to stay for coffee. No one kicks you out here.",
-      p2: "Just passing by? Stop for a chat. Our doors are open. We give you freedom – your style, your rules. Have your own idea? We'll go for it with you. Don't have one? We'll suggest something that fits. We don't just create hairstyles, we create an atmosphere.",
-      p3: "Our space is private enough so you don't feel like you're in a display window. Peace, quiet, and no unnecessary eyes. It's your corner for switching off from the surrounding world.",
-      p4: "Our time tariff is ideal for those who know what they want. If you hesitate, just book what you usually go for elsewhere – we'll handle it at the chair.",
-      motto: "As they say… our customer, our king.",
-      burnBtn: "Burn after reading",
-      burnNote: "Destroys evidence of your presence"
-    },
-    journey: {
-      title: ["My", "Journey"],
-      subtitle: "The Journey",
-      description: "From a small idea became MM BARBER. See how time flowed at our headquarters.",
-      archiveShot: "Archive shot",
-      footerTitle: "Today you are part of the story",
-      footerCta: "Continue further",
-      timeline: [
-        { year: "2018", title: "First Shot", desc: "Founding of MM BARBER. Start of a mission quietly talked about all over Hradiště.", side: "left" },
-        { year: "2020", title: "Headquarters in Hradiště", desc: "Opening of current premises in Mařatice. A sanctuary for those seeking more than just a cut.", side: "right" },
-        { year: "2022", title: "Team Hardening", desc: "Tomáš becomes synonymous with precision in the chair. New blood and new visions arrive.", side: "left" },
-        { year: "2024", title: "New Era", desc: "HQ grows with new services, technology and a stronger community.", side: "right" }
-      ]
-    },
     seo: {
       title: "MMBARBER | Best Barbershop in Uherské Hradiště (Mařatice)",
       description: "Looking for top skin fade, beard grooming or just a place to clear your head? MMBARBER in UH is more than hair. It's tradition, style and honest craft in the heart of Slovácko.",
       keywords: "barbershop Uherské Hradiště, men's hairdressing UH, skin fade Hradiště, beard grooming Uherské Hradiště, razor shave Slovácko, MM BARBER Mařatice, men's cut UH, hair salon for men Hradiště, barber gift voucher",
       extraContent: "Here in Uherské Hradiště (Mařatice) we don't build on trends, but on people. Every cut, every detail is reflection of our loyalty to craft. We are MM BARBER family - community defining style in UH. Come for honest service and experience atmosphere everyone looks for in Hradiště. Free parking at our door."
-    },
-
-    club: {
-      topSecret: "TOP SECRET // MM BARBER HQ",
-      title: "V.I.P. CLUB",
-      subtitle: "A place for those who know more than others.",
-      timeExpires: "SESSION EXPIRES IN:",
-      loginTitle: "ENTER ACCESS CODE",
-      loginSubtitle: "IF YOU DON'T BELONG HERE, LEAVE WHILE YOU CAN",
-      unlockButton: "AUTHORIZE ACCESS",
-      wrongPassword: "ACCESS DENIED // INVALID CODE"
-    },
-    contact: {
-      title: "Where to find us",
-      subtitle: "The coordinates of style.",
-      address: "Shop Address",
-      connection: "Contact",
-      responsiblePerson: "Responsible person",
-      parking: "Parking",
-      parkingText1: "FREE right here. Be careful with Waze, it might be slightly off.",
-      parkingText2: "Mornings have more than enough space.",
-      transit: "Public Transit",
-      transitText1: "Rudy Kubíčka Stop",
-      transitText2: "is literally a few steps from the door."
-    },
-    footer: {
-      description: "Elegance, tradition and honest precision. A barbershop in Hradiště where style is created - a style people don't talk about loudly, but everyone wants.",
-      nav: "Navigation",
-      family: "Family",
-      contact: "Contact",
-      follow: "Follow us",
-      seoBottomInfo: "Men's Barber & Barbershop Uherské Hradiště",
-      terms: "Terms & Conditions",
-      privacy: "Privacy Policy",
-      cookies: "Cookie Policy",
-      rules: "Operating Rules",
-      instagramLine: "A place where everyone is happy. At least in the photo.",
-      tiktokLine: "Content that won't stay in your head for long.",
-      facebookLine: "Wailing walls where everything and nothing is solved.",
-      copyright: "2024–2026 MMBARBER. All rights honestly guarded.",
-      neklikat: "don't click",
-      tryToCatch: "TRY TO CATCH ME",
-      closeTrap: "CLOSE TRAP",
-      likeWeb: "like the web?",
-      callUs: "don't hesitate to call",
-      callToAction: "Call us directly",
-      thankYou: "SYSTEM RUNNING. Try looking for hidden codes... or ask your barber what he has for you.",
-      cheatActivated: "CODE ACCEPTED",
-      cheatHint: "Keep searching...",
-      close: "CLOSE",
-      vipClub: "V.I.P. CLUB",
-      partnerships: "Partnerships",
-      followUs: "Follow Us",
-      reviews: "Reviews",
-      intelligenceFeed: "Daily Report",
-      liveUpdate: "UPDATE",
-      targetRegion: "REGION: SLOVÁCKO",
-      priorityNotice: "STATUS: ACTIVE",
-      directResponse: "DIRECT RESPONSE",
-      faq1: "Best Barbershop UH?",
-      faq1Ans: "MMBARBER Mařatice - Premium skin fade and heritage grooming.",
-      faq2: "Parking Available?",
-      faq2Ans: "Free private parking directly at the shop.",
-      faq3: "Academy & Career?",
-      faq3Ans: "Professional barber training and elite career paths."
-    },
-    partners: {
-      title: "Our Partners",
-      subtitle: ""
     }
   },
   boss: {
@@ -1318,39 +1116,6 @@ export const translations = {
       career: "Nábor",
       startMission: "PRAVIDLA RODINY",
       searchPlaceholder: "Ptej se jako šéf."
-    },
-    intelligence: [
-      "V UH je dneska horko, ale u nás v křesle je bezpečno.",
-      "Kšefty se hýbou, rezervuj si svůj flek, než bude pozdě.",
-      "V Mařaticích fouká, bacha na klobouky, tvůj střih musí držet.",
-      "Dneska je den na to ukázat, kdo je tady šéf.",
-      "Rodina se rozrůstá, buď u toho."
-    ],
-    familyIntelligence: [
-      "Vodo Topo Jahoda: Terén je čistý.",
-      "Kofipack: Zásilka doručena.",
-      "Malina Photo: Důkazy jsou v bezpečí.",
-      "Argema: Zvuk ladí.",
-      "Comites: Peníze se točí."
-    ],
-    holidayCountdown: {
-      title: "ODPOČET K AKCÍM",
-      subtitle: "Boss nečeká ve frontě.",
-      upcoming: "BLÍŽÍ SE:",
-      day: "DEN",
-      days: "DNÍ",
-      today: "DNES",
-      rightNow: "PRÁVĚ TEĎ",
-      showMore: "VÍCE AKCÍ",
-      showLess: "MÉNĚ",
-      footer: "KŘESLO ČEKÁ JEN NA TEBE",
-      holidays: {
-        newYear: { name: "Nový rok", desc: "Nový rok, nové teritorium." },
-        valentine: { name: "Valentýn", desc: "Udělej dojem." },
-        laborDay: { name: "Svátek práce", desc: "Ostatní makají, ty relaxuješ." },
-        victoryDay: { name: "Den vítězství", desc: "Oslava moci." },
-        christmas: { name: "Vánoce", desc: "Rodina na prvním místě." }
-      }
     },
     hero: {
       subtitle: "Teritorium Uherské Hradiště",
@@ -1375,89 +1140,6 @@ export const translations = {
       description: "Vstup do světa naší rodiny v Uherském Hradišti. MM BARBER nabízí bezcitnou preciznost, loajalitu a styl, který si nekoupíš.",
       keywords: "MMBARBER rodina, šéf Tomáš, Uherské Hradiště, kšefty, nábor, noir styl, loajalita, řemeslo, břitva",
       extraContent: "Tady u křesla se neřeší jen vlasy, ale i kšefty a budoucnost. Pokud máš ambice a chceš víc, jsi na správné adrese. UH - Mařatice - MM BARBER."
-    },
-    club: {
-      topSecret: "PŘÍSNĚ TAJNÉ // CENTRÁLA RODINY",
-      title: "ELITNÍ KLUB",
-      subtitle: "Tady se mluví o věcech, které se ven nedostanou.",
-      timeExpires: "ČAS DO KONCE SCHŮZKY:",
-      loginTitle: "POTVRĎ SVOU IDENTITU",
-      loginSubtitle: "CIZÍ TADY NEMAJÍ CO POHLEDÁVAT",
-      unlockButton: "VSTOUPIT DO KANCELÁŘE",
-      wrongPassword: "ŠPATNÉ HESLO // RADĚJI TO NEZKOUŠEJ ZNOVU"
-    },
-    theCode: {
-      title: "KODEX",
-      subtitle: "Pravidla hry.",
-      rules: [
-        { title: "Loajalita", description: "Prvně rodině, pak sobě." }
-      ]
-    },
-    devPanel: {
-      title: "SYSTÉMOVÝ PANEL",
-      accent: "BARVA",
-      atmosphere: "ATMOSFÉRA",
-      tools: "NÁSTROJE",
-      filters: "FILTRY",
-      game: "HRA"
-    },
-    others: {
-      members: {
-        employeeWall: {
-          title: "NÁŠ TÝM",
-          year: "2024",
-          brandVision: "Stavíme standard.",
-          invitation: "Přidej se.",
-          months: ["Led", "Úno", "Bře", "Dub", "Kvě", "Čer", "Čec", "Srp", "Zář", "Říj", "Lis", "Pro"],
-          employeeName: "Člen"
-        }
-      },
-      hiddenPlaces: {
-        cta: "ZJISTIT VÍC"
-      },
-      support: {
-        title: "PODPORA",
-        passwordLabel: "ZADEJ KÓD"
-      }
-    },
-    welcome: {
-      authorized: "PŘÍSTUP POVOLEN",
-      l1: { title: "Mise", content: "Cíl je jasný." },
-      l2: { title: "Vize", content: "Budoucnost je naše." },
-      l3: { title: "Protokol", content: "Dodržuj kodex." }
-    },
-    radio: {
-      playMe: "Hraj"
-    },
-    contact: {
-      title: "Kudy k nám",
-      subtitle: "Náš revír.",
-      address: "Adresa shopu",
-      connection: "Spojení",
-      responsiblePerson: "Zodpovídá",
-      parking: "Parkování",
-      parkingText1: "ZDARMA u nás. Bacha na Waze, trefí se o kousek vedle.",
-      parkingText2: "Dopoledne je tu místa víc než dost.",
-      transit: "MHD",
-      transitText1: "Zastávka Rudy Kubíčka",
-      transitText2: "je kousek od dveří."
-    },
-    footer: {
-      description: "Rodina, tradice a bezcitná preciznost. MM BARBER Teritorium Uherské Hradiště.",
-      nav: "Struktura",
-      family: "Rodina",
-      contact: "Spojení",
-      follow: "Sledovat",
-      seoBottomInfo: "MMBARBER Rodina | Uherské Hradiště",
-      terms: "Pravidla",
-      privacy: "Soukromí",
-      cookies: "Cookies",
-      rules: "Kodex",
-      copyright: "2024–2026 MMBARBER. Všechna práva pod ochranou rodiny."
-    },
-    partners: {
-      title: "Naši kumpáni",
-      subtitle: ""
     }
   },
   falco: {
@@ -1473,39 +1155,6 @@ export const translations = {
       startMission: "JAK TO U NÁS CHODÍ",
       searchPlaceholder: "Alles klar?"
     },
-    intelligence: [
-      "Der Luftdruck in Hradiště ist perfekt für einen kaiserlichen Schnitt.",
-      "Stil kennt keine Grenzen. Ihr Termin im Imperial Territory wartet.",
-      "Ein Gentleman weiß, wann es Zeit für MM BARBER ist.",
-      "Präzision ist unser Gesetz. Eleganz ist unser Erbe.",
-      "Hradiště leuchtet heute in Falco-Stil."
-    ],
-    familyIntelligence: [
-      "Vodo Topo Jahoda: Status Imperial.",
-      "Kofipack: Logistik Elite.",
-      "Malina Photo: Archiv gesichert.",
-      "Argema: Der Klang von Wien.",
-      "Comites: Wachstum stabil."
-    ],
-    holidayCountdown: {
-      title: "COUNTDOWN",
-      subtitle: "Elite timing.",
-      upcoming: "COMING:",
-      day: "DAY",
-      days: "DAYS",
-      today: "TODAY",
-      rightNow: "NOW",
-      showMore: "MORE",
-      showLess: "LESS",
-      footer: "ELITE SLOTS ONLY",
-      holidays: {
-        newYear: { name: "New Year", desc: "Imperial start." },
-        valentine: { name: "Valentine", desc: "Love & Style." },
-        laborDay: { name: "Labor Day", desc: "Rest like Falco." },
-        victoryDay: { name: "Victory Day", desc: "Celebrate success." },
-        christmas: { name: "Christmas", desc: "Family & Heritage." }
-      }
-    },
     intro: {
       welcome: "Willkommen im MMBARBER Imperial Territory.",
       parking: "KOSTENLOSES PARKEN",
@@ -1515,127 +1164,13 @@ export const translations = {
       payment: "BAR / QR-ZAHLUNG",
       acknowledge: "ICH VERSTEHE",
       acceptMission: "INSTRUKTIONEN AKZEPTIEREN"
-    },
-    akademie: {
-      title: "MM BARBER ACADEMY",
-      subtitle: "Imperial Mentoring",
-      description: "Learn the craft from the best.",
-      cta: "LEARN",
-      backToHq: "Back to HQ",
-      motto: "Craft is in the hands.",
-      levels: [
-        { title: "Basics", desc: "Clippers and shape." },
-        { title: "Masterclass", desc: "Advanced elite techniques." }
-      ],
-      guidesTitle: "Elite Knowledge Base",
-      guides: [
-        { title: "Elite Fade Maintenance", steps: ["Contours", "Quality", "Style"], keywords: ["elite", "style"] }
-      ],
-      backToHqBtn: "Back to HQ",
-      noResults: "Only for the best.",
-      bookBtn: "BOOK ELITE SLOT"
-    },
-    career: {
-      title: "Elite Recruitment",
-      subtitle: "New blood needed",
-      backToHq: "Back to base",
-      step1Title: "WANT TO BE ELITE?", 
-      step1Sub: "First check", 
-      step1Content: "Recruitment is about loyalty.", 
-      step1Btn: "Try it"
-    },
-    rodina: {
-      title: "MM BARBER FAMILY",
-      list: "List",
-      backToHq: "Back Home"
-    },
-    sidliste: {
-      title: "HOUSING ESTATE",
-      sector: "SECTOR VII",
-      return: "BACK TO BASE"
-    },
-    club: {
-      topSecret: "STRENG GEHEIM // MM BARBER HQ",
-      title: "V.I.P. CLUB",
-      subtitle: "Ein Ort für diejenigen, die mehr wissen als andere.",
-      timeExpires: "SITZUNG LÄUFT AB IN:",
-      loginTitle: "ZUGANGSCODE EINGEBEN",
-      loginSubtitle: "WENN SIE NICHT HIERHER GEHÖREN, GEHEN SIE, SOLANGE SIE KÖNNEN",
-      unlockButton: "ZUGANG AUTORISIEREN",
-      wrongPassword: "ZUGRIFF VERWEIGERT // CODE UNGÜLTIG"
-    },
-    theCode: {
-      title: "DER KODEX",
-      subtitle: "Die Regeln.",
-      rules: [
-        { title: "Loyalität", description: "Zuerst die Familie." }
-      ]
-    },
-    devPanel: {
-      title: "SYSTEMSTEUERUNG",
-      accent: "AKZENT",
-      atmosphere: "ATMOSPHÄRE",
-      tools: "WERKZEUGE",
-      filters: "FILTER",
-      game: "MINISPIEL"
-    },
-    others: {
-      members: {
-        employeeWall: {
-          title: "UNSER TEAM",
-          year: "2024",
-          brandVision: "Wir setzen den Standard.",
-          invitation: "Mach mit.",
-          months: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
-          employeeName: "Mitglied"
-        }
-      },
-      hiddenPlaces: {
-        cta: "MEHR ERFAHREN"
-      },
-      support: {
-        title: "UNTERSTÜTZUNG",
-        passwordLabel: "CODE EINGEBEN"
-      }
-    },
-    welcome: {
-      authorized: "ZUGANG AUTORISIERT",
-      l1: { title: "Mission", content: "Unser Ziel ist klar." },
-      l2: { title: "Vision", content: "Die Zukunft gehört uns." },
-      l3: { title: "Protokoll", content: "Folgen Sie dem Kodex." }
-    },
-    radio: {
-      playMe: "Abspielen"
-    },
-    contact: {
-      title: "Location",
-      subtitle: "Imperial Territory.",
-      address: "Shop Address",
-      connection: "Connection",
-      responsiblePerson: "Responsible person",
-      parking: "Parking",
-      parkingText1: "FREE here. Careful with Waze, players know the way.",
-      parkingText2: "Mornings are best for parking.",
-      transit: "Transit",
-      transitText1: "Rudy Kubíčka Stop",
-      transitText2: "steps away from the door."
-    },
-    footer: {
-      description: "Imperialer Stil, Wiener Tradition. MMBARBER Imperial Territory Uherské Hradiště.",
-      nav: "Navigation",
-      family: "Familie",
-      contact: "Kontakt",
-      follow: "Folgen",
-      seoBottomInfo: "MMBARBER Elite | Uherské Hradiště",
-      terms: "Bedingungen",
-      privacy: "Privatsphäre",
-      cookies: "Cookies",
-      rules: "Kodex",
-      copyright: "2024–2026 MMBARBER. Alle Rechte kaiserlich geschützt."
-    },
-    partners: {
-      title: "Unsere Partner",
-      subtitle: ""
     }
   }
 };
+"""
+
+    with open(r'c:\Users\micka\Documents\MMBarber_web\src\locales\translations.ts', 'w', encoding='utf-8') as f:
+        f.write(header)
+
+if __name__ == "__main__":
+    final_rebuild_from_clean_source()

@@ -55,10 +55,10 @@ export function FamilyIntelligence() {
       
       <div className="flex items-center gap-3 mb-4 border-b border-mafia-gold/10 pb-3">
          <Globe size={14} className="text-mafia-gold animate-spin-slow" />
-         <span className="text-[10px] uppercase tracking-[0.3em] text-mafia-gold font-black">
-            Family_Operational_Network
-         </span>
-         <span className="ml-auto text-[8px] opacity-30">SECURE_SYNC // V 3.4</span>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-mafia-gold font-black">
+             {t.footer.operationalNetwork}
+          </span>
+         <span className="ml-auto text-[8px] opacity-30">{t.footer.secureSync}</span>
       </div>
 
       <div className="flex gap-4 items-start">
@@ -67,12 +67,12 @@ export function FamilyIntelligence() {
          </div>
          <div className="space-y-2">
             <p className="text-xs md:text-sm text-smoke-white/80 leading-relaxed italic">
-               <span className="text-mafia-gold mr-2 font-black">REPORT:</span>
+               <span className="text-mafia-gold mr-2 font-black">{t.footer.reportLabel}</span>
                {currentMessage}
             </p>
             <div className="flex items-center gap-4">
                <span className="text-[8px] text-mafia-gold/40 uppercase tracking-widest flex items-center gap-2">
-                  <Activity size={10} /> Nodes: ACTIVE_2026
+                  <Activity size={10} /> {t.footer.activeNodes}
                </span>
                <div className="flex gap-1">
                   <div className="w-1 h-1 bg-mafia-gold rounded-full animate-pulse"></div>

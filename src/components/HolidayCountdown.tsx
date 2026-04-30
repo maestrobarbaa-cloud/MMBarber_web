@@ -73,93 +73,111 @@ export function HolidayCountdown() {
       if (lang === 'en') {
         return [
           {
-            name: t.holidayCountdown.holidays.newYear.name,
+            name: t?.holidayCountdown?.holidays?.newYear?.name || "New Year",
             date: new Date(currentYear, 0, 1),
             icon: <PartyPopper className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.newYear.desc,
+            desc: t?.holidayCountdown?.holidays?.newYear?.desc,
             isHighSeason: true
           },
           {
-            name: t.holidayCountdown.holidays.valentine.name,
+            name: t?.holidayCountdown?.holidays?.valentine?.name || "Valentine's Day",
             date: new Date(currentYear, 1, 14),
             icon: <Heart className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.valentine.desc,
+            desc: t?.holidayCountdown?.holidays?.valentine?.desc,
             isHighSeason: true
           },
           {
-            name: t.holidayCountdown.holidays.st_patricks.name,
+            name: t?.holidayCountdown?.holidays?.witches?.name || "Witches' Night",
+            date: new Date(currentYear, 3, 30),
+            icon: <Flame className="w-5 h-5 text-mafia-gold" />,
+            desc: t?.holidayCountdown?.holidays?.witches?.desc
+          },
+          {
+            name: t?.holidayCountdown?.holidays?.laborDay?.name || "Labor Day",
+            date: new Date(currentYear, 4, 1),
+            icon: <Hammer className="w-5 h-5 text-mafia-gold" />,
+            desc: t?.holidayCountdown?.holidays?.laborDay?.desc
+          },
+          {
+            name: t?.holidayCountdown?.holidays?.victoryDay?.name || "Victory Day",
+            date: new Date(currentYear, 4, 8),
+            icon: <Flag className="w-5 h-5 text-mafia-gold" />,
+            desc: t?.holidayCountdown?.holidays?.victoryDay?.desc
+          },
+          {
+            name: t?.holidayCountdown?.holidays?.st_patricks?.name || "St. Patrick's Day",
             date: new Date(currentYear, 2, 17),
             icon: <Clover className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.st_patricks.desc,
+            desc: t?.holidayCountdown?.holidays?.st_patricks?.desc,
             isHighSeason: true
           },
           {
-            name: t.holidayCountdown.holidays.goodFriday.name,
+            name: t?.holidayCountdown?.holidays?.goodFriday?.name || "Good Friday",
             date: easter.friday,
             icon: <Cross className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.goodFriday.desc,
+            desc: t?.holidayCountdown?.holidays?.goodFriday?.desc,
             isHighSeason: true
           },
           {
-            name: t.holidayCountdown.holidays.easter.name,
+            name: t?.holidayCountdown?.holidays?.easter?.name || "Easter Monday",
             date: easter.monday,
             icon: <Sparkles className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.easter.desc,
+            desc: t?.holidayCountdown?.holidays?.easter?.desc,
             isHighSeason: true
           },
           {
-            name: t.holidayCountdown.holidays.mothersDay.name,
-            date: new Date(currentYear, 4, 11), // 2025 US: May 11
+            name: t?.holidayCountdown?.holidays?.mothersDay?.name || "Mother's Day",
+            date: new Date(currentYear, 4, 11),
             icon: <Heart className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.mothersDay.desc
+            desc: t?.holidayCountdown?.holidays?.mothersDay?.desc
           },
           {
-            name: t.holidayCountdown.holidays.fathersDay.name,
-            date: new Date(currentYear, 5, 15), // 2025 US: Jun 15
+            name: t?.holidayCountdown?.holidays?.fathersDay?.name || "Father's Day",
+            date: new Date(currentYear, 5, 15),
             icon: <User className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.fathersDay.desc,
+            desc: t?.holidayCountdown?.holidays?.fathersDay?.desc,
             isHighSeason: true
           },
           {
-            name: t.holidayCountdown.holidays.independenceDay.name,
+            name: t?.holidayCountdown?.holidays?.independenceDay?.name || "Independence Day",
             date: new Date(currentYear, 6, 4),
             icon: <Flag className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.independenceDay.desc,
+            desc: t?.holidayCountdown?.holidays?.independenceDay?.desc,
             isHighSeason: true
           },
           {
-            name: t.holidayCountdown.holidays.halloween.name,
-            date: new Date(currentYear, 9, 31),
-            icon: <Ghost className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.halloween.desc,
-            isHighSeason: true
-          },
-          {
-            name: t.holidayCountdown.holidays.thanksgiving.name,
-            date: new Date(currentYear, 10, 27), // 2025 US: Nov 27
-            icon: <Gift className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.thanksgiving.desc,
-            isHighSeason: true
-          },
-          {
-            name: t.holidayCountdown.holidays.lfs.name,
+            name: t?.holidayCountdown?.holidays?.lfs?.name || "Summer Film School",
             date: new Date(currentYear, 6, 25),
             icon: <Film className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.lfs.desc,
+            desc: t?.holidayCountdown?.holidays?.lfs?.desc,
             isHighSeason: true
           },
           {
-            name: t.holidayCountdown.holidays.slavnostiVina.name,
+            name: t?.holidayCountdown?.holidays?.slavnostiVina?.name || "Wine Festival",
             date: new Date(currentYear, 8, 13),
             icon: <Utensils className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.slavnostiVina.desc,
+            desc: t?.holidayCountdown?.holidays?.slavnostiVina?.desc,
             isHighSeason: true
           },
           {
-            name: t.holidayCountdown.holidays.christmas.name,
+            name: t?.holidayCountdown?.holidays?.halloween?.name || "Halloween",
+            date: new Date(currentYear, 9, 31),
+            icon: <Ghost className="w-5 h-5 text-mafia-gold" />,
+            desc: t?.holidayCountdown?.holidays?.halloween?.desc,
+            isHighSeason: true
+          },
+          {
+            name: t?.holidayCountdown?.holidays?.thanksgiving?.name || "Thanksgiving",
+            date: new Date(currentYear, 10, 27),
+            icon: <Gift className="w-5 h-5 text-mafia-gold" />,
+            desc: t?.holidayCountdown?.holidays?.thanksgiving?.desc,
+            isHighSeason: true
+          },
+          {
+            name: t?.holidayCountdown?.holidays?.christmas?.name || "Christmas Day",
             date: new Date(currentYear, 11, 25),
             icon: <Sparkles className="w-5 h-5 text-mafia-gold" />,
-            desc: t.holidayCountdown.holidays.christmas.desc,
+            desc: t?.holidayCountdown?.holidays?.christmas?.desc,
             isHighSeason: true
           }
         ];
@@ -424,11 +442,15 @@ export function HolidayCountdown() {
         <div className={`text-3xl md:text-5xl font-heading font-black mb-1 tabular-nums transition-all ${
           h.isHighSeason ? "text-mafia-gold" : "text-mafia-gold/80"
         } md:group-hover:scale-110 drop-shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]`}>
-          {isToday ? t.holidayCountdown.today : daysLeft}
+          {isToday ? (t?.holidayCountdown?.today || "TODAY") : daysLeft}
         </div>
         
         <div className="text-[8px] font-mono text-mafia-gold/40 uppercase tracking-[0.3em] mb-3 font-black">
-          {isToday ? t.holidayCountdown.rightNow : t.holidayCountdown.days}
+          {isToday ? (t?.holidayCountdown?.rightNow || "NOW") : (
+            daysLeft === 1 ? (t?.holidayCountdown?.day || "DAY") : (
+              (lang === 'cs' && daysLeft >= 2 && daysLeft <= 4) ? "DNY" : (t?.holidayCountdown?.days || "DAYS")
+            )
+          )}
         </div>
 
         <h3 className="text-smoke-white font-sans font-bold text-xs md:text-sm uppercase tracking-widest text-center md:group-hover:text-mafia-gold transition-colors line-clamp-2 px-2">
@@ -459,13 +481,13 @@ export function HolidayCountdown() {
             className="flex items-center gap-4 text-mafia-gold/40 font-mono text-[10px] uppercase tracking-[0.4em] mb-4"
           >
             <Clock size={16} />
-            {t.holidayCountdown.upcoming}
+            {t?.holidayCountdown?.upcoming}
           </motion.div>
           <h2 className="text-4xl md:text-6xl font-heading font-black text-smoke-white tracking-[0.3em] uppercase text-center leading-tight">
-            {t.holidayCountdown.title}
+            {t?.holidayCountdown?.title}
           </h2>
           <p className="text-smoke-white/40 font-sans text-xs md:text-sm mt-4 uppercase tracking-widest text-center max-w-lg">
-            {t.holidayCountdown.subtitle}
+            {t?.holidayCountdown?.subtitle}
           </p>
           <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mt-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
         </div>
@@ -503,19 +525,19 @@ export function HolidayCountdown() {
           >
             {showMore ? (
               <>
-                {t.holidayCountdown.showLess}
+                {t?.holidayCountdown?.showLess}
                 <ChevronUp size={14} />
               </>
             ) : (
               <>
-                {t.holidayCountdown.showMore}
+                {t?.holidayCountdown?.showMore}
                 <ChevronDown size={14} />
               </>
             )}
           </motion.button>
 
           <p className="text-mafia-gold/30 font-mono text-[8px] uppercase tracking-[0.5em] italic animate-pulse">
-              {t.holidayCountdown.footer}
+              {t?.holidayCountdown?.footer}
           </p>
         </motion.div>
       </div>

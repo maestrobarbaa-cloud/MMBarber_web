@@ -75,7 +75,7 @@ const EasterEgg = () => {
           <div className={`w-16 h-16 rounded-full border border-mafia-gold/40 flex items-center justify-center transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.3)] ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:border-mafia-gold group-hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]' : ''}`}>
             <Zap size={24} className={`text-mafia-gold ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:animate-pulse' : ''}`} />
           </div>
-          <span className="text-mafia-gold font-mono text-xs md:text-sm uppercase tracking-[0.5em] font-black drop-shadow-lg">{t.footer.neklikat}</span>
+          <span className="text-mafia-gold font-mono text-xs md:text-sm uppercase tracking-[0.5em] font-black drop-shadow-lg">{t?.footer?.neklikat || "NEKLIKAT"}</span>
         </motion.button>
       </AnimatePresence>
 
@@ -144,7 +144,7 @@ const EasterEgg = () => {
                     animate={{ y: 0, opacity: 1 }}
                     className="text-mafia-gold font-heading font-black text-4xl md:text-6xl uppercase tracking-[0.2em] mb-12 drop-shadow-2xl"
                   >
-                    {t.footer.tryToCatch}
+                    {t?.footer?.tryToCatch || "CATCH ME"}
                   </motion.h2>
 
                   <EvasiveButton onCatch={() => {
@@ -165,11 +165,11 @@ const EasterEgg = () => {
 
                     <div className="space-y-4">
                       <h3 className="text-mafia-gold font-heading font-black text-3xl md:text-5xl uppercase tracking-wide italic drop-shadow-[0_4px_15px_rgba(0,0,0,1)] px-2">
-                        {t.footer.cheatActivated}
+                        {t?.footer?.cheatActivated || "CHEAT ACTIVATED"}
                       </h3>
                       <div className="w-24 h-1 bg-mafia-gold mx-auto"></div>
                       <p className="text-smoke-white font-sans text-base md:text-xl leading-relaxed max-w-2xl text-center px-4">
-                        {t.footer.thankYou}
+                        {t?.footer?.thankYou || "YOU GOT ME!"}
                       </p>
                     </div>
                   </div>
@@ -192,7 +192,7 @@ const EasterEgg = () => {
                 <div className="absolute inset-0 bg-mafia-gold translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500"></div>
                 <div className="relative z-10 flex items-center gap-3 text-white/40 group-hover:text-mafia-black transition-colors">
                   <X size={16} />
-                  <span className="font-mono text-[9px] font-black uppercase tracking-[0.5em]">{t.footer.closeTrap}</span>
+                  <span className="font-mono text-[9px] font-black uppercase tracking-[0.5em]">{t?.footer?.closeTrap || "CLOSE"}</span>
                 </div>
               </button>
             </div>
@@ -250,7 +250,7 @@ const FooterLink = ({ href, children, isExternal, isBordered, isRed, onClick }: 
 };
 
 export function Footer() {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const [showContactOverlay, setShowContactOverlay] = React.useState(false);
   const [showResponsibleModal, setShowResponsibleModal] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
@@ -305,7 +305,7 @@ export function Footer() {
               <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-mafia-gold"></div>
 
               <h4 className="text-mafia-gold font-mono text-xs uppercase tracking-[0.4em] mb-6 opacity-60">
-                {t.contact.responsiblePerson}
+                {t?.contact?.responsiblePerson || (lang === 'cs' ? 'Odpovědná osoba' : 'Responsible Person')}
               </h4>
 
               <div className="space-y-4">
@@ -322,7 +322,7 @@ export function Footer() {
                 className="mt-10 group relative overflow-hidden px-8 py-2 border border-mafia-gold/30 hover:border-mafia-gold transition-all"
               >
                 <span className="relative z-10 font-mono text-[10px] font-black uppercase tracking-[0.3em] text-mafia-gold group-hover:text-mafia-black">
-                  {t.footer.close}
+                  {t?.footer?.close || (lang === 'cs' ? 'ZAVŘÍT' : 'CLOSE')}
                 </span>
                 <div className="absolute inset-0 bg-mafia-gold translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
               </button>
@@ -356,7 +356,7 @@ export function Footer() {
               <div className="w-32 h-1 bg-mafia-gold mb-8"></div>
 
               <p className="text-mafia-gold/60 font-mono text-sm md:text-lg uppercase tracking-[0.4em] mb-4">
-                {t.footer.callToAction}
+                {t?.footer?.callToAction || (lang === 'cs' ? 'ZAVOLEJ NÁM' : 'CALL US')}
               </p>
 
               <a
@@ -370,7 +370,7 @@ export function Footer() {
                 onClick={() => setShowContactOverlay(false)}
                 className="mt-20 group relative overflow-hidden px-10 py-4 bg-mafia-gold text-mafia-black font-heading font-black text-sm uppercase tracking-[0.5em] transition-all"
               >
-                {t.footer.close}
+                {t?.footer?.close || (lang === 'cs' ? 'ZAVŘÍT' : 'CLOSE')}
               </button>
             </motion.div>
           </motion.div>
@@ -411,7 +411,7 @@ export function Footer() {
 
           <div className="relative p-6 bg-white/[0.02] border-l-2 border-mafia-gold/20 backdrop-blur-sm text-left">
             <p className="font-sans text-smoke-white/50 text-sm leading-relaxed italic">
-              &quot;{t.footer.description}&quot;
+              &quot;{t?.footer?.description || (lang === 'cs' ? 'MM BARBER - Víc než jen střih.' : 'MM BARBER - More than just a cut.')}&quot;
             </p>
           </div>
 
@@ -437,7 +437,7 @@ export function Footer() {
 
               <div className="relative z-10 flex flex-col items-center gap-1">
                 <p className={`text-mafia-gold font-heading font-black text-sm uppercase tracking-[0.2em] transition-colors ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:text-white' : ''}`}>
-                  {t.footer.likeWeb}
+                  {t?.footer?.likeWeb || (lang === 'cs' ? "LÍBÍ SE TI WEB?" : "LIKE THE WEB?") }
                 </p>
                 <p className="text-[8px] font-mono text-white/20 uppercase tracking-[0.3em] group-hover:text-mafia-gold/40 transition-colors">
                   Status: High Priority
@@ -453,8 +453,8 @@ export function Footer() {
           {/* Column 1: Navigace + Rodina stacked */}
           <div className="flex flex-col space-y-8">
             <div className="flex flex-col space-y-3">
-              <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">{t.footer.nav}</h3>
-              <FooterLink href="/#operativi">{t.operatives.title}</FooterLink>
+              <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">{t?.footer?.nav || "NAVIGACE"}</h3>
+              <FooterLink href="/#operativi">{t?.operatives?.title || "OPERATIVCI"}</FooterLink>
               <FooterLink
                 href="/#kontakt"
                 onClick={(e: React.MouseEvent) => {
@@ -464,22 +464,22 @@ export function Footer() {
                   }
                 }}
               >
-                {t.footer.contact}
+                {t?.footer?.contact || (lang === 'cs' ? "KONTAKT" : "CONTACT")}
               </FooterLink>
-              <FooterLink href="/#holidays">{t.header.schedule}</FooterLink>
+              <FooterLink href="/#holidays">{t?.header?.schedule || "PLÁN"}</FooterLink>
             </div>
 
             <div className="flex flex-col space-y-3">
-              <FooterLink href="/provozni-rad" isBordered>{t.footer.rules}</FooterLink>
-              <FooterLink href="/obchodni-podminky" isBordered>{t.footer.terms}</FooterLink>
-              <FooterLink href="/ochrana-osobnich-udaju" isBordered>{t.footer.privacy}</FooterLink>
-              <FooterLink href="/zasady-cookies" isBordered>{t.footer.cookies}</FooterLink>
+              <FooterLink href="/provozni-rad" isBordered>{t?.footer?.rules || "PRAVIDLA"}</FooterLink>
+              <FooterLink href="/obchodni-podminky" isBordered>{t?.footer?.terms || "PODMÍNKY"}</FooterLink>
+              <FooterLink href="/ochrana-osobnich-udaju" isBordered>{t?.footer?.privacy || "SOUKROMÍ"}</FooterLink>
+              <FooterLink href="/zasady-cookies" isBordered>{t?.footer?.cookies || "COOKIES"}</FooterLink>
             </div>
           </div>
 
           {/* Column 2: Spojení */}
           <div className="flex flex-col space-y-3">
-            <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">{t.footer.contact}</h3>
+            <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">{t?.footer?.contact || "KONTAKT"}</h3>
             <FooterLink href="tel:+420577544073" isExternal>+420 577 544 073</FooterLink>
             <FooterLink href="mailto:mmbarber@mmbarber.cz" isExternal>mmbarber@mmbarber.cz</FooterLink>
             <div className="mt-2">
@@ -491,7 +491,7 @@ export function Footer() {
                   trackEvent("click_footer_responsible_person");
                 }}
               >
-                {t.contact.responsiblePerson}
+                {t?.contact?.responsiblePerson || (lang === 'cs' ? "ODPOVĚDNÁ OSOBA" : "RESPONSIBLE PERSON")}
               </FooterLink>
             </div>
           </div>
@@ -501,27 +501,27 @@ export function Footer() {
             <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">
               {t.footer?.partnerships || "Partnerství"}
             </h3>
-            <FooterLink href="/franchise">{t.header.franchise}</FooterLink>
-            <FooterLink href="/payment">{t.header.payment}</FooterLink>
-            <FooterLink href="/kariera">{t.header.career}</FooterLink>
+            <FooterLink href="/franchise">{t?.header?.franchise || "FRANCHISE"}</FooterLink>
+            <FooterLink href="/payment">{t?.header?.payment || "PLATBA"}</FooterLink>
+            <FooterLink href="/kariera">{t?.header?.career || "KARIÉRA"}</FooterLink>
           </div>
 
           {/* Column 3: Sleduj nás - Modern Premium Grid */}
           <div className="flex flex-col space-y-6 flex-1 min-w-[200px]">
             <h3 className="font-sans font-black text-white uppercase tracking-[0.2em] text-[10px] mb-2 border-b border-mafia-gold/20 pb-2">
-              {t.footer.followUs}
+              {t?.footer?.followUs || (lang === 'cs' ? "SLEDUJ NÁS" : "FOLLOW US")}
             </h3>
 
             <div className="grid grid-cols-1 gap-4">
               {[
-                { icon: Instagram, label: "Instagram", sub: t.footer.instagramLine, url: "https://www.instagram.com/mmbarber_uherske_hradiste/" },
-                { icon: Facebook, label: "Facebook", sub: t.footer.facebookLine, url: "https://www.facebook.com/mmbarber.cz" },
+                { icon: Instagram, label: "Instagram", sub: t?.footer?.instagramLine || "IG", url: "https://www.instagram.com/mmbarber_uherske_hradiste/" },
+                { icon: Facebook, label: "Facebook", sub: t?.footer?.facebookLine || "FB", url: "https://www.facebook.com/mmbarber.cz" },
                 {
                   icon: () => (
                     <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.6-4.13-1.47-.13 3.1 0 6.2-.42 9.27-.47 3.32-2.73 6.32-6.13 7.07-2.14.47-4.48.06-6.2-1.35-2.01-1.64-2.81-4.48-1.95-6.94.75-2.13 2.65-3.8 4.86-4.13.13-.02.27-.03.4-.04v4.14c-1.12.16-2.1 1.05-2.3 2.15-.22 1.16.29 2.45 1.3 3.03.95.53 2.22.42 3.02-.34.62-.57.88-1.46.88-2.29V0h.02z" />
                     </svg>
-                  ), label: "TikTok", sub: t.footer.tiktokLine, url: "https://www.tiktok.com/@mmbarber4"
+                  ), label: "TikTok", sub: t?.footer?.tiktokLine || "TT", url: "https://www.tiktok.com/@mmbarber4"
                 }
               ].map((social, idx) => (
                 <a
@@ -551,8 +551,8 @@ export function Footer() {
       <div className="border-t border-mafia-gold/10 pt-10 pb-4 flex flex-col items-center relative">
         <div className="flex flex-col items-center gap-4">
           <div className="font-mono text-smoke-white/50 text-xs md:text-sm tracking-[0.2em] uppercase text-center flex flex-wrap items-center justify-center gap-2">
-            <span>© {t.footer.copyright}</span>
-            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V 3.4</span>
+            <span>© {t?.footer?.copyright || (lang === 'cs' ? 'Všechna práva vyhrazena' : 'All rights reserved')}</span>
+            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V.3.4.1</span>
           </div>
           <div className="w-full max-w-4xl opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 mb-8 px-6">
              <DailyIntelligence />
@@ -687,6 +687,27 @@ export function Footer() {
               Service_Beard
             </Link>
           </div>
+
+          {/* NOIR FAQ LAYER - AEO Optimization */}
+          <div className="mt-16 pt-8 border-t border-white/5 max-w-7xl mx-auto text-left opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000">
+             <h4 className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.4em] mb-8 flex items-center gap-2">
+                <span className="w-2 h-2 bg-mafia-gold animate-pulse"></span>
+                {t?.footer?.directResponse || (lang === 'cs' ? 'PŘÍMÁ ODPOVĚĎ' : 'DIRECT RESPONSE')}
+             </h4>
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[
+                  { q: t?.footer?.faq1 || (lang === 'cs' ? "Nejlepší Barber UH?" : "Best Barbershop UH?"), a: t?.footer?.faq1Ans || (lang === 'cs' ? "MMBARBER Mařatice - Prémiový střih a péče." : "MMBARBER Mařatice - Premium skin fade.") },
+                  { q: t?.footer?.faq2 || (lang === 'cs' ? "Možnost parkování?" : "Parking Available?"), a: t?.footer?.faq2Ans || (lang === 'cs' ? "Bezplatné soukromé parkoviště přímo u salonu." : "Free private parking directly at the shop.") },
+                  { q: t?.footer?.faq3 || (lang === 'cs' ? "Akademie a kariéra?" : "Academy & Career?"), a: t?.footer?.faq3Ans || (lang === 'cs' ? "Profesionální barbarský výcvik a kariérní růst." : "Professional barber training and career paths.") }
+                ].map((item, i) => (
+                  <div key={i} className="space-y-2">
+                    <p className="text-[9px] font-black text-white uppercase tracking-widest">{item.q}</p>
+                    <p className="text-[9px] font-mono text-smoke-white/40 uppercase leading-relaxed">{item.a}</p>
+                  </div>
+                ))}
+             </div>
+          </div>
+
           <div className="sr-only">
             <h2>{t.seo?.title}</h2>
             <p>{t.seo?.description}</p>

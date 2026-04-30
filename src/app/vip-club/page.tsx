@@ -37,13 +37,13 @@ export default function VipClub() {
       setCountdown((prev) => {
         return prev > 0 ? prev - 1 : 0;
       });
-      
+
       const isSoundEnabled = localStorage.getItem("mmbarber_sound_enabled") === "true";
       if (isSoundEnabled) {
         const audio = new Audio("/sounds/time.mp3");
         audio.volume = 0.3;
         tickingAudioRef.current = audio;
-        audio.play().catch(() => {});
+        audio.play().catch(() => { });
       }
     }, 1000);
 
@@ -98,7 +98,7 @@ export default function VipClub() {
     const p1 = password.trim().toUpperCase();
     const p2 = datePassword.trim().toLowerCase();
 
-    if (p1 === "omerta" && p2 === "mmbarber") {
+    if (p1 === "OMERTA" && p2 === "mmbarber") {
       // Correct passwords
       const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--color-mafia-gold').trim();
       const tl = gsap.timeline();

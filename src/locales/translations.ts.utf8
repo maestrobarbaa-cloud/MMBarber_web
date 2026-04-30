@@ -1,0 +1,1411 @@
+﻿export const translations = {
+  cs: {
+    header: {
+      services: "Slu┼żby",
+      gallery: "Galerie",
+      seznamka: "Seznamka",
+      payment: "Platba",
+      schedule: "Rozvrh",
+      theCode: "Informace",
+      more: "V├şce",
+      career: "Kari├ęra",
+      aboutUs: "O N├ís",
+      franchise: "FRANCHISE",
+      startMission: "JAK TO U N├üS CHOD├Ź",
+      compass: "KOMPAS",
+      web: "WEB",
+      on: "ZAPNUTO",
+      off: "VYPNUTO",
+      tracking: "SLEDUJI POLOHU",
+      savingData: "┼áET┼ś├Ź DATA",
+      navigate: "NAVIGOVAT",
+      searchPlaceholder: "Ptej se pr├ívn─Ť.",
+      reviews: "Recenze"
+    },
+    intelligence: [
+      "Dnes je ide├íln├ş tlak pro precizn├ş skin fade. Vlhkost v UH odpov├şd├í norm─Ť.",
+      "Syst├ęm detekoval zv├Ż┼íen├Ż z├íjem o ├║pravu vous┼» na Slov├ícku. Kapacity se pln├ş.",
+      "Pozor na v├ştr v Ma┼Öatic├şch. Doporu─Źujeme siln─Ťj┼í├ş pom├ídu z na┼í├ş v├Żbavy.",
+      "Dne┼ín├ş mise: Perfektn├ş kontury. Barber je v pln├ę pohotovosti.",
+      "Anal├Żza trend┼»: Zl├şn a okol├ş p┼Öech├íz├ş na krat┼í├ş st┼Öihy. Bu─Ćte nap┼Öed.",
+      "Hl├í┼íen├ş: Rezerva─Źn├ş syst├ęm is.mmbarber.cz vykazuje vysokou aktivitu.",
+      "Doporu─Źen├ş dne: Napa┼Öov├ín├ş vous┼» hork├Żm ru─Źn├şkem pro maxim├íln├ş relax.",
+      "Stav centr├íly: V┼íechny syst├ęmy stabiln├ş. ─îas na v├í┼í nov├Ż styl.",
+      "M├şstn├ş zpr├íva: V Uhersk├ęm Hradi┼íti dnes vl├ídne styl. Bu─Ćte jeho sou─Ź├íst├ş.",
+      "Technick├Ż tip: Olej na vousy aplikujte hned po spr┼íe pro nejlep┼í├ş efekt.",
+      "Monitorov├ín├ş: Klienti z Brodu a Vesel├ş jsou na cest─Ť k n├ím. Rezervujte v─Źas.",
+      "Strategie dne: Ne┼Öe┼íte, co bylo. ┼śe┼íte, jak vypad├íte te─Ć.",
+      "Syst├ęmov├í zpr├íva: MM BARBER rodina se rozr┼»st├í. D─Ťkujeme za loajalitu.",
+      "Po─Źas├ş v UH p┼Öeje kr├ítk├Żm vlas┼»m. P┼Öij─Ćte si pro sv┼»j taper fade.",
+      "Hl├í┼íen├ş z Ma┼Öatic: Parkov├ín├ş p┼Öed centr├ílou je voln├ę a p┼Öipraven├ę.",
+      "Nov├í data: Beard grooming je v roce 2026 z├íkladem ka┼żd├ęho ├║sp─Ť┼ín├ęho mu┼że.",
+      "Detekce stylu: V okol├ş Kunovic byl zaznamen├ín extr├ęmn─Ť ostr├Ż st┼Öih od n├ís.",
+      "Z├íznam: Dne┼ín├ş k├íva v centr├íle je stejn─Ť siln├í jako na┼íe b┼Öitvy.",
+      "Aktualizace: Upravili jsme techniky pro je┼ít─Ť ─Źist┼í├ş p┼Öechody.",
+      "Zpr├íva pro rekruty: Prvn├ş n├ív┼ít─Ťva? Nebojte se, postar├íme se o v┼íe.",
+      "Anal├Żza: Styl noir nen├ş m├│da, je to postoj. Dnes je den pro postoj.",
+      "Monitoring: Letn├ş filmov├í ┼íkola se bl├ş┼ż├ş. Vypadejte skv─Ťle v kinech.",
+      "Info: Slavnosti v├şna v UH vy┼żaduj├ş reprezentativn├ş viz├í┼ż. M├íte ji?",
+      "D┼»le┼żit├ę: Ka┼żd├Ż milimetr rozhoduje. My ty milimetry hl├şd├íme.",
+      "Zpr├íva ze syst├ęmu: Va┼íe loajalita je na┼íe s├şla. Pokra─Źujte v misi.",
+      "Technologie: Pou┼ż├şv├íme nejost┼Öej┼í├ş b┼Öity na cel├ęm Slov├ícku. Ov─Ť┼Öeno.",
+      "Hl├í┼íen├ş: Barber Tom├í┼í dnes lad├ş detaily s chirurgickou p┼Öesnost├ş.",
+      "Vzkaz: Nehledejte v├Żmluvy, hledejte voln├Ż term├şn na is.mmbarber.cz.",
+      "Data: 99% mu┼ż┼» se c├şt├ş l├ępe po n├ív┼ít─Ťv─Ť u n├ís. Bu─Ćte to 1% co to v├ş.",
+      "Z├ív─Ťre─Źn├ę hl├í┼íen├ş: MM BARBER Uhersk├ę Hradi┼ít─Ť ÔÇô mise spln─Ťna."
+    ],
+    familyIntelligence: [
+      "Vodo Topo Jahoda hl├ís├ş 100% nasazen├ş v ter├ęnu. Hav├írie v UH pod kontrolou.",
+      "Kofipack odeslal novou z├ísilku pro na┼íi rodinu. Logistika v Ma┼Öatic├şch b─Ť┼ż├ş.",
+      "Malina Photo vyvol├ív├í nov├ę d┼»kazy ze v─Źerej┼í├ş akce. O─Źek├ívejte vizu├íln├ş update.",
+      "Argema lad├ş zvuk pro dal┼í├ş misi. Slov├ícko bude vibrovat.",
+      "Slune─Źn├ş Reality detekovaly nov├ę strategick├ę objekty v centru Hradi┼ít─Ť.",
+      "Comites hl├ís├ş stabiln├ş r┼»st. Finance na┼í├ş rodiny jsou v bezpe─Ź├ş.",
+      "┼áimon Kr├íl p┼Öipravuje setlist, kter├Ż nenech├í nikoho v klidu. Ready?",
+      "O Shawarma Beef dopl┼łuje z├ísoby nejlep┼í├şho masa ve m─Ťst─Ť. Mise: Ob─Ťd.",
+      "Dv┼»r pod Star├Żma Horama p┼Öipravuje degustaci. Krev na┼í├ş rodiny je v├şno.",
+      "Kudielka instaluje nov├ę st├şn├şc├ş syst├ęmy. Va┼íe soukrom├ş je na┼í├ş prioritou.",
+      "D─Ťtsk├Ż domov UH: Spole─Źn─Ť jsme dnes vykouzlili n─Ťkolik ├║sm─Ťv┼». Dobr├í pr├íce.",
+      "O Kole─Źko v├şc hl├ís├ş: Sez├│na v pln├ęm proudu, servisy jedou na maximum.",
+      "Zden─Ťk Mi─Źka B├şlovice: V┼íechny trubky v regionu jsou v nejlep┼í├şch rukou.",
+      "Romana Mi─Źkov├í: Dan─Ť a ├║─Źty jsou srovnan├ę s matematickou p┼Öesnost├ş.",
+      "Poe Poe: Rychl├í jednotka ob─Źerstven├ş v UH je p┼Öipravena k nasazen├ş.",
+      "Anal├Żza: Na┼íe rodina se roz┼íi┼Öuje o nov├ę vlivn├ę ─Źleny. S├şla je v jednot─Ť."
+    ],
+    hero: {
+      subtitle: "Holi─Źstv├ş Uhersk├ę Hradi┼ít─Ť",
+      title: "P├ínsk├ę holi─Źstv├ş v Uhersk├ęm Hradi┼íti, o kter├ęm se nemluv├ş, ale ka┼żd├Ż tam chce pat┼Öit.",
+      motto: "Kapitola I: Zrozen├ş stylu",
+      chapters: [
+        "Kapitola I: Zrozen├ş stylu",
+        "Kapitola II: Loajalita",
+        "Kapitola III: ┼śemeslo"
+      ],
+      mottoes: [
+        "Kapitola I: Zrozen├ş stylu",
+        "Kapitola II: Loajalita",
+        "Kapitola III: ┼śemeslo"
+      ],
+      description: [
+        "M├şsto, o kter├ęm se ml─Ź├ş a ka┼żd├Ż chce sem pat┼Öit.",
+        "To nejlep┼í├ş se nikdy neukazuje nahlas",
+        "Styl, kter├Ż si nekoup├ş┼í. Mus├ş┼í si ho zaslou┼żit",
+        "Kvantita nen├ş n├í┼í c├şl. Perfektn├ş servis o V├ís ano.",
+        "Nevstupuje┼í do barbershopu. Vstupuje┼í do na┼íeho sv─Ťta."
+      ],
+      easterEggSlogans: [
+        "Nevstupuje┼í do barbershopu. Vstupuje┼í do na┼íeho sv─Ťta.",
+        "Tady se ne┼Öe┼í├ş, kdo jsi byl. Zaj├şm├í n├ís, k├Żm odch├íz├ş┼í.",
+        "Ne v┼íechno, co tady vznik├í, je vid─Ťt v zrcadle.",
+        "S├şla, kterou tu budujeme, nekon─Ź├ş u dve┼Ö├ş.",
+        "Ka┼żd├Ż krok dop┼Öedu, kter├Ż ud─Ťl├í┼í ty, pom├íh├í n─Ťkomu ud─Ťlat ten prvn├ş.",
+        "Kdy┼ż se jednou rozhodne┼í zm─Ťnit hru, za─Źne┼í pat┼Öit do jin├ę dynastie.",
+        "N─Ťkter├ę rody se zapisuj├ş do d─Ťjin. Jin├ę se zapisuj├ş do lid├ş.",
+        "Nez├íle┼ż├ş, odkud jsi p┼Öi┼íel. Z├íle┼ż├ş, jestli po tob─Ť n─Ťco z┼»stane."
+      ],
+      nightSlogans: [
+        "Nevstupuje┼í do barbershopu. Vstupuje┼í do na┼íeho sv─Ťta.",
+        "┼á┼í┼íÔÇŽ je┼ít─Ť nesp├ş┼í? Tak se rezervuj!",
+        "Noc pat┼Ö├ş t─Ťm, co v├ş, co cht─Ťj├ş. Rezervace ─Źek├í...",
+        "Z├şt┼Öek za─Ź├şn├í dnes ve─Źer. Klikni a m├í┼í m├şsto.",
+        "Ne─Źekej na r├íno. M├şsto miz├ş."
+      ],
+      deepNightSlogans: [
+        "Nevstupuje┼í do barbershopu. Vstupuje┼í do na┼íeho sv─Ťta.",
+        "P┼»lnoc. M─Ťsto sp├şÔÇŽ ale ty ne. V├ş┼í pro─Ź.",
+        "Tahle hodina pat┼Ö├ş jen vyvolen├Żm. Rezervace ─Źek├í.",
+        "Jestli nesp├ş┼íÔÇŽ m├í┼í d┼»vod. Dokon─Źi to.",
+        "V tuhle dobu se d─Ťlaj├ş rozhodnut├ş, co m─Ťn├ş hru.",
+        "Jestli tohle vid├ş┼íÔÇŽ jsi bl├ş┼ż, ne┼ż si mysl├ş┼í."
+      ],
+      cta: "P┼Öijmout Misi",
+      bookBtn: "REZERVOVAT K┼śESLO"
+    },
+    services: {
+      title: "Cen├şk slu┼żeb",
+      subtitle: "Vyber si odhadnut├Ż ─Źas podle toho, co zn├í┼í z jin├Żch barbershop┼», a spole─Źn─Ť u k┼Öesla se domluv├şme, co vybere┼í p┼Ö├ş┼ít─Ť. Ve─Źern├ş term├şny jsou dostupn├ę i pro ┼żeny.",
+      score: "Mise sk├│re",
+      bookBtn: "Rezervovat",
+      detailsBtn: "Detaily",
+      revolutNotice: "",
+      currencyLabel: "M─Ťna",
+      mainTitle: "─îasov├Ż tarif",
+      timeTariffNote: "D├şvej se na ─Źas, za jak dlouho t─Ť zvl├ídnu ost┼Ö├şhat. Ceny nastavuju f├ęrov─Ť podle toho, co skute─Źn─Ť pot┼Öebuje┼í.",
+      addonsTitle: "Dopl┼łkov├ę slu┼żby",
+      independentTitle: "Nez├ívisl├ę slu┼żby",
+      specialTitle: "No─Źn├ş mise",
+      totalLabel: "P┼Öedpokl├ídan├í celkov├í ─Ź├ístka",
+      timeLabel: "P┼Öedpokl├ídan├Ż ─Źas na rezervaci",
+      independentTimeLabel: "─îas nez├ívisl├Żch slu┼żeb",
+      totalTimeLabel: "Celkov├Ż ─Źas str├íven├Ż v barberu",
+      extraTimeLabel: "V├í┼í ─Źas mimo rezervaci",
+      dynamicPricingTitle: "Dynamick├í cenotvorba",
+      currentSurcharge: "Aktu├íln├ş p┼Öir├í┼żka",
+      surchargeReason: "D┼»vod",
+      surchargeNone: "B─Ť┼żn├Ż tarif",
+      surchargeSat: "Sobotn├ş provoz (+10%)",
+      surchargeSun: "Ned─Ťln├ş provoz (+30%)",
+      surchargeHoliday: "St├ítn├ş sv├ítek (+100%)",
+      surchargeAfterHours: "Mimo provozn├ş dobu (+30%)",
+      surchargeNewYear: "Nov├Ż rok (+70%)",
+      surchargeChristmas: "V├íno─Źn├ş r├íno (+50%)",
+      bookingNote: "Pracujeme dle rezerva─Źn├şho syst├ęmu. Vid├ş┼í volno? M├şsto si m┼»┼że┼í zarezervovat.",
+      switchDate: "Simulovat datum",
+      pricingModes: {
+        workday: "Pracovn├ş den",
+        saturday: "Sobota",
+        sunday: "Ned─Ťle",
+        holiday: "Sv├ítek",
+        night: "Mimo prov. dobu"
+      },
+      items: [
+        { time: "5 m", name: "RYCHL├ü OPERACE", desc: "Rychl├Ż v├Żtrat kontur nebo detail┼». Sta─Ź├ş jen sko─Źit na ┼żidli.", price: "100 K─Ź", priceValue: 100 },
+        { time: "10 m", name: "EXPRES SERVIS", desc: "Bez shaveru, n├íro─Źn─Ťj┼í├ş v├Żtraty, nav├íz├ín├ş nebo ├║prava, co nepo─Źk├í.", price: "180 K─Ź", priceValue: 180 },
+        { time: "15 m", name: "QUICK FADE", desc: "Buzzcut, st┼Öih strojkem, jednoduch├ę ├║pravy, fade + prost┼Ö├şh├ín├ş.", price: "280 K─Ź", priceValue: 280 },
+        { time: "20 m", name: "BASIC ST┼śIH", desc: "Pokro─Źil├ę d─Ťtsk├ę st┼Öihy nebo jednodu┼í┼í├ş st┼Öihy pro dosp─Ťl├ę, opalov├ín├ş, kol├şnsk├í, ├║prava (bez myt├ş).", price: "320 K─Ź", priceValue: 320 },
+        { time: "30 m", name: "KLASIK ST┼śIH", desc: "Precizn├ş st┼Öih bez myt├ş. N─Ťkdy stihnu i vlasy + vousy ÔÇô z├íle┼ż├ş na tob─Ť.", price: "450 K─Ź", priceValue: 450 },
+        { time: "45 m", name: "NEV├Ź┼á? ZASTAV SE...", desc: "Kompletn├ş p├ę─Źe s myt├şm a zaholov├ín├şm. Nev├ş┼í? Zastav se, vy┼Öe┼í├şme to.", price: "650 K─Ź", priceValue: 650 },
+        { time: "1 h", name: "PREMIUM KOMBO", desc: "Hladk├Ż expres: Vlasy, vousy a odpo─Źinek.", price: "1 000 K─Ź", priceValue: 1000 }
+      ],
+      addons: [
+        { id: "add1", name: "Depilace nosu", priceValue: 30, desc: "Rychl├í voskov├í epilace" },
+        { id: "add2", name: "Epilace u┼í├ş", priceValue: 30, desc: "Rychl├í voskov├í epilace" },
+        { id: "add3", name: "Metoda hork├Ż ru─Źn├şk", priceValue: 100, desc: "Tradi─Źn├ş napa┼Öen├ş a o┼íet┼Öen├ş" },
+        { id: "add6", name: "Myt├ş vlas┼»", priceValue: 100, desc: "Profesion├íln├ş myt├ş a mas├í┼ż hlavy" },
+        { id: "add4", name: "Napa┼Öov├ín├ş vous┼»", priceValue: 70, desc: "P┼Ö├şprava vous┼» a poko┼żky" },
+        { id: "add5", name: "Opalov├ín├ş u┼í├ş", priceValue: 20, desc: "Klidn─Ť si dojdi op├ílit jen u┼íi" }
+      ],
+      independent: [
+        { id: "ind1", name: "15 min mas├í┼żn├ş k┼Öeslo", priceValue: 100, time: 15, desc: "Klidn─Ť si dojdi jen odpo─Źinout" },
+        { id: "ind2", name: "30 min relaxa─Źn├ş k┼Öeslo", priceValue: 180, time: 30, desc: "Klidn─Ť si dojdi jen odpo─Źinout" }
+      ],
+      special: [
+        { id: "sp2", name: "Celkov├Ż servis", priceValue: 2500, time: "1 h", desc: "Kompletn├ş p├ę─Źe a relaxace v no─Źn├şch hodin├ích. Dle domluvy." },
+        { id: "sp1", name: "No─Źn├ş st┼Öih (45 min)", priceValue: 1300, time: "45 min", desc: "Exkluzivn├ş slu┼żba mimo b─Ť┼żnou pracovn├ş dobu. Dle domluvy." },
+        { id: "sp4", name: "No─Źn├ş st┼Öih (30 min)", priceValue: 900, time: "30 min", desc: "Rychl├Ż no─Źn├ş servis pro ty, co sp─Ťchaj├ş. Dle domluvy." },
+        { id: "sp3", name: "Ve─Źern├ş / No─Źn├ş st┼Öih p┼Öi sv├ş─Źk├ích", priceValue: 1800, time: "30 min", desc: "Jedine─Źn├í atmosf├ęra a klid p┼Öi sv─Ťtle sv├ş─Źek. Dle domluvy." }
+      ]
+    },
+    operatives: {
+      title: "Barbe┼Öi",
+      subtitle: "V┼íechno je o lidech a charakteru. Vyber si, komu sv─Ť┼Ö├ş┼í svou d┼»v─Ťru?",
+      openFile: "Otev┼Ö├şt slo┼żku",
+      bookBarber: "Rezervovat Barbera",
+      barbers: {
+        tomas: {
+          name: "Tom├í┼í",
+          role: "Ost┼Ö├şlen├Ż maz├ík",
+          motto: "",
+          story: "Zakladatel, strat├ęg a ─Źlov─Ťk, kter├Ż v├ş, ┼że detaily d─Ťlaj├ş celek. Nehled├í zkratky, ale poctivou cestu.",
+          schedule: "├Üt-P├í 9:00 - 18:00 | So-Ne 9:00 - 12:00",
+          englishSpeaking: "Anglicky mluv├şc├ş",
+          specializations: ["Prim├írn─Ť p├ínsk├ę", "ale zvl├ídnu i d├ímy"]
+        }
+      }
+    },
+    theCode: {
+      title: "Informace",
+      subtitle: "Upozorn─Ťn├ş pro n├ív┼ít─Ťvn├şky:",
+      rules: [
+        { title: "Platba", description: "P┼Öij├şm├íme hotovost i QR platbu. Ve┼íker├ę slu┼żby jsou splatn├ę ihned po poskytnut├ş." },
+        { title: "Parkov├ín├ş", description: "Bezplatn├ę parkov├ín├ş je k dispozici p┼Ö├şmo u salonu nebo v bl├şzk├ęm okol├ş. Dopoledne je parkov├ín├ş bez probl├ęm┼». Pou┼ż├şv├í┼í WAZE? tak to tref├ş┼í do barberu vedle..." },
+        { title: "P┼Ö├şprava", description: "P┼Öed n├ív┼ít─Ťvou holi─Źe si pros├şm nemyjte vlasy ÔÇô m─Ťly by b├Żt lehce mastn├ę pro lep┼í├ş ├║pravu. Nepou┼ż├şvejte stylingov├ę p┼Ö├şpravky." },
+        { title: "Soukrom├ş", description: "Tento prostor je vyhrazen pro tv┼»j klid. ┼Ż├ídn├ę zbyte─Źn├ę o─Źi, jen ty a tv┼»j styl." }
+      ],
+      footer: "MMBARBER"
+    },
+    intro: {
+      welcome: "V├şt├í V├ís p├ínsk├ę holi─Źstv├ş a barbershop v Uhersk├ęm Hradi┼íti.",
+      parking: "PARKOV├üN├Ź ZDARMA",
+      parkingHint: "Waze t─Ť klidn─Ť po┼íle jinam. Ale hr├í─Źi v├ş, kde je spr├ívn├í adresa.",
+      copyAddress: "KOP├ŹROVAT ADRESU",
+      openMaps: "OTEV┼ś├ŹT MAPY",
+      payment: "PLATBA HOTOV─Ü / QR",
+      acknowledge: "ROZUM├ŹM",
+      acceptMission: "AKCEPTOVAT INSTRUKCE"
+    },
+    devPanel: {
+      title: "V├ŁVOJOV├Ł PANEL",
+      accent: "Akcent",
+      atmosphere: "Atmosf├ęra",
+      tools: "N├ístroje",
+      filters: "Vizu├íln├ş Filtry",
+      game: "MINIHRA"
+    },
+    radio: {
+      playMe: "Hrajte mi"
+    },
+    partners: {
+      title: "Na┼íi Kump├íni",
+      subtitle: ""
+    },
+    contact: {
+      title: "Jak naj├şt cestu k n├ím",
+      subtitle: "",
+      address: "Adresa shopu",
+      connection: "Spojen├ş",
+      responsiblePerson: "Odpov─Ťdn├í osoba",
+      parking: "Parkov├ín├ş",
+      parkingText1: "ZDARMA v bl├şzkosti. Pou┼ż├şv├í┼í WAZE? tak to tref├ş┼í do barberu vedle...",
+      parkingText2: "Dopoledne lze st├ít hned u provozovny.",
+      transit: "Doprava k n├ím",
+      transitText1: "Zast├ívka Rudy Kub├ş─Źka",
+      transitText2: "je ihned v bezprost┼Öedn├ş bl├şzkosti."
+    },
+    footer: {
+      description: "Elegance, tradice, bezcitn├í preciznost a p┼Öedev┼í├şm inovace. P├ínsk├ę holi─Źstv├ş v Uhersk├ęm Hradi┼íti, o kter├ęm se nemluv├ş, ale ka┼żd├Ż tam chce pat┼Öit.",
+      nav: "Navigace",
+      family: "Rodina",
+      contact: "Spojen├ş",
+      follow: "Sleduj n├ís",
+      seoBottomInfo: "P├ínsk├ę holi─Źstv├ş & barbershop Uhersk├ę Hradi┼ít─Ť",
+      terms: "Obchodn├ş podm├şnky",
+      privacy: "Ochrana osobn├şch ├║daj┼»",
+      cookies: "Pou┼ż├şv├ín├ş cookies",
+      rules: "Provozn├ş ┼Ö├íd",
+      instagramLine: "M├şst─Ť, kde jsou v┼íichni ┼í┼ąastn├ş. Aspo┼ł na fotce.",
+      tiktokLine: "Obsaz├şch, po kter├Żch si nic nepamatuje┼í.",
+      facebookLine: "Zdi n├í┼Ök┼», kde se bre─Ź├ş ve┼Öejn─Ť.",
+      copyright: "2024-2026 MMBARBER. V┼íechna pr├íva vyzrazena.",
+      neklikat: "neklikat",
+      tryToCatch: "ZKUS M─Ü CHYTIT",
+      closeTrap: "ZAV┼ś├ŹT TUTO PAST",
+      likeWeb: "l├şb├ş se ti web ?",
+      callUs: "tak nev├íhej a volej k n├ím",
+      callToAction: "Tak nev├íhej a volej do barberu",
+      thankYou: "SYST├ëM AKTIVOV├üN. Zkus hledat k├│dy v na┼íem vyhled├íva─Źi... Pokud nev├ş┼í, zeptej se sv├ęho barbera, co ti m┼»┼że nab├şdnout.",
+      cheatActivated: "K├ôD P┼śIJAT",
+      cheatHint: "Hledej v inteligentn├şm vyhled├íva─Źi...",
+      close: "ZAV┼ś├ŹT",
+      vipClub: "V.I.P. KLUB",
+      partnerships: "Partnerstv├ş & Platba",
+      followUs: "Sledujte n├ís",
+      reviews: "Recenze"
+    },
+    rodina: {
+      title: "MM BARBER RODINA",
+      list: "Seznam",
+      network: "S├ş┼ą Spojen├ş",
+      divisions: "DIVIZE",
+      backToHq: "Zp─Ťt na z├íkladnu",
+      partnersTrust: "Podniky a ┼żivnostn├şci, kter├Żm v─Ť┼Ö├şme.",
+      youForUs: "Vy pro n├ís. My pro V├ís.",
+      weAreFamily: "MMBarber nen├ş jen o vlasech. Je to o lidech, kte┼Ö├ş tvo┼Ö├ş kvalitu nap┼Ö├ş─Ź obory. Jsme Rodina.",
+      closeNetwork: "ZAV┼ś├ŹT S├Ź┼Ą",
+      cameraFollows: "Kamera sleduje tv┼»j pohyb",
+      headquarters: "CENTR├üLA"
+    },
+    sidliste: {
+      title: "S├ŹDLI┼áT─Ü",
+      sector: "S├ŹDLI┼áT─Ü // SEKTOR VII",
+      return: "N├üVRAT NA ├ÜST┼śED├Ź",
+      subtitle: "P┼Öidej se k lidem, co cht─Ťj├ş v├şc ne┼ż jen sed─Ťt na m├şst─Ť.",
+      description: "V r├ímci s├şdli┼ít─Ť tvo┼Ö├şme komunitu, kde se rod├ş ty nejlep┼í├ş n├ípady. Tady se nehraje na efekt, ale na loajalitu a spole─Źn├ę vize.",
+      ideaTitle: "M├í┼í vlastn├ş n├ípad?",
+      ideaText: "Bylo by fajn se zde domluvit na n─Ťjak├ę spole─Źn├ę akci. Pokud m├í┼í vizi, kterou stoj├ş za to realizovat, ozvi se n├ím.",
+      proposeBtn: "NAVRHNOUT AKCI"
+    },
+    newspaper: {
+      masthead: "Denn├ş Rozkaz",
+      circulation: "N├üKLAD: P┼ś├ŹSN─Ü TAJN├ë",
+      price: "CENA: LOAJALITA",
+      headline: "Jak to u n├ís (ne)funguje",
+      subheadline: "Tady nejde jen o st┼Öih. O─Źek├ívej n─Ťco jin├ęho.",
+      p1: "U n├ís to nefunguje jako n─Ťkde jinde. P┼Öijde┼í, posad├ş┼í se do k┼Öesla a my se postar├íme o zbytek. B─Ťhem toho pokec├íme, probereme, co chce┼í ÔÇô nebo co ani nev├ş┼í, ┼że chce┼í. And kdy┼ż bude┼í m├şt chu┼ą, klidn─Ť z┼»sta┼ł. Sedni si, dej ┼Öe─Ź s ostatn├şma. Tady se nikdo nehon├ş pry─Ź.",
+      p2: "A nebo? Jde┼í jen kolem? Klidn─Ť se zastav, sedni si na pokec, ─Źlov├ş─Źku. Dve┼Öe jsou otev┼Öen├ę. D├ív├íme ti volnost. Tv┼»j styl, tvoje pravidla. M├í┼í vlastn├ş p┼Öedstavu? Jedeme podle tebe. Nem├í┼í? Navrhneme, co ti sedne. Tady se netvo┼Ö├ş jen ├║─Źesy, tady se tvo┼Ö├ş atmosf├ęra.",
+      p3: "A je┼ít─Ť jedna v─Ťc ÔÇô prostor je u n├ís dost soukrom├Ż na to, aby ses nec├ştil jak ve vitr├şn─Ť. Klid, pohoda, ┼ż├ídn├Ż zbyte─Źn├Ż o─Źi nav├şc. Tady m├í┼í sv┼»j kout na vypnut├ş od okoln├şho hluku.",
+      p4: "N├í┼í ─Źasov├Ż tarif je p┼Öedev┼í├şm vhodn├Ż pro klienty, kte┼Ö├ş v─Ťd├ş, co cht─Ťj├ş. Pokud si nejste jist├ş, ┼Öi─Ćte se jednodu┼íe t├şm, na co b─Ť┼żn─Ť chod├şte ke sv├ęmu barberovi ÔÇô my u┼ż si s t├şm porad├şme.",
+      motto: "Jak se ┼Ö├şk├íÔÇŽ n├í┼í z├íkazn├şk, n├í┼í p├ín.",
+      burnBtn: "Sp├ílit po p┼Öe─Źten├ş",
+      burnNote: "Zni─Ź├ş ve┼íker├ę d┼»kazy o tv├ę p┼Ö├ştomnosti"
+    },
+    journey: {
+      title: ["Moje", "Cesta"],
+      subtitle: "Historie / The Journey",
+      description: "Z mal├ęho n├ípadu se stala Legenda. Pod├şvejte se, jak plynul ─Źas v centr├íle MMBarber.",
+      archiveShot: "Arch├şvn├ş sn├şmek",
+      footerTitle: "Dnes jsi sou─Ź├íst├ş ty",
+      footerCta: "Pokra─Źovat v misi",
+      timeline: [
+        {
+          year: "2018",
+          title: "Prvn├ş v├Żst┼Öel",
+          desc: "Zalo┼żen├ş MMBarber. Za─Ź├ítek mise, o kter├ę se za─Źalo ti┼íe mluvit po cel├ęm m─Ťst─Ť.",
+          side: "left"
+        },
+        {
+          year: "2020",
+          title: "Centr├íla v Uhersk├ęm Hradi┼íti",
+          desc: "Otev┼Öen├ş sou─Źasn├Żch prostor. M├şsto, kter├ę se stalo ├║to─Źi┼ít─Ťm pro ty, kte┼Ö├ş hledaj├ş v├şc ne┼ż jen st┼Öih.",
+          side: "right"
+        },
+        {
+          year: "2022",
+          title: "Zocelen├ş t├Żmu",
+          desc: "Tom├í┼í se st├ív├í synonymem pro preciznost a autoritu v k┼Öesle. P┼Öich├íz├ş nov├í krev.",
+          side: "left"
+        },
+        {
+          year: "2024",
+          title: "Nov├í ├ęra",
+          desc: "Centr├íla MMBarber se rozr┼»st├í o nov├ę slu┼żby a technologie.",
+          side: "right"
+        }
+      ]
+    },
+    others: {
+      title: "V├ŹCE K PODNIKU",
+      hiddenPlaces: {
+        title: "SKRYT├ü M├ŹSTA M─ÜSTA",
+        name: "Komfort Lounge Bar",
+        address: "L. Jan├í─Źka 180 686 01, Uhersk├ę Hradi┼ít─Ť 1",
+        description: "Atmosf├ęrick├Ż shisha bar, ide├íln├ş m├şsto pro relax u vodn├ş d├Żmky, k├ívy nebo kvalitn├şho pit├ş.",
+        slotsTitle: "VOLN├ü M├ŹSTA",
+        cta: "P┼śIPOJ SE"
+      },
+      members: {
+        title: "─îLENOV├ë RODINY",
+        description: "Ti, kte┼Ö├ş v─Ťd├ş, kde hledat...",
+        employeeWall: {
+          title: "ZE─Ä ZAM─ÜSTNANC┼«",
+          year: "ROK 2026",
+          employeeName: "Tom├í┼í",
+          months: ["LEDEN", "├ÜNOR", "B┼śEZEN", "DUBEN", "KV─ÜTEN", "─îERVEN", "─îERVENEC", "SRPEN", "Z├ü┼ś├Ź", "┼ś├ŹJEN", "LISTOPAD", "PROSINEC"],
+          invitation: "Chce┼í b├Żt taky na na┼í├ş n├íst─Ťnce? M─Ťl by ses zastavit, a┼ą v─Ťd├ş, jakou p┼Öezd├şvku ti tam m├íme napsat!",
+          brandVision: "N─Ťkdo si mysl├ş, ┼że holi─Źstv├ş je jen o vlasech. Takto to vid├ş 99% lid├ş, ale jsou i jin├ş co to vid├ş jinak. M┼»┼że┼í se p┼Öidat a pomoct mi vybudovat zna─Źku."
+        }
+      },
+      support: {
+        title: "GRAFIKA",
+        description: "",
+        reward: "Kdy┼ż u┼ż ned├ív├ím slevy a black friday ka┼żd├Ż p├ítek. Chce┼í podpo┼Öit toho holi─Źe? Co za t├şm v┼í├şm stoj├ş? Tak podporuj !",
+        pcLabel: "Pozad├ş monitoru 1920x1080px.",
+        phoneLabel: "Tapeta mobilu 1080x1920px",
+        downloadBtn: "ST├üHNOUT ODM─ÜNU",
+        passwordLabel: "VSTUPOV├ë HESLO",
+        passwordHint: "Pro heslo mus├ş┼í zaj├şt k barberovi, hlavn─Ť necho─Ć vedle, ten ho nezn├í...",
+        unlock: "ODEMKNOUT",
+        denied: "P┼Ö├şstup odep┼Öen"
+      },
+      systemVisit: {
+        title: "Syst├ęm a n├ív┼ít─Ťva",
+        description: "Jak se spr├ívn─Ť p┼Öipravit na n├ív┼ít─Ťvu holi─Źe.",
+        cta: "V├ŹCE INFORMAC├Ź"
+      }
+    },
+    styleDefinition: {
+      defineStyle: {
+        title: ["Definujte", "Sv┼»j Styl"],
+        subtitle: "MMBARBER EXCLUSIVE /",
+        modalTitle: "Nev├ş┼í, jak├Ż ├║─Źes ti sedne k tv├ęmu stylu?",
+        modalContent: "Spole─Źn─Ť najdeme st┼Öih, kter├Ż bude ladit s t├şm, co nos├ş┼í ÔÇö i s t├şm, kdo jsi. Probereme detaily, dolad├şme look a ty pak vyjde┼í ven s jistotou. Jako kr├íl."
+      },
+      pairTherapy: {
+        title: ["P├írov├í", "Terapie"],
+        subtitle: "MMBARBER SPECIAL /",
+        modalTitle: "P┼Öij─Ćte spolu. Odejd─Ťte je┼ít─Ť v├şc slad─Ťn├ş.",
+        modalContent: "Nejd┼Ö├şv dolad├şme jeho styl, ve─Źer p┼Öijde na ┼Öadu i ona. Mezit├şm pohoda, konverzace a atmosf├ęra, kter├í v├ís vt├íhne. Proto┼że styl je lep┼í├ş, kdy┼ż ho sd├şl├şte."
+      }
+    },
+    environmentSlider: {
+      title: "GALERIE",
+      detailPhoto: "DETAILN├Ź FOTO",
+      closeImage: "ZAV┼ś├ŹT SN├ŹMEK"
+    },
+    seznamka: {
+      description: "Seznamka z re├íln├ęho sv─Ťta.\nNe ka┼żdej m├í ─Źas nebo chu┼ą b├Żt online.\nTohle je jin├Ż. P┼Öijde┼í. Sedne┼í siÔÇŽ a v─Ťci se d─Ťj├ş.",
+      protocolTitle: "PROTOKOL SEZNAMEN├Ź",
+      acknowledge: "ROZUM├ŹM",
+      successTitle: "MISE KOMPLETN├Ź",
+      successText: "Nyn├ş jste p┼Öipraveni na osobn├ş setk├ín├ş.",
+      finishBtn: "DOKON─îIT MISI",
+      cancelBtn: "Zru┼íit postup a vr├ítit se",
+      confirmedLabel: "Procedura potvrzena",
+      steps: [
+        { title: "Vyslat kamar├ída", desc: "Vyslat kamar├ída se ost┼Ö├şhat" },
+        { title: "Vz├şt kamar├ídku", desc: "Vz├şt kamar├ídku zkr├ítit kone─Źky" },
+        { title: "Naverbovat odv├í┼żn├ę", desc: "Nebo vy┼íli n─Ťkoho zn├ím├ęho kdo se neboj├ş" }
+      ]
+    },
+    welcome: {
+      l1: { title: "DOPIS O PLATB─Ü", content: "D┼«V─ÜRN├ë: U n├ís zaplat├ş┼í hotov─Ť nebo QR k├│dem tv├ęho bankovnictv├ş." },
+      l2: { title: "DOPIS O PARKOV├üN├Ź", content: "D┼«V─ÜRN├ë: Parkov├ín├ş zdarma p┼Ö├şmo p┼Öed provozovnou. Dopoledne je to ├║pln─Ť bez probl├ęmu. Pou┼ż├şv├í┼í WAZE? tak to tref├ş┼í do barberu vedle..." },
+      l3: { title: "DOPIS O KLIDU", content: "D┼«V─ÜRN├ë: Klidn─Ť u n├ís m┼»┼że┼í posed─Ťt, nikdo t─Ť odsud nevyhazuje. Jsme rodina." },
+      authorized: "Autorizov├íno MMBARBER"
+    },
+    club: {
+      title: "Star├í republika",
+      subtitle: "Sch├íz├şme se jako za dob prvn├ş republiky.",
+      logout: "Opustit centr├ílu",
+      confirmAttendance: "Potvrdit ├║─Źast",
+      cancelAttendance: "Zru┼íit ├║─Źast",
+      syncEvent: "Sesynchronizovat",
+      vipOnly: "─îESTN├Ź HOST├ë",
+      noEvents: "┼Ż├ídn├ę mise v pl├ínu",
+      loading: "Navazuji spojen├ş s centr├ílou...",
+      legendTitle: "LEGENDA",
+      loginTitle: "Heslo z├şsk├í┼í p┼Öi n├ív┼ít─Ťv─Ť na┼íeho podniku.",
+      loginSubtitle: "Zadejte heslo.",
+      passwordPlaceholder: "HESLO",
+      unlockButton: "ODEMKNOUT",
+      noirMode: "NOIR M├ôD",
+      noirModeDesc: "Zobrazit rodinn├ę z├íle┼żitosti ─Źerno-b├şle",
+      soundEffects: "ZVUKOV├ë EFEKTY",
+      soundEffectsDesc: "Aktivovat akci p┼Öi ka┼żd├ęm kliknut├ş",
+      statusEnabled: "AKTIVN├Ź",
+      statusDisabled: "VYPNUTO",
+      scheduleTitle: "Rozpis slu┼żeb",
+      updatedRealtime: "Aktualizov├íno v re├íln├ęm ─Źase",
+      free: "VOLNO",
+      occupied: "OBSAZENO",
+      legendAvailable: "Volno (Dnes)",
+      legendOccupied: "Obsazeno",
+      legendSpecial: "Ned─Ťle / St├ítn├ş sv├ítek",
+      topSecret: "P┼ś├ŹSN─Ü TAJN├ë / TOP SECRET",
+      preparingEvent: "P┼Öipravujeme nadch├ízej├şc├ş ud├ílost.",
+      timeExpires: "─îas vypr┼í├ş za",
+      wrongPassword: "Nespr├ívn├ę heslo. Zmizni.",
+      holidays: {
+        "01-01": "Nov├Ż rok",
+        "05-01": "Sv├ítek pr├íce",
+        "05-08": "Den v├şt─Ťzstv├ş",
+        "07-05": "Den v─Ťrozv─Ťst┼» Cyrila a Metod─Ťje",
+        "07-06": "Den up├ílen├ş mistra Jana Husa",
+        "09-28": "Den ─Źesk├ę st├ítnosti",
+        "10-28": "Den vzniku samostatn├ęho ─Źeskoslovensk├ęho st├ítu",
+        "11-17": "Den boje za svobodu a demokracii",
+        "12-24": "┼át─Ťdr├Ż den",
+        "12-25": "1. sv├ítek v├íno─Źn├ş",
+        "12-26": "2. sv├ítek v├íno─Źn├ş",
+        "easterFriday": "Velk├Ż p├ítek",
+        "easterMonday": "Velikono─Źn├ş pond─Ťl├ş",
+        "sunday": "Ned─Ťle"
+      }
+    },
+    holidayCountdown: {
+      title: "Sv├íte─Źn├ş Odpo─Ź├şt├ív├ín├ş",
+      subtitle: "Pl├ínuj sv├ę mise strategicky. Ka┼żd├Ż sv├ítek je p┼Ö├şle┼żitost vypadat skv─Ťle.",
+      upcoming: "NADCH├üZEJ├ŹC├Ź OPERACE",
+      days: "DN├Ź ZB├ŁV├ü",
+      showMore: "V├ŹCE AKC├Ź",
+      showLess: "M├ëN─Ü AKC├Ź",
+      footer: "MMBARBER ÔÇö RODINA, TRADICE, PRECIZNOST",
+      holidays: {
+        newYear: { name: "Nov├Ż Rok", desc: "Nov├ę mise, nov├ę v├Żzvy." },
+        valentine: { name: "Valent├Żn", desc: "Uka┼żte loajalitu sv├ę partnerce." },
+        womensDay: { name: "Mezin├írodn├ş den ┼żen", desc: "Vzdejte ├║ctu d├ím├ím." },
+        st_patricks: { name: "Svat├Ż Patrik", desc: "Irsk├ę ┼ít─Ťst├ş do tv├ęho stylu." },
+        easter: { name: "Velikono─Źn├ş pond─Ťl├ş", desc: "Zmrtv├Żchvst├ín├ş va┼íeho stylu." },
+        goodFriday: { name: "Velk├Ż p├ítek", desc: "Den klidu a rozj├şm├ín├ş p┼Öed velikonocemi." },
+        laborDay: { name: "Sv├ítek pr├íce", desc: "Den odpo─Źinku pro v┼íechny." },
+        victoryDay: { name: "Den v├şt─Ťzstv├ş", desc: "Oslava triumfu." },
+        mothersDay: { name: "Den matek", desc: "Nezapome┼łte na svou matku." },
+        childrensDay: { name: "Den d─Ťt├ş", desc: "Styl pro dal┼í├ş generaci." },
+        witches: { name: "P├ílen├ş ─Źarod─Ťjnic", desc: "Magick├í noc pln├í oh┼ł┼» a tradic." },
+        fathersDay: { name: "Den otc┼»", desc: "Pocta hlavy Rodin." },
+        saintsCyrilMethodius: { name: "Cyril a Metod─Ťj", desc: "V├şra a tradice." },
+        janHus: { name: "Mistr Jan Hus", desc: "V─Ťrnost pravd─Ť." },
+        summer: { name: "Letn├ş akce", desc: "Operace pod hork├Żm sluncem." },
+        backToSchool: { name: "Zp├ítky do ┼íkoly", desc: "Nasa─Ćte discipl├şnu nov├í─Źk┼»m." },
+        statehoodDay: { name: "Den svat├ęho V├íclava", desc: "Oslava kn├ş┼żete." },
+        independenceDay: { name: "Den vzniku ─îSR", desc: "Den kdy vzniklo imp├ęrium." },
+        halloween: { name: "Halloween", desc: "Kdy┼ż se st├şny stanou skute─Źnost├ş." },
+        freedomDay: { name: "Den boje za svobodu", desc: "P┼Öipom├şnka odvahy." },
+        st_nicholas: { name: "Mikul├í┼í", desc: "Status: ┼át─Ťdr├Ż." },
+        thanksgiving: { name: "D├şk┼»vzd├ín├ş", desc: "Vd─Ť─Źnost a setk├ín├ş rodiny." },
+        vacationSeason: { name: "Dovolen├í", desc: "Do─Źasn├Ż ├║stup ze z├íkladen." },
+        lfs: { name: "Letn├ş filmov├í ┼íkola", desc: "Kulturn├ş mise v Uhersk├ęm Hradi┼íti." },
+        slavnostiVina: { name: "Slavnosti v├şna", desc: "Tradice, v├şno a folklor v srdci Slov├ícka." },
+        christmas: { name: "V├ínoce", desc: "V├íno─Źn├ş tradice v kruhu Rodiny." }
+      },
+      today: "DNES",
+      rightNow: "PR├üV─Ü TE─Ä"
+    },
+    career: {
+      title: "Voln├í pracovn├ş m├şsta",
+      subtitle: "P┼Öidej se k na┼í├ş rodin─Ť",
+      vacancyTitle: "Holi─Ź / Holi─Źka",
+      vacancySubtitle: "(Barber / Barberka)",
+      location: "SADOV├ü 1383, MA┼śATICE, 686 05 UHERSK├ë HRADI┼áT─Ü",
+      type: "DPP / I─îO",
+      responsibilitiesTitle: "N├ípl┼ł pr├íce:",
+      responsibilities: [
+        "Prov├íd─Ťn├ş p├ínsk├Żch st┼Öih┼» vlas┼» a ├║pravy vous┼»",
+        "Pr├íce s klasick├Żmi i modern├şmi holi─Źsk├Żmi technikami",
+        "Profesion├íln├ş p┼Ö├şstup ke klient┼»m a budov├ín├ş dlouhodob├Żch vztah┼»",
+        "Dodr┼żov├ín├ş hygienick├Żch a pracovn├şch standard┼» provozovny"
+      ],
+      requirementsTitle: "Po┼żadujeme:",
+      requirements: [
+        "Vzd─Ťl├ín├ş nebo praxi v oboru holi─Źstv├ş / kade┼Önictv├ş",
+        "Zru─Źnost, precisnost a smysl pro detail",
+        "Spolehlivost, samostatnost a profesion├íln├ş vystupov├ín├ş",
+        "Z├íjem o obor a ochotu se d├íle rozv├şjet"
+      ],
+      offersTitle: "Nab├şz├şme:",
+      offers: [
+        "Stabiln├ş pracovn├ş z├ízem├ş",
+        "Odpov├şdaj├şc├ş finan─Źn├ş ohodnocen├ş dle zku┼íenost├ş",
+        "Modern├ş pracovn├ş prost┼Öed├ş",
+        "Mo┼żnost profesn├şho r┼»stu a dal┼í├şho vzd─Ťl├ív├ín├ş",
+        "P┼Ö├ítelsk├Ż a profesion├íln├ş kolektiv"
+      ],
+      status: "AKTIVN├Ź N├üBOR",
+      contactMotive: "Zaujala t─Ť tato mise? Ozvi se n├ím.",
+      backToHq: "Zp─Ťt na ├║st┼Öed├ş",
+      step1Title: "CHCE┼á B├ŁT JEDN├ŹM Z N├üS?", step1Sub: "Zku┼íebn├ş protokol", step1Content: "N├íbor do MMBARBER nen├ş pro ka┼żd├ęho. Hled├íme lidi, kte┼Ö├ş znaj├ş hodnotu loajality a poctiv├ęho ┼Öemesla. Zjisti, jestli bys mezi n├ís v┼»bec zapadl.", step1Btn: "Zah├íjit prov─Ťrku",
+      step2Title: "NEJSME JEN DAL┼á├Ź HOLI─îSTV├Ź JAKO DES├ŹTKY KOLEM", step2Sub: "Z├üKLADN├Ź PRAVIDLA", step2Content: "Nejedeme na efekt ani na trendy, kde m├í ka┼żd├Ż v ruce shavettu a ┼Ö├şk├í tomu ┼Öemeslo. U n├ís jde o skute─Źnou pr├íci, preciznost v ka┼żd├ęm detailu a respekt k tomu, co d─Ťl├íme. Jsme t├Żm, kter├Ż to bere v├í┼żn─Ť ÔÇô a z├írove┼ł dr┼ż├ş p┼Öi sob─Ť.\n\nHled├íme lidi, kte┼Ö├ş cht─Ťj├ş v├şc ne┼ż jen odpracovat sm─Ťnu. Lidi, kte┼Ö├ş na sob─Ť cht─Ťj├ş makat, posouvat se a b├Żt sou─Ź├íst├ş n─Ť─Źeho, co m├í sm─Ťr.\n\n┼á├ęf m├í jasnou vizi a u┼ż te─Ć dok├ízal vybudovat v─Ťt┼íinu tohohle m├şsta vlastn├şma rukama. Te─Ć hled├íme n─Ťkoho, kdo u toho chce b├Żt d├íl.\n\nChce┼í jet jinak ne┼ż ostatn├ş? P┼Öidej se k n├ím.", step2Btn: "Tomu rozum├şm",
+      step3Title: "VLASTN├Ź K┼śESLO A RESPEKT", step3Sub: "Odm─Ťna za discipl├şnu", step3Content: "U n├ís se o sv├ę lidi star├íme jako o vlastn├ş. Majitel ti uk├í┼że cestu a d├í ti v┼íechno, co k r┼»stu pot┼Öebuje┼í ÔÇô mentoring, vybaven├ş i klid na pr├íci. Na opl├ítku ale vy┼żadujeme jedin├ę: absolutn├ş respekt k jeho vizi a pevn├ę mor├íln├ş z├ísady.\n\nMus├ş┼í um─Ťt naslouchat a hr├ít podle pravidel na┼í├ş rodiny. Pokud m├í┼í charakter a chu┼ą se u─Źit, ─Źek├í t─Ť vlastn├ş m├şsto u na┼íeho stolu a p┼Ö├şstup k t├ę nejlep┼í├ş klientele.", step3Btn: "Jdu do toho",
+      step4Title: "P┼śIDEJ SE DO T├ŁMU", step4Sub: "Fin├íln├ş mise", step4Content: "Jsi p┼Öipraven? Po┼íli n├ím p├ír slov o sob─Ť a sv├Żch zku┼íenostech. Jakmile to zhodnot├şme, my se ti ozveme.", step4Btn: "Otev┼Ö├şt spojen├ş (E-mail)"
+    },
+    franchisePage: {
+      back: "ZP─ÜT NA ├ÜST┼śED├Ź",
+      title: "MMBARBER",
+      subtitle: "FRANCHISE",
+      heroDesc: "Chce┼í vlastn├ş barbershop pod silnou zna─Źkou? MMBARBER ti d├í z├íklad, na kter├ęm m┼»┼że┼í stav─Ťt.",
+      sections: {
+        about: {
+          title: "O N├üS",
+          label: "MMBARBER",
+          desc: "MMBARBER je barbershop z Uhersk├ęho Hradi┼ít─Ť. Stav├şme na kvalit─Ť, stylu a p┼Ö├şstupu k lidem.",
+          motto: "Nejde jen o st┼Öih. Jde o celkov├Ż dojem."
+        },
+        benefits: {
+          title: "CO Z├ŹSK├ü┼á",
+          items: [
+            "neust├íle se rozv├şjej├şc├ş koncept",
+            "jm├ęno, kter├ę u┼ż lidi znaj├ş",
+            "pomoc se startem",
+            "nastaven├ş fungov├ín├ş",
+            "podporu do za─Ź├ítku"
+          ]
+        },
+        who: {
+          title: "PRO KOHO TO JE",
+          desc: "Pro lidi, co cht─Ťj├ş podnikat. Ne pro ty, co ─Źekaj├ş, ┼że to p┼»jde samo.",
+          motto: "Mus├ş┼í cht├şt makat, ┼Öe┼íit v─Ťci a posouvat to d├íl."
+        },
+        how: {
+          title: "JAK TO FUNGUJE",
+          steps: [
+            "Ozve┼í se.",
+            "Probereme detaily.",
+            "Kdy┼ż to bude d├ívat smysl, m┼»┼że┼í jet pod MMBARBER."
+          ]
+        }
+      },
+      contact: {
+        title: "KONTAKT",
+        desc: "M├í┼í z├íjem? Napi┼í n├ím na Instagram nebo mail.",
+        email: "E-MAIL",
+        instagram: "INSTAGRAM"
+      },
+      footer: "Jednoduch├Ż. Funk─Źn├ş. Kvalita."
+    },
+    cityGuide: {
+      compass: {
+        label: "Kompas do barbershopu",
+        locating: "ZAM─Ü┼śUJI POLOHU...",
+        distance: "ZB├ŁV├ü {{distance}}"
+      }
+    },
+    rulesPage: {
+      title: "PROVOZN├Ź ┼ś├üD",
+      subtitle: "Pravidla a standardy p├ínsk├ęho holi─Źstv├ş MMBarber. Na┼íe mise vy┼żaduje discipl├şnu a vz├íjemn├Ż respekt.",
+      backBtn: "ZP─ÜT NA Z├üKLADNU",
+      sections: [
+        { title: "Rezervace a dochvilnost", text: "Dostavte se pros├şm na svou misi v─Źas. Pozdn├ş p┼Ö├şchod o v├şce ne┼ż 10 minut m┼»┼że znamenat zru┼íen├ş term├şnu bez n├íhrady, aby nebyli omezeni rekruti po v├ís." },
+        { title: "Zru┼íen├ş term├şnu", text: "Zm─Ťnu nebo zru┼íen├ş term├şnu oznamte minim├íln─Ť 24 hodin p┼Öedem. Respektujeme v├í┼í ─Źas, respektujte pros├şm n├í┼í." },
+        { title: "Hygienick├ę standardy", text: "Udr┼żujeme chirurgickou ─Źistotu. Ka┼żd├Ż n├ístroj je po ka┼żd├ęm pou┼żit├ş sterilizov├ín. Klid a bezpe─Ź├ş jsou prioritou." },
+        { title: "Pr├ívo na odm├ştnut├ş", text: "MMBarber si vyhrazuje pr├ívo odm├ştnout klienta, kter├Ż vykazuje zn├ímky nevhodn├ęho chov├ín├ş nebo infek─Źn├şho onemocn─Ťn├ş. V na┼í├ş rodin─Ť dr┼ż├şme ├║rove┼ł." },
+        { title: "Platba", text: "Platba prob├şh├í ihned po skon─Źen├ş mise. P┼Öij├şm├íme hotovost a QR platby." }
+      ]
+    },
+      seo: {
+      title: "MMBARBER Barber & Shop | Nejlep┼í├ş Barbershop Uhersk├ę Hradi┼ít─Ť | P├ínsk├ę holi─Źstv├ş",
+      description: "Hled├íte nejlep┼í├ş barbershop v Uhersk├ęm Hradi┼íti? MMBARBER Barber & Shop nab├şz├ş ┼ípi─Źkov├Ż p├ínsk├Ż st┼Öih, profesion├íln├ş ├║pravu vous┼» b┼Öitvou a unik├ítn├ş noir atmosf├ęru. Modern├ş grooming, precizn├ş skin fade a tradi─Źn├ş ritu├íly pro opravdov├ę mu┼że. Rezervujte si sv├ę m├şsto v nejlep┼í├şm kade┼Önictv├ş v UH.",
+      keywords: "nejlep┼í├ş barbershop Uhersk├ę Hradi┼ít─Ť, MMBARBER, top barber UH, p├ínsk├ę kade┼Önictv├ş Uhersk├ę Hradi┼ít─Ť, luxusn├ş p├ínsk├Ż st┼Öih, ├║prava vous┼» b┼Öitvou, profesion├íln├ş holi─Ź, modern grooming, lifestyle barbershop, heritage kade┼Önictv├ş, p├ínsk├í komunita Slov├ícko, autentick├Ż barber z├í┼żitek, MMBARBER community, p├ínsk├Ż grooming ritu├íl, profesion├íln├ş p├ę─Źe o vousy a vlasy, nejlep┼í├ş kade┼Ön├şk UH, p├ínsk├Ż st┼Öih vlas┼», holen├ş b┼Öitvou, hot towel service, napa┼Öov├ín├ş vous┼», skin fade UH, taper fade, klasick├Ż p├ínsk├Ż st┼Öih, modern├ş ├║─Źesy pro mu┼że, p├ínsk├í kosmetika, pom├ída na vlasy, olej na vousy, p├ínsk├Ż relax, p├ínsk├Ż klub, noir barbershop, Tom├í┼í Mi─Źka, holi─Źstv├ş Slov├ícko, kade┼Önictv├ş Kunovice, kade┼Önictv├ş Star├ę M─Ťsto, p├ínsk├Ż styl, tradi─Źn├ş holen├ş, barber shop experience, p├ínsk├ę ├║─Źesy 2024, p├ínsk├ę ├║─Źesy 2025, d├írkov├ę poukazy pro mu┼że, z├í┼żitkov├ę st┼Ö├şh├ín├ş, pr├ęmiov├Ż barber shop, kade┼Önictv├ş Uhersk├ę Hradi┼ít─Ť, p├ínsk├ę st┼Ö├şh├ín├ş, ├║prava vous┼» UH, barber shop Slov├ícko, nejlep┼í├ş ┼Öemesln├şci Uhersk├ę Hradi┼ít─Ť, prov─Ť┼Öen├Ż instalat├ęr UH, top elektrik├í┼Ö Slov├ícko, profesion├íln├ş fotograf UH, realitn├ş makl├ę┼Ö Hradi┼ít─Ť, servis kol a elektrokol Slov├ícko, revize elektro UH, ├║─Źetn├ş slu┼żby pro firmy, okna a ┼żaluzie Uhersk├ę Hradi┼ít─Ť, gastro a restaurace UH, nejlep┼í├ş barbershop franchisa, investice do podnik├ín├ş, ziskov├í franchisa kade┼Önictv├ş, master franchise p┼Ö├şle┼żitost, glob├íln├ş zna─Źka barbershop, MM BARBER expanze, kam na p├ínsk├Ż st┼Öih v UH, nejlep┼í├ş holi─Ź Uhersk├ę Hradi┼ít─Ť, p├ínsk├ę kade┼Önictv├ş Ma┼Öatice, st┼Ö├şh├ín├ş Uhersk├ę Hradi┼ít─Ť, holi─Źstv├ş Jaro┼íov, barber Kunovice, kade┼Ön├şk Star├ę M─Ťsto u UH, p├ínsk├ę ├║─Źesy Hradi┼ít─Ť, holen├ş b┼Öitvou cena, top barber Slov├ícko, Letn├ş filmov├í ┼íkola LF┼á, 1.FC Slov├ícko fotbal, Slov├íck├ę slavnosti v├şna, Aquapark Uhersk├ę Hradi┼ít─Ť, Slov├íck├ę divadlo, hrad Buchlov, z├ímek Buchlovice, Velehrad, nejlep┼í├ş burger UH, kam v Hradi┼íti, parkov├ín├ş zdarma Uhersk├ę Hradi┼ít─Ť, bezplatn├ę parkov├ín├ş UH, kde zaparkovat v Hradi┼íti, Nemocnice Uhersk├ę Hradi┼ít─Ť, vlakov├ę n├ídra┼ż├ş UH, po┼íta Uhersk├ę Hradi┼ít─Ť, OC Star├í Tr┼żnice."
+    },
+    game: {
+      default: {
+        ranks: [
+          { title: "Nov├í─Źek", desc: "Teprve se u─Ź├ş┼í dr┼żet n┼»┼żky." },
+          { title: "U─Źe┼ł", desc: "Z├íklady u┼ż m├í┼í, ale krev je┼ít─Ť te─Źe." },
+          { title: "Holi─Ź", desc: "Tvoje ruka je jist├í, tv┼»j styl je vid─Ťt." },
+          { title: "Mistr", desc: "Vlasy t─Ť poslouchaj├ş na slovo." },
+          { title: "Legenda", desc: "St┼Ö├şh├í┼í i poslepu. Respekt." }
+        ],
+        quips: ["P─Ťkn├Ż st┼Öih!", "Precizn├ş!", "Styl!", "Z├ísah!", "Ostr├Ż!"],
+        hairTooltip: "OST┼ś├ŹHAT",
+        rankLabel: "DOSA┼ŻEN├ü ├ÜROVE┼ç"
+      }
+    },
+    specialProjects: {
+      likeTheWeb: "L├şb├ş se ti tento web ?",
+      division: "DESIGN A V├ŁVOJOV├ü DIVIZE",
+      title: "TVO┼ś├ŹME DIGIT├üLN├Ź IDENTITY",
+      description: "Nejsme jen holi─Źstv├ş. Jsme komunita lid├ş, co cht─Ťj├ş tvo┼Öit kvalitu. Pokud chce┼í web, kter├Ż m├í du┼íi a ne jen k├│d, dej n├ím v─Ťd─Ťt.",
+      writeUs: "Napi┼íte n├ím",
+      callUs: "Zavolejte n├ím"
+    }
+  },
+  en: {
+    header: {
+      services: "Services",
+      gallery: "Gallery",
+      seznamka: "MATCHMAKING",
+      payment: "PAYMENT",
+      schedule: "Service Schedule",
+      theCode: "Information",
+      more: "More",
+      career: "Career",
+      aboutUs: "About Us",
+      franchise: "FRANCHISE",
+      startMission: "HOW IT WORKS",
+      compass: "COMPASS",
+      web: "WEB",
+      on: "ON",
+      off: "OFF",
+      tracking: "TRACKING POSITION",
+      savingData: "SAVING DATA",
+      navigate: "NAVIGATE",
+      searchPlaceholder: "LOCATE TARGET...",
+      reviews: "Reviews"
+    },
+    intelligence: [
+      "Today's air pressure is ideal for a precise skin fade. Humidity in UH is within norms.",
+      "System detected increased interest in beard grooming in Slov├ícko. Capacities are filling up.",
+      "Watch out for wind in Ma┼Öatice. We recommend a stronger pomade from our selection.",
+      "Today's mission: Perfect contours. The barber is on high alert.",
+      "Trend analysis: Zl├şn area is switching to shorter cuts. Stay ahead.",
+      "Report: Booking system is.mmbarber.cz shows high activity.",
+      "Recommendation: Hot towel beard steaming for maximum relaxation.",
+      "Headquarters status: All systems stable. Time for your new style.",
+      "Local news: Style rules Uhersk├ę Hradi┼ít─Ť today. Be a part of it.",
+      "Tech tip: Apply beard oil right after shower for the best effect.",
+      "Monitoring: Clients from Brod and Vesel├ş are on their way. Book in time.",
+      "Today's strategy: Don't worry about the past. Worry about how you look now.",
+      "System message: MM BARBER family is growing. Thank you for your loyalty.",
+      "UH weather favors short hair. Come get your taper fade.",
+      "Report from Ma┼Öatice: Parking in front of the headquarters is free and ready.",
+      "New data: Beard grooming is the foundation of every successful man in 2026.",
+      "Style detection: Extremely sharp cut from us recorded near Kunovice.",
+      "Log: Today's coffee at the headquarters is as strong as our razors.",
+      "Update: We have refined our techniques for even cleaner transitions.",
+      "Message for recruits: First visit? Don't worry, we'll take care of everything.",
+      "Analysis: Noir style is not fashion, it's an attitude. Today is the day for attitude.",
+      "Monitoring: Summer Film Festival is approaching. Look great in the cinemas.",
+      "Info: Wine Festival in UH requires a representative look. Do you have it?",
+      "Important: Every millimeter counts. We are watching those millimeters.",
+      "Message from the system: Your loyalty is our strength. Continue the mission.",
+      "Technology: Using the sharpest blades in the whole of Slov├ícko. Verified.",
+      "Report: Barber Tom├í┼í is tuning details with surgical precision today.",
+      "Message: Don't look for excuses, look for a free slot at is.mmbarber.cz.",
+      "Data: 99% of men feel better after visiting us. Be the 1% who knows.",
+      "Final report: MM BARBER Uhersk├ę Hradi┼ít─Ť ÔÇô mission accomplished."
+    ],
+    familyIntelligence: [
+      "Vodo Topo Jahoda reports 100% field deployment. Emergencies in UH under control.",
+      "Kofipack sent a new shipment for our family. Logistics in Ma┼Öatice active.",
+      "Malina Photo is developing new evidence from yesterday's event. Visual update expected.",
+      "Argema is tuning the sound for the next mission. Slov├ícko will vibrate.",
+      "Slune─Źn├ş Reality detected new strategic objects in the center of Hradi┼ít─Ť.",
+      "Comites reports stable growth. Our family's finances are secure.",
+      "┼áimon Kr├íl is preparing a setlist that won't leave anyone at peace. Ready?",
+      "O Shawarma Beef is restocking the best meat in town. Mission: Lunch.",
+      "Dv┼»r pod Star├Żma Horama is preparing a tasting. Our family's blood is wine.",
+      "Kudielka is installing new shading systems. Your privacy is our priority.",
+      "D─Ťtsk├Ż domov UH: Together we conjured a few smiles today. Good job.",
+      "O Kole─Źko v├şc reports: Season in full swing, service running at maximum.",
+      "Zden─Ťk Mi─Źka B├şlovice: All pipes in the region are in the best hands.",
+      "Romana Mi─Źkov├í: Taxes and accounts are balanced with mathematical precision.",
+      "Poe Poe: Quick refreshment unit in UH is ready for deployment.",
+      "Analysis: Our family is expanding with new influential members. Strength in unity."
+    ],
+    hero: {
+      subtitle: "Barber shop Uhersk├ę Hradi┼ít─Ť",
+      title: "A Men's Barbershop in Uhersk├ę Hradi┼ít─Ť.",
+      motto: "Chapter I: Birth of Style",
+      chapters: [
+        "Chapter I: Birth of Style",
+        "Chapter II: Loyalty",
+        "Chapter III: Craftsmanship"
+      ],
+      mottoes: [
+        "Chapter I: Birth of Style",
+        "Chapter II: Loyalty",
+        "Chapter III: Craftsmanship"
+      ],
+      description: [
+        "A place where silence is respected and everyone wants to belong.",
+        "The best is never shown out loud",
+        "Style you can't buy. You have to earn it",
+        "Quantity is not our goal. Perfect service for you is",
+        "You're not entering a barbershop. You're entering our world."
+      ],
+      easterEggSlogans: [
+        "You're not entering a barbershop. You're entering our world.",
+        "Status before doesn't matter. Who you become here does.",
+        "Not everything created here is visible in the mirror.",
+        "The strength we build here doesn't end at the door.",
+        "Every step forward you take helps someone else take their first.",
+        "Once you decide to change the game, you belong to a different dynasty.",
+        "Some lineages are written in history. Others are written in people.",
+        "It doesn't matter where you came from. It matters what you leave behind."
+      ],
+      nightSlogans: [
+        "You're not entering a barbershop. You're entering our world.",
+        "Shhh... still awake? Book your spot now!",
+        "The night belongs to those who know what they want. Booking is waiting...",
+        "Tomorrow starts tonight. Click and secure your chair.",
+        "Don't wait for morning. Spots are fading."
+      ],
+      deepNightSlogans: [
+        "You're not entering a barbershop. You're entering our world.",
+        "Midnight. The city sleeps... but not you. You know why.",
+        "This hour belongs to the chosen ones. Booking awaits.",
+        "If you're awake... there's a reason. Finish it.",
+        "Decisions that change the game are made at this hour.",
+        "If you're seeing this... you're closer than you think."
+      ],
+      cta: "Accept Mission",
+      bookBtn: "RESERVE A CHAIR"
+    },
+    services: {
+      title: "Service Menu",
+      subtitle: "Choose the estimated time based on what you know from other barbershops. Evening slots are also available for women.",
+      score: "Mission score",
+      revolutNotice: "",
+      currencyLabel: "Currency",
+      bookBtn: "Book Now",
+      detailsBtn: "Details",
+      mainTitle: "Time Tariff",
+      timeTariffNote: "Look at the time it takes me to cut your hair. I set prices fairly based on what you actually need.",
+      addonsTitle: "Additional Services",
+      independentTitle: "Independent Services",
+      specialTitle: "Night Missions",
+      totalLabel: "Estimated total amount",
+      timeLabel: "Estimated booking time",
+      independentTimeLabel: "Independent services time",
+      totalTimeLabel: "Total time spent at the barber",
+      extraTimeLabel: "Your time outside booking",
+      dynamicPricingTitle: "Dynamic Pricing",
+      currentSurcharge: "Current Surcharge",
+      surchargeReason: "Reason",
+      surchargeNone: "Standard Tariff",
+      surchargeSat: "Saturday Operation (+10%)",
+      surchargeSun: "Sunday Operation (+30%)",
+      surchargeHoliday: "Public Holiday (+100%)",
+      surchargeAfterHours: "Outside Business Hours (+30%)",
+      surchargeNewYear: "New Year's Day (+70%)",
+      surchargeChristmas: "Christmas Morning (+50%)",
+      bookingNote: "We work according to the booking system. See a free slot? You can book your spot.",
+      switchDate: "Simulate Date",
+      pricingModes: {
+        workday: "Workday",
+        saturday: "Saturday",
+        sunday: "Sunday",
+        holiday: "Holiday",
+        night: "After Hours"
+      },
+      items: [
+        { time: "5 m", name: "FLASH OPERATION", desc: "Quick trim of contours or details. Just hop on the chair.", price: "100 CZK", priceValue: 100 },
+        { time: "10 m", name: "EXPRESS SERVICE", desc: "No shaver, advanced fades, blending or an adjustment that won't wait.", price: "180 CZK", priceValue: 180 },
+        { time: "15 m", name: "QUICK FADE", desc: "Buzzcut, simple cuts, fade + blending.", price: "280 CZK", priceValue: 280 },
+        { time: "20 m", name: "BASIC CUT", desc: "Advanced kids cuts or simpler adult cuts.", price: "320 CZK", priceValue: 320 },
+        { time: "30 m", name: "CLASSIC CUT", desc: "Precision cut without wash. Sometimes covers hair + beard ÔÇô depends on you.", price: "450 CZK", priceValue: 450 },
+        { time: "45 m", name: "NOT SURE? STOP BY...", desc: "Full care with wash and wet shave. Not sure? Stop by, we'll solve it.", price: "650 CZK", priceValue: 650 },
+        { time: "1 h", name: "PREMIUM KOMBO", desc: "Smooth Express: Hair, beard, and relax.", price: "1 000 CZK", priceValue: 1000 }
+      ],
+      addons: [
+        { id: "add1", name: "Nose depilation", priceValue: 30, desc: "Quick hot wax hair removal" },
+        { id: "add2", name: "Ear epilation", priceValue: 30, desc: "Quick hot wax hair removal" },
+        { id: "add3", name: "Hot towel method", priceValue: 100, desc: "Traditional steam and treatment" },
+        { id: "add6", name: "Hair wash", priceValue: 100, desc: "Professional wash and head massage" },
+        { id: "add4", name: "Beard steaming", priceValue: 70, desc: "Beard and skin preparation" },
+        { id: "add5", name: "Ear singeing", priceValue: 20, desc: "Feel free to come just to get your ears singed" }
+      ],
+      independent: [
+        { id: "ind1", name: "15 min massage chair", priceValue: 100, time: 15, desc: "Feel free to come just to relax" },
+        { id: "ind2", name: "30 min relax chair", priceValue: 180, time: 30, desc: "Feel free to come just to relax" }
+      ],
+      special: [
+        { id: "sp3", name: "Evening / Night cut by candlelight", priceValue: 1800, time: "30 min", desc: "Unique atmosphere and peace by candlelight. By agreement." },
+        { id: "sp2", name: "Full service", priceValue: 2500, time: "1 h", desc: "Complete care and relaxation during night hours. By agreement." },
+        { id: "sp1", name: "Night cut (45 min)", priceValue: 1300, time: "45 min", desc: "Exclusive service outside regular hours. By agreement." },
+        { id: "sp4", name: "Night cut (30 min)", priceValue: 900, time: "30 min", desc: "Quick night service for those in a hurry. By agreement." }
+      ]
+    },
+    operatives: {
+      title: "Barbers",
+      subtitle: "Choose your specialist.",
+      openFile: "Open File",
+      bookBarber: "Book Barber",
+      barbers: {
+        tomas: {
+          name: "Tom├í┼í",
+          role: "The Specialist",
+          motto: "",
+          story: "Founder, strategist, and a man who knows that details make the whole. He doesn't look for shortcuts, but an honest path.",
+          schedule: "Tue-Fri 9:00 - 18:00 | Sat-Sun 9:00 - 12:00",
+          englishSpeaking: "English Speaking",
+          specializations: ["Primarily Men", "But I handle ladies too"]
+        }
+      }
+    },
+    theCode: {
+      title: "Information",
+      subtitle: "Notice for visitors:",
+      rules: [
+        { title: "Payment", description: "All services are payable immediately after they are provided." },
+        { title: "Parking", description: "Free parking is available directly at the salon or nearby. Do you use WAZE? then you'll hit the barber next door..." },
+        { title: "Preparation", description: "Please do NOT wash your hair before visiting." },
+        { title: "Privacy", description: "This space is reserved for your peace." }
+      ],
+      footer: "MMBARBER"
+    },
+    intro: {
+      welcome: "Welcome to our men's barbershop in Uhersk├ę Hradi┼ít─Ť.",
+      parking: "FREE PARKING",
+      parkingHint: "Waze might send you elsewhere. But the players know where the right address is.",
+      copyAddress: "COPY ADDRESS",
+      openMaps: "OPEN IN MAPS",
+      payment: "CASH / QR PAYMENT",
+      acknowledge: "I UNDERSTAND",
+      acceptMission: "ACCEPT INSTRUCTIONS"
+    },
+    devPanel: {
+      title: "DEVELOPMENT PANEL",
+      accent: "Accent Color",
+      atmosphere: "Atmosphere",
+      tools: "Background Tools",
+      filters: "Filters",
+      game: "MINI-GAME"
+    },
+    radio: {
+      playMe: "Play Me"
+    },
+    partners: {
+      title: "Our Associates",
+      subtitle: ""
+    },
+    contact: {
+      title: "How to find your way to us",
+      subtitle: "",
+      address: "Shop Address",
+      connection: "Connection",
+      responsiblePerson: "Responsible person",
+      parking: "Parking",
+      parkingText1: "FREE nearby. Do you use WAZE? then you'll hit the barber next door...",
+      parkingText2: "Mornings available outside the shop.",
+      transit: "Transit",
+      transitText1: "Rudy Kub├ş─Źka Stop",
+      transitText2: "is located in the immediate vicinity."
+    },
+    footer: {
+      description: "Elegance, tradition, ruthless precision and above all innovation.",
+      nav: "Navigation",
+      family: "The Family",
+      contact: "Connection",
+      follow: "Follow Us",
+      seoBottomInfo: "Men's barbershop Uhersk├ę Hradi┼ít─Ť",
+      terms: "Terms & Conditions",
+      privacy: "Privacy Policy",
+      cookies: "Cookie Policy",
+      rules: "Operating Rules",
+      instagramLine: "A place where everyone is happy.",
+      tiktokLine: "Content you won't remember.",
+      facebookLine: "The wailing wall.",
+      copyright: "2024-2026 MMBARBER. All rights reserved.",
+      neklikat: "don't click",
+      tryToCatch: "TRY TO CATCH ME",
+      closeTrap: "CLOSE THE TRAP",
+      likeWeb: "like the website ?",
+      callUs: "don't wait and call us",
+      callToAction: "So don't hesitate and call the barber",
+      thankYou: "SYSTEM ACTIVATED. Try searching for codes... Ask your barber what they can offer.",
+      cheatActivated: "CODE ACCEPTED",
+      cheatHint: "Search for secrets...",
+      close: "CLOSE",
+      vipClub: "V.I.P. CLUB",
+      partnerships: "Partnerships & Info",
+      followUs: "Follow Us",
+      reviews: "Reviews"
+    },
+    rodina: {
+      title: "MMBARBER FAMILY",
+      list: "List",
+      network: "Network",
+      divisions: "DIVISIONS",
+      backToHq: "Back to HQ",
+      partnersTrust: "Partners We Trust.",
+      youForUs: "You for us. We for you.",
+      weAreFamily: "MMBARBER isn't just about hair. It's about people creating quality across industries. We are Family.",
+      closeNetwork: "CLOSE NETWORK",
+      cameraFollows: "Camera follows your movement",
+      headquarters: "HEADQUARTERS"
+    },
+    sidliste: {
+      title: "THE BLOCKS",
+      sector: "THE BLOCKS // SECTOR VII",
+      return: "RETURN TO HQ",
+      subtitle: "Join the people who want more than just sitting around.",
+      description: "Within the blocks, we create a community where the best ideas are born. We don't play for effect, but for loyalty and shared visions.",
+      ideaTitle: "Got your own idea?",
+      ideaText: "It would be great to arrange some joint events here. If you have a vision worth realizing, let us know.",
+      proposeBtn: "PROPOSE EVENT"
+    },
+    newspaper: {
+      masthead: "Daily Order",
+      circulation: "CIRCULATION: TOP SECRET",
+      price: "PRICE: LOYALTY",
+      headline: "How we (don't) work",
+      subheadline: "It's not just about the cut here. Expect something different.",
+      p1: "It doesn't work here like everywhere else. You come in, sit in the chair and we take care of the rest. We'll chat, discuss what you want ÔÇô or what you didn't even know you wanted. And if you feel like it, feel free to stay. Sit down, talk with others. Nobody's chasing anyone away here.",
+      p2: "Or? Just passing by? Feel free to stop, sit down for a chat, buddy. The doors are open. We give you freedom. Your style, your rules. Have your own idea? We go by you. Don't have one? We'll suggest what fits. We don't just create hairstyles here, we create atmosphere.",
+      p3: "And one more thing ÔÇô our space is private enough that you won't feel like you're in a display window. Peace, quiet, no unnecessary eyes. Here you have your corner to switch off from the surrounding noise.",
+      p4: "Our time tariff is especially suitable for clients who know exactly what they want. If you are unsure, simply follow what you usually get at your barber ÔÇô we'll handle the rest.",
+      motto: "As they say... our customer, our master.",
+      burnBtn: "Burn after reading",
+      burnNote: "Destroys all evidence of your presence"
+    },
+    journey: {
+      title: ["My", "Journey"],
+      subtitle: "History / The Journey",
+      description: "From a small idea, a Legend was born. Look at how time passed at the MMBARBER headquarters.",
+      archiveShot: "Archive shot",
+      footerTitle: "Today you are a part of it",
+      footerCta: "Continue the mission",
+      timeline: [
+        {
+          year: "2018",
+          title: "First Shot",
+          desc: "Founding of MMBARBER. The beginning of a mission that people started talking about quietly all over the city.",
+          side: "left"
+        },
+        {
+          year: "2020",
+          title: "HQ in Uhersk├ę Hradi┼ít─Ť",
+          desc: "Opening of the current premises. A place that has become a sanctuary for those looking for more than just a cut.",
+          side: "right"
+        },
+        {
+          year: "2022",
+          title: "Hardening the Team",
+          desc: "Tom├í┼í becomes synonymous with precision and authority in the chair. New blood arrives.",
+          side: "left"
+        },
+        {
+          year: "2024",
+          title: "New Era",
+          desc: "MMBARBER headquarters expands with new services and technologies.",
+          side: "right"
+        }
+      ]
+    },
+    club: {
+      title: "Old Republic",
+      subtitle: "Welcome to the family.",
+      logout: "Leave HQ",
+      confirmAttendance: "Confirm Attendance",
+      cancelAttendance: "Cancel Attendance",
+      syncEvent: "Synchronize",
+      vipOnly: "HONORED GUESTS",
+      noEvents: "No missions planned",
+      loading: "Establishing connection with HQ...",
+      legendTitle: "LEGEND",
+      loginTitle: "Get password from our shop.",
+      loginSubtitle: "Enter password.",
+      passwordPlaceholder: "PASSWORD",
+      unlockButton: "UNLOCK",
+      noirMode: "NOIR MODE",
+      noirModeDesc: "Display in monochrome",
+      soundEffects: "SOUND EFFECTS",
+      soundEffectsDesc: "Action on every click",
+      statusEnabled: "ENABLED",
+      statusDisabled: "DISABLED",
+      scheduleTitle: "Service Schedule",
+      updatedRealtime: "Updated in real-time",
+      free: "AVAILABLE",
+      occupied: "OCCUPIED",
+      legendAvailable: "Available (Today)",
+      legendOccupied: "Occupied",
+      legendSpecial: "Sunday / Public Holiday",
+      topSecret: "TOP SECRET",
+      preparingEvent: "Preparing next assignment.",
+      timeExpires: "Time expires in",
+      wrongPassword: "Incorrect password.",
+      holidays: {
+        "01-01": "New Year's Day",
+        "05-01": "Labor Day",
+        "05-08": "Liberation Day",
+        "07-05": "Saints Cyril and Methodius Day",
+        "07-06": "Jan Hus Day",
+        "10-28": "Independence Day",
+        "11-17": "Freedom & Democracy Day",
+        "12-24": "Christmas Eve",
+        "12-25": "Christmas Day",
+        "12-26": "St. Stephen's Day",
+        "easterFriday": "Good Friday",
+        "easterMonday": "Easter Monday",
+        "sunday": "Sunday"
+      }
+    },
+    holidayCountdown: {
+      title: "Holiday Countdown",
+      subtitle: "Plan your missions strategically. Every holiday is an opportunity to look sharp.",
+      upcoming: "UPCOMING OPERATIONS",
+      days: "DAYS LEFT",
+      showMore: "SHOW MORE",
+      showLess: "SHOW LESS",
+      footer: "MMBARBER ÔÇö FAMILY, TRADITION, PRECISION",
+      today: "TODAY",
+      rightNow: "RIGHT NOW",
+      holidays: {
+        newYear: { name: "New Year", desc: "New year, new missions." },
+        valentine: { name: "Valentine's Day", desc: "Show loyalty to your partner." },
+        womensDay: { name: "International Women's Day", desc: "Respect to all ladies." },
+        st_patricks: { name: "St. Patrick's Day", desc: "Luck of the Irish in your style." },
+        easter: { name: "Easter Monday", desc: "Resurrection of your look." },
+        goodFriday: { name: "Good Friday", desc: "A day of peace and reflection." },
+        laborDay: { name: "Labor Day", desc: "A day for the workers." },
+        witches: { name: "Witches' Night", desc: "Magical night of fire and tradition." },
+        victoryDay: { name: "Victory Day", desc: "Commemoration of the triumph." },
+        mothersDay: { name: "Mother's Day", desc: "Don't forget the first lady of your life." },
+        childrensDay: { name: "Children's Day", desc: "Style for the next generation." },
+        fathersDay: { name: "Father's Day", desc: "Respect to the heads of families." },
+        saintsCyrilMethodius: { name: "St. Cyril & Methodius Day", desc: "Faith and tradition." },
+        janHus: { name: "Jan Hus Day", desc: "Loyalty to the truth." },
+        summer: { name: "Summer Season", desc: "Operations under the hot sun." },
+        backToSchool: { name: "Back to School", desc: "Setting discipline for the recruits." },
+        statehoodDay: { name: "Statehood Day", desc: "National heritage day." },
+        independenceDay: { name: "Independence Day", desc: "Celebrating freedom and style." },
+        halloween: { name: "Halloween", desc: "When shadows become reality." },
+        freedomDay: { name: "Freedom & Democracy Day", desc: "Reminder of courage." },
+        st_nicholas: { name: "St. Nicholas Day", desc: "Status: Generous." },
+        thanksgiving: { name: "Thanksgiving", desc: "Gratitude and family gathering." },
+        vacationSeason: { name: "Vacation Season", desc: "Temporary retreat from bases." },
+        lfs: { name: "Summer Film School", desc: "Cultural mission in Uhersk├ę Hradi┼ít─Ť." },
+        slavnostiVina: { name: "Wine Festival", desc: "Tradition, wine, and folklore in the heart of Moravia." },
+        christmas: { name: "Christmas", desc: "Tradition in the circle of Family." }
+      }
+    },
+    franchisePage: {
+      back: "BACK TO HQ",
+      title: "MMBARBER",
+      subtitle: "FRANCHISE",
+      heroDesc: "Want your own barbershop under a strong brand? MMBARBER gives you the foundation you can build on.",
+      sections: {
+        about: {
+          title: "ABOUT US",
+          label: "MMBARBER",
+          desc: "MMBARBER is a barbershop from Uhersk├ę Hradi┼ít─Ť. We build on quality, style, and approach to people.",
+          motto: "It's not just about the cut. It's about the overall impression."
+        },
+        benefits: {
+          title: "WHAT YOU GET",
+          items: [
+            "constantly evolving concept",
+            "name that people already know",
+            "help with the start",
+            "operations setup",
+            "support from the beginning"
+          ]
+        },
+        who: {
+          title: "WHO IS IT FOR",
+          desc: "For people who want to do business. Not for those who expect it to go by itself.",
+          motto: "You must want to work hard, solve things and move it forward."
+        },
+        how: {
+          title: "HOW IT WORKS",
+          steps: [
+            "Get in touch.",
+            "We'll discuss the details.",
+            "When it makes sense, you can run under MMBARBER."
+          ]
+        }
+      },
+      contact: {
+        title: "CONTACT",
+        desc: "Interested? Message us on Instagram or email.",
+        email: "EMAIL",
+        instagram: "INSTAGRAM"
+      },
+      footer: "Simple. Functional. Quality."
+    },
+    seo: {
+      title: "MMBARBER Barber & Shop | Best Barbershop Uhersk├ę Hradi┼ít─Ť | Men's Hairdressing",
+      description: "Looking for the best barbershop in Uhersk├ę Hradi┼ít─Ť? MMBARBER Barber & Shop offers top men's haircuts, professional razor beard grooming, and a unique noir atmosphere. Modern grooming, precise skin fade, and traditional rituals for real men. Book your spot in the best hair salon in UH.",
+      keywords: "best barbershop Uhersk├ę Hradi┼ít─Ť, MMBARBER, top barber UH, men's hairdressing Uhersk├ę Hradi┼ít─Ť, luxury men's haircut, razor beard grooming, professional barber, modern grooming, lifestyle barbershop, heritage hairdressing, men's community Slov├ícko, authentic barber experience, MMBARBER community, men's grooming ritual, professional hair and beard care, best hairdresser UH, men's haircut, razor shaving, hot towel service, beard steaming, skin fade UH, taper fade, classic men's haircut, modern hairstyles for men, men's cosmetics, hair pomade, beard oil, men's relax, men's club, noir barbershop, Tom├í┼í Mi─Źka, hairdressing Slov├ícko, Kunovice hairdressing, Star├ę M─Ťsto hairdressing, men's style, traditional shaving, barber shop experience, men's hairstyles 2024, men's hairstyles 2025, gift vouchers for men, experiential hair cutting, premium barber shop, hairdressing Uhersk├ę Hradi┼ít─Ť, men's cutting, beard grooming UH, barber shop Slov├ícko, best craftsmen Uhersk├ę Hradi┼ít─Ť, verified plumber UH, top electrician Slov├ícko, professional photographer UH, real estate agent Hradi┼ít─Ť, bike and e-bike service Slov├ícko, electrical inspection UH, accounting services for companies, windows and blinds Uhersk├ę Hradi┼ít─Ť, gastro and restaurants UH, best barbershop franchise, business investment, profitable hairdressing franchise, master franchise opportunity, global barbershop brand, MM BARBER expansion, where to go for a men's haircut in UH, best barber Uhersk├ę Hradi┼ít─Ť, men's hairdressing Ma┼Öatice, cutting Uhersk├ę Hradi┼ít─Ť, hairdressing Jaro┼íov, barber Kunovice, hairdresser Star├ę M─Ťsto near UH, men's hairstyles Hradi┼ít─Ť, razor shave price, top barber Slov├ícko, Summer Film School LF┼á, 1.FC Slov├ícko football, Slov├ícko Wine Festival, Aquapark Uhersk├ę Hradi┼ít─Ť, Slov├ícko Theatre, Buchlov Castle, Buchlovice Castle, Velehrad, best burger UH, where to go in Hradi┼ít─Ť, free parking Uhersk├ę Hradi┼ít─Ť, free parking UH, where to park in Hradi┼ít─Ť, Uhersk├ę Hradi┼ít─Ť Hospital, UH train station, Uhersk├ę Hradi┼ít─Ť post office, Old Marketplace Mall."
+    },
+    career: {
+      title: "Vacancies",
+      subtitle: "Join our family",
+      vacancyTitle: "Barber",
+      vacancySubtitle: "(Barber / Barberette)",
+      location: "SADOV├ü 1383, MA┼śATICE, 686 05 UHERSK├ë HRADI┼áT─Ü",
+      type: "DPP / I─îO",
+      responsibilitiesTitle: "Job Description:",
+      responsibilities: [
+        "Performing men's haircuts and beard styling",
+        "Working with classic and modern barbering techniques",
+        "Professional approach to clients and building long-term relationships",
+        "Adhering to hygiene and work standards of the establishment"
+      ],
+      requirementsTitle: "Requirements:",
+      requirements: [
+        "Education or experience in the field of barbering / hairdressing",
+        "Skill, precision and attention to detail",
+        "Reliability, independence and professional behavior",
+        "Interest in the field and willingness to further develop"
+      ],
+      offersTitle: "We Offer:",
+      offers: [
+        "Stable working background",
+        "Appropriate financial evaluation based on experience",
+        "Modern working environment",
+        "Possibility of professional growth and further education",
+        "Friendly and professional team"
+      ],
+      status: "ACTIVE RECRUITMENT",
+      contactMotive: "Interested in this mission? Contact us.",
+      backToHq: "Back to HQ",
+      step1Title: "WANT TO BE ONE OF US?", 
+      step1Sub: "Trial Protocol", 
+      step1Content: "Recruitment to MMBARBER is not for everyone. We are looking for people who know the value of loyalty and honest craftsmanship. Find out if you would fit in with us at all.", 
+      step1Btn: "Start Check",
+      step2Title: "WE ARE NOT JUST ANOTHER BARBERSHOP LIKE DOZENS AROUND", 
+      step2Sub: "BASIC RULES", 
+      step2Content: "We don't go for effect or trends where everyone has a shavette in hand and calls it craftsmanship. For us, it's about real work, precision in every detail and respect for what we do. We are a team that takes it seriously ÔÇô and at the same time sticks together.\n\nWe are looking for people who want more than just to work a shift. People who want to work on themselves, move forward and be part of something that has direction.\n\nThe boss has a clear vision and has already managed to build most of this place with his own hands. Now we are looking for someone who wants to be part of it further.\n\nWant to go differently than others? Join us.", 
+      step2Btn: "I understand",
+      step3Title: "OWN CHAIR AND RESPECT", 
+      step3Sub: "Reward for Discipline", 
+      step3Content: "Here we take care of our people like our own. The owner will show you the way and give you everything you need to grow ÔÇô mentoring, equipment and peace for work. In return, however, we require only one thing: absolute respect for his vision and strong moral principles.\n\nYou must be able to listen and play by the rules of our family. If you have character and a desire to learn, a seat at our table and access to the best clientele awaits you.", 
+      step3Btn: "I'm in",
+      step4Title: "JOIN THE TEAM", 
+      step4Sub: "Final Mission", 
+      step4Content: "Are you ready? Send us a few words about yourself and your experiences. Once we evaluate it, we will contact you.", 
+      step4Btn: "Open Connection (E-mail)"
+    },
+    rulesPage: {
+      title: "OPERATING RULES",
+      subtitle: "Rules and standards of MMBarber men's barbershop. Our mission requires discipline and mutual respect.",
+      backBtn: "BACK TO HQ",
+      sections: [
+        { title: "Booking and Punctuality", text: "Please arrive for your mission on time. Arrival later than 10 minutes may mean cancellation of the appointment without compensation, so as not to limit the recruits after you." },
+        { title: "Appointment Cancellation", text: "Please announce a change or cancellation of the appointment at least 24 hours in advance. We respect your time, please respect ours." },
+        { title: "Hygiene Standards", text: "We maintain surgical cleanliness. Every tool is sterilized after each use. Peace and safety are priorities." },
+        { title: "Right of Refusal", text: "MMBarber reserves the right to refuse a client who shows signs of inappropriate behavior or infectious disease. We keep the level in our family." },
+        { title: "Payment", text: "Payment takes place immediately after the end of the mission. We accept cash and QR payments." }
+      ]
+    },
+    others: {
+      title: "MORE ABOUT THE BUSINESS",
+      hiddenPlaces: {
+        title: "HIDDEN PLACES OF THE CITY",
+        name: "Komfort Lounge Bar",
+        address: "L. Jan├í─Źka 180 686 01, Uhersk├ę Hradi┼ít─Ť 1",
+        description: "Atmospheric shisha bar, ideal place to relax with a water pipe, coffee or quality drink.",
+        slotsTitle: "FREE SLOTS",
+        cta: "JOIN"
+      },
+      members: {
+        title: "FAMILY MEMBERS",
+        description: "Those who know where to look...",
+        employeeWall: {
+          title: "EMPLOYEE WALL",
+          year: "YEAR 2026",
+          employeeName: "Tom├í┼í",
+          months: ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"],
+          invitation: "Want to be on our wall too? You should stop by so we know what nickname to write there!",
+          brandVision: "Some think a barbershop is just about hair. This is how 99% of people see it, but there are others who see it differently. You can join and help me build a brand."
+        }
+      },
+      support: {
+        title: "GRAPHICS",
+        description: "",
+        reward: "Since I don't give discounts and Black Friday every Friday. Want to support the barber? What stands behind it all? So support!",
+        pcLabel: "Desktop background 1920x1080px.",
+        phoneLabel: "Phone wallpaper 1080x1920px",
+        downloadBtn: "DOWNLOAD REWARD",
+        passwordLabel: "ACCESS PASSWORD",
+        passwordHint: "For the password you have to go to the barber, just don't go next door, he doesn't know it...",
+        unlock: "UNLOCK",
+        denied: "Access denied"
+      },
+      systemVisit: {
+        title: "System and Visit",
+        description: "How to properly prepare for a visit to the barber.",
+        cta: "MORE INFORMATION"
+      }
+    },
+    styleDefinition: {
+      defineStyle: {
+        title: ["Define", "Your Style"],
+        subtitle: "MMBARBER EXCLUSIVE /",
+        modalTitle: "Don't know what hairstyle fits your style?",
+        modalContent: "Together we'll find a cut that will harmonize with what you wear ÔÇö and with who you are. We'll discuss details, fine-tune the look and you'll walk out with confidence. Like a king."
+      },
+      pairTherapy: {
+        title: ["Pair", "Therapy"],
+        subtitle: "MMBARBER SPECIAL /",
+        modalTitle: "Come together. Leave even more synchronized.",
+        modalContent: "First we'll fine-tune his style, in the evening it's her turn. Meanwhile, peace, conversation and atmosphere that draws you in. Because style is better when you share it."
+      }
+    },
+    environmentSlider: {
+      title: "GALLERY",
+      detailPhoto: "DETAIL PHOTO",
+      closeImage: "CLOSE SHOT"
+    },
+    seznamka: {
+      description: "Matchmaking from the real world.\nNot everyone has time or desire to be online.\nThis is different. You come. You sit down... and things happen.",
+      protocolTitle: "MATCHMAKING PROTOCOL",
+      acknowledge: "I UNDERSTAND",
+      successTitle: "MISSION COMPLETE",
+      successText: "Now you are ready for a personal meeting.",
+      finishBtn: "FINISH MISSION",
+      cancelBtn: "Cancel progress and return",
+      confirmedLabel: "Procedure confirmed",
+      steps: [
+        { title: "Send a friend", desc: "Send a friend to get a haircut" },
+        { title: "Take a girlfriend", desc: "Take a girlfriend to trim the ends" },
+        { title: "Recruit the brave", desc: "Or send someone known who is not afraid" }
+      ]
+    },
+    welcome: {
+      l1: { title: "LETTER ABOUT PAYMENT", content: "CONFIDENTIAL: With us you pay in cash or with a QR code of your banking." },
+      l2: { title: "LETTER ABOUT PARKING", content: "CONFIDENTIAL: Free parking directly in front of the premises. Mornings are completely without problem. Use WAZE? you'll hit the barber next door..." },
+      l3: { title: "LETTER ABOUT PEACE", content: "CONFIDENTIAL: You can sit with us, nobody's throwing you out. We are family." },
+      authorized: "Authorized by MMBARBER"
+    },
+    cityGuide: {
+      compass: {
+        label: "Compass to the barbershop",
+        locating: "LOCATING...",
+        distance: "{{distance}} REMAINING"
+      }
+    },
+    game: {
+      default: {
+        ranks: [
+          { title: "Rookie", desc: "You're just learning to hold the scissors." },
+          { title: "Apprentice", desc: "You have the basics, but blood still flows." },
+          { title: "Barber", desc: "Your hand is steady, your style is visible." },
+          { title: "Master", desc: "Hair obeys your every word." },
+          { title: "Legend", desc: "You cut even with your eyes closed. Respect." }
+        ],
+        quips: ["Nice cut!", "Precise!", "Style!", "Hit!", "Sharp!"],
+        hairTooltip: "CUT HAIR",
+        rankLabel: "ACHIEVED LEVEL"
+      }
+    },
+    specialProjects: {
+      likeTheWeb: "Do you like this web ?",
+      division: "DESIGN AND DEVELOPMENT DIVISION",
+      title: "WE CREATE DIGITAL IDENTITIES",
+      description: "We are not just a barbershop. We are a community of people who want to create quality. If you want a web that has a soul and not just code, let us know.",
+      writeUs: "Write us",
+      callUs: "Call us"
+    }
+  },
+  boss: {
+    header: {
+      services: "K┼íefty",
+      gallery: "D┼»kazy",
+      seznamka: "Inform├íto┼Öi",
+      payment: "V├Żpaln├ę",
+      schedule: "Pl├ín akc├ş",
+      theCode: "N├í┼í kodex",
+      more: "Ostatn├ş",
+      career: "N├íbor",
+      startMission: "PRAVIDLA RODINY",
+      searchPlaceholder: "Ptej se jako ┼í├ęf."
+    },
+    hero: {
+      subtitle: "Teritorium Uhersk├ę Hradi┼ít─Ť",
+      title: "Barbershop na┼í├ş rodiny. O ─Źem se ml─Ź├ş, to m├í nejv─Ťt┼í├ş v├íhu.",
+      cta: "Respektovat rodinu",
+      bookBtn: "Domluvit sch┼»zku"
+    },
+    services: {
+      title: "Cen├şk k┼íeft┼»",
+      subtitle: "Vyber si, kolik ─Źasu n├ím v─Ťnuje┼í. U k┼Öesla pak dojedn├íme zbytek.",
+      bookBtn: "M├ím z├íjem",
+      detailsBtn: "Slo┼żka"
+    },
+    operatives: {
+      title: "Na┼íi lidi",
+      subtitle: "Vyber si sv├Żho specialistu.",
+      openFile: "Slo┼żka",
+      bookBarber: "Domluvit se s n├şm"
+    },
+    seo: {
+      title: "MMBARBER Barber & Shop | Teritorium Uhersk├ę Hradi┼ít─Ť | Rezervace k┼íeftu",
+      description: "Vstup do sv─Ťta na┼í├ş rodiny v Uhersk├ęm Hradi┼íti. MM BARBER nab├şz├ş bezcitnou preciznost, loajalitu a styl, kter├Ż si nekoup├ş┼í. P├ínsk├ę holi─Źstv├ş pro ty, co v─Ťd├ş, co cht─Ťj├ş.",
+      keywords: "MMBARBER rodina, ┼í├ęf Tom├í┼í, Uhersk├ę Hradi┼ít─Ť, k┼íefty, n├íbor, noir styl, loajalita, ┼Öemeslo, b┼Öitva, v├Żpaln├ę."
+    }
+  },
+  falco: {
+    header: {
+      services: "Extra Klasse",
+      gallery: "Archiv",
+      seznamka: "Wiener Club",
+      payment: "Geld & Gold",
+      schedule: "Zeitplan",
+      theCode: "Wiener Kodex",
+      more: "Exkluzivita",
+      career: "N├íbor ELITE",
+      startMission: "JAK TO U N├üS CHOD├Ź",
+      searchPlaceholder: "Alles klar?"
+    },
+    hero: {
+      subtitle: "19. Februar // Imperial Edition",
+      title: "V├ştejte v teritoriu, kde vl├ídne v├şde┼łsk├Ż standard. Preciznost bez kompromis┼».",
+      cta: "Vstoupit do Show",
+      bookBtn: "Rezervovat Show",
+      description: [
+        "M├şsto, kde se tradice potk├ív├í s modern├ş dekadenc├ş.",
+        "Alles klar? Tady vl├ídne styl, na kter├Ż nejste zvykl├ş.",
+        "V├şc ne┼ż jen st┼Öih. Je to opereta tv├ęho nov├ęho j├í.",
+        "Imperial Standard... v├ştejte v centru d─Ťn├ş."
+      ]
+    },
+    services: {
+      title: "Pr├ęmiov├ę Menu",
+      subtitle: "Vyberte si sv├ę m├şsto v l├│┼żi. U k┼Öesla pak dojedn├íme zbytek v imperi├íln├şm stylu.",
+      bookBtn: "Zajistit Vstupenku",
+      detailsBtn: "Detail"
+    },
+    operatives: {
+      title: "Na┼íi Specialist├ę",
+      subtitle: "Tihle lid├ę lad├ş v├í┼í styl pro hlavn├ş stage.",
+      openFile: "Slo┼żka",
+      bookBarber: "Domluvit se s Mistrem"
+    },
+    others: {
+        title: "EGO & LEGACY",
+        members: {
+            title: "IMPERIAL CREW",
+            description: "Ti, kte┼Ö├ş v─Ťd├ş, jak vypadat v z├í┼Öi reflektor┼»...",
+            employeeWall: {
+              title: "HALL OF FAME",
+              year: "2026 // IMPERIAL",
+              employeeName: "Der Boss Tom├í┼í",
+              months: ["JANUAR", "FEBRUAR", "M├äRZ", "APRIL", "MAI", "JUNI", "JULI", "AUGUST", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DEZEMBER"],
+            }
+        }
+    },
+    intro: {
+      welcome: "Willkommen im MMBARBER Imperial Territory.",
+      parking: "KOSTENLOSES PARKEN",
+      parkingHint: "Waze wird Sie vielleicht woanders hinschicken. Aber die Spieler wissen, wo die richtige Adresse ist.",
+      copyAddress: "ADRESSE KOPIEREN",
+      openMaps: "KARTEN ├ľFFNEN",
+      payment: "BAR / QR-ZAHLUNG",
+      acknowledge: "ICH VERSTEHE",
+      acceptMission: "INSTRUKTIONEN AKZEPTIEREN"
+    }
+  }
+};

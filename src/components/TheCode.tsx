@@ -30,18 +30,18 @@ export function TheCode() {
           <div className="inline-flex items-center gap-3 px-4 py-2 border border-mafia-gold/20 bg-mafia-gold/5 rounded-full mb-6">
             <ScrollText className="w-4 h-4 text-mafia-gold" />
             <span className="text-mafia-gold text-xs font-mono tracking-[0.3em] uppercase">
-              {t.theCode.subtitle}
+              {t?.theCode?.subtitle}
             </span>
           </div>
           <h2 className="text-5xl md:text-7xl font-heading font-black text-smoke-white tracking-tighter uppercase mb-6">
-            {t.theCode.title}
+            {t?.theCode?.title || "THE CODE"}
           </h2>
           <div className="w-24 h-1 bg-mafia-gold mx-auto" />
         </motion.div>
 
         {/* Stacked Letters Interface */}
         <div className="max-w-4xl mx-auto relative h-[600px] md:h-[700px] flex items-center justify-center">
-          {(t.theCode.rules as { title: string; description: string }[]).map((rule, index: number) => (
+          {(Array.isArray(t?.theCode?.rules) ? t.theCode.rules : []).map((rule: any, index: number) => (
             <motion.div
               key={index}
               initial={{ 

@@ -39,7 +39,17 @@ export function DailyIntelligence() {
         "@type": "ImageObject",
         "url": "https://mmbarber.cz/logo.png"
       }
-    }
+    },
+    "about": [
+      { "@type": "Thing", "name": "Barbershop Uherské Hradiště" },
+      { "@type": "Thing", "name": "Men's Grooming Excellence" }
+    ],
+    "mentions": [
+      { "@type": "Place", "name": "Mařatice" },
+      { "@type": "Place", "name": "Kunovice" },
+      { "@type": "Place", "name": "Staré Město" },
+      { "@type": "Place", "name": "Uherské Hradiště" }
+    ]
   };
 
   return (
@@ -56,9 +66,9 @@ export function DailyIntelligence() {
       <div className="flex items-center gap-3 mb-4 border-b border-mafia-gold/10 pb-3">
          <Activity size={14} className="text-mafia-gold animate-pulse" />
          <span className="text-[10px] uppercase tracking-[0.3em] text-mafia-gold">
-            {t.header?.web === "WEB" ? "System_Intelligence_Feed" : "SYSTEM_INTELLIGENCE_FEED"}
+            {t.footer.intelligenceFeed}
          </span>
-         <span className="ml-auto text-[8px] opacity-30">V 3.4 // LIVE_UPDATE</span>
+         <span className="ml-auto text-[8px] opacity-30">{t.footer.liveUpdate}</span>
       </div>
 
       <div className="flex gap-4 items-start">
@@ -71,7 +81,7 @@ export function DailyIntelligence() {
                {currentMessage}
             </p>
             <div className="flex items-center gap-4">
-               <span className="text-[8px] text-mafia-gold/40 uppercase tracking-widest">Target: UH_Region</span>
+               <span className="text-[8px] text-mafia-gold/40 uppercase tracking-widest">{t.footer.targetRegion}</span>
                <div className="flex gap-1">
                   <div className="w-1 h-1 bg-mafia-gold rounded-full animate-bounce"></div>
                   <div className="w-1 h-1 bg-mafia-gold rounded-full animate-bounce [animation-delay:0.2s]"></div>
@@ -89,7 +99,7 @@ export function DailyIntelligence() {
              className="absolute top-4 right-12 flex items-center gap-2 px-2 py-1 bg-mafia-red/10 border border-mafia-red/20 text-mafia-red text-[8px] uppercase tracking-tighter"
            >
               <ShieldAlert size={10} />
-              <span>Priority_Notice</span>
+              <span>{t.footer.priorityNotice}</span>
            </motion.div>
          )}
       </AnimatePresence>

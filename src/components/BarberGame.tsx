@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Scissors, Minimize2, Maximize2, Heart, Ghost, Gift, Rocket, Monitor, Flag, Diamond } from "lucide-react";
+import { Scissors, Minimize2, Maximize2, Heart, Ghost, Gift, Rocket, Monitor, Flag, Diamond, Flame, Sparkles } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { usePathname } from "next/navigation";
 import { getActiveTheme } from "../lib/holidays";
@@ -66,7 +66,8 @@ const THEME_COLORS: Record<string, string[]> = {
   czech: ["#11457e", "#d7141a", "#ffffff", "var(--color-mafia-gold)"],
   secret: ["#8a0707", "var(--color-mafia-gold)", "#000000", "#ffffff"],
   easter: ["#FFD700", "#FF69B4", "#7FFFD4", "#E6E6FA", "#FFFFFF"],
-  "childrens-day": ["#FF007F", "#00E5FF", "#00FF00", "#FFD700", "#FFFFFF"]
+  "childrens-day": ["#FF007F", "#00E5FF", "#00FF00", "#FFD700", "#FFFFFF"],
+  witches: ["#ff4500", "#ff6600", "#ff8c00", "#ffd700", "#8b0000"]
 };
 
 
@@ -235,6 +236,7 @@ export function BarberGame() {
       czech: [Flag],
       secret: [Diamond],
       "childrens-day": [Rocket], // Simplified
+      witches: [Flame, Sparkles, Flame],
       default: [Scissors, Scissors, Scissors] // Focusing on scissors for default
     };
 
@@ -267,6 +269,7 @@ export function BarberGame() {
     matrix: Monitor,
     czech: Flag,
     secret: Diamond,
+    witches: Flame,
     default: Scissors
   };
   const HudIcon = HudIconMap[activeTheme] || Scissors;
