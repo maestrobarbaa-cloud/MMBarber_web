@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame, X } from "lucide-react";
@@ -11,8 +11,18 @@ import { SEOContentArchive } from "@/components/SEOContentArchive";
 
 export default function NewspaperPage() {
   const [isBurning, setIsBurning] = useState(false);
+  const [isNoirMode, setIsNoirMode] = useState(false);
   const router = useRouter();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const checkNoir = () => {
+      setIsNoirMode(document.documentElement.classList.contains('noir-mode'));
+    };
+    checkNoir();
+    window.addEventListener('mmbarber-theme-update', checkNoir);
+    return () => window.removeEventListener('mmbarber-theme-update', checkNoir);
+  }, []);
 
   const handleClose = () => {
     const isSoundEnabled = typeof window !== 'undefined' && localStorage.getItem("mmbarber_sound_enabled") === "true";
@@ -51,8 +61,12 @@ export default function NewspaperPage() {
             transition={{ duration: 1.4, ease: "easeIn" }}
             className="absolute z-50 w-[100vw] h-[100vw] rounded-full pointer-events-none"
             style={{
-              background: "radial-gradient(circle, #0a0a0a 40%, rgba(255,80,0,0.8) 55%, rgba(197,160,89,0.9) 70%, transparent 100%)",
-              boxShadow: "0 0 150px 80px rgba(255,50,0,0.8) inset, 0 0 250px 100px rgba(197,160,89,0.5)"
+              background: isNoirMode 
+                ? "radial-gradient(circle, #0a0a0a 40%, rgba(255,255,255,0.8) 55%, rgba(200,200,200,0.9) 70%, transparent 100%)"
+                : "radial-gradient(circle, #0a0a0a 40%, rgba(255,80,0,0.8) 55%, rgba(197,160,89,0.9) 70%, transparent 100%)",
+              boxShadow: isNoirMode
+                ? "0 0 150px 80px rgba(255,255,255,0.4) inset, 0 0 250px 100px rgba(255,255,255,0.2)"
+                : "0 0 150px 80px rgba(255,50,0,0.8) inset, 0 0 250px 100px rgba(197,160,89,0.5)"
             }}
           />
         )}
@@ -63,16 +77,16 @@ export default function NewspaperPage() {
         animate={isBurning ? { 
             scale: 0.85, 
             opacity: 0, 
-            filter: "sepia(1) hue-rotate(-20deg) saturate(4) brightness(0.1) contrast(3)"
+            filter: isNoirMode ? "grayscale(1) brightness(0.1) contrast(3)" : "sepia(1) hue-rotate(-20deg) saturate(4) brightness(0.1) contrast(3)"
         } : { 
             opacity: 1, 
             y: 0,
-            filter: "sepia(0.6) hue-rotate(-5deg) saturate(1.2) brightness(0.95)"
+            filter: isNoirMode ? "grayscale(1) contrast(1.2) brightness(0.9)" : "sepia(0.6) hue-rotate(-5deg) saturate(1.2) brightness(0.95)"
         }}
         transition={{ duration: isBurning ? 1.5 : 0.8, ease: "easeInOut" }}
         className="w-full max-w-4xl relative z-10"
       >
-        <div className="absolute inset-0 bg-[#E8dfcc] shadow-[0_20px_50px_rgba(0,0,0,0.8)] pointer-events-none"></div>
+        <div className={`absolute inset-0 shadow-[0_20px_50px_rgba(0,0,0,0.8)] pointer-events-none ${isNoirMode ? 'bg-[#d1d1d1]' : 'bg-[#E8dfcc]'}`}></div>
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-90 mix-blend-multiply pointer-events-none"></div>
         <div className="absolute inset-0 shadow-[inset_0_0_120px_rgba(80,50,20,0.4)] pointer-events-none"></div>
 

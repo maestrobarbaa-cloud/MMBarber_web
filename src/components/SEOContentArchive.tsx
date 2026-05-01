@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Database, Globe, Search } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -8,8 +8,18 @@ import { seoContent } from "@/data/seoContent";
 
 export function SEOContentArchive() {
   const { lang } = useTranslation();
+  const [isNoirMode, setIsNoirMode] = useState(false);
   const currentLang = (lang === 'cs' ? 'cs' : 'en') as 'cs' | 'en';
   const articles = seoContent[currentLang];
+
+  useEffect(() => {
+    const checkNoir = () => {
+      setIsNoirMode(document.documentElement.classList.contains('noir-mode'));
+    };
+    checkNoir();
+    window.addEventListener('mmbarber-theme-update', checkNoir);
+    return () => window.removeEventListener('mmbarber-theme-update', checkNoir);
+  }, []);
 
   return (
     <div className="w-full bg-mafia-black py-32 px-6 border-t border-mafia-gold/20">
@@ -21,7 +31,7 @@ export function SEOContentArchive() {
                 <Database size={48} className="text-mafia-gold" />
              </div>
           </div>
-          <h1 className="text-4xl md:text-7xl font-heading font-black text-smoke-white uppercase tracking-tighter mb-6 italic">
+          <h1 className={`text-4xl md:text-7xl font-heading font-black text-smoke-white uppercase tracking-tighter mb-6 italic ${isNoirMode ? 'animate-neon-flicker-rhythmic' : ''}`}>
             {currentLang === 'cs' ? 'GLOBÁLNÍ_ARCHIV_DAT' : 'GLOBAL_DATA_ARCHIVE'}
           </h1>
           <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-[0.4em] max-w-2xl mx-auto opacity-60">
