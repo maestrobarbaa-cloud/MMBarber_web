@@ -74,10 +74,14 @@ export function MobileCompass() {
           const lat1 = pos.coords.latitude;
           const lon1 = pos.coords.longitude;
           
+          // Basic validation to avoid 0,0 or invalid jumps
+          if (!lat1 || !lon1 || (lat1 === 0 && lon1 === 0)) return;
+
           const lat1Rad = lat1 * Math.PI / 180;
           const lat2Rad = TARGET_LAT * Math.PI / 180;
           const dLonRad = (TARGET_LON - lon1) * Math.PI / 180;
 
+          // Bearing calculation
           const y = Math.sin(dLonRad) * Math.cos(lat2Rad);
           const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) -
                     Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLonRad);
@@ -85,7 +89,8 @@ export function MobileCompass() {
           const brng = Math.atan2(y, x) * 180 / Math.PI;
           setTargetBearing((brng + 360) % 360);
 
-          const R = 6371e3;
+          // Distance calculation (Haversine)
+          const R = 6371e3; // Earth radius in meters
           const φ1 = lat1Rad;
           const φ2 = lat2Rad;
           const Δφ = (TARGET_LAT - lat1) * Math.PI / 180;
@@ -100,15 +105,21 @@ export function MobileCompass() {
           setDistanceValue(d);
 
           let dDisplay = "";
+          // Reverted to 60m as requested/previously working
           if (d < 60) {
             dDisplay = lang === 'cs' ? 'V CÍLI' : 'ARRIVED';
           } else {
             dDisplay = d > 1000 ? `${(d / 1000).toFixed(1)} km` : `${Math.round(d)} m`;
           }
           setDistanceRaw(dDisplay);
+          setLocationTimeout(false);
         },
-        (err) => console.error("Geo error:", err),
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        (err) => {
+          console.error("Geo error:", err);
+          if (err.code === 1) setDistanceRaw(lang === 'cs' ? 'POVOLTE GPS' : 'ALLOW GPS');
+          else setDistanceRaw("GPS ERROR");
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
       return () => navigator.geolocation.clearWatch(watchId);
     }
@@ -224,6 +235,12 @@ export function MobileCompass() {
                     </div>
                   )}
                </motion.div>
+
+               {userHeading === null && !isArrived && (
+                 <div className="absolute top-[-40px] left-1/2 -translate-x-1/2 text-[8px] font-mono text-mafia-gold animate-pulse whitespace-nowrap">
+                   {lang === 'cs' ? '[ POUŽIJTE MOBIL PRO KOMPAS ]' : '[ USE MOBILE FOR COMPASS ]'}
+                 </div>
+               )}
 
                {!isArrived ? (
                  <motion.div 

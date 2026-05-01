@@ -504,6 +504,18 @@ export function Footer() {
             <FooterLink href="/franchise">{t?.header?.franchise || "FRANCHISE"}</FooterLink>
             <FooterLink href="/payment">{t?.header?.payment || "PLATBA"}</FooterLink>
             <FooterLink href="/kariera">{t?.header?.career || "KARIÉRA"}</FooterLink>
+            <FooterLink href="/pribeh">{lang === 'cs' ? "PŘÍBĚH" : "STORY"}</FooterLink>
+          </div>
+
+          {/* Column 4: SEO Landing Pages */}
+          <div className="flex flex-col space-y-3">
+            <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">
+              {lang === 'cs' ? "SLUŽBY A REGION" : "SERVICES & REGION"}
+            </h3>
+            <FooterLink href="/barbershop-uherske-hradiste">BARBERSHOP UH</FooterLink>
+            <FooterLink href="/pansky-strih-uherske-hradiste">{lang === 'cs' ? "PÁNSKÝ STŘIH" : "HAIRCUT"}</FooterLink>
+            <FooterLink href="/uprava-vousu-uherske-hradiste">{lang === 'cs' ? "ÚPRAVA VOUSŮ" : "BEARD TRIM"}</FooterLink>
+            <FooterLink href="/region-slovacko">SLOVÁCKO</FooterLink>
           </div>
 
           {/* Column 3: Sleduj nás - Modern Premium Grid */}
@@ -552,7 +564,7 @@ export function Footer() {
         <div className="flex flex-col items-center gap-4">
           <div className="font-mono text-smoke-white/50 text-xs md:text-sm tracking-[0.2em] uppercase text-center flex flex-wrap items-center justify-center gap-2">
             <span>© {t?.footer?.copyright || (lang === 'cs' ? 'Všechna práva vyhrazena' : 'All rights reserved')}</span>
-            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V.3.4.1</span>
+            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V.3.4.2</span>
           </div>
           <div className="sr-only">
             <h2>{t.seo?.title}</h2>

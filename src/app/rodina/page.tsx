@@ -30,6 +30,9 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { trackEvent } from "@/utils/analytics";
 import { playSound } from "@/utils/audio";
 import { FamilyIntelligence } from "@/components/FamilyIntelligence";
+import { FamilySEOInterlink } from "@/components/FamilySEOInterlink";
+import { FamilyFAQ } from "@/components/FamilyFAQ";
+import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
 
 function MemberCard({ m, lang }: { m: any, lang: string }) {
   const [showContact, setShowContact] = useState(false);
@@ -307,13 +310,20 @@ export default function FamilyPage() {
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,20,20,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none"></div>
 
-      {/* View Mode Toggle - Only visible on Desktop */}
-      <div className="fixed bottom-12 right-12 z-[100] hidden md:flex flex-col items-end gap-4">
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-mafia-black/80 backdrop-blur-xl border border-mafia-gold/20 p-2 flex gap-2 shadow-2xl">
-          <button onClick={() => { setViewMode("grid"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'grid' ? 'bg-mafia-gold text-mafia-black' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.list}</button>
-          <button onClick={() => { setViewMode("network"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'network' ? 'bg-mafia-gold text-mafia-black shadow-[0_0_20px_rgba(197,160,89,0.4)]' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.network}</button>
-        </motion.div>
-      </div>
+            <div className="text-center mb-16 max-w-4xl mx-auto relative">
+              <h1 className="text-4xl md:text-6xl font-heading font-black text-smoke-white uppercase mb-4">{t.rodina.title}</h1>
+              <p className="text-mafia-gold font-heading text-xl uppercase tracking-[0.2em] italic font-black mb-12">{t.rodina.youForUs}</p>
+              
+              {/* View Mode Toggle moved to top as requested */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                className="inline-flex bg-mafia-black/80 backdrop-blur-xl border border-mafia-gold/20 p-2 gap-2 shadow-2xl mb-8"
+              >
+                <button onClick={() => { setViewMode("grid"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'grid' ? 'bg-mafia-gold text-mafia-black' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.list}</button>
+                <button onClick={() => { setViewMode("network"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'network' ? 'bg-mafia-gold text-mafia-black shadow-[0_0_20px_rgba(197,160,89,0.4)]' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.network}</button>
+              </motion.div>
+            </div>
 
       {/* Cinematic Dust/Particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -346,10 +356,6 @@ export default function FamilyPage() {
             <div className="text-center mb-16 max-w-4xl mx-auto">
               <h1 className="text-4xl md:text-6xl font-heading font-black text-smoke-white uppercase mb-4">{t.rodina.title}</h1>
               <p className="text-mafia-gold font-heading text-xl uppercase tracking-[0.2em] italic font-black mb-12">{t.rodina.youForUs}</p>
-              
-              <div className="max-w-2xl mx-auto opacity-80 hover:opacity-100 transition-opacity">
-                <FamilyIntelligence />
-              </div>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-16">
@@ -744,6 +750,36 @@ export default function FamilyPage() {
           </div>
         )}
       </AnimatePresence>
+
+      <div className="mt-20">
+        <BottomTerminalReveal thresholdMultiplier={2}>
+          {(unlockLevel) => (
+            <motion.div 
+              initial={{ opacity: 0, y: 50 }}
+              animate={unlockLevel >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+              className="space-y-24"
+            >
+              <div className="max-w-7xl mx-auto">
+                <FamilySEOInterlink />
+              </div>
+              
+              <div className="max-w-4xl mx-auto">
+                <FamilyFAQ />
+              </div>
+
+              <div className="max-w-2xl mx-auto pb-32">
+                <div className="flex items-center gap-4 mb-8 opacity-20 justify-center">
+                   <div className="h-px w-12 bg-mafia-gold"></div>
+                   <span className="font-mono text-[8px] uppercase tracking-[1em]">Intelligence_Archive</span>
+                   <div className="h-px w-12 bg-mafia-gold"></div>
+                </div>
+                <FamilyIntelligence />
+              </div>
+            </motion.div>
+          )}
+        </BottomTerminalReveal>
+      </div>
+      
       {/* 
           SEO STRATEGY - HIDDEN DATA LAYER 
           Tato sekce zajišťuje indexaci klíčových slov pro Uherské Hradiště a okolí.

@@ -57,6 +57,7 @@ export function FutureSEO() {
       {
         "@type": "Question",
         "name": lang === 'cs' ? "Jaký je nejlepší barbershop v Uherském Hradišti?" : "What is the best barbershop in Uherské Hradiště?",
+        "url": "https://mmbarber.cz/barbershop-uherske-hradiste",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": lang === 'cs' 
@@ -67,6 +68,7 @@ export function FutureSEO() {
       {
         "@type": "Question",
         "name": lang === 'cs' ? "Proč zvolit MMBARBER pro úpravu vousů?" : "Why choose MMBARBER for beard grooming?",
+        "url": "https://mmbarber.cz/uprava-vousu-uherske-hradiste",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": lang === 'cs'
@@ -77,6 +79,7 @@ export function FutureSEO() {
       {
         "@type": "Question",
         "name": lang === 'cs' ? "Nabízíte parkování pro zákazníky?" : "Do you offer parking for customers?",
+        "url": "https://mmbarber.cz/barbershop-uherske-hradiste#parkovani",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": lang === 'cs'
@@ -87,6 +90,7 @@ export function FutureSEO() {
       {
         "@type": "Question",
         "name": lang === 'cs' ? "Jak se objednat do MMBARBER?" : "How to book an appointment at MMBARBER?",
+        "url": "https://is.mmbarber.cz",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": lang === 'cs'
@@ -97,6 +101,7 @@ export function FutureSEO() {
       {
         "@type": "Question",
         "name": lang === 'cs' ? "Co zahrnuje MM BARBER Akademie?" : "What does MM BARBER Academy include?",
+        "url": "https://mmbarber.cz/akademie",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": lang === 'cs'
@@ -190,6 +195,13 @@ export function FutureSEO() {
     "relatedTo": [
       { "@type": "Service", "name": "Men's Lifestyle & Community" },
       { "@type": "Organization", "name": "MM BARBER Family Network" },
+      { "@type": "Organization", "name": "Vodo Topo Jahoda", "description": "Expert plumbing and heating services in Uherské Hradiště" },
+      { "@type": "Organization", "name": "Malina Photo", "description": "Professional photography and visual identity" },
+      { "@type": "Organization", "name": "Comites", "description": "Construction, real estate, and financial services" },
+      { "@type": "Organization", "name": "Sluneční Reality", "description": "Real estate agency in Slovácko region" },
+      { "@type": "Organization", "name": "Kofipack", "description": "Packaging solutions and logistics" },
+      { "@type": "Organization", "name": "O Kolečko víc", "description": "Bicycle service and sales" },
+      { "@type": "Person", "name": "Roman Jakubčák", "jobTitle": "Electrician & Revisions" },
       { "@type": "Person", "name": "Slovácký Gentleman" }
     ]
   };

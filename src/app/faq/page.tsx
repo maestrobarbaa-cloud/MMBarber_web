@@ -117,7 +117,8 @@ export default function FAQPage() {
           {FAQ_DATA.map((faq, idx) => (
             <div 
               key={idx}
-              className="border border-white/5 bg-mafia-dark/20 backdrop-blur-sm overflow-hidden"
+              id={`q-${idx}`}
+              className="border border-white/5 bg-mafia-dark/20 backdrop-blur-sm overflow-hidden scroll-mt-32"
             >
               <button
                 onClick={() => setOpenIdx(openIdx === idx ? null : idx)}

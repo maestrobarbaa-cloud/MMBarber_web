@@ -191,7 +191,7 @@ export default function Home() {
               </div>
             </SectionReveal>
 
-            <BottomTerminalReveal>
+            <BottomTerminalReveal thresholdMultiplier={2}>
               {(level) => (
                 <>
                   <SectionReveal>

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Globe, MapPin, Signal, Radio, Shield } from "lucide-react";
 
@@ -14,6 +15,15 @@ export function RegionalSEOCloud() {
     { name: "SLOVÁCKO_SOUTH", cities: ["Hodonín", "Břeclav", "Veselí nad Moravou", "Kyjov", "Strážnice", "Rohatec"] },
     { name: "MORAVIA_EAST", cities: ["Kroměříž", "Holešov", "Luhačovice", "Brumov-Bylnice", "Valašské Klobouky"] }
   ];
+
+  const getTargetUrl = (city: string) => {
+    const c = city.toLowerCase();
+    if (c.includes("hradiště") || c.includes("mařatice")) return "/barbershop-uherske-hradiste";
+    if (c.includes("slovácko") || c.includes("veselí")) return "/region-slovacko";
+    if (c.includes("zlín") || c.includes("napajedla")) return "/pansky-strih-uherske-hradiste";
+    if (c.includes("brod") || c.includes("hluk")) return "/uprava-vousu-uherske-hradiste";
+    return "/barbershop-uherske-hradiste";
+  };
 
   return (
     <div className="w-full bg-mafia-black/80 border-t border-mafia-gold/10 py-32 px-6 overflow-hidden relative">
@@ -35,9 +45,13 @@ export function RegionalSEOCloud() {
               </div>
               <div className="flex flex-wrap gap-x-6 gap-y-3">
                 {region.cities.map((city, cIdx) => (
-                  <span key={cIdx} className="text-smoke-white/40 font-sans text-sm hover:text-mafia-gold transition-colors cursor-default">
+                  <Link 
+                    key={cIdx} 
+                    href={getTargetUrl(city)}
+                    className="text-smoke-white/40 font-sans text-sm hover:text-mafia-gold transition-colors cursor-pointer"
+                  >
                     {city}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>

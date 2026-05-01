@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Flame, X } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { playSound } from "@/utils/audio";
+import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
+import { SEOContentArchive } from "@/components/SEOContentArchive";
 
 export default function NewspaperPage() {
   const [isBurning, setIsBurning] = useState(false);
@@ -146,6 +148,21 @@ export default function NewspaperPage() {
 
         </div>
       </motion.div>
+
+      <div className="absolute bottom-0 left-0 w-full z-20">
+        <BottomTerminalReveal thresholdMultiplier={3}>
+           {(unlockLevel) => (
+             <motion.div
+               initial={{ opacity: 0, y: 100 }}
+               animate={unlockLevel >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
+               transition={{ duration: 1.5 }}
+               className="w-full"
+             >
+               <SEOContentArchive />
+             </motion.div>
+           )}
+        </BottomTerminalReveal>
+      </div>
 
       <style jsx global>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }

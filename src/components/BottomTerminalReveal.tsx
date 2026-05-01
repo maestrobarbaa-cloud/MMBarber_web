@@ -7,17 +7,18 @@ import { useTranslation } from "../hooks/useTranslation";
 
 interface BottomTerminalRevealProps {
   children: (unlockLevel: number) => React.ReactNode;
+  thresholdMultiplier?: number;
 }
 
-export function BottomTerminalReveal({ children }: BottomTerminalRevealProps) {
+export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: BottomTerminalRevealProps) {
   const [unlockLevel, setUnlockLevel] = useState(0); // 0: Locked, 1-4: Stages
   const [overscrollProgress, setOverscrollProgress] = useState(0);
   const { lang } = useTranslation();
   
-  const STAGE_1_THRESHOLD = 500;
-  const STAGE_2_THRESHOLD = 1500;
-  const STAGE_3_THRESHOLD = 3000;
-  const STAGE_4_THRESHOLD = 5000; // Ultimate depth
+  const STAGE_1_THRESHOLD = 1000 * thresholdMultiplier;
+  const STAGE_2_THRESHOLD = 3000 * thresholdMultiplier;
+  const STAGE_3_THRESHOLD = 7000 * thresholdMultiplier;
+  const STAGE_4_THRESHOLD = 12000 * thresholdMultiplier; // Ultimate depth - extreme scroll
   
   const scrollAccumulator = useRef(0);
   const lastScrollTime = useRef(0);
