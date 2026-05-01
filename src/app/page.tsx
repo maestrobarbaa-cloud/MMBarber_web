@@ -14,16 +14,21 @@ const Contact = dynamic(() => import("@/components/Contact").then(mod => mod.Con
 const Partners = dynamic(() => import("@/components/Partners").then(mod => mod.Partners), { ssr: false });
 const Footer = dynamic(() => import("@/components/Footer").then(mod => mod.Footer), { ssr: false });
 const StyleDefinition = dynamic(() => import("@/components/StyleDefinition").then(mod => mod.StyleDefinition), { ssr: false });
-const DailyIntelligence = dynamic(() => import("@/components/DailyIntelligence").then(mod => mod.DailyIntelligence), { ssr: false });
+const SEOFAQ = dynamic(() => import("@/components/SEOFAQ").then(mod => mod.SEOFAQ), { ssr: false });
+const BottomTerminalReveal = dynamic(() => import("@/components/BottomTerminalReveal").then(mod => mod.BottomTerminalReveal), { ssr: false });
+const FooterSecrets = dynamic(() => import("@/components/FooterSecrets").then(mod => mod.FooterSecrets), { ssr: false });
+const RegionalSEOCloud = dynamic(() => import("@/components/RegionalSEOCloud").then(mod => mod.RegionalSEOCloud), { ssr: false });
+const GoogleReviewsWall = dynamic(() => import("@/components/GoogleReviewsWall").then(mod => mod.GoogleReviewsWall), { ssr: false });
+const OperationalJournal = dynamic(() => import("@/components/OperationalJournal").then(mod => mod.OperationalJournal), { ssr: false });
 
 import { CinematicIntro } from "@/components/Intro";
 import { Atmosphere } from "@/components/Atmosphere";
 import { MinigameToggle } from "@/components/MinigameToggle";
-import { MobileCompass } from "@/components/MobileCompass";
 import { FloatingScissors } from "@/components/FloatingScissors";
 import { CinematicSequence737 } from "@/components/CinematicSequence737";
 import { MafiaClickEffects } from "@/components/MafiaClickEffects";
 import { useTranslation } from "@/hooks/useTranslation";
+import { LocalSEOHomepage } from "@/components/LocalSEOHomepage";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -179,11 +184,72 @@ export default function Home() {
               </div>
             </SectionReveal>
 
+
             <SectionReveal>
               <div className="section-optimize">
                 <Footer />
               </div>
             </SectionReveal>
+
+            <BottomTerminalReveal>
+              {(level) => (
+                <>
+                  <SectionReveal>
+                    <div className="section-optimize">
+                      <FooterSecrets />
+                    </div>
+                  </SectionReveal>
+
+                  <SectionReveal>
+                    <div className="section-optimize">
+                      <SEOFAQ />
+                    </div>
+                  </SectionReveal>
+
+                  {level >= 2 && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      transition={{ duration: 1.5 }}
+                    >
+                      <SectionReveal>
+                        <div className="section-optimize">
+                          <RegionalSEOCloud />
+                        </div>
+                      </SectionReveal>
+                    </motion.div>
+                  )}
+
+                  {level >= 3 && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      transition={{ duration: 1.5 }}
+                    >
+                      <SectionReveal>
+                        <div className="section-optimize">
+                          <GoogleReviewsWall />
+                        </div>
+                      </SectionReveal>
+                    </motion.div>
+                  )}
+
+                  {level >= 4 && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      transition={{ duration: 1.5 }}
+                    >
+                      <SectionReveal>
+                        <div className="section-optimize">
+                          <OperationalJournal />
+                        </div>
+                      </SectionReveal>
+                    </motion.div>
+                  )}
+                </>
+              )}
+            </BottomTerminalReveal>
           </motion.div>
         )}
       </AnimatePresence>
@@ -198,6 +264,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <LocalSEOHomepage />
     </div>
   );
 }

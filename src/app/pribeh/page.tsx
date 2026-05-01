@@ -3,8 +3,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ChevronLeft, 
-  ChevronRight, 
   Target, 
   Zap, 
   Shield, 
@@ -14,10 +12,21 @@ import {
   BookOpen, 
   Flag,
   FileText,
-  X
+  X,
+  Lock,
+  Terminal,
+  Activity,
+  AlertTriangle,
+  Flame,
+  Fingerprint,
+  Heart,
+  Search,
+  Cpu,
+  Ear,
+  Timer,
+  Layers,
+  Laptop
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface StoryNode {
@@ -29,18 +38,53 @@ interface StoryNode {
   x: number; // percentage from left
   y: number; // percentage from top
   connections: string[];
-  type?: 'major' | 'minor' | 'branch';
+  type?: 'major' | 'minor' | 'branch' | 'secret';
+  secretContent?: string;
+}
+
+interface StarBg {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  duration: number;
+  delay: number;
+  depth: number;
 }
 
 const STORY_NODES: StoryNode[] = [
   {
     id: "origin",
+    year: "DĚTSTVÍ",
+    title: "PRVNÍ KONTAKT",
+    content: "Už od dětství jsem měl blízko k technice a počítačům. Jako malý kluk jsem je rozebíral, skládal zpátky a snažil se pochopil, jak fungují. Byl to přirozený zájem, který mě provázel dlouho.",
+    icon: <Cpu size={24} />,
+    x: 4,
+    y: 20,
+    connections: ["tech_roots", "origin_technical"],
+    type: 'secret',
+    secretContent: "Časem ale přišlo období, kdy jsem se od toho vzdálil. Ztratil jsem směr a měl pocit, že jsem z té cesty na chvíli vystoupil. Ale některé věci v člověku nezmizí."
+  },
+  {
+    id: "tech_roots",
+    year: "NÁVRAT",
+    title: "TECHNOLOGICKÉ LOGO",
+    content: "Postupně jsem se k technice začal vracet – tentokrát s jiným pohledem, větší zkušeností a jasnější hlavou. Začal jsem znovu využívat to, co jsem se naučil dřív, ale novým způsobem.",
+    icon: <Terminal size={24} />,
+    x: 6,
+    y: 75,
+    connections: ["origin_technical"],
+    type: 'secret',
+    secretContent: "Dnes už nevnímám tvorbu jen jako něco technického. Ale jako možnost stavět věci po svém, bez nutnosti kopírovat ostatní. Děkuji za všechny nabídky, šablony a „hotová řešení“. Ale jdu vlastní cestou. Ne proto, že bych odmítal svět kolem sebe. Ale proto, že každá značka má svůj vlastní směr. A já si ten svůj určuju sám."
+  },
+  {
+    id: "origin_technical",
     year: "2013 — 2017",
     title: "TECHNICKÝ ZÁKLAD",
     content: "Vystudoval jsem SSŠPHZ Uherské Hradiště, obor elektrotechnika. Na papíře jeden směr, v realitě ale začátek cesty, která se postupně začala ubírat jiným směrem.",
     icon: <Zap size={24} />,
     x: 10,
-    y: 50,
+    y: 45,
     connections: ["craft"],
     type: 'major'
   },
@@ -50,8 +94,8 @@ const STORY_NODES: StoryNode[] = [
     title: "SVĚT DETAILU",
     content: "Po škole jsem si dodělal nástavbové studium kadeřník, které mi otevřelo svět práce s lidmi, stylem a detailem. Právě tam jsem pochopil, že mě zajímá něco víc než technický obor — prostředí, kde má práce okamžitý dopad na člověka.",
     icon: <Target size={24} />,
-    x: 25,
-    y: 40,
+    x: 17,
+    y: 60,
     connections: ["experience"],
     type: 'major'
   },
@@ -61,10 +105,34 @@ const STORY_NODES: StoryNode[] = [
     title: "TERÉNNÍ PRŮZKUM",
     content: "Zkušenosti jsem sbíral v Brně i Uherském Hradišti, kde jsem prošel různými provozy a situacemi. Každé místo mě něco naučilo a posunulo dál. Historie této cesty je dnes vidět v recenzích a zpětné vazbě klientů.",
     icon: <Shield size={24} />,
-    x: 40,
+    x: 25,
     y: 40,
-    connections: ["academic", "maverick"],
+    connections: ["turning_point", "academic", "maverick", "shadow_days"],
     type: 'major'
+  },
+  {
+    id: "turning_point",
+    year: "ZLOMOVÝ BOD",
+    title: "OSOBNÍ TRANSFORMACE",
+    content: "Studoval jsem, žil normální život a přemýšlel, kam vlastně patřím. Měl jsem plány, které nebyly jen o mně – chtěl jsem budovat budoucnost pro dva, ne jen pro sebe. Byl jsem připravený jít za tím i do jiného města, začít znovu a postavit něco společného.",
+    icon: <Heart size={24} />,
+    x: 22,
+    y: 15,
+    connections: ["maverick"],
+    type: 'secret',
+    secretContent: "Ale život ti někdy ukáže jiný směr, než čekáš. Začal jsem chápat, že ne každý vidí věci stejně. Že ne každý s tebou půjde tam, kam ty vidíš svou cestu. A i když jsem se snažil pomáhat, ukazovat směr a motivovat, nakonec jsem pochopil jednu věc: ne všechno můžeš nést za dva. To období mě změnilo. Donutilo mě přemýšlet jinak. O sobě, o směru, o tom, co vlastně chci tvořit. A právě tehdy jsem si uvědomil, že moje energie patří něčemu, co má přesah. Ne jen práci. Ne jen střihu. Ale vlastnímu směru, vlastnímu světu, vlastní značce. Tak vznikl MMBARBER. Ne jako plán B. Ale jako rozhodnutí jít vlastní cestou."
+  },
+  {
+    id: "shadow_days",
+    year: "2020 — 2021",
+    title: "STÍNOVÁ OPERACE",
+    content: "Doba, kdy se formovaly ty nejtvrdší zásady. Práce pod tlakem v nejistém prostředí. Tehdy jsem pochopil, že systém se na tebe neptá — ty se musíš postarat o sebe a o své lidi.",
+    icon: <Fingerprint size={24} />,
+    x: 27,
+    y: 80,
+    connections: ["maverick"],
+    type: 'secret',
+    secretContent: "Období lockdownů nebylo o čekání. Bylo o hledání cest tam, kde ostatní viděli jen zavřené dveře. Naučilo mě to, že pravidla jsou pro ty, co nemají vizi. My jsme měli vizi — přežít a vybudovat něco, co nikdo nezavře."
   },
   {
     id: "academic",
@@ -72,8 +140,8 @@ const STORY_NODES: StoryNode[] = [
     title: "TITUL NENÍ CÍL",
     content: "Univerzita Tomáše Bati ve Zlíně, sociální pedagogika. Postupem času jsem ale pochopil jednu věc — titul není cíl. Je to jen formální potvrzení, které nikdy nenahradí reálnou zkušenost a praxi.",
     icon: <BookOpen size={24} />,
-    x: 55,
-    y: 25,
+    x: 35,
+    y: 10,
     connections: ["vision"],
     type: 'minor'
   },
@@ -83,10 +151,94 @@ const STORY_NODES: StoryNode[] = [
     title: "VLASTNÍ SMĚR",
     content: "Nechci jít s proudem jen proto, že je to běžná volba. Raději si volím vlastní směr — i když je delší, náročnější a bez jistot. Nechávám ostatní jít vyšlapanou cestou a já si hledám vlastní.",
     icon: <Flag size={24} />,
-    x: 55,
+    x: 38,
+    y: 45,
+    connections: ["vision", "underground_tactics", "human_connection", "listening_post", "mastery", "simplicity", "no_pose", "intuition"],
+    type: 'branch'
+  },
+  {
+    id: "intuition",
+    year: "PROCES",
+    title: "PŘIROZENÝ VÝVOJ",
+    content: "Zatím si většinu věcí dělám sám. Často vytvářím věci, které mi přijdou úplně normální – jako přirozený krok v tom, co dělám. Až zpětně ale vidím, že to pro spoustu lidí má mnohem větší hodnotu.",
+    icon: <Fingerprint size={24} />,
+    x: 48,
+    y: 85,
+    connections: ["vision"],
+    type: 'secret',
+    secretContent: "Neplánuju věci s tím, jak budou vypadat navenek. Spíš je dělám tak, jak mi dávají smysl v daný moment. A často až čas ukáže, co z toho vlastně vzniklo. To, co je pro mě 'jen práce', je pro ostatní důkazem směru, kterým jdu."
+  },
+  {
+    id: "no_pose",
+    year: "AUTENTICITA",
+    title: "BEZ PÓZY",
+    content: "Ohledně barbershopu si na nic nepotřebuju hrát. Většinou mě lidi potkají v obyčejném režimu – někdy rozcuchaného, v pohybu, mezi prací. Neřeším, jak to v tu chvíli vypadá navenek.",
+    icon: <Laptop size={24} />,
+    x: 31,
+    y: 60,
+    connections: ["vision"],
+    type: 'secret',
+    secretContent: "Většinu času totiž nejsem jen v barber křesle. Řeším věci kolem podnikání, nápady, systém, posun značky. Často s notebookem, mezi klienty nebo v pohybu. Klasické pořekadlo „kovářova kobyla chodí bosa“ tu možná sedí, ale spíš v tom smyslu, že energie jde do práce, ne do předstírání dokonalosti. Důležitější než image je pro mě to, co se reálně buduje."
+  },
+  {
+    id: "simplicity",
+    year: "HODNOTY",
+    title: "SÍLA JEDNODUCHOSTI",
+    content: "V životě si nepotrpím na zbytečný věci. Nikdy to nebylo o tom, co má člověk na sobě nebo kolik to stálo. Spíš o tom, co za tím je. Mám blízko k jednoduchosti – k věcem, které dávají smysl a fungují.",
+    icon: <Layers size={24} />,
+    x: 35,
+    y: 80,
+    connections: ["vision"],
+    type: 'secret',
+    secretContent: "Skromnost pro mě není póza. Je to přirozený způsob, jak přemýšlím. Důležitější než věci kolem mě je to, co tvořím a kam směřuju. Fungovat bez potřeby ukazovat se navenek – to je ten skutečný motor."
+  },
+  {
+    id: "mastery",
+    year: "ÚROVEŇ",
+    title: "TRÉNINK DĚLÁ MISTRA",
+    content: "Na první pohled to může vypadat jednoduše – rychlý střih, přesný fade, hotový účes za pár minut. Třeba crop za patnáct minut. Ale za tou rychlostí není uspěchanost. Je za ní opakování.",
+    icon: <Timer size={24} />,
+    x: 42,
     y: 65,
     connections: ["vision"],
-    type: 'branch'
+    type: 'secret',
+    secretContent: "Stejný pohyb, stejná situace, stejný tlak – znovu a znovu, dokud se z toho nestane přirozenost. Když něco děláš dostatečně dlouho, přestaneš nad tím přemýšlet a začneš to cítit. Pak už to není o tom, že „pracuješ rychle“. Ale o tom, že víš přesně, co děláš v každé vteřině. Jako bys byl každý den na soutěži. Ne proto, že musíš. Ale proto, že to už je tvoje úroveň."
+  },
+  {
+    id: "listening_post",
+    year: "NASLOUCHÁNÍ",
+    title: "SBĚR PERSPEKTIV",
+    content: "Věřím, že každý člověk, který projde dveřmi, může přinést něco hodnotného. Naslouchám lidem kolem sebe – klientům, známým i těm, kteří přijdou jen na chvíli. Každý má jinou zkušenost, jiný pohled a někdy i nečekanou myšlenku, která dává smysl.",
+    icon: <Ear size={24} />,
+    x: 45,
+    y: 15,
+    connections: ["vision"],
+    type: 'secret',
+    secretContent: "Neberu to ale jako slepé přijímání rad. Spíš jako sbírání perspektiv. Nakonec si ale vždy určuju vlastní směr sám. Ne všechno, co slyším, následuji. Ale učím se vnímat víc, než jen jeden úhel pohledu. A právě to mi pomáhá růst – jako člověku i v tom, co tvořím."
+  },
+  {
+    id: "human_connection",
+    year: "POZOROVÁNÍ",
+    title: "SKUTEČNÁ POUTO",
+    content: "Během času jsem začal víc vnímat, jak těžké je pro některé lidi skutečně někoho poznat. Nešlo jen o mě. Ale i o lidi v mém okolí – o moji sestru a holky, které mají problém potkat někoho normálním způsobem v reálném životě.",
+    icon: <Search size={24} />,
+    x: 46,
+    y: 40,
+    connections: ["vision"],
+    type: 'secret',
+    secretContent: "Všude je spousta možností, ale málo skutečných spojení. A právě to mě přivedlo k myšlence vytvořit něco jiného. Ne další povrchní aplikaci, ale prostor, kde se lidi můžou potkat přirozeněji, s větším smyslem. Nešlo o byznys nápad. Byla to reakce na realitu, kterou jsem viděl kolem sebe. A stejně jako u MMBARBER, i tady šlo o jedno: když něco nefunguje, zkus to udělat jinak."
+  },
+  {
+    id: "underground_tactics",
+    year: "LOGIKA BOJE",
+    title: "TACTICAL MINDSET",
+    content: "Podnikání není hra na kavárnu. Je to strategická operace. Každý krok musí mít svůj význam. Pokud nevíš proč to děláš, raději to nedělej vůbec.",
+    icon: <Terminal size={24} />,
+    x: 52,
+    y: 70,
+    connections: ["vision"],
+    type: 'secret',
+    secretContent: "Zatímco ostatní řešili barvu stěn, já jsem řešil logistiku, psychologii klienta a efektivitu každého pohybu nůžkami. Barbershop je jen frontová linie. To skutečné se děje v hlavě a v zákulisí."
   },
   {
     id: "vision",
@@ -94,10 +246,22 @@ const STORY_NODES: StoryNode[] = [
     title: "ZROZENÍ MMBARBER",
     content: "Tenhle podnik nevznikl proto, aby byl „další barbershop“. Vznikl pro přístup, který má klid, respekt a hloubku. Chci dělat věci vědomě, poctivě a s důrazem na detail i atmosféru.",
     icon: <Star size={24} />,
-    x: 75,
+    x: 62,
     y: 50,
-    connections: ["people"],
+    connections: ["people", "inner_circle"],
     type: 'major'
+  },
+  {
+    id: "inner_circle",
+    year: "CORE BELIEFS",
+    title: "ELITNÍ PŘÍSTUP",
+    content: "Respekt si nekoupíš. Respekt si musíš zasloužit. V MMBARBER se hraje podle našich pravidel — a kdo je nerespektuje, ten tu nemá místo.",
+    icon: <Lock size={24} />,
+    x: 65,
+    y: 20,
+    connections: ["people"],
+    type: 'secret',
+    secretContent: "Není to pro každého. A tak je to správně. Elita není o penězích, je o mindsetu. Chceme lidi, kteří chápou hodnotu řemesla a loajality. Zbytek může jít ke konkurenci."
   },
   {
     id: "people",
@@ -105,8 +269,8 @@ const STORY_NODES: StoryNode[] = [
     title: "LIDÉ & PŘÍLEŽITOSTI",
     content: "Chci dávat příležitost i těm, kteří ji jinde třeba nedostali. Mladším lidem, kteří chtějí začít. Šance není samozřejmost. Chci budovat prostředí, kde se lidé stávají součástí něčeho většího.",
     icon: <Users size={24} />,
-    x: 88,
-    y: 40,
+    x: 71,
+    y: 35,
     connections: ["future"],
     type: 'major'
   },
@@ -116,24 +280,110 @@ const STORY_NODES: StoryNode[] = [
     title: "CESTA POKRAČUJE",
     content: "Mým cílem není jen podnik. Chci vytvářet místo, kde se spojuje poctivá práce, respekt k lidem a růst. Nejde mi o status, jde mi o reálnou hodnotu. Tohle je cesta, která teprve začíná.",
     icon: <Rocket size={24} />,
-    x: 95,
-    y: 50,
+    x: 73,
+    y: 65,
+    connections: ["operational_mode"],
+    type: 'major'
+  },
+  {
+    id: "operational_mode",
+    year: "2024 — 2025",
+    title: "OPERATIVNÍ REŽIM",
+    content: "Změna paradigmatu. Už nejde jen o to, jak držíš nůžky, ale jak řídíš celý systém. Budování infrastruktury, která funguje bez ohledu na vnější vlivy. Přechod z role řemeslníka do role operátora systému.",
+    icon: <Activity size={24} />,
+    x: 81,
+    y: 40,
+    connections: ["systemic_dominance"],
+    type: 'secret',
+    secretContent: "Většina lidí vidí jen barber křeslo. Já vidím data, logistiku a psychologii. Operativní režim znamená, že každá minuta má svou cenu a každé rozhodnutí je podloženo strategií. Tohle je úroveň, kde se odděluje hobby od skutečného byznysu."
+  },
+  {
+    id: "systemic_dominance",
+    year: "2025 — 2026",
+    title: "SYSTÉMOVÁ DOMINANCE",
+    content: "Regionální autorita je potvrzena. MMBARBER se stává synonymem pro standard kvality na celém Slovácku. Propojení 'Rodiny' a digitální identity vytváří ekosystém, který nelze ignorovat.",
+    icon: <Layers size={24} />,
+    x: 88,
+    y: 70,
+    connections: ["global_standard"],
+    type: 'major'
+  },
+  {
+    id: "global_standard",
+    year: "2026 — BUDOUCNOST",
+    title: "GLOBÁLNÍ STANDARD",
+    content: "Hranice regionu jsou minulostí. Standardy MMBARBER jsou uznávané i v mezinárodním kontextu. Přinášíme světový styl a systémovou preciznost, která překonává běžná očekávání. Cesta nikdy nekončí, jen se mění úroveň hry.",
+    icon: <Shield size={24} />,
+    x: 96,
+    y: 30,
     connections: [],
     type: 'major'
   }
 ];
+const ShootingStar = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [coords, setCoords] = useState({ x: 0, y: 0, angle: 0 });
+
+  useEffect(() => {
+    const launch = () => {
+      setCoords({
+        x: Math.random() * 100,
+        y: Math.random() * 50,
+        angle: Math.random() * 45 + 135 // shoot downwards
+      });
+      setIsVisible(true);
+      setTimeout(() => setIsVisible(false), 2000);
+    };
+
+    const timer = setInterval(() => {
+      if (Math.random() > 0.7) launch();
+    }, 8000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  if (!isVisible) return null;
+
+  return (
+    <motion.div
+      initial={{ x: `${coords.x}%`, y: `${coords.y}%`, opacity: 0, scale: 0 }}
+      animate={{ 
+        x: `${coords.x - 20}%`, 
+        y: `${coords.y + 20}%`, 
+        opacity: [0, 1, 0],
+        scale: [0, 1, 0]
+      }}
+      transition={{ duration: 1.5, ease: "easeOut" }}
+      className="absolute w-40 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent z-0 pointer-events-none"
+      style={{ rotate: `${coords.angle}deg` }}
+    />
+  );
+};
 
 export default function StoryPage() {
-  const router = useRouter();
-  const { lang } = useTranslation();
   const [selectedNode, setSelectedNode] = useState<StoryNode | null>(STORY_NODES[0]);
   const [visitedNodes, setVisitedNodes] = useState<Set<string>>(new Set(["origin"]));
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [isEasterEggOpen, setIsEasterEggOpen] = useState(false);
+  const [isSecretRevealed, setIsSecretRevealed] = useState(false);
+  const [hackingProgress, setHackingProgress] = useState(0);
+  
+  const [stars, setStars] = useState<StarBg[]>([]);
+
+  useEffect(() => {
+    setStars([...Array(250)].map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 2 + 0.5,
+      duration: Math.random() * 5 + 3,
+      delay: Math.random() * 10,
+      depth: Math.random()
+    })));
+  }, []);
 
   // Load visited nodes from localStorage
   useEffect(() => {
@@ -154,13 +404,11 @@ export default function StoryPage() {
       setVisitedNodes(nextVisited);
       localStorage.setItem("mmbarber_story_progress", JSON.stringify(Array.from(nextVisited)));
     }
+    // Reset secret reveal when node changes
+    setIsSecretRevealed(false);
+    setHackingProgress(0);
   }, [selectedNode, visitedNodes]);
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const target = e.currentTarget;
-    const progress = target.scrollLeft / (target.scrollWidth - target.clientWidth);
-    setScrollProgress(progress);
-  };
 
   // Mouse Dragging Logic
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -230,6 +478,20 @@ export default function StoryPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const handleRevealSecret = () => {
+    if (isSecretRevealed) return;
+    
+    let current = 0;
+    const interval = setInterval(() => {
+      current += 2;
+      setHackingProgress(current);
+      if (current >= 100) {
+        clearInterval(interval);
+        setIsSecretRevealed(true);
+      }
+    }, 20);
+  };
+
   return (
     <div className="fixed inset-0 z-[200] bg-mafia-black text-smoke-white overflow-hidden selection:bg-mafia-gold selection:text-mafia-black flex flex-col lg:flex-row">
       {/* Background Atmosphere */}
@@ -248,7 +510,7 @@ export default function StoryPage() {
         <div className="p-8 pt-24 lg:pt-8 pb-4 flex items-center justify-end">
           <div className="text-mafia-gold/20 font-mono text-[8px] tracking-[0.5em] text-right">
             DOC_REF: MM_812<br/>
-            STATUS: ACTIVE
+            STATUS: {selectedNode?.type === 'secret' ? 'CLASSIFIED_ACCESS_REQUIRED' : 'ACTIVE'}
           </div>
         </div>
 
@@ -264,8 +526,8 @@ export default function StoryPage() {
               >
                 <div className="relative pt-12">
                    {/* 'CLASSIFIED' STAMP */}
-                   <div className="absolute top-0 left-0 border-2 border-mafia-red/20 text-mafia-red/20 font-black text-xl px-2 py-1 rotate-[-15deg] pointer-events-none select-none uppercase font-mono">
-                      PŘÍSNĚ TAJNÉ
+                   <div className={`absolute top-0 left-0 border-2 px-2 py-1 rotate-[-15deg] pointer-events-none select-none uppercase font-mono transition-all duration-700 ${selectedNode.type === 'secret' ? 'border-mafia-red text-mafia-red scale-110' : 'border-mafia-red/20 text-mafia-red/20 text-xl'}`}>
+                      {selectedNode.type === 'secret' ? 'PŘÍSNĚ TAJNÉ // EYES ONLY' : 'PŘÍSNĚ TAJNÉ'}
                    </div>
                    
                    <div className="flex items-center gap-4 mb-2">
@@ -280,20 +542,60 @@ export default function StoryPage() {
 
                 <div className="relative group">
                   <div className="absolute -left-6 top-0 bottom-0 w-[2px] bg-mafia-gold/30"></div>
-                  <p className="text-smoke-white/90 text-lg md:text-xl font-sans leading-relaxed italic first-letter:text-4xl first-letter:font-heading first-letter:text-mafia-gold first-letter:mr-1">
-                    {selectedNode.content}
-                  </p>
+                  
+                  {selectedNode.type === 'secret' && !isSecretRevealed ? (
+                    <div className="space-y-6">
+                      <div className="p-6 border border-mafia-red/30 bg-mafia-red/5 relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(239,68,68,0.05)_10px,rgba(239,68,68,0.05)_20px)] animate-pulse"></div>
+                        <p className="text-mafia-red/60 font-mono text-sm mb-4 relative z-10 flex items-center gap-2">
+                          <AlertTriangle size={14} /> TENTO OBSAH JE ŠIFROVÁN
+                        </p>
+                        <button 
+                          onClick={handleRevealSecret}
+                          className="w-full py-4 border border-mafia-red/50 hover:bg-mafia-red hover:text-white transition-all duration-300 font-mono text-xs uppercase tracking-[0.3em] relative z-10"
+                        >
+                          {hackingProgress > 0 ? `DEŠIFROVÁNÍ: ${hackingProgress}%` : "DEŠIFROVAT ZÁPIS"}
+                        </button>
+                      </div>
+                      <p className="text-smoke-white/20 text-lg md:text-xl font-sans leading-relaxed italic blur-sm select-none">
+                        {selectedNode.content}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <p className="text-smoke-white/90 text-lg md:text-xl font-sans leading-relaxed italic first-letter:text-4xl first-letter:font-heading first-letter:text-mafia-gold first-letter:mr-1">
+                        {selectedNode.content}
+                      </p>
+                      
+                      {isSecretRevealed && selectedNode.secretContent && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="pt-6 border-t border-mafia-red/20 mt-6"
+                        >
+                          <p className="text-mafia-red font-mono text-sm mb-4 uppercase tracking-widest flex items-center gap-2">
+                             <Flame size={14} /> NEZACOVANÁ PRAVDA:
+                          </p>
+                          <p className="text-mafia-red/90 text-lg md:text-xl font-sans leading-relaxed italic border-l-2 border-mafia-red pl-4 whitespace-pre-line">
+                            {selectedNode.secretContent}
+                          </p>
+                        </motion.div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Decorative Elements */}
                 <div className="pt-12 space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-mafia-gold/5 border border-mafia-gold/20 flex items-center justify-center text-mafia-gold">
+                    <div className={`w-10 h-10 flex items-center justify-center transition-all duration-500 ${selectedNode.type === 'secret' ? 'bg-mafia-red/10 border-mafia-red/40 text-mafia-red shadow-[0_0_15px_rgba(239,68,68,0.3)]' : 'bg-mafia-gold/5 border-mafia-gold/20 text-mafia-gold'} border`}>
                       {selectedNode.icon}
                     </div>
                     <div>
                       <div className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-widest">ID_OPERACE</div>
-                      <div className="text-xs font-heading font-bold text-smoke-white uppercase">{selectedNode.id}</div>
+                      <div className={`text-xs font-heading font-bold uppercase transition-colors ${selectedNode.type === 'secret' ? 'text-mafia-red' : 'text-smoke-white'}`}>
+                        {selectedNode.id}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -304,7 +606,9 @@ export default function StoryPage() {
                     <motion.div 
                       key={node.id} 
                       animate={{ 
-                        backgroundColor: STORY_NODES.indexOf(selectedNode) >= i ? "#c5a059" : "rgba(197, 160, 89, 0.1)",
+                        backgroundColor: STORY_NODES.indexOf(selectedNode) >= i 
+                          ? (STORY_NODES[i].type === 'secret' ? "#ef4444" : "#c5a059") 
+                          : "rgba(197, 160, 89, 0.1)",
                         height: STORY_NODES.indexOf(selectedNode) === i ? 6 : 2
                       }}
                       className="flex-1 transition-all duration-700"
@@ -321,7 +625,6 @@ export default function StoryPage() {
       {/* RIGHT SIDE: Campaign Map */}
       <div className="flex-1 h-[60vh] lg:h-full relative overflow-hidden bg-mafia-black/30 backdrop-blur-sm">
         {/* Tactical Grid Background */}
-        {/* Fine Grid with Sector Labels */}
         <div 
           className="absolute inset-0 z-0 opacity-15 pointer-events-none"
           style={{
@@ -332,7 +635,6 @@ export default function StoryPage() {
             backgroundSize: '80px 80px'
           }}
         >
-          {/* Sector Labels Overlay */}
           <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 pointer-events-none">
              {[...Array(144)].map((_, i) => (
                <div key={i} className="border-r border-b border-mafia-gold/5 p-1 flex items-start justify-start">
@@ -344,7 +646,6 @@ export default function StoryPage() {
           </div>
         </div>
 
-        {/* Large Strategic Grid */}
         <div 
           className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none"
           style={{
@@ -358,13 +659,12 @@ export default function StoryPage() {
 
         {/* Map Header */}
         <div className="absolute top-0 right-0 p-8 z-30 pointer-events-none text-right">
-          <h1 className="text-xl md:text-2xl font-heading font-black text-mafia-gold/40 uppercase tracking-widest">MAP_OVERVIEW</h1>
-          <div className="text-[8px] font-mono text-mafia-gold/20 tracking-[0.5em] mt-1">GRID_REF: 49.0683° N, 17.4597° E</div>
+          <h1 className="text-xl md:text-2xl font-heading font-black text-mafia-gold/40 uppercase tracking-widest">STELLAR_CHART</h1>
+          <div className="text-[8px] font-mono text-mafia-gold/20 tracking-[0.5em] mt-1">STAR_FIELD_REF: 49.0683° N, 17.4597° E</div>
         </div>
 
         <div 
           ref={containerRef}
-          onScroll={handleScroll}
           onMouseDown={handleMouseDown}
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
@@ -381,8 +681,20 @@ export default function StoryPage() {
                   <stop offset="50%" stopColor="rgba(197, 160, 89, 0.4)" />
                   <stop offset="100%" stopColor="rgba(197, 160, 89, 0.1)" />
                 </linearGradient>
+                <linearGradient id="secretLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="rgba(239, 68, 68, 0.1)" />
+                  <stop offset="50%" stopColor="rgba(239, 68, 68, 0.5)" />
+                  <stop offset="100%" stopColor="rgba(239, 68, 68, 0.1)" />
+                </linearGradient>
                 <filter id="glow">
                   <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+                <filter id="secretGlow">
+                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
                   <feMerge>
                     <feMergeNode in="coloredBlur"/>
                     <feMergeNode in="SourceGraphic"/>
@@ -397,6 +709,7 @@ export default function StoryPage() {
                   
                   const isFullyDiscovered = visitedNodes.has(node.id) && visitedNodes.has(target.id);
                   const isNextPotential = selectedNode?.id === node.id && !visitedNodes.has(target.id);
+                  const isSecretConnection = node.type === 'secret' || target.type === 'secret';
                   
                   return (
                     <motion.line
@@ -405,9 +718,9 @@ export default function StoryPage() {
                       y1={`${node.y}%`}
                       x2={`${target.x}%`}
                       y2={`${target.y}%`}
-                      stroke="url(#lineGrad)"
+                      stroke={isSecretConnection ? "url(#secretLineGrad)" : "url(#lineGrad)"}
                       strokeWidth={isFullyDiscovered ? "3" : isNextPotential ? "2" : "1.5"}
-                      strokeDasharray={isFullyDiscovered ? "0" : "8,8"}
+                      strokeDasharray={isFullyDiscovered ? "0" : (isSecretConnection ? "4,12" : "8,8")}
                       initial={{ pathLength: 0, opacity: 0 }}
                       animate={{ 
                         pathLength: 1, 
@@ -415,7 +728,7 @@ export default function StoryPage() {
                       }}
                       transition={{ duration: 1 }}
                       style={{ 
-                        filter: isFullyDiscovered ? "url(#glow)" : "none",
+                        filter: isFullyDiscovered ? (isSecretConnection ? "url(#secretGlow)" : "url(#glow)") : "none",
                       }}
                     />
                   );
@@ -431,66 +744,146 @@ export default function StoryPage() {
                 style={{ left: `${node.x}%`, top: `${node.y}%` }}
               >
                 <motion.button
-                  whileHover={{ scale: 1.1 }}
+                  whileHover={{ scale: 1.15 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={(e) => {
                     if (isDragging) return;
                     setSelectedNode(node);
-                    
-                    // Smoothly center the node on click
-                    if (containerRef.current) {
-                      const totalWidth = containerRef.current.scrollWidth;
-                      const targetX = (node.x / 100) * totalWidth - containerRef.current.clientWidth / 2;
-                      containerRef.current.scrollTo({ left: targetX, behavior: "smooth" });
-                    }
                   }}
                   className={`relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center border-2 transition-all duration-500 ${
                     selectedNode?.id === node.id 
-                      ? "bg-mafia-gold text-mafia-black border-white shadow-[0_0_30px_rgba(197,160,89,0.5)]" 
+                      ? (node.type === 'secret' ? "bg-mafia-red text-white border-white shadow-[0_0_40px_rgba(239,68,68,0.6)]" : "bg-mafia-gold text-mafia-black border-white shadow-[0_0_30px_rgba(197,160,89,0.5)]")
                       : visitedNodes.has(node.id)
-                        ? "bg-mafia-black/80 text-mafia-gold border-mafia-gold/60 hover:border-mafia-gold"
-                        : "bg-mafia-black/40 text-mafia-gold/20 border-mafia-gold/10 hover:border-mafia-gold/30"
+                        ? (node.type === 'secret' ? "bg-mafia-black/80 text-mafia-red border-mafia-red/40" : "bg-mafia-black/80 text-mafia-gold border-mafia-gold/60 hover:border-mafia-gold")
+                        : (node.type === 'secret' ? "bg-mafia-red/5 text-mafia-red/10 border-mafia-red/10 scale-90" : "bg-mafia-black/40 text-mafia-gold/20 border-mafia-gold/10 hover:border-mafia-gold/30")
                   }`}
                 >
-                  {/* Node Label (Year) */}
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                     <span className="text-[8px] font-mono font-black tracking-[0.2em] opacity-40 uppercase">{node.year}</span>
+                     <span className={`text-[8px] font-mono font-black tracking-[0.2em] uppercase transition-opacity duration-500 ${node.type === 'secret' ? 'text-mafia-red opacity-100' : 'opacity-40'}`}>{node.year}</span>
                   </div>
 
                   <div className="scale-75 md:scale-100">
                     {node.icon}
                   </div>
 
-                  {/* Tactical Ring */}
                   <AnimatePresence>
                     {selectedNode?.id === node.id && (
                       <motion.div 
                         initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1.5, opacity: [0.5, 0] }}
+                        animate={{ scale: 1.8, opacity: [0.6, 0] }}
                         exit={{ scale: 0, opacity: 0 }}
                         transition={{ duration: 1.5, repeat: Infinity }}
-                        className="absolute inset-0 border border-mafia-gold rounded-full pointer-events-none"
+                        className={`absolute inset-0 border rounded-full pointer-events-none ${node.type === 'secret' ? 'border-mafia-red' : 'border-mafia-gold'}`}
                       />
                     )}
                   </AnimatePresence>
+                  
+                  {node.type === 'secret' && !visitedNodes.has(node.id) && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <Lock size={12} className="text-mafia-red opacity-30 animate-pulse" />
+                    </div>
+                  )}
                 </motion.button>
                 
-                {/* Tactical Title */}
                 <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                   <span className={`text-[9px] font-heading font-black tracking-widest uppercase transition-colors duration-500 ${selectedNode?.id === node.id ? "text-white" : "text-mafia-gold/40"}`}>
+                   <span className={`text-[9px] font-heading font-black tracking-widest uppercase transition-all duration-500 ${selectedNode?.id === node.id ? "text-white scale-110" : (node.type === 'secret' ? "text-mafia-red/40" : "text-mafia-gold/40")}`}>
                      {node.title}
                    </span>
                 </div>
               </div>
             ))}
 
-            {/* Tactical Decor */}
-            <div className="absolute inset-0 pointer-events-none opacity-5">
-               <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-mafia-gold rotate-45"></div>
-               <div className="absolute bottom-1/4 right-1/4 w-48 h-48 border border-mafia-gold -rotate-12"></div>
+            <div className="absolute inset-0 pointer-events-none">
+               {/* Starfield Layers (Star Wars style flight effect) */}
+               <div className="absolute inset-0 z-0">
+                  {/* Layer 1: Slow distant stars */}
+                  <motion.div 
+                    animate={{ x: ["0%", "-50%"] }}
+                    transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 w-[200%] flex"
+                  >
+                    {[...Array(2)].map((_, idx) => (
+                      <div key={idx} className="relative w-full h-full">
+                        {stars.slice(0, 80).map(star => (
+                          <div
+                            key={star.id}
+                            className="absolute rounded-full bg-white/40"
+                            style={{ 
+                              width: `${star.size * 0.5}px`,
+                              height: `${star.size * 0.5}px`,
+                              left: `${star.x}%`, 
+                              top: `${star.y}%`,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </motion.div>
+
+                  {/* Layer 2: Medium speed stars */}
+                  <motion.div 
+                    animate={{ x: ["0%", "-100%"] }}
+                    transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 w-[200%] flex"
+                  >
+                    {[...Array(2)].map((_, idx) => (
+                      <div key={idx} className="relative w-full h-full">
+                        {stars.slice(80, 160).map(star => (
+                          <motion.div
+                            key={star.id}
+                            animate={{ opacity: [0.2, 0.8, 0.2] }}
+                            transition={{ duration: star.duration, repeat: Infinity, delay: star.delay }}
+                            className="absolute rounded-full bg-white/80"
+                            style={{ 
+                              width: `${star.size}px`,
+                              height: `${star.size}px`,
+                              left: `${star.x}%`, 
+                              top: `${star.y}%`,
+                              boxShadow: star.size > 1.5 ? '0 0 8px rgba(255,255,255,0.4)' : 'none'
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </motion.div>
+
+                  {/* Layer 3: Fast streaks (The "Star Wars" feel) */}
+                  <motion.div 
+                    animate={{ x: ["0%", "-200%"] }}
+                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 w-[300%] flex"
+                  >
+                    {[...Array(3)].map((_, idx) => (
+                      <div key={idx} className="relative w-full h-full">
+                        {stars.slice(160, 200).map(star => (
+                          <div
+                            key={star.id}
+                            className="absolute bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                            style={{ 
+                              width: `${star.size * 20}px`,
+                              height: `1px`,
+                              left: `${star.x}%`, 
+                              top: `${star.y}%`,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </motion.div>
+               </div>
+               
+               {/* Nebula Effects */}
+               <div className="absolute top-1/3 left-1/4 w-[800px] h-[800px] bg-mafia-gold/5 blur-[150px] rounded-full animate-pulse"></div>
+               <div className="absolute bottom-1/4 right-1/3 w-[600px] h-[600px] bg-mafia-red/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
+               
+               <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-mafia-gold rotate-45 opacity-10"></div>
+               <div className="absolute bottom-1/4 right-1/4 w-48 h-48 border border-mafia-gold -rotate-12 opacity-10"></div>
+               <div className="absolute top-3/4 left-2/3 w-64 h-64 border border-mafia-red/50 rotate-90 opacity-10"></div>
+
+               <ShootingStar />
+               <ShootingStar />
             </div>
 
-            {/* Easter Egg Trigger (Classified File near Technical Basis) */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 0.3 }}
@@ -507,11 +900,13 @@ export default function StoryPage() {
           </div>
         </div>
 
-        {/* Tactical Map Footer */}
         <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between pointer-events-none z-30">
           <div className="flex items-center gap-4 opacity-30">
             <div className="w-12 h-[1px] bg-mafia-gold"></div>
-            <span className="text-[8px] font-mono uppercase tracking-[0.5em]">Sector_MM_01</span>
+            <span className="text-[8px] font-mono uppercase tracking-[0.5em]">Sector_MM_Tactical_Update</span>
+          </div>
+          <div className="flex items-center gap-2 text-mafia-red/40 font-mono text-[8px] animate-pulse">
+            <Activity size={10} /> LIVE_ENCRYPTION_LAYER_ACTIVE
           </div>
         </div>
       </div>
@@ -576,42 +971,10 @@ export default function StoryPage() {
                   <p>Něco, co není kopie ostatních.</p>
                 </section>
 
-                <section>
-                  <h3 className="text-xl font-heading font-black text-mafia-gold uppercase mb-6 flex items-center gap-4">
-                    <span className="w-8 h-8 rounded-full border border-mafia-gold/30 flex items-center justify-center text-[10px]">03</span>
-                    🧭 ULICE A REALITA
-                  </h3>
-                  <p className="mb-4">Neprodávám rychlé řešení.</p>
-                  <p className="mb-4">Nejedu podle ceníků a šablon, co vypadají stejně všude.</p>
-                  <p className="mb-4">Do každé věci dávám svůj přístup — někdy to drhne, někdy se to hádá, někdy to stojí víc nervů než práce samotná.</p>
-                  <p>Ale funguje to. Protože to není hra na dokonalost. Je to realita.</p>
-                </section>
-
-                <section>
-                  <h3 className="text-xl font-heading font-black text-mafia-gold uppercase mb-6 flex items-center gap-4">
-                    <span className="w-8 h-8 rounded-full border border-mafia-gold/30 flex items-center justify-center text-[10px]">04</span>
-                    🚬 TVÁŘ TOHO, CO DĚLÁM
-                  </h3>
-                  <p className="mb-4">V dnešní době není těžké kopírovat ostatní.</p>
-                  <p className="mb-4">Těžké je stát si za svým.</p>
-                  <p>Najít lidi, kteří chtějí dělat věci poctivě, není jednoduché. Ale o to víc to má váhu, když se to povede.</p>
-                </section>
-
-                <section>
-                  <h3 className="text-xl font-heading font-black text-mafia-gold uppercase mb-6 flex items-center gap-4">
-                    <span className="w-8 h-8 rounded-full border border-mafia-gold/30 flex items-center justify-center text-[10px]">05</span>
-                    🚀 SMĚR
-                  </h3>
-                  <p className="mb-4">Nejedu s davem.</p>
-                  <p className="mb-4">Nejdu tam, kam se má.</p>
-                  <p className="mb-4">Jdu svou cestou — pomalejší, těžší, ale vlastní.</p>
-                  <p>A postupně z toho stavím něco, co má styl, respekt a smysl.</p>
-                </section>
-
                 <section className="pt-12 border-t border-mafia-gold/10 italic text-mafia-gold/60">
                   <h3 className="text-xl font-heading font-black text-mafia-gold uppercase not-italic mb-4">🧭 ZÁVĚR</h3>
                   <p className="mb-2">Tohle není jen web.</p>
-                  <p className="mb-2">Tohle je práce, přístup a způsob myšleme.</p>
+                  <p className="mb-2">Tohle je práce, přístup a způsob myšlene.</p>
                   <p>A kdo to chápe, ten je součástí.</p>
                 </section>
               </div>

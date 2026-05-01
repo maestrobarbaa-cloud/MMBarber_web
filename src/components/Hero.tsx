@@ -11,51 +11,98 @@ import Image from "./OptimizedImage";
 
 const LATIN_SLOGANS: Record<string, string> = {
   // CZECH SLOGANS
-  "Nejsme jen místo. Jsme standard, který se posouvá.": "Non solum locus. Gradus sumus qui progreditur.",
-  "Místo, o kterém se mlčí a každý chce sem patřit.": "Locus silens ad quem omnes pertinere volunt.",
-  "To nejlepší se nikdy neukazuje nahlas": "Optimum numquam clare ostenditur.",
-  "Styl, který si nekoupíš. Musíš si ho zasloužit": "Stylus non emitur, merendus est.",
-  "Kvantita není náš cíl. Perfektní servis o Vás ano.": "Non copia, sed perfectio servienda est.",
-  "Nevstupuješ do barbershopu. Vstupuješ do našeho světa.": "Non solum tonstrinam, sed mundum nostrum intras.",
-  "Tady se neřeší, kdo jsi byl. Zajímá nás, kým odcházíš.": "Non quis fueris, sed quis abeas interest.",
-  "Ne všechno, co tady vzniká, je vidět v zrcadle.": "Non omnia quae hic nascuntur in speculo videntur.",
-  "Síla, kterou tu budujeme, nekončí u dveří.": "Vis quam hic aedificamus ad ostium non desinit.",
-  "Každý krok dopředu, který uděláš ty, pomáhá někomu udělat ten první.": "Quilibet gradus tuus alteri ad primum adiuvat.",
-  "Když se jednou rozhodneš změnit hru, začneš patřit do jiné dynastie.": "Cum ludum mutare statueris, ad aliam dynastiam pertinebis.",
-  "Některé rody se zapisují do dějin. Jiné se zapisují do lidí.": "Quaedam gentes in historia, aliae in hominibus scribuntur.",
-  "Nezáleží, odkud jsi přišel. Záleží, jestli po tobě něco zůstane.": "Non interest unde veneris, sed quid post te maneat.",
-  "Ššš… ještě nespíš? Tak se rezervuj!": "Silere... nonne dormis? Rezerva nunc!",
-  "Noc patří těm, co ví, co chtějí. Rezervace čeká...": "Nox iis est qui sciunt quid velint. Rezervatio manet.",
-  "Zítřek začíná dnes večer. Klikni a máš místo.": "Cras vespere incipit. Preme et locum habe.",
-  "Nečekej na ráno. Místo mizí.": "Ne mane expectaveris. Locus evanescit.",
-  "Půlnoc. Město spí… ale ty ne. Víš proč.": "Media nox. Urbs dormit... sed non tu. Scis quare.",
-  "Tahle hodina patří jen vyvoleným. Rezervace čeká.": "Haec hora tantum electis est. Rezervatio manet.",
-  "Jestli nespíš… máš důvod. Dokonči to.": "Si non dormis... causam habes. Perfice eam.",
-  "V tuhle dobu se dělají rozhodnutí, co mění hru.": "Hoc tempore consilia capiuntur quae ludum mutant.",
-  "Jestli tohle vidíš… jsi blíž, než si myslíš.": "Si hoc vides... propior es quam putas.",
+  "Místo pro ty, co nepotřebují vykřikovat svůj styl do světa.": "Locus iis qui stilum suum mundo clamare non debent.",
+  "Kvalita se pozná i bez zbytečných slov.": "Qualitas etiam sine verbis supervacuis agnoscitur.",
+  "Styl, který si nekoupíš. Musíš si ho zasloužit.": "Stylus quem non emas. Mereri debes.",
+  "Nezajímá nás kvantita. Chceme, abys od nás odcházel jako nový člověk.": "Quantitas non interest. Te novum hominem hinc abire volumus.",
+  "Tohle není jen barbershop. Je to náš svět, do kterého tě zveme.": "Hic non solum tonstrina est. Mundus noster est quo te invitamus.",
+
+  // EASTER EGG SLOGANS
+  "Tady neřešíme, kdo jsi byl. Zajímá nás, s jakou vizí odcházíš.": "Hic non curamus quis fueris. Interest qua visione abeas.",
+  "Ne všechno, co tu vytváříme, uvidíš jen v zrcadle.": "Non omnia quae hic creamus in speculo tantum videntur.",
+  "Sebevědomí, které si od nás odneseš, u dveří nekončí.": "Fiducia quam hinc aufers ad ostium non desinit.",
+  "Every success of yours is our success too. We're in this together.": "Omnis successus tuus etiam noster est. Una sumus.",
+  "Nezáleží na tom, odkud přicházíš. Záleží na tom, co po tobě zůstane.": "Non interest unde venias. Interest quid post te maneat.",
+  "Když se rozhodneš změnit pravidla hry, začneš psát novou historii.": "Cum regulas ludi mutare statueris, novam historiam scribere incipies.",
+  "Některá jména se zapomínají. Skutečný charakter zůstává.": "Quaedam nomina obliviscuntur. Character verus manet.",
+  "Tady stavíme na hodnotách, které se dneska už moc nenosí.": "Hic fundamenta iacimus in virtutibus quae hodie rarae sunt.",
+
+  // NIGHT SLOGANS
+  "Město už spí, ale tvůj nový styl začíná právě teď.": "Urbs dormit, sed novus stylus tuus nunc incipit.",
+  "Ššš… ještě jsi vzhůru? Ideální čas si zajistit křeslo.": "Silere... adhuc vigilas? Tempus est sedem parare.",
+  "Noc patří těm, co vědí, co chtějí. Tvoje rezervace čeká.": "Nox iis est qui sciunt quid velint. Reservatio tua manet.",
+  "Zítřek začíná dnešním rozhodnutím. Klikni a máš své místo.": "Cras hodierna decisione incipit. Preme et locum habe.",
+  "Nečekej na ráno, ty nejlepší termíny mizí za tmy.": "Ne mane expectaveris, optima tempora in tenebris evanescunt.",
+
+  // DEEP NIGHT SLOGANS
+  "Půlnoc. Hradiště utichlo… a ty víš, že je čas na změnu.": "Media nox. Urbs siluit... et scis tempus esse mutandi.",
+  "Tahle hodina patří vyvoleným. Tvé místo u nás je připravené.": "Haec hora electis est. Locus tuus paratus est.",
+  "Pokud nespíš, máš k tomu důvod. Udělej ten první krok k nám.": "Si non dormis, causam habes. Primum gradum ad nos fac.",
+  "V tuhle dobu se dělají ta nejlepší rozhodnutí. Potvrď si termín.": "Hoc tempore optima consilia capiuntur. Reservationem confirma.",
+  "Jsi blíž svému novému já, než si v tuhle chvíli myslíš.": "Propior es novo te quam hoc momento putas.",
+
+  // MOTTOES / CHAPTERS
+  "Příběh první: Kde se rodí styl": "Historia Prima: Ubi stylus nascitur",
+  "Příběh druhý: O loajalitě": "Historia Secunda: De fidelitate",
+  "Příběh třetí: Poctivé řemeslo": "Historia Tertia: Ars honesta",
+  "Story one: Where style is born": "Historia Prima: Ubi stylus nascitur",
+  "Story two: About loyalty": "Historia Secunda: De fidelitate",
+  "Story three: Honest craft": "Historia Tertia: Ars honesta",
 
   // ENGLISH SLOGANS
-  "A place where silence is respected and everyone wants to belong.": "Locus silens ad quem omnes pertinere volunt.",
-  "The best is never shown out loud": "Optimum numquam clare ostenditur.",
-  "Style you can't buy. You have to earn it": "Stylus non emitur, merendus est.",
-  "Quantity is not our goal. Perfect service for you is": "Non copia, sed perfectio servienda est.",
-  "You're not entering a barbershop. You're entering our world.": "Non solum tonstrinam, sed mundum nostrum intras.",
-  "Status before doesn't matter. Who you become here does.": "Non quis fueris, sed quis abeas interest.",
-  "Not everything created here is visible in the mirror.": "Non omnia quae hic nascuntur in speculo videntur.",
-  "The strength we build here doesn't end at the door.": "Vis quam hic aedificamus ad ostium non desinit.",
-  "Every step forward you take helps someone else take their first.": "Quilibet gradus tuus alteri ad primum adiuvat.",
-  "Once you decide to change the game, you belong to a different dynasty.": "Cum ludum mutare statueris, ad aliam dynastiam pertinebis.",
-  "Some lineages are written in history. Others are written in people.": "Quaedam gentes in historia, aliae in hominibus scribuntur.",
-  "It doesn't matter where you came from. It matters what you leave behind.": "Non interest unde veneris, sed quid post te maneat.",
-  "Shhh... still awake? Book your spot now!": "Silere... nonne dormis? Rezerva nunc!",
-  "The night belongs to those who know what they want. Booking is waiting...": "Nox iis est qui sciunt quid velint. Rezervatio manet.",
-  "Tomorrow starts tonight. Click and secure your chair.": "Cras vespere incipit. Preme et locum habe.",
-  "Don't wait for morning. Spots are fading.": "Ne mane expectaveris. Locus evanescit.",
-  "Midnight. The city sleeps... but not you. You know why.": "Media nox. Urbs dormit... sed non tu. Scis quare.",
-  "This hour belongs to the chosen ones. Booking awaits.": "Haec hora tantum electis est. Rezervatio manet.",
-  "If you're awake... there's a reason. Finish it.": "Si non dormis... causam habes. Perfice eam.",
-  "Decisions that change the game are made at this hour.": "Hoc tempore consilia capiuntur quae ludum mutant.",
-  "If you're seeing this... you're closer than you think.": "Si hoc vides... propior es quam putas."
+  "A place for those who don't need to shout their style to the world.": "Locus iis qui stilum suum mundo clamare non debent.",
+  "Quality is recognized even without unnecessary words.": "Qualitas etiam sine verbis supervacuis agnoscitur.",
+  "Style you can't buy. You have to earn it.": "Stylus quem non emas. Mereri debes.",
+  "We don't care about quantity. We want you to leave here as a new person.": "Quantitas non interest. Te novum hominem hinc abire volumus.",
+  "This isn't just a barbershop. It's our world we're inviting you to.": "Hic non solum tonstrina est. Mundus noster est quo te invitamus.",
+
+  "We don't care who you were here. We care what vision you leave with.": "Hic non curamus quis fueris. Interest qua visione abeas.",
+  "Not everything we create here you'll see only in the mirror.": "Non omnia quae hic creamus in speculo tantum videntur.",
+  "The confidence you take from us doesn't end at the door.": "Fiducia quam hinc aufers ad ostium non desinit.",
+  "It doesn't matter where you come from. It matters what you leave behind.": "Non interest unde venias. Interest quid post te maneat.",
+  "Some names are forgotten. Real character remains.": "Quaedam nomina obliviscuntur. Character verus manet.",
+
+  "City's already asleep, but your new style starts right now.": "Urbs dormit, sed novus stylus tuus nunc incipit.",
+  "Shh... still awake? Ideal time to secure your chair.": "Silere... adhuc vigilas? Tempus est sedem parare.",
+  "Night belongs to those who know what they want. Your booking awaits.": "Nox iis est qui sciunt quid velint. Reservatio tua manet.",
+  "Tomorrow starts with today's decision. Click and you have your spot.": "Cras hodierna decisione incipit. Preme et locum habe.",
+  "Don't wait for morning, best slots vanish in the dark.": "Ne mane expectaveris, optima tempora in tenebris evanescunt.",
+
+  "Midnight. Hradiště quieted... and you know it's time for a change.": "Media nox. Urbs siluit... et scis tempus esse mutandi.",
+  "This hour belongs to the chosen. Your spot with us is ready.": "Haec hora electis est. Locus tuus paratus est.",
+  "If you're not sleeping, you have a reason. Take that first step to us.": "Si non dormis, causam habes. Primum gradum ad nos fac.",
+  "Best decisions are made at this time. Confirm your booking.": "Hoc tempore optima consilia capiuntur. Reservationem confirma.",
+  "You're closer to your new self than you think right now.": "Propior es novo te quam hoc momento putas.",
+
+
+  // BOSS SLOGANS
+  "Tady se neptáme, co jsi dělal včera. Důležité je, jak vypadáš dnes.": "Non quaerimus quid heri feceris. Refert quomodo hodie videaris.",
+  "Respekt se nezískává slovy, ale činy. A tvým vzhledem.": "Respectus non verbis, sed factis et specie acquiritur.",
+  "V našem křesle jsi pod ochranou. Ostatní nechej za dveřmi.": "In sede nostra protectus es. Reliqua post fores relinque.",
+  "Kšefty se dělají tam, kde vládne styl. My ti ho dáme.": "Negotia ubi stylus regnat aguntur. Nos tibi eum dabimus.",
+  "Rodina je základ. A tvůj střih je tvá vizitka.": "Familia fundamentum est. Et tonsura tua tessera est.",
+  "Pravidlo první: Loajalita": "Regula prima: Fidelitas",
+  "Pravidlo druhé: Mlčení": "Regula secunda: Silentium",
+  "Pravidlo třetí: Respekt": "Regula tertia: Respectus",
+  "I když město spí, my hlídáme tvůj styl.": "Etiam si urbs dormit, stylum tuum custodimus.",
+  "Noc je dlouhá, ale tvoje místo u nás je jisté.": "Nox longa est, sed locus tuus apud nos certus est.",
+  "Pravý šéf ví, kdy je čas na změnu.": "Verus dux scit quando tempus sit mutandi.",
+  "V tuhle hodinu se řeší ty nejdůležitější věci.": "Hac hora res gravissimae aguntur.",
+  "Hradiště utichlo, ale my jsme stále v pohotovosti.": "Urbs siluit, sed nos adhuc vigilemus.",
+  "Někdy je lepší mlčet a nechat za sebe mluvit svůj střih.": "Aliquando melius est silere et tonsuram pro te loqui sinere.",
+  "Kdo má styl, nepotřebuje křičet.": "Qui stylum habet, clamare non debet.",
+
+  // FALCO SLOGANS
+  "Stil ist eine Entscheidung, kein Zufall.": "Stylus decisio est, non casus.",
+  "Eleganz ist die einzige Schönheit, die niemals vergeht.": "Elegantia sola pulchritudo est quae nunquam perit.",
+  "Ein Gentleman schweigt und genießt den Moment im Sessel.": "Vir generosus silet et momentum in sede fruitur.",
+  "Wir kreieren nicht nur Schnitte, wir kreieren Legenden.": "Non solum tonsuras, sed legandas creamus.",
+  "Der Wiener Charme trifft auf tschechisches Handwerk.": "Lepos Vindobonensis artes Bohemicas occurrit.",
+  "Kapitel Eins: Der Kaiser": "Caput Primum: Imperator",
+  "Kapitel Zwei: Die Musik": "Caput Secundum: Musica",
+  "Kapitel Drei: Der Ruhm": "Caput Tertium: Gloria",
+  "Die Stadt schläft, aber der Kaiser wacht.": "Urbs dormit, sed imperator vigilat.",
+  "Nachtstunden sind für die Elite.": "Horae nocturnae electis sunt."
 };
 
 export function Hero() {
@@ -294,7 +341,7 @@ export function Hero() {
                       />
                     ))}
                   </div>
-                  <div className="text-mafia-gold font-mono text-[10px] tracking-[1.2em] uppercase font-black">MMBARBER_OS_LOAD</div>
+                  <div className="text-mafia-gold font-mono text-[10px] tracking-[1.2em] uppercase font-black">MMBARBER_OS_ONERAT</div>
                   <div className="w-80 h-[2px] bg-mafia-gold/20 relative overflow-hidden">
                     <motion.div 
                       animate={{ x: ["-100%", "100%"] }}
@@ -320,9 +367,9 @@ export function Hero() {
                   <div className="flex items-center gap-10">
                     <span className="text-mafia-gold/40 font-mono text-[8px] animate-pulse">AUTH_TOKEN: STATUS_OK</span>
                     <div className="w-12 h-px bg-mafia-gold/30"></div>
-                    <span className="text-mafia-gold/40 font-mono text-[8px] animate-pulse">SYSCALL_READY</span>
+                    <span className="text-mafia-gold/40 font-mono text-[8px] animate-pulse">VOCATIO_SYST_PARATA</span>
                   </div>
-                  <div className="text-mafia-gold/20 font-mono text-[10px] tracking-[0.8em] font-light">ESTABLISHING_VISUAL_LINK</div>
+                  <div className="text-mafia-gold/20 font-mono text-[10px] tracking-[0.8em] font-light">NEXUS_VISUALIS_STRUEBATUR</div>
                 </div>
              </motion.div>
 
@@ -462,7 +509,7 @@ export function Hero() {
               key="mob-mission-ready"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              href="#operativi"
+              href="/#operativi"
               onClick={(e) => { 
                 e.preventDefault();
                 handleBookingScroll();
@@ -566,7 +613,7 @@ export function Hero() {
                     className="w-full flex justify-center overflow-visible"
                     style={{ 
                       transformOrigin: "top center",
-                      transform: "scaleY(-1)",
+                      transform: "scaleY(-1) scaleX(-1)",
                       maskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.6) 40%, transparent 95%)",
                       WebkitMaskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.6) 40%, transparent 95%)",
                     }}
@@ -646,13 +693,13 @@ export function Hero() {
           <div 
             className="absolute top-full left-0 w-full opacity-20 pointer-events-none select-none blur-[2px]"
             style={{ 
-              transform: "scaleY(-0.8) translateY(4px)",
+              transform: "scaleY(-0.8) scaleX(-1) translateY(4px)",
               maskImage: "linear-gradient(to bottom, white, transparent)",
               WebkitMaskImage: "linear-gradient(to bottom, white, transparent)"
             }}
           >
             <div className="text-mafia-gold font-mono text-[10px] tracking-[0.4em] uppercase">
-              {selectedMotto}
+              {isMounted && (LATIN_SLOGANS[selectedMotto] || selectedMotto)}
             </div>
           </div>
         </div>
@@ -684,7 +731,7 @@ export function Hero() {
                   ))}
                 </div>
                 <span className="text-mafia-gold font-mono text-xs tracking-[1.5em] uppercase font-black ml-[1.5em]">
-                  NAČÍTÁNÍ...
+                  ONERANDI...
                 </span>
               </motion.div>
             ) : (
@@ -692,7 +739,7 @@ export function Hero() {
                 key="mission-ready"
                 initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                href="#operativi"
+                href="/#operativi"
                 onClick={(e) => { 
                   e.preventDefault();
                   handleBookingScroll();

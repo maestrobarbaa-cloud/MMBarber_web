@@ -85,8 +85,7 @@ export default function AkademiePage() {
            <Scissors size={40} className="mx-auto mb-6 text-mafia-gold/20" />
            <p className="text-sm font-mono uppercase tracking-[0.4em] text-smoke-white/40 mb-8">{t?.akademie?.noResults || "Book your chair."}</p>
            <Link 
-              href="https://is.mmbarber.cz/" 
-              target="_blank"
+              href="/#operativi" 
               className="inline-block border-2 border-mafia-gold text-mafia-gold px-12 py-4 font-heading font-black uppercase tracking-widest hover:bg-mafia-gold hover:text-mafia-black transition-all"
            >
               {t?.akademie?.bookBtn || "BOOK NOW"}

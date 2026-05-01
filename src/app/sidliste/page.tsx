@@ -11,7 +11,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function HousingEstatePage() {
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-black text-smoke-white overflow-hidden relative selection:bg-mafia-gold selection:text-mafia-black">

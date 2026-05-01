@@ -519,17 +519,14 @@ export default function CenikPage() {
               </div>
             </div>
             
-            <div className="flex flex-col gap-3">
-              <motion.a
-                href="https://mm.inthechair.com/micka"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => {
-                  playSound("/sounds/razor.mp3", 0.5);
-                  trackEvent("cenik_booking_click_tomas");
-                }}
-                className="group relative overflow-hidden bg-mafia-gold border border-mafia-gold px-8 py-3 transition-all duration-300 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] md:ml-auto"
-              >
+            <motion.a
+              href="/#operativi"
+              onClick={() => {
+                playSound("/sounds/razor.mp3", 0.5);
+                trackEvent("cenik_booking_click_masters");
+              }}
+              className="group relative overflow-hidden bg-mafia-gold border border-mafia-gold px-8 py-3 transition-all duration-300 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] md:ml-auto"
+            >
                 <div className="absolute inset-0 block bg-white -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
                 <span className="relative z-10 text-mafia-black font-sans uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors">
                   {t.hero.bookBtn}
@@ -551,8 +548,7 @@ export default function CenikPage() {
               </p>
             </div>
           </div>
-        </div>
-      </motion.div>
-    </div>
-  );
+        </motion.div>
+      </div>
+    );
 }

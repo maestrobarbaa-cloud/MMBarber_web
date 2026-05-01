@@ -28,7 +28,6 @@ const PHOTO_DESCRIPTIONS = [
 ];
 
 export default function FadeGalleryPage() {
-  const { lang } = useTranslation();
 
   return (
     <main className="min-h-screen bg-mafia-black text-smoke-white py-24 px-6 relative overflow-hidden">

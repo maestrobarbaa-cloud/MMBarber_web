@@ -3,7 +3,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Star, Quote, ExternalLink, MessageSquare, TrendingUp } from "lucide-react";
-import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import { useTranslation } from "../../hooks/useTranslation";
 import Image from "next/image";
@@ -69,7 +68,6 @@ const REVIEWS: Review[] = [
 ];
 
 export default function ReviewsPage() {
-  const { t } = useTranslation();
 
   const aggregateRating = 5.0;
   const totalReviews = 148; // Example total
