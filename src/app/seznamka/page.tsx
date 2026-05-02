@@ -2,10 +2,12 @@
 
 import { Scissors, Users, Target, ShieldCheck, CheckCircle2, ChevronDown, ChevronLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "@/hooks/useTranslation";
+import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
+import { DatingSEOArchive } from "@/components/DatingSEOArchive";
 
 export default function SeznamkaPage() {
   const { t, lang } = useTranslation();
@@ -45,20 +47,29 @@ export default function SeznamkaPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-mafia-black text-smoke-white overflow-hidden">
+    <main className="min-h-screen bg-mafia-black text-smoke-white overflow-x-hidden">
       
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-16 px-4 md:px-12 flex flex-col items-center justify-center text-center">
-        {/* Mobile Back Button */}
-        <div className="absolute top-28 left-6 z-50 md:hidden">
-          <Link 
-            href="/"
-            className="flex items-center gap-2 text-mafia-gold/60 hover:text-mafia-gold transition-colors text-[10px] font-mono uppercase tracking-[0.2em] bg-black/40 backdrop-blur-md px-3 py-2 border border-mafia-gold/20"
-          >
-            <ChevronLeft size={14} />
-            <span>{lang === 'cs' ? 'ZPĚT' : 'BACK'}</span>
+      {/* Header */}
+      <header className="sticky top-0 z-[150] bg-black/80 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+          <Link href="/" className="group flex items-center gap-4 text-mafia-gold hover:text-white transition-all duration-500 relative z-[160]">
+            <div className="w-12 h-12 rounded-full border border-mafia-gold/20 flex items-center justify-center group-hover:border-mafia-gold group-hover:bg-mafia-gold group-hover:text-black transition-all duration-500">
+              <ChevronLeft size={20} />
+            </div>
+            <span className="font-mono text-xs uppercase tracking-[0.4em] font-bold">
+              {lang === 'cs' ? "ZPĚT DO SALONU" : "BACK TO SALON"}
+            </span>
           </Link>
+          <div className="flex flex-col items-end">
+            <span className="font-heading font-black text-2xl italic tracking-tighter text-white">MMBARBER</span>
+            <span className="text-[8px] font-mono text-mafia-gold/50 tracking-[0.5em] uppercase">Network_Protocol_v3.4.3</span>
+          </div>
         </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-16 px-4 md:px-12 flex flex-col items-center justify-center text-center">
+        {/* Mobile Back Button removed as it's in the header now */}
 
         <div className="absolute inset-0 pointer-events-none opacity-5">
             <div className="absolute top-1/4 left-1/4 w-96 h-96 border border-mafia-gold rounded-full animate-pulse" style={{ borderColor: 'var(--user-accent-color)', filter: 'drop-shadow(0 0 var(--user-glow-radius) var(--user-glow-color))' }}></div>
@@ -316,6 +327,22 @@ export default function SeznamkaPage() {
       </section>
 
       <Footer />
+
+      <BottomTerminalReveal thresholdMultiplier={1.5}>
+        {(level) => (
+          <>
+            {level >= 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <DatingSEOArchive />
+              </motion.div>
+            )}
+          </>
+        )}
+      </BottomTerminalReveal>
     </main>
   );
 }

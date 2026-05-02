@@ -7,7 +7,6 @@ import Image from "@/components/OptimizedImage";
 import Link from "next/link";
 import { ArrowLeft, X, Maximize2, Camera, ChevronLeft, ChevronRight } from "lucide-react";
 import { Footer } from "@/components/Footer";
-import { MinigameToggle } from "@/components/MinigameToggle";
 
 // Corrected Gallery Data
 const GALLERY_DATA = [
@@ -303,7 +302,6 @@ export default function GaleriePage() {
       </AnimatePresence>
 
       <BulletHoles />
-      <MinigameToggle />
       <Footer />
     </main>
   );

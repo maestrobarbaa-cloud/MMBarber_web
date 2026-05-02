@@ -9,12 +9,15 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { Footer } from "@/components/Footer";
+import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
+import { HousingSEOArchive } from "@/components/HousingSEOArchive";
 
 export default function HousingEstatePage() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-black text-smoke-white overflow-hidden relative selection:bg-mafia-gold selection:text-mafia-black">
+    <div className="min-h-screen bg-black text-smoke-white overflow-x-hidden relative selection:bg-mafia-gold selection:text-mafia-black">
       
       {/* Cinematic Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
@@ -34,8 +37,11 @@ export default function HousingEstatePage() {
           <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform" />
           {t.sidliste.return}
         </Link>
-        <div className="w-12 h-12 border border-mafia-gold/20 flex items-center justify-center overflow-hidden p-1">
-            <Image src="/logo.png" alt="MM" width={40} height={40} className="w-full h-full object-contain opacity-80" />
+        <div className="flex flex-col items-end">
+            <div className="w-12 h-12 border border-mafia-gold/20 flex items-center justify-center overflow-hidden p-1">
+                <Image src="/logo.png" alt="MM" width={40} height={40} className="w-full h-full object-contain opacity-80" />
+            </div>
+            <span className="text-[8px] font-mono text-mafia-gold/50 tracking-[0.5em] uppercase mt-2">Housing_Archive_v3.4.3</span>
         </div>
       </nav>
 
@@ -120,8 +126,23 @@ export default function HousingEstatePage() {
 
       </main>
 
-      {/* Footer Decoration */}
-      <div className="fixed bottom-0 left-0 w-full h-[5vh] bg-gradient-to-t from-mafia-gold/5 to-transparent pointer-events-none"></div>
+      <Footer />
+
+      <BottomTerminalReveal thresholdMultiplier={1.5}>
+        {(level) => (
+          <>
+            {level >= 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <HousingSEOArchive />
+              </motion.div>
+            )}
+          </>
+        )}
+      </BottomTerminalReveal>
     </div>
   );
 }

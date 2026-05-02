@@ -12,43 +12,35 @@ interface Message {
 
 const DIALOGUES: Message[][] = [
   [
-    { name: "Tomáš", text: "Protože některý věci musí být nad vším ostatním." }
+    { name: "BARBER_AI", text: "Detekuji nového návštěvníka. Spouštím analýzu estetického profilu..." }
   ],
   [
-    { name: "Tomáš", text: "Mlč… hraju si s publikem. Počkej, až to začnou chápat." }
+    { name: "BARBER_AI", text: "Neklidné scrollování detekováno. Doporučuji hluboký nádech a návštěvu salonu." }
   ],
   [
-    { name: "Tomáš", text: "Jen tak trošku… jinak by to byla nuda." }
+    { name: "BARBER_AI", text: "Upozornění: Vaše aktuální úprava vousů neodpovídá standardům MM BARBER." }
   ],
   [
-    { name: "Tomáš", text: "To říkají všichni… a pak chtějí to samý." }
+    { name: "BARBER_AI", text: "Optimalizuji vizuální integritu webu... Hotovo. Teď to vypadá tak, jak má." }
   ],
   [
-    { name: "Tomáš", text: "Tak přijde znova… a už bude vědět." }
+    { name: "BARBER_AI", text: "Vyhledávám volné termíny... Systém je přetížen vaší nerozhodností." }
   ],
   [
-    { name: "Tomáš", text: "Vsadím se, že řekne, udělej mi to jak minule." }
+    { name: "BARBER_AI", text: "Záznam 737: Kvalita není náhoda. Je to výsledek precizního algoritmu." }
   ],
   [
-    { name: "Tomáš", text: "Jo, to má pravdu… museli mi poslat výzvu." },
-    { name: "Tomáš", text: "Prý se na něj prášilo a byl tam chudáček úplně sám." },
-    { name: "Tomáš", text: "Kdyby bylo na mně, nechám ho tam ještě další rok." },
-    { name: "Tomáš", text: "Nakonec mi ho stejně vyzvedla ona." },
-    { name: "Tomáš", text: "Hele… vyrovnávám s ním televizi." },
-    { name: "Tomáš", text: "Byla totiž trochu křivá." }
+    { name: "BARBER_AI", text: "Váš styl je jako starý kód. Potřebuje refaktorizaci břitvou." }
   ],
   [
-    { name: "Tomáš", text: "To by bylo moc jednoduchý." },
-    { name: "Tomáš", text: "Nevím… ale funguje to." }
+    { name: "BARBER_AI", text: "MHC Komplex analyzován. Vaše biologická stopa vyžaduje specifickou péči." },
+    { name: "BARBER_AI", text: "Doporučuji sekci Péče pro další instrukce." }
   ],
   [
-    { name: "Tomáš", text: "Styl se nedá koupit." }
+    { name: "BARBER_AI", text: "Systémový uzel aktivován. Připravuji půdu pro novou generaci holičství." }
   ],
   [
-    { name: "Tomáš", text: "Podnikatelský klub… jen místo obleků máme pláště." }
-  ],
-  [
-    { name: "Tomáš", text: "Já se nepřimotávám. Já určuju, kde to začíná." }
+    { name: "BARBER_AI", text: "Vše pod kontrolou. Jen relaxujte. AI_SYSTEM se postará o zbytek." }
   ]
 ];
 
@@ -160,7 +152,7 @@ export function BarberChat({ isOpen }: BarberChatProps) {
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-mafia-red animate-pulse shadow-[0_0_8px_rgba(139,0,0,1)]"></div>
               <span className="text-[9px] font-mono text-mafia-gold/80 uppercase tracking-[0.2em] font-bold">
-                SECRET_COMM: INTERCEPT_14
+                BARBER_AI: ACTIVE_LEARNING
               </span>
             </div>
             <div className="flex gap-1">
@@ -178,15 +170,15 @@ export function BarberChat({ isOpen }: BarberChatProps) {
               {activeMessages.map((msg, i) => (
                 <motion.div
                   key={`${i}-${msg.text}`}
-                  initial={{ opacity: 0, x: msg.name === 'Tomáš' ? 10 : -10, y: 5 }}
+                  initial={{ opacity: 0, x: msg.name === 'BARBER_AI' ? 10 : -10, y: 5 }}
                   animate={{ opacity: 1, x: 0, y: 0 }}
-                  className={`flex flex-col ${msg.name === 'Tomáš' ? 'items-end' : 'items-start'}`}
+                  className={`flex flex-col ${msg.name === 'BARBER_AI' ? 'items-end' : 'items-start'}`}
                 >
-                  <span className={`text-[8px] font-mono mb-0.5 uppercase tracking-widest ${msg.name === 'Tomáš' ? 'text-mafia-gold/40' : 'text-mafia-red/40'}`}>
+                  <span className={`text-[8px] font-mono mb-0.5 uppercase tracking-widest ${msg.name === 'BARBER_AI' ? 'text-mafia-gold/40' : 'text-mafia-red/40'}`}>
                     {msg.name}
                   </span>
                   <div className={`px-3 py-1.5 text-xs md:text-sm font-sans relative ${
-                    msg.name === 'Tomáš' 
+                    msg.name === 'BARBER_AI' 
                     ? 'bg-mafia-gold/5 border-r border-mafia-gold/30 text-smoke-white/90' 
                     : 'bg-mafia-red/5 border-l border-mafia-red/30 text-smoke-white/90'
                   }`}>
@@ -200,10 +192,10 @@ export function BarberChat({ isOpen }: BarberChatProps) {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className={`flex items-center gap-1 ${typingName === 'Tomáš' ? 'justify-end' : 'justify-start'}`}
+                className={`flex items-center gap-1 ${typingName === 'BARBER_AI' ? 'justify-end' : 'justify-start'}`}
               >
                 <span className="text-[8px] font-mono text-white/30 uppercase mr-1">
-                   signal incoming
+                   ai processing
                 </span>
                 <span className="inline-flex gap-0.5">
                   <span className="w-0.5 h-0.5 bg-mafia-gold/30 animate-bounce"></span>

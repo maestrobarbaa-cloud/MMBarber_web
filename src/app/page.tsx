@@ -23,8 +23,6 @@ const OperationalJournal = dynamic(() => import("@/components/OperationalJournal
 
 import { CinematicIntro } from "@/components/Intro";
 import { Atmosphere } from "@/components/Atmosphere";
-import { MinigameToggle } from "@/components/MinigameToggle";
-import { FloatingScissors } from "@/components/FloatingScissors";
 import { CinematicSequence737 } from "@/components/CinematicSequence737";
 import { MafiaClickEffects } from "@/components/MafiaClickEffects";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -132,13 +130,11 @@ export default function Home() {
             className="flex flex-col w-full"
           >
             <Atmosphere />
-            <MinigameToggle />
             <CinematicSequence737 />
             <Hero />
             
             <div className="relative bg-transparent w-full section-optimize">
               <div className="hidden xl:block">
-                <FloatingScissors position="absolute" />
               </div>
               
               <SectionReveal>

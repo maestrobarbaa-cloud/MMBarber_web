@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Scissors, Clock, Globe, X, ChevronRight, Target, Star, Heart, Lock, Camera, Building2, Ticket, Scale, Info, Users } from "lucide-react";
+import { Scissors, Clock, Globe, X, ChevronRight, Target, Star, Heart, Lock, Camera, Building2, Ticket, Scale, Info, Users, Sparkles } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
@@ -106,7 +106,7 @@ export function Services() {
               title: lang === 'cs' ? 'DÁRKOVÉ VOUCHERY' : 'GIFT VOUCHERS',
               icon: <Ticket size={48} className="text-mafia-gold" />,
               description: lang === 'cs' ? 'DÁRKOVÉ BALENÍ S PEČETÍ / PLATNOST 1 ROK' : 'PREMIUM PACKAGING WITH SEAL / 1 YEAR VALIDITY',
-              onClick: () => { setShowVouchers(true); trackEvent("open_vouchers_modal"); }
+              onClick: () => { router.push('/vouchery'); trackEvent("open_vouchers_page"); }
             },
             { 
               id: 'gallery',
@@ -120,7 +120,7 @@ export function Services() {
               title: t?.others?.support?.title || (lang === 'cs' ? 'PODPORA' : 'SUPPORT'),
               icon: <Heart size={48} className="text-mafia-gold" />,
               description: lang === 'cs' ? 'PODPOŘTE NÁŠ SALON' : 'SUPPORT OUR SALON',
-              onClick: () => { setShowSupport(true); trackEvent("open_support"); }
+              onClick: () => { router.push('/grafika'); trackEvent("open_graphics_page"); }
             },
             { 
               id: 'members',
@@ -149,6 +149,13 @@ export function Services() {
               icon: <Info size={48} className="text-mafia-gold" />,
               description: t?.others?.systemVisit?.description,
               onClick: () => { router.push('/system-a-navsteva'); trackEvent("open_system_visit_page"); }
+            },
+            { 
+              id: 'pece',
+              title: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : 'CARE'),
+              icon: <Sparkles size={48} className="text-mafia-gold" />,
+              description: t?.others?.pece?.description || (lang === 'cs' ? 'MAGAZÍN O PÉČI A KOSMETICE' : 'MAGAZINE ABOUT CARE & COSMETICS'),
+              onClick: () => { router.push('/pece'); trackEvent("open_care_magazine"); }
             }
           ].map((card, idx, arr) => (
             <MenuCard 
@@ -179,7 +186,7 @@ export function Services() {
               id: 'vouchers',
               title: lang === 'cs' ? 'VOUCHERY' : 'VOUCHERS',
               icon: <Ticket size={32} className="text-mafia-gold" />,
-              onClick: () => { setShowVouchers(true); trackEvent("open_vouchers_modal"); }
+              onClick: () => { router.push('/vouchery'); trackEvent("open_vouchers_page"); }
             },
             { 
               id: 'gallery',
@@ -216,6 +223,12 @@ export function Services() {
               title: lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : 'SYSTEM & VISIT',
               icon: <Info size={32} className="text-mafia-gold" />,
               onClick: () => { router.push('/system-a-navsteva'); trackEvent("open_system_visit_page"); }
+            },
+            { 
+              id: 'pece',
+              title: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : 'CARE'),
+              icon: <Sparkles size={32} className="text-mafia-gold" />,
+              onClick: () => { router.push('/pece'); trackEvent("open_care_magazine"); }
             }
           ].map((card) => (
              <div key={card.id} className="w-[calc(50%-0.375rem)] md:w-[220px] lg:w-[250px] flex-shrink-0">
@@ -264,7 +277,7 @@ export function Services() {
                       <h4 className="text-4xl md:text-5xl font-heading font-black text-white italic uppercase tracking-tighter leading-tight">
                          {lang === 'cs' ? "VOUCHER DLE TVÝCH PRAVIDEL" : "VOUCHER BY YOUR RULES"}
                       </h4>
-                      <p className="text-smoke-white/60 text-lg leading-relaxed font-sans">
+                      <p className="text-smoke-white/80 text-xl md:text-2xl leading-relaxed font-sans font-light">
                          {lang === 'cs' 
                            ? "Voucher u nás funguje jako osobní kredit. Můžeš si ho nabít v jakékoliv hodnotě a postupně ho čerpat na jakékoliv naše služby. Ideální dárek pro ty, kteří si potrpí na kvalitu."
                            : "The voucher works as a personal credit. You can charge it with any amount and gradually use it for any of our services. The perfect gift for those who value quality."}
@@ -278,44 +291,44 @@ export function Services() {
                           { cs: "Použitelné na všechny služby", en: "Valid for all services" },
                           { cs: "Dárkové balení v obálce s pečetí", en: "Gift wrapped in an envelope with a seal" }
                         ].map((item, i) => (
-                          <li key={i} className="flex items-center gap-3 text-smoke-white/80 font-mono text-xs uppercase tracking-wider">
-                             <div className="w-1.5 h-1.5 bg-mafia-gold rotate-45"></div>
+                          <li key={i} className="flex items-center gap-4 text-smoke-white font-mono text-sm md:text-base uppercase tracking-wider">
+                             <div className="w-2 h-2 bg-mafia-gold rotate-45 shadow-[0_0_10px_rgba(197,160,89,0.5)]"></div>
                              {lang === 'cs' ? item.cs : item.en}
                           </li>
                         ))}
                       </ul>
                    </div>
 
-                   <div className="relative group">
+                   <div className="relative group lg:scale-110 lg:origin-right">
                       <div className="absolute -inset-4 bg-mafia-gold/10 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-1000"></div>
-                      <div className="relative aspect-[1.586/1] w-full border border-mafia-gold/20 bg-mafia-black p-8 flex flex-col justify-between shadow-2xl overflow-hidden group-hover:border-mafia-gold/50 transition-colors">
-                         <div className="absolute top-0 right-0 w-32 h-32 bg-mafia-gold/5 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                      <div className="relative aspect-[1.586/1] w-full border-2 border-mafia-gold/30 bg-mafia-black p-10 md:p-14 flex flex-col justify-between shadow-2xl overflow-hidden group-hover:border-mafia-gold/60 transition-colors">
+                         <div className="absolute top-0 right-0 w-48 h-48 bg-mafia-gold/5 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2"></div>
                          
                          <div className="flex justify-between items-start">
-                           <Image src="/logo.png" alt="Logo" width={50} height={50} className="w-12 h-12 grayscale opacity-50 brightness-200" />
+                           <Image src="/logo.png" alt="Logo" width={60} height={60} className="w-16 h-16 grayscale opacity-60 brightness-200" />
                            <div className="text-right">
-                             <div className="text-mafia-gold font-mono text-[8px] uppercase tracking-widest opacity-50">MMBARBER OFFICIAL</div>
-                             <div className="text-white font-heading font-bold text-xl uppercase italic group-hover:text-mafia-gold transition-colors tracking-widest">
+                             <div className="text-mafia-gold font-mono text-[10px] uppercase tracking-widest opacity-60">MMBARBER OFFICIAL</div>
+                             <div className="text-white font-heading font-bold text-2xl md:text-3xl uppercase italic group-hover:text-mafia-gold transition-colors tracking-widest">
                                {lang === 'cs' ? 'DÁRKOVÝ POUKAZ' : 'GIFT VOUCHER'}
                              </div>
                            </div>
                          </div>
 
-                         <div className="space-y-1">
-                            <div className="text-mafia-gold/40 font-mono text-[7px] uppercase tracking-[0.4em]">{lang === 'cs' ? 'SPECIFIKACE' : 'SPECIFICATION'}</div>
-                            <div className="text-smoke-white font-mono text-sm tracking-[0.2em]">{lang === 'cs' ? 'LIBOVOLNÁ HODNOTA' : 'ANY AMOUNT'}</div>
+                         <div className="space-y-2">
+                            <div className="text-mafia-gold/60 font-mono text-[9px] uppercase tracking-[0.4em]">{lang === 'cs' ? 'SPECIFIKACE' : 'SPECIFICATION'}</div>
+                            <div className="text-smoke-white font-mono text-lg md:text-xl tracking-[0.2em]">{lang === 'cs' ? 'LIBOVOLNÁ HODNOTA' : 'ANY AMOUNT'}</div>
                          </div>
                          <div className="text-right">
-                            <div className="text-mafia-gold/40 font-mono text-[7px] uppercase tracking-[0.4em]">{lang === 'cs' ? 'BALENÍ' : 'PACKAGING'}</div>
-                            <div className="text-smoke-white font-mono text-[10px] tracking-widest uppercase italic">{lang === 'cs' ? 'DÁRKOVÁ OBÁLKA' : 'GIFT ENVELOPE'}</div>
+                            <div className="text-mafia-gold/60 font-mono text-[9px] uppercase tracking-[0.4em]">{lang === 'cs' ? 'BALENÍ' : 'PACKAGING'}</div>
+                            <div className="text-smoke-white font-mono text-sm md:text-base tracking-widest uppercase italic">{lang === 'cs' ? 'DÁRKOVÁ OBÁLKA' : 'GIFT ENVELOPE'}</div>
                          </div>
 
-                         <div className="flex justify-between items-end border-t border-white/5 pt-4">
-                            <div className="space-y-1">
-                               <div className="text-mafia-gold/40 font-mono text-[7px] uppercase tracking-[0.4em]">{lang === 'cs' ? 'PLATNOST' : 'VALIDITY'}</div>
-                               <div className="text-mafia-red font-mono text-[10px] tracking-widest uppercase">{lang === 'cs' ? '12 MĚSÍCŮ' : '12 MONTHS'}</div>
+                         <div className="flex justify-between items-end border-t border-white/10 pt-6">
+                            <div className="space-y-2">
+                               <div className="text-mafia-gold/60 font-mono text-[9px] uppercase tracking-[0.4em]">{lang === 'cs' ? 'PLATNOST' : 'VALIDITY'}</div>
+                               <div className="text-mafia-red font-mono text-sm md:text-lg tracking-widest uppercase font-bold">{lang === 'cs' ? '12 MĚSÍCŮ' : '12 MONTHS'}</div>
                             </div>
-                            <Ticket className="text-mafia-gold opacity-10" size={64} />
+                            <Ticket className="text-mafia-gold opacity-10" size={80} />
                          </div>
                       </div>
                    </div>
@@ -335,7 +348,7 @@ export function Services() {
                             <Info size={14} />
                             {lang === 'cs' ? "Uplatnění" : "Usage"}
                          </div>
-                         <p className="text-smoke-white/50 text-[11px] font-sans leading-relaxed">
+                         <p className="text-smoke-white/70 text-sm md:text-base font-sans leading-relaxed">
                             {lang === 'cs' 
                               ? "Voucher lze uplatnit na veškeré služby poskytované v MMBarber. Částka za každou realizovanou službu je odečtena z celkového nabitého kreditu až do jeho úplného vyčerpání."
                               : "The voucher can be applied to all services provided at MMBarber. The amount for each realized service is deducted from the total charged credit until it is fully exhausted."}

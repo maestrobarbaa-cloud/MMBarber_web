@@ -553,6 +553,11 @@ export const translations = {
         title: "Systém a návštěva",
         description: "Jak se správně připravit na návštěvu u barbera.",
         cta: "VÍCE INFORMACÍ"
+      },
+      pece: {
+        title: "PÉČE",
+        description: "Magazín o péči, kosmetice a zdraví pokožky.",
+        cta: "OTEVŘÍT MAGAZÍN"
       }
     },
     styleDefinition: {
@@ -666,79 +671,107 @@ export const translations = {
       title: "ČASTO KLADENÉ DOTAZY",
       subtitle: "Vše, co potřebujete vědět před návštěvou našeho revíru v Uherském Hradišti.",
       items: [
-        { 
-          q: "Kolik stojí pánský střih v MMBARBER?", 
-          a: "Naše ceny jsou transparentní a začínají již na 100 Kč za bleskové úpravy kontur. Expresní servis vyjde na 180 Kč, klasický precizní střih (Klasika) stojí 450 Kč a kompletní péče (střih + zaholení) je za 650 Kč. Premium Kombo pro vlasy i vousy vyjde na 1 000 Kč." 
+        {
+          q: "Kolik stojí pánský střih v MMBARBER?",
+          a: "Naše ceny jsou transparentní a začínají již na 100 Kč za bleskové úpravy kontur. Expresní servis vyjde na 180 Kč, klasický precizní střih (Klasika) stojí 450 Kč a kompletní péče (střih + zaholení) je za 650 Kč. Premium Kombo pro vlasy i vousy vyjde na 1 000 Kč."
         },
-        { 
-          q: "Jak dlouho trvá návštěva u barbera?", 
-          a: "Standardní pánský střih trvá přibližně 45 minut. Pokud si zvolíte kombinaci vlasy a vousy, počítejte s jednou hodinou. Chceme, aby byl výsledek perfektní, ne uspěchaný." 
+        {
+          q: "Jak dlouho trvá návštěva u barbera?",
+          a: "Standardní pánský střih trvá přibližně 45 minut. Pokud si zvolíte kombinaci vlasy a vousy, počítejte s jednou hodinou. Chceme, aby byl výsledek perfektní, ne uspěchaný."
         },
-        { 
-          q: "Musím se objednat předem?", 
-          a: "Ano, náš systém is.mmbarber.cz funguje na rezervace. Pokud vidíš volný slot, okamžitě si ho zajisti – termíny v Hradišti se plní rychle." 
+        {
+          q: "Musím se objednat předem?",
+          a: "Ano, náš systém is.mmbarber.cz funguje na rezervace. Pokud vidíš volný slot, okamžitě si ho zajisti – termíny v Hradišti se plní rychle."
         },
-        { 
-          q: "Kde v Uherském Hradišti vás najdu?", 
-          a: "Najdeš nás v klidné části Mařatice na adrese Sadová 1383. Parkování je zdarma přímo před dveřmi, takže nemusíš řešit zóny v centru." 
+        {
+          q: "Kde v Uherském Hradišti vás najdu?",
+          a: "Najdeš nás v klidné části Mařatice na adrese Sadová 1383. Parkování je zdarma přímo před dveřmi, takže nemusíš řešit zóny v centru."
         },
-        { 
-          q: "Dá se u vás platit kartou?", 
-          a: "Přijímáme hotovost nebo pohodlnou platbu přes QR kód přímo ve vašem mobilním bankovnictví. Tradiční platební terminál u nás nenajdete." 
+        {
+          q: "Dá se u vás platit kartou?",
+          a: "Přijímáme hotovost nebo pohodlnou platbu přes QR kód přímo ve vašem mobilním bankovnictví. Tradiční platební terminál u nás nenajdete."
         },
-        { 
-          q: "Nabízíte dárkové poukazy do barbershopu?", 
-          a: "Ano, dárkové poukazy jsou u nás velmi oblíbené. Můžete si je zakoupit přímo v salonu v Uherském Hradišti nebo nás kontaktovat pro zaslání. Je to ideální dárek pro každého muže, který si potrpí na styl." 
+        {
+          q: "Nabízíte dárkové poukazy do barbershopu?",
+          a: "Ano, dárkové poukazy jsou u nás velmi oblíbené. Můžete si je zakoupit přímo v salonu v Uherském Hradišti nebo nás kontaktovat pro zaslání. Je to ideální dárek pro každého muže, který si potrpí na styl."
         },
-        { 
-          q: "Hledám nejlepší fade v regionu Slovácko. Proč přijet k vám?", 
-          a: "V MMBARBER se specializujeme na precizní skin fade a taper fade. Naši barbeři procházejí neustálým školením a používají špičkovou techniku. Klienti k nám jezdí nejen z Hradiště, ale i z Kunovic, Starého Města nebo Hluku." 
+        {
+          q: "Hledám nejlepší fade v regionu Slovácko. Proč přijet k vám?",
+          a: "V MMBARBER se specializujeme na precizní skin fade a taper fade. Naši barbeři procházejí neustálým školením a používají špičkovou techniku. Klienti k nám jezdí nejen z Hradiště, ale i z Kunovic, Starého Města nebo Hluku."
         },
-        { 
-          q: "Co je to MM BARBER Akademie?", 
-          a: "Akademie je náš vzdělávací projekt, kde předáváme řemeslo dál. Školíme začátečníky i pokročilé v technikách pánského stříhání, holení břitvou a péče o zákazníka. Budujeme novou generaci špičkových barberů." 
+        {
+          q: "Co je to MM BARBER Akademie?",
+          a: "Akademie je náš vzdělávací projekt, kde předáváme řemeslo dál. Školíme začátečníky i pokročilé v technikách pánského stříhání, holení břitvou a péče o zákazníka. Budujeme novou generaci špičkových barberů."
         },
-        { 
-          q: "Jaké jsou trendy v pánských účesech pro rok 2026?", 
-          a: "V roce 2026 vidíme návrat k přirozenějším texturám, ale s velmi ostrými konturami. Populární je spojení klasického stylu s moderními prvky, jako je mullet fade nebo výrazné texturované střihy (crop top)." 
+        {
+          q: "Jaké jsou trendy v pánských účesech pro rok 2026?",
+          a: "V roce 2026 vidíme návrat k přirozenějším texturám, ale s velmi ostrými konturami. Populární je spojení klasického stylu s moderními prvky, jako je mullet fade nebo výrazné texturované střihy (crop top)."
         },
-        { 
-          q: "Máte pobočky i v jiných městech jako Zlín nebo Uherský Brod?", 
-          a: "Naše hlavní základna je v Uherském Hradišti (Mařatice), ale naše komunita a vliv sahá do celého kraje. Spolupracujeme s partnery ve Zlíně, Brodě i Hodoníně a budujeme síť postavenou na kvalitě." 
+        {
+          q: "Máte pobočky i v jiných městech jako Zlín nebo Uherský Brod?",
+          a: "Naše hlavní základna je v Uherském Hradišti (Mařatice), ale naše komunita a vliv sahá do celého kraje. Spolupracujeme s partnery ve Zlíně, Brodě i Hodoníně a budujeme síť postavenou na kvalitě."
         },
-        { 
-          q: "Provádíte i barvení vousů nebo maskování šedin?", 
-          a: "Ano, nabízíme profesionální maskování šedin u vlasů i vousů. Výsledek je naprosto přirozený a dodá vaší vizáži mladistvý, ale stále mužný vzhled." 
+        {
+          q: "Provádíte i barvení vousů nebo maskování šedin?",
+          a: "Ano, nabízíme profesionální maskování šedin u vlasů i vousů. Výsledek je naprosto přirozený a dodá vaší vizáži mladistvý, ale stále mužný vzhled."
         },
-        { 
-          q: "Co je to projekt MM BARBER Rodina?", 
-          a: "MM BARBER Rodina je naše vize propojování poctivých řemeslníků a lokálních firem. Spolupracujeme s lidmi jako Vodo Topo Jahoda, Kofipack nebo Malina Photo. Věříme, že společně dokážeme v regionu Slovácka tvořit vyšší standard služeb." 
+        {
+          q: "Co je to projekt MM BARBER Rodina?",
+          a: "MM BARBER Rodina je naše vize propojování poctivých řemeslníků a lokálních firem. Spolupracujeme s lidmi jako Vodo Topo Jahoda, Kofipack nebo Malina Photo. Věříme, že společně dokážeme v regionu Slovácka tvořit vyšší standard služeb."
         },
-        { 
-          q: "Doporučujete i jiné místní služby v Uherském Hradišti?", 
-          a: "Ano, naše 'Rodina' zahrnuje prověřené profesionály z různých oborů. Ať už jde o instalatérské práce, logistiku nebo profesionální fotografii, stojíme za kvalitou našich partnerů v UH a okolí." 
+        {
+          q: "Doporučujete i jiné místní služby v Uherském Hradišti?",
+          a: "Ano, naše 'Rodina' zahrnuje prověřené profesionály z různých oborů. Ať už jde o instalatérské práce, logistiku nebo profesionální fotografii, stojíme za kvalitou našich partnerů v UH a okolí."
         },
-        { 
-          q: "Sleduje MMBARBER celosvětové trendy v barberingu?", 
-          a: "Absolutně. Inspirujeme se v mezinárodních centrech jako Londýn, Rotterdam nebo New York. Naše standardy odpovídají světové špičce, ať už jde o techniky střihu, hygienu nebo klientský servis. Přinášíme světový styl do srdce Moravy." 
+        {
+          q: "Sleduje MMBARBER celosvětové trendy v barberingu?",
+          a: "Absolutně. Inspirujeme se v mezinárodních centrech jako Londýn, Rotterdam nebo New York. Naše standardy odpovídají světové špičce, ať už jde o techniky střihu, hygienu nebo klientský servis. Přinášíme světový styl do srdce Moravy."
         },
-        { 
-          q: "Je MM BARBER systém uznávaný i v zahraničí?", 
-          a: "Náš přístup k řemeslu a vzdělávání v rámci Akademie stavíme na univerzálních principech kvality, které jsou uznávané globálně. Naše vize 'Global Standards' znamená, že zákazník v Hradišti dostane stejnou nebo vyšší kvalitu než v nejlepších barbershopech světa." 
+        {
+          q: "Je MM BARBER systém uznávaný i v zahraničí?",
+          a: "Náš přístup k řemeslu a vzdělávání v rámci Akademie stavíme na univerzálních principech kvality, které jsou uznávané globálně. Naše vize 'Global Standards' znamená, že zákazník v Hradišti dostane stejnou nebo vyšší kvalitu než v nejlepších barbershopech světa."
         },
-        { 
-          q: "Jaké jsou novinky v MMBARBER pro tento měsíc?", 
-          a: "Pravidelně aktualizujeme naše techniky a rozšiřujeme nabídku o sezónní péči. Aktuálně se zaměřujeme na regeneraci vlasů a pokožky po zimním období a představujeme nové texturované střihy, které budou dominovat jaru 2026." 
+        {
+          q: "Jaké jsou novinky v MMBARBER pro tento měsíc?",
+          a: "Pravidelně aktualizujeme naše techniky a rozšiřujeme nabídku o sezónní péči. Aktuálně se zaměřujeme na regeneraci vlasů a pokožky po zimním období a představujeme nové texturované střihy, které budou dominovat jaru 2026."
         },
-        { 
-          q: "Proč je MMBARBER víc než jen kadeřnictví?", 
-          a: "Protože u nás kupujete čas pro sebe. Je to životní styl postavený na disciplíně, kvalitě a sounáležitosti k regionu Slovácka. Propojujeme moderní technologie s tradičním řemeslem." 
+        {
+          q: "Proč je MMBARBER víc než jen kadeřnictví?",
+          a: "Protože u nás kupujete čas pro sebe. Je to životní styl postavený na disciplíně, kvalitě a sounáležitosti k regionu Slovácka. Propojujeme moderní technologie s tradičním řemeslem."
         },
-        { 
-          q: "Provádíte i úpravy na svatby nebo speciální akce?", 
-          a: "Ano, kompletní servis pro ženichy a jejich doprovod je naší specialitou. V Uherském Hradišti jsme vyhlášení jako místo, kde vás připravíme na váš nejdůležitější den v životě." 
+        {
+          q: "Provádíte i úpravy na svatby nebo speciální akce?",
+          a: "Ano, kompletní servis pro ženichy a jejich doprovod je naší specialitou. V Uherském Hradišti jsme vyhlášení jako místo, kde vás připravíme na váš nejdůležitější den v životě."
         }
       ]
+    },
+    magazine: {
+      categories: {
+        magazin: "MAGAZÍN",
+        biologie: "BIOLOGIE",
+        vlasy: "VLASY",
+        plet: "PLEŤ",
+        vousy: "VOUSY"
+      },
+      ui: {
+        backToSalon: "Zpět do salonu",
+        page: "STRANA",
+        of: "/",
+        reset: "Resetovat test",
+        next: "Další",
+        prev: "Předchozí",
+        officialPub: "Oficiální odborná publikace",
+        results: {
+          borealis: "PROFIL: BOREALIS",
+          meridionalis: "PROFIL: MERIDIONALIS",
+          orientalis: "PROFIL: ORIENTALIS",
+          lowPorosity: "NÍZKÁ POROZITA",
+          mediumPorosity: "STŘEDNÍ POROZITA",
+          highPorosity: "VYSOKÁ POROZITA",
+          dryScalp: "SUCHÁ POKOŽKA",
+          oilyScalp: "MASTNÁ POKOŽKA"
+        }
+      }
     }
   },
   en: {
@@ -1143,9 +1176,14 @@ export const translations = {
         denied: "Access denied"
       },
       systemVisit: {
-        title: "System and Visit",
-        description: "How to properly prepare for a barber visit.",
-        cta: "MORE INFO"
+        title: "System & Visit",
+        description: "How to properly prepare for a visit to the barber.",
+        cta: "MORE INFORMATION"
+      },
+      pece: {
+        title: "CARE",
+        description: "Magazine about care, cosmetics and skin health.",
+        cta: "OPEN MAGAZINE"
       }
     },
     styleDefinition: {
@@ -1384,57 +1422,57 @@ export const translations = {
       title: "FREQUENTLY ASKED QUESTIONS",
       subtitle: "Everything you need to know before visiting our HQ in Uherské Hradiště.",
       items: [
-        { 
-          q: "How much does a haircut cost at MMBARBER?", 
-          a: "Our prices are transparent and start at just 100 CZK for quick contour cleanups. Express service is 180 CZK, Classic cut is 450 CZK, and Complete Care (cut + shave) is 650 CZK. Premium Combo for both hair and beard is 1,000 CZK." 
+        {
+          q: "How much does a haircut cost at MMBARBER?",
+          a: "Our prices are transparent and start at just 100 CZK for quick contour cleanups. Express service is 180 CZK, Classic cut is 450 CZK, and Complete Care (cut + shave) is 650 CZK. Premium Combo for both hair and beard is 1,000 CZK."
         },
-        { 
-          q: "How long does a barber visit take?", 
-          a: "A standard men's cut takes about 45 minutes. For a hair and beard combo, allow one hour. We prioritize perfection over speed." 
+        {
+          q: "How long does a barber visit take?",
+          a: "A standard men's cut takes about 45 minutes. For a hair and beard combo, allow one hour. We prioritize perfection over speed."
         },
-        { 
-          q: "Do I need to book in advance?", 
-          a: "Yes, our is.mmbarber.cz system runs on reservations. If you see an open slot, grab it immediately – spots in Hradiště fill up fast." 
+        {
+          q: "Do I need to book in advance?",
+          a: "Yes, our is.mmbarber.cz system runs on reservations. If you see an open slot, grab it immediately – spots in Hradiště fill up fast."
         },
-        { 
-          q: "Where in Uherské Hradiště are you located?", 
-          a: "You'll find us in the Mařatice district at Sadová 1383. Free parking is available directly in front of the door." 
+        {
+          q: "Where in Uherské Hradiště are you located?",
+          a: "You'll find us in the Mařatice district at Sadová 1383. Free parking is available directly in front of the door."
         },
-        { 
-          q: "Can I pay by card?", 
-          a: "We accept cash or convenient QR code payments via your mobile banking. We do not have a traditional card terminal." 
+        {
+          q: "Can I pay by card?",
+          a: "We accept cash or convenient QR code payments via your mobile banking. We do not have a traditional card terminal."
         },
-        { 
-          q: "Do you offer gift vouchers for the barbershop?", 
-          a: "Yes, gift vouchers are very popular with us. You can purchase them directly at the salon in Uherské Hradiště. It's the perfect gift for any man who values style and premium care." 
+        {
+          q: "Do you offer gift vouchers for the barbershop?",
+          a: "Yes, gift vouchers are very popular with us. You can purchase them directly at the salon in Uherské Hradiště. It's the perfect gift for any man who values style and premium care."
         },
-        { 
-          q: "I'm looking for the best fade in the Slovácko region. Why choose you?", 
-          a: "At MMBARBER, we specialize in precise skin fades and taper fades. Our barbers undergo continuous training and use top-tier equipment. Clients travel to us from all over the Zlín region." 
+        {
+          q: "I'm looking for the best fade in the Slovácko region. Why choose you?",
+          a: "At MMBARBER, we specialize in precise skin fades and taper fades. Our barbers undergo continuous training and use top-tier equipment. Clients travel to us from all over the Zlín region."
         },
-        { 
-          q: "What is the MM BARBER Academy?", 
-          a: "The Academy is our educational project where we pass on the craft. We train beginners and advanced barbers in men's cutting techniques, straight razor shaving, and customer care." 
+        {
+          q: "What is the MM BARBER Academy?",
+          a: "The Academy is our educational project where we pass on the craft. We train beginners and advanced barbers in men's cutting techniques, straight razor shaving, and customer care."
         },
-        { 
-          q: "What are the men's hair trends for 2026?", 
-          a: "In 2026, we see a return to more natural textures but with very sharp contours. The combination of classic styles with modern elements like mullet fades or textured crops is highly popular." 
+        {
+          q: "What are the men's hair trends for 2026?",
+          a: "In 2026, we see a return to more natural textures but with very sharp contours. The combination of classic styles with modern elements like mullet fades or textured crops is highly popular."
         },
-        { 
-          q: "Do you have branches in other cities like Zlín or Uherský Brod?", 
-          a: "Our main base is in Uherské Hradiště (Mařatice), but our community and influence reach the entire region. We collaborate with partners in Zlín, Brod, and Hodonín." 
+        {
+          q: "Do you have branches in other cities like Zlín or Uherský Brod?",
+          a: "Our main base is in Uherské Hradiště (Mařatice), but our community and influence reach the entire region. We collaborate with partners in Zlín, Brod, and Hodonín."
         },
-        { 
-          q: "What is the MM BARBER Family project?", 
-          a: "MM BARBER Family is our vision for connecting honest craftsmen and local businesses. We collaborate with companies like Vodo Topo Jahoda, Kofipack, and Malina Photo to build a strong regional network." 
+        {
+          q: "What is the MM BARBER Family project?",
+          a: "MM BARBER Family is our vision for connecting honest craftsmen and local businesses. We collaborate with companies like Vodo Topo Jahoda, Kofipack, and Malina Photo to build a strong regional network."
         },
-        { 
-          q: "Does MMBARBER follow global grooming trends?", 
-          a: "Absolutely. We draw inspiration from international grooming hubs like London, Rotterdam, and NYC. Our techniques and service standards match the world's elite barbershops, bringing global style to the heart of Moravia." 
+        {
+          q: "Does MMBARBER follow global grooming trends?",
+          a: "Absolutely. We draw inspiration from international grooming hubs like London, Rotterdam, and NYC. Our techniques and service standards match the world's elite barbershops, bringing global style to the heart of Moravia."
         },
-        { 
-          q: "What makes MMBARBER a modern business system?", 
-          a: "We integrate digital convenience through our online booking system with the raw authenticity of manual craft. It's a synergy of tradition and future-ready business logic." 
+        {
+          q: "What makes MMBARBER a modern business system?",
+          a: "We integrate digital convenience through our online booking system with the raw authenticity of manual craft. It's a synergy of tradition and future-ready business logic."
         }
       ]
     }
@@ -1621,53 +1659,53 @@ export const translations = {
       title: "PTEJ SE JAKO ŠÉF",
       subtitle: "Všechno, co musíš vědět, než vstoupíš do našich dveří.",
       items: [
-        { 
-          q: "Kolik stojí výpalné za střih?", 
-          a: "Kšefty jsou jasné a začínají už na stovce (100 Kč) za bleskové srovnání. Expres je za 180 Kč, poctivá klasika za 450 Kč a kompletní balíček i s břitvou za 650 Kč. Šéfovské kombo je za litr." 
+        {
+          q: "Kolik stojí výpalné za střih?",
+          a: "Kšefty jsou jasné a začínají už na stovce (100 Kč) za bleskové srovnání. Expres je za 180 Kč, poctivá klasika za 450 Kč a kompletní balíček i s břitvou za 650 Kč. Šéfovské kombo je za litr."
         },
-        { 
-          q: "Jak dlouho mě budeš držet v křesle?", 
-          a: "Čas jsou peníze. Střih trvá 45 minut, s vousy počítej hodinu. Děláme to precizně, aby nebyly žádné stopy." 
+        {
+          q: "Jak dlouho mě budeš držet v křesle?",
+          a: "Čas jsou peníze. Střih trvá 45 minut, s vousy počítej hodinu. Děláme to precizně, aby nebyly žádné stopy."
         },
-        { 
-          q: "Musím mít domluvenou schůzku?", 
-          a: "Bez ohlášení nechoď. Rezervuj si flek na is.mmbarber.cz. Kdo dřív přijde, ten dřív mele." 
+        {
+          q: "Musím mít domluvenou schůzku?",
+          a: "Bez ohlášení nechoď. Rezervuj si flek na is.mmbarber.cz. Kdo dřív přijde, ten dřív mele."
         },
-        { 
-          q: "Kde přesně má rodina základnu?", 
-          a: "Jsme v Mařaticích, Sadová 1383. Žádné zmatky v centru, zaparkuješ přímo u nás a nikdo tě neuvidí." 
+        {
+          q: "Kde přesně má rodina základnu?",
+          a: "Jsme v Mařaticích, Sadová 1383. Žádné zmatky v centru, zaparkuješ přímo u nás a nikdo tě neuvidí."
         },
-        { 
-          q: "Berete plastové karty?", 
-          a: "Karty jsou pro turisty. Bereme hotovost nebo QR kód. Rychle a bez řečí." 
+        {
+          q: "Berete plastové karty?",
+          a: "Karty jsou pro turisty. Bereme hotovost nebo QR kód. Rychle a bez řečí."
         },
-        { 
-          q: "Máš dárkové poukazy pro ostatní šéfy?", 
-          a: "Jasná věc. Poukaz do MMBARBER je vstupenka do jiného světa. Seženeš ho u nás na základně v Hradišti. Ideální věc, když chceš někomu ukázat, jak vypadá poctivý řemeslo." 
+        {
+          q: "Máš dárkové poukazy pro ostatní šéfy?",
+          a: "Jasná věc. Poukaz do MMBARBER je vstupenka do jiného světa. Seženeš ho u nás na základně v Hradišti. Ideální věc, když chceš někomu ukázat, jak vypadá poctivý řemeslo."
         },
-        { 
-          q: "Proč jít k vám a ne do běžnýho kadeřnictví v UH?", 
-          a: "Kadeřnictví je pro všechny, MMBARBER je pro chlapy. U nás dostaneš servis, břitvu, horkej ručník a atmosféru, kterou jinde nenajdeš. Neřešíme jen vlasy, řešíme charakter." 
+        {
+          q: "Proč jít k vám a ne do běžnýho kadeřnictví v UH?",
+          a: "Kadeřnictví je pro všechny, MMBARBER je pro chlapy. U nás dostaneš servis, břitvu, horkej ručník a atmosféru, kterou jinde nenajdeš. Neřešíme jen vlasy, řešíme charakter."
         },
-        { 
-          q: "Co ta vaše Akademie, učíte tam řemeslo?", 
-          a: "MM BARBER Akademie není škola, je to výcvik. Učíme lidi, jak se stát mistry v oboru. Od základů po ty nejtvrdší fady. Chceme, aby řemeslo mělo úroveň." 
+        {
+          q: "Co ta vaše Akademie, učíte tam řemeslo?",
+          a: "MM BARBER Akademie není škola, je to výcvik. Učíme lidi, jak se stát mistry v oboru. Od základů po ty nejtvrdší fady. Chceme, aby řemeslo mělo úroveň."
         },
-        { 
-          q: "Jak to vypadá s pobočkama v okolí?", 
-          a: "Centrála je v Mařaticích, ale naše jméno má zvuk ve Zlíně, Brodě i Kyjově. Budujeme síť lidí, co vědí, co dělají. Kvalita se pozná všude." 
+        {
+          q: "Jak to vypadá s pobočkama v okolí?",
+          a: "Centrála je v Mařaticích, ale naše jméno má zvuk ve Zlíně, Brodě i Kyjově. Budujeme síť lidí, co vědí, co dělají. Kvalita se pozná všude."
         },
-        { 
-          q: "Kdo všechno patří do MM BARBER Rodiny?", 
-          a: "Rodina jsou lidi, na který je spoleh. Patří sem firmy jako Vodo Topo Jahoda, Kofipack nebo Malina Photo. Táhneme za jeden provaz, aby byl region Slovácka silnější." 
+        {
+          q: "Kdo všechno patří do MM BARBER Rodiny?",
+          a: "Rodina jsou lidi, na který je spoleh. Patří sem firmy jako Vodo Topo Jahoda, Kofipack nebo Malina Photo. Táhneme za jeden provaz, aby byl region Slovácka silnější."
         },
-        { 
-          q: "Hrajete i světovou ligu v barberingu?", 
-          a: "Jasná věc. Neřešíme jen Hradiště, koukáme na Londýn i Státy. Naše standardy jsou nastavený tak, aby ses u nás cítil jako v top salonu v Londýně. Světový řemeslo, lokální srdce." 
+        {
+          q: "Hrajete i světovou ligu v barberingu?",
+          a: "Jasná věc. Neřešíme jen Hradiště, koukáme na Londýn i Státy. Naše standardy jsou nastavený tak, aby ses u nás cítil jako v top salonu v Londýně. Světový řemeslo, lokální srdce."
         },
-        { 
-          q: "Proč k vám jezdí lidi z celýho kraje?", 
-          a: "Protože vědí, že v Mařaticích dostanou servis, kterej má koule. Nejsme jen střihači, jsme architekti tvýho stylu. Brod, Zlín, Kyjov – pro kvalitu si dojedeš kamkoliv." 
+        {
+          q: "Proč k vám jezdí lidi z celýho kraje?",
+          a: "Protože vědí, že v Mařaticích dostanou servis, kterej má koule. Nejsme jen střihači, jsme architekti tvýho stylu. Brod, Zlín, Kyjov – pro kvalitu si dojedeš kamkoliv."
         }
       ]
     }
@@ -1875,47 +1913,75 @@ export const translations = {
       title: "IMPERIAL FRAGEN",
       subtitle: "Alles, was ein Gentleman vor dem Besuch wissen muss.",
       items: [
-        { 
-          q: "Was kostet ein kaiserlicher Schnitt?", 
-          a: "Qualität hat ihren Preis und beginnt bereits bei 100 CZK für kleine Korrekturen. Expres für 180 CZK, Klassik für 450 CZK und Full Service für 650 CZK. Das Elite Combo kostet 1.000 CZK." 
+        {
+          q: "Was kostet ein kaiserlicher Schnitt?",
+          a: "Qualität hat ihren Preis und beginnt bereits bei 100 CZK für kleine Korrekturen. Expres für 180 CZK, Klassik für 450 CZK und Full Service für 650 CZK. Das Elite Combo kostet 1.000 CZK."
         },
-        { 
-          q: "Wie lange dauert die Prozedur?", 
-          a: "Ein Schnitt benötigt 45 Minuten Perfektion. Für das Combo planen Sie bitte eine Stunde ein. Stil braucht Zeit." 
+        {
+          q: "Wie lange dauert die Prozedur?",
+          a: "Ein Schnitt benötigt 45 Minuten Perfektion. Für das Combo planen Sie bitte eine Stunde ein. Stil braucht Zeit."
         },
-        { 
-          q: "Ist eine Reservierung erforderlich?", 
-          a: "Ja, der Wiener Kodex verlangt eine Buchung über is.mmbarber.cz. Sichern Sie sich Ihren Platz rechtzeitig." 
+        {
+          q: "Ist eine Reservierung erforderlich?",
+          a: "Ja, der Wiener Kodex verlangt eine Buchung über is.mmbarber.cz. Sichern Sie sich Ihren Platz rechtzeitig."
         },
-        { 
-          q: "Wo befindet sich das Imperial Territory?", 
-          a: "Wir residieren in Mařatice, Sadová 1383. Kostenlose Parkplätze für Ihre Karosse direkt vor der Tür." 
+        {
+          q: "Wo befindet sich das Imperial Territory?",
+          a: "Wir residieren in Mařatice, Sadová 1383. Kostenlose Parkplätze für Ihre Karosse direkt vor der Tür."
         },
-        { 
-          q: "Akzeptieren Sie Goldkarten?", 
-          a: "Wir bevorzugen Bargeld oder QR-Zahlung. Diskret und effizient." 
+        {
+          q: "Akzeptieren Sie Goldkarten?",
+          a: "Wir bevorzugen Bargeld oder QR-Zahlung. Diskret und effizient."
         },
-        { 
-          q: "Bieten Sie Geschenkgutscheine an?", 
-          a: "Ja, kaiserliche Gutscheine sind bei uns erhältlich. Das perfekte Geschenk für den modernen Gentleman in Uherské Hradiště." 
+        {
+          q: "Bieten Sie Geschenkgutscheine an?",
+          a: "Ja, kaiserliche Gutscheine sind bei uns erhältlich. Das perfekte Geschenk für den modernen Gentleman in Uherské Hradiště."
         },
-        { 
-          q: "Was ist die MM BARBER Academy?", 
-          a: "Unsere Akademie ist ein Ort der Tradition und Exzellenz. Wir bilden die nächste Generation von Elite-Barbern in den feinsten Techniken des Handwerks aus." 
+        {
+          q: "Was ist die MM BARBER Academy?",
+          a: "Unsere Akademie ist ein Ort der Tradition und Exzellenz. Wir bilden die nächste Generation von Elite-Barbern in den feinsten Techniken des Handwerks aus."
         },
-        { 
-          q: "Gibt es Trends für das Jahr 2026?", 
-          a: "Das Jahr 2026 steht im Zeichen der Präzision. Natürliche Looks kombiniert mit messerscharfen Konturen definieren den modernen Imperial-Stil." 
+        {
+          q: "Gibt es Trends für das Jahr 2026?",
+          a: "Das Jahr 2026 steht im Zeichen der Präzision. Natürliche Looks kombiniert mit messerscharfen Konturen definieren den modernen Imperial-Stil."
         },
-        { 
-          q: "Was ist die MM BARBER Family?", 
-          a: "Es ist unser Netzwerk lokaler Partner in Uherské Hradiště. Wir kooperieren mit Profis wie Vodo Topo Jahoda und Kofipack, um höchste Qualität in allen Bereichen zu garantieren." 
+        {
+          q: "Was ist die MM BARBER Family?",
+          a: "Es ist unser Netzwerk lokaler Partner in Uherské Hradiště. Wir kooperieren mit Profis wie Vodo Topo Jahoda und Kofipack, um höchste Qualität in allen Bereichen zu garantieren."
         },
-        { 
-          q: "Folgt MMBARBER globalen Trends?", 
-          a: "Ja, wir orientieren uns an internationalen Standards aus London und Rotterdam. Weltklasse-Handwerk trifft auf regionale Tradition." 
+        {
+          q: "Folgt MMBARBER globalen Trends?",
+          a: "Ja, wir orientieren uns an internationalen Standards aus London und Rotterdam. Weltklasse-Handwerk trifft auf regionale Tradition."
         }
       ]
+    },
+    magazine: {
+      categories: {
+        magazin: "MAGAZINE",
+        biologie: "BIOLOGY",
+        vlasy: "HAIR",
+        plet: "SKIN",
+        vousy: "BEARD"
+      },
+      ui: {
+        backToSalon: "Back to Salon",
+        page: "PAGE",
+        of: "/",
+        reset: "Reset Test",
+        next: "Next",
+        prev: "Previous",
+        officialPub: "Official Scientific Publication",
+        results: {
+          borealis: "PROFILE: BOREALIS",
+          meridionalis: "PROFILE: MERIDIONALIS",
+          orientalis: "PROFILE: ORIENTALIS",
+          lowPorosity: "LOW POROSITY",
+          mediumPorosity: "MEDIUM POROSITY",
+          highPorosity: "HIGH POROSITY",
+          dryScalp: "DRY SCALP",
+          oilyScalp: "OILY SCALP"
+        }
+      }
     }
   }
 };

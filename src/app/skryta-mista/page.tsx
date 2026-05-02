@@ -7,6 +7,9 @@ import { trackEvent } from "@/utils/analytics";
 import Link from "next/link";
 import Image from "next/image";
 import TacticalClickEffects from "@/components/TacticalClickEffects";
+import { Footer } from "@/components/Footer";
+import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
+import { HiddenSEOArchive } from "@/components/HiddenSEOArchive";
 
 export default function HiddenPlacesPage() {
   const { t, lang } = useTranslation();
@@ -40,7 +43,7 @@ export default function HiddenPlacesPage() {
             </Link>
             <div className="flex items-center gap-4 mt-8 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-[0.5em] text-mafia-gold/30">
                <div className="w-1 h-1 bg-mafia-gold/30 rounded-full"></div>
-               <span className="text-mafia-gold/40">SYSTÉM: MM_OS_ZABEZPEČENO</span>
+               <span className="text-mafia-gold/40">SYSTÉM: MM_OS_v3.4.3_ZABEZPEČENO</span>
             </div>
         </div>
 
@@ -61,7 +64,7 @@ export default function HiddenPlacesPage() {
                  <span className="text-mafia-gold/40 font-mono text-[9px] md:text-[10px] uppercase tracking-widest md:tracking-[1em] mb-4 ml-0 md:ml-[1em]">
                    {lang === 'cs' ? "ZABEZPEČENÝ_PŘÍSTUP_NAVÁZÁN" : "SECURE_ACCESS_ESTABLISHED"}
                  </span>
-                                <h1 className="text-4xl md:text-8xl lg:text-9xl font-heading font-black text-white italic tracking-tighter leading-[0.85] mb-2 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                                 <h1 className="text-4xl md:text-8xl lg:text-9xl font-heading font-black text-white italic tracking-tighter leading-[0.85] mb-2 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
                     {lang === 'cs' ? (
                       <>SKRYTÁ <span className="text-mafia-gold">MÍSTA</span></>
                     ) : (
@@ -243,6 +246,24 @@ export default function HiddenPlacesPage() {
            </div>
         </section>
       </div>
+
+      <Footer />
+
+      <BottomTerminalReveal thresholdMultiplier={1.5}>
+        {(level) => (
+          <>
+            {level >= 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <HiddenSEOArchive />
+              </motion.div>
+            )}
+          </>
+        )}
+      </BottomTerminalReveal>
 
       <style jsx global>{`
         @keyframes scanline {

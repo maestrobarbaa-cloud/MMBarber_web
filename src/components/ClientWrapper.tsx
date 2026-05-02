@@ -252,14 +252,14 @@ export function ClientWrapper() {
       {showEffects && <BarberChat isOpen={isBarberChatOpen} />}
       {showEffects && <Radio />}
       <CookieBanner />
-      {showEffects && <FloatingScissors />}
+      {/* {showEffects && <FloatingScissors />} */}
       <MobileCompass />
       <VipControlBar />
       {showEffects && <GlobalSound />}
       {showEffects && <MatrixBackground />}
       <UserSettingsManager />
       <EarthProtocol isOpen={isEarthProtocolOpen} onClose={() => setIsEarthProtocolOpen(false)} lang={lang} />
-      <ElitaGame />
+      {/* {showEffects && <ElitaGame />} */}
     </MotionConfig>
   );
 }
