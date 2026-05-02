@@ -720,14 +720,24 @@ export function Header() {
         {/* Mobile Actions (Top Right) */}
         <div className="xl:hidden flex items-center gap-2 relative z-[30001]">
           {/* Compass integrated into the bar */}
-          {!isCompassActive && !isMenuOpen && (
-            <button 
-              onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
-              className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)]"
-            >
-              <Compass size={24} className="text-mafia-gold animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-heading font-black text-mafia-gold tracking-[0.1em] uppercase whitespace-nowrap hidden min-[380px]:inline">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
-            </button>
+          {!isMenuOpen && (
+            isCompassActive ? (
+              <button 
+                onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
+                className="flex items-center justify-center w-12 h-12 bg-mafia-red border-2 border-white group transition-all duration-500 shadow-[0_0_20px_rgba(255,0,0,0.4)]"
+                aria-label="Deactivate Compass"
+              >
+                <X size={24} className="text-white group-hover:scale-110 transition-transform" />
+              </button>
+            ) : (
+              <button 
+                onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
+                className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)]"
+              >
+                <Compass size={24} className="text-mafia-gold animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] font-heading font-black text-mafia-gold tracking-[0.1em] uppercase whitespace-nowrap hidden min-[380px]:inline">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
+              </button>
+            )
           )}
 
           <button

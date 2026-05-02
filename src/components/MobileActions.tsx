@@ -81,9 +81,10 @@ export function MobileActions() {
     },
     { 
       id: 'compass',
-      label: 'KOMPAS', 
-      icon: <Compass size={24} className="animate-spin-slow" />, 
-      isAction: () => window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'))
+      label: isCompassOpen ? (t.cityGuide?.compass?.deactivate || 'VYPNOUT KOMPAS') : 'KOMPAS', 
+      icon: isCompassOpen ? <X size={24} className="text-mafia-red" /> : <Compass size={24} className="animate-spin-slow" />, 
+      isAction: () => window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass')),
+      color: isCompassOpen ? 'bg-mafia-red/10 border-mafia-red/30' : undefined
     }
   ];
 

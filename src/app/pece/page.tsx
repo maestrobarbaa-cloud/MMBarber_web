@@ -169,8 +169,32 @@ export default function CareMagazinePage() {
           </div>
         </div>
 
+        {/* Mobile Navigation Header */}
+        <div className="xl:hidden border-b border-white/5 bg-black/60 backdrop-blur-md sticky top-24 z-[90] overflow-x-auto no-scrollbar scroll-smooth">
+           <div className="flex px-4 py-3 gap-6 whitespace-nowrap min-w-max">
+              {MAGAZINE_PAGES.map((page, i) => (
+                <button 
+                  key={i}
+                  onClick={() => {
+                    setCurrentPage(i);
+                    // Scroll into view
+                    const el = document.getElementById(`mob-nav-${i}`);
+                    el?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                  }}
+                  id={`mob-nav-${i}`}
+                  className={`flex flex-col items-center gap-1.5 transition-all duration-300 ${i === currentPage ? 'text-mafia-gold' : 'text-white/30'}`}
+                >
+                   <div className={`w-1.5 h-1.5 rotate-45 transition-all duration-500 ${i === currentPage ? 'bg-mafia-gold scale-125 shadow-[0_0_8px_rgba(197,160,89,0.8)]' : 'bg-white/10'}`}></div>
+                   <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold">
+                     {page.shortTitle}
+                   </span>
+                </button>
+              ))}
+           </div>
+        </div>
+
         {/* Header */}
-        <div className="sticky top-0 z-[100] flex items-center justify-between p-6 md:p-10 border-b border-white/5 bg-black/40 backdrop-blur-md">
+        <div className="sticky top-0 z-[110] h-24 flex items-center justify-between px-6 border-b border-white/5 bg-black/40 backdrop-blur-md">
            <Link href="/" className="group flex items-center gap-3 text-mafia-gold hover:text-white transition-all duration-500">
               <div className="w-10 h-10 rounded-full border border-mafia-gold/20 flex items-center justify-center group-hover:border-mafia-gold group-hover:bg-mafia-gold group-hover:text-black transition-all duration-500">
                  <ArrowLeft size={18} />
@@ -184,54 +208,54 @@ export default function CareMagazinePage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex items-center justify-center relative p-4 md:p-12 mt-16 z-10">
-           <div className="max-w-6xl w-full h-[70vh] md:h-[80vh] relative">
+        <div className="flex-1 flex items-center justify-center relative p-3 md:p-12 mt-4 md:mt-16 z-10">
+           <div className="max-w-6xl w-full h-[75vh] md:h-[80vh] relative">
               <AnimatePresence mode="wait">
                  <motion.div
                    key={currentPage}
-                   initial={{ opacity: 0, scale: 0.95 }}
+                   initial={{ opacity: 0, scale: 0.98 }}
                    animate={{ opacity: 1, scale: 1 }}
-                   exit={{ opacity: 0, scale: 1.05 }}
-                   transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                   exit={{ opacity: 0, scale: 1.02 }}
+                   transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                    className="w-full h-full bg-[#0c0c0c] border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden relative"
                  >
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-                    <div className="flex-1 p-8 md:p-20 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-mafia-gold/20">
+                    <div className="flex-1 p-6 md:p-20 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-mafia-gold/20">
                       {renderPageContent(MAGAZINE_PAGES[currentPage], season, { handleTestAnswer, testAnswers, testResult, resetTest, lang }, t_mag, SEASONAL_CONTENT)}
                     </div>
-                    <div className="absolute bottom-6 right-6 font-mono text-[10px] text-mafia-gold/40 uppercase tracking-widest">
-                       {t_mag.ui.page} {currentPage + 1} {t_mag.ui.of} {MAGAZINE_PAGES.length}
+                    <div className="absolute bottom-4 right-4 font-mono text-[9px] text-mafia-gold/30 uppercase tracking-widest">
+                       {t_mag.ui.page} {currentPage + 1} / {MAGAZINE_PAGES.length}
                     </div>
                  </motion.div>
               </AnimatePresence>
 
-              <div className="absolute -bottom-20 left-0 w-full flex items-center justify-center gap-8">
+              <div className="absolute -bottom-16 md:-bottom-20 left-0 w-full flex items-center justify-center gap-4 md:gap-8 px-4">
                  <button 
                    onClick={prevPage}
                    disabled={currentPage === 0}
-                   className={`p-4 rounded-full border border-mafia-gold/20 transition-all ${currentPage === 0 ? 'opacity-10 cursor-not-allowed' : 'hover:bg-mafia-gold hover:text-black hover:border-mafia-gold'}`}
+                   className={`p-3 md:p-4 rounded-full border border-mafia-gold/20 transition-all ${currentPage === 0 ? 'opacity-10 cursor-not-allowed' : 'hover:bg-mafia-gold hover:text-black hover:border-mafia-gold active:scale-90'}`}
                  >
-                  <ChevronLeft size={24} />
+                  <ChevronLeft size={20} />
                  </button>
-                 <div className="flex gap-2">
+                 <div className="flex-1 max-w-[200px] flex gap-1 md:gap-2">
                     {MAGAZINE_PAGES.map((_, i) => (
                       <div 
                         key={i} 
-                        className={`w-12 h-1 transition-all duration-500 ${i === currentPage ? 'bg-mafia-gold' : 'bg-white/10'}`}
+                        className={`h-1 flex-1 transition-all duration-500 ${i === currentPage ? 'bg-mafia-gold shadow-[0_0_8px_rgba(197,160,89,0.5)]' : 'bg-white/10'}`}
                       ></div>
                     ))}
                  </div>
                  <button 
                    onClick={nextPage}
                    disabled={currentPage === MAGAZINE_PAGES.length - 1}
-                   className={`p-4 rounded-full border border-mafia-gold/20 transition-all ${currentPage === MAGAZINE_PAGES.length - 1 ? 'opacity-10 cursor-not-allowed' : 'hover:bg-mafia-gold hover:text-black hover:border-mafia-gold'}`}
+                   className={`p-3 md:p-4 rounded-full border border-mafia-gold/20 transition-all ${currentPage === MAGAZINE_PAGES.length - 1 ? 'opacity-10 cursor-not-allowed' : 'hover:bg-mafia-gold hover:text-black hover:border-mafia-gold active:scale-90'}`}
                  >
-                  <ChevronRight size={24} />
+                  <ChevronRight size={20} />
                  </button>
               </div>
            </div>
         </div>
-        <div className="h-24"></div>
+        <div className="h-20 md:h-24"></div>
       </div>
       
       <Footer />
@@ -261,57 +285,59 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
   switch (page.type) {
     case 'cover':
       return (
-        <div className="h-full flex flex-col items-center text-center py-20">
-             <div className="inline-block px-3 py-1 bg-mafia-gold text-black font-mono text-[9px] font-black uppercase tracking-[0.3em] mb-12">
+        <div className="h-full flex flex-col items-center justify-center text-center py-6 md:py-20 relative overflow-hidden">
+             <div className="inline-block px-3 py-1 bg-mafia-gold text-black font-mono text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] mb-8 md:mb-12 relative z-20">
                 {t_mag.ui.officialPub}
              </div>
-             <h1 className="text-[12rem] md:text-[18rem] font-heading font-black text-white italic leading-none tracking-tighter mb-4 opacity-10 absolute pointer-events-none select-none">
-                {page.title}
-             </h1>
-             <h1 className="text-8xl md:text-[10rem] font-heading font-black text-white italic leading-none tracking-tighter mb-4 z-10">
-                {page.title}
-             </h1>
-             <p className="text-mafia-gold font-heading font-bold text-2xl md:text-3xl uppercase tracking-widest mb-12 italic z-10">
+             <div className="relative flex flex-col items-center">
+                <h1 className="text-7xl min-[400px]:text-8xl md:text-[18rem] font-heading font-black text-white italic leading-none tracking-tighter mb-4 opacity-5 absolute pointer-events-none select-none top-1/2 -translate-y-1/2">
+                    {page.title}
+                </h1>
+                <h1 className="text-6xl min-[400px]:text-7xl md:text-[10rem] font-heading font-black text-white italic leading-none tracking-tighter mb-4 z-10 relative">
+                    {page.title}
+                </h1>
+             </div>
+             <p className="text-mafia-gold font-heading font-bold text-lg min-[400px]:text-xl md:text-3xl uppercase tracking-widest mb-8 md:mb-12 italic z-10">
                 {page.subtitle}
              </p>
-             <div className="mt-20 pt-8 border-t border-white/10 w-64 flex justify-center">
-                <div className="font-mono text-[10px] text-white/40 tracking-widest">{page.edition}</div>
+             <div className="mt-8 md:mt-20 pt-6 md:pt-8 border-t border-white/10 w-48 md:w-64 flex justify-center z-10">
+                <div className="font-mono text-[9px] md:text-[10px] text-white/40 tracking-widest">{page.edition}</div>
              </div>
         </div>
       );
     case 'editorial':
       return (
-        <div className="h-full flex flex-col max-w-4xl mx-auto text-center py-10">
-             <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-12 leading-tight">
+        <div className="h-full flex flex-col max-w-4xl mx-auto text-center py-4 md:py-10">
+             <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-8 md:mb-12 leading-tight">
                 {page.title}
              </h2>
-             <div className="relative">
-                <Quote className="text-mafia-gold/20 absolute -top-12 -left-12" size={80} />
-                <p className="text-smoke-white/80 text-xl md:text-2xl leading-relaxed italic mb-12 font-serif relative z-10">
+             <div className="relative px-4">
+                <Quote className="text-mafia-gold/10 absolute -top-8 -left-2 md:-top-12 md:-left-12 w-12 h-12 md:w-20 md:h-20" />
+                <p className="text-smoke-white/80 text-lg md:text-2xl leading-relaxed italic mb-8 md:mb-12 font-serif relative z-10">
                     {page.content}
                 </p>
              </div>
-             <div className="mt-12">
-                <p className="text-mafia-gold font-heading font-bold text-2xl mb-2">{page.quote}</p>
-                <div className="w-12 h-0.5 bg-mafia-gold/30 mx-auto mt-4"></div>
+             <div className="mt-6 md:mt-12">
+                <p className="text-mafia-gold font-heading font-bold text-xl md:text-2xl mb-2">{page.quote}</p>
+                <div className="w-10 h-0.5 bg-mafia-gold/30 mx-auto mt-4"></div>
              </div>
         </div>
       );
     case 'rituals':
       return (
-        <div className="h-full flex flex-col">
-           <div className="mb-16 text-center">
-              <h2 className="text-5xl md:text-7xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
-              <p className="text-mafia-gold font-mono text-xs uppercase tracking-[0.4em]">{page.subtitle}</p>
+        <div className="h-full flex flex-col pb-10">
+           <div className="mb-10 md:mb-16 text-center">
+              <h2 className="text-4xl md:text-7xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-[0.4em]">{page.subtitle}</p>
            </div>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16">
               {page.rituals.map((r: any, i: number) => (
-                <div key={i} className="space-y-4 p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/30 transition-all duration-500">
+                <div key={i} className="space-y-4 p-6 md:p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/30 transition-all duration-500">
                    <div className="flex items-center gap-4">
-                      <span className="text-mafia-gold font-heading font-black text-2xl italic">{r.country}</span>
+                      <span className="text-mafia-gold font-heading font-black text-xl md:text-2xl italic">{r.country}</span>
                       <div className="flex-1 h-px bg-mafia-gold/20"></div>
                    </div>
-                   <p className="text-smoke-white/60 text-sm md:text-base leading-relaxed font-sans italic">
+                   <p className="text-smoke-white/60 text-xs md:text-base leading-relaxed font-sans italic">
                       {r.fact}
                    </p>
                 </div>
@@ -329,28 +355,28 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
       };
 
       return (
-        <div className="h-full flex flex-col">
-           <div className="mb-16 text-center">
-              <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+        <div className="h-full flex flex-col pb-10">
+           <div className="mb-10 md:mb-16 text-center">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
               <div className="flex items-center justify-center gap-4">
-                 <div className="w-12 h-px bg-mafia-gold/30"></div>
+                 <div className="w-8 h-px bg-mafia-gold/30"></div>
                  {icons[season]}
-                 <div className="w-12 h-px bg-mafia-gold/30"></div>
+                 <div className="w-8 h-px bg-mafia-gold/30"></div>
               </div>
            </div>
-           <div className="max-w-4xl mx-auto bg-white/[0.02] border border-white/5 p-12 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
+           <div className="max-w-4xl mx-auto bg-white/[0.02] border border-white/5 p-6 md:p-12 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5 md:opacity-10">
                  {icons[season]}
               </div>
-              <h3 className="text-3xl font-heading font-bold text-white italic mb-6">{content.title}</h3>
-              <p className="text-smoke-white/70 text-lg leading-relaxed mb-12 italic border-l-2 border-mafia-gold pl-6">
+              <h3 className="text-2xl md:text-3xl font-heading font-bold text-white italic mb-4 md:mb-6">{content.title}</h3>
+              <p className="text-smoke-white/70 text-base md:text-lg leading-relaxed mb-8 md:mb-12 italic border-l-2 border-mafia-gold pl-4 md:pl-6">
                  {content.desc}
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                  {content.tips.map((tip: string, i: number) => (
-                   <div key={i} className="p-6 bg-black border border-white/5 hover:border-mafia-gold/40 transition-all group">
-                      <div className="text-mafia-gold font-mono text-[10px] mb-4">TIP 0{i+1}</div>
-                      <p className="text-smoke-white/60 text-sm leading-relaxed group-hover:text-white transition-colors">{tip}</p>
+                   <div key={i} className="p-5 md:p-6 bg-black border border-white/5 hover:border-mafia-gold/40 transition-all group">
+                      <div className="text-mafia-gold font-mono text-[9px] mb-3">TIP 0{i+1}</div>
+                      <p className="text-smoke-white/60 text-xs md:text-sm leading-relaxed group-hover:text-white transition-colors">{tip}</p>
                    </div>
                  ))}
               </div>
@@ -359,35 +385,35 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
       );
     case 'fragrance':
       return (
-        <div className="w-full flex flex-col">
-           <div className="mb-12">
-              <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
-              <p className="text-mafia-gold font-mono text-xs uppercase tracking-widest">{page.subtitle}</p>
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
            </div>
-           <p className="text-smoke-white/70 text-lg max-w-4xl mb-12 italic leading-relaxed">
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
               {page.content}
            </p>
-           <div className="mb-16">
-              <h4 className="text-white font-mono text-[10px] uppercase tracking-[0.4em] mb-8 border-l-2 border-mafia-gold pl-4">{lang === 'cs' ? 'Genetický Profiler:' : 'Genetic Profiler:'}</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+           <div className="mb-12 md:mb-16">
+              <h4 className="text-white font-mono text-[9px] md:text-[10px] uppercase tracking-[0.4em] mb-6 md:mb-8 border-l-2 border-mafia-gold pl-4">{lang === 'cs' ? 'Genetický Profiler:' : 'Genetic Profiler:'}</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                  {page.profiles.map((p: any, i: number) => (
-                   <div key={i} className="group p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/40 transition-all duration-700">
-                      <h5 className="text-mafia-gold font-heading font-bold text-lg uppercase mb-4">{p.origin}</h5>
-                      <div className="space-y-4">
-                         <div className="text-[9px] font-mono text-white/30 uppercase">{lang === 'cs' ? 'Biometrika:' : 'Biometrics:'} <span className="text-white/60">{p.skin}</span></div>
-                         <div className="text-[9px] font-mono text-white/30 uppercase">{lang === 'cs' ? 'Genetika:' : 'Genetics:'} <span className="text-white/60">{p.genetics}</span></div>
-                         <div className="h-px bg-white/5 w-full my-4"></div>
-                         <p className="text-smoke-white/50 text-xs leading-relaxed italic">{p.rec}</p>
+                   <div key={i} className="group p-6 md:p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/40 transition-all duration-700">
+                      <h5 className="text-mafia-gold font-heading font-bold text-base md:text-lg uppercase mb-4">{p.origin}</h5>
+                      <div className="space-y-3 md:space-y-4">
+                         <div className="text-[8px] md:text-[9px] font-mono text-white/30 uppercase">{lang === 'cs' ? 'Biometrika:' : 'Biometrics:'} <span className="text-white/60">{p.skin}</span></div>
+                         <div className="text-[8px] md:text-[9px] font-mono text-white/30 uppercase">{lang === 'cs' ? 'Genetika:' : 'Genetics:'} <span className="text-white/60">{p.genetics}</span></div>
+                         <div className="h-px bg-white/5 w-full my-3 md:my-4"></div>
+                         <p className="text-smoke-white/50 text-[10px] md:text-xs leading-relaxed italic">{p.rec}</p>
                       </div>
                    </div>
                  ))}
               </div>
            </div>
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
               {page.factors.map((f: any, i: number) => (
-                <div key={i} className="p-8 bg-black border border-white/5 hover:border-mafia-gold/30 transition-all duration-500">
-                   <h5 className="text-mafia-gold font-heading font-bold text-lg uppercase tracking-widest mb-6">{f.t}</h5>
-                   <p className="text-smoke-white/50 text-sm leading-relaxed font-sans">{f.d}</p>
+                <div key={i} className="p-6 md:p-8 bg-black border border-white/5 hover:border-mafia-gold/30 transition-all duration-500">
+                   <h5 className="text-mafia-gold font-heading font-bold text-base md:text-lg uppercase tracking-widest mb-4 md:mb-6">{f.t}</h5>
+                   <p className="text-smoke-white/50 text-xs md:text-sm leading-relaxed font-sans">{f.d}</p>
                 </div>
               ))}
            </div>
@@ -395,19 +421,19 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
       );
     case 'aftercare':
       return (
-        <div className="w-full flex flex-col">
-           <div className="mb-12">
-              <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
-              <p className="text-mafia-gold font-mono text-xs uppercase tracking-widest">{page.subtitle}</p>
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
            </div>
-           <p className="text-smoke-white/70 text-lg max-w-4xl mb-12 italic leading-relaxed">
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
               {page.content}
            </p>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {page.sections.map((section: any, i: number) => (
-                <div key={i} className="p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/20 transition-all group">
-                   <h5 className="text-mafia-gold font-heading font-bold text-lg uppercase tracking-widest mb-4 group-hover:text-white transition-colors">{section.t}</h5>
-                   <p className="text-smoke-white/50 text-sm leading-relaxed">{section.d}</p>
+                <div key={i} className="p-6 md:p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/20 transition-all group">
+                   <h5 className="text-mafia-gold font-heading font-bold text-base md:text-lg uppercase tracking-widest mb-4 group-hover:text-white transition-colors">{section.t}</h5>
+                   <p className="text-smoke-white/50 text-xs md:text-sm leading-relaxed">{section.d}</p>
                 </div>
               ))}
            </div>
@@ -415,24 +441,24 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
       );
     case 'shaving':
       return (
-        <div className="w-full flex flex-col">
-           <div className="mb-12">
-              <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
-              <p className="text-mafia-gold font-mono text-xs uppercase tracking-widest">{page.subtitle}</p>
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
            </div>
-           <p className="text-smoke-white/70 text-lg max-w-4xl mb-12 italic leading-relaxed">
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
               {page.content}
            </p>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {page.steps.map((step: any, i: number) => (
-                <div key={i} className="p-8 bg-black border border-white/5 hover:border-mafia-gold/40 transition-all duration-500 group">
-                   <div className="flex items-center gap-4 mb-6">
-                      <div className="w-10 h-10 rounded-full border border-mafia-gold/30 flex items-center justify-center text-mafia-gold font-mono text-sm group-hover:bg-mafia-gold group-hover:text-black transition-all">
+                <div key={i} className="p-6 md:p-8 bg-black border border-white/5 hover:border-mafia-gold/40 transition-all duration-500 group">
+                   <div className="flex items-center gap-4 mb-4 md:mb-6">
+                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-mafia-gold/30 flex items-center justify-center text-mafia-gold font-mono text-xs md:text-sm group-hover:bg-mafia-gold group-hover:text-black transition-all">
                          0{i+1}
                       </div>
-                      <h5 className="text-white font-heading font-bold text-lg uppercase tracking-widest">{step.t}</h5>
+                      <h5 className="text-white font-heading font-bold text-base md:text-lg uppercase tracking-widest">{step.t}</h5>
                    </div>
-                   <p className="text-smoke-white/50 text-sm leading-relaxed">{step.d}</p>
+                   <p className="text-smoke-white/50 text-xs md:text-sm leading-relaxed">{step.d}</p>
                 </div>
               ))}
            </div>
@@ -440,25 +466,25 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
       );
     case 'nutrition':
       return (
-        <div className="w-full flex flex-col">
-           <div className="mb-12 text-center md:text-left">
-              <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
-              <p className="text-mafia-gold font-mono text-xs uppercase tracking-widest">{page.subtitle}</p>
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12 text-center md:text-left">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
            </div>
-           <p className="text-smoke-white/70 text-lg max-w-4xl mb-12 italic leading-relaxed">
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
               {page.content}
            </p>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {page.nutrients.map((item: any, i: number) => (
-                <div key={i} className="p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/20 transition-all group">
+                <div key={i} className="p-6 md:p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/20 transition-all group">
                    <div className="flex justify-between items-start mb-4">
-                      <h5 className="text-mafia-gold font-heading font-bold text-xl uppercase tracking-widest">{item.n}</h5>
-                      <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Klíčová živina' : 'Key Nutrient'}</div>
+                      <h5 className="text-mafia-gold font-heading font-bold text-lg md:text-xl uppercase tracking-widest">{item.n}</h5>
+                      <div className="text-[8px] md:text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Klíčová živina' : 'Key Nutrient'}</div>
                    </div>
-                   <div className="text-white/80 text-xs font-mono mb-4 uppercase tracking-wider bg-white/5 inline-block px-2 py-1">
+                   <div className="text-white/80 text-[10px] font-mono mb-4 uppercase tracking-wider bg-white/5 inline-block px-2 py-1">
                       {lang === 'cs' ? 'Zdroje:' : 'Sources:'} {item.f}
                    </div>
-                   <p className="text-smoke-white/50 text-sm leading-relaxed">{item.d}</p>
+                   <p className="text-smoke-white/50 text-xs md:text-sm leading-relaxed">{item.d}</p>
                 </div>
               ))}
            </div>
@@ -466,19 +492,19 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
       );
     case 'expert':
       return (
-        <div className="w-full flex flex-col">
-           <div className="mb-12">
-              <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
-              <p className="text-mafia-gold font-mono text-xs uppercase tracking-widest">{page.subtitle}</p>
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
            </div>
-           <p className="text-smoke-white/70 text-lg max-w-4xl mb-12 italic leading-relaxed">
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
               {page.content}
            </p>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {page.sections.map((section: any, i: number) => (
-                <div key={i} className="p-8 bg-black border border-white/5 hover:border-mafia-gold/30 transition-all group">
-                   <h5 className="text-mafia-gold font-heading font-bold text-lg uppercase tracking-widest mb-4 group-hover:text-white transition-colors">{section.t}</h5>
-                   <p className="text-smoke-white/50 text-sm leading-relaxed">{section.d}</p>
+                <div key={i} className="p-6 md:p-8 bg-black border border-white/5 hover:border-mafia-gold/30 transition-all group">
+                   <h5 className="text-mafia-gold font-heading font-bold text-base md:text-lg uppercase tracking-widest mb-4 group-hover:text-white transition-colors">{section.t}</h5>
+                   <p className="text-smoke-white/50 text-xs md:text-sm leading-relaxed">{section.d}</p>
                 </div>
               ))}
            </div>
@@ -486,20 +512,20 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
       );
     case 'solutions':
       return (
-        <div className="w-full flex flex-col">
-           <div className="mb-12">
-              <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
-              <p className="text-mafia-gold font-mono text-xs uppercase tracking-widest">{page.subtitle}</p>
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
            </div>
-           <p className="text-smoke-white/70 text-lg max-w-4xl mb-12 italic leading-relaxed">
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
               {page.content}
            </p>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {page.categories.map((cat: any, i: number) => (
-                <div key={i} className="p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/20 transition-all group relative overflow-hidden">
-                   <div className="absolute top-0 right-0 p-4 text-[40px] font-heading font-black text-white/[0.02] pointer-events-none uppercase italic">SOL-0{i+1}</div>
-                   <h5 className="text-mafia-gold font-heading font-bold text-xl uppercase tracking-widest mb-6 group-hover:text-white transition-colors">{cat.t}</h5>
-                   <p className="text-smoke-white/50 text-sm leading-relaxed border-l border-mafia-gold/20 pl-6">{cat.d}</p>
+                <div key={i} className="p-6 md:p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/20 transition-all group relative overflow-hidden">
+                   <div className="absolute top-0 right-0 p-4 text-[30px] md:text-[40px] font-heading font-black text-white/[0.02] pointer-events-none uppercase italic">SOL-0{i+1}</div>
+                   <h5 className="text-mafia-gold font-heading font-bold text-lg md:text-xl uppercase tracking-widest mb-4 md:mb-6 group-hover:text-white transition-colors">{cat.t}</h5>
+                   <p className="text-smoke-white/50 text-[10px] md:text-sm leading-relaxed border-l border-mafia-gold/20 pl-4 md:pl-6">{cat.d}</p>
                 </div>
               ))}
            </div>
@@ -515,33 +541,35 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
       if (testResult) {
         const res = results[testResult];
         return (
-          <div className="h-full flex flex-col items-center justify-center py-10">
-             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="max-w-2xl w-full bg-white/[0.03] border border-mafia-gold/30 p-12 relative overflow-hidden">
-                <h2 className="text-mafia-gold font-heading font-black text-4xl italic mb-2">{res.title}</h2>
-                <p className="text-smoke-white/80 leading-relaxed mb-8 italic">{res.desc}</p>
+          <div className="h-full flex flex-col items-center justify-center py-6 md:py-10">
+             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="max-w-2xl w-full bg-white/[0.03] border border-mafia-gold/30 p-6 md:p-12 relative overflow-hidden">
+                <h2 className="text-mafia-gold font-heading font-black text-2xl md:text-4xl italic mb-2">{res.title}</h2>
+                <p className="text-smoke-white/80 text-sm md:text-lg leading-relaxed mb-6 md:mb-8 italic">{res.desc}</p>
                 
                 {res.advice && (
-                  <div className="p-4 bg-mafia-gold/5 border-l-2 border-mafia-gold mb-8">
-                    <div className="text-mafia-gold font-mono text-[10px] uppercase mb-2 font-bold">
+                  <div className="p-4 bg-mafia-gold/5 border-l-2 border-mafia-gold mb-6 md:mb-8">
+                    <div className="text-mafia-gold font-mono text-[9px] md:text-[10px] uppercase mb-2 font-bold">
                        {page.type === 'test-scalp' ? (lang === 'cs' ? 'Doporučení:' : 'Recommendation:') : (lang === 'cs' ? 'Expertní rada:' : 'Expert Advice:')}
                     </div>
-                    <p className="text-sm text-white/70">{res.advice}</p>
+                    <p className="text-xs md:text-sm text-white/70">{res.advice}</p>
                   </div>
                 )}
 
-                {res.focus && (
-                  <div className="text-white/30 text-[10px] font-mono uppercase">
-                    {lang === 'cs' ? 'Hlavní složka:' : 'Key Ingredient:'} {res.focus}
-                  </div>
-                )}
-                
-                {res.warning && (
-                  <div className="text-red-400/60 text-[9px] font-mono uppercase tracking-widest mt-4">
-                    {lang === 'cs' ? 'Varování:' : 'Warning:'} {res.warning}
-                  </div>
-                )}
+                <div className="flex flex-col gap-4">
+                  {res.focus && (
+                    <div className="text-white/30 text-[9px] md:text-[10px] font-mono uppercase">
+                      {lang === 'cs' ? 'Hlavní složka:' : 'Key Ingredient:'} {res.focus}
+                    </div>
+                  )}
+                  
+                  {res.warning && (
+                    <div className="text-red-400/60 text-[8px] md:text-[9px] font-mono uppercase tracking-widest">
+                      {lang === 'cs' ? 'Varování:' : 'Warning:'} {res.warning}
+                    </div>
+                  )}
+                </div>
 
-                <button onClick={resetTest} className="mt-8 w-full py-4 border border-white/10 hover:bg-white/5 transition-all font-mono text-[10px] uppercase tracking-widest">
+                <button onClick={resetTest} className="mt-8 w-full py-4 border border-white/10 hover:bg-white/5 transition-all font-mono text-[9px] md:text-[10px] uppercase tracking-widest">
                    {t_mag.ui.reset}
                 </button>
              </motion.div>
@@ -551,18 +579,18 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
 
       const currentQ = questions[testAnswers.length];
       return (
-        <div className="h-full flex flex-col items-center justify-center py-10">
-           <div className="max-w-3xl w-full">
-              <div className="mb-12 text-center">
-                 <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
-                 <p className="text-mafia-gold font-mono text-xs uppercase tracking-[0.4em]">{page.subtitle}</p>
+        <div className="h-full flex flex-col items-center justify-center py-6 md:py-10">
+           <div className="max-w-3xl w-full px-4">
+              <div className="mb-10 md:mb-12 text-center">
+                 <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+                 <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-[0.4em]">{page.subtitle}</p>
               </div>
-              <div className="space-y-8">
-                 <h3 className="text-2xl font-heading font-bold text-white italic mb-8">{currentQ.q}</h3>
-                 <div className="grid grid-cols-1 gap-4">
+              <div className="space-y-6 md:space-y-8">
+                 <h3 className="text-xl md:text-2xl font-heading font-bold text-white italic mb-6 md:mb-8 text-center">{currentQ.q}</h3>
+                 <div className="grid grid-cols-1 gap-3 md:gap-4">
                     {currentQ.options.map((opt: any, i: number) => (
-                      <button key={i} onClick={() => handleTestAnswer(opt.val)} className="p-6 border border-white/5 bg-white/[0.02] hover:border-mafia-gold/50 hover:bg-mafia-gold/5 text-left transition-all">
-                         <p className="text-smoke-white/60">{opt.text}</p>
+                      <button key={i} onClick={() => handleTestAnswer(opt.val)} className="p-5 md:p-6 border border-white/5 bg-white/[0.02] hover:border-mafia-gold/50 hover:bg-mafia-gold/5 text-left transition-all group">
+                         <p className="text-smoke-white/60 group-hover:text-white transition-colors text-sm md:text-base">{opt.text}</p>
                       </button>
                     ))}
                  </div>
