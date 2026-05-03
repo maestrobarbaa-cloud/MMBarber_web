@@ -56,19 +56,9 @@ export function WelcomeLetters() {
   useEffect(() => {
     setIsMounted(true);
     
-    // Skip for mobile immediately
-    if (typeof window !== 'undefined' && window.innerWidth < 1280) {
-      setIsVisible(false);
-      localStorage.setItem("mmbarber_welcome_letters_seen_v13", "true");
-      return;
-    }
-
-    // Unique version v13 to reset for all users who had issues
-    const hasSeen = localStorage.getItem("mmbarber_welcome_letters_seen_v13"); 
-    if (!hasSeen) {
-      const timer = setTimeout(() => setIsVisible(true), 1500); // Faster appearance for better UX
-      return () => clearTimeout(timer);
-    }
+    // Skip for everyone as requested by user
+    setIsVisible(false);
+    localStorage.setItem("mmbarber_welcome_letters_seen_v13", "true");
   }, []);
 
   const handleDismissPermanently = () => {

@@ -706,7 +706,7 @@ export function Header() {
             <div className="relative ml-2 flex flex-col justify-center">
               <span 
                 ref={logoRef}
-                className="text-lg md:text-3xl font-heading font-black text-mafia-gold tracking-widest group-hover:text-smoke-white transition-all duration-300 logo-neon leading-none"
+                className="text-lg md:text-3xl font-heading font-black text-mafia-gold noir-mode:text-smoke-white tracking-widest group-hover:text-smoke-white transition-all duration-300 logo-neon leading-none"
               >
                 MMBARBER
               </span>
@@ -732,24 +732,24 @@ export function Header() {
             ) : (
               <button 
                 onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
-                className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)]"
+                className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-red group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.1)] theme-blood:shadow-[0_0_20px_rgba(139,0,0,0.2)]"
               >
-                <Compass size={24} className="text-mafia-gold animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] font-heading font-black text-mafia-gold tracking-[0.1em] uppercase whitespace-nowrap hidden min-[380px]:inline">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
+                <Compass size={24} className="text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] font-heading font-black text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red tracking-[0.1em] uppercase whitespace-nowrap hidden min-[380px]:inline">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
               </button>
             )
           )}
 
           <button
             onClick={toggleMenu}
-            className={`flex items-center gap-2 px-4 py-2.5 shadow-[0_0_20px_rgba(197,160,89,0.3)] border-2 transition-all duration-500 ${isMenuOpen ? 'bg-mafia-gold border-white' : 'bg-mafia-black border-mafia-gold group hover:bg-mafia-gold/20'}`}
+            className={`flex items-center gap-2 px-4 py-2.5 shadow-[0_0_20px_rgba(197,160,89,0.3)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.2)] border-2 transition-all duration-500 ${isMenuOpen ? 'bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-red border-white' : 'bg-mafia-black border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-red group hover:bg-mafia-gold/20'}`}
             aria-label="Open Hamburger Menu"
           >
             <div className="flex flex-col items-end">
-              <span className={`text-[10px] font-black tracking-[0.2em] uppercase leading-none ${isMenuOpen ? 'text-mafia-black' : 'text-mafia-gold'}`}>{isMenuOpen ? (lang === 'cs' ? 'ZAVŘÍT' : '') : 'MENU'}</span>
+              <span className={`text-[10px] font-black tracking-[0.2em] uppercase leading-none ${isMenuOpen ? 'text-mafia-black' : 'text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red'}`}>{isMenuOpen ? (lang === 'cs' ? 'ZAVŘÍT' : '') : 'MENU'}</span>
             </div>
             {!isMenuOpen ? (
-              <Menu size={24} className="text-mafia-gold transition-all duration-700 group-hover:scale-110" />
+              <Menu size={24} className="text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red transition-all duration-700 group-hover:scale-110" />
             ) : (
               <X size={24} className="text-mafia-black transition-all duration-700 group-hover:scale-110" />
             )}
@@ -764,13 +764,13 @@ export function Header() {
               onClick={(e) => {
                 trackEvent("nav_link_click", { label: "jak-to-chodi" });
               }} 
-              className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2"
+              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
             >
-              <Compass size={16} style={{ color: userAccentColor }} />
+              <Compass size={16} style={{ color: 'var(--user-accent-color)' }} />
               {t.header.startMission}
             </Link>
-            <Link href="/pribeh" onClick={() => trackEvent("nav_link_click", { label: "pribeh" })} className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2">
-              <Users size={16} style={{ color: userAccentColor }} />
+            <Link href="/pribeh" onClick={() => trackEvent("nav_link_click", { label: "pribeh" })} className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2">
+              <Users size={16} style={{ color: 'var(--user-accent-color)' }} />
               {t.header.aboutUs}
             </Link>
 
@@ -783,9 +783,9 @@ export function Header() {
                   document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth" });
                 }
               }} 
-              className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2"
+              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
             >
-              <MapPin size={16} style={{ color: userAccentColor }} />
+              <MapPin size={16} style={{ color: 'var(--user-accent-color)' }} />
               {t.footer.contact}
             </Link>
             <Link 
@@ -793,9 +793,9 @@ export function Header() {
               onClick={() => {
                 trackEvent("nav_link_click", { label: "designed_by_tm" });
               }} 
-              className="hover:text-mafia-gold transition-colors duration-300 flex items-center gap-2"
+              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
             >
-              <LayoutGrid size={16} style={{ color: userAccentColor }} />
+              <LayoutGrid size={16} style={{ color: 'var(--user-accent-color)' }} />
               {t.header.web || "WEB"}
             </Link>
 
@@ -867,8 +867,8 @@ export function Header() {
                 size={20} 
                 className="relative z-10" 
                 style={{ 
-                  color: userAccentColor, 
-                  filter: `drop-shadow(0 0 8px ${userAccentColor}80)`,
+                  color: 'var(--user-accent-color)', 
+                  filter: `drop-shadow(0 0 8px var(--user-glow-color))`,
                   opacity: isSearchOpen ? 1 : 0.7 
                 }} 
               />
@@ -894,10 +894,10 @@ export function Header() {
                 <Settings 
                   size={20} 
                   className={`relative z-10 ${isSettingsOpen ? 'rotate-90' : ''} transition-transform duration-500`}
-                  style={{ color: userAccentColor, filter: `drop-shadow(0 0 8px var(--user-glow-color))` }} 
+                  style={{ color: 'var(--user-accent-color)', filter: `drop-shadow(0 0 8px var(--user-glow-color))` }} 
                 />
                 {(isRadioPlaying || isGameActive || isCustomLookActive) && !isSettingsOpen && (
-                   <div className="absolute top-0 right-0 w-2 h-2 bg-mafia-gold rounded-full shadow-[0_0_8px_var(--color-mafia-gold)] z-20" />
+                   <div className="absolute top-0 right-0 w-2 h-2 bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-blood rounded-full shadow-[0_0_8px_var(--user-glow-color)] z-20" />
                 )}
               </button>
 
@@ -973,8 +973,8 @@ export function Header() {
                   size={24} 
                   className="relative z-10 animate-pulse" 
                   style={{ 
-                    color: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor,
-                    filter: `drop-shadow(0 0 10px ${(typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? 'rgba(139,0,0,0.5)' : 'var(--user-glow-color)'})`
+                    color: 'var(--user-accent-color)',
+                    filter: `drop-shadow(0 0 10px var(--user-glow-color))`
                   }} 
                 />
             </button>
@@ -1052,10 +1052,10 @@ export function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={lang === 'cs' ? "ZADEJTE CÍL..." : "SEARCH TARGET..."}
-                  className="w-full bg-white/5 border-2 border-mafia-gold/30 text-white text-base font-mono px-6 py-4 outline-none focus:border-mafia-gold transition-all tracking-[0.2em] uppercase"
+                  className="w-full bg-white/5 border-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-blood/30 text-white text-base font-mono px-6 py-4 outline-none focus:border-mafia-gold noir-mode:focus:border-mafia-silver theme-blood:focus:border-mafia-blood transition-all tracking-[0.2em] uppercase"
                 />
                 <div className="absolute top-0 right-0 h-full flex items-center pr-6 pointer-events-none">
-                  <Search size={20} className="text-mafia-gold/40" />
+                  <Search size={20} className="text-mafia-gold/40 noir-mode:text-mafia-silver/40 theme-blood:text-mafia-blood/40" />
                 </div>
               </form>
             </div>
@@ -1071,11 +1071,11 @@ export function Header() {
               </Link>
 
               <Link href="/pribeh" onClick={handleNavLinkClick} className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left">
-                <div className="text-mafia-gold/60">
+                <div className="text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60">
                    <Users size={28} />
                 </div>
                 <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest">{lang === 'cs' ? 'NÁŠ PŘÍBĚH' : 'OUR STORY'}</span>
+                   <span className="text-[10px] font-mono text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60 uppercase tracking-widest">{lang === 'cs' ? 'NÁŠ PŘÍBĚH' : 'OUR STORY'}</span>
                    <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.aboutUs}</span>
                 </div>
               </Link>
@@ -1093,11 +1093,11 @@ export function Header() {
                 }} 
                 className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
               >
-                <div className="text-mafia-gold/60">
-                   <Phone size={28} />
+                <div className="text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60">
+                   <MapPin size={28} />
                 </div>
                 <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest">{lang === 'cs' ? 'SPOJENÍ' : 'CONNECTION'}</span>
+                   <span className="text-[10px] font-mono text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60 uppercase tracking-widest">{lang === 'cs' ? 'SPOJENÍ' : 'CONNECTION'}</span>
                    <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.footer?.contact || 'KONTAKT'}</span>
                 </div>
               </Link>
@@ -1107,14 +1107,14 @@ export function Header() {
                 <Link 
                   href="/vip-club" 
                   onClick={handleNavLinkClick} 
-                  className="bg-mafia-gold/10 border border-mafia-gold/30 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
+                  className="bg-mafia-gold/10 noir-mode:bg-mafia-silver/10 theme-blood:bg-mafia-blood/10 border border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-blood/30 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
                 >
-                  <div className="text-mafia-gold">
+                  <div className="text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-blood">
                      <Sparkles size={28} />
                   </div>
                   <div className="flex flex-col">
-                     <span className="text-[10px] font-mono text-mafia-gold uppercase tracking-widest">EXKLUZIVNÍ PŘÍSTUP</span>
-                     <span className="text-sm font-sans font-black text-mafia-gold uppercase">VIP CLUB</span>
+                     <span className="text-[10px] font-mono text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-blood uppercase tracking-widest">EXKLUZIVNÍ PŘÍSTUP</span>
+                     <span className="text-sm font-sans font-black text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-blood uppercase">VIP CLUB</span>
                   </div>
                 </Link>
               )}
@@ -1124,23 +1124,23 @@ export function Header() {
                 onClick={() => {
                   window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'));
                 }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isCompassActive ? 'border-mafia-gold bg-mafia-gold/5 shadow-[0_0_20px_rgba(197,160,89,0.1)]' : 'border-white/10'}`}
+                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isCompassActive ? 'border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-blood bg-mafia-gold/5 noir-mode:bg-mafia-silver/5 theme-blood:bg-mafia-blood/5 shadow-[0_0_20px_rgba(197,160,89,0.1)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.1)] theme-blood:shadow-[0_0_20px_rgba(139,0,0,0.1)]' : 'border-white/10'}`}
               >
                 <div className="flex items-center gap-5">
-                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${isCompassActive ? 'border-mafia-gold bg-mafia-gold/10' : 'border-mafia-gold/30'}`}>
-                    <Compass size={28} className={`text-mafia-gold ${isCompassActive ? 'animate-[spin_8s_linear_infinite]' : 'opacity-40'}`} />
+                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${isCompassActive ? 'border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-blood bg-mafia-gold/10 noir-mode:bg-mafia-silver/10 theme-blood:bg-mafia-blood/10' : 'border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-blood/30'}`}>
+                    <Compass size={28} className={`text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-blood ${isCompassActive ? 'animate-[spin_8s_linear_infinite]' : 'opacity-40'}`} />
                   </div>
                   <div className="flex flex-col items-start text-left">
                     <div className="flex items-center gap-2">
                       <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{t.header.compass || 'KOMPAS'}</span>
-                      <div className={`px-1.5 py-0.5 text-[8px] font-black rounded ${isCompassActive ? 'bg-mafia-gold text-mafia-black' : 'bg-white/10 text-white/40'}`}>
+                      <div className={`px-1.5 py-0.5 text-[8px] font-black rounded ${isCompassActive ? 'bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-blood text-mafia-black' : 'bg-white/10 text-white/40'}`}>
                         {isCompassActive ? (t.header.on || 'ZAPNUTO') : (t.header.off || 'VYPNUTO')}
                       </div>
                     </div>
-                    <span className="text-[10px] font-mono text-mafia-gold/40 uppercase">{isCompassActive ? (t.header.tracking || 'SLEDUJI POLOHU') : (t.header.savingData || 'ŠETŘÍ DATA')}</span>
+                    <span className="text-[10px] font-mono text-mafia-gold/40 noir-mode:text-mafia-silver/40 theme-blood:text-mafia-blood/40 uppercase">{isCompassActive ? (t.header.tracking || 'SLEDUJI POLOHU') : (t.header.savingData || 'ŠETŘÍ DATA')}</span>
                   </div>
                 </div>
-                <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isCompassActive ? 'bg-mafia-gold' : 'bg-white/10'}`}>
+                <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isCompassActive ? 'bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-blood' : 'bg-white/10'}`}>
                    <motion.div 
                      animate={{ x: isCompassActive ? 22 : 4 }}
                      className="w-3 h-3 rounded-full bg-white shadow-sm"

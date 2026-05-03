@@ -17,6 +17,48 @@ export const MAGAZINE_CS = [
     quote: '„Kvalita není náhoda, je to výsledek inteligentního úsilí.“',
   },
   {
+    type: 'alter-ego',
+    title: 'Tvoje Alter Ego',
+    category: 'IDENTITA',
+    shortTitle: 'Alter Ego (Test)',
+    subtitle: 'Kdo se skrývá pod povrchem?',
+    questions: [
+      { q: "Jak vypadá váš ideální pracovní nástroj?", options: [{ text: "Pero, luxusní diář a drahé hodinky.", val: 1 }, { text: "Rychlé auto a neprůstřelný postoj.", val: 2 }, { text: "Vlastní pravidla a batoh na zádech.", val: 3 }, { text: "Knihy, etiketa a dobré mravy.", val: 4 }] },
+      { q: "Kdybyste měl vyřešit problém, jak to uděláte?", options: [{ text: "Deleguji to a pak zkontroluji výsledek.", val: 1 }, { text: "Vyřeším to silou nebo zastrašením.", val: 2 }, { text: "Ignoruji systém a najdu si vlastní cestu.", val: 3 }, { text: "Slušně požádám o řešení a poděkuji.", val: 4 }] },
+      { q: "Kam směřujete, když se nikdo nedívá?", options: [{ text: "Do VIP salónku s nejlepším výhledem.", val: 1 }, { text: "Do stínu, kde se dělají skutečné obchody.", val: 2 }, { text: "Kamkoliv, kde mě nikdo nebude hledat.", val: 3 }, { text: "Do knihovny nebo na charitativní večer.", val: 4 }] }
+    ],
+    results: {
+      boss: { 
+        title: "IDENTITA: BOSS", 
+        desc: "Vy neřídíte jen firmu, vy řídíte osudy. Autorita z vás sálá na metry daleko. Jste predátor v obleku.", 
+        advice: "Váš styl: SLICK BACK + perfektně konturované vousy. Vůně: Tabák a kůže.",
+        haircut: "Slick Back (uhlazený dozadu)",
+        beard: "Konturované, středně dlouhé vousy"
+      },
+      gangster: { 
+        title: "IDENTITA: STREET KING", 
+        desc: "Město je vaše hřiště a ulice vaše pravidla. Respekt se nekupuje, ten se získává činy.", 
+        advice: "Váš styl: HIGH FADE + TEXTURE CROP. Vůně: Černý pepř a oud.",
+        haircut: "High Fade (vysoký přechod) + Texture Crop",
+        beard: "Krátké strniště nebo ostře řezaná brada"
+      },
+      outsider: { 
+        title: "IDENTITA: REBEL / OUTSIDER", 
+        desc: "Systém je pro vás jen doporučení. Žijete na okraji, ale vidíte to, co ostatní přehlížejí.", 
+        advice: "Váš styl: MESSY LOOK / LONG HAIR + divoké vousy. Vůně: Jehličí a kouř.",
+        haircut: "Messy Look (rozcuch) nebo delší přirozené vlasy",
+        beard: "Přírodní, delší a nezkrocené vousy"
+      },
+      gentleman: { 
+        title: "IDENTITA: MODERNÍ GENTLEMAN", 
+        desc: "Slušnost není slabost, je to nejvyšší forma inteligence. Svět potřebuje víc lidí jako vy.", 
+        advice: "Váš styl: SIDE PART + hladké oholení. Vůně: Levandule a čerstvé prádlo.",
+        haircut: "Side Part (pěšinka) - klasická elegance",
+        beard: "Hladce oholeno nebo velmi krátké, udržované strniště"
+      }
+    }
+  },
+  {
     type: 'rituals',
     title: 'Globální rituály',
     category: 'MAGAZÍN',
@@ -219,6 +261,48 @@ export const MAGAZINE_EN = [
     shortTitle: 'Philosophy',
     content: 'True care is not about marketing, but about biology. Your skin is the body\'s largest organ, and hair/beard are its derivatives. In this issue, we look at how oils work, how to fight skin anomalies, and why care must change with the seasons.',
     quote: '„Quality is not an accident; it is the result of intelligent effort.“',
+  },
+  {
+    type: 'alter-ego',
+    title: 'Your Alter Ego',
+    category: 'IDENTITY',
+    shortTitle: 'Alter Ego (Test)',
+    subtitle: 'Who hides beneath the surface?',
+    questions: [
+      { q: "What does your ideal work tool look like?", options: [{ text: "Pen, luxury diary, and expensive watch.", val: 1 }, { text: "Fast car and bulletproof attitude.", val: 2 }, { text: "Own rules and a backpack on your back.", val: 3 }, { text: "Books, etiquette, and good manners.", val: 4 }] },
+      { q: "If you had to solve a problem, how would you do it?", options: [{ text: "Delegate it and then check the result.", val: 1 }, { text: "Solve it with force or intimidation.", val: 2 }, { text: "Ignore the system and find your own way.", val: 3 }, { text: "Politely ask for a solution and say thank you.", val: 4 }] },
+      { q: "Where do you go when no one is looking?", options: [{ text: "To the VIP lounge with the best view.", val: 1 }, { text: "Into the shadows where real deals are made.", val: 2 }, { text: "Anywhere where no one will look for me.", val: 3 }, { text: "To the library or a charity evening.", val: 4 }] }
+    ],
+    results: {
+      boss: { 
+        title: "IDENTITY: BOSS", 
+        desc: "You don't just run a company; you run destinies. Authority radiates from you for yards. You are a predator in a suit.", 
+        advice: "Your style: SLICK BACK + perfectly contoured beard. Fragrance: Tobacco and leather.",
+        haircut: "Slick Back (smoothed back)",
+        beard: "Contoured, medium-length beard"
+      },
+      gangster: { 
+        title: "IDENTITY: STREET KING", 
+        desc: "The city is your playground and the streets are your rules. Respect isn't bought; it's earned through actions.", 
+        advice: "Your style: HIGH FADE + TEXTURE CROP. Fragrance: Black pepper and oud.",
+        haircut: "High Fade + Texture Crop",
+        beard: "Short stubble or sharply cut chin beard"
+      },
+      outsider: { 
+        title: "IDENTITY: REBEL / OUTSIDER", 
+        desc: "The system is just a suggestion to you. You live on the edge, but you see what others overlook.", 
+        advice: "Your style: MESSY LOOK / LONG HAIR + wild beard. Fragrance: Pine and smoke.",
+        haircut: "Messy Look or longer natural hair",
+        beard: "Natural, longer and untamed beard"
+      },
+      gentleman: { 
+        title: "IDENTITY: MODERN GENTLEMAN", 
+        desc: "Politeness is not weakness; it is the highest form of intelligence. The world needs more people like you.", 
+        advice: "Your style: SIDE PART + clean shave. Fragrance: Lavender and fresh linen.",
+        haircut: "Side Part - classic elegance",
+        beard: "Clean-shaven or very short, maintained stubble"
+      }
+    }
   },
   {
     type: 'rituals',

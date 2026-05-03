@@ -582,6 +582,28 @@ export const translations = {
     seznamka: {
       description: "Matchmaking z reálného světa.\nNe každý má čas nebo chuť být online.\nTohle je jiné. Přijdeš. Sedneš si... a věci se dějí.",
       protocolTitle: "MATCHMAKING PROTOKOL",
+      variantA: {
+        title: "PROTOKOL A: DOPORUČENÍ",
+        desc: "Klasická cesta skrze loajalitu a doporučení tvého okolí."
+      },
+      variantB: {
+        title: "PROTOKOL B: OPERATIVNÍ NÁBOR",
+        desc: "Pro ženy, které hledají víc než jen brigádu. Najdi sebe i někoho k sobě přímo u křesla."
+      },
+      brigada: {
+        title: "BRIGÁDA S PŘIDANOU HODNOTOU",
+        subtitle: "Hledáme novou krev do týmu (a do života)",
+        desc: "Tato varianta je určena pro ženy, které si dlouhodobě nemohou najít partnera a chtějí to změnit v reálném prostředí. Nabízíme brigádu u nás v salonu, kde se naučíte základy řemesla (nebo využijete své zkušenosti) a během práce budete v přímém kontaktu s naší klientelou.",
+        requirements: [
+          "Dlouhodobý neúspěch v hledání partnera (chceme to změnit)",
+          "Ochota učit se novým věcem a pracovat s lidmi",
+          "Reprezentativní vystupování a loajalita",
+          "Nejste 'zmagořena' radami pseudo-odborníků z Instagramu",
+          "Musíte počítat s přísným výběrovým řízením"
+        ],
+        cta: "Chci projít výběrovým řízením",
+        recruitmentSuccess: "NEPRODLENĚ SE DOSTAVTE NA NAŠI POBOČKU. ČAS KVAPÍ."
+      },
       acknowledge: "ROZUMÍM",
       successTitle: "MISE KOMPLETNÍ",
       successText: "Teď jsi připraven na osobní setkání.",
@@ -755,12 +777,13 @@ export const translations = {
       },
       ui: {
         backToSalon: "Zpět do salonu",
+        officialPub: "OFICIÁLNÍ MAGAZÍN PÉČE",
+        title: "MAGAZÍN PÉČE",
         page: "STRANA",
         of: "/",
         reset: "Resetovat test",
         next: "Další",
         prev: "Předchozí",
-        officialPub: "Oficiální odborná publikace",
         results: {
           borealis: "PROFIL: BOREALIS",
           meridionalis: "PROFIL: MERIDIONALIS",
@@ -1208,6 +1231,28 @@ export const translations = {
     seznamka: {
       description: "Real world matchmaking.\nNot everyone has time/desire to be online.\nThis is different. You come. Sit down... and things happen.",
       protocolTitle: "MATCHMAKING PROTOCOL",
+      variantA: {
+        title: "PROTOCOL A: RECOMMENDATION",
+        desc: "Classic path through loyalty and recommendations from your circle."
+      },
+      variantB: {
+        title: "PROTOCOL B: OPERATIONAL RECRUITMENT",
+        desc: "For women looking for more than just a part-time job. Find yourself and someone else right at the chair."
+      },
+      brigada: {
+        title: "PART-TIME WITH ADDED VALUE",
+        subtitle: "Looking for new blood for the team (and for life)",
+        desc: "This variant is designed for women who have been unable to find a partner for a long time and want to change that in a real-world environment. We offer a part-time position in our salon, where you will learn the basics of the trade (or use your experience) and interact directly with our clientele during work.",
+        requirements: [
+          "Long-term failure in finding a partner (we want to change that)",
+          "Willingness to learn new things and work with people",
+          "Representative appearance and loyalty",
+          "Not 'brainwashed' by the advice of IG pseudo-experts",
+          "You must expect a strict selection process"
+        ],
+        cta: "I want to undergo the selection process",
+        recruitmentSuccess: "REPORT TO OUR BRANCH IMMEDIATELY. TIME IS RUNNING OUT."
+      },
       acknowledge: "I UNDERSTAND",
       successTitle: "MISSION COMPLETE",
       successText: "Now you're ready for a personal meeting.",

@@ -29,6 +29,23 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Subtle Anti-Screenshot Watermark */
+body::before {
+  content: "MMBARBER AUTHENTIC SELECTION";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 15vw;
+  font-family: var(--font-mono);
+  color: rgba(197, 160, 89, 0.015);
+  pointer-events: none;
+  z-index: 99999;
+  white-space: nowrap;
+  letter-spacing: 0.5em;
+  font-weight: 900;
+}
+
 button, a {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -260,6 +277,8 @@ html {
   --color-mafia-gold: var(--user-accent-color, #c5a059);
   --color-mafia-gold-accent: var(--user-accent-color);
   --color-mafia-red: var(--user-red-color, #8b0000);
+  --color-mafia-silver: #e2e2e2;
+  --color-mafia-blood: #8b0000;
   --color-neon-yellow: #fdfd96;
   --color-smoke-white: #e5e4e2;
 }
@@ -394,8 +413,8 @@ html.theme-blood {
   --color-mafia-gold: #e2e2e2; /* Back to silver base */
   --color-mafia-gold-rgb: 226, 226, 226;
   --color-mafia-gold-glow: rgba(226, 226, 226, 0.3);
-  --user-accent-color: #e2e2e2;
-  --user-accent-color-rgb: 226, 226, 226;
+  --user-accent-color: #8b0000;
+  --user-accent-color-rgb: 139, 0, 0;
   --color-mafia-sepia: #888888; /* Silver sepia */
   --color-mafia-red: #8b0000;   /* Blood red detail - preserved! */
   --user-glow-radius: 25px;
@@ -1121,7 +1140,8 @@ button, input, select, textarea {
   }
 }
 
-.noir-mode .logo-neon {
+.noir-mode .logo-neon,
+.theme-blood .logo-neon {
   animation: neon-flicker-rhythmic 6s infinite !important;
 }
 

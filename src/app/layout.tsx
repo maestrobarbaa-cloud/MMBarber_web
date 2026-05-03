@@ -36,8 +36,8 @@ const greatVibes = Great_Vibes({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mmbarber.cz"),
-  title: "MMBARBER Barber & Shop | Nejlepší Barbershop Uherské Hradiště | Pánské holičství",
-  description: "Zažijte prémiovou péči v MMBARBER Barber & Shop. Moderní barbershop, heritage styl a unikátní atmosféra v srdci Uherského Hradiště. Nechte se ostříhat od mistrů v oboru – skin fade, úprava vousů břitvou, parkování zdarma.",
+  title: "Barbershop Uherské Hradiště | MMBARBER – pánské holičství Mařatice",
+  description: "Zažijte prémiovou péči v MMBARBER Barber & Shop. Nejlepší barbershop v Uherském Hradišti (Mařatice). Moderní pánský střih, skin fade a úprava vousů břitvou v unikátní noir atmosféře. Rezervujte si svůj termín online u mistrů v oboru.",
   keywords: [
     "MMBARBER",
     "Barbershop Uherské Hradiště",
@@ -140,6 +140,9 @@ export default function RootLayout({
   return (
     <html lang="cs" className="dark" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preload" href="/obr/main-hero.png" as="image" type="image/png" fetchPriority="high" />
         <link rel="preload" href="/logo.png" as="image" type="image/png" />
         <link rel="alternate" href="https://mmbarber.cz/" hrefLang="cs" />
@@ -345,12 +348,12 @@ export default function RootLayout({
 
             <ClientWrapper />
             
-            {/* Global Web Frame - PC/Desktop Only (Subtle Yellow Border & Glow) */}
-            <div className="fixed inset-0 pointer-events-none z-[9999] border-[1px] border-mafia-gold/20 shadow-[inset_0_0_15px_rgba(197,160,89,0.05),0_0_15px_rgba(197,160,89,0.05)] hidden md:block">
-              <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-mafia-gold/30" />
-              <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-mafia-gold/30" />
-              <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-mafia-gold/30" />
-              <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-mafia-gold/30" />
+            {/* Global Web Frame - PC/Desktop Only (Theme Aware Border & Glow) */}
+            <div className="fixed inset-0 pointer-events-none z-[9999] border-[1px] border-mafia-gold/20 noir-mode:border-mafia-silver/20 theme-blood:border-mafia-red/20 shadow-[inset_0_0_15px_rgba(197,160,89,0.05)] noir-mode:shadow-[inset_0_0_15px_rgba(192,192,192,0.05)] theme-blood:shadow-[inset_0_0_15px_rgba(139,0,0,0.05)] hidden md:block">
+              <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
+              <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
+              <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
+              <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
             </div>
 
             <ScrollIndicator />

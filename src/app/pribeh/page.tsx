@@ -59,32 +59,31 @@ const STORY_NODES: StoryNode[] = [
     title: "PRVNÍ KONTAKT",
     content: "Už od dětství jsem měl blízko k technice a počítačům. Jako malý kluk jsem je rozebíral, skládal zpátky a snažil se pochopil, jak fungují. Byl to přirozený zájem, který mě provázel dlouho.",
     icon: <Cpu size={24} />,
-    x: 4,
-    y: 20,
-    connections: ["tech_roots", "origin_technical"],
-    type: 'secret',
-    secretContent: "Časem ale přišlo období, kdy jsem se od toho vzdálil. Ztratil jsem směr a měl pocit, že jsem z té cesty na chvíli vystoupil. Ale některé věci v člověku nezmizí."
+    x: 2,
+    y: 35,
+    connections: ["tech_roots"],
+    type: 'major'
   },
   {
     id: "tech_roots",
     year: "NÁVRAT",
-    title: "TECHNOLOGICKÉ LOGO",
+    title: "TECHNOLOGICKÉ KOŘENY",
     content: "Postupně jsem se k technice začal vracet – tentokrát s jiným pohledem, větší zkušeností a jasnější hlavou. Začal jsem znovu využívat to, co jsem se naučil dřív, ale novým způsobem.",
     icon: <Terminal size={24} />,
-    x: 6,
-    y: 75,
+    x: 4,
+    y: 80,
     connections: ["origin_technical"],
     type: 'secret',
-    secretContent: "Dnes už nevnímám tvorbu jen jako něco technického. Ale jako možnost stavět věci po svém, bez nutnosti kopírovat ostatní. Děkuji za všechny nabídky, šablony a „hotová řešení“. Ale jdu vlastní cestou. Ne proto, že bych odmítal svět kolem sebe. Ale proto, že každá značka má svůj vlastní směr. A já si ten svůj určuju sám."
+    secretContent: "Dnes už nevnímám tvorbu jen jako něco technického, ale jako možnost stavět věci po svém. Děkuji za všechny šablony a „hotová řešení“, ale jdu vlastní cestou."
   },
   {
     id: "origin_technical",
     year: "2013 — 2017",
     title: "TECHNICKÝ ZÁKLAD",
-    content: "Vystudoval jsem SSŠPHZ Uherské Hradiště, obor elektrotechnika. Na papíře jeden směr, v realitě ale začátek cesty, která se postupně začala ubírat jiným směrem.",
+    content: "Vystudoval jsem elektrotechniku v Uherském Hradišti. Na papíře jeden směr, v realitě ale začátek cesty, která se postupně začala ubírat jiným směrem.",
     icon: <Zap size={24} />,
-    x: 10,
-    y: 45,
+    x: 8,
+    y: 55,
     connections: ["craft"],
     type: 'major'
   },
@@ -92,10 +91,10 @@ const STORY_NODES: StoryNode[] = [
     id: "craft",
     year: "2017",
     title: "SVĚT DETAILU",
-    content: "Po škole jsem si dodělal nástavbové studium kadeřník, které mi otevřelo svět práce s lidmi, stylem a detailem. Právě tam jsem pochopil, že mě zajímá něco víc než technický obor — prostředí, kde má práce okamžitý dopad na člověka.",
+    content: "Po škole jsem si dodělal kadeřnické studium, které mi otevřelo svět práce s lidmi a detailem. Pochopil jsem, že mě zajímá prostředí, kde má práce okamžitý dopad.",
     icon: <Target size={24} />,
-    x: 17,
-    y: 60,
+    x: 15,
+    y: 65,
     connections: ["experience"],
     type: 'major'
   },
@@ -103,174 +102,66 @@ const STORY_NODES: StoryNode[] = [
     id: "experience",
     year: "2018 — 2022",
     title: "TERÉNNÍ PRŮZKUM",
-    content: "Zkušenosti jsem sbíral v Brně i Uherském Hradišti, kde jsem prošel různými provozy a situacemi. Každé místo mě něco naučilo a posunulo dál. Historie této cesty je dnes vidět v recenzích a zpětné vazbě klientů.",
+    content: "Zkušenosti jsem sbíral v Brně i Uherském Hradišti. Každé místo mě něco naučilo a posunulo dál. Tato cesta je dnes vidět v recenzích a zpětné vazbě klientů.",
     icon: <Shield size={24} />,
     x: 25,
-    y: 40,
-    connections: ["turning_point", "academic", "maverick", "shadow_days"],
+    y: 45,
+    connections: ["academic"],
     type: 'major'
-  },
-  {
-    id: "turning_point",
-    year: "ZLOMOVÝ BOD",
-    title: "OSOBNÍ TRANSFORMACE",
-    content: "Studoval jsem, žil normální život a přemýšlel, kam vlastně patřím. Měl jsem plány, které nebyly jen o mně – chtěl jsem budovat budoucnost pro dva, ne jen pro sebe. Byl jsem připravený jít za tím i do jiného města, začít znovu a postavit něco společného.",
-    icon: <Heart size={24} />,
-    x: 22,
-    y: 15,
-    connections: ["maverick"],
-    type: 'secret',
-    secretContent: "Ale život ti někdy ukáže jiný směr, než čekáš. Začal jsem chápat, že ne každý vidí věci stejně. Že ne každý s tebou půjde tam, kam ty vidíš svou cestu. A i když jsem se snažil pomáhat, ukazovat směr a motivovat, nakonec jsem pochopil jednu věc: ne všechno můžeš nést za dva. To období mě změnilo. Donutilo mě přemýšlet jinak. O sobě, o směru, o tom, co vlastně chci tvořit. A právě tehdy jsem si uvědomil, že moje energie patří něčemu, co má přesah. Ne jen práci. Ne jen střihu. Ale vlastnímu směru, vlastnímu světu, vlastní značce. Tak vznikl MMBARBER. Ne jako plán B. Ale jako rozhodnutí jít vlastní cestou."
-  },
-  {
-    id: "shadow_days",
-    year: "2020 — 2021",
-    title: "STÍNOVÁ OPERACE",
-    content: "Doba, kdy se formovaly ty nejtvrdší zásady. Práce pod tlakem v nejistém prostředí. Tehdy jsem pochopil, že systém se na tebe neptá — ty se musíš postarat o sebe a o své lidi.",
-    icon: <Fingerprint size={24} />,
-    x: 27,
-    y: 80,
-    connections: ["maverick"],
-    type: 'secret',
-    secretContent: "Období lockdownů nebylo o čekání. Bylo o hledání cest tam, kde ostatní viděli jen zavřené dveře. Naučilo mě to, že pravidla jsou pro ty, co nemají vizi. My jsme měli vizi — přežít a vybudovat něco, co nikdo nezavře."
   },
   {
     id: "academic",
     year: "2022 — 2024",
     title: "TITUL NENÍ CÍL",
-    content: "Univerzita Tomáše Bati ve Zlíně, sociální pedagogika. Postupem času jsem ale pochopil jednu věc — titul není cíl. Je to jen formální potvrzení, které nikdy nenahradí reálnou zkušenost a praxi.",
+    content: "Studoval jsem sociální pedagogiku na UTB ve Zlíně. Pochopil jsem ale jednu věc — titul nikdy nenahradí reálnou zkušenost a praxi.",
     icon: <BookOpen size={24} />,
     x: 35,
-    y: 10,
-    connections: ["vision"],
+    y: 22,
+    connections: ["maverick"],
     type: 'minor'
   },
   {
     id: "maverick",
     year: "ROZCESTÍ",
     title: "VLASTNÍ SMĚR",
-    content: "Nechci jít s proudem jen proto, že je to běžná volba. Raději si volím vlastní směr — i když je delší, náročnější a bez jistot. Nechávám ostatní jít vyšlapanou cestou a já si hledám vlastní.",
+    content: "Nechci jít s proudem jen proto, že je to běžná volba. Raději si volím vlastní směr — i když je delší a náročnější. Hledám si vlastní cestu.",
     icon: <Flag size={24} />,
-    x: 38,
-    y: 45,
-    connections: ["vision", "underground_tactics", "human_connection", "listening_post", "mastery", "simplicity", "no_pose", "intuition"],
-    type: 'branch'
-  },
-  {
-    id: "intuition",
-    year: "PROCES",
-    title: "PŘIROZENÝ VÝVOJ",
-    content: "Zatím si většinu věcí dělám sám. Často vytvářím věci, které mi přijdou úplně normální – jako přirozený krok v tom, co dělám. Až zpětně ale vidím, že to pro spoustu lidí má mnohem větší hodnotu.",
-    icon: <Fingerprint size={24} />,
-    x: 48,
-    y: 85,
-    connections: ["vision"],
-    type: 'secret',
-    secretContent: "Neplánuju věci s tím, jak budou vypadat navenek. Spíš je dělám tak, jak mi dávají smysl v daný moment. A často až čas ukáže, co z toho vlastně vzniklo. To, co je pro mě 'jen práce', je pro ostatní důkazem směru, kterým jdu."
-  },
-  {
-    id: "no_pose",
-    year: "AUTENTICITA",
-    title: "BEZ PÓZY",
-    content: "Ohledně barbershopu si na nic nepotřebuju hrát. Většinou mě lidi potkají v obyčejném režimu – někdy rozcuchaného, v pohybu, mezi prací. Neřeším, jak to v tu chvíli vypadá navenek.",
-    icon: <Laptop size={24} />,
-    x: 31,
-    y: 60,
-    connections: ["vision"],
-    type: 'secret',
-    secretContent: "Většinu času totiž nejsem jen v barber křesle. Řeším věci kolem podnikání, nápady, systém, posun značky. Často s notebookem, mezi klienty nebo v pohybu. Klasické pořekadlo „kovářova kobyla chodí bosa“ tu možná sedí, ale spíš v tom smyslu, že energie jde do práce, ne do předstírání dokonalosti. Důležitější než image je pro mě to, co se reálně buduje."
-  },
-  {
-    id: "simplicity",
-    year: "HODNOTY",
-    title: "SÍLA JEDNODUCHOSTI",
-    content: "V životě si nepotrpím na zbytečný věci. Nikdy to nebylo o tom, co má člověk na sobě nebo kolik to stálo. Spíš o tom, co za tím je. Mám blízko k jednoduchosti – k věcem, které dávají smysl a fungují.",
-    icon: <Layers size={24} />,
-    x: 35,
-    y: 80,
-    connections: ["vision"],
-    type: 'secret',
-    secretContent: "Skromnost pro mě není póza. Je to přirozený způsob, jak přemýšlím. Důležitější než věci kolem mě je to, co tvořím a kam směřuju. Fungovat bez potřeby ukazovat se navenek – to je ten skutečný motor."
-  },
-  {
-    id: "mastery",
-    year: "ÚROVEŇ",
-    title: "TRÉNINK DĚLÁ MISTRA",
-    content: "Na první pohled to může vypadat jednoduše – rychlý střih, přesný fade, hotový účes za pár minut. Třeba crop za patnáct minut. Ale za tou rychlostí není uspěchanost. Je za ní opakování.",
-    icon: <Timer size={24} />,
     x: 42,
-    y: 65,
+    y: 50,
     connections: ["vision"],
-    type: 'secret',
-    secretContent: "Stejný pohyb, stejná situace, stejný tlak – znovu a znovu, dokud se z toho nestane přirozenost. Když něco děláš dostatečně dlouho, přestaneš nad tím přemýšlet a začneš to cítit. Pak už to není o tom, že „pracuješ rychle“. Ale o tom, že víš přesně, co děláš v každé vteřině. Jako bys byl každý den na soutěži. Ne proto, že musíš. Ale proto, že to už je tvoje úroveň."
-  },
-  {
-    id: "listening_post",
-    year: "NASLOUCHÁNÍ",
-    title: "SBĚR PERSPEKTIV",
-    content: "Věřím, že každý člověk, který projde dveřmi, může přinést něco hodnotného. Naslouchám lidem kolem sebe – klientům, známým i těm, kteří přijdou jen na chvíli. Každý má jinou zkušenost, jiný pohled a někdy i nečekanou myšlenku, která dává smysl.",
-    icon: <Ear size={24} />,
-    x: 45,
-    y: 15,
-    connections: ["vision"],
-    type: 'secret',
-    secretContent: "Neberu to ale jako slepé přijímání rad. Spíš jako sbírání perspektiv. Nakonec si ale vždy určuju vlastní směr sám. Ne všechno, co slyším, následuji. Ale učím se vnímat víc, než jen jeden úhel pohledu. A právě to mi pomáhá růst – jako člověku i v tom, co tvořím."
-  },
-  {
-    id: "human_connection",
-    year: "POZOROVÁNÍ",
-    title: "SKUTEČNÁ POUTO",
-    content: "Během času jsem začal víc vnímat, jak těžké je pro některé lidi skutečně někoho poznat. Nešlo jen o mě. Ale i o lidi v mém okolí – o moji sestru a holky, které mají problém potkat někoho normálním způsobem v reálném životě.",
-    icon: <Search size={24} />,
-    x: 46,
-    y: 40,
-    connections: ["vision"],
-    type: 'secret',
-    secretContent: "Všude je spousta možností, ale málo skutečných spojení. A právě to mě přivedlo k myšlence vytvořit něco jiného. Ne další povrchní aplikaci, ale prostor, kde se lidi můžou potkat přirozeněji, s větším smyslem. Nešlo o byznys nápad. Byla to reakce na realitu, kterou jsem viděl kolem sebe. A stejně jako u MMBARBER, i tady šlo o jedno: když něco nefunguje, zkus to udělat jinak."
-  },
-  {
-    id: "underground_tactics",
-    year: "LOGIKA BOJE",
-    title: "TACTICAL MINDSET",
-    content: "Podnikání není hra na kavárnu. Je to strategická operace. Každý krok musí mít svůj význam. Pokud nevíš proč to děláš, raději to nedělej vůbec.",
-    icon: <Terminal size={24} />,
-    x: 52,
-    y: 70,
-    connections: ["vision"],
-    type: 'secret',
-    secretContent: "Zatímco ostatní řešili barvu stěn, já jsem řešil logistiku, psychologii klienta a efektivitu každého pohybu nůžkami. Barbershop je jen frontová linie. To skutečné se děje v hlavě a v zákulisí."
+    type: 'branch'
   },
   {
     id: "vision",
     year: "SOUČASNOST",
     title: "ZROZENÍ MMBARBER",
-    content: "Tenhle podnik nevznikl proto, aby byl „další barbershop“. Vznikl pro přístup, který má klid, respekt a hloubku. Chci dělat věci vědomě, poctivě a s důrazem na detail i atmosféru.",
+    content: "Tenhle podnik nevznikl proto, aby byl „další barbershop“. Vznikl pro přístup, který má klid, respekt a hloubku.",
     icon: <Star size={24} />,
-    x: 62,
-    y: 50,
-    connections: ["people", "inner_circle"],
+    x: 65,
+    y: 45,
+    connections: ["inner_circle"],
     type: 'major'
   },
   {
     id: "inner_circle",
     year: "CORE BELIEFS",
     title: "ELITNÍ PŘÍSTUP",
-    content: "Respekt si nekoupíš. Respekt si musíš zasloužit. V MMBARBER se hraje podle našich pravidel — a kdo je nerespektuje, ten tu nemá místo.",
+    content: "Respekt si nekoupíš. Respekt si musíš zasloužit. V MMBARBER se hraje podle našich pravidel.",
     icon: <Lock size={24} />,
-    x: 65,
-    y: 20,
+    x: 68,
+    y: 25,
     connections: ["people"],
     type: 'secret',
-    secretContent: "Není to pro každého. A tak je to správně. Elita není o penězích, je o mindsetu. Chceme lidi, kteří chápou hodnotu řemesla a loajality. Zbytek může jít ke konkurenci."
+    secretContent: "Není to pro každého. A tak je to správně. Chceme lidi, kteří chápou hodnotu řemesla a loajality."
   },
   {
     id: "people",
     year: "MISE",
     title: "LIDÉ & PŘÍLEŽITOSTI",
-    content: "Chci dávat příležitost i těm, kteří ji jinde třeba nedostali. Mladším lidem, kteří chtějí začít. Šance není samozřejmost. Chci budovat prostředí, kde se lidé stávají součástí něčeho většího.",
+    content: "Chci dávat příležitost těm, kteří ji jinde třeba nedostali. Mladším lidem, kteří chtějí začít a stát se součástí něčeho většího.",
     icon: <Users size={24} />,
-    x: 71,
-    y: 35,
+    x: 75,
+    y: 30,
     connections: ["future"],
     type: 'major'
   },
@@ -278,9 +169,9 @@ const STORY_NODES: StoryNode[] = [
     id: "future",
     year: "VIZE",
     title: "CESTA POKRAČUJE",
-    content: "Mým cílem není jen podnik. Chci vytvářet místo, kde se spojuje poctivá práce, respekt k lidem a růst. Nejde mi o status, jde mi o reálnou hodnotu. Tohle je cesta, která teprve začíná.",
+    content: "Mým cílem není jen podnik. Chci vytvářet místo, kde se spojuje poctivá práce, respekt k lidem a růst.",
     icon: <Rocket size={24} />,
-    x: 73,
+    x: 78,
     y: 65,
     connections: ["operational_mode"],
     type: 'major'
@@ -289,22 +180,22 @@ const STORY_NODES: StoryNode[] = [
     id: "operational_mode",
     year: "2024 — 2025",
     title: "OPERATIVNÍ REŽIM",
-    content: "Změna paradigmatu. Už nejde jen o to, jak držíš nůžky, ale jak řídíš celý systém. Budování infrastruktury, která funguje bez ohledu na vnější vlivy. Přechod z role řemeslníka do role operátora systému.",
+    content: "Už nejde jen o to, jak držíš nůžky, ale jak řídíš systém. Budování infrastruktury, která funguje bez ohledu na vnější vlivy.",
     icon: <Activity size={24} />,
-    x: 81,
-    y: 40,
+    x: 85,
+    y: 35,
     connections: ["systemic_dominance"],
     type: 'secret',
-    secretContent: "Většina lidí vidí jen barber křeslo. Já vidím data, logistiku a psychologii. Operativní režim znamená, že každá minuta má svou cenu a každé rozhodnutí je podloženo strategií. Tohle je úroveň, kde se odděluje hobby od skutečného byznysu."
+    secretContent: "Většina lidí vidí jen barber křesle. Já vidím data, logistiku a psychologii. Tohle je úroveň, kde se odděluje hobby od byznysu."
   },
   {
     id: "systemic_dominance",
     year: "2025 — 2026",
     title: "SYSTÉMOVÁ DOMINANCE",
-    content: "Regionální autorita je potvrzena. MMBARBER se stává synonymem pro standard kvality na celém Slovácku. Propojení 'Rodiny' a digitální identity vytváří ekosystém, který nelze ignorovat.",
+    content: "Regionální autorita je potvrzena. MMBARBER se stává synonymem pro standard kvality na celém Slovácku.",
     icon: <Layers size={24} />,
-    x: 88,
-    y: 70,
+    x: 92,
+    y: 75,
     connections: ["global_standard"],
     type: 'major'
   },
@@ -312,10 +203,10 @@ const STORY_NODES: StoryNode[] = [
     id: "global_standard",
     year: "2026 — BUDOUCNOST",
     title: "GLOBÁLNÍ STANDARD",
-    content: "Hranice regionu jsou minulostí. Standardy MMBARBER jsou uznávané i v mezinárodním kontextu. Přinášíme světový styl a systémovou preciznost, která překonává běžná očekávání. Cesta nikdy nekončí, jen se mění úroveň hry.",
+    content: "Hranice regionu jsou minulostí. Standardy MMBARBER jsou uznávané i v mezinárodním kontextu. Cesta nikdy nekončí.",
     icon: <Shield size={24} />,
-    x: 96,
-    y: 30,
+    x: 98,
+    y: 25,
     connections: [],
     type: 'major'
   }
@@ -370,6 +261,9 @@ export default function StoryPage() {
   const [isEasterEggOpen, setIsEasterEggOpen] = useState(false);
   const [isSecretRevealed, setIsSecretRevealed] = useState(false);
   const [hackingProgress, setHackingProgress] = useState(0);
+  const [visitCount, setVisitCount] = useState(0);
+  const [personalNodesUnlocked, setPersonalNodesUnlocked] = useState(false);
+  const [loyalNodesUnlocked, setLoyalNodesUnlocked] = useState(false);
   
   const [stars, setStars] = useState<StarBg[]>([]);
 
@@ -383,6 +277,15 @@ export default function StoryPage() {
       delay: Math.random() * 10,
       depth: Math.random()
     })));
+
+    const count = parseInt(localStorage.getItem('mmbarber_visit_count') || '0');
+    setVisitCount(count);
+    if (count >= 5) {
+      setPersonalNodesUnlocked(true);
+    }
+    if (count >= 10) {
+      setLoyalNodesUnlocked(true);
+    }
   }, []);
 
   // Load visited nodes from localStorage
@@ -491,6 +394,95 @@ export default function StoryPage() {
       }
     }, 20);
   };
+
+  const personalNodes: StoryNode[] = [
+    {
+      id: "shadow_days",
+      year: "2020 — 2021",
+      title: "STÍNOVÁ OPERACE",
+      content: "Doba, kdy se formovaly nejtvrdší zásady. Práce pod tlakem v nejistém prostředí. Tehdy jsem pochopil, že se musíš postarat o své lidi.",
+      icon: <Fingerprint size={24} />,
+      x: 30,
+      y: 75,
+      connections: ["maverick"],
+      type: 'secret',
+      secretContent: "Období lockdownů nebylo o čekání. Bylo o hledání cest tam, kde ostatní viděli jen zavřené dveře."
+    },
+    {
+      id: "human_connection",
+      year: "POZOROVÁNÍ",
+      title: "SKUTEČNÁ POUTO",
+      content: "Během času jsem začal víc vnímat, jak těžké je pro některé lidi skutečně někoho poznat. Nešlo jen o mě, ale i o moji sestru.",
+      icon: <Search size={24} />,
+      x: 55,
+      y: 22,
+      connections: ["vision"],
+      type: 'secret',
+      secretContent: "Všude je spousta možností, ale málo skutečných spojení. To mě přivedlo k myšlence vytvořit něco jiného."
+    }
+  ];
+
+  const loyalNodes: StoryNode[] = [
+    {
+      id: "turning_point",
+      year: "ZLOMOVÝ BOD",
+      title: "OSOBNÍ TRANSFORMACE",
+      content: "Měl jsem plány, které nebyly jen o mně – chtěl jsem budovat budoucnost pro dva. Byl jsem připravený začít znovu.",
+      icon: <Heart size={24} />,
+      x: 28,
+      y: 28,
+      connections: ["academic"],
+      type: 'secret',
+      secretContent: "Ale život ti někdy ukáže jiný směr. Pochopil jsem, že moje energie musí patřit něčemu vlastnímu. Tak vznikl MMBARBER poté, co se naše cesty s partnerkou rozdělily."
+    }
+  ];
+
+  // Add pulse animation state
+  const [pulseIndex, setPulseIndex] = useState(0);
+  
+  // Linear sequence definition for the pulse
+  const getLinearSequence = () => {
+    const base = [
+      "origin", "tech_roots", "origin_technical", "craft", "experience", 
+      "academic", "maverick", "vision", "inner_circle", "people", 
+      "future", "operational_mode", "systemic_dominance", "global_standard"
+    ];
+    
+    // Insert personal/loyal nodes if unlocked
+    const sequence = [...base];
+    if (loyalNodesUnlocked) {
+      const idx = sequence.indexOf("experience");
+      if (idx !== -1) sequence.splice(idx + 1, 0, "turning_point");
+    }
+    if (personalNodesUnlocked) {
+      const idxAcad = sequence.indexOf("academic");
+      if (idxAcad !== -1) sequence.splice(idxAcad + 1, 0, "shadow_days");
+      const idxVis = sequence.indexOf("vision");
+      if (idxVis !== -1) sequence.splice(idxVis + 1, 0, "human_connection");
+    }
+    return sequence;
+  };
+
+  const sequence = getLinearSequence();
+  const maxAccessibleIndex = sequence.findLastIndex(id => visitedNodes.has(id));
+
+  // Global pulse timer - SLOWER as requested
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPulseIndex(prev => {
+        const next = prev + 1;
+        // If we reached the end of what's accessible, start over
+        return next > maxAccessibleIndex ? 0 : next;
+      });
+    }, 2500); // Slower interval (2.5s per node)
+    return () => clearInterval(interval);
+  }, [maxAccessibleIndex]);
+
+  const visibleNodes = [
+    ...STORY_NODES,
+    ...(personalNodesUnlocked ? personalNodes : []),
+    ...(loyalNodesUnlocked ? loyalNodes : [])
+  ];
 
   return (
     <div className="fixed inset-0 z-[200] bg-mafia-black text-smoke-white overflow-hidden selection:bg-mafia-gold selection:text-mafia-black flex flex-col lg:flex-row">
@@ -602,14 +594,14 @@ export default function StoryPage() {
 
                 {/* Progress Indicators */}
                 <div className="mt-12 flex items-center gap-2">
-                  {STORY_NODES.map((node, i) => (
+                  {visibleNodes.map((node, i) => (
                     <motion.div 
                       key={node.id} 
                       animate={{ 
-                        backgroundColor: STORY_NODES.indexOf(selectedNode) >= i 
-                          ? (STORY_NODES[i].type === 'secret' ? "#ef4444" : "#c5a059") 
+                        backgroundColor: visibleNodes.indexOf(selectedNode) >= i 
+                          ? (visibleNodes[i].type === 'secret' ? "#ef4444" : "#c5a059") 
                           : "rgba(197, 160, 89, 0.1)",
-                        height: STORY_NODES.indexOf(selectedNode) === i ? 6 : 2
+                        height: visibleNodes.indexOf(selectedNode) === i ? 6 : 2
                       }}
                       className="flex-1 transition-all duration-700"
                     />
@@ -671,7 +663,7 @@ export default function StoryPage() {
           onMouseMove={handleMouseMove}
           className={`h-full w-full overflow-x-auto overflow-y-hidden ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'} no-scrollbar transition-all`}
         >
-          <div className="relative h-full w-[450vw] md:w-[350vw] lg:w-[300vw] flex items-center">
+          <div className="relative h-full w-[600vw] md:w-[500vw] lg:w-[450vw] flex items-center">
             
             {/* SVG Connection Lines */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
@@ -702,96 +694,140 @@ export default function StoryPage() {
                 </filter>
               </defs>
               
-              {STORY_NODES.map(node => (
-                node.connections.map(connId => {
-                  const target = STORY_NODES.find(n => n.id === connId);
-                  if (!target) return null;
-                  
-                  const isFullyDiscovered = visitedNodes.has(node.id) && visitedNodes.has(target.id);
-                  const isNextPotential = selectedNode?.id === node.id && !visitedNodes.has(target.id);
-                  const isSecretConnection = node.type === 'secret' || target.type === 'secret';
-                  
-                  return (
-                    <motion.line
-                      key={`${node.id}-${connId}`}
-                      x1={`${node.x}%`}
-                      y1={`${node.y}%`}
-                      x2={`${target.x}%`}
-                      y2={`${target.y}%`}
-                      stroke={isSecretConnection ? "url(#secretLineGrad)" : "url(#lineGrad)"}
-                      strokeWidth={isFullyDiscovered ? "3" : isNextPotential ? "2" : "1.5"}
-                      strokeDasharray={isFullyDiscovered ? "0" : (isSecretConnection ? "4,12" : "8,8")}
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      animate={{ 
-                        pathLength: 1, 
-                        opacity: isFullyDiscovered ? 0.9 : isNextPotential ? 0.5 : 0.25,
-                      }}
-                      transition={{ duration: 1 }}
-                      style={{ 
-                        filter: isFullyDiscovered ? (isSecretConnection ? "url(#secretGlow)" : "url(#glow)") : "none",
-                      }}
-                    />
-                  );
-                })
-              ))}
+              {sequence.map((nodeId, idx) => {
+                if (idx >= sequence.length - 1) return null;
+                
+                const sourceId = nodeId;
+                const targetId = sequence[idx + 1];
+                
+                const node = visibleNodes.find(n => n.id === sourceId);
+                const target = visibleNodes.find(n => n.id === targetId);
+                
+                if (!node || !target) return null;
+                
+                const isSourceVisited = visitedNodes.has(node.id);
+                const isTargetVisited = visitedNodes.has(target.id);
+                const isFullyDiscovered = isSourceVisited && isTargetVisited;
+                const isPulseActive = pulseIndex === idx;
+                const isSecretConnection = node.type === 'secret' || target.type === 'secret';
+                
+                if (!isSourceVisited) return null;
+
+                return (
+                  <React.Fragment key={`${node.id}-${target.id}`}>
+                    {/* Static Connection Line - Color coded and hidden until fully discovered */}
+                    {isFullyDiscovered && (
+                      <motion.line
+                        x1={`${node.x}%`}
+                        y1={`${node.y}%`}
+                        x2={`${target.x}%`}
+                        y2={`${target.y}%`}
+                        stroke={isSecretConnection ? "#ef4444" : "#c5a059"}
+                        strokeWidth="1.5"
+                        initial={{ opacity: 0 }}
+                        animate={{ 
+                          opacity: isFullyDiscovered ? (isPulseActive ? 0.9 : 0.4) : 0,
+                          strokeWidth: isPulseActive ? 2.5 : 1.5,
+                        }}
+                        transition={{ duration: 1.5 }}
+                        style={{ 
+                          filter: isSecretConnection ? "blur(1px) drop-shadow(0 0 5px #ef4444)" : "blur(1px) drop-shadow(0 0 5px #c5a059)"
+                        }}
+                      />
+                    )}
+                    
+                    {/* Travelling Energy Beam - Always active for the current segment */}
+                    <AnimatePresence>
+                      {isPulseActive && (
+                        <motion.line
+                          key={`pulse-${node.id}`}
+                          x1={`${node.x}%`}
+                          y1={`${node.y}%`}
+                          x2={`${target.x}%`}
+                          y2={`${target.y}%`}
+                          stroke={isSecretConnection ? "#ff0000" : "#ffffff"}
+                          strokeWidth="3"
+                          strokeDasharray="40, 1000"
+                          initial={{ strokeDashoffset: 1000, opacity: 0 }}
+                          animate={{ 
+                            strokeDashoffset: 0, 
+                            opacity: [0, 1, 1, 0] 
+                          }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 2.5, ease: "easeInOut" }}
+                          style={{ filter: isSecretConnection ? "blur(2px) drop-shadow(0 0 10px #ff0000)" : "blur(2px) drop-shadow(0 0 10px #ffffff)" }}
+                        />
+                      )}
+                    </AnimatePresence>
+                  </React.Fragment>
+                );
+              })}
             </svg>
 
             {/* Nodes */}
-            {STORY_NODES.map((node) => (
-              <div 
-                key={node.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
-                style={{ left: `${node.x}%`, top: `${node.y}%` }}
-              >
-                <motion.button
-                  whileHover={{ scale: 1.15 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={(e) => {
-                    if (isDragging) return;
-                    setSelectedNode(node);
-                  }}
-                  className={`relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center border-2 transition-all duration-500 ${
-                    selectedNode?.id === node.id 
-                      ? (node.type === 'secret' ? "bg-mafia-red text-white border-white shadow-[0_0_40px_rgba(239,68,68,0.6)]" : "bg-mafia-gold text-mafia-black border-white shadow-[0_0_30px_rgba(197,160,89,0.5)]")
-                      : visitedNodes.has(node.id)
-                        ? (node.type === 'secret' ? "bg-mafia-black/80 text-mafia-red border-mafia-red/40" : "bg-mafia-black/80 text-mafia-gold border-mafia-gold/60 hover:border-mafia-gold")
-                        : (node.type === 'secret' ? "bg-mafia-red/5 text-mafia-red/10 border-mafia-red/10 scale-90" : "bg-mafia-black/40 text-mafia-gold/20 border-mafia-gold/10 hover:border-mafia-gold/30")
-                  }`}
+            {visibleNodes.map((node) => {
+              const isVisited = visitedNodes.has(node.id);
+              const isAccessible = isVisited || visibleNodes.some(n => visitedNodes.has(n.id) && n.connections.includes(node.id));
+
+              // Nodes are completely hidden until accessible
+              if (!isAccessible) return null;
+
+              return (
+                <div 
+                  key={node.id}
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
+                  style={{ left: `${node.x}%`, top: `${node.y}%` }}
                 >
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                     <span className={`text-[8px] font-mono font-black tracking-[0.2em] uppercase transition-opacity duration-500 ${node.type === 'secret' ? 'text-mafia-red opacity-100' : 'opacity-40'}`}>{node.year}</span>
-                  </div>
-
-                  <div className="scale-75 md:scale-100">
-                    {node.icon}
-                  </div>
-
-                  <AnimatePresence>
-                    {selectedNode?.id === node.id && (
-                      <motion.div 
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1.8, opacity: [0.6, 0] }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        transition={{ duration: 1.5, repeat: Infinity }}
-                        className={`absolute inset-0 border rounded-full pointer-events-none ${node.type === 'secret' ? 'border-mafia-red' : 'border-mafia-gold'}`}
-                      />
-                    )}
-                  </AnimatePresence>
-                  
-                  {node.type === 'secret' && !visitedNodes.has(node.id) && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <Lock size={12} className="text-mafia-red opacity-30 animate-pulse" />
+                  <motion.button
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ 
+                      scale: pulseIndex === sequence.indexOf(node.id) ? 1.2 : 1, 
+                      opacity: 1,
+                      boxShadow: pulseIndex === sequence.indexOf(node.id) 
+                        ? (node.type === 'secret' ? "0 0 60px rgba(255,0,0,1)" : "0 0 40px rgba(255,255,255,0.8)") 
+                        : "none"
+                    }}
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={(e) => {
+                      if (isDragging) return;
+                      setSelectedNode(node);
+                    }}
+                    className={`relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center border-2 transition-all duration-700 ${
+                      selectedNode?.id === node.id 
+                        ? (node.type === 'secret' ? "bg-mafia-red text-white border-white shadow-[0_0_50px_rgba(255,0,0,0.8)]" : "bg-mafia-gold text-mafia-black border-white shadow-[0_0_40px_rgba(197,160,89,0.7)]")
+                        : isVisited
+                          ? (node.type === 'secret' ? "bg-mafia-black text-mafia-red border-mafia-red" : "bg-mafia-black text-mafia-gold border-mafia-gold")
+                          : (node.type === 'secret' ? "bg-mafia-black/20 text-mafia-red/20 border-mafia-red/10" : "bg-mafia-black/20 text-mafia-gold/20 border-mafia-gold/10")
+                    }`}
+                  >
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
+                       <span className={`text-[8px] font-mono font-black tracking-[0.2em] uppercase transition-opacity duration-500 ${isVisited ? 'opacity-100' : 'opacity-0'}`}>{node.year}</span>
                     </div>
-                  )}
-                </motion.button>
-                
-                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                   <span className={`text-[9px] font-heading font-black tracking-widest uppercase transition-all duration-500 ${selectedNode?.id === node.id ? "text-white scale-110" : (node.type === 'secret' ? "text-mafia-red/40" : "text-mafia-gold/40")}`}>
-                     {node.title}
-                   </span>
+
+                    <div className="scale-75 md:scale-100">
+                      {isVisited ? node.icon : <Lock size={16} className="opacity-40" />}
+                    </div>
+
+                    <AnimatePresence>
+                      {isVisited && (
+                        <motion.div 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className={`absolute -inset-1 border border-dashed rounded-sm pointer-events-none opacity-20 ${node.type === 'secret' ? 'border-mafia-red' : 'border-mafia-gold'} animate-[spin_10s_linear_infinite]`}
+                        />
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
+                  
+                  <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
+                     <span className={`text-[9px] font-heading font-black tracking-widest uppercase transition-all duration-700 ${isVisited ? "text-white opacity-100" : "text-white/0 opacity-0"}`}>
+                       {node.title}
+                     </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             <div className="absolute inset-0 pointer-events-none">
                {/* Starfield Layers (Star Wars style flight effect) */}

@@ -57,6 +57,61 @@ function StarField() {
   );
 }
 
+function DNAHelix() {
+  return (
+    <div className="absolute top-0 bottom-0 right-8 md:right-[5%] w-64 pointer-events-none overflow-hidden hidden md:flex flex-col items-center justify-around z-0">
+      {[...Array(32)].map((_, i) => (
+        <div key={i} className="relative w-full h-8 flex items-center justify-center">
+          {/* Synchronized Container for Rung and Points */}
+          <motion.div
+            className="relative flex items-center justify-center"
+            animate={{
+              width: ["0px", "180px", "0px"],
+              opacity: [0, 1, 0],
+              rotateY: [0, 180, 360],
+              x: [0, 10, 0, -10, 0] // Subtle horizontal wobble for extra 3D feel
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 0.18
+            }}
+          >
+            {/* Connection Rung - Tapered line (thicker at ends) */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-full h-[2.5px] bg-gradient-to-r from-mafia-gold via-mafia-gold/5 to-mafia-gold noir-mode:from-mafia-silver noir-mode:via-mafia-silver/5 noir-mode:to-mafia-silver theme-blood:from-mafia-blood theme-blood:via-mafia-blood/5 theme-blood:to-mafia-blood opacity-60" />
+            </div>
+
+            {/* Left Rhombus (Kosodélník) */}
+            <div 
+              className="absolute left-0 -translate-x-1/2 w-3.5 h-7 bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-blood shadow-[0_0_20px_var(--user-accent-color)]"
+              style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
+            ></div>
+
+            {/* Right Rhombus */}
+            <div 
+              className="absolute right-0 translate-x-1/2 w-3.5 h-7 bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-blood shadow-[0_0_20px_var(--user-accent-color)] opacity-90"
+              style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
+            ></div>
+          </motion.div>
+        </div>
+      ))}
+      
+      {/* Vertical Backbone Glitters */}
+      <motion.div 
+        animate={{ y: ["0%", "100%"] }}
+        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        className="absolute inset-0 flex flex-col items-center gap-24 opacity-5"
+      >
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="w-px h-40 bg-gradient-to-b from-transparent via-mafia-gold noir-mode:via-mafia-silver theme-blood:via-mafia-blood to-transparent" />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
 export default function CareMagazinePage() {
   const { lang } = useTranslation();
   const MAGAZINE_PAGES = lang === 'en' ? MAGAZINE_EN : MAGAZINE_CS;
@@ -118,6 +173,13 @@ export default function CareMagazinePage() {
       else if (sum <= 14) setTestResult('warning');
       else setTestResult('critical');
     }
+    else if (pageType === 'alter-ego' && newAnswers.length === 3) {
+      const sum = newAnswers.reduce((a, b) => a + b, 0);
+      if (sum <= 4) setTestResult('boss');
+      else if (sum <= 7) setTestResult('gangster');
+      else if (sum <= 10) setTestResult('outsider');
+      else setTestResult('gentleman');
+    }
   };
 
   const resetTest = () => {
@@ -129,6 +191,7 @@ export default function CareMagazinePage() {
     <main className="min-h-screen bg-black text-white relative flex flex-col selection:bg-mafia-gold selection:text-black overflow-x-hidden">
       <div className="fixed inset-0 z-0 bg-black">
         <StarField />
+        <DNAHelix />
       </div>
 
       <div className="relative flex flex-col flex-1">
@@ -194,16 +257,16 @@ export default function CareMagazinePage() {
         </div>
 
         {/* Header */}
-        <div className="sticky top-0 z-[110] h-24 flex items-center justify-between px-6 border-b border-white/5 bg-black/40 backdrop-blur-md">
-           <Link href="/" className="group flex items-center gap-3 text-mafia-gold hover:text-white transition-all duration-500">
-              <div className="w-10 h-10 rounded-full border border-mafia-gold/20 flex items-center justify-center group-hover:border-mafia-gold group-hover:bg-mafia-gold group-hover:text-black transition-all duration-500">
+        <div className="sticky top-0 z-[110] h-24 flex items-center justify-between px-6 border-b border-white/10 bg-black/40 backdrop-blur-md">
+           <Link href="/" className="group flex items-center gap-3 text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red hover:text-white transition-all duration-500">
+              <div className="w-10 h-10 rounded-full border border-mafia-gold/20 noir-mode:border-mafia-silver/20 theme-blood:border-mafia-red/20 flex items-center justify-center group-hover:border-mafia-gold noir-mode:group-hover:border-mafia-silver theme-blood:group-hover:border-mafia-red group-hover:bg-mafia-gold noir-mode:group-hover:bg-mafia-silver theme-blood:group-hover:bg-mafia-red group-hover:text-black transition-all duration-500">
                  <ArrowLeft size={18} />
               </div>
               <span className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold">{t_mag.ui.backToSalon}</span>
            </Link>
            <div className="flex flex-col items-end">
-              <span className="font-heading font-black text-xl italic tracking-tighter text-white">MMBARBER</span>
-              <span className="text-[8px] font-mono text-mafia-gold/50 tracking-[0.5em] uppercase">Care_Magazine_v3.4.3</span>
+              <span className="font-heading font-black text-xl italic tracking-tighter text-white logo-neon">MMBARBER</span>
+              <span className="text-[8px] font-mono text-mafia-gold/50 noir-mode:text-mafia-silver/50 theme-blood:text-mafia-red/50 tracking-[0.5em] uppercase">{t_mag.ui.title?.replace(' ', '_')}_v3.4.3</span>
            </div>
         </div>
 
@@ -528,6 +591,95 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
                    <p className="text-smoke-white/50 text-[10px] md:text-sm leading-relaxed border-l border-mafia-gold/20 pl-4 md:pl-6">{cat.d}</p>
                 </div>
               ))}
+           </div>
+        </div>
+      );
+    case 'alter-ego':
+      if (testResult) {
+        const res = page.results[testResult];
+        return (
+          <div className="h-full flex flex-col items-center justify-center py-6 md:py-10">
+             <motion.div 
+               initial={{ opacity: 0, rotateY: 180, scale: 0.8 }} 
+               animate={{ opacity: 1, rotateY: 0, scale: 1 }} 
+               className="max-w-3xl w-full bg-gradient-to-br from-mafia-gold/20 via-black to-mafia-gold/5 border-2 border-mafia-gold p-8 md:p-16 relative overflow-hidden shadow-[0_0_50px_rgba(197,160,89,0.3)]"
+             >
+                {/* Decorative Elements */}
+                <div className="absolute top-0 right-0 p-4 font-mono text-[60px] opacity-10 select-none">ID</div>
+                <div className="absolute bottom-0 left-0 p-4 font-mono text-[10px] text-mafia-gold/40 tracking-widest uppercase">Verified by MMBARBER</div>
+                
+                <h2 className="text-mafia-gold font-heading font-black text-4xl md:text-6xl italic mb-4 tracking-tighter uppercase">{res.title}</h2>
+                <div className="w-24 h-1 bg-mafia-gold mb-8"></div>
+                
+                <p className="text-white text-lg md:text-2xl leading-relaxed mb-10 italic font-serif">
+                  {res.desc}
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                   <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
+                      <div className="text-mafia-gold font-mono text-[10px] uppercase mb-3 tracking-widest font-black">Doporučený střih:</div>
+                      <p className="text-white font-heading font-bold text-xl uppercase italic">{res.haircut}</p>
+                   </div>
+                   <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
+                      <div className="text-mafia-gold font-mono text-[10px] uppercase mb-3 tracking-widest font-black">Úprava vousů:</div>
+                      <p className="text-white font-heading font-bold text-xl uppercase italic">{res.beard}</p>
+                   </div>
+                </div>
+
+                <div className="bg-mafia-gold/10 p-6 border-l-4 border-mafia-gold mb-12">
+                   <p className="text-mafia-gold font-mono text-[11px] font-bold uppercase mb-2">PRO TIP:</p>
+                   <p className="text-smoke-white/80 italic">{res.advice}</p>
+                </div>
+
+                <button 
+                  onClick={resetTest} 
+                  className="group relative w-full py-6 bg-mafia-gold text-mafia-black font-heading font-black uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-white"
+                >
+                   <span className="relative z-10">{lang === 'cs' ? 'Zkusit jinou identitu' : 'Try another identity'}</span>
+                </button>
+             </motion.div>
+          </div>
+        );
+      }
+
+      const q = page.questions[testAnswers.length];
+      return (
+        <div className="h-full flex flex-col items-center justify-center py-6 md:py-10">
+           <div className="max-w-4xl w-full">
+              <div className="mb-12 text-center">
+                 <h2 className="text-4xl md:text-7xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+                 <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-[0.5em]">{page.subtitle}</p>
+              </div>
+              <div className="relative">
+                 <AnimatePresence mode="wait">
+                    <motion.div 
+                      key={testAnswers.length}
+                      initial={{ opacity: 0, x: 50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -50 }}
+                      className="space-y-8"
+                    >
+                       <h3 className="text-2xl md:text-4xl font-heading font-bold text-white italic mb-10 text-center leading-tight">
+                         {q.q}
+                       </h3>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {q.options.map((opt: any, i: number) => (
+                            <button 
+                              key={i} 
+                              onClick={() => handleTestAnswer(opt.val)} 
+                              className="group relative p-6 md:p-8 border border-white/10 bg-white/[0.02] hover:border-mafia-gold transition-all duration-500 text-left overflow-hidden"
+                            >
+                               <div className="absolute inset-0 bg-mafia-gold/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                               <p className="relative z-10 text-smoke-white/60 group-hover:text-white transition-colors text-base md:text-lg font-sans">
+                                 {opt.text}
+                               </p>
+                               <div className="absolute top-2 right-2 font-mono text-[10px] text-white/10 group-hover:text-mafia-gold/40">0{i+1}</div>
+                            </button>
+                          ))}
+                       </div>
+                    </motion.div>
+                 </AnimatePresence>
+              </div>
            </div>
         </div>
       );

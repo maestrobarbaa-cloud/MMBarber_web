@@ -123,8 +123,32 @@ export function OperationalJournal() {
 
         </div>
 
-        {/* Hidden Global SEO Payload */}
-        <div className="mt-32 opacity-[0.01] select-none pointer-events-none text-[8px] font-sans leading-relaxed text-mafia-gold uppercase">
+        {/* Stealth SEO Story & Keyword Payload (Visible to Crawlers, Part of Deep Reveal) */}
+        <div className="mt-40 border-t border-mafia-gold/10 pt-20">
+          <div className="opacity-[0.02] hover:opacity-[0.2] transition-opacity duration-1000 select-none text-[9px] font-mono leading-relaxed text-mafia-gold uppercase tracking-tighter">
+            <h2 className="text-xs font-bold mb-6">OPERATIVNÍ MANIFEST A PŘÍBĚH MMBARBER</h2>
+            <p className="mb-4">
+              MMBARBER není jen kadeřnictví, je to systém. Uherské Hradiště a lokalita Mařatice jsou naší základnou, 
+              odkud definujeme standardy pánské péče pro celé Slovácko. Náš příběh je o poctivém řemesle, 
+              které se nebojí břitvy ani nejmodernějších technologií. Pokud hledáš ten nejlepší skin fade v UH, 
+              jsi na správné adrese. Nejsme mainstream, jsme reálná identita.
+            </p>
+            <p className="mb-4">
+              Pánské holičství Mařatice (Sadová 1383) nabízí víc než jen střih. Nabízí klid, networking 
+              úspěšných mužů a bezproblémové parkování zdarma přímo u vchodu. Střih vousů Uherské Hradiště 
+              pod naší taktovkou zahrnuje rituál horkého ručníku (hot towel) a precizní kontury. 
+              Naše barber rezervace přes is.mmbarber.cz běží 24/7 pro tvé maximální pohodlí.
+            </p>
+            <p>
+              Keywords: Barbershop Uherské Hradiště, pánské holičství Mařatice, střih vousů Uherské Hradiště, 
+              barber rezervace, skin fade UH, pánské kadeřnictví Hradiště, holič Slovácko, břitva, 
+              tradiční holení, MM BARBER akademie, MM BARBER rodina, Kunovice, Staré Město, Uherský Brod.
+            </p>
+          </div>
+        </div>
+
+        {/* Original Hidden Global SEO Payload */}
+        <div className="mt-20 opacity-[0.01] select-none pointer-events-none text-[8px] font-sans leading-relaxed text-mafia-gold uppercase">
           Best barbershop Uherské Hradiště, top rated barber UH, expert mens haircut Slovácko region, 
           professional beard grooming Czech Republic, luxury barber services Central Europe. 
           MMBARBER academy certified training, international grooming standards, 

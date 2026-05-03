@@ -30,28 +30,15 @@ import { LocalSEOHomepage } from "@/components/LocalSEOHomepage";
 
 export default function Home() {
   const { t } = useTranslation();
-  const [showContent, setShowContent] = useState(false);
-  const [isIntroDismissed, setIsIntroDismissed] = useState(false);
+  const [showContent, setShowContent] = useState(true);
+  const [isIntroDismissed, setIsIntroDismissed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
 
   useEffect(() => {
-    // Check if intro was already dismissed in a previous session or if on mobile/tablet
-    const hasVisited = localStorage.getItem("mmbarber_visited") === "true";
-    const isMobileView = window.innerWidth < 1280;
-
-    if (hasVisited || isMobileView) {
-      setShowContent(true);
-      setIsIntroDismissed(true);
-      
-      // If it's a mobile view, mark as visited so they don't see it even if they switch to desktop mode/larger screen
-      if (isMobileView && !hasVisited) {
-        localStorage.setItem("mmbarber_visited", "true");
-        // Also set a specific mobile flag for consistency
-        localStorage.setItem("mmbarber_mobile_skip", "true");
-      }
-    }
-
+    // Automatically mark as visited to ensure intro is skipped
+    localStorage.setItem("mmbarber_visited", "true");
+    
     const checkMobile = () => setIsMobile(window.innerWidth < 1280);
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -139,13 +126,13 @@ export default function Home() {
               
               <SectionReveal>
                 <div className="section-optimize">
-                  <Services />
+                  <Profiles />
                 </div>
               </SectionReveal>
 
               <SectionReveal>
                 <div className="section-optimize">
-                  <Profiles />
+                  <Services />
                 </div>
               </SectionReveal>
 
