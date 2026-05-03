@@ -18,7 +18,8 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
   const STAGE_1_THRESHOLD = 1000 * thresholdMultiplier;
   const STAGE_2_THRESHOLD = 3000 * thresholdMultiplier;
   const STAGE_3_THRESHOLD = 7000 * thresholdMultiplier;
-  const STAGE_4_THRESHOLD = 12000 * thresholdMultiplier; // Ultimate depth - extreme scroll
+  const STAGE_4_THRESHOLD = 12000 * thresholdMultiplier;
+  const STAGE_5_THRESHOLD = 18000 * thresholdMultiplier; // Final Micka Directive level
   
   const scrollAccumulator = useRef(0);
   const lastScrollTime = useRef(0);
@@ -46,6 +47,10 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
           setUnlockLevel(4);
         }
 
+        if (unlockLevel === 4 && scrollAccumulator.current >= STAGE_5_THRESHOLD) {
+          setUnlockLevel(5);
+        }
+
         // Calculate progress for the current stage
         let progress = 0;
         if (unlockLevel === 0) {
@@ -56,6 +61,8 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
           progress = ((scrollAccumulator.current - STAGE_2_THRESHOLD) / (STAGE_3_THRESHOLD - STAGE_2_THRESHOLD)) * 100;
         } else if (unlockLevel === 3) {
           progress = ((scrollAccumulator.current - STAGE_3_THRESHOLD) / (STAGE_4_THRESHOLD - STAGE_3_THRESHOLD)) * 100;
+        } else if (unlockLevel === 4) {
+          progress = ((scrollAccumulator.current - STAGE_4_THRESHOLD) / (STAGE_5_THRESHOLD - STAGE_4_THRESHOLD)) * 100;
         } else {
           progress = 100;
         }
@@ -65,7 +72,9 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
       } else if (e.deltaY < 0 && isAtBottom) {
           scrollAccumulator.current = Math.max(0, scrollAccumulator.current + e.deltaY);
           
-          if (unlockLevel === 4 && scrollAccumulator.current < STAGE_4_THRESHOLD) {
+          if (unlockLevel === 5 && scrollAccumulator.current < STAGE_5_THRESHOLD) {
+            setUnlockLevel(4);
+          } else if (unlockLevel === 4 && scrollAccumulator.current < STAGE_4_THRESHOLD) {
             setUnlockLevel(3);
           } else if (unlockLevel === 3 && scrollAccumulator.current < STAGE_3_THRESHOLD) {
             setUnlockLevel(2);

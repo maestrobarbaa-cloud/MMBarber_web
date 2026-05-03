@@ -20,6 +20,7 @@ const FooterSecrets = dynamic(() => import("@/components/FooterSecrets").then(mo
 const RegionalSEOCloud = dynamic(() => import("@/components/RegionalSEOCloud").then(mod => mod.RegionalSEOCloud), { ssr: false });
 const GoogleReviewsWall = dynamic(() => import("@/components/GoogleReviewsWall").then(mod => mod.GoogleReviewsWall), { ssr: false });
 const OperationalJournal = dynamic(() => import("@/components/OperationalJournal").then(mod => mod.OperationalJournal), { ssr: false });
+const PersonalVision = dynamic(() => import("@/components/PersonalVision").then(mod => mod.PersonalVision), { ssr: false });
 
 import { CinematicIntro } from "@/components/Intro";
 import { Atmosphere } from "@/components/Atmosphere";
@@ -230,6 +231,20 @@ export default function Home() {
                       </SectionReveal>
                     </motion.div>
                   )}
+
+                  {level >= 5 && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      transition={{ duration: 1.5 }}
+                    >
+                      <SectionReveal>
+                        <div className="section-optimize">
+                          <PersonalVision />
+                        </div>
+                      </SectionReveal>
+                    </motion.div>
+                  )}
                 </>
               )}
             </BottomTerminalReveal>
@@ -239,9 +254,14 @@ export default function Home() {
 
       <div className="absolute bottom-0 left-0 w-full p-4 pointer-events-none select-none opacity-[0.01] text-mafia-gold transition-colors duration-1000 overflow-hidden" style={{ fontSize: '1px', lineHeight: '1.2' }}>
         <div className="max-w-[95%] mx-auto columns-4 md:columns-8 lg:columns-12 gap-4">
-          <h1>{t.seo.title}</h1>
+          <h1>MMBARBER – barbershop v Uherském Hradišti, kde se píše respekt</h1>
           <p>{t.seo.description}</p>
           <div className="space-y-1">
+            <p>
+              Barbershop Uherské Hradiště, pánské holičství Mařatice, nejlepší střih UH, skin fade Slovácko. 
+              Micka style, žádný korporát, autentický přístup, gangster vibe, poctivé řemeslo.
+              Sadová 1383 Mařatice, parkování zdarma, online rezervace 24/7.
+            </p>
             <p>{t.seo.extraContent}</p>
             <p>Keywords: {t.seo.keywords}</p>
           </div>

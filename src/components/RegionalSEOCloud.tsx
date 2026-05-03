@@ -18,7 +18,8 @@ export function RegionalSEOCloud() {
 
   const getTargetUrl = (city: string) => {
     const c = city.toLowerCase();
-    if (c.includes("hradiště") || c.includes("mařatice")) return "/barbershop-uherske-hradiste";
+    if (c.includes("mařatice")) return "/panske-holictvi-maratice";
+    if (c.includes("hradiště")) return "/barbershop-uherske-hradiste";
     if (c.includes("slovácko") || c.includes("veselí")) return "/region-slovacko";
     if (c.includes("zlín") || c.includes("napajedla")) return "/pansky-strih-uherske-hradiste";
     if (c.includes("brod") || c.includes("hluk")) return "/uprava-vousu-uherske-hradiste";

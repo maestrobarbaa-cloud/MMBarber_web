@@ -80,7 +80,7 @@ export function Services() {
             }}
             onHover={playCardSound}
           />
-          <MenuCard 
+            <MenuCard 
             variant="simple"
             title={t?.header?.seznamka || (lang === 'cs' ? 'SEZNAMKA' : 'DATING')}
             icon={<Heart size={32} className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" />}

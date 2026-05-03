@@ -12,6 +12,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { FutureSEO } from "@/components/FutureSEO";
 
 import Script from "next/script";
+import { Scissors } from "lucide-react";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
