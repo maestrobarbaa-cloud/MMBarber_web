@@ -144,8 +144,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        <link rel="preload" href="/obr/main-hero.png" as="image" type="image/png" fetchPriority="high" />
-        <link rel="preload" href="/logo.png" as="image" type="image/png" />
         <link rel="alternate" href="https://mmbarber.cz/" hrefLang="cs" />
         <link rel="alternate" href="https://mmbarber.cz/en" hrefLang="en" />
         <link rel="alternate" href="https://mmbarber.cz/" hrefLang="x-default" />

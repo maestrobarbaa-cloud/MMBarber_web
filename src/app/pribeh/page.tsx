@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Target, 
-  Zap, 
-  Shield, 
-  Star, 
-  Users, 
-  Rocket, 
-  BookOpen, 
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { motion, AnimatePresence, useMotionValue, animate, useTransform, useMotionValueEvent } from "framer-motion";
+import {
+  Target,
+  Zap,
+  Shield,
+  Star,
+  Users,
+  Rocket,
+  BookOpen,
   Flag,
-  FileText,
   X,
   Lock,
   Terminal,
@@ -19,15 +18,30 @@ import {
   AlertTriangle,
   Flame,
   Fingerprint,
-  Heart,
-  Search,
   Cpu,
-  Ear,
-  Timer,
-  Layers,
-  Laptop
+  Plus,
+  Minus,
+  Scissors,
+  MapPin,
+  Briefcase,
+  Bookmark,
+  FileText,
+  FlaskConical,
+  Eye,
+  Navigation,
+  Map,
+  ShieldCheck,
+  Award,
+  EyeOff,
+  Trophy,
+  Compass,
+  Radio,
+  Key,
+  Moon,
+  Heart,
+  ArrowLeft,
+  ArrowRight
 } from "lucide-react";
-import { useTranslation } from "@/hooks/useTranslation";
 
 interface StoryNode {
   id: string;
@@ -40,6 +54,8 @@ interface StoryNode {
   connections: string[];
   type?: 'major' | 'minor' | 'branch' | 'secret';
   secretContent?: string;
+  constellation: 'core' | 'origins' | 'talent' | 'career' | 'ultimate';
+  requiredVisits?: number;
 }
 
 interface StarBg {
@@ -50,167 +66,372 @@ interface StarBg {
   duration: number;
   delay: number;
   depth: number;
+  color: string;
 }
 
 const STORY_NODES: StoryNode[] = [
+  // --- LEVEL 1: SOUČASNOST (Central Core Hub) ---
   {
     id: "origin",
-    year: "DĚTSTVÍ",
-    title: "PRVNÍ KONTAKT",
-    content: "Už od dětství jsem měl blízko k technice a počítačům. Jako malý kluk jsem je rozebíral, skládal zpátky a snažil se pochopil, jak fungují. Byl to přirozený zájem, který mě provázel dlouho.",
-    icon: <Cpu size={24} />,
-    x: 2,
-    y: 35,
-    connections: ["tech_roots"],
-    type: 'major'
+    title: "Srdce Rodiny",
+    year: "DNES",
+    content: "Vše začíná zde. V našem křesle, kde se čas zastaví. Tady se tvoří respekt, který se nedá koupit. Jsme MMBarber a toto je naše teritorium.",
+    icon: <Users />,
+    x: 50, y: 50,
+    constellation: "core",
+    requiredVisits: 1,
+    connections: ["vibe", "rules", "loyalty"]
   },
   {
-    id: "tech_roots",
-    year: "NÁVRAT",
-    title: "TECHNOLOGICKÉ KOŘENY",
-    content: "Postupně jsem se k technice začal vracet – tentokrát s jiným pohledem, větší zkušeností a jasnější hlavou. Začal jsem znovu využívat to, co jsem se naučil dřív, ale novým způsobem.",
-    icon: <Terminal size={24} />,
-    x: 4,
-    y: 80,
-    connections: ["origin_technical"],
-    type: 'secret',
-    secretContent: "Dnes už nevnímám tvorbu jen jako něco technického, ale jako možnost stavět věci po svém. Děkuji za všechny šablony a „hotová řešení“, ale jdu vlastní cestou."
+    id: "vibe",
+    title: "Noir Atmosféra",
+    year: "2024",
+    content: "Černá a bílá. Žádné kompromisy. Naše estetika odráží naši filozofii – čistota, kontrast a neúprosná kvalita v každém detailu.",
+    icon: <Moon />,
+    x: 52, y: 48,
+    constellation: "core",
+    requiredVisits: 1,
+    connections: ["style", "secret_vibe"]
   },
   {
-    id: "origin_technical",
-    year: "2013 — 2017",
-    title: "TECHNICKÝ ZÁKLAD",
-    content: "Vystudoval jsem elektrotechniku v Uherském Hradišti. Na papíře jeden směr, v realitě ale začátek cesty, která se postupně začala ubírat jiným směrem.",
-    icon: <Zap size={24} />,
-    x: 8,
-    y: 55,
-    connections: ["craft"],
-    type: 'major'
+    id: "rules",
+    title: "Kodex Mlčení",
+    year: "STÁLÉ",
+    content: "To, co se řekne v barberu, zůstane v barberu. Jsme důvěrníci, psychologové i spojenci našich hostů. Respektujeme vaše soukromí jako vlastní.",
+    icon: <Shield />,
+    x: 48, y: 52,
+    constellation: "core",
+    requiredVisits: 1,
+    connections: ["loyalty"]
   },
   {
-    id: "craft",
-    year: "2017",
-    title: "SVĚT DETAILU",
-    content: "Po škole jsem si dodělal kadeřnické studium, které mi otevřelo svět práce s lidmi a detailem. Pochopil jsem, že mě zajímá prostředí, kde má práce okamžitý dopad.",
-    icon: <Target size={24} />,
-    x: 15,
-    y: 65,
-    connections: ["experience"],
-    type: 'major'
+    id: "loyalty",
+    title: "Pouto Krve",
+    year: "VŽDY",
+    content: "Naši zákazníci nejsou jen klienti, jsou to členové širší rodiny. Loajalita je měnou, kterou si u nás ceníme nejvíce.",
+    icon: <Heart />,
+    x: 49, y: 49,
+    constellation: "core",
+    requiredVisits: 1,
+    connections: ["origin"]
   },
   {
-    id: "experience",
-    year: "2018 — 2022",
-    title: "TERÉNNÍ PRŮZKUM",
-    content: "Zkušenosti jsem sbíral v Brně i Uherském Hradišti. Každé místo mě něco naučilo a posunulo dál. Tato cesta je dnes vidět v recenzích a zpětné vazbě klientů.",
-    icon: <Shield size={24} />,
-    x: 25,
-    y: 45,
-    connections: ["academic"],
-    type: 'major'
+    id: "style",
+    title: "Estetika Moci",
+    year: "2024",
+    content: "Styl není móda. Móda pomíjí, styl je věčný. My tvoříme identitu, která vyzařuje sílu a sebevědomí v každém kroku.",
+    icon: <Zap />,
+    x: 51, y: 51,
+    constellation: "core",
+    requiredVisits: 1,
+    connections: ["vibe"]
   },
   {
-    id: "academic",
-    year: "2022 — 2024",
-    title: "TITUL NENÍ CÍL",
-    content: "Studoval jsem sociální pedagogiku na UTB ve Zlíně. Pochopil jsem ale jednu věc — titul nikdy nenahradí reálnou zkušenost a praxi.",
-    icon: <BookOpen size={24} />,
-    x: 35,
-    y: 22,
-    connections: ["maverick"],
-    type: 'minor'
+    id: "secret_vibe",
+    title: "Půlnoční Kšeft",
+    year: "UTAJENO",
+    content: "Někdy se ty nejdůležitější věci řeší, když město spí. Naše dveře se občas otevírají i pro ty, kteří nepotřebují jen střih, ale i radu.",
+    type: "secret",
+    secretContent: "V noci se v MMBarberu scházejí lidé, kteří hýbou tímto městem. Jsme neutrální půda pro velké kšefty.",
+    icon: <Lock />,
+    x: 50, y: 44,
+    constellation: "core",
+    requiredVisits: 1,
+    connections: ["vibe"]
+  },
+
+  // --- LEVEL 2: KOŘENY (Origins Cluster) ---
+  {
+    id: "roots_start",
+    title: "První Nůžky",
+    year: "MINULOST",
+    content: "Zde v Hradišti to všechno začalo. Jeden sen, jedny nůžky a nekonečná touha dělat věci jinak – poctivě a s respektem k řemeslu.",
+    icon: <Scissors />,
+    x: 8, y: 12,
+    constellation: "origins",
+    requiredVisits: 2,
+    connections: ["tradition", "childhood"]
   },
   {
-    id: "maverick",
-    year: "ROZCESTÍ",
-    title: "VLASTNÍ SMĚR",
-    content: "Nechci jít s proudem jen proto, že je to běžná volba. Raději si volím vlastní směr — i když je delší a náročnější. Hledám si vlastní cestu.",
-    icon: <Flag size={24} />,
-    x: 42,
-    y: 50,
-    connections: ["vision"],
-    type: 'branch'
+    id: "tradition",
+    title: "Rodinný Odkaz",
+    year: "1984",
+    content: "Respekt k řemeslu se u nás dědí. Učili jsme se od those nejlepších, abychom dnes mohli sami určovat pravidla hry.",
+    icon: <Star />,
+    x: 3, y: 18,
+    constellation: "origins",
+    requiredVisits: 2,
+    connections: ["hard_times", "secret_roots"]
   },
   {
-    id: "vision",
-    year: "SOUČASNOST",
-    title: "ZROZENÍ MMBARBER",
-    content: "Tenhle podnik nevznikl proto, aby byl „další barbershop“. Vznikl pro přístup, který má klid, respekt a hloubku.",
-    icon: <Star size={24} />,
-    x: 65,
-    y: 45,
-    connections: ["inner_circle"],
-    type: 'major'
+    id: "childhood",
+    title: "Ulicemi Hradiště",
+    year: "RETRO",
+    content: "Každý kout tohoto města známe. Tady jsme vyrůstali a tady jsme pochopili, co znamená slovo domov a teritorium.",
+    icon: <MapPin />,
+    x: 14, y: 5,
+    constellation: "origins",
+    requiredVisits: 2,
+    connections: ["first_shop"]
   },
   {
-    id: "inner_circle",
-    year: "CORE BELIEFS",
-    title: "ELITNÍ PŘÍSTUP",
-    content: "Respekt si nekoupíš. Respekt si musíš zasloužit. V MMBARBER se hraje podle našich pravidel.",
-    icon: <Lock size={24} />,
-    x: 68,
-    y: 25,
-    connections: ["people"],
-    type: 'secret',
-    secretContent: "Není to pro každého. A tak je to správně. Chceme lidi, kteří chápou hodnotu řemesla a loajality."
+    id: "hard_times",
+    title: "Zkouška Ohněm",
+    year: "KRITICKÉ",
+    content: "Nebylo to vždy snadné. Každá jizva na naší cestě nás posílila. Naučili jsme se, že pád není konec, ale lekce.",
+    icon: <Target />,
+    x: 2, y: 30,
+    constellation: "origins",
+    requiredVisits: 2,
+    connections: ["first_shop"]
   },
   {
-    id: "people",
-    year: "MISE",
-    title: "LIDÉ & PŘÍLEŽITOSTI",
-    content: "Chci dávat příležitost těm, kteří ji jinde třeba nedostali. Mladším lidem, kteří chtějí začít a stát se součástí něčeho většího.",
-    icon: <Users size={24} />,
-    x: 75,
-    y: 30,
-    connections: ["future"],
-    type: 'major'
+    id: "first_shop",
+    title: "Stará Garáž",
+    year: "START",
+    content: "První neoficiální křeslo v garáži. Tam se rodila legenda. Bez marketingu, jen díky šeptandě o nejlepším střihu v okolí.",
+    icon: <Briefcase />,
+    x: 10, y: 22,
+    constellation: "origins",
+    requiredVisits: 2,
+    connections: ["roots_start"]
   },
   {
-    id: "future",
-    year: "VIZE",
-    title: "CESTA POKRAČUJE",
-    content: "Mým cílem není jen podnik. Chci vytvářet místo, kde se spojuje poctivá práce, respekt k lidem a růst.",
-    icon: <Rocket size={24} />,
-    x: 78,
-    y: 65,
-    connections: ["operational_mode"],
-    type: 'major'
+    id: "mentor",
+    title: "Starý Mistr",
+    year: "MOUDROST",
+    content: "Každý šéf měl svého mentora. Člověka, který mu ukázal, že nůžky jsou jen nástroj, ale ruka je vedená duší.",
+    icon: <Bookmark />,
+    x: 18, y: 18,
+    constellation: "origins",
+    requiredVisits: 2,
+    connections: ["roots_start"]
   },
   {
-    id: "operational_mode",
-    year: "2024 — 2025",
-    title: "OPERATIVNÍ REŽIM",
-    content: "Už nejde jen o to, jak držíš nůžky, ale jak řídíš systém. Budování infrastruktury, která funguje bez ohledu na vnější vlivy.",
-    icon: <Activity size={24} />,
-    x: 85,
-    y: 35,
-    connections: ["systemic_dominance"],
-    type: 'secret',
-    secretContent: "Většina lidí vidí jen barber křesle. Já vidím data, logistiku a psychologii. Tohle je úroveň, kde se odděluje hobby od byznysu."
+    id: "secret_roots",
+    title: "Ztracený Deník",
+    year: "KLASIFIKOVÁNO",
+    content: "Existují záznamy o prvních klientech, kteří u nás hledali azyl. Příběhy, které by neměly být nikdy vyprávěny nahlas.",
+    type: "secret",
+    secretContent: "Prvním hostem v garáži byl místní boss, který nám daroval první profesionální břitvu za zachování mlčení.",
+    icon: <FileText />,
+    x: 5, y: 4,
+    constellation: "origins",
+    requiredVisits: 2,
+    connections: ["tradition"]
+  },
+
+  // --- LEVEL 3: TALENT (Talent Cluster) ---
+  {
+    id: "talent_start",
+    title: "Absolutní Přesnost",
+    year: "MISTROVSTVÍ",
+    content: "Chyba není v našem slovníku. Každý milimetr hraje roli. Naše práce je geometrie aplikovaná na tvář moderního muže.",
+    icon: <Target />,
+    x: 92, y: 12,
+    constellation: "talent",
+    requiredVisits: 3,
+    connections: ["sharp_blade", "steady_hand"]
   },
   {
-    id: "systemic_dominance",
-    year: "2025 — 2026",
-    title: "SYSTÉMOVÁ DOMINANCE",
-    content: "Regionální autorita je potvrzena. MMBARBER se stává synonymem pro standard kvality na celém Slovácku.",
-    icon: <Layers size={24} />,
-    x: 92,
-    y: 75,
-    connections: ["global_standard"],
-    type: 'major'
+    id: "sharp_blade",
+    title: "Ocel a Kůže",
+    year: "ZRUČNOST",
+    content: "Břitva je prodloužením naší ruky. Pocit ostří na kůži je rituál, který vyžaduje absolutní důvěru mezi barberem a hostem.",
+    icon: <Zap />,
+    x: 97, y: 5,
+    constellation: "talent",
+    requiredVisits: 3,
+    connections: ["alchemy", "secret_talent"]
   },
   {
-    id: "global_standard",
-    year: "2026 — BUDOUCNOST",
-    title: "GLOBÁLNÍ STANDARD",
-    content: "Hranice regionu jsou minulostí. Standardy MMBARBER jsou uznávané i v mezinárodním kontextu. Cesta nikdy nekončí.",
-    icon: <Shield size={24} />,
-    x: 98,
-    y: 25,
-    connections: [],
-    type: 'major'
+    id: "steady_hand",
+    title: "Klidná Ruka",
+    year: "TRÉNINK",
+    content: "Tisíce hodin tréninku vedou k jedinému okamžiku dokonalosti. Naše ruce se nechvějí ani v největším tlaku.",
+    icon: <Activity />,
+    x: 88, y: 6,
+    constellation: "talent",
+    requiredVisits: 3,
+    connections: ["philosophy"]
+  },
+  {
+    id: "alchemy",
+    title: "Vůně Respektu",
+    year: "MAGIE",
+    content: "Výběr vůně je jako podpis. Namícháme pro vás esenci, která bude vyprávět váš příběh dřív, než promluvíte.",
+    icon: <FlaskConical />,
+    x: 96, y: 20,
+    constellation: "talent",
+    requiredVisits: 3,
+    connections: ["talent_start"]
+  },
+  {
+    id: "philosophy",
+    title: "Tichá Síla",
+    year: "FILOZOFIE",
+    content: "Skutečný talent nepotřebuje křičet. Naše výsledky mluví samy za sebe. Jsme tiší tvůrci vašeho veřejného obrazu.",
+    icon: <Eye />,
+    x: 82, y: 22,
+    constellation: "talent",
+    requiredVisits: 3,
+    connections: ["talent_start"]
+  },
+  {
+    id: "secret_talent",
+    title: "Zakázaná Technika",
+    year: "EXPERIMENTÁLNÍ",
+    content: "Existují postupy, které běžné oko nespatří. Práce s texturou, která hraničí s uměním. Jen pro vyvolené.",
+    type: "secret",
+    secretContent: "Naše speciální technika 'Fantomový Fade' vytváří přechod, který vypadá přirozeně i po dvou týdnech.",
+    icon: <Flame />,
+    x: 94, y: 3,
+    constellation: "talent",
+    requiredVisits: 3,
+    connections: ["sharp_blade"]
+  },
+
+  // --- LEVEL 4: CESTA (Career Cluster) ---
+  {
+    id: "career_start",
+    title: "Expanze",
+    year: "RŮST",
+    content: "Hradiště nám začalo být malé. Naše jméno se začalo šířit dál. Vybudovat impérium vyžaduje strategii a správné lidi po boku.",
+    icon: <Navigation />,
+    x: 12, y: 85,
+    constellation: "career",
+    requiredVisits: 4,
+    connections: ["team_power", "territory"]
+  },
+  {
+    id: "team_power",
+    title: "Smečka",
+    year: "RODINA",
+    content: "Barber je jen tak dobrý, jako jeho nejslabší článek. My žádné slabé články nemáme. Jsme jednotka se společným cílem.",
+    icon: <Users />,
+    x: 4, y: 94,
+    constellation: "career",
+    requiredVisits: 4,
+    connections: ["standards", "secret_career"]
+  },
+  {
+    id: "territory",
+    title: "Dobytí Trhu",
+    year: "DOMINANCE",
+    content: "Nejsme jen další barber. Jsme standard, podle kterého se měří ostatní. Ovládli jsme prostor kvalitou, ne reklamou.",
+    icon: <Map />,
+    x: 20, y: 92,
+    constellation: "career",
+    requiredVisits: 4,
+    connections: ["legacy_building"]
+  },
+  {
+    id: "standards",
+    title: "Železná Pravidla",
+    year: "PROVOZ",
+    content: "Naše standardy jsou neúprosné. Hygiena, servis, drink – vše musí být na 110 %. Jinak nejsme rodina MM.",
+    icon: <ShieldCheck />,
+    x: 3, y: 82,
+    constellation: "career",
+    requiredVisits: 4,
+    connections: ["career_start"]
+  },
+  {
+    id: "legacy_building",
+    title: "Budování Jména",
+    year: "ZNAČKA",
+    content: "MMBarber není jen nápis na dveřích. Je to příslib zážitku. Investujeme do budoucnosti, aby naše jméno přežilo nás všechny.",
+    icon: <Award />,
+    x: 10, y: 97,
+    constellation: "career",
+    requiredVisits: 4,
+    connections: ["career_start"]
+  },
+  {
+    id: "secret_career",
+    title: "Stínový Poradce",
+    year: "NEOFICIÁLNÍ",
+    content: "Některá rozhodnutí se nedělají u stolu, ale za zavřenými dveřmi v zadní místnosti. Tam se kreslí mapa naší expanze.",
+    type: "secret",
+    secretContent: "Plánujeme otevření utajeného klubu pro naše VIP členy, kde barbering bude jen začátkem večera.",
+    icon: <EyeOff />,
+    x: 5, y: 72,
+    constellation: "career",
+    requiredVisits: 4,
+    connections: ["team_power"]
+  },
+
+  // --- LEVEL 5: CÍL (Ultimate Cluster) ---
+  {
+    id: "ultimate_goal",
+    title: "Absolutní Vize",
+    year: "BUDOUCNOST",
+    content: "Naše cesta nekončí. Míříme ke hvězdám. Chceme změnit vnímání mužské péče v celém regionu i mimo něj.",
+    icon: <Trophy />,
+    x: 88, y: 85,
+    constellation: "ultimate",
+    requiredVisits: 5,
+    connections: ["perfection", "immortality"]
+  },
+  {
+    id: "perfection",
+    title: "Bod Nula",
+    year: "DOKONALOST",
+    content: "Hledáme bod, kde už není co zlepšit. Neustálý progres je náš motor. Spokojenost je pro nás jen dočasná zastávka.",
+    icon: <Zap />,
+    x: 95, y: 82,
+    constellation: "ultimate",
+    requiredVisits: 5,
+    connections: ["new_era", "secret_ultimate"]
+  },
+  {
+    id: "immortality",
+    title: "Nesmrtelnost",
+    year: "ODKAZ",
+    content: "Chceme vytvořit něco, co tu bude i za sto let. Odkaz MMBarber je vrytý do tváří tisíců mužů, kteří prošli naším křeslem.",
+    icon: <Compass />,
+    x: 82, y: 94,
+    constellation: "ultimate",
+    requiredVisits: 5,
+    connections: ["new_era"]
+  },
+  {
+    id: "new_era",
+    title: "Nová Éra",
+    year: "2030+",
+    content: "Připravujeme půdu pro příští generaci. Technologie, tradice a noir styl v dokonalé symbióze příští dekády.",
+    icon: <Radio />,
+    x: 97, y: 92,
+    constellation: "ultimate",
+    requiredVisits: 5,
+    connections: ["ultimate_goal"]
+  },
+  {
+    id: "secret_ultimate",
+    title: "Původní Plán",
+    year: "GENESIS",
+    content: "Všechno, co vidíte, bylo naplánováno už na úplném začátku. Každý krok v této galaxii byl zapsán v naší první vizi.",
+    type: "secret",
+    secretContent: "Konečným cílem je vytvořit globální síť MMBarber, kde se loajalita odměňuje doživotním členstvím v elitním klubu.",
+    icon: <Key />,
+    x: 92, y: 97,
+    constellation: "ultimate",
+    requiredVisits: 5,
+    connections: ["perfection"]
+  },
+  {
+    id: "legacy_myth",
+    title: "Mýtus o Barberovi",
+    year: "NEKONEČNO",
+    content: "Některé příběhy se stávají legendami. Traduje se, že první MM střih změnil osud celého rodu. Pravda je ale mnohem hlubší.",
+    icon: <Award />,
+    x: 2, y: 2,
+    constellation: "ultimate",
+    requiredVisits: 5,
+    connections: ["origin"]
   }
 ];
+
 const ShootingStar = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ x: 0, y: 0, angle: 0 });
@@ -218,18 +439,16 @@ const ShootingStar = () => {
   useEffect(() => {
     const launch = () => {
       setCoords({
-        x: Math.random() * 100,
-        y: Math.random() * 50,
-        angle: Math.random() * 45 + 135 // shoot downwards
+        x: Math.random() * 80 + 10,
+        y: Math.random() * 40,
+        angle: Math.random() * 30 + 135
       });
       setIsVisible(true);
-      setTimeout(() => setIsVisible(false), 2000);
+      setTimeout(() => setIsVisible(false), 3000);
     };
-
     const timer = setInterval(() => {
-      if (Math.random() > 0.7) launch();
-    }, 8000);
-
+      if (Math.random() > 0.85) launch();
+    }, 15000);
     return () => clearInterval(timer);
   }, []);
 
@@ -238,16 +457,19 @@ const ShootingStar = () => {
   return (
     <motion.div
       initial={{ x: `${coords.x}%`, y: `${coords.y}%`, opacity: 0, scale: 0 }}
-      animate={{ 
-        x: `${coords.x - 20}%`, 
-        y: `${coords.y + 20}%`, 
-        opacity: [0, 1, 0],
-        scale: [0, 1, 0]
+      animate={{
+        x: `${coords.x - 30}%`,
+        y: `${coords.y + 30}%`,
+        opacity: [0, 1, 0.8, 0],
+        scale: [0, 1, 1.2, 0]
       }}
-      transition={{ duration: 1.5, ease: "easeOut" }}
-      className="absolute w-40 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent z-0 pointer-events-none"
+      transition={{ duration: 2.8, ease: "linear" }}
+      className="absolute z-0 pointer-events-none flex items-center"
       style={{ rotate: `${coords.angle}deg` }}
-    />
+    >
+      <div className="w-64 h-[2px] bg-gradient-to-r from-transparent via-mafia-gold/20 to-white/60 blur-[1px]" />
+      <div className="w-2 h-2 bg-white rounded-full blur-[2px] shadow-[0_0_15px_white]" />
+    </motion.div>
   );
 };
 
@@ -256,134 +478,107 @@ export default function StoryPage() {
   const [visitedNodes, setVisitedNodes] = useState<Set<string>>(new Set(["origin"]));
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [isEasterEggOpen, setIsEasterEggOpen] = useState(false);
   const [isSecretRevealed, setIsSecretRevealed] = useState(false);
   const [hackingProgress, setHackingProgress] = useState(0);
-  const [visitCount, setVisitCount] = useState(0);
-  const [personalNodesUnlocked, setPersonalNodesUnlocked] = useState(false);
-  const [loyalNodesUnlocked, setLoyalNodesUnlocked] = useState(false);
-  
+  const flightControlRef = useRef<number>(0);
+
+  const panX = useMotionValue(0);
+  const panY = useMotionValue(0);
+  const zoomMotion = useMotionValue(0.8);
+
+  const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
+  const [mapSize, setMapSize] = useState({ width: 3000, height: 2000 });
+  const [unlockedLevels, setUnlockedLevels] = useState<Set<number>>(new Set([1, 2, 3, 4, 5, 6]));
+  const [terminalInput, setTerminalInput] = useState("");
+  const [terminalStatus, setTerminalStatus] = useState<"idle" | "success" | "error">("idle");
+  const [justUnlocked, setJustUnlocked] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
   const [stars, setStars] = useState<StarBg[]>([]);
+  const [textDistance, setTextDistance] = useState("15625");
+
+  // Parallax and HUD transforms
+  const starLayer1X = useTransform(panX, x => x * 0.05);
+  const starLayer1Y = useTransform(panY, y => y * 0.05);
+  const starLayer1Scale = useTransform(zoomMotion, z => 1 + (z - 1) * 0.02);
+
+  const starLayer2X = useTransform(panX, x => x * 0.1);
+  const starLayer2Y = useTransform(panY, y => y * 0.1);
+  const starLayer2Scale = useTransform(zoomMotion, z => 1 + (z - 1) * 0.05);
+
+  const starLayer3X = useTransform(panX, x => x * 0.2);
+  const starLayer3Y = useTransform(panY, y => y * 0.2);
+  const starLayer3Scale = useTransform(zoomMotion, z => 1 + (z - 1) * 0.08);
+
+  const distanceValue = useTransform(zoomMotion, (z) => (12500 / z).toFixed(0));
+  useMotionValueEvent(distanceValue, "change", (latest) => setTextDistance(latest));
 
   useEffect(() => {
-    setStars([...Array(250)].map((_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 2 + 0.5,
-      duration: Math.random() * 5 + 3,
-      delay: Math.random() * 10,
-      depth: Math.random()
-    })));
+    setIsMounted(true);
+    const savedProgress = localStorage.getItem("mmbarber_story_progress");
+    if (savedProgress) {
+      try { setVisitedNodes(new Set(JSON.parse(savedProgress))); } catch (e) { }
+    }
 
-    const count = parseInt(localStorage.getItem('mmbarber_visit_count') || '0');
-    setVisitCount(count);
-    if (count >= 5) {
-      setPersonalNodesUnlocked(true);
+    const savedLevels = localStorage.getItem("mmbarber_unlocked_levels");
+    if (savedLevels) {
+      try { setUnlockedLevels(new Set(JSON.parse(savedLevels))); } catch (e) { }
     }
-    if (count >= 10) {
-      setLoyalNodesUnlocked(true);
-    }
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    setMapSize({ width: w * 8, height: h * 4 });
+
+    setStars([...Array(800)].map((_, i) => {
+      const rand = Math.random();
+      let color = "rgba(255, 255, 255, 0.8)";
+      if (rand > 0.95) color = "rgba(147, 197, 253, 0.8)";
+      else if (rand > 0.90) color = "rgba(252, 165, 165, 0.8)";
+      else if (rand > 0.85) color = "rgba(197, 160, 89, 0.8)";
+
+      return {
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 2.5 + 0.5,
+        duration: Math.random() * 5 + 3,
+        delay: Math.random() * 10,
+        depth: Math.random(),
+        color
+      };
+    }));
+
+    // Initial center on "origin"
+    const targetNode = STORY_NODES[0];
+    const sidebarW = w >= 1024 ? (w >= 1280 ? 400 : 320) : 0;
+    const cX = sidebarW + (w - sidebarW) / 2;
+    const cY = h / 2;
+    panX.set(cX - (targetNode.x / 100) * (w * 8) * 0.8);
+    panY.set(cY - (targetNode.y / 100) * (h * 4) * 0.8);
   }, []);
 
-  // Load visited nodes from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem("mmbarber_story_progress");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setVisitedNodes(new Set(parsed));
-      } catch (e) {}
-    }
-  }, []);
-
-  // Update visited nodes when selected
-  useEffect(() => {
-    if (selectedNode && !visitedNodes.has(selectedNode.id)) {
-      const nextVisited = new Set(visitedNodes);
-      nextVisited.add(selectedNode.id);
-      setVisitedNodes(nextVisited);
-      localStorage.setItem("mmbarber_story_progress", JSON.stringify(Array.from(nextVisited)));
-    }
-    // Reset secret reveal when node changes
-    setIsSecretRevealed(false);
-    setHackingProgress(0);
-  }, [selectedNode, visitedNodes]);
-
-
-  // Mouse Dragging Logic
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    setIsDragging(true);
-    setStartX(e.pageX - containerRef.current.offsetLeft);
-    setScrollLeft(containerRef.current.scrollLeft);
+  const getSectorName = (constellation: string) => {
+    const sectors: Record<string, string> = {
+      core: "Souhvězdí Kodexu",
+      origins: "Souhvězdí Původu",
+      talent: "Souhvězdí Mistrů",
+      career: "Souhvězdí Teritoria",
+      ultimate: "Souhvězdí Odkazu"
+    };
+    return sectors[constellation] || "Neznámé Souhvězdí";
   };
 
-  const handleMouseLeave = () => setIsDragging(false);
-  const handleMouseUp = () => setIsDragging(false);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !containerRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // scroll-fast
-    containerRef.current.scrollLeft = scrollLeft - walk;
+  const getGalaxyColor = (baseColor: string) => {
+    const currentZoom = zoomMotion.get();
+    if (currentZoom < 0.4) return "#4facfe";
+    if (currentZoom < 0.9) return "#f8fafc";
+    if (currentZoom < 1.6) return "#ff4d4d";
+    return baseColor;
   };
 
-  // Automatic Selection Logic (Center Tracking)
-  useEffect(() => {
-    const handleAutoSelect = () => {
-      if (!containerRef.current) return;
-      const container = containerRef.current;
-      const scrollCenterX = container.scrollLeft + container.clientWidth / 2;
-      const totalWidth = container.scrollWidth;
-
-      let closestNode = STORY_NODES[0];
-      let minDistance = Infinity;
-
-      STORY_NODES.forEach(node => {
-        const nodeX = (node.x / 100) * totalWidth;
-        const distance = Math.abs(scrollCenterX - nodeX);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestNode = node;
-        }
-      });
-
-      // Only auto-select if reasonably close (e.g. within 15% of viewport width)
-      if (minDistance < container.clientWidth * 0.15) {
-        setSelectedNode(closestNode);
-      }
-    };
-
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("scroll", handleAutoSelect);
-      return () => container.removeEventListener("scroll", handleAutoSelect);
-    }
-  }, []);
-
-  // Keyboard Navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!containerRef.current) return;
-      const scrollAmount = 200;
-      if (e.key === "ArrowRight") {
-        containerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-      } else if (e.key === "ArrowLeft") {
-        containerRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  const getStrokeWidth = (base: number) => base / Math.sqrt(zoomMotion.get());
 
   const handleRevealSecret = () => {
     if (isSecretRevealed) return;
-    
     let current = 0;
     const interval = setInterval(() => {
       current += 2;
@@ -395,634 +590,228 @@ export default function StoryPage() {
     }, 20);
   };
 
-  const personalNodes: StoryNode[] = [
-    {
-      id: "shadow_days",
-      year: "2020 — 2021",
-      title: "STÍNOVÁ OPERACE",
-      content: "Doba, kdy se formovaly nejtvrdší zásady. Práce pod tlakem v nejistém prostředí. Tehdy jsem pochopil, že se musíš postarat o své lidi.",
-      icon: <Fingerprint size={24} />,
-      x: 30,
-      y: 75,
-      connections: ["maverick"],
-      type: 'secret',
-      secretContent: "Období lockdownů nebylo o čekání. Bylo o hledání cest tam, kde ostatní viděli jen zavřené dveře."
-    },
-    {
-      id: "human_connection",
-      year: "POZOROVÁNÍ",
-      title: "SKUTEČNÁ POUTO",
-      content: "Během času jsem začal víc vnímat, jak těžké je pro některé lidi skutečně někoho poznat. Nešlo jen o mě, ale i o moji sestru.",
-      icon: <Search size={24} />,
-      x: 55,
-      y: 22,
-      connections: ["vision"],
-      type: 'secret',
-      secretContent: "Všude je spousta možností, ale málo skutečných spojení. To mě přivedlo k myšlence vytvořit něco jiného."
+  const handleTerminalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const passwords: Record<string, number> = { "KORENY": 2, "TALENT": 3, "CESTA": 4, "CIL": 5 };
+    const level = passwords[terminalInput.toUpperCase().trim()];
+    if (level) {
+      const nextLevels = new Set(unlockedLevels);
+      nextLevels.add(level);
+      setUnlockedLevels(nextLevels);
+      localStorage.setItem("mmbarber_unlocked_levels", JSON.stringify(Array.from(nextLevels)));
+      setTerminalStatus("success");
+      setTerminalInput("");
+      setTimeout(() => setTerminalStatus("idle"), 2000);
+    } else {
+      setTerminalStatus("error");
+      setTimeout(() => setTerminalStatus("idle"), 2000);
     }
-  ];
-
-  const loyalNodes: StoryNode[] = [
-    {
-      id: "turning_point",
-      year: "ZLOMOVÝ BOD",
-      title: "OSOBNÍ TRANSFORMACE",
-      content: "Měl jsem plány, které nebyly jen o mně – chtěl jsem budovat budoucnost pro dva. Byl jsem připravený začít znovu.",
-      icon: <Heart size={24} />,
-      x: 28,
-      y: 28,
-      connections: ["academic"],
-      type: 'secret',
-      secretContent: "Ale život ti někdy ukáže jiný směr. Pochopil jsem, že moje energie musí patřit něčemu vlastnímu. Tak vznikl MMBARBER poté, co se naše cesty s partnerkou rozdělily."
-    }
-  ];
-
-  // Add pulse animation state
-  const [pulseIndex, setPulseIndex] = useState(0);
-  
-  // Linear sequence definition for the pulse
-  const getLinearSequence = () => {
-    const base = [
-      "origin", "tech_roots", "origin_technical", "craft", "experience", 
-      "academic", "maverick", "vision", "inner_circle", "people", 
-      "future", "operational_mode", "systemic_dominance", "global_standard"
-    ];
-    
-    // Insert personal/loyal nodes if unlocked
-    const sequence = [...base];
-    if (loyalNodesUnlocked) {
-      const idx = sequence.indexOf("experience");
-      if (idx !== -1) sequence.splice(idx + 1, 0, "turning_point");
-    }
-    if (personalNodesUnlocked) {
-      const idxAcad = sequence.indexOf("academic");
-      if (idxAcad !== -1) sequence.splice(idxAcad + 1, 0, "shadow_days");
-      const idxVis = sequence.indexOf("vision");
-      if (idxVis !== -1) sequence.splice(idxVis + 1, 0, "human_connection");
-    }
-    return sequence;
   };
 
-  const sequence = getLinearSequence();
-  const maxAccessibleIndex = sequence.findLastIndex(id => visitedNodes.has(id));
-
-  // Global pulse timer - SLOWER as requested
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPulseIndex(prev => {
-        const next = prev + 1;
-        // If we reached the end of what's accessible, start over
-        return next > maxAccessibleIndex ? 0 : next;
-      });
-    }, 2500); // Slower interval (2.5s per node)
-    return () => clearInterval(interval);
-  }, [maxAccessibleIndex]);
+    if (selectedNode && !visitedNodes.has(selectedNode.id)) {
+      const nextVisited = new Set(visitedNodes);
+      nextVisited.add(selectedNode.id);
+      setVisitedNodes(nextVisited);
+      localStorage.setItem("mmbarber_story_progress", JSON.stringify(Array.from(nextVisited)));
+      setJustUnlocked(selectedNode.id);
+      setTimeout(() => setJustUnlocked(null), 1500);
+    }
+    setIsSecretRevealed(false);
+    setHackingProgress(0);
+  }, [selectedNode]);
 
-  const visibleNodes = [
-    ...STORY_NODES,
-    ...(personalNodesUnlocked ? personalNodes : []),
-    ...(loyalNodesUnlocked ? loyalNodes : [])
-  ];
+  const handleCenterCamera = async (targetNode: StoryNode, customZoom?: number) => {
+    const flightId = ++flightControlRef.current;
+    const targetZoom = customZoom || 1.2;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const sidebarW = w >= 1024 ? (w >= 1280 ? 400 : 320) : 0;
+    const cX = sidebarW + (w - sidebarW) / 2;
+    const cY = h / 2;
+    const tx = cX - (targetNode.x / 100) * mapSize.width * targetZoom;
+    const ty = cY - (targetNode.y / 100) * mapSize.height * targetZoom;
+
+    await Promise.all([
+      animate(panX, tx, { duration: 0.8, ease: "easeInOut" }),
+      animate(panY, ty, { duration: 0.8, ease: "easeInOut" }),
+      animate(zoomMotion, targetZoom, { duration: 0.8, ease: "easeInOut" })
+    ]);
+  };
+
+  const handleZoom = (delta: number, mouseX?: number, mouseY?: number) => {
+    const currentZoom = zoomMotion.get();
+    const newZoom = Math.min(Math.max(currentZoom + delta, 0.2), 3);
+    const zoomRatio = newZoom / currentZoom;
+    const rect = containerRef.current?.getBoundingClientRect();
+    const x = mouseX !== undefined ? mouseX : (rect ? rect.width / 2 : 0);
+    const y = mouseY !== undefined ? mouseY : (rect ? rect.height / 2 : 0);
+    const newX = x - (x - panX.get()) * zoomRatio;
+    const newY = y - (y - panY.get()) * zoomRatio;
+    panX.set(newX);
+    panY.set(newY);
+    zoomMotion.set(newZoom);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setLastMousePos({ x: e.clientX, y: e.clientY });
+  };
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    const dx = e.clientX - lastMousePos.x;
+    const dy = e.clientY - lastMousePos.y;
+    panX.set(panX.get() + dx);
+    panY.set(panY.get() + dy);
+    setLastMousePos({ x: e.clientX, y: e.clientY });
+  };
+  const handleMouseUp = () => setIsDragging(false);
+
+  const handleNextNode = () => {
+    const currentIndex = STORY_NODES.findIndex(n => n.id === selectedNode?.id);
+    const nextNode = STORY_NODES[currentIndex + 1];
+    if (nextNode && unlockedLevels.has(nextNode.requiredVisits || 1)) {
+      setSelectedNode(nextNode);
+      handleCenterCamera(nextNode);
+    }
+  };
+  const handlePrevNode = () => {
+    const currentIndex = STORY_NODES.findIndex(n => n.id === selectedNode?.id);
+    const prevNode = STORY_NODES[currentIndex - 1];
+    if (prevNode && unlockedLevels.has(prevNode.requiredVisits || 1)) {
+      setSelectedNode(prevNode);
+      handleCenterCamera(prevNode);
+    }
+  };
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') handleNextNode();
+      if (e.key === 'ArrowLeft') handlePrevNode();
+    };
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      handleZoom(-e.deltaY * 0.002, e.clientX, e.clientY);
+    };
+    window.addEventListener('keydown', handleKey);
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, [selectedNode, unlockedLevels]);
+
+  const starLayer1 = React.useMemo(() => (
+    <motion.div style={{ x: starLayer1X, y: starLayer1Y, scale: starLayer1Scale }} className="absolute inset-0 w-[150%] h-[150%]">
+      {stars.slice(0, 200).map(star => (
+        <motion.div key={star.id} animate={{ opacity: [0.2, 0.8, 0.2] }} transition={{ duration: star.duration, repeat: Infinity }} className="absolute rounded-full"
+          style={{ width: star.size, height: star.size, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, boxShadow: '0 0 5px white' }} />
+      ))}
+    </motion.div>
+  ), [stars]);
+
+  const starLayer2 = React.useMemo(() => (
+    <motion.div style={{ x: starLayer2X, y: starLayer2Y, scale: starLayer2Scale }} className="absolute inset-0 w-[200%] h-[200%]">
+      {stars.slice(200, 400).map(star => (
+        <motion.div key={star.id} animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: star.duration * 0.8, repeat: Infinity }} className="absolute rounded-full"
+          style={{ width: star.size * 1.2, height: star.size * 1.2, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, boxShadow: `0 0 8px ${star.color}` }} />
+      ))}
+    </motion.div>
+  ), [stars]);
+
+  const starLayer3 = React.useMemo(() => (
+    <motion.div style={{ x: starLayer3X, y: starLayer3Y, scale: starLayer3Scale }} className="absolute inset-0 w-[300%] h-[300%]">
+      {stars.slice(400, 600).map(star => (
+        <div key={star.id} className="absolute rounded-full" style={{ width: star.size * 1.5, height: star.size * 1.5, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, opacity: 0.6 }} />
+      ))}
+    </motion.div>
+  ), [stars]);
+
+  if (!isMounted) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] bg-mafia-black text-smoke-white overflow-hidden selection:bg-mafia-gold selection:text-mafia-black flex flex-col lg:flex-row">
-      {/* Background Atmosphere */}
+    <div className="fixed inset-0 z-[200] bg-black text-smoke-white overflow-hidden flex flex-col lg:flex-row">
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-mafia-gold/5 via-transparent to-mafia-black"></div>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-mafia-gold/5 via-transparent to-mafia-black" />
       </div>
 
-      {/* LEFT SIDE: Personal Diary / Dossier */}
-      <div className="w-full lg:w-[450px] xl:w-[550px] h-[40vh] lg:h-full bg-[#0c0c0c] border-b lg:border-b-0 lg:border-r border-mafia-gold/20 relative z-40 flex flex-col shadow-[10px_0_50px_rgba(0,0,0,0.5)]">
-        {/* Diary Binding Effect */}
-        <div className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-r from-black/50 to-transparent"></div>
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black via-black/20 to-transparent opacity-40"></div>
-        
-        {/* Header inside Diary */}
-        <div className="p-8 pt-24 lg:pt-8 pb-4 flex items-center justify-end">
-          <div className="text-mafia-gold/20 font-mono text-[8px] tracking-[0.5em] text-right">
-            DOC_REF: MM_812<br/>
-            STATUS: {selectedNode?.type === 'secret' ? 'CLASSIFIED_ACCESS_REQUIRED' : 'ACTIVE'}
+      <div className="w-full lg:w-[320px] xl:w-[400px] h-[45vh] lg:h-full bg-black/5 backdrop-blur-md border-r border-white/5 relative z-40 flex flex-col pointer-events-none">
+        <div className="p-8 pt-24 lg:pt-12 flex flex-col h-full items-center text-center pointer-events-none">
+          <div className="flex items-center gap-3 mb-10 opacity-30">
+            <div className="w-8 h-px bg-mafia-gold/40" />
+            <div className="text-mafia-gold font-mono text-[9px] tracking-[0.6em] uppercase">Archiv_812</div>
+            <div className="w-8 h-px bg-mafia-gold/40" />
           </div>
-        </div>
 
-        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-mafia-gold/10 p-8 pt-0">
-          <AnimatePresence mode="wait">
-            {selectedNode && (
-              <motion.div 
-                key={selectedNode.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                className="space-y-8"
-              >
-                <div className="relative pt-12">
-                   {/* 'CLASSIFIED' STAMP */}
-                   <div className={`absolute top-0 left-0 border-2 px-2 py-1 rotate-[-15deg] pointer-events-none select-none uppercase font-mono transition-all duration-700 ${selectedNode.type === 'secret' ? 'border-mafia-red text-mafia-red scale-110' : 'border-mafia-red/20 text-mafia-red/20 text-xl'}`}>
-                      {selectedNode.type === 'secret' ? 'PŘÍSNĚ TAJNÉ // EYES ONLY' : 'PŘÍSNĚ TAJNÉ'}
-                   </div>
-                   
-                   <div className="flex items-center gap-4 mb-2">
-                     <span className="text-mafia-gold font-mono text-xs tracking-widest">{selectedNode.year}</span>
-                     <div className="h-[1px] flex-1 bg-mafia-gold/20"></div>
-                   </div>
-                   
-                   <h2 className="text-4xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter italic leading-none mb-6">
-                      {selectedNode.title}
-                   </h2>
-                </div>
+          <div className="flex-1 w-full flex flex-col justify-end pb-12">
+            <AnimatePresence mode="wait">
+              {selectedNode && (
+                <motion.div key={selectedNode.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6 pointer-events-auto">
+                  <span className="text-mafia-gold/40 font-mono text-[10px] tracking-widest block uppercase">Období: {selectedNode.year}</span>
+                  <h2 className="text-4xl font-heading font-black text-white uppercase italic leading-tight">{selectedNode.title}</h2>
+                  <p className="text-white/80 text-lg italic leading-relaxed">{selectedNode.content}</p>
 
-                <div className="relative group">
-                  <div className="absolute -left-6 top-0 bottom-0 w-[2px] bg-mafia-gold/30"></div>
-                  
                   {selectedNode.type === 'secret' && !isSecretRevealed ? (
-                    <div className="space-y-6">
-                      <div className="p-6 border border-mafia-red/30 bg-mafia-red/5 relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(239,68,68,0.05)_10px,rgba(239,68,68,0.05)_20px)] animate-pulse"></div>
-                        <p className="text-mafia-red/60 font-mono text-sm mb-4 relative z-10 flex items-center gap-2">
-                          <AlertTriangle size={14} /> TENTO OBSAH JE ŠIFROVÁN
-                        </p>
-                        <button 
-                          onClick={handleRevealSecret}
-                          className="w-full py-4 border border-mafia-red/50 hover:bg-mafia-red hover:text-white transition-all duration-300 font-mono text-xs uppercase tracking-[0.3em] relative z-10"
-                        >
-                          {hackingProgress > 0 ? `DEŠIFROVÁNÍ: ${hackingProgress}%` : "DEŠIFROVAT ZÁPIS"}
-                        </button>
-                      </div>
-                      <p className="text-smoke-white/20 text-lg md:text-xl font-sans leading-relaxed italic blur-sm select-none">
-                        {selectedNode.content}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      <p className="text-smoke-white/90 text-lg md:text-xl font-sans leading-relaxed italic first-letter:text-4xl first-letter:font-heading first-letter:text-mafia-gold first-letter:mr-1">
-                        {selectedNode.content}
-                      </p>
-                      
-                      {isSecretRevealed && selectedNode.secretContent && (
-                        <motion.div 
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          className="pt-6 border-t border-mafia-red/20 mt-6"
-                        >
-                          <p className="text-mafia-red font-mono text-sm mb-4 uppercase tracking-widest flex items-center gap-2">
-                             <Flame size={14} /> NEZACOVANÁ PRAVDA:
-                          </p>
-                          <p className="text-mafia-red/90 text-lg md:text-xl font-sans leading-relaxed italic border-l-2 border-mafia-red pl-4 whitespace-pre-line">
-                            {selectedNode.secretContent}
-                          </p>
-                        </motion.div>
-                      )}
+                    <button onClick={handleRevealSecret} className="w-full py-4 border border-mafia-red/40 text-mafia-red font-mono text-[10px] uppercase hover:bg-mafia-red hover:text-white transition-all">
+                      {hackingProgress > 0 ? `DEŠIFROVÁNÍ: ${hackingProgress}%` : "ZAHÁJIT_DEŠIFROVÁNÍ"}
+                    </button>
+                  ) : isSecretRevealed && selectedNode.secretContent && (
+                    <div className="p-6 border border-mafia-red/20 bg-mafia-red/5 text-mafia-red italic rounded-sm">
+                      <div className="text-[9px] font-mono mb-2 opacity-50">DEŠIFROVANÁ_DATA:</div>
+                      {selectedNode.secretContent}
                     </div>
                   )}
-                </div>
-
-                {/* Decorative Elements */}
-                <div className="pt-12 space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 flex items-center justify-center transition-all duration-500 ${selectedNode.type === 'secret' ? 'bg-mafia-red/10 border-mafia-red/40 text-mafia-red shadow-[0_0_15px_rgba(239,68,68,0.3)]' : 'bg-mafia-gold/5 border-mafia-gold/20 text-mafia-gold'} border`}>
-                      {selectedNode.icon}
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-widest">ID_OPERACE</div>
-                      <div className={`text-xs font-heading font-bold uppercase transition-colors ${selectedNode.type === 'secret' ? 'text-mafia-red' : 'text-smoke-white'}`}>
-                        {selectedNode.id}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Progress Indicators */}
-                <div className="mt-12 flex items-center gap-2">
-                  {visibleNodes.map((node, i) => (
-                    <motion.div 
-                      key={node.id} 
-                      animate={{ 
-                        backgroundColor: visibleNodes.indexOf(selectedNode) >= i 
-                          ? (visibleNodes[i].type === 'secret' ? "#ef4444" : "#c5a059") 
-                          : "rgba(197, 160, 89, 0.1)",
-                        height: visibleNodes.indexOf(selectedNode) === i ? 6 : 2
-                      }}
-                      className="flex-1 transition-all duration-700"
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-      </div>
-
-      {/* RIGHT SIDE: Campaign Map */}
-      <div className="flex-1 h-[60vh] lg:h-full relative overflow-hidden bg-mafia-black/30 backdrop-blur-sm">
-        {/* Tactical Grid Background */}
-        <div 
-          className="absolute inset-0 z-0 opacity-15 pointer-events-none"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(197, 160, 89, 0.3) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(197, 160, 89, 0.3) 1px, transparent 1px)
-            `,
-            backgroundSize: '80px 80px'
-          }}
-        >
-          <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 pointer-events-none">
-             {[...Array(144)].map((_, i) => (
-               <div key={i} className="border-r border-b border-mafia-gold/5 p-1 flex items-start justify-start">
-                  <span className="text-[6px] font-mono text-mafia-gold/20 uppercase">
-                    {String.fromCharCode(65 + Math.floor(i / 12))}{i % 12 + 1}
-                  </span>
-               </div>
-             ))}
-          </div>
-        </div>
-
-        <div 
-          className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(197, 160, 89, 0.6) 2px, transparent 2px),
-              linear-gradient(to bottom, rgba(197, 160, 89, 0.6) 2px, transparent 2px)
-            `,
-            backgroundSize: '400px 400px'
-          }}
-        ></div>
-
-        {/* Map Header */}
-        <div className="absolute top-0 right-0 p-8 z-30 pointer-events-none text-right">
-          <h1 className="text-xl md:text-2xl font-heading font-black text-mafia-gold/40 uppercase tracking-widest">STELLAR_CHART</h1>
-          <div className="text-[8px] font-mono text-mafia-gold/20 tracking-[0.5em] mt-1">STAR_FIELD_REF: 49.0683° N, 17.4597° E</div>
-        </div>
-
-        <div 
-          ref={containerRef}
-          onMouseDown={handleMouseDown}
-          onMouseLeave={handleMouseLeave}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          className={`h-full w-full overflow-x-auto overflow-y-hidden ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'} no-scrollbar transition-all`}
-        >
-          <div className="relative h-full w-[600vw] md:w-[500vw] lg:w-[450vw] flex items-center">
-            
-            {/* SVG Connection Lines */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-              <defs>
-                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="rgba(197, 160, 89, 0.1)" />
-                  <stop offset="50%" stopColor="rgba(197, 160, 89, 0.4)" />
-                  <stop offset="100%" stopColor="rgba(197, 160, 89, 0.1)" />
-                </linearGradient>
-                <linearGradient id="secretLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="rgba(239, 68, 68, 0.1)" />
-                  <stop offset="50%" stopColor="rgba(239, 68, 68, 0.5)" />
-                  <stop offset="100%" stopColor="rgba(239, 68, 68, 0.1)" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-                <filter id="secretGlow">
-                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              
-              {sequence.map((nodeId, idx) => {
-                if (idx >= sequence.length - 1) return null;
-                
-                const sourceId = nodeId;
-                const targetId = sequence[idx + 1];
-                
-                const node = visibleNodes.find(n => n.id === sourceId);
-                const target = visibleNodes.find(n => n.id === targetId);
-                
-                if (!node || !target) return null;
-                
-                const isSourceVisited = visitedNodes.has(node.id);
-                const isTargetVisited = visitedNodes.has(target.id);
-                const isFullyDiscovered = isSourceVisited && isTargetVisited;
-                const isPulseActive = pulseIndex === idx;
-                const isSecretConnection = node.type === 'secret' || target.type === 'secret';
-                
-                if (!isSourceVisited) return null;
-
-                return (
-                  <React.Fragment key={`${node.id}-${target.id}`}>
-                    {/* Static Connection Line - Color coded and hidden until fully discovered */}
-                    {isFullyDiscovered && (
-                      <motion.line
-                        x1={`${node.x}%`}
-                        y1={`${node.y}%`}
-                        x2={`${target.x}%`}
-                        y2={`${target.y}%`}
-                        stroke={isSecretConnection ? "#ef4444" : "#c5a059"}
-                        strokeWidth="1.5"
-                        initial={{ opacity: 0 }}
-                        animate={{ 
-                          opacity: isFullyDiscovered ? (isPulseActive ? 0.9 : 0.4) : 0,
-                          strokeWidth: isPulseActive ? 2.5 : 1.5,
-                        }}
-                        transition={{ duration: 1.5 }}
-                        style={{ 
-                          filter: isSecretConnection ? "blur(1px) drop-shadow(0 0 5px #ef4444)" : "blur(1px) drop-shadow(0 0 5px #c5a059)"
-                        }}
-                      />
-                    )}
-                    
-                    {/* Travelling Energy Beam - Always active for the current segment */}
-                    <AnimatePresence>
-                      {isPulseActive && (
-                        <motion.line
-                          key={`pulse-${node.id}`}
-                          x1={`${node.x}%`}
-                          y1={`${node.y}%`}
-                          x2={`${target.x}%`}
-                          y2={`${target.y}%`}
-                          stroke={isSecretConnection ? "#ff0000" : "#ffffff"}
-                          strokeWidth="3"
-                          strokeDasharray="40, 1000"
-                          initial={{ strokeDashoffset: 1000, opacity: 0 }}
-                          animate={{ 
-                            strokeDashoffset: 0, 
-                            opacity: [0, 1, 1, 0] 
-                          }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 2.5, ease: "easeInOut" }}
-                          style={{ filter: isSecretConnection ? "blur(2px) drop-shadow(0 0 10px #ff0000)" : "blur(2px) drop-shadow(0 0 10px #ffffff)" }}
-                        />
-                      )}
-                    </AnimatePresence>
-                  </React.Fragment>
-                );
-              })}
-            </svg>
-
-            {/* Nodes */}
-            {visibleNodes.map((node) => {
-              const isVisited = visitedNodes.has(node.id);
-              const isAccessible = isVisited || visibleNodes.some(n => visitedNodes.has(n.id) && n.connections.includes(node.id));
-
-              // Nodes are completely hidden until accessible
-              if (!isAccessible) return null;
-
-              return (
-                <div 
-                  key={node.id}
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
-                  style={{ left: `${node.x}%`, top: `${node.y}%` }}
-                >
-                  <motion.button
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ 
-                      scale: pulseIndex === sequence.indexOf(node.id) ? 1.2 : 1, 
-                      opacity: 1,
-                      boxShadow: pulseIndex === sequence.indexOf(node.id) 
-                        ? (node.type === 'secret' ? "0 0 60px rgba(255,0,0,1)" : "0 0 40px rgba(255,255,255,0.8)") 
-                        : "none"
-                    }}
-                    whileHover={{ scale: 1.15 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={(e) => {
-                      if (isDragging) return;
-                      setSelectedNode(node);
-                    }}
-                    className={`relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center border-2 transition-all duration-700 ${
-                      selectedNode?.id === node.id 
-                        ? (node.type === 'secret' ? "bg-mafia-red text-white border-white shadow-[0_0_50px_rgba(255,0,0,0.8)]" : "bg-mafia-gold text-mafia-black border-white shadow-[0_0_40px_rgba(197,160,89,0.7)]")
-                        : isVisited
-                          ? (node.type === 'secret' ? "bg-mafia-black text-mafia-red border-mafia-red" : "bg-mafia-black text-mafia-gold border-mafia-gold")
-                          : (node.type === 'secret' ? "bg-mafia-black/20 text-mafia-red/20 border-mafia-red/10" : "bg-mafia-black/20 text-mafia-gold/20 border-mafia-gold/10")
-                    }`}
-                  >
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                       <span className={`text-[8px] font-mono font-black tracking-[0.2em] uppercase transition-opacity duration-500 ${isVisited ? 'opacity-100' : 'opacity-0'}`}>{node.year}</span>
-                    </div>
-
-                    <div className="scale-75 md:scale-100">
-                      {isVisited ? node.icon : <Lock size={16} className="opacity-40" />}
-                    </div>
-
-                    <AnimatePresence>
-                      {isVisited && (
-                        <motion.div 
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className={`absolute -inset-1 border border-dashed rounded-sm pointer-events-none opacity-20 ${node.type === 'secret' ? 'border-mafia-red' : 'border-mafia-gold'} animate-[spin_10s_linear_infinite]`}
-                        />
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
-                  
-                  <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                     <span className={`text-[9px] font-heading font-black tracking-widest uppercase transition-all duration-700 ${isVisited ? "text-white opacity-100" : "text-white/0 opacity-0"}`}>
-                       {node.title}
-                     </span>
-                  </div>
-                </div>
-              );
-            })}
-
-            <div className="absolute inset-0 pointer-events-none">
-               {/* Starfield Layers (Star Wars style flight effect) */}
-               <div className="absolute inset-0 z-0">
-                  {/* Layer 1: Slow distant stars */}
-                  <motion.div 
-                    animate={{ x: ["0%", "-50%"] }}
-                    transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 w-[200%] flex"
-                  >
-                    {[...Array(2)].map((_, idx) => (
-                      <div key={idx} className="relative w-full h-full">
-                        {stars.slice(0, 80).map(star => (
-                          <div
-                            key={star.id}
-                            className="absolute rounded-full bg-white/40"
-                            style={{ 
-                              width: `${star.size * 0.5}px`,
-                              height: `${star.size * 0.5}px`,
-                              left: `${star.x}%`, 
-                              top: `${star.y}%`,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ))}
-                  </motion.div>
-
-                  {/* Layer 2: Medium speed stars */}
-                  <motion.div 
-                    animate={{ x: ["0%", "-100%"] }}
-                    transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 w-[200%] flex"
-                  >
-                    {[...Array(2)].map((_, idx) => (
-                      <div key={idx} className="relative w-full h-full">
-                        {stars.slice(80, 160).map(star => (
-                          <motion.div
-                            key={star.id}
-                            animate={{ opacity: [0.2, 0.8, 0.2] }}
-                            transition={{ duration: star.duration, repeat: Infinity, delay: star.delay }}
-                            className="absolute rounded-full bg-white/80"
-                            style={{ 
-                              width: `${star.size}px`,
-                              height: `${star.size}px`,
-                              left: `${star.x}%`, 
-                              top: `${star.y}%`,
-                              boxShadow: star.size > 1.5 ? '0 0 8px rgba(255,255,255,0.4)' : 'none'
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ))}
-                  </motion.div>
-
-                  {/* Layer 3: Fast streaks (The "Star Wars" feel) */}
-                  <motion.div 
-                    animate={{ x: ["0%", "-200%"] }}
-                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 w-[300%] flex"
-                  >
-                    {[...Array(3)].map((_, idx) => (
-                      <div key={idx} className="relative w-full h-full">
-                        {stars.slice(160, 200).map(star => (
-                          <div
-                            key={star.id}
-                            className="absolute bg-gradient-to-r from-transparent via-white/40 to-transparent"
-                            style={{ 
-                              width: `${star.size * 20}px`,
-                              height: `1px`,
-                              left: `${star.x}%`, 
-                              top: `${star.y}%`,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ))}
-                  </motion.div>
-               </div>
-               
-               {/* Nebula Effects */}
-               <div className="absolute top-1/3 left-1/4 w-[800px] h-[800px] bg-mafia-gold/5 blur-[150px] rounded-full animate-pulse"></div>
-               <div className="absolute bottom-1/4 right-1/3 w-[600px] h-[600px] bg-mafia-red/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
-               
-               <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-mafia-gold rotate-45 opacity-10"></div>
-               <div className="absolute bottom-1/4 right-1/4 w-48 h-48 border border-mafia-gold -rotate-12 opacity-10"></div>
-               <div className="absolute top-3/4 left-2/3 w-64 h-64 border border-mafia-red/50 rotate-90 opacity-10"></div>
-
-               <ShootingStar />
-               <ShootingStar />
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 0.3 }}
-              whileHover={{ opacity: 1, scale: 1.1 }}
-              onClick={() => setIsEasterEggOpen(true)}
-              className="absolute z-20 w-32 h-32 flex flex-col items-center justify-center cursor-help group pointer-events-auto -translate-x-1/2 -translate-y-1/2"
-              style={{ left: '10%', top: '75%' }}
-            >
-              <div className="w-12 h-12 bg-mafia-gold/5 border border-mafia-gold/20 flex items-center justify-center mb-1 shadow-[0_0_20px_rgba(197,160,89,0.1)] group-hover:border-mafia-gold/60 group-hover:bg-mafia-gold/20 transition-all">
-                <FileText size={18} className="text-mafia-gold/40 group-hover:text-mafia-gold" />
-              </div>
-              <span className="text-[6px] font-mono text-mafia-gold/30 uppercase tracking-[0.4em] group-hover:text-mafia-gold transition-colors">CLASSIFIED_FILE.doc</span>
-            </motion.div>
-          </div>
-        </div>
-
-        <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between pointer-events-none z-30">
-          <div className="flex items-center gap-4 opacity-30">
-            <div className="w-12 h-[1px] bg-mafia-gold"></div>
-            <span className="text-[8px] font-mono uppercase tracking-[0.5em]">Sector_MM_Tactical_Update</span>
-          </div>
-          <div className="flex items-center gap-2 text-mafia-red/40 font-mono text-[8px] animate-pulse">
-            <Activity size={10} /> LIVE_ENCRYPTION_LAYER_ACTIVE
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
 
-      {/* EASTER EGG MODAL (DOSSIER) */}
-      <AnimatePresence>
-        {isEasterEggOpen && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-10">
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }} 
-              onClick={() => setIsEasterEggOpen(false)} 
-              className="absolute inset-0 bg-black/95 backdrop-blur-2xl" 
-            />
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0, rotateX: 20 }} 
-              animate={{ scale: 1, opacity: 1, rotateX: 0 }} 
-              exit={{ scale: 0.9, opacity: 0, rotateX: 20 }} 
-              className="relative w-full max-w-4xl max-h-[85vh] bg-[#1a1a1a] border-l-8 border-mafia-gold p-8 md:p-16 overflow-y-auto shadow-[0_0_100px_rgba(0,0,0,1)] scrollbar-hide"
-            >
-              <div className="absolute top-8 right-8">
-                <button onClick={() => setIsEasterEggOpen(false)} className="text-mafia-gold/40 hover:text-mafia-gold transition-colors">
-                  <X size={32} />
+      <div ref={containerRef} className="absolute inset-0 z-0 bg-black overflow-hidden cursor-crosshair" onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+        <div className="absolute inset-0 pointer-events-none z-0">
+          {starLayer1} {starLayer2} {starLayer3}
+        </div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)] pointer-events-none" />
+
+        <ShootingStar />
+
+        <motion.div className="absolute origin-top-left z-10" style={{ x: panX, y: panY, scale: zoomMotion, width: mapSize.width, height: mapSize.height }}>
+          <svg className="absolute inset-0 w-full h-full pointer-events-none">
+            {STORY_NODES.map(node => node.connections.map(targetId => {
+              const target = STORY_NODES.find(n => n.id === targetId);
+              if (!target || !unlockedLevels.has(node.requiredVisits || 1) || !unlockedLevels.has(target.requiredVisits || 1)) return null;
+              return <line key={`${node.id}-${target.id}`} x1={`${node.x}%`} y1={`${node.y}%`} x2={`${target.x}%`} y2={`${target.y}%`} stroke={getGalaxyColor("#c5a059")} strokeWidth={getStrokeWidth(1)} opacity={0.3} strokeDasharray="4 4" />;
+            }))}
+          </svg>
+
+          {STORY_NODES.map(node => {
+            const isAccessible = unlockedLevels.has(node.requiredVisits || 1);
+            const isVisited = visitedNodes.has(node.id);
+            return (
+              <motion.div key={node.id} className="absolute" style={{ left: `${node.x}%`, top: `${node.y}%`, x: "-50%", y: "-50%" }}>
+                <button onClick={() => { if (isAccessible) { setSelectedNode(node); handleCenterCamera(node); } }}
+                  className={`w-14 h-14 rounded-sm border-2 flex items-center justify-center transition-all duration-500 pointer-events-auto ${selectedNode?.id === node.id ? "bg-mafia-gold text-mafia-black border-white" : isVisited ? "bg-black text-mafia-gold border-mafia-gold" : "bg-black/80 text-white/20 border-white/10"}`}>
+                  {isVisited ? React.cloneElement(node.icon as any, { size: 20 }) : isAccessible ? <Activity size={20} className="animate-pulse" /> : <Lock size={20} className="opacity-20" />}
                 </button>
-              </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      </div>
 
-              <div className="flex items-center gap-6 mb-12 opacity-40">
-                <div className="w-12 h-12 border-2 border-mafia-gold flex items-center justify-center font-black text-mafia-gold">MM</div>
-                <div className="h-px flex-grow bg-mafia-gold/20"></div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.5em] text-mafia-gold">INTERNAL_MEMO // #001</div>
-              </div>
 
-              <div className="space-y-12 font-mono text-smoke-white/80 leading-relaxed">
-                <section>
-                  <h2 className="text-3xl font-heading font-black text-mafia-gold uppercase italic mb-6">CESTA PO SVÝM (MAFIA STYLE)</h2>
-                  <p className="mb-4">Ty první weby vznikly rychle. V podstatě mezi svátky, když ostatní seděli u stolu, já jsem seděl u práce a skládal věci dohromady po svým.</p>
-                  <p className="mb-4">Nebyl to žádný velký plán. Spíš první krok.</p>
-                  <p>Když to pustíš ven, začne to žít vlastním životem. A lidi začnou mluvit.</p>
-                </section>
+      <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-2 pointer-events-auto">
+        <button onClick={() => handleZoom(0.2)} className="w-12 h-12 bg-black/40 border border-white/10 text-mafia-gold flex items-center justify-center rounded-sm hover:bg-mafia-gold hover:text-black transition-all"><Plus size={20} /></button>
+        <button onClick={() => handleZoom(-0.2)} className="w-12 h-12 bg-black/40 border border-white/10 text-mafia-gold flex items-center justify-center rounded-sm hover:bg-mafia-gold hover:text-black transition-all"><Minus size={20} /></button>
+        <div className="mt-2 p-4 bg-black/60 border border-mafia-gold/20 backdrop-blur-md text-[9px] font-mono text-mafia-gold/60 uppercase space-y-2">
+          <div className="flex justify-between gap-8"><span>VZDÁLENOST:</span><span className="text-mafia-gold font-bold">{textDistance} LY</span></div>
+          <div className="flex justify-between gap-8"><span>GALAXIE:</span><span className="text-mafia-gold font-bold">{getSectorName(selectedNode?.constellation || "core")}</span></div>
+        </div>
+      </div>
 
-                <section>
-                  <h3 className="text-xl font-heading font-black text-mafia-gold uppercase mb-6 flex items-center gap-4">
-                    <span className="w-8 h-8 rounded-full border border-mafia-gold/30 flex items-center justify-center text-[10px]">01</span>
-                    🧠 HLUK VENKU
-                  </h3>
-                  <p className="mb-4">Začaly chodit zprávy. E-maily. Názory.</p>
-                  <p className="mb-4">Že je to slabé. Že by to chtělo víc. Že to není „ono“.</p>
-                  <p className="mb-4">Něco z toho bylo užitečné. Něco jen hluk.</p>
-                  <p>Ale v jednu chvíli ti dojde jednoduchá věc — když začneš něco dělat jinak, vždycky se najde někdo, komu to nesedí.</p>
-                </section>
-
-                <section>
-                  <h3 className="text-xl font-heading font-black text-mafia-gold uppercase mb-6 flex items-center gap-4">
-                    <span className="w-8 h-8 rounded-full border border-mafia-gold/30 flex items-center justify-center text-[10px]">02</span>
-                    👊 JÁ NEJSEM NA ŠABLONY
-                  </h3>
-                  <p className="mb-4">Seděl jsem nad tím a říkal si:</p>
-                  <p className="mb-4">Nechci dělat věci tak, jak se mají dělat „správně“.</p>
-                  <p className="mb-4">Nechci web, co jen projde kontrolou a zapadne.</p>
-                  <p className="mb-4">Chci něco, co má styl. Charakter. Přítomnost.</p>
-                  <p>Něco, co není kopie ostatních.</p>
-                </section>
-
-                <section className="pt-12 border-t border-mafia-gold/10 italic text-mafia-gold/60">
-                  <h3 className="text-xl font-heading font-black text-mafia-gold uppercase not-italic mb-4">🧭 ZÁVĚR</h3>
-                  <p className="mb-2">Tohle není jen web.</p>
-                  <p className="mb-2">Tohle je práce, přístup a způsob myšlene.</p>
-                  <p>A kdo to chápe, ten je součástí.</p>
-                </section>
-              </div>
-
-              <div className="mt-20 flex justify-between items-end opacity-20 font-mono text-[8px] uppercase tracking-[0.8em]">
-                <span>CONFIDENTIAL_INFORMATION</span>
-                <span>ORIGIN: MM_ARCHIVE</span>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <button onClick={() => window.location.href = '/'} className="fixed top-8 right-8 w-12 h-12 bg-black/60 border border-mafia-gold/20 text-mafia-gold flex items-center justify-center rounded-full z-[100] hover:text-white transition-all"><X size={20} /></button>
     </div>
   );
 }

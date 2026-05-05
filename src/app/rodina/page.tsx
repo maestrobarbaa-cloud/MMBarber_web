@@ -24,6 +24,7 @@ import {
   Bike,
   Clock,
   FileText,
+  Users,
   X
 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -93,6 +94,7 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
 }
 
 const divisions = [
+  { id: "all", name: "Všichni", nameEn: "All", icon: <Users className="w-5 h-5" /> },
   { id: "voda", name: "Vodaři / Vodo-Topo", nameEn: "Plumbers", icon: <Droplets className="w-5 h-5" /> },
   { id: "elektro", name: "Elektrikáři", nameEn: "Electricians", icon: <Zap className="w-5 h-5" /> },
   { id: "stavebnictvi", name: "Stavebnictví & Reality", nameEn: "Construction & Reality", icon: <Building2 className="w-5 h-5" /> },
@@ -252,7 +254,7 @@ const members = [
 export default function FamilyPage() {
   const { t, lang } = useTranslation();
   const [isMounted, setIsMounted] = useState(false);
-  const [activeDivision, setActiveDivision] = useState("voda");
+  const [activeDivision, setActiveDivision] = useState("all");
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [isWallOpen, setIsWallOpen] = useState(false);
   const [contactModal, setContactModal] = useState<{ name: string; phone: string } | null>(null);
@@ -353,10 +355,6 @@ export default function FamilyPage() {
 
         {viewMode === 'grid' && (
           <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <div className="text-center mb-16 max-w-4xl mx-auto">
-              <h1 className="text-4xl md:text-6xl font-heading font-black text-smoke-white uppercase mb-4">{t.rodina.title}</h1>
-              <p className="text-mafia-gold font-heading text-xl uppercase tracking-[0.2em] italic font-black mb-12">{t.rodina.youForUs}</p>
-            </div>
 
             <div className="flex flex-col lg:flex-row gap-16">
               <aside className="w-full lg:w-[400px] shrink-0">
@@ -398,7 +396,7 @@ export default function FamilyPage() {
                               exit={{ height: 0, opacity: 0 }}
                               className="lg:hidden mt-6 grid grid-cols-2 gap-3 pb-6"
                             >
-                              {members.filter(m => (div.id === 'all' || m.div === div.id)).map(m => (
+                              {members.filter(m => (div.id === 'all' ? m.div !== 'team' : m.div === div.id)).map(m => (
                                 <MemberCard key={m.name} m={m} lang={lang} />
                               ))}
                             </motion.div>
@@ -425,7 +423,7 @@ export default function FamilyPage() {
                     exit={{ opacity: 0, y: -20 }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-8"
                   >
-                    {members.filter(m => activeDivision === 'all' || m.div === activeDivision).map(m => (
+                    {members.filter(m => (activeDivision === 'all' ? m.div !== 'team' : m.div === activeDivision)).map(m => (
                       <MemberCard key={m.name} m={m} lang={lang} />
                     ))}
                   </motion.div>
@@ -594,7 +592,7 @@ export default function FamilyPage() {
                       return (
                         <motion.line
                           key={`string-${member.name}`}
-                          initial={{ pathLength: 0, opacity: 0 }}
+                          initial={{ pathLength: 0, opacity: 0, strokeWidth: 1 }}
                           animate={{
                             pathLength: 1,
                             opacity: isHovered ? 0.9 : 0.25,

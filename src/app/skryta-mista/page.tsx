@@ -43,7 +43,7 @@ export default function HiddenPlacesPage() {
             </Link>
             <div className="flex items-center gap-4 mt-8 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-[0.5em] text-mafia-gold/30">
                <div className="w-1 h-1 bg-mafia-gold/30 rounded-full"></div>
-               <span className="text-mafia-gold/40">SYSTÉM: MM_OS_v3.4.3_ZABEZPEČENO</span>
+               <span className="text-mafia-gold/40">SYSTÉM: MM_OS_v3.4.4_ZABEZPEČENO</span>
             </div>
         </div>
 

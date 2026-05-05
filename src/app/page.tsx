@@ -21,6 +21,7 @@ const RegionalSEOCloud = dynamic(() => import("@/components/RegionalSEOCloud").t
 const GoogleReviewsWall = dynamic(() => import("@/components/GoogleReviewsWall").then(mod => mod.GoogleReviewsWall), { ssr: false });
 const OperationalJournal = dynamic(() => import("@/components/OperationalJournal").then(mod => mod.OperationalJournal), { ssr: false });
 const PersonalVision = dynamic(() => import("@/components/PersonalVision").then(mod => mod.PersonalVision), { ssr: false });
+const GlobalIntelligenceArchive = dynamic(() => import("@/components/GlobalIntelligenceArchive").then(mod => mod.GlobalIntelligenceArchive), { ssr: false });
 
 import { CinematicIntro } from "@/components/Intro";
 import { Atmosphere } from "@/components/Atmosphere";
@@ -181,6 +182,12 @@ export default function Home() {
                   <SectionReveal>
                     <div className="section-optimize">
                       <FooterSecrets />
+                    </div>
+                  </SectionReveal>
+
+                  <SectionReveal>
+                    <div className="section-optimize">
+                      <GlobalIntelligenceArchive />
                     </div>
                   </SectionReveal>
 

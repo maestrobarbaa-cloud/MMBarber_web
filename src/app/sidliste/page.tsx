@@ -41,7 +41,7 @@ export default function HousingEstatePage() {
             <div className="w-12 h-12 border border-mafia-gold/20 flex items-center justify-center overflow-hidden p-1">
                 <Image src="/logo.png" alt="MM" width={40} height={40} className="w-full h-full object-contain opacity-80" />
             </div>
-            <span className="text-[8px] font-mono text-mafia-gold/50 tracking-[0.5em] uppercase mt-2">Housing_Archive_v3.4.3</span>
+            <span className="text-[8px] font-mono text-mafia-gold/50 tracking-[0.5em] uppercase mt-2">Housing_Archive_v3.4.4</span>
         </div>
       </nav>
 

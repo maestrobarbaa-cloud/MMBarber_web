@@ -33,8 +33,12 @@ export function CustomCursor() {
       mouseY.set(e.clientY);
       
       const target = e.target as HTMLElement;
+      const computedCursor = window.getComputedStyle(target).cursor;
+      
       setIsPointer(
-        window.getComputedStyle(target).cursor === "pointer" || 
+        computedCursor === "pointer" || 
+        computedCursor === "grab" || 
+        computedCursor === "grabbing" ||
         target.tagName === "A" || 
         target.tagName === "BUTTON"
       );

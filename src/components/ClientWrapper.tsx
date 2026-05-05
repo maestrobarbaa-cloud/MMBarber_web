@@ -249,7 +249,8 @@ export function ClientWrapper() {
     <MotionConfig reducedMotion={isActuallyMobile || graphicsTier === "low" || graphicsTier === "medium" ? "always" : "user"}>
       {/* Games are currently disabled by request */}
       {/* {showEffects && <BarberGame />} */}
-      {showEffects && <BarberChat isOpen={isBarberChatOpen} />}
+      {/* BarberChat is disabled per user request */}
+      {/* {showEffects && <BarberChat isOpen={isBarberChatOpen} />} */}
       {showEffects && <Radio />}
       <CookieBanner />
       {/* {showEffects && <FloatingScissors />} */}
@@ -259,7 +260,7 @@ export function ClientWrapper() {
       {showEffects && <MatrixBackground />}
       <UserSettingsManager />
       <EarthProtocol isOpen={isEarthProtocolOpen} onClose={() => setIsEarthProtocolOpen(false)} lang={lang} />
-      {/* {showEffects && <ElitaGame />} */}
+      <ElitaGame />
     </MotionConfig>
   );
 }

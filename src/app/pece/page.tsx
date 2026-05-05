@@ -266,7 +266,7 @@ export default function CareMagazinePage() {
            </Link>
            <div className="flex flex-col items-end">
               <span className="font-heading font-black text-xl italic tracking-tighter text-white logo-neon">MMBARBER</span>
-              <span className="text-[8px] font-mono text-mafia-gold/50 noir-mode:text-mafia-silver/50 theme-blood:text-mafia-red/50 tracking-[0.5em] uppercase">{t_mag.ui.title?.replace(' ', '_')}_v3.4.3</span>
+              <span className="text-[8px] font-mono text-mafia-gold/50 noir-mode:text-mafia-silver/50 theme-blood:text-mafia-red/50 tracking-[0.5em] uppercase">{t_mag.ui.title?.replace(' ', '_')}_v3.4.4</span>
            </div>
         </div>
 

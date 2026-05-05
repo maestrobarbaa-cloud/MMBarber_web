@@ -76,6 +76,12 @@ export function RegionalSEOCloud() {
             Pánský klub UH, noir atmosféra barbershop, exkluzivní péče pro muže v Hradišti.
             Otevírací doba barber UH, Sadová 1383 Mařatice, parkování u barbershopu Hradiště.
           </p>
+          <p className="mt-4">
+            {t.seo.servicesFullText}
+          </p>
+          <p className="mt-4">
+            {t.seo.partnerServicesFullText}
+          </p>
         </div>
 
         {/* System Status */}

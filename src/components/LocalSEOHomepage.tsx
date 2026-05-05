@@ -106,14 +106,24 @@ export function LocalSEOHomepage() {
             Našimi partnery jsou například:
           </p>
           <ul>
-            <li><strong>Vodo Topo Jahoda:</strong> Špičkoví instalatéři a topenáři pro region UH.</li>
-            <li><strong>Kofipack:</strong> Odborníci na logistiku a balení.</li>
-            <li><strong>Malina Photo:</strong> Profesionální fotograf zachycující emoce a styl.</li>
+            <li><strong>Vodo Topo Jahoda:</strong> Křišťálově poctiví instalatéři a topenáři pro region Uherské Hradiště. Havárie vody, výměny kotlů a modernizace rozvodů.</li>
+            <li><strong>Zdeněk Mička:</strong> Mistr instalatér z Bílovic, specialista na precizní technické systémy a rozvody.</li>
+            <li><strong>Kofipack:</strong> Odborníci na logistiku, balení a bezpečný transport v Mařaticích i do celého světa.</li>
+            <li><strong>Malina Photo:</strong> Profesionální fotograf s okem pro detail, zachycující noir atmosféru a vizuální identitu.</li>
+            <li><strong>Comites:</strong> Vaše jistota v oblasti financí, realit a strategického růstu na Slovácku.</li>
+            <li><strong>Sluneční Reality:</strong> Průvodce světem realit v Uherském Hradišti, který vám pomůže najít ideální prostor.</li>
+            <li><strong>Kudielka:</strong> Špičkové stínění, žaluzie a pergoly pro moderní bydlení i firmy.</li>
+            <li><strong>O Kolečko víc:</strong> Profesionální bike servis v UH, kde se o vaše kolo starají se stejnou vášní, s jakou my o vaše vlasy.</li>
           </ul>
           <p>
-            Díky této spolupráci tvoříme v našem regionu silný ekosystém služeb, který se navzájem doplňuje a roste.
+            Díky této spolupráci tvoříme v našem regionu silný ekosystém služeb. Každý člen MM BARBER Rodiny prochází přísným výběrem, abychom vám mohli garantovat stejnou úroveň kvality, na jakou jste zvyklí u nás v křesle.
           </p>
         </div>
+
+        <h3>Jak poznat kvalitního elektrikáře nebo instalatéra v UH?</h3>
+        <p>
+          V rámci naší komunity klademe důraz na osvětu. Kvalitního řemeslníka poznáte podle profesionálního nářadí, dodržování termínů a transparentní komunikace. Naši partneři jako Vodo Topo Jahoda nebo Roman Jakubčák jsou příkladem toho, jak má vypadat moderní řemeslo v 21. století – bezpečné, estetické a spolehlivé.
+        </p>
 
         <h3>Globální standardy v srdci Moravy</h3>
         <p>
@@ -205,6 +215,13 @@ export function LocalSEOHomepage() {
             <h4 itemProp="name">Co je to MM BARBER Rodina?</h4>
             <div itemProp="acceptedAnswer" itemScope itemType="https://schema.org/Answer">
               <p itemProp="text">Projekt MM BARBER Rodina propojuje lokální poctivé řemeslníky v Uherském Hradišti. Spolupracujeme s partnery jako Vodo Topo Jahoda, Kofipack nebo Malina Photo, abychom společně zvyšovali úroveň služeb v regionu.</p>
+            </div>
+          </div>
+          
+          <div itemProp="mainEntity" itemScope itemType="https://schema.org/Question">
+            <h4 itemProp="name">Jak poznat kvalitního elektrikáře nebo instalatéra v Uherském Hradišti?</h4>
+            <div itemProp="acceptedAnswer" itemScope itemType="https://schema.org/Answer">
+              <p itemProp="text">Kvalitní profesionál (jako naši partneři Vodo Topo Jahoda nebo Zdeněk Mička) má profesionální nářadí, dodržuje termíny a je transparentní v ceně. Důležitá je také platná certifikace a schopnost vysvětlit technický problém srozumitelně. V MM BARBER Rodině za tyto standardy ručíme.</p>
             </div>
           </div>
           

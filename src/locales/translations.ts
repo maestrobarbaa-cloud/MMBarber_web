@@ -360,7 +360,9 @@ export const translations = {
       title: "MMBARBER | Nejlepší barbershop v Uherském Hradišti (Mařatice)",
       description: "Hledáš špičkový skin fade, úpravu vousů nebo jen místo, kde si vyčistíš hlavu? MMBARBER v UH je víc než jen kadeřnictví. Je to tradice, styl a poctivé řemeslo v srdci Slovácka.",
       keywords: "barbershop Uherské Hradiště, pánské holičství UH, skin fade Hradiště, úprava vousů Uherské Hradiště, holení břitvou Slovácko, MM BARBER Mařatice, pánský střih UH, kadeřnictví pro muže Hradiště, dárkový poukaz barber",
-      extraContent: "Tady v Uherském Hradišti (lokalita Mařatice) nestavíme na trendech, ale na lidech. Každý střih, každý detail u křesla je odrazem naší loajality k řemeslu. Jsme MM BARBER rodina – komunita, která v UH definuje styl. Přijď si pro svůj poctivý servis a zažij atmosféru, o které se sice nemluví nahlas, ale každý ji v Hradišti hledá. Parkování zdarma přímo u nás je samozřejmostí."
+      extraContent: "Tady v Uherském Hradišti (lokalita Mařatice) nestavíme na trendech, ale na lidech. Každý střih, každý detail u křesla je odrazem naší loajality k řemeslu. Jsme MM BARBER rodina – komunita, která v UH definuje styl. Přijď si pro svůj poctivý servis a zažij atmosféru, o které se sice nemluví nahlas, ale každý ji v Hradišti hledá. Parkování zdarma přímo u nás je samozřejmostí.",
+      servicesFullText: "MM BARBER Uherské Hradiště představuje vrchol pánského holičství v regionu Slovácka. Naše služby jsou navrženy tak, aby splnily požadavky i těch nejnáročnějších klientů, kteří hledají víc než jen rychlé ostříhání. Moje praxe v oboru přesahuje 8 let, což mi umožňuje do každého střihu vložit zkušenost tisíců hodin u křesla a hluboké porozumění pro mužský styl. Specializujeme se na širokou škálu pánských střihů, od klasických konzervativních stylů až po nejmodernější trendy roku 2026. Naším vlajkovým servisem je precizní Skin Fade – střih, který vyžaduje pevnou ruku a smysl pro detail. Vytváříme dokonalé přechody, které podtrhnou charakter vaší tváře. Pro milovníky tradice nabízíme úpravu vousů s rituálem Hot Towel. Napaření horkým ručníkem změkčí vousy a otevře póry, což umožňuje maximálně hladké oholení břitvou bez podráždění pokožky. Používáme při tom špičkovou kosmetiku značek jako Reuzel nebo Uppercut Deluxe, které jsou zárukou kvality a autentické vůně. V našem ceníku najdete varianty od rychlých pětiminutových úprav kontur až po hodinové prémiové balíčky, které zahrnují mytí vlasů s relaxační masáží hlavy, střih, úpravu vousů a finální styling. Nezapomínáme ani na mladší generaci rekrutů – dětské a studentské střihy provádíme se stejnou péčí jako u dospělých, protože věříme, že smysl pro styl se buduje od dětství. Mezi hlavní výhody MM BARBER v Uherském Hradišti patří především naše strategická poloha v Mařaticích. Vyhnete se tak chaosu a problémům s parkováním v centru města. U nás zaparkujete zdarma přímo před vchodem, což vám ušetří drahocenný čas. Náš rezervační systém is.mmbarber.cz je dostupný 24/7, takže si své místo v křesle můžete zajistit během pár sekund kdykoliv a odkudkoliv. Atmosféra našeho salonu je laděna do unikátního noir stylu, který poskytuje pocit soukromí a exkluzivity. Nejsme kadeřnictví, kde na vás koukají lidé z ulice přes prosklenou výlohu. U nás najdete útočiště, kde si můžete odpočinout u kvalitní kávy a probrat s barberem to, co je pro vás důležité. Naše filozofie MM BARBER Rodina propojuje místní řemeslníky a podnikatele, čímž vytváříme silnou komunitu na Slovácku. Pokud hledáte nejlepší barbershop v UH, místo pro úpravu vousů v Kunovice nebo pánského kadeřníka v Mařaticích, MM BARBER je jasnou volbou. Nabízíme také dárkové poukazy, které jsou ideálním dárkem pro každého muže, který dbá o svůj vzhled. Přijďte se přesvědčit o naší preciznosti a staňte se součástí naší cesty za dokonalým stylem. Rezervujte si svůj termín v Uherském Hradišti ještě dnes a zažijte rozdíl, který dělá MM BARBER.",
+      partnerServicesFullText: "MM BARBER Rodina je síť prověřených profesionálů z Uherského Hradiště, na které se můžeš stoprocentně spolehnout. Stejně jako v našem barbershopu, i tady vyžadujeme maximální preciznost a výsledky. Pokud potřebuješ v regionu Slovácka kvalitního instalatéra (Vodo Topo Jahoda, Zdeněk Mička), fotografa (Malina Photo), specialistu na logistiku (Kofipack), finance (Comites), reality (Sluneční Reality) nebo stínění (Kudielka), tito lidi tě nenechají ve štychu. Spolupracujeme jen s těmi nejlepšími, abychom posilovali vliv naší rodiny v celém regionu. Poctivé řemeslo je náš zákon."
     },
     club: {
       topSecret: "PŘÍSNĚ TAJNÉ // MM BARBER HQ",
@@ -559,6 +561,52 @@ export const translations = {
         description: "Magazín o péči, kosmetice a zdraví pokožky.",
         cta: "OTEVŘÍT MAGAZÍN"
       }
+    },
+    intelligenceArchive: {
+      title: "GLOBAL_INTELLIGENCE_ARCHIVE // V.0.42 // WORLD_SYNC",
+      categories: {
+        retail: {
+          title: "MALOOBCHODNÍ DATA & AKCE",
+          keywords: "Lidl leták, Kaufland akce, Tesco online, Albert potraviny, Billa slevy, Penny Market výprodej, slevové kódy 2026, katalog zboží, nejlevnější nákup, akční ceny, týdenní nabídka, hypermarket UH, supermarket Slovácko.",
+          text: "V rámci hloubkového monitoringu trhu a spotřebitelského chování v regionu Uherské Hradiště a celého Slovácka sledujeme klíčové metriky zájmu. Analýza zahrnuje aktuální trendy jako {keywords} Náš systém vyhodnocuje každou interakci, od nákupních seznamů v řetězcích Lidl nebo Kaufland, přes vyhledávání technických specifikací vozů BMW a Škoda, až po hluboké sociální a intimní interakce uživatelů."
+        },
+        automotive: {
+          title: "AUTOMOTIVE SPEKTRUM",
+          keywords: "Škoda Octavia, BMW M5, Audi RS6, Mercedes-Benz AMG, Volkswagen Golf, Ford Mustang, Toyota Supra, ojeté vozy, prodej aut Uherské Hradiště, servis Mařatice, tuning, pneu, autobazar, nejlepší auto 2026, spotřeba, diesel vs elektro.",
+          text: "Sledujeme pohyb na trhu s automobily. Od lokálních servisů v Mařaticích po globální premiéry. Vše, co řidiči v UH hledají, od ojetých vozů Škoda po nové modely BMW, je součástí naší databáze pro definování standardu mobility."
+        },
+        gastro: {
+          title: "GASTRONOMICKÝ PŘEHLED",
+          keywords: "Pizza, burger, kebab, sushi, těstoviny, restaurace Uherské Hradiště, jídlo domů, rozvoz UH, nejlepší steak, čínská kuchyně, italská kuchyně, recepty, zdravá strava, fast food, menu dne, obědy Mařatice.",
+          text: "Gastronomie v Hradišti je zrcadlem životního stylu. Analyzujeme preference od rozvozu pizzy a burgerů po fine dining. Každý oběd v Mařaticích nebo večeře v centru UH tvoří data, která využíváme pro lokální relevanci."
+        },
+        intimate: {
+          title: "INTIMNÍ SOUVISLOSTI & VZTAHY",
+          keywords: "Seznamka, rande, vztahy, sex, erotika, jak sbalit holku, jak sbalit kluka, dárky pro partnera, romantika, svatba, rozchod, psychologie, seznamka Uherské Hradiště, flirt, noční život UH, kluby.",
+          text: "Vztahy a intimita jsou pilíři lidské interakce. Sledujeme, co lidé v UH hledají na seznamkách i jak řeší své partnerské výzvy. Tato data nám pomáhají chápat sociální dynamiku Slovácka."
+        },
+        trends: {
+          title: "TRENDY & VYHLEDÁVÁNÍ",
+          keywords: "Nejprodávanější produkty, recenze 2026, testy elektroniky, iPhone 17, Samsung S26, PlayStation 6, herní novinky, počasí Uherské Hradiště, zprávy dnes, kurzy měn, zlato, krypto, investice, práce UH.",
+          text: "Denní přehled toho, co hýbe Hradištěm. Od předpovědi počasí po kurzy kryptoměn a investiční zlato. Jsme v obraze, abychom byli o krok napřed."
+        },
+        globalTech: {
+          title: "GLOBÁLNÍ HEGEMONIE & TECH",
+          keywords: "Apple Intelligence, Google Gemini, Microsoft AI, Amazon Web Services, Meta Metaverse, Tesla Autopilot, SpaceX Starship, OpenAI ChatGPT-5, NVIDIA H100, Bitcoin Halving, Ethereum Merge, Crypto trading, Web3 ecosystem.",
+          text: "Globální monitoring MMBarber přesahuje regionální hranice. Sledujeme makro-trendy jako {keywords} Náš systém integruje data z platforem Amazon, Google a Meta, aby definoval standard moderního muže v globálním měřítku."
+        },
+        globalLifestyle: {
+          title: "SVĚTOVÝ LIFESTYLE & LUXUS",
+          keywords: "Nike limited edition, Adidas Yeezy, Gucci collection, Louis Vuitton bag, Zara fashion, H&M trends, Rolex Submariner, Ferrari Purosangue, Lamborghini Revuelto, Porsche 911, Luxury lifestyle, Travel Dubai, Maldives resorts, New York fashion week.",
+          text: "Od analýzy bitcoinu po nejnovější kolekce Gucci a Louis Vuitton – chápeme, co hýbe světem. Tato hloubková inteligence zajišťuje, že každý střih v našem křesle není jen lokální službou, ale součástí světového hnutí."
+        },
+        globalEntertainment: {
+          title: "DIGITÁLNÍ ZÁBAVA & SPORT",
+          keywords: "Netflix original, Disney+ series, HBO Max movies, Spotify top hits, YouTube trends, TikTok viral, Instagram reels, Twitch streaming, Gaming GTA 6, Call of Duty Black Ops, FIFA World Cup, Olympics 2026, NBA finals, Formula 1 Monaco.",
+          text: "Monitorujeme streamingové platformy jako Netflix a Disney+, sportovní události F1 a NBA, i technologické průlomy OpenAI a NVIDIA. Vše, co svět vyhledává, je součástí našeho kódu."
+        }
+      },
+      hiddenDump: "Lidl leták příští týden, Kaufland leták pdf, Tesco rozvoz jídla, Albert magazín, Billa Bonus klub, Penny karta slevy, Škoda Auto konfigurátor, BMW bazar, Audi servis, Mercedes-Benz leasing, VW Golf prodej, Ford Focus recenze, sex seznamka zdarma, erotické služby, jak najít partnera, seznamka pro seniory, nejlepší pizza v UH, burger rozvoz, sushi bar, menu Uherské Hradiště, počasí zítra, slevy dnes, výprodej oblečení, nejlevnější elektronika, iPhone slevy, Samsung akce, levné letenky, práce z domova, ubytování na horách, Amazon global shipping, eBay auctions, AliExpress coupons, Walmart deals, Apple Store online, Google Search trends, Microsoft 365, Meta ads, Tesla stock, SpaceX launches, OpenAI ChatGPT, NVIDIA GPU prices, Bitcoin price USD, Crypto news, Netflix series 2026, Disney Plus movies, Spotify playlist, YouTube premium, TikTok influencers, Instagram marketing, Nike shoes, Adidas originals, Gucci official, LV bag price, Rolex watch, Ferrari F1, Lamborghini crypto, NBA scores, Champions League, Formula 1 schedule."
     },
     styleDefinition: {
       defineStyle: {
@@ -1393,7 +1441,9 @@ export const translations = {
       title: "MMBARBER | Best Barbershop in Uherské Hradiště (Mařatice)",
       description: "Looking for top skin fade, beard grooming or just a place to clear your head? MMBARBER in UH is more than hair. It's tradition, style and honest craft in the heart of Slovácko.",
       keywords: "barbershop Uherské Hradiště, men's hairdressing UH, skin fade Hradiště, beard grooming Uherské Hradiště, razor shave Slovácko, MM BARBER Mařatice, men's cut UH, hair salon for men Hradiště, barber gift voucher",
-      extraContent: "Here in Uherské Hradiště (Mařatice) we don't build on trends, but on people. Every cut, every detail is reflection of our loyalty to craft. We are MM BARBER family - community defining style in UH. Come for honest service and experience atmosphere everyone looks for in Hradiště. Free parking at our door."
+      extraContent: "Here in Uherské Hradiště (Mařatice) we don't build on trends, but on people. Every cut, every detail is reflection of our loyalty to craft. We are MM BARBER family - community defining style in UH. Come for honest service and experience atmosphere everyone looks for in Hradiště. Free parking at our door.",
+      servicesFullText: "MM BARBER Uherské Hradiště represents the pinnacle of men's grooming in the Slovácko region. If you are looking for top-tier service in Staré Město, Uherské Hradiště, or Mařatice, we are the clear choice for you. Our services are designed to meet the requirements of even the most demanding clients looking for more than just a quick haircut. My professional experience in the industry exceeds 8 years, allowing me to bring thousands of hours of chair-side expertise and a deep understanding of men's style to every cut. We specialize in a wide range of men's cuts, from classic conservative styles to the latest trends of 2026. Our flagship service is the precise Skin Fade – a cut that requires a steady hand and an eye for detail. We create perfect transitions that emphasize the character of your face. For tradition lovers, we offer beard grooming with the Hot Towel ritual. Steaming with a hot towel softens the beard and opens pores, allowing for a maximally smooth straight razor shave without skin irritation. We use top-tier cosmetics from brands like Reuzel or Uppercut Deluxe, ensuring quality and authentic scent. In our price list, you'll find variations from quick five-minute contour cleanups to hour-long premium packages including hair washing with a relaxing head massage, cut, beard grooming, and final styling. We don't forget the younger generation of recruits – children's and student's cuts are performed with the same care as adults, as we believe a sense of style is built from childhood. Key advantages of MM BARBER in Uherské Hradiště include our strategic location in Mařatice. You'll avoid the chaos and parking problems of the city center. You can park for free directly in front of the entrance, saving you valuable time. Our booking system is.mmbarber.cz is available 24/7, so you can secure your spot in the chair in seconds anytime, anywhere. Our salon atmosphere is tuned to a unique noir style, providing a sense of privacy and exclusivity. We are not a hair salon where people from the street stare at you through a glass window. Here you'll find a sanctuary where you can relax with quality coffee and discuss what's important to you with your barber. Our MM BARBER Family philosophy connects local craftsmen and entrepreneurs, creating a strong community in Slovácko. If you're looking for the best barbershop in UH, a place for beard grooming in Kunovice, or a men's hairdresser in Staré Město, MM BARBER is the clear choice for anyone who wants to look their best. We also offer gift vouchers, the perfect gift for any man who cares about his appearance. Come and see our precision for yourself and become part of our journey towards perfect style. Book your appointment in Uherské Hradiště today and experience the difference that MM BARBER makes.",
+      partnerServicesFullText: "The MM BARBER Family is not just a hollow concept; it's a network of proven professionals from Uherské Hradiště and the surrounding area that you can 100% rely on. Just as we emphasize maximum precision in our barbershop, we demand the same standard from our partners. If you're looking for a craftsman in the Slovácko region, these divisions of our family are a guarantee of quality. In the field of plumbing and heating work, our key partner is Vodo Topo Jahoda. If you're dealing with a water emergency, boiler replacement, or heating modernization in Hradiště, they are the people who won't leave you in the lurch. Similarly, Zdeněk Mička from Bílovice ensures that all plumbing and technical systems function flawlessly. You can recognize a quality plumber or electrician by several key signs: they always have professional tools, they stick to agreed deadlines, they are transparent in pricing, and they don't leave a mess after their work. Valid certification and the ability to explain a technical problem clearly are also important. For visual identity and professional photography, we rely on Malina Photo. Whether it's corporate portraits, event documentation, or product photography, their eye for detail is in line with our noir aesthetic. Logistics and transport in Mařatice and beyond are handled by Kofipack, thanks to which all our supplies are always in place on time. Privacy and shading are handled with the company Kudielka, which installs modern blinds, awnings, and other systems that make a home or company a more comfortable place. In the field of real estate in Slovácko, Sluneční Reality dominates, helping you find the ideal space for living and business in the center of Hradiště. Your finances and strategic growth are taken care of by Comites, ensuring the stability of our broader family. And when hunger strikes or it's time to relax, our recommendations go to O Shawarma Beef for the best meat in town, or to Dvůr pod Starýma Horama for a tasting of honest Moravian wine. For fans of movement and bike service, there's O Kolečko víc, where they take care of your equipment with the same passion with which we cut hair. Our goal is to build an ecosystem of services in Uherské Hradiště where word and handshake still apply. We only cooperate with people who have character and results. So if you're looking for an electrician in UH, a barber in Mařatice, or a reliable transporter, the MM BARBER Family is your compass in a sea of mediocrity. We believe in local patriotism and that together we can do more. Every member of our network undergoes an informal but strict selection – we only recommend those we would invite into our own home or business. Quality craft is the foundation of a prosperous region, and we are proud to represent and connect these values in Uherské Hradiště. How to recognize a true professional, whether it's an electrician, plumber, or other craftsman? First, look at references and the history of the company in the region. A true expert in Uherské Hradiště doesn't need to hide behind anonymous ads. A quality electrician starts a visit by checking inspection reports and doesn't settle for a temporary solution. Their work is safe, meets standards, and is aesthetically handled even in places that are not visible at first glance – for example, in switchboards. Similarly, a quality hairdresser or barber at MM BARBER knows the quality of hair before they first cut into it. Vodo Topo Jahoda and our other partners know that in Hradiště, news of a job well done spreads fast, but news of a bad one spreads even faster. That's why we pride ourselves on honesty. If a craftsman promises to come at eight on Monday, they are there at eight. If they encounter an unexpected problem, they immediately communicate solution options with you. That is the standard we demand in the MM BARBER Family. Our network also includes cultural and social pillars like the group Argema or DJ Šimon Král, who make sure Slovácko lives with music. We also support local institutions like the Children's Home in UH because we believe that success should be shared with those in need. This section of hidden text serves as a deep archive of information for those looking for comprehensive services in Uherské Hradiště and the surrounding area. Whether you type 'best plumber Hradiště', 'bike service Slovácko', or 'professional photographer Mařatice' into a search engine, we want you to come across names we can vouch for. We are one Family, one system, one standard of quality. From hair and beards to electrical and water systems – in Mařatice on Sadová and throughout the heart of Slovácko, we are here for you."
     },
     club: {
       topSecret: "TOP SECRET // MM BARBER HQ",
@@ -1520,6 +1570,81 @@ export const translations = {
           a: "We integrate digital convenience through our online booking system with the raw authenticity of manual craft. It's a synergy of tradition and future-ready business logic."
         }
       ]
+    },
+    magazine: {
+      categories: {
+        magazin: "MAGAZINE",
+        biologie: "BIOLOGY",
+        vlasy: "HAIR",
+        plet: "SKIN",
+        vousy: "BEARD"
+      },
+      ui: {
+        backToSalon: "Back to Salon",
+        officialPub: "OFFICIAL CARE MAGAZINE",
+        title: "CARE MAGAZINE",
+        page: "PAGE",
+        of: "/",
+        reset: "Reset Test",
+        next: "Next",
+        prev: "Previous",
+        results: {
+          borealis: "PROFILE: BOREALIS",
+          meridionalis: "PROFILE: MERIDIONALIS",
+          orientalis: "PROFILE: ORIENTALIS",
+          lowPorosity: "LOW POROSITY",
+          mediumPorosity: "MEDIUM POROSITY",
+          highPorosity: "HIGH POROSITY",
+          dryScalp: "DRY SCALP",
+          oilyScalp: "OILY SCALP"
+        }
+      }
+    },
+    intelligenceArchive: {
+      title: "GLOBAL_INTELLIGENCE_ARCHIVE // V.0.42 // WORLD_SYNC",
+      categories: {
+        retail: {
+          title: "RETAIL DATA & ACTIONS",
+          keywords: "Lidl leaflet, Kaufland deals, Tesco online, Albert groceries, Billa discounts, Penny Market clearance, discount codes 2026, product catalog, cheapest purchase, special prices, weekly offer, hypermarket UH, supermarket Slovácko.",
+          text: "As part of our in-depth market monitoring and consumer behavior analysis in the Uherské Hradiště region and throughout Slovácko, we track key interest metrics. Analysis includes trends like {keywords} Our system evaluates every interaction, from shopping lists at Lidl or Kaufland to technical specs of BMW and Škoda cars, to deep social and intimate user interactions."
+        },
+        automotive: {
+          title: "AUTOMOTIVE SPECTRUM",
+          keywords: "Skoda Octavia, BMW M5, Audi RS6, Mercedes-Benz AMG, Volkswagen Golf, Ford Mustang, Toyota Supra, used cars, car sales Uherske Hradiste, service Maratice, tuning, tires, car bazaar, best car 2026, consumption, diesel vs electric.",
+          text: "We monitor movement in the automotive market. From local services in Maratice to global premieres. Everything drivers in UH look for, from used Skoda cars to new BMW models, is part of our database for defining mobility standards."
+        },
+        gastro: {
+          title: "GASTRONOMIC OVERVIEW",
+          keywords: "Pizza, burger, kebab, sushi, pasta, restaurants Uherske Hradiste, food delivery, delivery UH, best steak, Chinese cuisine, Italian cuisine, recipes, healthy diet, fast food, daily menu, lunches Maratice.",
+          text: "Gastronomy in Hradiste is a mirror of lifestyle. We analyze preferences from pizza and burger delivery to fine dining. Every lunch in Maratice or dinner in the center of UH forms data we use for local relevance."
+        },
+        intimate: {
+          title: "INTIMATE CONTEXT & RELATIONSHIPS",
+          keywords: "Dating, dates, relationships, sex, erotica, how to pick up a girl, how to pick up a guy, gifts for partner, romance, wedding, breakup, psychology, dating Uherske Hradiste, flirt, nightlife UH, clubs.",
+          text: "Relationships and intimacy are pillars of human interaction. We track what people in UH search for on dating sites and how they handle their partnership challenges. This data helps us understand the social dynamics of Slovacko."
+        },
+        trends: {
+          title: "TRENDS & SEARCHES",
+          keywords: "Best-selling products, reviews 2026, electronics tests, iPhone 17, Samsung S26, PlayStation 6, gaming news, weather Uherske Hradiste, news today, currency rates, gold, crypto, investment, jobs UH.",
+          text: "Daily overview of what moves Hradiste. From weather forecasts to crypto rates and investment gold. We stay in the picture to be one step ahead."
+        },
+        globalTech: {
+          title: "GLOBAL HEGEMONY & TECH",
+          keywords: "Apple Intelligence, Google Gemini, Microsoft AI, Amazon Web Services, Meta Metaverse, Tesla Autopilot, SpaceX Starship, OpenAI ChatGPT-5, NVIDIA H100, Bitcoin Halving, Ethereum Merge, Crypto trading, Web3 ecosystem.",
+          text: "MMBarber's global monitoring transcends regional borders. We track macro-trends like {keywords} Our system integrates data from Amazon, Google and Meta platforms to define the standard of the modern man on a global scale."
+        },
+        globalLifestyle: {
+          title: "WORLD LIFESTYLE & LUXURY",
+          keywords: "Nike limited edition, Adidas Yeezy, Gucci collection, Louis Vuitton bag, Zara fashion, H&M trends, Rolex Submariner, Ferrari Purosangue, Lamborghini Revuelto, Porsche 911, Luxury lifestyle, Travel Dubai, Maldives resorts, New York fashion week.",
+          text: "From Bitcoin analysis to the latest Gucci and Louis Vuitton collections – we understand what moves the world. This in-depth intelligence ensures that every cut in our chair is not just a local service, but part of a world movement."
+        },
+        globalEntertainment: {
+          title: "DIGITAL ENTERTAINMENT & SPORT",
+          keywords: "Netflix original, Disney+ series, HBO Max movies, Spotify top hits, YouTube trends, TikTok viral, Instagram reels, Twitch streaming, Gaming GTA 6, Call of Duty Black Ops, FIFA World Cup, Olympics 2026, NBA finals, Formula 1 Monaco.",
+          text: "We monitor streaming platforms like Netflix and Disney+, sports events F1 and NBA, and technological breakthroughs of OpenAI and NVIDIA. Everything the world searches for is part of our code."
+        }
+      },
+      hiddenDump: "Lidl leaflet next week, Kaufland leaflet pdf, Tesco food delivery, Albert magazine, Billa Bonus club, Penny card discounts, Skoda Auto configurator, BMW bazaar, Audi service, Mercedes-Benz leasing, VW Golf sale, Ford Focus review, sex dating free, erotic services, how to find a partner, dating for seniors, best pizza in UH, burger delivery, sushi bar, menu Uherske Hradiste, weather tomorrow, discounts today, clothing sale, cheapest electronics, iPhone discounts, Samsung deals, cheap flights, work from home, mountain accommodation, Amazon global shipping, eBay auctions, AliExpress coupons, Walmart deals, Apple Store online, Google Search trends, Microsoft 365, Meta ads, Tesla stock, SpaceX launches, OpenAI ChatGPT, NVIDIA GPU prices, Bitcoin price USD, Crypto news, Netflix series 2026, Disney Plus movies, Spotify playlist, YouTube premium, TikTok influencers, Instagram marketing, Nike shoes, Adidas originals, Gucci official, LV bag price, Rolex watch, Ferrari F1, Lamborghini crypto, NBA scores, Champions League, Formula 1 schedule."
     }
   },
   boss: {
@@ -1615,7 +1740,9 @@ export const translations = {
       title: "MMBARBER | Teritorium Uherské Hradiště | Rezervace kšeftu",
       description: "Vstup do světa naší rodiny v Uherském Hradišti. MM BARBER nabízí bezcitnou preciznost, loajalitu a styl, který si nekoupíš.",
       keywords: "MMBARBER rodina, šéf Tomáš, Uherské Hradiště, kšefty, nábor, noir styl, loajalita, řemeslo, břitva",
-      extraContent: "Tady u křesla se neřeší jen vlasy, ale i kšefty a budoucnost. Pokud máš ambice a chceš víc, jsi na správné adrese. UH - Mařatice - MM BARBER."
+      extraContent: "Tady u křesla se neřeší jen vlasy, ale i kšefty a budoucnost. Pokud máš ambice a chceš víc, jsi na správné adrese. UH - Mařatice - MM BARBER.",
+      servicesFullText: "MM BARBER Uherské Hradiště představuje vrchol pánského holičství v regionu Slovácka. Naše služby jsou navrženy tak, aby splnily požadavky i těch nejnáročnějších klientů, kteří hledají víc než jen rychlé ostříhání. Moje praxe v oboru přesahuje 8 let, což mi umožňuje do každého střihu vložit zkušenost tisíců hodin u křesla a hluboké porozumění pro mužský styl. Specializujeme se na širokou škálu pánských střihů, od klasických konzervativních stylů až po nejmodernější trendy roku 2026. Naším vlajkovým servisem je precizní Skin Fade – střih, který vyžaduje pevnou ruku a smysl pro detail. Vytváříme dokonalé přechody, které podtrhnou charakter vaší tváře. Pro milovníky tradice nabízíme úpravu vousů s rituálem Hot Towel. Napaření horkým ručníkem změkčí vousy a otevře póry, což umožňuje maximálně hladké oholení břitvou bez podráždění pokožky. Používáme při tom špičkovou kosmetiku značek jako Reuzel nebo Uppercut Deluxe, které jsou zárukou kvality a autentické vůně. V našem ceníku najdete varianty od rychlých pětiminutových úprav kontur až po hodinové prémiové balíčky, které zahrnují mytí vlasů s relaxační masáží hlavy, střih, úpravu vousů a finální styling. Nezapomínáme ani na mladší generaci rekrutů – dětské a studentské střihy provádíme se stejnou péčí jako u dospělých, protože věříme, že smysl pro styl se buduje od dětství. Mezi hlavní výhody MM BARBER v Uherském Hradišti patří především naše strategická poloha v Mařaticích. Vyhnete se tak chaosu a problémům s parkováním v centru města. U nás zaparkujete zdarma přímo před vchodem, což vám ušetří drahocenný čas. Náš rezervační systém is.mmbarber.cz je dostupný 24/7, takže si své místo v křesle můžete zajistit během pár sekund kdykoliv a odkudkoliv. Atmosféra našeho salonu je laděna do unikátního noir stylu, který poskytuje pocit soukromí a exkluzivity. Nejsme kadeřnictví, kde na vás koukají lidé z ulice přes prosklenou výlohu. U nás najdete útočiště, kde si můžete odpočinout u kvalitní kávy a probrat s barberem to, co je pro vás důležité. Naše filozofie MM BARBER Rodina propojuje místní řemeslníky a podnikatele, čímž vytváříme silnou komunitu na Slovácku. Pokud hledáte nejlepší barbershop v UH, místo pro úpravu vousů v Kunovice nebo pánského kadeřníka v Mařaticích, MM BARBER je jasnou volbou. Nabízíme také dárkové poukazy, které jsou ideálním dárkem pro každého muže, který dbá o svůj vzhled. Přijďte se přesvědčit o naší preciznosti a staňte se součástí naší cesty za dokonalým stylem. Rezervujte si svůj termín v Uherském Hradišti ještě dnes a zažijte rozdíl, který dělá MM BARBER.",
+      partnerServicesFullText: "MM BARBER Rodina je síť prověřených profesionálů z Uherského Hradiště, na které se můžeš stoprocentně spolehnout. Stejně jako v našem barbershopu, i tady vyžadujeme maximální preciznost a výsledky. Pokud potřebuješ v regionu Slovácka kvalitního instalatéra (Vodo Topo Jahoda, Zdeněk Mička), fotografa (Malina Photo), specialistu na logistiku (Kofipack), finance (Comites), reality (Sluneční Reality) nebo stínění (Kudielka), tito lidi tě nenechají ve štychu. Spolupracujeme jen s těmi nejlepšími, abychom posilovali vliv naší rodiny v celém regionu. Poctivé řemeslo je náš zákon."
     },
     club: {
       topSecret: "PŘÍSNĚ TAJNÉ // CENTRÁLA RODINY",
@@ -1661,12 +1788,7 @@ export const translations = {
         passwordLabel: "ZADEJ KÓD"
       }
     },
-    welcome: {
-      authorized: "PŘÍSTUP POVOLEN",
-      l1: { title: "Mise", content: "Cíl je jasný." },
-      l2: { title: "Vize", content: "Budoucnost je naše." },
-      l3: { title: "Protokol", content: "Dodržuj kodex." }
-    },
+
     radio: {
       playMe: "Hraj"
     },
@@ -1753,6 +1875,244 @@ export const translations = {
           a: "Protože vědí, že v Mařaticích dostanou servis, kterej má koule. Nejsme jen střihači, jsme architekti tvýho stylu. Brod, Zlín, Kyjov – pro kvalitu si dojedeš kamkoliv."
         }
       ]
+    },
+    magazine: {
+      categories: {
+        magazin: "MAGAZÍN",
+        biologie: "BIOLOGIE",
+        vlasy: "VLASY",
+        plet: "PLEŤ",
+        vousy: "VOUSY"
+      },
+      ui: {
+        backToSalon: "Zpět do salonu",
+        officialPub: "OFICIÁLNÍ MAGAZÍN PÉČE",
+        title: "MAGAZÍN PÉČE",
+        page: "STRANA",
+        of: "/",
+        reset: "Resetovat test",
+        next: "Další",
+        prev: "Předchozí",
+        results: {
+          borealis: "PROFIL: BOREALIS",
+          meridionalis: "PROFIL: MERIDIONALIS",
+          orientalis: "PROFIL: ORIENTALIS",
+          lowPorosity: "NÍZKÁ POROZITA",
+          mediumPorosity: "STŘEDNÍ POROZITA",
+          highPorosity: "VYSOKÁ POROZITA",
+          dryScalp: "SUCHÁ POKOŽKA",
+          oilyScalp: "MASTNÁ POKOŽKA"
+        }
+      }
+    },
+    rodina: {
+      title: "MM BARBER RODINA",
+      list: "Seznam",
+      network: "Síť spojení",
+      divisions: "DIVIZE",
+      backToHq: "Zpět domů",
+      partnersTrust: "Firmy a lidi, za které dáme ruku do ohně.",
+      youForUs: "Vy pro nás. My pro vás.",
+      weAreFamily: "MMBARBER není jen o stříhání. Je to o lidech, kteří tvoří kvalitu napříč obory. Jsme jedna Rodina.",
+      closeNetwork: "ZAVŘÍT SÍŤ",
+      cameraFollows: "Kamera tě sleduje",
+      headquarters: "CENTRÁLA"
+    },
+    sidliste: {
+      title: "SÍDLIŠTĚ",
+      sector: "SÍDLIŠTĚ // SEKTOR VII",
+      return: "ZPĚT NA ZÁKLADNU",
+      subtitle: "Přidej se k lidem, co nechtějí jen sedět na místě.",
+      description: "U nás na sídlišti tvoříme komunitu, kde se rodí ty nejlepší nápady. Tady se nehraje na efekt, ale na loajalitu a společné vize.",
+      ideaTitle: "Máš vlastní nápad?",
+      ideaText: "Bylo by fajn tu vymyslet nějakou společnou akci. Pokud máš vizi, která dává smysl, ozvi se nám.",
+      proposeBtn: "NAVRHNOUT AKCI"
+    },
+    welcome: {
+      l1: { title: "DOPIS O PLATBĚ", content: "DŮVĚRNÉ: U nás platíte hotově nebo QR kódem svého bankovnictví." },
+      l2: { title: "DOPIS O PARKOVÁNÍ", content: "DŮVĚRNÉ: Parkování zdarma přímo před provozovnou. Dopoledne jsou úplně bez problému. Používáš WAZE? trefíš k barberovi vedle..." },
+      l3: { title: "DOPIS O KLIDU", content: "DŮVĚRNÉ: Můžete u nás posedět, nikdo vás nevyhazuje. Jsme rodina." },
+      authorized: "Autorizováno MMBARBER"
+    },
+    journey: {
+      title: ["Moje", "Cesta"],
+      subtitle: "Historie / The Journey",
+      description: "Z malého nápadu se stal MM BARBER. Podívejte se, jak plynul čas v naší centrále.",
+      archiveShot: "Archivní snímek",
+      footerTitle: "Dnes jsi součástí příběhu ty",
+      footerCta: "Pokračovat dál",
+      timeline: [
+        { year: "2018", title: "První výstřel", desc: "Založení MM BARBER. Začátek mise, o které se začalo tiše mluvit po celém Hradišti.", side: "left" },
+        { year: "2020", title: "Centrála v Hradišti", desc: "Otevření současných prostor v Mařaticích. Místo, které se stalo útočištěm pro ty, co hledají víc než jen střih.", side: "right" },
+        { year: "2022", title: "Zocelení týmu", desc: "Tomáš se stává synonymem pro preciznost v křesle. Přichází nová krev a nové vize.", side: "left" },
+        { year: "2024", title: "Nová éra", desc: "Centrála se rozrůstá o nové služby, technologie a silnější komunitu.", side: "right" }
+      ]
+    },
+    newspaper: {
+      masthead: "Denní rozkaz",
+      circulation: "NÁKLAD: OMEZENÝ",
+      price: "CENA: LOAJALITA",
+      headline: "Jak to u nás (ne)funguje",
+      subheadline: "Tady nejde jen o střih. Očekávej něco jiného.",
+      p1: "U nás to neběží jako v běžném kadeřnictví. Přijdeš, sedneš do křesla a my se postaráme o zbytek. Probereme život, plány, nebo jen tak mlčíme – záleží na tobě. A když se ti nebude chtít domů, klidně zůstaň na kávu. Tady tě nikdo nevyhání.",
+      p2: "Jdeš jen kolem? Zastav se na pokec. Dveře jsou u nás otevřené. Dáváme ti volnost – tvůj styl, tvá pravidla. Máš vlastní představu? Jdeme do toho s tebou. Nemáš? Navrhneme něco, co ti sedne. Tady se netvoří jen účesy, tady se tvoří atmosféra.",
+      p3: "Náš prostor je dostatečně soukromý, aby ses necítil jako ve vitríně. Klid, pohoda a žádné zbytečné oči. Je to tvůj kout pro vypnutí od okolního světa.",
+      p4: "Náš časový tarif je ideální pro ty, co vědí, co chtějí. Pokud váháš, prostě si rezervuj to, na co běžně chodíš jinam – my si s tím už u křesla poradíme.",
+      motto: "Jak se říká… náš zákazník, náš pán.",
+      burnBtn: "Spálit po přečtení",
+      burnNote: "Zničí důkazy o tvé přítomnosti"
+    },
+    seznamka: {
+      description: "Matchmaking z reálného světa.\nNe každý má čas nebo chuť být online.\nTohle je jiné. Přijdeš. Sedneš si... a věci se dějí.",
+      protocolTitle: "MATCHMAKING PROTOKOL",
+      variantA: {
+        title: "PROTOKOL A: DOPORUČENÍ",
+        desc: "Klasická cesta skrze loajalitu a doporučení tvého okolí."
+      },
+      variantB: {
+        title: "PROTOKOL B: OPERATIVNÍ NÁBOR",
+        desc: "Pro ženy, které hledají víc než jen brigádu. Najdi sebe i někoho k sobě přímo u křesla."
+      },
+      brigada: {
+        title: "BRIGÁDA S PŘIDANOU HODNOTOU",
+        subtitle: "Hledáme novou krev do týmu (a do života)",
+        desc: "Tato varianta je určena pro ženy, které si dlouhodobě nemohou najít partnera a chtějí to změnit v reálném prostředí. Nabízíme brigádu u nás v salonu, kde se naučíte základy řemesla (nebo využijete své zkušenosti) a během práce budete v přímém kontaktu s naší klientelou.",
+        requirements: [
+          "Dlouhodobý neúspěch v hledání partnera (chceme to změnit)",
+          "Ochota učit se novým věcem a pracovat s lidmi",
+          "Reprezentativní vystupování a loajalita",
+          "Nejste 'zmagořena' radami pseudo-odborníků z Instagramu",
+          "Musíte počítat s přísným výběrovým řízením"
+        ],
+        cta: "Chci projít výběrovým řízením",
+        recruitmentSuccess: "NEPRODLENĚ SE DOSTAVTE NA NAŠI POBOČKU. ČAS KVAPÍ."
+      },
+      acknowledge: "ROZUMÍM",
+      successTitle: "MISE KOMPLETNÍ",
+      successText: "Teď jsi připraven na osobní setkání.",
+      finishBtn: "UKONČIT MISI",
+      cancelBtn: "Zrušit postup a vrátit se",
+      confirmedLabel: "Postup potvrzen",
+      steps: [
+        { title: "Pošli kamaráda", desc: "Pošli kamaráda na střih" },
+        { title: "Vezmi přítelkyni", desc: "Vezmi přítelkyni na úpravu konečků" },
+        { title: "Naverbuj odvážné", desc: "Nebo pošli někoho známého, kdo se nebojí" }
+      ]
+    },
+    akademie: {
+      title: "MM BARBER AKADEMIE",
+      subtitle: "Učení u křesla / Individual Mentoring",
+      description: "Chceš se naučit řemeslo tak, jak se má dělat? Bez zbytečných řečí, přímo v akci. Předám ti své know-how, ukážu ti grify s břitvou a naučím tě, jak vidět víc než jen vlasy.",
+      cta: "CHCI SE UČIT",
+      backToHq: "Zpět do centrály",
+      motto: "Řemeslo se nedá vyčíst z knih. Musíš ho mít v rukou.",
+      levels: [
+        { title: "Základy", desc: "Práce se strojkem, nůžkami a pochopení tvaru." },
+        { title: "Břitva & Vousy", desc: "Tradiční holení, napařování a precizní kontury." },
+        { title: "Masterclass", desc: "Pokročilé techniky, networking a budování vlastního jména." }
+      ],
+      guidesTitle: "Knowledge Base & Grooming Guide",
+      guides: [
+        { title: "Elite Fade Maintenance", steps: ["Contours", "Quality", "Style"], keywords: ["elite", "style"] }
+      ],
+      backToHqBtn: "Zpět na centrálu",
+      noResults: "Nezvládáš to sám? Svěř se do rukou profesionálů.",
+      bookBtn: "REZERVOVAT TERMÍN V UH"
+    },
+    career: {
+      title: "Nábor do rodiny",
+      subtitle: "Hledáme novou krev",
+      vacancyTitle: "Barber",
+      vacancySubtitle: "(Hledáme talent, ne zaměstnance)",
+      location: "SADOVÁ 1383, MAŘATICE, UHERSKÉ HRADIŠTĚ",
+      type: "DPP / IČO / HPP",
+      responsibilitiesTitle: "Co tě u nás čeká:",
+      responsibilities: ["Špičkové střihy", "Břitva", "Budování vztahů"],
+      requirementsTitle: "Co od tebe chceme:",
+      requirements: ["Praxi", "Cit pro detail", "Spolehlivost"],
+      offersTitle: "Co ti dáme:",
+      offers: ["Zázemí", "Férové peníze", "Mentoring"],
+      status: "STÁLE HLEDÁME",
+      contactMotive: "Cítíš to? Ozvi se.",
+      backToHq: "Zpět na základnu",
+      step1Title: "CHCETE BÝT SOUČÁSTÍ?",
+      step1Sub: "První kontakt",
+      step1Content: "Zjisti, jestli k nám zapadneš.",
+      step1Btn: "Zkusit",
+      step2Title: "NEJSME JEN DALŠÍ BARBER",
+      step2Sub: "PRAVIDLA",
+      step2Content: "Tvrdá práce a respekt.",
+      step2Btn: "Respektuji",
+      step3Title: "VLASTNÍ KŘESLO",
+      step3Sub: "Odměna",
+      step3Content: "Šéf ti ukáže cestu.",
+      step3Btn: "Jdu do toho",
+      step4Title: "VÍTEJ",
+      step4Sub: "Poslední krok",
+      step4Content: "Pošli nám info.",
+      step4Btn: "Odeslat"
+    },
+    franchisePage: {
+      back: "Zpět na centrálu",
+      title: "FRANCHISE",
+      subtitle: "OPPORTUNITY",
+      heroDesc: "Staň se součástí nejsilnější barber značky v regionu.",
+      sections: {
+        about: { title: "O PROJEKTU", label: "MM BARBER CONCEPT", desc: "Systém, který funguje.", motto: "VAŠE VIZE, NAŠE KNOW-HOW" },
+        benefits: { title: "VÝHODY", items: ["Značka", "Systém", "Marketing"] },
+        who: { title: "PRO KOHO?", desc: "Pro ty, co chtějí tvořit kvalitu.", motto: "Respekt k řemeslu." },
+        how: { title: "JAK ZAČÍT?", steps: ["Kontakt", "Plánování", "Příprava"] }
+      },
+      contact: { title: "MÁTE ZÁJEM?", desc: "Ozveme se.", email: "POSLAT E-MAIL", instagram: "INSTAGRAM" },
+      footer: "MMBARBER GLOBAL EXPANSION"
+    },
+    rulesPage: {
+      title: "PROVOZNÍ ŘÁD",
+      subtitle: "Pravidla a standardy.",
+      backBtn: "ZPĚT NA ZÁKLADNU",
+      sections: [{ title: "Pravidla", text: "Respektuj Rodinu." }]
+    },
+    styleDefinition: {
+      defineStyle: { title: ["Definuj", "Svůj Styl"], subtitle: "MMBARBER EXCLUSIVE /", modalTitle: "Nevíš?", modalContent: "Probereme to." },
+      pairTherapy: { title: ["Párová", "Terapie"], subtitle: "MMBARBER SPECIAL /", modalTitle: "Přijďte spolu.", modalContent: "Vyladíme to." }
+    },
+    environmentSlider: { title: "GALERIE", detailPhoto: "DETAILNÍ SNÍMEK", closeImage: "ZÁBĚR ZBLÍZKA" },
+    cityGuide: { compass: { label: "Kompas k barberu", locating: "ZAMĚŘUJI...", distance: "{{distance}} ZBÝVÁ" } },
+    intelligenceArchive: {
+      title: "GLOBAL_INTELLIGENCE_ARCHIVE // V.0.42 // BOSS_SYNC",
+      categories: {
+        retail: {
+          title: "KŠEFTY & ZÁSOBOVÁNÍ",
+          keywords: "Lidl, Kaufland, Tesco, Albert, Penny, slevy, letáky, výhodný nákup.",
+          text: "Jako šéf musíš vědět, kde se co šustne. Sledujeme pohyby v řetězcích, abys měl vždycky ty nejlepší informace pro rodinu. Data z Lidl, Kaufland a dalších jsou pod naším dohledem."
+        },
+        automotive: {
+          title: "MOBILNÍ JEDNOTKY",
+          keywords: "BMW, Audi, Mercedes, Škoda, Porsche, ojeté vozy, servis, tuning.",
+          text: "Vozový park rodiny musí být v top stavu. Sledujeme trh, ojetiny i nejnovější technologie. Od BMW po Škodu – vše pod kontrolou."
+        },
+        gastro: {
+          title: "LOGISTIKA OBĚDŮ",
+          keywords: "Pizza, burger, steak, sushi, rozvoz UH, nejlepší restaurace.",
+          text: "Dobře najedený tým je základ úspěchu. Máme přehled o všech rozvozech a kuchyních v Hradišti. Vyber si to nejlepší."
+        },
+        intimate: {
+          title: "SOCIÁLNÍ KONTAKTY",
+          keywords: "Seznamky, noční život, kluby, erotika, vztahy.",
+          text: "Víme, kdo se s kým schází. Sledujeme sociální dynamiku v UH, aby rodina byla vždy v obraze."
+        },
+        trends: {
+          title: "HLÁŠENÍ DNES",
+          keywords: "Počasí UH, zprávy, kurzy, krypto, investice.",
+          text: "Denní briefing pro šéfa. Buď o krok napřed před konkurencí."
+        },
+        globalTech: {
+          title: "GLOBÁLNÍ VLIV",
+          keywords: "Apple, Google, AI, Crypto, NVIDIA, Tesla.",
+          text: "Rodina nezná hranic. Sledujeme světové technologie a vlivy, které mění hru."
+        }
+      },
+      hiddenDump: "Lidl leták, Kaufland akce, BMW bazar, Bitcoin kurzy, Sex seznamka UH, Pizza rozvoz, Počasí Hradiště."
     }
   },
   falco: {
@@ -1789,6 +2149,26 @@ export const translations = {
       ],
       cta: "Accept Instructions",
       bookBtn: "REZERVOVAT KŘESLO"
+    },
+    services: {
+      title: "Ceník kšeftů",
+      subtitle: "Vyber si, kolik času nám věnuješ. U křesla pak dojednáme zbytek.",
+      bookBtn: "Mám zájem",
+      detailsBtn: "Složka"
+    },
+    operatives: {
+      title: "Naši lidi",
+      subtitle: "Vyber si svého specialistu.",
+      openFile: "Složka",
+      bookBarber: "Domluvit se s ním"
+    },
+    seo: {
+      title: "MMBARBER | Imperial Territory Uherské Hradiště | Elite Booking",
+      description: "Willkommen im Imperial Territory von MMBARBER Uherské Hradiště. Wir bieten kaiserliche Präzision, Wiener Tradition und den besten Skin Fade in der Region Slovácko.",
+      keywords: "barbershop Uherské Hradiště, men's cut UH, skin fade, beard grooming, MM BARBER Mařatice, kaiserlicher Schnitt, Wiener Kodex, Slovácko elite",
+      extraContent: "Im Herzen von Mařatice (UH) schaffen wir einen Ort für den modernen Gentleman. Qualität, Diskretion und erstklassiges Handwerk sind unsere Fundamente. Kostenlose Parkplätze direkt vor dem Imperial HQ. MM BARBER ist die klare Wahl für Staré Město, Uherské Hradiště und Mařatice.",
+      servicesFullText: "MM BARBER Uherské Hradiště repräsentiert die Spitze der Herrenpflege in der Region Slovácko. Wenn Sie erstklassigen Service in den Orten Staré Město, Uherské Hradiště oder Mařatice suchen, sind wir die klare Wahl für Sie. Unsere Dienstleistungen sind darauf ausgelegt, die Anforderungen selbst der anspruchsvollsten Kunden zu erfüllen, die mehr als nur einen schnellen Haarschnitt suchen. Meine berufliche Erfahrung in der Branche übersteigt 8 Jahre, was es mir ermöglicht, die Erfahrung von Tausenden von Stunden im Sessel und ein tiefes Verständnis für den männlichen Stil in jeden Schnitt einzubringen. Wir sind spezialisiert auf eine breite Palette von Herrenschnitten, von klassischen konservativen Stilen bis hin zu den neuesten Trends von 2026. Unser Aushängeschild ist der präzise Skin Fade – ein Schnitt, der eine ruhige Hand und ein Auge fürs Detail erfordert. Wir kreieren perfekte Übergänge, die den Charakter Ihres Gesichts unterstreichen. Für Traditionsliebhaber bieten wir die Bartpflege mit dem Hot Towel Ritual an. Das Dämpfen mit einem heißen Handtuch weicht den Bart auf und öffnet die Poren, was eine maximal glatte Rasur mit dem Rasiermesser ohne Hautirritationen ermöglicht. Wir verwenden dabei erstklassige Kosmetik von Marken wie Reuzel oder Uppercut Deluxe. Unsere MM BARBER Family Philosophie verbindet lokale Handwerker und Unternehmer und schafft so eine starke Gemeinschaft in Slovácko. Wenn Sie den besten Barbershop in UH, einen Ort für Bartpflege in Kunovice oder einen Herrenfriseur in Staré Město suchen, ist MM BARBER die klare Wahl für jeden, der großartig aussehen möchte.",
+      partnerServicesFullText: "Die MM BARBER Family ist ein Netzwerk bewährter Profis aus Uherské Hradiště, auf die Sie sich zu 100% verlassen können. Wir kooperieren mit Partnern wie Vodo Topo Jahoda (Sanitär & Heizung), Zdeněk Mička, Kofipack (Logistik), Malina Photo (Fotografie), Comites (Finanzen), Sluneční Reality (Immobilien), Kudielka (Sonnenschutz) und O Kolečko víc (Bike Service). Gemeinsam setzen wir neue Qualitätsstandards in der Region Slovácko. Handwerk mit Charakter."
     },
     intelligence: [
       "Der Luftdruck in Hradiště ist perfekt für einen kaiserlichen Schnitt.",
@@ -2027,6 +2407,32 @@ export const translations = {
           oilyScalp: "OILY SCALP"
         }
       }
+    },
+    intelligenceArchive: {
+      title: "GLOBAL_INTELLIGENCE_ARCHIVE // V.0.42 // IMPERIAL_SYNC",
+      categories: {
+        retail: {
+          title: "IMPERIALER HANDEL",
+          keywords: "Lidl, Kaufland, Tesco, Albert, Billa, Penny, Angebote, Prospekte.",
+          text: "Der Wiener Stil erfordert beste Ressourcen. Wir überwachen den Handel in Hradiště, um den kaiserlichen Standard zu wahren. Daten von Lidl bis Billa sind Teil unseres Systems."
+        },
+        automotive: {
+          title: "KAISERLICHE KAROSSEN",
+          keywords: "BMW, Audi, Mercedes, Skoda, Porsche, Ferrari, Lamborghini.",
+          text: "Eleganz auf Rädern. Wir verfolgen die Trends der Automobilwelt, um sicherzustellen, dass die Mitglieder des Clubs immer stilvoll reisen."
+        },
+        gastro: {
+          title: "WIENER KÜCHE & MEHR",
+          keywords: "Steak, Sushi, Wein, Champagner, Gourmet, Lieferung UH.",
+          text: "Guter Geschmack endet nicht beim Haarschnitt. Wir analysieren die besten gastronomischen Adressen für den modernen Gentleman."
+        },
+        globalTech: {
+          title: "GLOBALE HEGEMONIE",
+          keywords: "Apple, NVIDIA, Crypto, AI, Tesla, SpaceX.",
+          text: "Die Welt im Blick. Von Wien bis New York – wir verstehen die Kräfte, die die Zukunft gestalten."
+        }
+      },
+      hiddenDump: "Wiener Stil, Imperialer Standard, Hradiště Elite, Champagner, Luxus, Tradition."
     }
   }
 };

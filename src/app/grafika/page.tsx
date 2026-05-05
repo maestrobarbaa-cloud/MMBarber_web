@@ -47,7 +47,7 @@ export default function GraphicsPage() {
           </Link>
           <div className="flex flex-col items-end">
             <span className="font-heading font-black text-2xl italic tracking-tighter text-white">MMBARBER</span>
-            <span className="text-[8px] font-mono text-mafia-gold/50 tracking-[0.5em] uppercase">Visual_Assets_v3.4.3</span>
+            <span className="text-[8px] font-mono text-mafia-gold/50 tracking-[0.5em] uppercase">Visual_Assets_v3.4.4</span>
           </div>
         </div>
       </header>

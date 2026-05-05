@@ -108,6 +108,16 @@ export function FutureSEO() {
             ? "Akademie v Uherském Hradišti nabízí individuální mentorství, kurzy holení břitvou a stříhání pro začátečníky i pokročilé, kteří chtějí posunout své řemeslo na vyšší úroveň."
             : "The Academy in Uherské Hradiště offers individual mentorship, razor shaving and haircutting courses for beginners and advanced students who want to take their craft to the next level."
         }
+      },
+      {
+        "@type": "Question",
+        "name": lang === 'cs' ? "Jak poznat kvalitního elektrikáře nebo instalatéra v Uherském Hradišti?" : "How to recognize a quality electrician or plumber in Uherské Hradiště?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": lang === 'cs'
+            ? "Kvalitní profesionál (jako naši partneři Vodo Topo Jahoda nebo Zdeněk Mička) disponuje profesionálním nářadím, dodržuje smluvené termíny, má platné certifikace a revizní oprávnění. Důležitá je transparentní cena a čistota po odvedené práci. V MM BARBER Rodině doporučujeme pouze ty, kteří splňují tyto přísné standardy."
+            : "A quality professional (like our partners Vodo Topo Jahoda or Zdeněk Mička) has professional tools, adheres to agreed deadlines, and holds valid certifications and inspection permits. Transparent pricing and cleanliness after work are crucial. In the MM BARBER Family, we only recommend those who meet these strict standards."
+        }
       }
     ]
   };
@@ -201,6 +211,10 @@ export function FutureSEO() {
       { "@type": "Organization", "name": "Sluneční Reality", "description": "Real estate agency in Slovácko region" },
       { "@type": "Organization", "name": "Kofipack", "description": "Packaging solutions and logistics" },
       { "@type": "Organization", "name": "O Kolečko víc", "description": "Bicycle service and sales" },
+      { "@type": "Organization", "name": "Kudielka", "description": "Modern shading systems and pergolas" },
+      { "@type": "Organization", "name": "O Shawarma Beef", "description": "Premium food and catering" },
+      { "@type": "Organization", "name": "Dvůr pod Starýma Horama", "description": "Wine tasting and accommodation" },
+      { "@type": "Person", "name": "Zdeněk Mička", "jobTitle": "Plumbing & Technical Systems" },
       { "@type": "Person", "name": "Roman Jakubčák", "jobTitle": "Electrician & Revisions" },
       { "@type": "Person", "name": "Slovácký Gentleman" }
     ]

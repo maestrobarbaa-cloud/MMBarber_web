@@ -244,10 +244,6 @@ export function ScrollIndicator() {
           top: topProgress,
           y: "-50%"
         }}
-        onDoubleClick={(e) => {
-          window.dispatchEvent(new CustomEvent('mmbarber-toggle-chat'));
-          e.stopPropagation();
-        }}
         onClick={(e) => {
           e.stopPropagation();
         }}

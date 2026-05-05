@@ -680,10 +680,10 @@ export function Header() {
 
   return (
     <>
-      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-20 md:h-24 xl:h-28 block'}`} aria-hidden="true" />
+      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-24 xl:h-28 block'}`} aria-hidden="true" />
       <header
         className={`w-full left-0 z-[30000] py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate 
-          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24 md:h-24' : `fixed top-0 h-24 xl:h-28 ${isScrolled || pathname !== '/' ? 'bg-mafia-black/95 backdrop-blur-xl border-b border-white/5' : 'bg-transparent backdrop-blur-none border-b border-transparent'}`} 
+          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24' : `fixed top-0 h-24 xl:h-28 ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black/95 backdrop-blur-xl border-b border-white/5' : 'bg-transparent backdrop-blur-none border-b border-transparent'}`} 
           ${(isIntroActive) ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} 
           ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
       >

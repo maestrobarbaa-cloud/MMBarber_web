@@ -15,89 +15,81 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
   const [overscrollProgress, setOverscrollProgress] = useState(0);
   const { lang } = useTranslation();
   
-  const STAGE_1_THRESHOLD = 1000 * thresholdMultiplier;
-  const STAGE_2_THRESHOLD = 3000 * thresholdMultiplier;
-  const STAGE_3_THRESHOLD = 7000 * thresholdMultiplier;
-  const STAGE_4_THRESHOLD = 12000 * thresholdMultiplier;
-  const STAGE_5_THRESHOLD = 18000 * thresholdMultiplier; // Final Micka Directive level
+  const STAGE_1_THRESHOLD = 500 * thresholdMultiplier;
+  const STAGE_2_THRESHOLD = 1500 * thresholdMultiplier;
+  const STAGE_3_THRESHOLD = 3500 * thresholdMultiplier;
+  const STAGE_4_THRESHOLD = 6000 * thresholdMultiplier;
+  const STAGE_5_THRESHOLD = 10000 * thresholdMultiplier; 
   
   const scrollAccumulator = useRef(0);
   const lastScrollTime = useRef(0);
+  const touchStartY = useRef(0);
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
-      const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 20;
+      const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
       
       if (isAtBottom && e.deltaY > 0) {
-        scrollAccumulator.current += e.deltaY;
+        scrollAccumulator.current += Math.abs(e.deltaY);
         
-        if (unlockLevel < 1 && scrollAccumulator.current >= STAGE_1_THRESHOLD) {
-          setUnlockLevel(1);
-        }
-        
-        if (unlockLevel === 1 && scrollAccumulator.current >= STAGE_2_THRESHOLD) {
-          setUnlockLevel(2);
-        }
+        if (unlockLevel < 1 && scrollAccumulator.current >= STAGE_1_THRESHOLD) setUnlockLevel(1);
+        if (unlockLevel === 1 && scrollAccumulator.current >= STAGE_2_THRESHOLD) setUnlockLevel(2);
+        if (unlockLevel === 2 && scrollAccumulator.current >= STAGE_3_THRESHOLD) setUnlockLevel(3);
+        if (unlockLevel === 3 && scrollAccumulator.current >= STAGE_4_THRESHOLD) setUnlockLevel(4);
+        if (unlockLevel === 4 && scrollAccumulator.current >= STAGE_5_THRESHOLD) setUnlockLevel(5);
 
-        if (unlockLevel === 2 && scrollAccumulator.current >= STAGE_3_THRESHOLD) {
-          setUnlockLevel(3);
-        }
-
-        if (unlockLevel === 3 && scrollAccumulator.current >= STAGE_4_THRESHOLD) {
-          setUnlockLevel(4);
-        }
-
-        if (unlockLevel === 4 && scrollAccumulator.current >= STAGE_5_THRESHOLD) {
-          setUnlockLevel(5);
-        }
-
-        // Calculate progress for the current stage
         let progress = 0;
-        if (unlockLevel === 0) {
-          progress = (scrollAccumulator.current / STAGE_1_THRESHOLD) * 100;
-        } else if (unlockLevel === 1) {
-          progress = ((scrollAccumulator.current - STAGE_1_THRESHOLD) / (STAGE_2_THRESHOLD - STAGE_1_THRESHOLD)) * 100;
-        } else if (unlockLevel === 2) {
-          progress = ((scrollAccumulator.current - STAGE_2_THRESHOLD) / (STAGE_3_THRESHOLD - STAGE_2_THRESHOLD)) * 100;
-        } else if (unlockLevel === 3) {
-          progress = ((scrollAccumulator.current - STAGE_3_THRESHOLD) / (STAGE_4_THRESHOLD - STAGE_3_THRESHOLD)) * 100;
-        } else if (unlockLevel === 4) {
-          progress = ((scrollAccumulator.current - STAGE_4_THRESHOLD) / (STAGE_5_THRESHOLD - STAGE_4_THRESHOLD)) * 100;
-        } else {
-          progress = 100;
-        }
+        if (unlockLevel === 0) progress = (scrollAccumulator.current / STAGE_1_THRESHOLD) * 100;
+        else if (unlockLevel === 1) progress = ((scrollAccumulator.current - STAGE_1_THRESHOLD) / (STAGE_2_THRESHOLD - STAGE_1_THRESHOLD)) * 100;
+        else if (unlockLevel === 2) progress = ((scrollAccumulator.current - STAGE_2_THRESHOLD) / (STAGE_3_THRESHOLD - STAGE_2_THRESHOLD)) * 100;
+        else if (unlockLevel === 3) progress = ((scrollAccumulator.current - STAGE_3_THRESHOLD) / (STAGE_4_THRESHOLD - STAGE_3_THRESHOLD)) * 100;
+        else if (unlockLevel === 4) progress = ((scrollAccumulator.current - STAGE_4_THRESHOLD) / (STAGE_5_THRESHOLD - STAGE_4_THRESHOLD)) * 100;
+        else progress = 100;
         
         setOverscrollProgress(Math.min(progress, 100));
         lastScrollTime.current = Date.now();
-      } else if (e.deltaY < 0 && isAtBottom) {
-          scrollAccumulator.current = Math.max(0, scrollAccumulator.current + e.deltaY);
+      } else if (e.deltaY < 0 && isAtBottom && scrollAccumulator.current > 0) {
+          scrollAccumulator.current = Math.max(0, scrollAccumulator.current - Math.abs(e.deltaY));
           
-          if (unlockLevel === 5 && scrollAccumulator.current < STAGE_5_THRESHOLD) {
-            setUnlockLevel(4);
-          } else if (unlockLevel === 4 && scrollAccumulator.current < STAGE_4_THRESHOLD) {
-            setUnlockLevel(3);
-          } else if (unlockLevel === 3 && scrollAccumulator.current < STAGE_3_THRESHOLD) {
-            setUnlockLevel(2);
-          } else if (unlockLevel === 2 && scrollAccumulator.current < STAGE_2_THRESHOLD) {
-            setUnlockLevel(1);
-          } else if (unlockLevel === 1 && scrollAccumulator.current < STAGE_1_THRESHOLD) {
-            setUnlockLevel(0);
-          }
+          if (unlockLevel === 5 && scrollAccumulator.current < STAGE_5_THRESHOLD) setUnlockLevel(4);
+          else if (unlockLevel === 4 && scrollAccumulator.current < STAGE_4_THRESHOLD) setUnlockLevel(3);
+          else if (unlockLevel === 3 && scrollAccumulator.current < STAGE_3_THRESHOLD) setUnlockLevel(2);
+          else if (unlockLevel === 2 && scrollAccumulator.current < STAGE_2_THRESHOLD) setUnlockLevel(1);
+          else if (unlockLevel === 1 && scrollAccumulator.current < STAGE_1_THRESHOLD) setUnlockLevel(0);
           
           setOverscrollProgress(0); 
       }
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const deltaY = touchStartY.current - e.touches[0].clientY;
+      const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
+      
+      if (isAtBottom && deltaY > 0) {
+        scrollAccumulator.current += Math.abs(deltaY) * 0.5;
+        // Logic same as wheel... but for simplicity we trigger levels faster on touch
+        if (unlockLevel < 1 && scrollAccumulator.current >= STAGE_1_THRESHOLD) setUnlockLevel(1);
+        lastScrollTime.current = Date.now();
+      }
+    };
+
     const timer = setInterval(() => {
-        if (unlockLevel < 2 && Date.now() - lastScrollTime.current > 2000 && scrollAccumulator.current > 0) {
-            scrollAccumulator.current = Math.max(0, scrollAccumulator.current - 15);
-            // Update UI progress accordingly... (simplified for brevity here)
+        if (Date.now() - lastScrollTime.current > 3000 && scrollAccumulator.current > 0) {
+            scrollAccumulator.current = Math.max(0, scrollAccumulator.current - 50);
         }
     }, 100);
 
     window.addEventListener("wheel", handleWheel, { passive: true });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
     return () => {
         window.removeEventListener("wheel", handleWheel);
+        window.removeEventListener("touchstart", handleTouchStart);
+        window.removeEventListener("touchmove", handleTouchMove);
         clearInterval(timer);
     };
   }, [unlockLevel]);

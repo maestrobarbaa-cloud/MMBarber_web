@@ -1,0 +1,800 @@
+﻿export const translations = {
+  cs: {
+    header: {
+      services: "Služby",
+      gallery: "Galerie",
+      seznamka: "Seznamka",
+      payment: "Platba",
+      schedule: "Rozvrh",
+      theCode: "Informace",
+      more: "Více",
+      career: "Kariéra",
+      aboutUs: "O Nás",
+      franchise: "FRANCHISE",
+      startMission: "JAK TO U NÁS CHODÍ",
+      compass: "KOMPAS",
+      web: "WEB",
+      on: "ZAPNUTO",
+      off: "VYPNUTO",
+      tracking: "SLEDUJI POLOHU",
+      savingData: "ŠETŘÍ DATA",
+      navigate: "NAVIGOVAT",
+      searchPlaceholder: "Ptej se právně.",
+      reviews: "Recenze"
+    },
+    intelligence: [
+      "Dneska je ideální tlak pro ten nejostřejší skin fade. V UH je vzduch tak akorát.",
+      "Vypadá to, že se v Hradišti začínají dít věci. Rezervace na vousy se plní.",
+      "V Mařaticích dnes fouká – pokud nechceš mít vlasy všude, sáhni po silnější pomádě.",
+      "Dnešní plán je jasný: Perfektní kontury a klid u křesla. Jsme v pohotovosti.",
+      "Všiml jsem si, že se na Slovácku vrací kratší střihy. Buďte o krok napřed.",
+      "Náš rezervační systém is.mmbarber.cz dneska skoro nestíhá. Díky za důvěru.",
+      "Doporučuji dneska zkusit napaření horkým ručníkem. Nic tě víc neuklidní.",
+      "V centrále je všechno připravené. Káva voní, břitvy jsou ostré. Tvůj čas přišel.",
+      "V Hradišti dneska vládne styl. Stačí se podívat kolem. Buď jeho součástí.",
+      "Malý tip: Olej na vousy dej hned po sprše, dokud jsou póry otevřené. Funguje to líp.",
+      "Chlapi z Brodu a Veselí už jsou na cestě. Raději si to své místo pojisti včas.",
+      "Dneska neřeš, co bylo včera. Důležité je, jak vypadáš teď a tady.",
+      "Naše MM BARBER rodina roste. Je skvělé vidět tolik známých tváří.",
+      "Počasí v UH přeje krátkým vlasům. Přijď si pro svůj poctivý taper fade.",
+      "Parkování v Mařaticích je dneska úplně v pohodě. Čekáme tě přímo před dveřmi.",
+      "V roce 2026 je upravený plnovous základ. Bez debat.",
+      "V Kunovicích jsem zahlédl jeden náš čerstvý střih. Sakra, to se povedlo.",
+      "Dnešní káva v barberu je silná jako naše břitvy. Přesně tak to máme rádi.",
+      "Pořád ladíme detaily. Dneska jsou ty přechody ještě o kousek čistší.",
+      "Jdeš k nám poprvé? Žádný stres. U nás se budeš cítit jako doma.",
+      "Noir není jen filtr na fotku, je to postoj. Dneska je den na to ukázat charakter.",
+      "Letní filmovka se blíží. Chceš v kině vypadat líp než ti na plátně, že?",
+      "Slavnosti vína v UH vyžadují reprezentativní vizáž. Nechceš to nechat na náhodu.",
+      "Hrajeme si s milimetry. Protože právě na nich záleží ten nejlepší výsledek.",
+      "Díky, že držíte s námi. Vaše loajalita je to, co nás žene dopředu.",
+      "Máme tu ty nejostřejší břity na celém Slovácku. Přijď si to vyzkoušet na vlastní kůži.",
+      "Dneska ty detaily ladím s maximální soustředěností. Chci, abys odcházel spokojený.",
+      "Nehledej výmluvy, proč to nejde. Najdi si volný termín na is.mmbarber.cz.",
+      "Skoro každý, kdo k nám přijde, odchází s čistou hlavou. Zkus to taky.",
+      "MM BARBER Uherské Hradiště – poctivé řemeslo, žádné prázdné řeči."
+    ],
+    familyIntelligence: [
+      "Vodo Topo Jahoda hlásí 100% nasazení v terénu. Havárie v UH pod kontrolou.",
+      "Kofipack odeslal novou zásilku pro naši rodinu. Logistika v Mařaticích běží.",
+      "Malina Photo vyvolává nové důkazy ze včerejší akce. Očekávejte vizuální update.",
+      "Argema ladí zvuk pro další misi. Slovácko bude vibrovat.",
+      "Sluneční Reality detekovaly nové strategické objekty v centru Hradiště.",
+      "Comites hlásí stabilní růst. Finance naší rodiny jsou v bezpečí.",
+      "Šimon Král připravuje setlist, který nenechá nikoho v klidu. Ready?",
+      "O Shawarma Beef doplňuje zásoby nejlepšího masa ve městě. Mise: Oběd.",
+      "Dvůr pod Starýma Horama připravuje degustaci. Krev naší rodiny je víno.",
+      "Kudielka instaluje nové stínící systémy. Vaše soukromí je naší prioritou.",
+      "Dětský domov UH: Společně jsme dnes vykouzlili několik úsměvů. Dobrá práce.",
+      "O Kolečko víc hlásí: Sezóna v plném proudu, servisy jedou na maximum.",
+      "Zdeněk Mička Bílovice: Všechny trubky v regionu jsou v nejlepších rukou.",
+      "Romana Mičková: Daně a účty jsou srovnané s matematickou přesností.",
+      "Poe Poe: Rychlá jednotka občerstvení v UH je připravena k nasazení.",
+      "Analýza: Naše rodina se rozšiřuje o nové vlivné členy. Síla je v jednotě."
+    ],
+    hero: {
+      subtitle: "Barbershop Uherské Hradiště | Pánský střih Mařatice",
+      title: "Prémiový barbershop v Uherském Hradišti, kde se mluví málo, ale dělá hodně. Stačí vstoupit.",
+      motto: "Příběh první: Kde se rodí styl",
+      chapters: [
+        "Příběh první: Kde se rodí styl",
+        "Příběh druhý: O loajalitě",
+        "Příběh třetí: Poctivé řemeslo"
+      ],
+      mottoes: [
+        "Příběh první: Kde se rodí styl",
+        "Příběh druhý: O loajalitě",
+        "Příběh třetí: Poctivé řemeslo"
+      ],
+      description: [
+        "Místo pro ty, co nepotřebují vykřikovat svůj styl do světa.",
+        "Kvalita se pozná i bez zbytečných slov.",
+        "Styl, který si nekoupíš. Musíš si ho zasloužit.",
+        "Nezajímá nás kvantita. Chceme, abys od nás odcházel jako nový člověk.",
+        "Tohle není jen barbershop. Je to náš svět, do kterého tě zveme."
+      ],
+      easterEggSlogans: [
+        "Tady neřešíme, kdo jsi byl. Zajímá nás, s jakou vizí odcházíš.",
+        "Ne všechno, co tu vytváříme, uvidíš jen v zrcadle.",
+        "Sebevědomí, které si od nás odneseš, u dveří nekončí.",
+        "Každý tvůj úspěch je i naším úspěchem. Jsme v tom spolu.",
+        "Nezáleží na tom, odkud přicházíš. Záleží na tom, co po tobě zůstane.",
+        "Když se rozhodneš změnit pravidla hry, začneš psát novou historii.",
+        "Některá jména se zapomínají. Skutečný charakter zůstává.",
+        "Tady stavíme na hodnotách, které se dneska už moc nenosí."
+      ],
+      nightSlogans: [
+        "Město už spí, ale tvůj nový styl začíná právě teď.",
+        "Ššš… ještě jsi vzhůru? Ideální čas si zajistit křeslo.",
+        "Noc patří těm, co vědí, co chtějí. Tvoje rezervace čeká.",
+        "Zítřek začíná dnešním rozhodnutím. Klikni a máš své místo.",
+        "Nečekej na ráno, ty nejlepší termíny mizí za tmy."
+      ],
+      deepNightSlogans: [
+        "Půlnoc. Hradiště utichlo… a ty víš, že je čas na změnu.",
+        "Tahle hodina patří vyvoleným. Tvé místo u nás je připravené.",
+        "Pokud nespíš, máš k tomu důvod. Udělej ten první krok k nám.",
+        "V tuhle dobu se dělají ta nejlepší rozhodnutí. Potvrď si termín.",
+        "Jsi blíž svému novému já, než si v tuhle chvíli myslíš."
+      ],
+      cta: "Vstoupit do příběhu",
+      bookBtn: "REZERVOVAT KŘESLO"
+    },
+    services: {
+      title: "Naše služby a ceny",
+      subtitle: "Vyber si časový slot podle toho, co potřebuješ. Pokud váháš, u křesla to doladíme. Večerní termíny jsou po domluvě otevřené i pro dámy.",
+      score: "Zkušenosti",
+      bookBtn: "Rezervovat",
+      detailsBtn: "Detaily",
+      revolutNotice: "",
+      currencyLabel: "Měna",
+      mainTitle: "Časový tarif",
+      timeTariffNote: "Ceny jsou nastavené férově podle času, který tvému stylu věnuji. Platíš za poctivou práci, ne za značku.",
+      addonsTitle: "Něco navíc",
+      independentTitle: "Jen tak se zastavit",
+      specialTitle: "Noční zážitek",
+      totalLabel: "Odhadovaná cena",
+      timeLabel: "Čas v křesle",
+      independentTimeLabel: "Čas odpočinku",
+      totalTimeLabel: "Celkový čas u nás",
+      extraTimeLabel: "Tvůj čas navíc",
+      dynamicPricingTitle: "Dynamická cenotvorba",
+      currentSurcharge: "Aktuální sazba",
+      surchargeReason: "Důvod",
+      surchargeNone: "Standardní cena",
+      surchargeSat: "Sobotní provoz (+10 %)",
+      surchargeSun: "Nedělní relax (+30 %)",
+      surchargeHoliday: "Sváteční servis (+100 %)",
+      surchargeAfterHours: "Mimo běžnou dobu (+30 %)",
+      surchargeNewYear: "Novoroční update (+70 %)",
+      surchargeChristmas: "Vánoční ráno (+50 %)",
+      bookingNote: "Jedeme podle rezervačního systému. Pokud vidíš volno, je tvoje.",
+      switchDate: "Simulovat datum",
+      pricingModes: {
+        workday: "Všední den",
+        saturday: "Sobota",
+        sunday: "Neděle",
+        holiday: "Svátek",
+        night: "Noční hodiny"
+      },
+      items: [
+        { time: "5 m", name: "RYCHLÁ ÚPRAVA", desc: "Kontury, detaily nebo jen bleskový refresh. Stačí na chvíli naskočit.", price: "100 Kč", priceValue: 100 },
+        { time: "10 m", name: "EXPRES SERVIS", desc: "Zaholení krku, úprava bez strojku nebo něco, co už vážně nepočká.", price: "180 Kč", priceValue: 180 },
+        { time: "15 m", name: "QUICK FADE", desc: "Buzzcut, jednoduchý střih strojkem nebo rychlé srovnání stran.", price: "280 Kč", priceValue: 280 },
+        { time: "20 m", name: "ZÁKLADNÍ STŘIH", desc: "Dětské střihy nebo jednodušší úpravy. Očista, kolínská, styl.", price: "320 Kč", priceValue: 320 },
+        { time: "30 m", name: "KLASIKA", desc: "Precizní střih nůžkami i strojkem. Často stihneme vlasy i lehké vousy.", price: "450 Kč", priceValue: 450 },
+        { time: "45 m", name: "KOMPLETNÍ PÉČE", desc: "Mytí, střih, zaholení břitvou. Pokud nevíš, tohle je sázka na jistotu.", price: "650 Kč", priceValue: 650 },
+        { time: "1 h", name: "PREMIUM KOMBO", desc: "Vlasy, vousy, mytí a totální vypnutí. Maximální relaxace.", price: "1 000 Kč", priceValue: 1000 }
+      ],
+      addons: [
+        { id: "add1", name: "Depilace nosu", priceValue: 30, desc: "Rychle a (skoro) bezbolestně voskem." },
+        { id: "add2", name: "Depilace uší", priceValue: 30, desc: "Vosková epilace pro čistý vzhled." },
+        { id: "add3", name: "Horký ručník (Hot Towel)", priceValue: 100, desc: "Tradiční napaření a uvolnění pokožky." },
+        { id: "add6", name: "Mytí s masáží", priceValue: 100, desc: "Mytí vlasů s příjemnou masáží hlavy." },
+        { id: "add4", name: "Napařování vousů", priceValue: 70, desc: "Příprava na precizní oholení." },
+        { id: "add5", name: "Opalování uší", priceValue: 20, desc: "Tradiční metoda odstranění jemných chloupků." }
+      ],
+      independent: [
+        { id: "ind1", name: "Masážní křeslo (15 min)", priceValue: 100, time: 15, desc: "Když si chceš jen na chvíli odfrknout." },
+        { id: "ind2", name: "Relaxační zóna (30 min)", priceValue: 180, time: 30, desc: "Klid, káva a chvíle pro sebe." }
+      ],
+      special: [
+        { id: "sp2", name: "Noční Full Service", priceValue: 2500, time: "1 h", desc: "Když potřebuješ vypadat skvěle a den ti byl krátký. Po domluvě." },
+        { id: "sp1", name: "Noční střih (45 min)", priceValue: 1300, time: "45 min", desc: "Individuální termín mimo běžné hodiny." },
+        { id: "sp4", name: "Rychlý noční refresh", priceValue: 900, time: "30 min", desc: "Když spěcháš i v noci." },
+        { id: "sp3", name: "Střih při svíčkách", priceValue: 1800, time: "30 min", desc: "Unikátní atmosféra pro ty, co hledají klid." }
+      ]
+    },
+    operatives: {
+      title: "Mistři v oboru",
+      subtitle: "Všechno stojí na lidech. Komu dneska svěříš svou vizáž?",
+      openFile: "Otevřít profil",
+      bookBarber: "Rezervovat termín",
+      barbers: {
+        tomas: {
+          name: "Tomáš",
+          role: "Zakladatel & Hlavní barber",
+          motto: "",
+          story: "Člověk, který věří, že v detailech je síla. Nehledá zkratky, ale poctivou cestu k nejlepšímu výsledku.",
+          schedule: "Út–Pá 9:00 – 18:00 | So–Ne 9:00 – 12:00",
+          englishSpeaking: "English Speaking",
+          specializations: ["Hlavně pánské", "ale zvládnu i dámské styly"]
+        }
+      }
+    },
+    theCode: {
+      title: "Co byste měli vědět",
+      subtitle: "Pár drobností pro hladký průběh:",
+      rules: [
+        { title: "Jak platit", description: "Bereme hotovost i QR platby. Vyřešíme to hned po servisu u křesla." },
+        { title: "Kde zaparkovat", description: "Parkování zdarma přímo u nás nebo kousek vedle. Waze tě možná pošle o dům dál, tak raději sleduj značky." },
+        { title: "Jak se připravit", description: "Ideální je vlasy předem nemýt – s lehce mastnými se nám pracuje líp. Styling nechte raději na nás." },
+        { title: "Tvé soukromí", description: "Tento prostor je tu pro tvůj klid. Žádné zbytečné oči, jen ty a tvůj styl." }
+      ],
+      footer: "MMBARBER Uherské Hradiště"
+    },
+    intro: {
+      welcome: "Vítejte v MMBARBER – vašem útočišti v Uherském Hradišti.",
+      parking: "PARKOVÁNÍ ZDARMA",
+      parkingHint: "Waze občas zlobí, ale kdo hledá, ten nás v Mařaticích najde.",
+      copyAddress: "KOPÍROVAT ADRESU",
+      openMaps: "OTEVŘÍT MAPY",
+      payment: "HOTOVOST / QR KÓD",
+      acknowledge: "ROZUMÍM",
+      acceptMission: "VSTOUPIT"
+    },
+    devPanel: {
+      title: "VÝVOJOVÝ PANEL",
+      accent: "Akcent",
+      atmosphere: "Atmosféra",
+      tools: "Nástroje",
+      filters: "Vizuální Filtry",
+      game: "MINIHRA"
+    },
+    radio: {
+      playMe: "Hrajte mi"
+    },
+    partners: {
+      title: "Naši Kumpáni",
+      subtitle: ""
+    },
+    contact: {
+      title: "Kudy k nám",
+      subtitle: "",
+      address: "Adresa shopu",
+      connection: "Spojení",
+      responsiblePerson: "Odpovědná osoba",
+      parking: "Parkování",
+      parkingText1: "ZDARMA hned u nás. S Waze raději opatrně, trefí se o kousek vedle.",
+      parkingText2: "Dopoledne je tu místa víc než dost.",
+      transit: "MHD",
+      transitText1: "Zastávka Rudy Kubíčka",
+      transitText2: "je doslova pár kroků od dveří."
+    },
+    footer: {
+      description: "Elegance, tradice a poctivá preciznost. Barbershop v Hradišti, kde se tvoří styl, o kterém se sice nemluví nahlas, ale každý ho chce.",
+      nav: "Navigace",
+      family: "Rodina",
+      contact: "Spojení",
+      follow: "Sleduj nás",
+      seoBottomInfo: "Pánské holičství & barbershop Uherské Hradiště",
+      terms: "Obchodní podmínky",
+      privacy: "Ochrana soukromí",
+      cookies: "Soubory cookies",
+      rules: "Provozní řád",
+      instagramLine: "Místo, kde jsou všichni šťastní. Aspoň na fotce.",
+      tiktokLine: "Obsah, co ti v hlavě dlouho nezůstane.",
+      facebookLine: "Zdi nářků, kde se řeší všechno a nic.",
+      copyright: "2024–2026 MMBARBER. Všechna práva vyhrazena.",
+      neklikat: "neklikat",
+      tryToCatch: "ZKUS MĚ CHYTIT",
+      closeTrap: "ZAVŘÍT PAST",
+      likeWeb: "líbí se ti web?",
+      callUs: "tak neváhej a ozvi se",
+      callToAction: "Volej přímo k nám",
+      thankYou: "SYSTÉM BĚŽÍ. Zkus hledat skryté kódy... nebo se zeptej svého barbera, co pro tebe má.",
+      cheatActivated: "KÓD PŘIJAT",
+      cheatHint: "Hledej dál...",
+      close: "ZAVŘÍT",
+      vipClub: "V.I.P. KLUB",
+      partnerships: "Partnerství",
+      followUs: "Sleduj nás",
+      reviews: "Recenze",
+      intelligenceFeed: "Denní hlášení",
+      liveUpdate: "AKTUALIZACE",
+      targetRegion: "REGION: SLOVÁCKO",
+      priorityNotice: "STAV: AKTIVNÍ"
+    },
+    rodina: {
+      title: "MM BARBER RODINA",
+      list: "Seznam",
+      network: "Síť spojení",
+      divisions: "DIVIZE",
+      backToHq: "Zpět domů",
+      partnersTrust: "Firmy a lidi, za které dáme ruku do ohně.",
+      youForUs: "Vy pro nás. My pro vás.",
+      weAreFamily: "MMBARBER není jen o stříhání. Je to o lidech, kteří tvoří kvalitu napříč obory. Jsme jedna Rodina.",
+      closeNetwork: "ZAVŘÍT SÍŤ",
+      cameraFollows: "Kamera tě sleduje",
+      headquarters: "CENTRÁLA"
+    },
+    sidliste: {
+      title: "SÍDLIŠTĚ",
+      sector: "SÍDLIŠTĚ // SEKTOR VII",
+      return: "ZPĚT NA ZÁKLADNU",
+      subtitle: "Přidej se k lidem, co nechtěj�      p3: "Náš prostor je dostatečně soukromý, aby ses necítil jako ve vitríně. Klid, pohoda a žádné zbytečné oči. Je to tvůj kout pro vypnutí od okolního světa.",
+      p4: "Náš časový tarif je ideální pro ty, co vědí, co chtějí. Pokud váháš, prostě si rezervuj to, na co běžně chodíš jinam – my si s tím už u křesla poradíme.",
+      motto: "Jak se říká… náš zákazník, náš pán.",
+      burnBtn: "Spálit po přečtení",
+      burnNote: "Zničí důkazy o tvé přítomnosti"
+    },
+    journey: {
+      title: ["Moje", "Cesta"],
+      subtitle: "Historie / The Journey",
+      description: "Z malého nápadu se stal MM BARBER. Podívejte se, jak plynul čas v naší centrále.",
+      archiveShot: "Archivní snímek",
+      footerTitle: "Dnes jsi součástí příběhu ty",
+      footerCta: "Pokračovat dál",
+      timeline: [
+        {
+          year: "2018",
+          title: "První výstřel",
+          desc: "Založení MM BARBER. Začátek mise, o které se začalo tiše mluvit po celém Hradišti.",
+          side: "left"
+        },
+        {
+          year: "2020",
+          title: "Centrála v Hradišti",
+          desc: "Otevření současných prostor v Mařaticích. Místo, které se stalo útočištěm pro ty, co hledají víc než jen střih.",
+          side: "right"
+        },
+        {
+          year: "2022",
+          title: "Zocelení týmu",
+          desc: "Tomáš se stává synonymem pro preciznost v křesle. Přichází nová krev and nové vize.",
+          side: "left"
+        },
+        {
+          year: "2024",
+          title: "Nová éra",
+          desc: "Centrála se rozrůstá o nové služby, technologie a silnější komunitu.",
+          side: "right"
+        }
+      ]
+    },
+    seo: {
+      title: "MMBARBER | Nejlepší barbershop v Uherském Hradišti (Mařatice)",
+      description: "Hledáš špičkový skin fade, úpravu vousů nebo jen místo, kde si vyčistíš hlavu? MMBARBER v UH je víc než jen kadeřnictví. Je to tradice, styl a poctivé řemeslo v srdci Slovácka.",
+      keywords: "barbershop Uherské Hradiště, pánské holičství UH, skin fade Hradiště, úprava vousů Uherské Hradiště, holení břitvou Slovácko, MM BARBER Mařatice, pánský střih UH, kadeřnictví pro muže Hradiště, dárkový poukaz barber",
+      extraContent: "Tady v Uherském Hradišti (lokalita Mařatice) nestavíme na trendech, ale na lidech. Každý střih, každý detail u křesla je odrazem naší loajality k řemeslu. Jsme MM BARBER rodina – komunita, která v UH definuje styl. Přijď si pro svůj poctivý servis a zažij atmosféru, o které se sice nemluví nahlas, ale každý ji v Hradišti hledá. Parkování zdarma přímo u nás je samozřejmostí.",
+      servicesFullText: "MM BARBER Uherské Hradiště představuje vrchol pánského holičství v regionu Slovácka. Naše služby jsou navrženy tak, aby splnily požadavky i těch nejnáročnějších klientů, kteří hledají víc než jen rychlé ostříhání. Moje praxe v oboru přesahuje 8 let, což mi umožňuje do každého střihu vložit zkušenost tisíců hodin u křesla a hluboké porozumění pro mužský styl. Specializujeme se na širokou škálu pánských střihů, od klasických konzervativních stylů až po nejmodernější trendy roku 2026. Naším vlajkovým servisem je precizní Skin Fade – střih, který vyžaduje pevnou ruku a smysl pro detail. Vytváříme dokonalé přechody, které podtrhnou charakter vaší tváře. Pro milovníky tradice nabízíme úpravu vousů s rituálem Hot Towel. Napaření horkým ručníkem změkčí vousy a otevře póry, což umožňuje maximálně hladké oholení břitvou bez podráždění pokožky. Používáme při tom špičkovou kosmetiku značek jako Reuzel nebo Uppercut Deluxe, které jsou zárukou kvality a autentické vůně. V našem ceníku najdete varianty od rychlých pětiminutových úprav kontur až po hodinové prémiové balíčky, které zahrnují mytí vlasů s relaxační masáží hlavy, střih, úpravu vousů a finální styling. Nezapomínáme ani na mladší generaci rekrutů – dětské a studentské střihy provádíme se stejnou péčí jako u dospělých, protože věříme, že smysl pro styl se buduje od dětství. Mezi hlavní výhody MM BARBER v Uherském Hradišti patří především naše strategická poloha v Mařaticích. Vyhnete se tak chaosu a problémům s parkováním v centru města. U nás zaparkujete zdarma přímo před vchodem, což vám ušetří drahocenný čas. Náš rezervační systém is.mmbarber.cz je dostupný 24/7, takže si své místo v křesle můžete zajistit během pár sekund kdykoliv a odkudkoliv. Atmosféra našeho salonu je laděna do unikátního noir stylu, který poskytuje pocit soukromí a exkluzivity. Nejsme kadeřnictví, kde na vás koukají lidé z ulice přes prosklenou výlohu. U nás najdete útočiště, kde si můžete odpočinout u kvalitní kávy a probrat s barberem to, co je pro vás důležité. Naše filozofie MM BARBER Rodina propojuje místní řemeslníky a podnikatele, čímž vytváříme silnou komunitu na Slovácku. Pokud hledáte nejlepší barbershop v UH, místo pro úpravu vousů v Kunovicích nebo pánského kadeřníka v Mařaticích, MM BARBER je jasnou volbou. Nabízíme také dárkové poukazy, které jsou ideálním dárkem pro každého muže, který dbá o svůj vzhled. Přijďte se přesvědčit o naší preciznosti a staňte se součástí naší cesty za dokonalým stylem. Uherské Hradiště, srdce Slovácka, si zaslouží služby na světové úrovni. Proto v MM BARBER neustále sledujeme globální trendy v barberingu. Naše techniky střihu nůžkami (scissoring) i strojkem (clipping) jsou dotaženy k dokonalosti. Kromě standardních služeb nabízíme i specifické úkony jako je depilace chloupků v nose a uších pomocí vosku, což je rychlá a efektivní metoda pro dokonale čistý vzhled. Pro muže, kteří chtějí zakrýt první známky stárnutí, máme v nabídce maskování šedin (beard & hair color camo), které působí přirozeně a diskrétně. Výhody MM BARBER nejsou jen o samotném stříhání. Jde o celkový zážitek. Naše křesla jsou ergonomická a poskytují maximální komfort i při delších procedurách. Každý klient je pro nás jedinečný a ke každému přistupujeme individuálně – analyzujeme směr růstu vlasů, tvar lebky i hustotu vousů, abychom navrhli střih, který bude vyžadovat minimální údržbu v domácím prostředí. Jsme hrdí na to, že naše klientela zahrnuje muže z celého okolí – od Starého Města, přes Jarošov až po Uherský Brod nebo Zlín. MM BARBER se stal synonymem pro kvalitu, na kterou se můžete spolehnout před důležitou pracovní schůzkou, svatbou nebo prostě jen pro dobrý pocit ze sebe sama. Věříme v poctivé řemeslo a loajalitu k našim zákazníkům. Vaše spokojenost je naší nejlepší vizitkou v celém regionu. Rezervujte si svůj termín v Uherském Hradišti ještě dnes a zažijte rozdíl, který dělá MM BARBER. V roce 2026 se nároky na pánskou péči neustále zvyšují. Proto v Uherském Hradišti (UH) nabízému servis, který tyto nároky převyšuje. Náš barbershop v Mařaticích je vybaven špičkovými nástroji, které pravidelně sterilizujeme, aby byla zajištěna stoprocentní hygiena. Úprava vousů u nás není jen o zastřižení délky, ale o tvarování, které podpoří vaši čelist a dodá obličeji mužnější rysy. Používáme speciální oleje a balzámy, které vyživují pokožku pod vousy a zabraňují svědění nebo vysoušení. Naše výhody pocítíte už při příjezdu. Lokalita na Sadové ulici v Mařaticích je snadno dostupná a parkování u nás nikdy není problém. To ocení zejména ti, kteří dojíždějí z okolních obcí jako jsou Vésky, Sady nebo Kunovice. Online rezervace přes is.mmbarber.cz vám dává okamžitý přehled o volných časech všech našich barberů. Už žádné zbytečné telefonování nebo čekání v salonu. V MM BARBER tvoříme styl, který vydrží. Naše střihy jako Side Part, Pompadour nebo moderní Textured Crop jsou navrženy tak, aby vypadaly skvěle i po několika týdnech od návštěvy. Poradíme vám také s výběrem správných stylingových produktů pro domácí použití, aby váš účes vypadal jako od profesionála každý den. Naše partnerství s lokálními firmami v rámci MM BARBER Rodiny (Vodo Topo Jahoda, Kofipack, Malina Photo) jen potvrzuje, že jsme pevnou součástí života na Slovácku. Zvolte si kvalitu, zvolte MM BARBER Uherské Hradiště. Jsme tu pro vás v každém čase, připraveni posunout váš styl na novou úroveň. Ať už potřebujete jen refresh kontur před víkendem nebo kompletní proměnu vizáže, v Mařaticích jste na správné adrese. Pánské holičství, na které se můžete spolehnout.",
+      partnerServicesFullText: "MM BARBER Rodina není jen prázdný pojem, je to síť prověřených profesionálů z Uherského Hradiště a okolí, na které se můžete stoprocentně spolehnout. Stejně jako v našem barbershopu dbáme na maximální preciznost, vyžadujeme stejný standard i od našich partnerů. Pokud hledáte řemeslníka v regionu Slovácka, tyto divize naší rodiny jsou zárukou kvality. V oblasti instalatérských a topenářských prací je naším klíčovým partnerem Vodo Topo Jahoda. Pokud řešíte havárii vody, výměnu kotle nebo modernizaci vytápění v Hradišti, jsou to lidé, kteří vás nenechají ve štychu. Podobně Zdeněk Mička z Bílovic zajišťuje, že veškeré rozvody a technické systémy fungují bezchybně. Kvalitního instalatéra nebo elektrikáře poznáte podle několika klíčových znaků: vždy má profesionální nářadí, dodržuje smluvené termíny, je transparentní v cenotvorbě a po své práci nenechává nepořádek. Důležitá je také platná certifikace a schopnost vysvětlit technický problém srozumitelně. Pro vizuální identitu a profesionální fotografii se spoléháme na Malina Photo. Ať už jde o firemní portréty, dokumentaci akcí nebo produktovou fotografii, jejich oko pro detail je v souladu s naší noir estetikou. Logistiku a přepravu v Mařaticích i dál zajišťuje Kofipack, díky kterému jsou veškeré naše zásoby vždy na svém místě včas. Soukromí a stínění řešíme s firmou Kudielka, která instaluje moderní žaluzie, markýzy a další systémy, které dělají domov nebo firmu komfortnějším místem. V oblasti realit na Slovácku dominují Sluneční Reality, které vám pomohou najít ideální prostor pro život i podnikání v centru Hradiště. O vaše finance a strategický růst se postará Comites, čímž zajišťuje stabilitu naší širší rodiny. A když přijde hlad nebo čas na relaxaci, naše doporučení míří k O Shawarma Beef za nejlepším masem ve městě, nebo do Dvora pod Starýma Horama na degustaci poctivého moravského vína. Pro fanoušky pohybu a servisu kol je tu O Kolečko víc, kde se o vaše vybavení postarají se stejnou vášní, s jakou my stříháme vlasy. Naším cílem je budovat v Uherském Hradišti ekosystém služeb, kde slovo a podání ruky stále platí. Spolupracujeme pouze s lidmi, kteří mají charakter a výsledky. Pokud tedy hledáte elektrikáře v UH, kadeřníka v Mařaticích nebo spolehlivého dopravce, MM BARBER Rodina je vaším kompasem v moři průměrnosti. Věříme v lokální patriotismus a v to, že společně dokážeme víc. Každý člen naší sítě prochází neformálním, ale přísným výběrem – doporučujeme jen ty, ke kterým bychom si sami pozvali domů nebo do firmy. Kvalitní řemeslo je základem prosperujícího regionu a my jsme hrdí na to, že můžeme tyto hodnoty v Uherském Hradišti reprezentovat a propojovat. Jak poznat skutečného profesionála, ať už jde o elektrikáře, instalatéra nebo jiného řemeslníka? V první řadě se dívejte na reference a historii firmy v regionu. Skutečný odborník v Uherském Hradišti se nemusí schovávat za anonymní inzeráty. Kvalitní elektrikář začíná návštěvu kontrolou revizních zpráv a nespokojí se s provizorním řešením. Jeho práce je bezpečná, odpovídá normám a je esteticky zvládnutá i v místech, která nejsou na první pohled vidět – například v rozvaděčích. Stejně tak kvalitní kadeřník nebo barber v MM BARBER pozná kvalitu vlasu dřív, než do nich poprvé střihne. Vodo Topo Jahoda i další naši kumpáni vědí, že v Hradišti se zprávy o dobře odvedené práci šíří rychle, ale ty o špatné ještě rychleji. Proto si zakládáme na poctivosti. Pokud řemeslník slíbí, že přijde v pondělí v osm, tak tam v osm je. Pokud narazí na nečekaný problém, okamžitě s vámi komunikuje možnosti řešení. To je standard, který v MM BARBER Rodině vyžadujeme. Naše síť zahrnuje také kulturní a společenské pilíře, jako je skupina Argema nebo DJ Šimon Král, kteří se starají o to, aby Slovácko žilo hudbou. Podporujeme také lokální instituce, jako je Dětský domov v UH, protože věříme, že úspěch by se měl sdílet s těmi, kteří to potřebují. Tato sekce skrytého textu slouží jako hluboký archiv informací pro ty, kteří hledají komplexní služby v Uherském Hradišti a okolí. Ať už zadáte do vyhledávače 'nejlepší instalatér Hradiště', 'servis kol Slovácko' nebo 'profesionální fotograf Mařatice', chceme, abyste narazili na jména, za která se můžeme zaručit. Jsme jedna Rodina, jeden systém, jeden standard kvality. Od vlasů a vousů až po rozvody elektřiny a vody – v Mařaticích na Sadové i v celém srdci Slovácka jsme tu pro vás."
+    club: {
+      topSecret: "PŘÍSNĚ TAJNÉ // MM BARBER HQ",
+      title: "V.I.P. KLUB",
+      subtitle: "Místo pro ty, co vědí víc než ostatní.",
+      timeExpires: "PLATNOST SEANCE KONČÍ ZA:",
+      loginTitle: "ZADEJTE PŘÍSTUPOVÝ KÓD",
+      loginSubtitle: "POKUD SEM NEPATŘÍŠ, ODEJDI DOKUD MŮŽEŠ",
+      unlockButton: "AUTORIZOVAT PŘÍSTUP",
+      wrongPassword: "PŘÍSTUP ZAMÍTNUT // KÓD JE NEPLATNÝ"
+    },
+    akademie: {
+      title: "MM BARBER AKADEMIE",
+      subtitle: "Učení u křesla / Individual Mentoring",
+      description: "Chceš se naučit řemeslo tak, jak se má dělat? Bez zbytečných řečí, přímo v akci. Předám ti své know-how, ukážu ti grify s břitvou a naučím tě, jak vidět víc než jen vlasy.",
+      cta: "CHCI SE UČIT",
+      backToHq: "Zpět do centrály",
+      motto: "Řemeslo se nedá vyčíst z knih. Musíš ho mít v rukou.",
+      levels: [
+        { title: "Základy", desc: "Práce se strojkem, nůžkami a pochopení tvaru." },
+        { title: "Břitva & Vousy", desc: "Tradiční holení, napařování a precizní kontury." },
+        { title: "Masterclass", desc: "Pokročilé techniky, networking a budování vlastního jména." }
+      ],
+      guidesTitle: "Knowledge Base & Grooming Guide",
+      guides: [
+        {
+          title: "Jak udržet fade v kondici",
+          steps: [
+            "Kontury u uší a na krku jsou základ. Pokud máš doma strojek, opatrně je začišťuj jednou za týden.",
+            "Pokožka pod vlasy potřebuje dýchat. Peeling hlavy jednou týdně tě zbaví zbytků stylingových past.",
+            "Méně je více. Matná pasta ti dodá texturu, ale nesmí vlasy slepit. Stačí množství o velikosti hrášku."
+          ],
+          keywords: ["údržba fade", "péče o vlasy", "styling tipy"]
+        },
+        {
+          title: "Domácí rituál pro vousy",
+          steps: [
+            "Kartáč z kančích štětin není luxus, ale nutnost. Prokrví kůži a srovná vousy do latě.",
+            "Olej na vousy patří na vlhkou tvář. Uzamkne v nich vlhkost a vousy pak neškrábou.",
+            "Při holení kontur se drž pravidla 'dva prsty nad ohryzkem'. To je přirozená hranice tvého stylu."
+          ],
+          keywords: ["péče o vousy", "olej na vousy", "holení kontur"]
+        }
+      ],
+      backToHqBtn: "Zpět na centrálu",
+      noResults: "Nezvládáš to sám? Svěř se do rukou profesionálů.",
+      bookBtn: "REZERVOVAT TERMÍN V UH"
+    },
+    franchisePage: {
+      back: "Zpět na centrálu",
+      title: "FRANCHISE",
+      subtitle: "OPPORTUNITY",
+      heroDesc: "Staň se součástí nejsilnější barber značky v regionu. Nabízíme víc než jen licenci – nabízíme cestu k vlastnímu úspěchu.",
+      sections: {
+        about: {
+          title: "O PROJEKTU",
+          label: "MM BARBER CONCEPT",
+          desc: "Vytvořili jsme systém, který funguje. Spojujeme poctivé řemeslo, moderní technologie a nezaměnitelnou noir atmosféru do jednoho celku.",
+          motto: "VAŠE VIZE, NAŠE KNOW-HOW"
+        },
+        benefits: {
+          title: "VÝHODY SPOLUPRÁCE",
+          items: [
+            "Zavedená značka s vysokou autoritou",
+            "Kompletní rezervační a informační systém",
+            "Pravidelné školení a mentoring týmu",
+            "Marketingová podpora a vizuální identita",
+            "Pomoc s výběrem a designem prostor",
+            "Exkluzivita pro danou lokalitu"
+          ]
+        },
+        who: {
+          title: "PRO KOHO?",
+          desc: "Hledáme partnery, kteří nehledají jen investici, ale chtějí tvořit kvalitu a být součástí komunity.",
+          motto: "Nezáleží na tom, jestli jsi barber nebo investor. Důležitý je tvůj přístup k řemeslu a respekt k našim hodnotám."
+        },
+        how: {
+          title: "JAK ZAČÍT?",
+          steps: [
+            "První kontakt a schůzka",
+            "Plánování a výběr lokality",
+            "Příprava a otevření"
+          ]
+        }
+      },
+      contact: {
+        title: "MÁTE ZÁJEM?",
+        desc: "Pokud věříte naší vizi a chcete růst s námi, ozvěte se. Probereme detaily.",
+        email: "POSLAT E-MAIL",
+        instagram: "INSTAGRAM"
+      },
+      footer: "MMBARBER GLOBAL EXPANSION"
+    },
+    career: {
+      title: "Nábor do rodiny",
+      subtitle: "Hledáme novou krev",
+      vacancyTitle: "Barber / Holič",
+      vacancySubtitle: "(Hledáme talent, ne jen zaměstnance)",
+      location: "SADOVÁ 1383, MAŘATICE, UHERSKÉ HRADIŠTĚ",
+      type: "DPP / IČO / HPP",
+      responsibilitiesTitle: "Co tě u nás čeká:",
+      responsibilities: [
+        "Špičkové pánské střihy a precizní úprava vousů",
+        "Práce s břitvou a tradičními metodami",
+        "Budování vztahů s klienty – u nás nejsi jen u křesla, jsi hostitel",
+        "Udržování standardu naší centrály"
+      ],
+      requirementsTitle: "Co od tebe chceme:",
+      requirements: [
+        "Vzdělání nebo praxi v oboru (ale talent poznáme i bez papíru)",
+        "Cit pro detail a pevnou ruku",
+        "Spolehlivost a loajalitu k týmu",
+        "Chuť se neustále učit a posouvat dál"
+      ],
+      offersTitle: "Co ti dáme my:",
+      offers: [
+        "Zázemí nejsilnějšího barberu v regionu",
+        "Férové peníze, které odpovídají tvému nasazení",
+        "Moderní vybavení a prostor, kde tě práce bude bavit",
+        "Možnost růstu a mentoring přímo od Tomáše",
+        "Tým, který tě nenechá ve štychu"
+      ],
+      status: "STÁLE HLEDÁME",
+      contactMotive: "Cítíš, že patříš k nám? Ozvi se.",
+      backToHq: "Zpět na základnu",
+      step1Title: "CHCETE BÝT SOUČÁSTÍ MMBARBER?",
+      step1Sub: "První kontakt",
+      step1Content: "Nábor u nás není jen o papírech. Hledáme lidi, kteří chápou, že tohle řemeslo je o loajalitě a poctivé práci. Zjisti, jestli k nám zapadneš.",
+      step1Btn: "Chci to zkusit",
+      step2Title: "NEJSME JEN DALŠÍ BARBER V ŘADĚ",
+      step2Sub: "ZÁKLADNÍ PRAVIDLA",
+      step2Content: "Nehrajeme si na trendy, kde má každý v ruce břitvu a říká si barber. U nás je to o tvrdé práci, preciznosti v každém detailu a respektu k řemeslu. Jsme tým, který to bere vážně – a zároveň drží při sobě.\n\nHledáme lidi, co chtějí víc než jen 'odkroutit' směnu. Lidi, co na sobě chtějí makat, posouvat se a být součástí něčeho, co má směr.\n\nŠéf má jasnou vizi a většinu tohohle místa dokázal vybudovat vlastníma rukama. Teď hledáme někoho, kdo v tom chce pokračovat s námi.\n\nChceš jít jinou cestou než ostatní? Přidej se.",
+      step2Btn: "Rozumím a respektuji",
+      step3Title: "VLASTNÍ KŘESLO A RESPEKT",
+      step3Sub: "Odměna za disciplínu",
+      step3Content: "Tady se o své lidi staráme jako o vlastní. Majitel ti ukáže cestu a dá ti všechno, co k růstu potřebuješ – mentoring, vybavení a klid na práci. Na oplátku ale vyžadujeme jediné: absolutní respekt k jeho vizi a silné morální zásady.\n\nMusíš umět naslouchat a hrát podle pravidel naší rodiny. Pokud máš charakter a chuť se učit, čeká tě místo u našeho stolu a přístup k té nejlepší klientele.",
+      step3Btn: "Jdu do toho",
+      step4Title: "VÍTEJ V TÝMU",
+      step4Sub: "Poslední krok",
+      step4Content: "Jsi připraven? Pošli nám pár slov o sobě a svých zkušenostech. Jakmile to vyhodnotíme, spojíme se s tebou.",
+      step4Btn: "Odeslat info (E-mail)"
+    },
+    rulesPage: {
+      title: "PROVOZNÍ ŘÁD",
+      subtitle: "Pravidla a standardy pánského holičství MMBarber. Naše mise vyžaduje disciplínu a vzájemný respekt.",
+      backBtn: "ZPĚT NA ZÁKLADNU",
+      sections: [
+        { title: "Rezervace a dochvilnost", text: "Prosíme, dorazte na svou misi včas. Příjezd později než 10 minut může znamenat zrušení termínu bez náhrady, abychom neomezili rekruty po vás." },
+        { title: "Zrušení termínu", text: "Změnu nebo zrušení termínu hlaste prosím alespoň 24 hodin předem. Respektujeme váš čas, respektujte prosím náš." },
+        { title: "Hygienické standardy", text: "Udržujeme chirurgickou čistotu. Každý nástroj je po každém použití sterilizován. Klid a bezpečí jsou prioritou." },
+        { title: "Právo odmítnout", text: "MMBarber si vyhrazuje právo odmítnout klienta, který vykazuje známky nevhodného chování nebo infekčního onemocnění. Držíme úroveň v naší rodině." },
+        { title: "Platba", text: "Platba probíhá ihned po skončení mise. Přijímáme hotovost a QR platby." }
+      ]
+    },
+    others: {
+      title: "VÍCE O PODNIKU",
+      hiddenPlaces: {
+        title: "SKRYTÁ MÍSTA MĚSTA",
+        name: "Komfort Lounge Bar",
+        address: "L. Janáčka 180 686 01, Uherské Hradiště 1",
+        description: "Atmosférický shisha bar, ideální místo pro relaxaci u vodní dýmky, kávy nebo kvalitního drinku.",
+        slotsTitle: "VOLNÉ SLOTS",
+        cta: "PŘIDAT SE"
+      },
+      members: {
+        title: "ČLENOVÉ RODINY",
+        description: "Ti, co vědí, kam se dívat...",
+        employeeWall: {
+          title: "ZEĎ ZAMĚSTNANCŮ",
+          year: "ROK 2026",
+          employeeName: "Tomáš",
+          months: ["LEDEN", "ÚNOR", "BŘEZEN", "DUBEN", "KVĚTEN", "ČERVEN", "ČERVENEC", "SRPEN", "ZÁŘÍ", "ŘÍJEN", "LISTOPAD", "PROSINEC"],
+          invitation: "Chceš být taky na naší zdi? Měl by ses stavit, ať víme, jakou přezdívku tam máme napsat!",
+          brandVision: "Někdo si myslí, že barbershop je jen o vlasech. Tak to vidí 99 % lidí, ale jsou i tací, co to vidí jinak. Můžeš se přidat a pomoct mi budovat brand."
+        }
+      },
+      support: {
+        title: "GRAFIKA",
+        description: "",
+        reward: "Protože nedávám slevy a Black Friday každý pátek. Chceš podpořit barbera? To, co za tím vším stojí? Tak podpoř!",
+        pcLabel: "Pozadí na PC 1920x1080px.",
+        phoneLabel: "Tapeta na mobil 1080x1920px",
+        downloadBtn: "STÁHNOUT ODMĚNU",
+        passwordLabel: "PŘÍSTUPOVÉ HESLO",
+        passwordHint: "Pro heslo si musíš jít k barberovi, jen nechoď vedle, ten ho neví...",
+        unlock: "ODEMKNOUT",
+        denied: "Přístup zamítnut"
+      },
+      systemVisit: {
+        title: "Systém a návštěva",
+        description: "Jak se správně připravit na návštěvu u barbera.",
+        cta: "VÍCE INFORMACÍ"
+      },
+      pece: {
+        title: "PÉČE",
+        description: "Magazín o péči, kosmetice a zdraví pokožky.",
+        cta: "OTEVŘÍT MAGAZÍN"
+      }
+    },
+    styleDefinition: {
+      defineStyle: {
+        title: ["Definuj", "Svůj Styl"],
+        subtitle: "MMBARBER EXCLUSIVE /",
+        modalTitle: "Nevíš, jaký sestřih sedne tvému stylu?",
+        modalContent: "Společně najdeme střih, který bude ladit s tím, co nosíš – a s tím, kým jsi. Probereme detaily, vyladíme look a ty odejdeš se sebevědomím. Jako král."
+      },
+      pairTherapy: {
+        title: ["Párová", "Terapie"],
+        subtitle: "MMBARBER SPECIAL /",
+        modalTitle: "Přijďte spolu. Odejděte ještě víc synchronizovaní.",
+        modalContent: "Nejdřív vyladíme jeho styl, večer je řada na ní. Mezitím klid, hovor a atmosféra, která vás vtáhne. Protože styl je lepší, když ho sdílíte."
+      }
+    },
+    environmentSlider: {
+      title: "GALERIE",
+      detailPhoto: "DETAILNÍ SNÍMEK",
+      closeImage: "ZÁBĚR ZBLÍZKA"
+    },
+    seznamka: {
+      description: "Matchmaking z reálného světa.\nNe každý má čas nebo chuť být online.\nTohle je jiné. Přijdeš. Sedneš si... a věci se dějí.",
+      protocolTitle: "MATCHMAKING PROTOKOL",
+      variantA: {
+        title: "PROTOKOL A: DOPORUČENÍ",
+        desc: "Klasická cesta skrze loajalitu a doporučení tvého okolí."
+      },
+      variantB: {
+        title: "PROTOKOL B: OPERATIVNÍ NÁBOR",
+        desc: "Pro ženy, které hledají víc než jen brigádu. Najdi sebe i někoho k sobě přímo u křesla."
+      },
+      brigada: {
+        title: "BRIGÁDA S PŘIDANOU HODNOTOU",
+        subtitle: "Hledáme novou krev do týmu (a do života)",
+        desc: "Tato varianta je určena pro ženy, které si dlouhodobě nemohou najít partnera a chtějí to změnit v reálném prostředí. Nabízíme brigádu u nás v salonu, kde se naučíte základy řemesla (nebo využijete své zkušenosti) a během práce budete v přímém kontaktu s naší klientelou.",
+        requirements: [
+          "Dlouhodobý neúspěch v hledání partnera (chceme to změnit)",
+          "Ochota učit se novým věcem a pracovat s lidmi",
+          "Reprezentativní vystupování a loajalita",
+          "Nejste 'zmagořena' radami pseudo-odborníků z Instagramu",
+          "Musíte počítat s přísným výběrovým řízením"
+        ],
+        cta: "Chci projít výběrovým řízením",
+        recruitmentSuccess: "NEPRODLENĚ SE DOSTAVTE NA NAŠI POBOČKU. ČAS KVAPÍ."
+      },
+      acknowledge: "ROZUMÍM",
+      successTitle: "MISE KOMPLETNÍ",
+      successText: "Teď jsi připraven na osobní setkání.",
+      finishBtn: "UKONČIT MISI",
+      cancelBtn: "Zrušit postup a vrátit se",
+      confirmedLabel: "Postup potvrzen",
+      steps: [
+        { title: "Pošli kamaráda", desc: "Pošli kamaráda na střih" },
+        { title: "Vezmi přítelkyni", desc: "Vezmi přítelkyni na úpravu konečků" },
+        { title: "Naverbuj odvážné", desc: "Nebo pošli někoho známého, kdo se nebojí" }
+      ]
+    },
+    welcome: {
+      l1: { title: "DOPIS O PLATBĚ", content: "DŮVĚRNÉ: U nás platíte hotově nebo QR kódem svého bankovnictví." },
+      l2: { title: "DOPIS O PARKOVÁNÍ", content: "DŮVĚRNÉ: Parkování zdarma přímo před provozovnou. Dopoledne jsou úplně bez problému. Používáš WAZE? trefíš k barberovi vedle..." },
+      l3: { title: "DOPIS O KLIDU", content: "DŮVĚRNÉ: Můžete u nás posedět, nikdo vás nevyhazuje. Jsme rodina." },
+      authorized: "Autorizováno MMBARBER"
+    },
+    cityGuide: {
+      compass: {
+        label: "Kompas k barberu",
+        locating: "ZAMĚŘUJI...",
+        distance: "{{distance}} ZBÝVÁ"
+      }
+    },
+    game: {
+      default: {
+        ranks: [
+          { title: "Nováček", desc: "Teprve se učíš držet nůžky." },
+          { title: "Učeň", desc: "Základy už máš, ale krev ještě teče." },
+          { title: "Holič", desc: "Tvoje ruka je jistá, tvůj styl je vidět." },
+          { title: "Mistr", desc: "Vlasy tě poslouchají na slovo." },
+          { title: "Legenda", desc: "Stříháš i poslepu. Respekt." }
+        ],
+        quips: ["Pěkný střih!", "Precizní!", "Styl!", "Zásah!", "Ostrý!"],
+        hairTooltip: "OSTŘÍHAT",
+        rankLabel: "DOSAŽENÁ ÚROVEŇ"
+      }
+    },
+    holidayCountdown: {
+      title: "ODPOČET K UDÁLOSTEM",
+      subtitle: "Nenechávejte svůj styl na poslední chvíli.",
+      upcoming: "BLÍŽÍ SE:",
+      day: "DEN",
+      days: "DNÍ",
+      rightNow: "PRÁVĚ TEĎ",
+      today: "DNES",
+      showMore: "ZOBRAZIT VÍCE",
+      showLess: "SKRÝT",
+      footer: "TERMÍNY SE PLNÍ RYCHLE",
+      holidays: {
+        newYear: { name: "Nový rok", desc: "Nový rok, nový styl. Začněte s čistým štítem." },
+        valentine: { name: "Valentýn", desc: "Buďte připraveni na večer, na kterém záleží." },
+        goodFriday: { name: "Velký pátek", desc: "Velikonoční příprava začíná." },
+        womensDay: { name: "MDŽ", desc: "Nezapomeňte na ty, které dělají svět lepším." },
+        easter: { name: "Velikonoční pondělí", desc: "Tradice a poctivý sestřih jdou k sobě." },
+        laborDay: { name: "Svátek práce", desc: "Zasloužený odpočinek v křesle." },
+        witches: { name: "Pálení čarodějnic", desc: "Vypadejte skvěle i u ohně." },
+        victoryDay: { name: "Den vítězství", desc: "Oslavte svobodu se stylem." },
+        mothersDay: { name: "Den matek", desc: "Udělejte radost těm nejdůležitějším." },
+        childrensDay: { name: "Den dětí", desc: "I mladí rekruti potřebují svůj styl." },
+        fathersDay: { name: "Den otců", desc: "Den pro skutečné chlapy." },
+        saintsCyrilMethodius: { name: "Cyril a Metoděj", desc: "Svátek tradic a kořenů." },
+        janHus: { name: "Jan Hus", desc: "Odkaz, který přetrvává." },
+        summer: { name: "Start prázdnin", desc: "Letní sezóna vyžaduje svěží fade." },
+        backToSchool: { name: "Back to School", desc: "Vraťte se do lavic s respektem." },
+        statehoodDay: { name: "Den české státnosti", desc: "Hrdost a styl." },
+        independenceDay: { name: "Den nezávislosti", desc: "Oslava samostatnosti." },
+        halloween: { name: "Halloween", desc: "Děsivě dobrý sestřih." },
+        freedomDay: { name: "Den boje za svobodu", desc: "Pamatujeme na hodnoty." },
+        st_nicholas: { name: "Mikuláš", desc: "Buďte za fešáka, než přijde nadílka." },
+        vacationSeason: { name: "Dovolená", desc: "Na pláž jedině s čerstvým střihem." },
+        lfs: { name: "Letní Filmová Škola", desc: "Kulturní událost roku v Hradišti." },
+        slavnostiVina: { name: "Slavnosti vína", desc: "Vrchol sezóny na Slovácku." },
+        christmas: { name: "Štědrý den", desc: "To nejdůležitější pod stromečkem jste vy." }
+      }
+    },
+    specialProjects: {
+      likeTheWeb: "Líbí se ti tento web ?",
+      division: "DESIGN A VÝVOJOVÁ DIVIZE",
+      title: "TVOŘÍME DIGITÁLNÍ IDENTITY",
+      description: "Nejsme jen holičství. Jsme komunita lidí, co chtějí tvořit kvalitu. Pokud chceš web, který má duši a ne jen kód, dej nám vědět.",
+      writeUs: "Napište nám",
+      callUs: "Zavolejte nám"
+    },
+    faqSection: {
+      title: "ČASTO KLADENÉ DOTAZY",
+      subtitle: "Vše, co potřebujete vědět před návštěvou našeho revíru v Uherském Hradišti.",
+      items: [
+        {
+          q: "Kolik stojí pánský střih v MMBARBER?",
+          a: "Naše ceny jsou transparentní a začínají již na 100 Kč za bleskové úpravy kontur. Expresní servis vyjde na 180 Kč, klasický precizní střih (Klasika) stojí 450 Kč a kompletní péče (střih + zaholení) je za 650 Kč. Premium Kombo pro vlasy i vousy vyjde na 1 000 Kč."
+        },
+        {
+          q: "Jak dlouho trvá návštěva u barbera?",
+          a: "Standardní pánský střih trvá přibližně 45 minut. Pokud si zvolíte kombinaci vlasy a vousy, počítejte s jednou hodinou. Chceme, aby byl výsledek perfektní, ne uspěchaný."
+        },
+        {
+          q: "Musím se objednat předem?",
+          a: "Ano, náš systém is.mmbarber.cz funguje na rezervace. Pokud vidíš volný slot, okamžitě si ho zajisti – termíny v Hradišti se plní rychle."
+        },
+        {
+          q: "Kde v Uherském Hradišti vás najdu?",
+          a: "Najdeš nás v klidné části Mařatice na adrese Sadová 1383. Parkování je zdarma přímo před dveřmi, takže nemusíš řešit zóny v centru."
+        },
+        {
+          q: "Dá se u vás platit kartou?",
+          a: "Přijímáme hotovost nebo pohodlnou platbu přes QR kód přímo ve vašem mobilním bankovnictví. Tradiční platební terminál u nás nenajdete."
+        },
+        {
+          q: "Nabízíte dárkové poukazy do barbershopu?",
+          a: "Ano, dárkové poukazy jsou u nás velmi oblíbené. Můžete si je zakoupit přímo v salonu v Uherském Hradišti nebo nás kontaktovat pro zaslání. Je to ideální dárek pro každého muže, který si potrpí na styl."
+        },
+        {
+          q: "Hledám nejlepší fade v regionu Slovácko. Proč přijet k vám?",
+          a: "V MMBARBER se specializujeme na precizní skin fade a taper fade. Naši barbeři procházejí neustálým školením a používají špičkovou techniku. Klienti k nám jezdí nejen z Hradiště, ale i z Kunovic, Starého Města nebo Hluku."
+        },
+        {
+          q: "Co je to MM BARBER Akademie?",
+          a: "Akademie je náš vzdělávací projekt, kde předáváme řemeslo dál. Školíme začátečníky i pokročilé v technikách pánského stříhání, holení břitvou a péče o zákazníka. Budujeme novou generaci špičkových barberů."
+        },
+        {
+          q: "Jaké jsou trendy v pánských účesech pro rok 2026?",
+          a: "V roce 2026 vidíme návrat k přirozenějším texturám, ale s velmi ostrými konturami. Populární je spojení klasického stylu s moderními prvky, jako je mullet fade nebo výrazné texturované střihy (crop top)."
+        },
+        {
+          q: "Máte pobočky i v jiných městech jako Zlín nebo Uherský Brod?",
+          a: "Naše hlavní základna je v Uherském Hradišti (Mařatice), ale naše komunita a vliv sahá do celého kraje. Spolupracujeme s partnery ve Zlíně, Brodě i Hodoníně a budujeme síť postavenou na kvalitě."
+        },
+        {
+          q: "Provádíte i barvení vousů nebo maskování šedin?",
+          a: "Ano, nabízíme profesionální maskování šedin u vlasů i vousů. Výsledek je naprosto přirozený a dodá vaší vizáži mladistvý, ale stále mužný vzhled."
+        },
+        {
+          q: "Co je to projekt MM BARBER Rodina?",
+          a: "MM BARBER Rodina je naše vize propojování poctivých řemeslníků a lokálních firem. Spolupracujeme s lidmi jako Vodo Topo Jahoda, Kofipack nebo Malina Photo. Věříme, že společně dokážeme v regionu Slovácka tvořit vyšší standard služeb."
+        },
+        {
+          q: "Doporučujete i jiné místní služby v Uherském Hradišti?",
+          a: "Ano, naše 'Rodina' zahrnuje prověřené profesionály z různých oborů. Ať už jde o instalatérské práce, logistiku nebo profesionální fotografii, stojíme za kvalitou našich partnerů v UH a okolí."
+        },
+        {
+          q: "Sleduje MMBARBER celosvětové trendy v barberingu?",
+          a: "Absolutně. Inspirujeme se v mezinárodních centrech jako Londýn, Rotterdam nebo New York. Naše standardy odpovídají světové špičce, ať už jde o techniky střihu, hygienu nebo klientský servis. Přinášíme světový styl do srdce Moravy."
+        },
+        {
+          q: "Je MM BARBER systém uznávaný i v zahraničí?",
+          a: "Náš přístup k řemeslu a vzdělávání v rámci Akademie stavíme na univerzálních principech kvality, které jsou uznávané globálně. Naše vize 'Global Standards' znamená, že zákazník v Hradišti dostane stejnou nebo vyšší kvalitu než v nejlepších barbershopech světa."
+        },
+        {
+          q: "Jaké jsou novinky v MMBARBER pro tento měsíc?",
+          a: "Pravidelně aktualizujeme naše techniky a rozšiřujeme nabídku o sezónní péči. Aktuálně se zaměřujeme na regeneraci vlasů a pokožky po zimním období a představujeme nové texturované střihy, které budou dominovat jaru 2026."
+        },
+        {
+          q: "Proč je MMBARBER víc než jen kadeřnictví?",
+          a: "Protože u nás kupujete čas pro sebe. Je to životní styl postavený na disciplíně, kvalitě a sounáležitosti k regionu Slovácka. Propojujeme moderní technologie s tradičním řemeslem."
+        },
+        {
+          q: "Provádíte i úpravy na svatby nebo speciální akce?",
+          a: "Ano, kompletní servis pro ženichy a jejich doprovod je naší specialitou. V Uherském Hradišti jsme vyhlášení jako místo, kde vás připravíme na váš nejdůležitější den v životě."
+        }
+      ]
+    },
+    magazine: {
+      categories: {
+        magazin: "MAGAZÍN",
+        biologie: "BIOLOGIE",
+        vlasy: "VLASY",
+        plet: "PLEŤ",
+        vousy: "VOUSY"
+      },
+      ui: {
+        backToSalon: "Zpět do salonu",
+        officialPub: "OFICIÁLNÍ MAGAZÍN PÉČE",
+        title: "MAGAZÍN PÉČE",
+        page: "STRANA",
+        of: "/",
+        reset: "Resetovat test",
+        next: "Další",
+        prev: "Předchozí",
+        results: {
+          borealis: "PROFIL: BOREALIS",
+          meridionalis: "PROFIL: MERIDIONALIS",
+          orientalis: "PROFIL: ORIENTALIS",
+          lowPorosity: "NÍZKÁ POROZITA",
+          mediumPorosity: "STŘEDNÍ POROZITA",
+          highPorosity: "VYSOKÁ POROZITA",
+          dryScalp: "SUCHÁ POKOŽKA",
+          oilyScalp: "MASTNÁ POKOŽKA"
+        }
+      }
+    }
+  },
+  en: {
+    header: {
+      services: "Services",
+      gallery: "Gallery",
+      seznamka: "MATCHMAKING",
+      payment: "PAYMENT",
+      schedule: "Service Schedule",
+      theCode: "Information",
+      more: "More",
+      career: "Career",
+      aboutUs: "About Us",
+      franchise: "FRANCHISE",
+      startMission: "HOW IT WORKS",
+      compass: "COMPASS",
