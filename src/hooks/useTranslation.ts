@@ -41,21 +41,21 @@ export function useTranslation() {
     if (lang === 'boss') {
       return { 
         ...translations.cs, 
-        header: { ...translations.cs.header, ...(translations.boss as typeof translations.cs).header },
-        hero: { ...translations.cs.hero, ...(translations.boss as typeof translations.cs).hero },
-        services: { ...translations.cs.services, ...(translations.boss as typeof translations.cs).services },
-        operatives: { ...translations.cs.operatives, ...(translations.boss as typeof translations.cs).operatives }
+        header: { ...translations.cs.header, ...(translations.boss as any).header },
+        hero: { ...translations.cs.hero, ...(translations.boss as any).hero },
+        services: { ...translations.cs.services, ...(translations.boss as any).services },
+        operatives: { ...translations.cs.operatives, ...(translations.boss as any).operatives }
       };
     }
     if (lang === 'falco') {
       return { 
         ...translations.cs, 
-        header: { ...translations.cs.header, ...(translations.falco as typeof translations.cs).header },
-        hero: { ...translations.cs.hero, ...(translations.falco as typeof translations.cs).hero },
-        services: { ...translations.cs.services, ...(translations.falco as typeof translations.cs).services },
-        operatives: { ...translations.cs.operatives, ...(translations.falco as typeof translations.cs).operatives },
-        intro: { ...translations.cs.intro, ...(translations.falco as typeof translations.cs).intro },
-        theCode: { ...translations.cs.theCode, ...(translations.falco as typeof translations.cs).theCode }
+        header: { ...translations.cs.header, ...(translations.falco as any).header },
+        hero: { ...translations.cs.hero, ...(translations.falco as any).hero },
+        services: { ...translations.cs.services, ...(translations.falco as any).services },
+        operatives: { ...translations.cs.operatives, ...(translations.falco as any).operatives },
+        intro: { ...translations.cs.intro, ...(translations.falco as any).intro },
+        theCode: { ...translations.cs.theCode, ...(translations.falco as any).theCode }
       };
     }
     return (translations as any)[lang] || (translations as any).en;
