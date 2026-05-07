@@ -175,7 +175,7 @@ export function OperativeModal({ barber, isOpen, onClose }: OperativeModalProps)
                     href={barber.bookingLink} 
                     target="_blank" 
                     rel="noreferrer noopener"
-                    className="block w-full text-center border border-mafia-gold/50 bg-mafia-gold/10 px-4 md:px-6 py-3 md:py-4 text-mafia-gold font-sans uppercase tracking-[0.2em] font-bold hover:bg-mafia-gold hover:text-mafia-black hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] transition-all duration-300 text-sm md:text-base outline-none"
+                    className="block w-full text-center border border-mafia-gold/50 bg-mafia-gold/10 px-4 md:px-6 py-3 md:py-4 text-mafia-gold font-sans uppercase tracking-[0.2em] font-bold hover:bg-mafia-gold hover:text-mafia-black hover:shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.4)] transition-all duration-300 text-sm md:text-base outline-none"
                   >
                     Povolat do Akce
                   </a>

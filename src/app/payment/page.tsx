@@ -133,7 +133,7 @@ export default function PaymentPage() {
 
             <button 
               type="submit"
-              className="mt-6 group relative overflow-hidden bg-mafia-gold text-mafia-black p-4 font-heading font-black text-sm uppercase tracking-[0.4em] transition-all hover:shadow-[0_0_30px_rgba(197,160,89,0.4)]"
+              className="mt-6 group relative overflow-hidden bg-mafia-gold text-mafia-black p-4 font-heading font-black text-sm uppercase tracking-[0.4em] transition-all hover:shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.4)]"
             >
               <div className="absolute inset-0 bg-white translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 z-0"></div>
               <span className="relative z-10 flex items-center justify-center gap-3">
@@ -177,7 +177,7 @@ export default function PaymentPage() {
         transition={{ duration: 0.6 }}
         className="relative z-10 w-full max-w-4xl flex flex-col items-center"
       >
-        <h1 className="text-6xl md:text-8xl font-heading font-black text-smoke-white mb-6 uppercase tracking-tighter drop-shadow-[0_4px_30px_rgba(197,160,89,0.3)]">
+        <h1 className="text-6xl md:text-8xl font-heading font-black text-smoke-white mb-6 uppercase tracking-tighter drop-shadow-[0_4px_30px_rgba(var(--color-mafia-gold-rgb),0.3)]">
           {currentText.title}
         </h1>
 
@@ -214,7 +214,7 @@ export default function PaymentPage() {
             </div>
 
             <div className="mt-8 flex flex-col items-center gap-2">
-               <div className="px-6 py-2 border-2 border-mafia-gold bg-mafia-gold text-mafia-black font-heading font-black text-[10px] uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(197,160,89,0.4)]">
+               <div className="px-6 py-2 border-2 border-mafia-gold bg-mafia-gold text-mafia-black font-heading font-black text-[10px] uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.4)]">
                  {currentText.enterAmount}
                </div>
                <div className="text-[8px] font-mono text-mafia-gold opacity-40 uppercase tracking-widest mt-2 font-bold tracking-[0.3em]">Naskenovat mobilem</div>
@@ -227,7 +227,7 @@ export default function PaymentPage() {
           <div className="flex flex-col items-center gap-2">
             <span className="text-mafia-gold/40 font-mono text-[10px] uppercase tracking-[0.5em] mb-4 text-center font-black">{currentText.accountLabel}</span>
             <div className="px-12 py-8 bg-mafia-gold/5 border-2 border-mafia-gold/20 flex flex-col items-center gap-2 backdrop-blur-sm group hover:border-mafia-gold transition-colors duration-500">
-              <span className="text-3xl md:text-5xl font-heading font-black text-mafia-gold tracking-[0.1em] drop-shadow-[0_0_20px_rgba(197,160,89,0.3)]">
+              <span className="text-3xl md:text-5xl font-heading font-black text-mafia-gold tracking-[0.1em] drop-shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]">
                 235888143 / 0800
               </span>
               <span className="text-smoke-white/40 text-xs font-mono uppercase tracking-[0.3em] mt-2 font-bold">Česká spořitelna, a.s.</span>

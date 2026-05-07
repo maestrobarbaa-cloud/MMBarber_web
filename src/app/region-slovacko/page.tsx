@@ -102,7 +102,7 @@ export default function RegionSlovackoPage() {
               <Link 
                 href="https://is.mmbarber.cz/" 
                 target="_blank"
-                className="bg-mafia-gold text-mafia-black px-10 py-4 font-heading font-black uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(197,160,89,0.2)]"
+                className="bg-mafia-gold text-mafia-black px-10 py-4 font-heading font-black uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.2)]"
               >
                 REZERVOVAT TERMÍN
               </Link>

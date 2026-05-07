@@ -296,9 +296,9 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
       case 'broom':
         return <div className="hover:rotate-12 transition-transform duration-500"><BroomIcon size={item.size} className="text-[#8b4513]" /></div>;
       case 'star':
-        return <Star size={item.size} className="text-mafia-gold drop-shadow-[0_0_15px_rgba(197,160,89,0.8)]" style={commonStyle} fill="currentColor" />;
+        return <Star size={item.size} className="text-mafia-gold drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.8)]" style={commonStyle} fill="currentColor" />;
       case 'medal':
-        return <Medal size={item.size} className="text-mafia-gold/60 drop-shadow-[0_0_15px_rgba(197,160,89,0.4)]" style={commonStyle} />;
+        return <Medal size={item.size} className="text-mafia-gold/60 drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.4)]" style={commonStyle} />;
       case 'scissors':
         return <Scissors size={item.size} className={commonClass} style={commonStyle} />;
       case 'clippers':

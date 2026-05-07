@@ -14,7 +14,7 @@ export function HousingEstate() {
       {/* Cinematic Background Elements */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         {/* Animated Digital Grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.05)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--color-mafia-gold-rgb),0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--color-mafia-gold-rgb),0.05)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]"></div>
         
         {/* Floating Blurs */}
         <motion.div 
@@ -116,7 +116,7 @@ export function HousingEstate() {
                 className="flex flex-col items-center gap-6 group/btn"
                 onClick={() => window.location.href = 'mailto:mmbarber@mmbarber.cz'}
               >
-                <div className="w-24 h-24 rounded-full border border-mafia-gold/40 flex items-center justify-center group-hover/btn:bg-mafia-gold group-hover/btn:border-mafia-gold transition-all duration-500 shadow-[0_0_40px_rgba(197,160,89,0.1)] group-hover/btn:shadow-[0_0_60px_rgba(197,160,89,0.4)]">
+                <div className="w-24 h-24 rounded-full border border-mafia-gold/40 flex items-center justify-center group-hover/btn:bg-mafia-gold group-hover/btn:border-mafia-gold transition-all duration-500 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.1)] group-hover/btn:shadow-[0_0_60px_rgba(var(--color-mafia-gold-rgb),0.4)]">
                    <ArrowRight className="text-mafia-gold group-hover/btn:text-mafia-black transition-colors" size={32} />
                 </div>
                 <span className="text-mafia-gold font-heading font-black text-2xl uppercase tracking-[0.4em] group-hover/btn:text-smoke-white transition-colors">

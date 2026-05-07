@@ -44,7 +44,7 @@ export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
     
     // Disable effects for mobile/tablet or low graphics tier
     const isMobile = window.innerWidth < 1024;
-    if (isMobile || graphicsTier === 'low') {
+    if (isMobile || graphicsTier === 'low' || graphicsTier === 'medium') {
       setRevealedIndices(PARTNERS.map((_, i) => i));
       return;
     }

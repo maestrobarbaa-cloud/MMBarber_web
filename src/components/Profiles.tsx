@@ -26,53 +26,21 @@ export interface BarberProfile {
   symbol: string;
 }
 
-const BARBER_DIALOGUES = [
-  { 
-    tomas: "Beru si inspiraci od lidí, co něco dokázali. A víš, co mě štve? Firmy, které nevidí potenciál v lidech hned na začátku. Přitom právě tam často je."
-  },
-  { 
-    tomas: "To chápu. Ale jistota bez šance nikoho neposune. A upřímně – u nás to nebylo vždy ideální. Dvakrát jsem tě propustil, jednou jsi odešla sama… a nakonec ses vrátila."
-  },
-  { 
-    tomas: "To si pamatuju. Ale víš co? Nešlo o to někoho dusit. Šlo o výsledky a o to, aby ses něco naučila."
-  },
-  { 
-    tomas: "A to je přesně ono. Spousta lidí vyjde ze školy a čeká, že všechno půjde samo. Jenže praxe je jiná. Často musím lidi hodně věcí doučovat."
-  },
-  { 
-    tomas: "Spíš jedou podle starších modelů. Učí se věci, které člověk skoro nepoužije, a ty důležité přijdou až v práci. A pak jsou z toho zbytečná očekávání."
-  },
-  { 
-    tomas: "Přesně. Už jsem viděl hodně případů, kdy se mladým zdála nabídka nízká jen proto, že mají titul. Ale dovednosti tomu často neodpovídaly."
-  },
-  { 
-    tomas: "Jednoznačně. A co je škoda – když s nimi chce šéf pracovat dlouhodobě, naučit je věci, tak někdy odejdou kvůli pár tisícům navíc jinam."
-  },
-  { 
-    tomas: "Přesně tak. Někdy je lepší dívat se na to, co se naučíš, než jen na první výplatu."
-  },
-  { 
-    tomas: "Tam je to podobné. Lidi často reagují na emoce – nakupují, když je všechno drahé, místo aby přemýšleli dopředu. Přitom trpělivost dělá největší rozdíl."
-  },
-  { 
-    tomas: "Přesně. A u práce to platí taky. Když jsi přišla zpátky, věděl jsem, že to nebude o pohodlí. Ale o posunu."
-  },
-  { 
-    tomas: "A o to jde. Ne o „kafíčka a pohodičku“, ale o to, aby ses posouvala a něco z toho měla i do budoucna. A taky si občas přiznej, když ti něco nejde – od toho tu jsme, abychom to zlepšili."
-  },
-  { 
-    tomas: "To dělá hodně lidí. Ale právě tím se brzdí."
-  },
-  { 
-    tomas: "A tu šanci máš. Teď ji jen využít."
-  },
-  { 
-    tomas: "Tak jo, a šup do práce 🙂 Postarej se o klienty – náš zákazník, náš pán. A hlavně se s nimi bav, když chtějí. O tom to celé je."
-  },
-  { 
-    tomas: "A ještě jedna věc – jestli tady uvidím někoho schovávat se za certifikáty místo reálné práce s lidmi, tak to není cesta, kterou jdeme. Tady rozhoduje praxe, přístup a výsledky, ne papíry za rámem."
-  }
+const MAY_HISTORY_DIALOGUES = [
+  { tomas: "Ten den se nezapsal kvůli byznysu. Ne kvůli střihu. Ani kvůli penězům. Zapsal se kvůli návratu.", nella: "..." },
+  { tomas: "Tak hele… zase zpátky. Dvakrát ven, jednou sama… a pořád stojíš tady.", nella: "Jen jsem chtěla zjistit, jestli to tu ještě žije." },
+  { tomas: "Žije. Jakž takž. Dobří holubi se vracejí.", nella: "Ty si to fakt pamatuješ?" },
+  { tomas: "Pamatuju si lidi, co odejdou.", nella: "Mezitím jsem tě prý trochu roznesla." },
+  { tomas: "Slyšel jsem. V pohodě. Lidi mluví. Čas jim to nevezme.", nella: "A stejně jsem tady." },
+  { tomas: "Jo. To je přesně ten moment, co si pamatuješ.", nella: "Takže… kolik mám proher?" },
+  { tomas: "Nevím přesně. Ale historie si stejně zapisuje jen návraty.", nella: "Fajn." },
+  { tomas: "Tady se nehraje na skóre. Tady se buď vrátíš… nebo zmizíš.", nella: "..." },
+  { tomas: "A tak se to stalo. Bez fanfár. Bez svědků. Jen jedny dveře, které se znovu otevřely.", nella: "..." },
+  { tomas: "A jeden den, který už nikdo nevymaže: 7. 5. 2026 – den, kdy se někdo vrátil zpátky do hry.", nella: "..." }
 ];
+
+const BARBER_DIALOGUES = MAY_HISTORY_DIALOGUES;
+const BARBER_DIALOGUES_EN = MAY_HISTORY_DIALOGUES;
 
 const TOMAS_QUOTES_EN = [
   "Divide et impera.",
@@ -100,10 +68,20 @@ const barbers: BarberProfile[] = [
     bookingLink: "https://mm.inthechair.com/micka",
     specializations: ["Primárně pánské", "ale zvládnu i dámy"],
     symbol: "A"
+  },
+  {
+    name: "Nella",
+    role: "Mladé ucho",
+    image: "/obr/nellapelikanova.png",
+    desc: "Ochoč si svoji barberku. Čerstvá krev v našem týmu.",
+    schedule: "Individuální režim práce.",
+    bookingLink: "https://mmbarberx.setmore.com",
+    specializations: ["Barvení", "Trvalá ondulace", "Stříhání pánské", "Stříhání dámské", "Děti"],
+    symbol: "Q"
   }
 ];
 
-const MissionLoading = ({ isHovered }: { isHovered: boolean }) => (
+const MissionLoading = ({ isHovered, graphicsTier }: { isHovered: boolean, graphicsTier?: string }) => (
   <AnimatePresence>
     {isHovered && (
       <motion.div 
@@ -120,25 +98,29 @@ const MissionLoading = ({ isHovered }: { isHovered: boolean }) => (
           className="w-full h-1/3 bg-gradient-to-b from-transparent via-mafia-gold/40 to-transparent z-10"
         />
         
-        {/* Binary/Data Overlay */}
-        <div className="absolute inset-0 flex flex-wrap content-start opacity-20 text-[6px] font-mono leading-none p-1 gap-1">
-          {Array(40).fill(0).map((_, i) => (
-            <motion.span 
-              key={i}
-              animate={{ opacity: [0.2, 1, 0.2] }}
-              transition={{ duration: Math.random() * 2 + 1, repeat: Infinity }}
-            >
-              {Math.random() > 0.5 ? '1' : '0'}
-            </motion.span>
-          ))}
-        </div>
+        {/* Binary/Data Overlay - Only on high tiers */}
+        {graphicsTier !== 'low' && graphicsTier !== 'medium' && (
+          <div className="absolute inset-0 flex flex-wrap content-start opacity-20 text-[6px] font-mono leading-none p-1 gap-1">
+            {Array(20).fill(0).map((_, i) => (
+              <motion.span 
+                key={i}
+                animate={{ opacity: [0.2, 1, 0.2] }}
+                transition={{ duration: Math.random() * 2 + 1, repeat: Infinity }}
+              >
+                {Math.random() > 0.5 ? '1' : '0'}
+              </motion.span>
+            ))}
+          </div>
+        )}
 
-        {/* Glitch Overlay */}
-        <motion.div 
-          animate={{ opacity: [0, 0.1, 0] }}
-          transition={{ duration: 0.2, repeat: Infinity, repeatDelay: Math.random() * 5 }}
-          className="absolute inset-0 bg-white mix-blend-overlay"
-        />
+        {/* Glitch Overlay - Only on high tiers */}
+        {graphicsTier !== 'low' && graphicsTier !== 'medium' && (
+          <motion.div 
+            animate={{ opacity: [0, 0.1, 0] }}
+            transition={{ duration: 0.2, repeat: Infinity, repeatDelay: Math.random() * 5 }}
+            className="absolute inset-0 bg-white mix-blend-overlay"
+          />
+        )}
       </motion.div>
     )}
   </AnimatePresence>
@@ -153,6 +135,7 @@ function BarberCard({
   playCardSound,
   onBook,
   onHoverChange,
+  activeSpeaker,
   graphicsTier
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
@@ -164,6 +147,7 @@ function BarberCard({
   playCardSound: () => void,
   onBook: () => void,
   onHoverChange?: (hovered: boolean) => void,
+  activeSpeaker: string | null,
   graphicsTier?: string
 }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -187,7 +171,7 @@ function BarberCard({
       <div className="xl:hidden w-full max-w-[340px] h-auto min-h-[420px] bg-[#0c0c0c] border-2 border-mafia-gold/20 p-5 rounded-2xl flex flex-col items-center gap-4 shadow-2xl overflow-hidden relative">
         <div className="w-36 h-36 border-2 border-mafia-gold/20 overflow-hidden bg-black/40 flex-shrink-0 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
           {barber.image === "question-mark" ? (
-            <div className="text-mafia-gold/30 font-heading text-9xl animate-pulse italic drop-shadow-[0_0_15px_rgba(197,160,89,0.2)]">?</div>
+            <div className="text-mafia-gold/30 font-heading text-9xl animate-pulse italic drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.2)]">?</div>
           ) : (
             <Image 
               src={barber.image} 
@@ -264,7 +248,7 @@ function BarberCard({
             className={`absolute inset-0 bg-[#0c0c0c] border-2 p-8 flex flex-col items-center justify-between rounded-2xl shadow-[0_45px_90px_-20px_rgba(0,0,0,1)] ${
               graphicsTier === 'low' ? 'transition-none' : 'transition-all duration-300'
             } ${
-              isActive ? "border-mafia-gold shadow-[0_0_20px_rgba(197,160,89,0.3)]" : "border-mafia-gold/20"
+              isActive ? "border-mafia-gold shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]" : "border-mafia-gold/20"
             }`}
             style={{ 
               backfaceVisibility: "hidden", 
@@ -302,14 +286,31 @@ function BarberCard({
               </div>
             </div>
 
-            <div className="flex-grow flex flex-col items-center justify-center text-center px-4">
-              <div className="mb-6 relative w-full h-[20px] flex items-center justify-center">
-                  {/* Dialogues hidden per user request */}
+            <div className="flex-grow flex flex-col items-center justify-start text-center px-4 pt-10">
+              {/* Dialogue Bubble - Increased space and added background for clarity */}
+              <div className="mb-10 relative w-full min-h-[160px] flex items-center justify-center">
+                  <AnimatePresence mode="wait">
+                    {activeSpeaker === (barber.name === 'Tomáš' || barber.name === 'Tomas' ? 'tomas' : 'nella') && (
+                      <motion.div
+                        key={`${barber.name}-${dialogueIndex}`}
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="text-mafia-gold font-heading italic text-xs md:text-[14px] tracking-[0.15em] px-6 py-4 leading-relaxed uppercase bg-mafia-gold/5 border border-mafia-gold/10 rounded-lg backdrop-blur-sm shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+                      >
+                        <span className="opacity-40 block mb-2 text-[8px] font-mono tracking-[0.5em]">
+                          {lang === 'cs' ? "— ZÁZNAM KOMUNIKACE —" : "— MESSAGE_LOG —"}
+                        </span>
+                        {barber.story}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
               </div>
 
-              <div className="space-y-3 w-full">
+              <div className="space-y-2 w-full mt-auto">
                   {barber.specializations?.map((spec, i) => (
-                    <div key={i} className="text-[10px] font-mono text-mafia-gold/40 border border-mafia-gold/10 py-2 uppercase tracking-[0.3em] relative">
+                    <div key={i} className="text-[9px] font-mono text-mafia-gold/40 border border-mafia-gold/5 py-1.5 uppercase tracking-[0.3em] relative">
                       {spec}
                       {isHidden && (
                         <div className="absolute inset-0 bg-mafia-black/80 z-10" />
@@ -360,40 +361,59 @@ function BarberCard({
 
             
             <div className="flex-grow w-full flex flex-col items-center justify-start relative z-10 pt-16">
-                <div className={`relative w-56 h-56 rounded-none overflow-hidden transition-all duration-1000 mb-8 flex items-center justify-center ${
-                    isHovered ? "shadow-[0_0_40px_rgba(197,160,89,0.2)]" : ""
-                }`}>
-                    {barber.image === "question-mark" ? (
-                      <div className="text-mafia-gold/30 font-heading text-[12rem] animate-pulse italic drop-shadow-[0_0_20px_rgba(197,160,89,0.3)]">?</div>
-                    ) : (
-                      <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
-                        <Image src={barber.image} alt={barber.name} width={300} height={300} className="w-full h-full object-cover grayscale-[0.2]" />
-                      </motion.div>
-                    )}
-                </div>
-
-                <div className="flex flex-col items-center gap-1 mb-6 text-center relative">
-                    <h3 className="text-7xl font-heading font-black uppercase tracking-[0.2em] text-mafia-gold leading-none mr-[-0.2em] relative">
-                        {barber.name}
-                        {isHidden && (
-                          <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black border border-mafia-gold/20 z-20 origin-left" />
-                        )}
-                    </h3>
-                    {barber.motto && (
-                      <div className="mt-8 text-2xl font-heading text-mafia-gold/90 tracking-[0.1em] uppercase font-black italic relative">
+                {barber.name === "Nella" ? (
+                  <>
+                    <div className={`relative w-56 h-56 rounded-none overflow-hidden transition-all duration-1000 mb-8 flex items-center justify-center ${
+                        isHovered ? "shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]" : ""
+                    }`}>
+                        <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
+                          <Image src={barber.image} alt={barber.name} width={300} height={300} className="w-full h-full object-cover grayscale-[0.2]" />
+                        </motion.div>
+                    </div>
+                    <div className="text-center px-6 mt-4">
+                      <h3 className="text-2xl md:text-3xl font-heading font-black uppercase tracking-[0.1em] text-mafia-gold italic leading-tight drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]">
                         {barber.motto}
-                        {isHidden && (
-                          <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
+                      </h3>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={`relative w-56 h-56 rounded-none overflow-hidden transition-all duration-1000 mb-8 flex items-center justify-center ${
+                        isHovered ? "shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]" : ""
+                    }`}>
+                        {barber.image === "question-mark" ? (
+                          <div className="text-mafia-gold/30 font-heading text-[12rem] animate-pulse italic drop-shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]">?</div>
+                        ) : (
+                          <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
+                            <Image src={barber.image} alt={barber.name} width={300} height={300} className="w-full h-full object-cover grayscale-[0.2]" />
+                          </motion.div>
                         )}
-                      </div>
-                    )}
-                </div>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1 mb-6 text-center relative">
+                        <h3 className="text-7xl font-heading font-black uppercase tracking-[0.2em] text-mafia-gold leading-none mr-[-0.2em] relative">
+                            {barber.name}
+                            {isHidden && (
+                              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black border border-mafia-gold/20 z-20 origin-left" />
+                            )}
+                        </h3>
+                        {barber.motto && (
+                          <div className="mt-8 text-2xl font-heading text-mafia-gold/90 tracking-[0.1em] uppercase font-black italic relative">
+                            {barber.motto}
+                            {isHidden && (
+                              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
+                            )}
+                          </div>
+                        )}
+                    </div>
+                  </>
+                )}
             </div>
 
               {!isHidden && (
                 <div className="w-full flex justify-center relative z-[60] mt-auto pb-10">
                     <div className="w-full max-w-[260px] h-16 relative flex items-center justify-center border-2 border-mafia-gold bg-mafia-black text-mafia-gold font-heading uppercase tracking-[0.6em] font-black text-lg overflow-hidden group">
-                        <MissionLoading isHovered={isHovered} />
+                        <MissionLoading isHovered={isHovered} graphicsTier={graphicsTier} />
                         <span className="relative z-20 transition-all duration-300 group-hover:tracking-[0.8em]">
                           {lang === 'cs' ? "REZERVACE" : "BOOKING"}
                         </span>
@@ -492,7 +512,7 @@ function ChairWithCard({
   graphicsTier
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
-  activeSpeaker: boolean, 
+  activeSpeaker: string | null, 
   dialogueIndex: number, 
   lang: string, 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -570,7 +590,7 @@ function ChairWithCard({
           <div className="h-px w-8 bg-gradient-to-r from-transparent to-mafia-gold/30 mr-4"></div>
           <p className="font-heading text-lg text-mafia-gold italic tracking-[0.2em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
             {side === 'right' 
-              ? (lang === 'cs' ? "Přidáš se?" : "Will you join?")
+              ? (lang === 'cs' ? "Pane, Vaše místo..." : "Sir, your seat...")
               : (lang === 'cs' ? "Tvoje místo je připravené." : "Your seat is ready.")
             }
           </p>
@@ -585,7 +605,7 @@ function ChairWithCard({
           <motion.div 
             animate={{ x: parallaxBgX }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(197,160,89,0.15)_0%,_rgba(0,0,0,0)_60%)] pointer-events-none rounded-full blur-2xl"
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(var(--color-mafia-gold-rgb),0.15)_0%,_rgba(0,0,0,0)_60%)] pointer-events-none rounded-full blur-2xl"
           />
 
           <Image 
@@ -642,13 +662,14 @@ function ChairWithCard({
       <div className="relative z-10">
         <BarberCard 
           barber={barber}
-          isActive={activeSpeaker}
+          isActive={activeSpeaker === (barber.name === 'Tomáš' || barber.name === 'Tomas' ? 'tomas' : 'nella')}
           dialogueIndex={dialogueIndex}
           lang={lang}
           t={t}
           playCardSound={playCardSound}
           onBook={handleBook}
           onHoverChange={(h) => setIsCardHovered(h)}
+          activeSpeaker={activeSpeaker}
           graphicsTier={graphicsTier}
         />
       </div>
@@ -660,7 +681,7 @@ export function Profiles() {
   const { t, lang } = useTranslation();
   const [isRandomizing, setIsRandomizing] = useState(false);
   const [dialogueIndex, setDialogueIndex] = useState(BARBER_DIALOGUES.length - 1);
-  const [activeSpeaker, setActiveSpeaker] = useState<'tomas' | null>(null);
+  const [activeSpeaker, setActiveSpeaker] = useState<'tomas' | 'nella' | null>(null);
   const [isDecided, setIsDecided] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -682,6 +703,14 @@ export function Profiles() {
     updateTier();
     window.addEventListener('mmbarber-graphics-update', updateTier);
     
+    // Visibility Observer for Dialogues
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsSectionVisible(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    const section = document.getElementById('operativi');
+    if (section) observer.observe(section);
+
     // Lottery is currently disabled per user request - skipping directly to profiles
     setIsFirstVisit(false);
 
@@ -702,6 +731,7 @@ export function Profiles() {
     return () => {
       window.removeEventListener("mmbarber-reveal-barbers", handleReveal);
       window.removeEventListener('mmbarber-graphics-update', updateTier);
+      if (section) observer.unobserve(section);
     };
   }, [revealedBarbers]);
 
@@ -710,7 +740,7 @@ export function Profiles() {
     localStorage.setItem("mmbarber_profiles_seen", "true");
     trackEvent("cta_randomize_barber");
 
-    const availableBarbers = barbers.filter(b => b.name !== "Nella");
+    const availableBarbers = barbers;
 
     setIsRandomizing(true);
     let ticks = 0;
@@ -738,64 +768,78 @@ export function Profiles() {
     }, 80);
   };
 
-  // Re-enabled dialogue system - Sequential story mode
+  // Re-enabled dialogue system - Alternating sequential mode
   useEffect(() => {
-    if (!isSectionVisible) {
+    const isMobile = window.innerWidth < 1280;
+    const isMay = new Date().getMonth() === 4;
+    
+    if (!isSectionVisible || isMobile || !isMay) {
       setActiveSpeaker(null);
       return;
     }
 
+    let cycleCount = 0;
+    let t1: NodeJS.Timeout;
+    let t2: NodeJS.Timeout;
+    
     const triggerDialogue = () => {
-      setDialogueIndex(prev => (prev + 1) % BARBER_DIALOGUES.length);
+      // Tomáš starts, then Nella replies
+      const speaker = cycleCount % 2 === 0 ? 'tomas' : 'nella';
       
-      // Sequence the "talking" animation
-      setActiveSpeaker('tomas');
+      if (speaker === 'tomas') {
+        // Only increment dialogue index when Tomáš starts a new exchange
+        setDialogueIndex(prev => (prev + 1) % BARBER_DIALOGUES.length);
+      }
       
-      // Increased delays for longer text
-      const tomasDelay = 6000;
-      const t1 = setTimeout(() => setActiveSpeaker(null), tomasDelay);
+      setActiveSpeaker(speaker);
       
-      return () => {
-        clearTimeout(t1);
-      };
+      // Slower pace: Keep talking for 8-10 seconds
+      const talkTime = 8000;
+      t1 = setTimeout(() => {
+        setActiveSpeaker(null);
+        cycleCount++;
+        
+        // Pause between speakers (3s) or between exchanges (6s)
+        const pauseTime = cycleCount % 2 === 0 ? 6000 : 3000;
+        t2 = setTimeout(triggerDialogue, pauseTime);
+      }, talkTime);
     };
 
     // Initial delay before first talk
     const initialDelay = setTimeout(triggerDialogue, 4000);
 
-    const interval = setInterval(() => {
-      triggerDialogue();
-    }, 18000); // Wait longer between full exchanges
-
     return () => {
       clearTimeout(initialDelay);
-      clearInterval(interval);
+      if (t1) clearTimeout(t1);
+      if (t2) clearTimeout(t2);
       setActiveSpeaker(null);
     };
   }, [isSectionVisible]);
 
   const translatedBarbers = useMemo(() => {
+    const isMay = new Date().getMonth() === 4;
+    
     return barbers.map(b => {
-      const isTomas = b.name === 'Tomáš';
+      const isTomas = b.name === 'Tomáš' || b.name === 'Tomas';
+      const barberKey = isTomas ? 'tomas' : 'nella';
+      const barberTranslations = t.operatives?.barbers?.[barberKey as 'tomas' | 'nella'];
       
-      const staticDesc = isTomas 
-        ? (t.operatives?.barbers?.tomas as { story?: string })?.story 
-        : "";
+      const staticDesc = barberTranslations?.story || "";
 
-      const currentDialogue = BARBER_DIALOGUES[dialogueIndex];
-      const dialogueText = isTomas ? currentDialogue?.tomas : "";
+      // Show dialogue only in May (index 4)
+      const currentDialogues = isMay ? BARBER_DIALOGUES : [];
+      const currentDialogue = currentDialogues[dialogueIndex];
+      const dialogueText = isTomas ? currentDialogue?.tomas : currentDialogue?.nella;
 
       return {
         ...b,
-        name: t.operatives?.barbers?.tomas?.name,
-        role: t.operatives?.barbers?.tomas?.role,
-        motto: t.operatives?.barbers?.tomas?.motto,
-        staticDesc,
-        desc: dialogueText ?? staticDesc ?? "",
-        schedule: t.operatives?.barbers?.tomas?.schedule,
-        favorites: undefined,
-        specializations: t.operatives?.barbers?.tomas?.specializations,
-        englishSpeaking: (t.operatives?.barbers?.tomas as { englishSpeaking?: string })?.englishSpeaking,
+        name: barberTranslations?.name || b.name,
+        role: barberTranslations?.role || b.role,
+        motto: barberTranslations?.motto || "",
+        story: dialogueText || staticDesc,
+        schedule: barberTranslations?.schedule || b.schedule,
+        specializations: barberTranslations?.specializations || b.specializations,
+        englishSpeaking: (barberTranslations as { englishSpeaking?: string })?.englishSpeaking,
         symbol: b.symbol,
         isHidden: false
       };
@@ -809,7 +853,7 @@ export function Profiles() {
     >
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/black-paper.png')" }}></div>
       <div className="relative z-10 w-full flex flex-col items-center">
-        <div className="max-w-6xl mx-auto w-full">
+        <div className="max-w-[1600px] mx-auto w-full">
             <div className="w-full">
                 <div className="text-center mb-16 md:mb-24">
                     <h2 className="text-3xl md:text-5xl font-heading font-black text-smoke-white mb-3 md:mb-4 tracking-[0.3em] uppercase">{t.operatives.title}</h2>
@@ -820,12 +864,12 @@ export function Profiles() {
                         </span>
                     </div>
                 </div>
-                <div className="flex flex-wrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full max-w-[1400px] mx-auto py-4 xl:py-8">
+                <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full mx-auto py-4 xl:py-8">
                     {translatedBarbers.map((barber, index) => (
                       <ChairWithCard 
                         key={barber.name}
                         barber={barber} 
-                        activeSpeaker={activeSpeaker === 'tomas'} 
+                        activeSpeaker={activeSpeaker} 
                         dialogueIndex={dialogueIndex} 
                         lang={lang} 
                         t={t} 
@@ -849,8 +893,8 @@ export function Profiles() {
         }
         @keyframes glitch-text-anim {
           0% { transform: translate(0); text-shadow: none; }
-          20% { transform: translate(-2px, 1px); text-shadow: 1px 0 #ffd700; }
-          40% { transform: translate(2px, -1px); text-shadow: -1px 0 #c5a059; }
+          20% { transform: translate(-2px, 1px); text-shadow: 1px 0 var(--color-mafia-gold); }
+          40% { transform: translate(2px, -1px); text-shadow: -1px 0 var(--color-mafia-gold); }
           60% { transform: translate(-1px, -1px); }
           80% { transform: translate(1px, 1px); }
           100% { transform: translate(0); }

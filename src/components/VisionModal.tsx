@@ -42,7 +42,7 @@ export function VisionModal({ isOpen, onClose }: VisionModalProps) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 50 }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="relative w-full max-w-2xl max-h-[85vh] bg-[#080808] border border-mafia-gold/20 shadow-[0_0_150px_rgba(197,160,89,0.1)] overflow-hidden flex flex-col"
+            className="relative w-full max-w-2xl max-h-[85vh] bg-[#080808] border border-mafia-gold/20 shadow-[0_0_150px_rgba(var(--color-mafia-gold-rgb),0.1)] overflow-hidden flex flex-col"
           >
             {/* Close Button */}
             <button 

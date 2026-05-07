@@ -6,7 +6,7 @@ import { useTranslation } from "../hooks/useTranslation";
 
 export function GlobalIntelligenceArchive() {
   const { t } = useTranslation();
-  
+
   // Guard for missing translations
   if (!t.intelligenceArchive) return null;
 
@@ -26,7 +26,7 @@ export function GlobalIntelligenceArchive() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           {categories.map((cat: any, idx: number) => (
-            <motion.div 
+            <motion.div
               key={idx}
               initial={{ opacity: 0.05, filter: "blur(4px)" }}
               whileInView={{ opacity: 1, filter: "blur(0px)" }}

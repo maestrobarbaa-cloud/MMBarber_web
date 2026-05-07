@@ -250,7 +250,7 @@ export function ElitaGame() {
         onClick={handleMiss}
       >
         <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.05)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--color-mafia-gold-rgb),0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--color-mafia-gold-rgb),0.05)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20" />
         </div>
 
         {/* Close Button - Moved to left and further down to clear HUD */}
@@ -308,7 +308,7 @@ export function ElitaGame() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={(e) => { e.stopPropagation(); startGame(); }}
-                className="px-8 md:px-12 py-4 md:py-5 bg-mafia-gold text-mafia-black font-heading font-black text-base md:text-lg uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(197,160,89,0.3)]"
+                className="px-8 md:px-12 py-4 md:py-5 bg-mafia-gold text-mafia-black font-heading font-black text-base md:text-lg uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.3)]"
               >
                 {lang === 'cs' ? "ZAHÁJIT PALBU" : "START MISSION"}
               </button>

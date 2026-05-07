@@ -428,7 +428,7 @@ const STORY_NODES: StoryNode[] = [
     x: 2, y: 2,
     constellation: "ultimate",
     requiredVisits: 5,
-    connections: ["origin"]
+    connections: []
   }
 ];
 
@@ -436,7 +436,14 @@ const ShootingStar = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ x: 0, y: 0, angle: 0 });
 
+  const [graphicsTier, setGraphicsTier] = useState<string>("low");
+
   useEffect(() => {
+    const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
+    setGraphicsTier(tier);
+    
+    if (tier === 'low' || tier === 'medium') return;
+
     const launch = () => {
       setCoords({
         x: Math.random() * 80 + 10,
@@ -495,6 +502,16 @@ export default function StoryPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [stars, setStars] = useState<StarBg[]>([]);
   const [textDistance, setTextDistance] = useState("15625");
+  const [graphicsTier, setGraphicsTier] = useState<string>("low");
+
+  useEffect(() => {
+    const updateTier = () => {
+      const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
+      setGraphicsTier(tier);
+    };
+    window.addEventListener('mmbarber-graphics-update', updateTier);
+    return () => window.removeEventListener('mmbarber-graphics-update', updateTier);
+  }, []);
 
   // Parallax and HUD transforms
   const starLayer1X = useTransform(panX, x => x * 0.05);
@@ -528,12 +545,20 @@ export default function StoryPage() {
     const h = window.innerHeight;
     setMapSize({ width: w * 8, height: h * 4 });
 
-    setStars([...Array(800)].map((_, i) => {
+    const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
+    setGraphicsTier(tier);
+
+    let starCount = 800;
+    if (tier === 'high') starCount = 400;
+    else if (tier === 'medium') starCount = 200;
+    else if (tier === 'low') starCount = 80;
+
+    setStars([...Array(starCount)].map((_, i) => {
       const rand = Math.random();
       let color = "rgba(255, 255, 255, 0.8)";
       if (rand > 0.95) color = "rgba(147, 197, 253, 0.8)";
       else if (rand > 0.90) color = "rgba(252, 165, 165, 0.8)";
-      else if (rand > 0.85) color = "rgba(197, 160, 89, 0.8)";
+      else if (rand > 0.85) color = "var(--color-mafia-gold)";
 
       return {
         id: i,
@@ -701,42 +726,67 @@ export default function StoryPage() {
     };
   }, [selectedNode, unlockedLevels]);
 
-  const starLayer1 = React.useMemo(() => (
-    <motion.div style={{ x: starLayer1X, y: starLayer1Y, scale: starLayer1Scale }} className="absolute inset-0 w-[150%] h-[150%]">
-      {stars.slice(0, 200).map(star => (
-        <motion.div key={star.id} animate={{ opacity: [0.2, 0.8, 0.2] }} transition={{ duration: star.duration, repeat: Infinity }} className="absolute rounded-full"
-          style={{ width: star.size, height: star.size, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, boxShadow: '0 0 5px white' }} />
-      ))}
-    </motion.div>
-  ), [stars]);
+  const starLayer1 = React.useMemo(() => {
+    const sliceEnd = graphicsTier === 'ultra' ? 200 : (graphicsTier === 'high' ? 150 : (graphicsTier === 'medium' ? 100 : 50));
+    const isLow = graphicsTier === 'low';
 
-  const starLayer2 = React.useMemo(() => (
-    <motion.div style={{ x: starLayer2X, y: starLayer2Y, scale: starLayer2Scale }} className="absolute inset-0 w-[200%] h-[200%]">
-      {stars.slice(200, 400).map(star => (
-        <motion.div key={star.id} animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: star.duration * 0.8, repeat: Infinity }} className="absolute rounded-full"
-          style={{ width: star.size * 1.2, height: star.size * 1.2, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, boxShadow: `0 0 8px ${star.color}` }} />
-      ))}
-    </motion.div>
-  ), [stars]);
+    return (
+      <motion.div 
+        style={{ 
+          x: isLow ? 0 : starLayer1X, 
+          y: isLow ? 0 : starLayer1Y, 
+          scale: isLow ? 1 : starLayer1Scale 
+        }} 
+        className="absolute inset-0 w-[150%] h-[150%]"
+      >
+        {stars.slice(0, sliceEnd).map(star => (
+          <motion.div 
+            key={star.id} 
+            animate={isLow ? { opacity: 0.5 } : { opacity: [0.2, 0.8, 0.2] }} 
+            transition={isLow ? {} : { duration: star.duration, repeat: Infinity }} 
+            className="absolute rounded-full"
+            style={{ width: star.size, height: star.size, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, boxShadow: isLow ? 'none' : '0 0 5px white' }} 
+          />
+        ))}
+      </motion.div>
+    );
+  }, [stars, graphicsTier]);
 
-  const starLayer3 = React.useMemo(() => (
-    <motion.div style={{ x: starLayer3X, y: starLayer3Y, scale: starLayer3Scale }} className="absolute inset-0 w-[300%] h-[300%]">
-      {stars.slice(400, 600).map(star => (
-        <div key={star.id} className="absolute rounded-full" style={{ width: star.size * 1.5, height: star.size * 1.5, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, opacity: 0.6 }} />
-      ))}
-    </motion.div>
-  ), [stars]);
+  const starLayer2 = React.useMemo(() => {
+    if (graphicsTier === 'low' || graphicsTier === 'medium') return null;
+    const sliceEnd = graphicsTier === 'ultra' ? 400 : 300;
+
+    return (
+      <motion.div style={{ x: starLayer2X, y: starLayer2Y, scale: starLayer2Scale }} className="absolute inset-0 w-[200%] h-[200%]">
+        {stars.slice(200, sliceEnd).map(star => (
+          <motion.div key={star.id} animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: star.duration * 0.8, repeat: Infinity }} className="absolute rounded-full"
+            style={{ width: star.size * 1.2, height: star.size * 1.2, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, boxShadow: `0 0 8px ${star.color}` }} />
+        ))}
+      </motion.div>
+    );
+  }, [stars, graphicsTier]);
+
+  const starLayer3 = React.useMemo(() => {
+    if (graphicsTier !== 'ultra') return null;
+    return (
+      <motion.div style={{ x: starLayer3X, y: starLayer3Y, scale: starLayer3Scale }} className="absolute inset-0 w-[300%] h-[300%]">
+        {stars.slice(400, 600).map(star => (
+          <div key={star.id} className="absolute rounded-full" style={{ width: star.size * 1.5, height: star.size * 1.5, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, opacity: 0.6 }} />
+        ))}
+      </motion.div>
+    );
+  }, [stars, graphicsTier]);
 
   if (!isMounted) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] bg-black text-smoke-white overflow-hidden flex flex-col lg:flex-row">
+    <div className="fixed inset-0 z-[200] bg-transparent text-smoke-white overflow-hidden flex flex-col lg:flex-row">
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-mafia-gold/5 via-transparent to-mafia-black" />
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-mafia-gold/5 via-transparent to-mafia-black/40" />
       </div>
 
-      <div className="w-full lg:w-[320px] xl:w-[400px] h-[45vh] lg:h-full bg-black/5 backdrop-blur-md border-r border-white/5 relative z-40 flex flex-col pointer-events-none">
+      <div className="w-full lg:w-[320px] xl:w-[400px] h-[45vh] lg:h-full bg-transparent relative z-40 flex flex-col pointer-events-none">
         <div className="p-8 pt-24 lg:pt-12 flex flex-col h-full items-center text-center pointer-events-none">
           <div className="flex items-center gap-3 mb-10 opacity-30">
             <div className="w-8 h-px bg-mafia-gold/40" />
@@ -747,10 +797,18 @@ export default function StoryPage() {
           <div className="flex-1 w-full flex flex-col justify-end pb-12">
             <AnimatePresence mode="wait">
               {selectedNode && (
-                <motion.div key={selectedNode.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6 pointer-events-auto">
+                <motion.div 
+                  key={selectedNode.id} 
+                  initial={{ opacity: 0, rotateX: 45, y: 100, z: -100 }} 
+                  animate={{ opacity: 1, rotateX: 0, y: 0, z: 0 }} 
+                  exit={{ opacity: 0, rotateX: -45, y: -100, z: -100 }} 
+                  transition={{ duration: 1.2, ease: "easeOut" }}
+                  className="space-y-6 pointer-events-auto"
+                  style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
+                >
                   <span className="text-mafia-gold/40 font-mono text-[10px] tracking-widest block uppercase">Období: {selectedNode.year}</span>
-                  <h2 className="text-4xl font-heading font-black text-white uppercase italic leading-tight">{selectedNode.title}</h2>
-                  <p className="text-white/80 text-lg italic leading-relaxed">{selectedNode.content}</p>
+                  <h2 className="text-4xl font-heading font-black text-white uppercase italic leading-tight" style={{ textShadow: "0 0 20px rgba(var(--color-mafia-gold-rgb),0.3)" }}>{selectedNode.title}</h2>
+                  <p className="text-white/80 text-lg italic leading-relaxed" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>{selectedNode.content}</p>
 
                   {selectedNode.type === 'secret' && !isSecretRevealed ? (
                     <button onClick={handleRevealSecret} className="w-full py-4 border border-mafia-red/40 text-mafia-red font-mono text-[10px] uppercase hover:bg-mafia-red hover:text-white transition-all">
@@ -769,11 +827,11 @@ export default function StoryPage() {
         </div>
       </div>
 
-      <div ref={containerRef} className="absolute inset-0 z-0 bg-black overflow-hidden cursor-crosshair" onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+      <div ref={containerRef} className="absolute inset-0 z-0 bg-[#020202] overflow-hidden cursor-crosshair" onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
         <div className="absolute inset-0 pointer-events-none z-0">
           {starLayer1} {starLayer2} {starLayer3}
         </div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] pointer-events-none" />
 
         <ShootingStar />
 
@@ -782,7 +840,7 @@ export default function StoryPage() {
             {STORY_NODES.map(node => node.connections.map(targetId => {
               const target = STORY_NODES.find(n => n.id === targetId);
               if (!target || !unlockedLevels.has(node.requiredVisits || 1) || !unlockedLevels.has(target.requiredVisits || 1)) return null;
-              return <line key={`${node.id}-${target.id}`} x1={`${node.x}%`} y1={`${node.y}%`} x2={`${target.x}%`} y2={`${target.y}%`} stroke={getGalaxyColor("#c5a059")} strokeWidth={getStrokeWidth(1)} opacity={0.3} strokeDasharray="4 4" />;
+              return <line key={`${node.id}-${target.id}`} x1={`${node.x}%`} y1={`${node.y}%`} x2={`${target.x}%`} y2={`${target.y}%`} stroke={getGalaxyColor("var(--color-mafia-gold)")} strokeWidth={getStrokeWidth(2.5)} opacity={0.6} />;
             }))}
           </svg>
 

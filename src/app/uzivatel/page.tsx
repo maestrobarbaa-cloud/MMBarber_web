@@ -25,7 +25,7 @@ export default function UserSettings() {
   const { lang } = useTranslation();
   
   const defaultConfig = {
-    accentColor: "#c5a059",
+    accentColor: "var(--color-mafia-gold)",
     glowIntensity: 50,
     fontFamily: '"Courier New", Courier, monospace'
   };
@@ -61,7 +61,7 @@ export default function UserSettings() {
 
   const handleReset = () => {
     const default_ = {
-      accentColor: "#c5a059",
+      accentColor: "var(--color-mafia-gold)",
       glowIntensity: 50,
       fontFamily: '"Courier New", Courier, monospace'
     };
@@ -233,7 +233,7 @@ export default function UserSettings() {
                       <div className="absolute bottom-0 left-0 h-0.5 w-0 group-focus-within:w-full transition-all duration-500" style={{ backgroundColor: config.accentColor }}></div>
                     </div>
                     <div className="grid grid-cols-5 gap-2">
-                       {["#c5a059", "#ff1a1a", "#00ff41", "#00ccff", "#ffffff"].map(c => (
+                       {["var(--color-mafia-gold)", "#ff1a1a", "#00ff41", "#00ccff", "#ffffff"].map(c => (
                          <button 
                            key={c} 
                            onClick={() => setConfig({...config, accentColor: c})}
@@ -343,9 +343,9 @@ export default function UserSettings() {
           height: 24px;
           width: 24px;
           border-radius: 50%;
-          background: var(--user-accent, #c5a059);
+          background: var(--user-accent, var(--color-mafia-gold));
           cursor: pointer;
-          box-shadow: 0 0 15px var(--user-accent, #c5a059);
+          box-shadow: 0 0 15px var(--user-accent, var(--color-mafia-gold));
           border: 3px solid white;
           margin-top: -10px;
         }
@@ -353,9 +353,9 @@ export default function UserSettings() {
           height: 24px;
           width: 24px;
           border-radius: 50%;
-          background: var(--user-accent, #c5a059);
+          background: var(--user-accent, var(--color-mafia-gold));
           cursor: pointer;
-          box-shadow: 0 0 15px var(--user-accent, #c5a059);
+          box-shadow: 0 0 15px var(--user-accent, var(--color-mafia-gold));
           border: 3px solid white;
         }
         input[type="range"]::-webkit-slider-runnable-track {

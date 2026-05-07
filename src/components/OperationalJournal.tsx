@@ -9,16 +9,16 @@ export function OperationalJournal() {
 
   useEffect(() => {
     const logData: { text: string; type: 'info' | 'success' | 'warn' | 'critical' }[] = [
-      { text: "SYSTEM_INITIALIZED: MM BARBER v3.4.1", type: "info" },
-      { text: "REGIONAL_AUTHORITY: UHERSKÉ HRADIŠTĚ - MAŘATICE [ACTIVE]", type: "success" },
-      { text: "PROTOCOL_DEPLOYED: SKIN_FADE_PRECISION_V5", type: "info" },
-      { text: "PARTNERSHIP_SYNC: VODO TOPO JAHODA [STABLE]", type: "success" },
-      { text: "ACADEMY_STATUS: 12 GRADUATES CERTIFIED", type: "success" },
-      { text: "MARKET_PENETRATION: 50KM RADIUS COVERAGE ACHIEVED", type: "info" },
-      { text: "SEO_PAYLOAD: 4500+ KEYWORDS INDEXED", type: "success" },
-      { text: "COMMUNITY_IMPACT: SLOVÁCKO REGION HUB [VERIFIED]", type: "success" },
-      { text: "OPERATIONAL_SECURITY: NOIR_AESTHETIC_ENFORCED", type: "info" },
-      { text: "BUSINESS_MODEL: SCALABLE_SYSTEMS_ACTIVE", type: "success" }
+      { text: "SYSTÉM_INICIALIZOVÁN: MM BARBER v3.4.1", type: "info" },
+      { text: "REGIONÁLNÍ_AUTORITA: UHERSKÉ HRADIŠTĚ - MAŘATICE [AKTIVNÍ]", type: "success" },
+      { text: "PROTOKOL_NASAZEN: PRECIZNÍ_STŘIH_V5", type: "info" },
+      { text: "SYNCHRONIZACE_PARTNERŮ: VODO TOPO JAHODA [STABILNÍ]", type: "success" },
+      { text: "STAV_AKADEMIE: 12 CERTIFIKOVANÝCH ABSOLVENTŮ", type: "success" },
+      { text: "REGIONÁLNÍ_DOSAH: POKRYTÍ 50KM DOSAŽENO", type: "info" },
+      { text: "SEO_DATA: 4500+ KLÍČOVÝCH SLOV INDEXOVÁNO", type: "success" },
+      { text: "KOMUNITNÍ_DOPAD: SLOVÁCKO REGION HUB [OVĚŘENO]", type: "success" },
+      { text: "BEZPEČNOST_PROVOZU: NOIR_ESTETIKA_VYNUCENA", type: "info" },
+      { text: "OBCHODNÍ_MODEL: ŠKÁLOVATELNÉ_SYSTÉMY_AKTIVNÍ", type: "success" }
     ];
 
     let current = 0;
@@ -46,29 +46,29 @@ export function OperationalJournal() {
               <h2 className="text-mafia-gold font-heading font-black text-4xl md:text-6xl uppercase tracking-tighter mb-6 italic">
                 OPERAČNÍ <span className="text-white">PROTOKOL</span>
               </h2>
-              <p className="text-smoke-white/40 font-mono text-[10px] uppercase tracking-[0.6em] mb-12">STRATEGIC_AUTHORITY_JOURNAL</p>
+              <p className="text-smoke-white/40 font-mono text-[10px] uppercase tracking-[0.6em] mb-12">DENÍK_STRATEGICKÉ_AUTORITY</p>
             </div>
 
             <div className="grid grid-cols-2 gap-8">
               <div className="p-6 bg-white/[0.02] border border-white/5 space-y-3">
                 <Award className="text-mafia-gold" size={20} />
                 <div className="text-2xl font-black text-white">#1</div>
-                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">REGIONAL_RANKING</div>
+                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">REGIONÁLNÍ_POŘADÍ</div>
               </div>
               <div className="p-6 bg-white/[0.02] border border-white/5 space-y-3">
                 <Users className="text-mafia-gold" size={20} />
                 <div className="text-2xl font-black text-white">2500+</div>
-                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">ACTIVE_RECRUITS</div>
+                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">AKTIVNÍ_ČLENOVÉ</div>
               </div>
               <div className="p-6 bg-white/[0.02] border border-white/5 space-y-3">
                 <TrendingUp className="text-mafia-gold" size={20} />
                 <div className="text-2xl font-black text-white">100%</div>
-                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">CRAFT_PRECISION</div>
+                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">PRECIZNOST_ŘEMESLA</div>
               </div>
               <div className="p-6 bg-white/[0.02] border border-white/5 space-y-3">
                 <Shield className="text-mafia-gold" size={20} />
                 <div className="text-2xl font-black text-white">STABLE</div>
-                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">REPUTATION_ENGINE</div>
+                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">STAV_REPUTACE</div>
               </div>
             </div>
 
@@ -83,7 +83,7 @@ export function OperationalJournal() {
              <div className="absolute top-0 left-0 w-full h-1 bg-mafia-gold/20"></div>
              <div className="flex items-center gap-3 mb-6 opacity-40">
                 <Terminal size={14} />
-                <span className="uppercase tracking-[0.3em]">SYSTEM_LOG_OUTPUT</span>
+                <span className="uppercase tracking-[0.3em]">VÝSTUP_SYSTÉMOVÉHO_LOGU</span>
                 <div className="ml-auto flex gap-2">
                    <div className="w-2 h-2 rounded-full bg-mafia-gold/40"></div>
                    <div className="w-2 h-2 rounded-full bg-mafia-gold/20"></div>
@@ -101,7 +101,7 @@ export function OperationalJournal() {
                     <span className="text-white/20">[{new Date().toLocaleTimeString()}]</span>
                     <span className={
                       log.type === 'success' ? 'text-mafia-gold' : 
-                      log.type === 'warn' ? 'text-yellow-500' :
+                      log.type === 'warn' ? 'text-mafia-gold' :
                       log.type === 'critical' ? 'text-mafia-red' : 'text-white/60'
                     }>
                       {log.text}

@@ -469,7 +469,7 @@ export default function SystemVisitPage() {
                 initial={{ width: 0 }} 
                 animate={{ width: 120 }} 
                 transition={{ delay: 0.6, duration: 1 }}
-                className="h-1 bg-mafia-gold mx-auto mb-12 shadow-[0_0_15px_rgba(197,160,89,0.5)]"
+                className="h-1 bg-mafia-gold mx-auto mb-12 shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.5)]"
               />
               
               <motion.p 
@@ -547,7 +547,7 @@ export default function SystemVisitPage() {
                    </div>
 
                    <motion.button
-                     whileHover={{ scale: 1.05, boxShadow: "0 0 50px rgba(197, 160, 89, 0.4)" }}
+                     whileHover={{ scale: 1.05, boxShadow: "0 0 50px rgba(var(--color-mafia-gold-rgb), 0.4)" }}
                      whileTap={{ scale: 0.95 }}
                      onClick={handleClose}
                      className="group relative overflow-hidden bg-mafia-gold text-mafia-black px-12 md:px-20 py-6 md:py-8 font-heading font-black uppercase tracking-[0.3em] text-sm md:text-base transition-all"

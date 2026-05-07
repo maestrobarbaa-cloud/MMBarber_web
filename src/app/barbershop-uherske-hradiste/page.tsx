@@ -76,7 +76,7 @@ export default function BarbershopUHPage() {
                  href="https://is.mmbarber.cz" 
                  target="_blank" 
                  rel="noopener noreferrer"
-                 className="flex-1 p-10 bg-mafia-gold text-mafia-black text-center font-heading font-black uppercase italic tracking-widest hover:bg-white transition-all shadow-[0_0_30px_rgba(197,160,89,0.3)]"
+                 className="flex-1 p-10 bg-mafia-gold text-mafia-black text-center font-heading font-black uppercase italic tracking-widest hover:bg-white transition-all shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)]"
                >
                   Rezervovat termín UH
                </a>

@@ -42,11 +42,14 @@ export function MatrixBackground() {
 
     const chars = "MMBARBER0101シハミヒニリサテトボポウエ".split("");
 
+    let animationFrameId: number;
     const draw = () => {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, width, height);
 
-      ctx.fillStyle = "#00ff41";
+      const rootStyle = getComputedStyle(document.documentElement);
+      const accentColor = rootStyle.getPropertyValue('--color-mafia-gold').trim() || "#00ff41";
+      ctx.fillStyle = accentColor;
       ctx.font = "15pt monospace";
 
       for (let i = 0; i < drops.length; i++) {
@@ -59,9 +62,10 @@ export function MatrixBackground() {
 
         drops[i]++;
       }
+      animationFrameId = requestAnimationFrame(draw);
     };
 
-    const interval = setInterval(draw, 50);
+    animationFrameId = requestAnimationFrame(draw);
 
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
@@ -75,7 +79,7 @@ export function MatrixBackground() {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      clearInterval(interval);
+      cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
     };
   }, [isActive]);

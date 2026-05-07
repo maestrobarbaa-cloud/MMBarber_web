@@ -51,7 +51,7 @@ export default function TacticalClickEffects() {
               top: ping.y - 20,
               width: 40,
               height: 40,
-              boxShadow: "0 0 15px rgba(197, 160, 89, 0.5) inset"
+              boxShadow: "0 0 15px rgba(var(--color-mafia-gold-rgb), 0.5) inset"
             }}
           >
             {/* Crosshair inside ping */}

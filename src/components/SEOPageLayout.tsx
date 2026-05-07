@@ -77,7 +77,7 @@ export function SEOPageLayout({ title, subtitle, content, keywords, url }: SEOPa
             <motion.a
               whileHover={{ scale: 1.05 }}
               href="https://is.mmbarber.cz/"
-              className="bg-mafia-gold text-mafia-black px-16 py-6 font-heading font-black uppercase tracking-[0.3em] text-lg shadow-[0_0_50px_rgba(197,160,89,0.3)]"
+              className="bg-mafia-gold text-mafia-black px-16 py-6 font-heading font-black uppercase tracking-[0.3em] text-lg shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.3)]"
             >
               REZERVACE ONLINE
             </motion.a>

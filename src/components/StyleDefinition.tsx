@@ -158,7 +158,7 @@ const EditorialPhoto = ({ imageSrc, title, subtitle, modalTitle, modalContent, s
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 10 }}
-              className="relative w-full max-w-xl bg-mafia-dark/80 border border-mafia-gold/30 shadow-[0_0_100px_rgba(197,160,89,0.15)] p-8 md:p-12 overflow-hidden"
+              className="relative w-full max-w-xl bg-mafia-dark/80 border border-mafia-gold/30 shadow-[0_0_100px_rgba(var(--color-mafia-gold-rgb),0.15)] p-8 md:p-12 overflow-hidden"
             >
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-mafia-gold/50 to-transparent"></div>
               

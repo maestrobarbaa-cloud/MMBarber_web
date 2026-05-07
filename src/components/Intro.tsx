@@ -236,7 +236,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
                   {/* Decorative separator */}
                   <div className="w-32 h-1 bg-gradient-to-r from-transparent via-mafia-gold/30 to-transparent my-2"></div>
                   
-                  <span className="flavor-text font-heading font-black text-3xl md:text-[50px] uppercase tracking-[0.2em] text-mafia-gold drop-shadow-[0_0_25px_rgba(197,160,89,0.5)] leading-tight">
+                  <span className="flavor-text font-heading font-black text-3xl md:text-[50px] uppercase tracking-[0.2em] text-mafia-gold drop-shadow-[0_0_25px_rgba(var(--color-mafia-gold-rgb),0.5)] leading-tight">
                     {t.intro.payment}
                   </span>
                 </motion.div>

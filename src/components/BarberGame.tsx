@@ -255,7 +255,7 @@ export function BarberGame() {
         <IconComponent 
           size={isPC ? 64 : 48} 
           strokeWidth={1.5}
-          className="drop-shadow-[0_0_15px_rgba(197,160,89,0.8)] filter transition-all duration-300 group-hover:scale-125" 
+          className="drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.8)] filter transition-all duration-300 group-hover:scale-125" 
         />
       </motion.div>
     );

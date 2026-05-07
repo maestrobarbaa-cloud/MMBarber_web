@@ -67,6 +67,8 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
     html.setAttribute('data-graphics-tier', newConfig.tier);
     html.classList.toggle('reduce-motion', !newConfig.animationsEnabled);
     html.classList.toggle('disable-grain', !newConfig.grainEnabled);
+    html.classList.toggle('disable-blur', !newConfig.blurEnabled);
+    html.classList.toggle('disable-parallax', !newConfig.parallaxEnabled);
     html.classList.toggle('vignette-active', newConfig.vignetteEnabled);
     html.classList.toggle('chromatic-active', newConfig.chromaticAberration);
     html.classList.toggle('letterbox-active', newConfig.letterboxEnabled);
@@ -104,8 +106,8 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
         break;
       case 'medium':
         newConfig = { 
-            tier, grainEnabled: true, blurEnabled: false, parallaxEnabled: true, 
-            animationsEnabled: true, crtEnabled: false, glowIntensity: 0.6, 
+            tier, grainEnabled: true, blurEnabled: false, parallaxEnabled: false, 
+            animationsEnabled: true, crtEnabled: false, glowIntensity: 0.4, 
             vignetteEnabled: true, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.5,
             autoDetectEnabled: false
         };
@@ -187,8 +189,8 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
         break;
       case 'medium':
         newConfig = { 
-            tier: recommended, grainEnabled: true, blurEnabled: false, parallaxEnabled: true, 
-            animationsEnabled: true, crtEnabled: false, glowIntensity: 0.6, 
+            tier: recommended, grainEnabled: true, blurEnabled: false, parallaxEnabled: false, 
+            animationsEnabled: true, crtEnabled: false, glowIntensity: 0.4, 
             vignetteEnabled: true, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.5,
             autoDetectEnabled: true
         };
@@ -232,7 +234,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             initial={{ scale: 0.9, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 30 }}
-            className="relative w-full max-w-4xl bg-[#050505] border border-mafia-gold/30 shadow-[0_0_100px_rgba(197,160,89,0.15)] overflow-hidden flex flex-col max-h-[90vh]"
+            className="relative w-full max-w-4xl bg-[#050505] border border-mafia-gold/30 shadow-[0_0_100px_rgba(var(--color-mafia-gold-rgb),0.15)] overflow-hidden flex flex-col max-h-[90vh]"
           >
             {/* Header */}
             <div className="p-6 border-b border-white/5 flex items-center justify-between bg-mafia-gold/5">
@@ -269,7 +271,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                                         saveConfig({ ...config, autoDetectEnabled: false });
                                     }
                                 }}
-                                className={`flex items-center gap-2 px-3 py-1 border text-[9px] font-black uppercase tracking-widest transition-all ${config.autoDetectEnabled ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.3)]' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
+                                className={`flex items-center gap-2 px-3 py-1 border text-[9px] font-black uppercase tracking-widest transition-all ${config.autoDetectEnabled ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
                             >
                                 <Scan size={12} className={config.autoDetectEnabled ? 'animate-pulse' : ''} />
                                 {lang === 'cs' ? (config.autoDetectEnabled ? 'Auto-Detekce AKTIVNÍ' : 'Auto-Detekce VYPNUTA') : (config.autoDetectEnabled ? 'Auto-Detect ACTIVE' : 'Auto-Detect OFF')}
@@ -282,7 +284,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                           key={t}
                           disabled={config.autoDetectEnabled}
                           onClick={() => applyTier(t)}
-                          className={`py-4 text-[10px] font-black uppercase tracking-widest transition-all border ${config.tier === t ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_20px_rgba(197,160,89,0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'} ${config.autoDetectEnabled ? 'opacity-20 cursor-not-allowed' : ''}`}
+                          className={`py-4 text-[10px] font-black uppercase tracking-widest transition-all border ${config.tier === t ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'} ${config.autoDetectEnabled ? 'opacity-20 cursor-not-allowed' : ''}`}
                         >
                           {t}
                         </button>
@@ -311,7 +313,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                     <div className="flex items-start gap-4">
                         <Shield size={20} className="text-mafia-gold/50" />
                         <div>
-                            <div className="text-[10px] font-heading font-black text-white uppercase tracking-wider mb-1">Adaptive Performance</div>
+                            <div className="text-[10px] font-heading font-black text-white uppercase tracking-wider mb-1">{lang === 'cs' ? 'Adaptivní Výkon' : 'Adaptive Performance'}</div>
                             <p className="text-[10px] text-white/40 leading-relaxed font-mono uppercase tracking-tighter">
                                 {lang === 'cs' 
                                     ? "Systém automaticky optimalizuje grafiku pro váš hardware. Manuální změna vypne auto-detekci."
@@ -329,35 +331,35 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                         <SettingToggle 
                             label={lang === 'cs' ? "Filmové Zrno" : "Film Grain"}
-                            desc="Dither Noise"
+                            desc={lang === 'cs' ? "Dithering Šum" : "Dither Noise"}
                             active={config.grainEnabled}
                             icon={<Ghost size={16} />}
                             onClick={() => saveConfig({...config, grainEnabled: !config.grainEnabled, autoDetectEnabled: false})}
                         />
                         <SettingToggle 
                             label={lang === 'cs' ? "Motion Blur" : "Motion Blur"}
-                            desc="Fluid Render"
+                            desc={lang === 'cs' ? "Plynulý Render" : "Fluid Render"}
                             active={config.blurEnabled}
                             icon={<Eye size={16} />}
                             onClick={() => saveConfig({...config, blurEnabled: !config.blurEnabled, autoDetectEnabled: false})}
                         />
                         <SettingToggle 
                             label={lang === 'cs' ? "Parallax" : "Parallax"}
-                            desc="Depth Mapping"
+                            desc={lang === 'cs' ? "Mapování Hloubky" : "Depth Mapping"}
                             active={config.parallaxEnabled}
                             icon={<Layers size={16} />}
                             onClick={() => saveConfig({...config, parallaxEnabled: !config.parallaxEnabled, autoDetectEnabled: false})}
                         />
                          <SettingToggle 
                             label={lang === 'cs' ? "Vinětace" : "Vignette"}
-                            desc="Edge Darkening"
+                            desc={lang === 'cs' ? "Ztmavení Okrajů" : "Edge Darkening"}
                             active={config.vignetteEnabled}
                             icon={<Maximize size={16} />}
                             onClick={() => saveConfig({...config, vignetteEnabled: !config.vignetteEnabled, autoDetectEnabled: false})}
                         />
                          <SettingToggle 
                             label={lang === 'cs' ? "Aberace" : "Aberration"}
-                            desc="Lens Distortion"
+                            desc={lang === 'cs' ? "Zkreslení Čočky" : "Lens Distortion"}
                             active={config.chromaticAberration}
                             icon={<Sparkles size={16} />}
                             onClick={() => saveConfig({...config, chromaticAberration: !config.chromaticAberration, autoDetectEnabled: false})}
@@ -371,14 +373,14 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                         />
                         <SettingToggle 
                             label={lang === 'cs' ? "CRT Simulace" : "CRT Simulation"}
-                            desc="Scanlines"
+                            desc={lang === 'cs' ? "Skenovací Čáry" : "Scanlines"}
                             active={config.crtEnabled}
                             icon={<Monitor size={16} />}
                             onClick={() => saveConfig({...config, crtEnabled: !config.crtEnabled, autoDetectEnabled: false})}
                         />
                          <SettingToggle 
                             label={lang === 'cs' ? "Animace" : "Animations"}
-                            desc="Transition Logic"
+                            desc={lang === 'cs' ? "Logika Přechodů" : "Transition Logic"}
                             active={config.animationsEnabled}
                             icon={<Zap size={16} />}
                             onClick={() => saveConfig({...config, animationsEnabled: !config.animationsEnabled, autoDetectEnabled: false})}
@@ -393,7 +395,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                  <div className="text-[9px] font-mono text-white/20 uppercase tracking-[0.4em]">MM_ENGINE_INITIALIZED_001</div>
                  <button 
                     onClick={onClose}
-                    className="px-12 py-3 bg-mafia-gold text-mafia-black text-[10px] font-heading font-black uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-[0_0_30px_rgba(197,160,89,0.2)]"
+                    className="px-12 py-3 bg-mafia-gold text-mafia-black text-[10px] font-heading font-black uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)]"
                  >
                     {lang === 'cs' ? 'Aplikovat Nastavení' : 'Apply Settings'}
                  </button>
@@ -447,7 +449,7 @@ function SettingToggle({ label, desc, active, icon, onClick }: { label: string, 
     return (
         <button 
             onClick={onClick}
-            className={`p-4 border text-left flex items-center justify-between transition-all group ${active ? 'bg-mafia-gold/10 border-mafia-gold/40 shadow-[inset_0_0_15px_rgba(197,160,89,0.05)]' : 'bg-white/[0.01] border-white/5 hover:border-white/20'}`}
+            className={`p-4 border text-left flex items-center justify-between transition-all group ${active ? 'bg-mafia-gold/10 border-mafia-gold/40 shadow-[inset_0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)]' : 'bg-white/[0.01] border-white/5 hover:border-white/20'}`}
         >
             <div className="flex items-center gap-3">
                 <div className={`${active ? 'text-mafia-gold' : 'text-white/20 group-hover:text-white/40'} transition-colors`}>
@@ -458,7 +460,7 @@ function SettingToggle({ label, desc, active, icon, onClick }: { label: string, 
                     <div className="text-[8px] text-white/20 uppercase font-mono mt-0.5">{desc}</div>
                 </div>
             </div>
-            <div className={`w-3 h-3 border ${active ? 'bg-mafia-gold border-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.5)]' : 'bg-transparent border-white/20'}`}>
+            <div className={`w-3 h-3 border ${active ? 'bg-mafia-gold border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.5)]' : 'bg-transparent border-white/20'}`}>
                 {active && <div className="w-full h-full flex items-center justify-center text-mafia-black text-[6px] font-black">✓</div>}
             </div>
         </button>

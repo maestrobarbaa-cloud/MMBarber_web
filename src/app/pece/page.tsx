@@ -37,7 +37,7 @@ function StarField() {
             top: `${star.y}%`,
             width: star.size,
             height: star.size,
-            boxShadow: star.size > 1.5 ? `0 0 ${star.size * 2}px rgba(197, 160, 89, 0.8)` : 'none',
+            boxShadow: star.size > 1.5 ? `0 0 ${star.size * 2}px rgba(var(--color-mafia-gold-rgb), 0.8)` : 'none',
           }}
           animate={{
             opacity: [0, star.opacity, star.opacity * 0.3, star.opacity],
@@ -207,7 +207,7 @@ export default function CareMagazinePage() {
             }, {} as Record<string, any[]>)).map(([category, pages]) => (
                <div key={category} className="flex flex-col gap-4">
                   <div className="flex items-center gap-3 mb-1">
-                     <div className="w-1.5 h-1.5 bg-mafia-gold rotate-45 shadow-[0_0_5px_rgba(197,160,89,0.3)]"></div>
+                     <div className="w-1.5 h-1.5 bg-mafia-gold rotate-45 shadow-[0_0_5px_rgba(var(--color-mafia-gold-rgb),0.3)]"></div>
                      <span className="font-mono text-[11px] text-mafia-gold/60 uppercase tracking-[0.4em] font-black">
                        {category}
                      </span>
@@ -219,7 +219,7 @@ export default function CareMagazinePage() {
                          onClick={() => setCurrentPage(page.index)}
                          className={`group flex items-center gap-4 transition-all duration-500 ${page.index === currentPage ? 'text-mafia-gold' : 'text-white/30 hover:text-white/70'}`}
                        >
-                          <div className={`w-2 h-2 rotate-45 transition-all duration-500 ${page.index === currentPage ? 'bg-mafia-gold scale-150 shadow-[0_0_12px_rgba(197,160,89,0.9)]' : 'bg-white/10 group-hover:bg-white/30'}`}></div>
+                          <div className={`w-2 h-2 rotate-45 transition-all duration-500 ${page.index === currentPage ? 'bg-mafia-gold scale-150 shadow-[0_0_12px_rgba(var(--color-mafia-gold-rgb),0.9)]' : 'bg-white/10 group-hover:bg-white/30'}`}></div>
                           <span className={`font-mono text-[10px] uppercase tracking-[0.25em] transition-all duration-500 origin-left whitespace-nowrap ${page.index === currentPage ? 'opacity-100 translate-x-1 font-bold' : 'opacity-50 group-hover:opacity-100'}`}>
                             {page.shortTitle}
                           </span>
@@ -247,7 +247,7 @@ export default function CareMagazinePage() {
                   id={`mob-nav-${i}`}
                   className={`flex flex-col items-center gap-1.5 transition-all duration-300 ${i === currentPage ? 'text-mafia-gold' : 'text-white/30'}`}
                 >
-                   <div className={`w-1.5 h-1.5 rotate-45 transition-all duration-500 ${i === currentPage ? 'bg-mafia-gold scale-125 shadow-[0_0_8px_rgba(197,160,89,0.8)]' : 'bg-white/10'}`}></div>
+                   <div className={`w-1.5 h-1.5 rotate-45 transition-all duration-500 ${i === currentPage ? 'bg-mafia-gold scale-125 shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.8)]' : 'bg-white/10'}`}></div>
                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold">
                      {page.shortTitle}
                    </span>
@@ -304,7 +304,7 @@ export default function CareMagazinePage() {
                     {MAGAZINE_PAGES.map((_, i) => (
                       <div 
                         key={i} 
-                        className={`h-1 flex-1 transition-all duration-500 ${i === currentPage ? 'bg-mafia-gold shadow-[0_0_8px_rgba(197,160,89,0.5)]' : 'bg-white/10'}`}
+                        className={`h-1 flex-1 transition-all duration-500 ${i === currentPage ? 'bg-mafia-gold shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.5)]' : 'bg-white/10'}`}
                       ></div>
                     ))}
                  </div>
@@ -413,7 +413,7 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
       const icons: any = {
         winter: <Snowflake className="text-blue-400" />,
         spring: <Leaf className="text-green-400" />,
-        summer: <Sun className="text-yellow-400" />,
+        summer: <Sun className="text-mafia-gold" />,
         autumn: <Wind className="text-orange-400" />
       };
 
@@ -602,7 +602,7 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
              <motion.div 
                initial={{ opacity: 0, rotateY: 180, scale: 0.8 }} 
                animate={{ opacity: 1, rotateY: 0, scale: 1 }} 
-               className="max-w-3xl w-full bg-gradient-to-br from-mafia-gold/20 via-black to-mafia-gold/5 border-2 border-mafia-gold p-8 md:p-16 relative overflow-hidden shadow-[0_0_50px_rgba(197,160,89,0.3)]"
+               className="max-w-3xl w-full bg-gradient-to-br from-mafia-gold/20 via-black to-mafia-gold/5 border-2 border-mafia-gold p-8 md:p-16 relative overflow-hidden shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.3)]"
              >
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 p-4 font-mono text-[60px] opacity-10 select-none">ID</div>

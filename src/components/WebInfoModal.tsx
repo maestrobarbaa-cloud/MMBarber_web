@@ -44,7 +44,7 @@ export function WebInfoModal({ isOpen, onClose }: WebInfoModalProps) {
             animate={{ scale: 1, opacity: 1, y: 0, rotateX: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 50, rotateX: -10 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="relative w-full max-w-2xl bg-[#080808] border border-mafia-gold/30 shadow-[0_0_150px_rgba(197,160,89,0.15)] overflow-hidden flex flex-col"
+            className="relative w-full max-w-2xl bg-[#080808] border border-mafia-gold/30 shadow-[0_0_150px_rgba(var(--color-mafia-gold-rgb),0.15)] overflow-hidden flex flex-col"
           >
             {/* Close Button */}
             <button 
@@ -64,7 +64,7 @@ export function WebInfoModal({ isOpen, onClose }: WebInfoModalProps) {
             <div className="relative z-10 p-10 md:p-14 overflow-y-auto custom-scrollbar flex-1">
               
               <div className="flex items-center gap-5 mb-12">
-                <div className="w-14 h-14 border-2 border-mafia-gold/40 flex items-center justify-center text-mafia-gold bg-mafia-gold/5 shadow-[0_0_20px_rgba(197,160,89,0.1)]">
+                <div className="w-14 h-14 border-2 border-mafia-gold/40 flex items-center justify-center text-mafia-gold bg-mafia-gold/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.1)]">
                     <Globe size={28} className="animate-pulse" />
                 </div>
                 <div>
@@ -110,7 +110,7 @@ export function WebInfoModal({ isOpen, onClose }: WebInfoModalProps) {
                    </div>
                    <button 
                      onClick={onClose}
-                     className="px-10 py-3 bg-mafia-gold/10 border border-mafia-gold/40 text-mafia-gold text-xs font-black uppercase tracking-[0.3em] hover:bg-mafia-gold hover:text-mafia-black transition-all duration-500 shadow-[0_0_30px_rgba(197,160,89,0.05)] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)]"
+                     className="px-10 py-3 bg-mafia-gold/10 border border-mafia-gold/40 text-mafia-gold text-xs font-black uppercase tracking-[0.3em] hover:bg-mafia-gold hover:text-mafia-black transition-all duration-500 shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.05)] hover:shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]"
                    >
                      {lang === 'cs' ? 'Zavřít Protokol' : 'Close Protocol'}
                    </button>

@@ -60,10 +60,10 @@ export function Header() {
       const hour = new Date().getHours();
       const isNightTime = hour >= 19 || hour < 6;
       
-      const hasSpecialMode = html.classList.contains('mode-silver') || 
-                           html.classList.contains('mode-blood') || 
+      const hasSpecialMode = html.classList.contains('theme-silver') || 
+                           html.classList.contains('theme-blood') || 
                            html.classList.contains('mode-poppy') ||
-                           html.classList.contains('mode-noir');
+                           html.classList.contains('noir-mode');
                            
       if (hasSpecialMode || isNightTime) {
         setActiveMode('night');
@@ -112,7 +112,7 @@ export function Header() {
    const [isSoundEnabled, setIsSoundEnabled] = useState(true);
    const [isRadioPlaying, setIsRadioPlaying] = useState(false);
    const [isGameActive, setIsGameActive] = useState(false);
-   const [userAccentColor, setUserAccentColor] = useState<string>("#c5a059");
+   const [userAccentColor, setUserAccentColor] = useState<string>("var(--color-mafia-gold)");
    const [isCustomLookActive, setIsCustomLookActive] = useState(false);
 
   useEffect(() => {
@@ -128,7 +128,7 @@ export function Header() {
     // Read accent color from CSS variable or localStorage
     const readAccentColor = () => {
       const saved = localStorage.getItem("mmbarber_user_config");
-      const defaultHex = "#c5a059";
+      const defaultHex = "var(--color-mafia-gold)";
       const defaultRgb = "rgb(197, 160, 89)";
 
       if (saved) {
@@ -683,7 +683,7 @@ export function Header() {
       <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-24 xl:h-28 block'}`} aria-hidden="true" />
       <header
         className={`w-full left-0 z-[30000] py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate 
-          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24' : `fixed top-0 h-24 xl:h-28 ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black/95 backdrop-blur-xl border-b border-white/5' : 'bg-transparent backdrop-blur-none border-b border-transparent'}`} 
+          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24' : `fixed top-0 h-24 xl:h-28 ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black/95 backdrop-blur-md xl:backdrop-blur-xl border-b border-white/5' : 'bg-transparent backdrop-blur-none border-b border-transparent'}`} 
           ${(isIntroActive) ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} 
           ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
       >
@@ -732,7 +732,7 @@ export function Header() {
             ) : (
               <button 
                 onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
-                className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-red group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.1)] theme-blood:shadow-[0_0_20px_rgba(139,0,0,0.2)]"
+                className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-red group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.2)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.1)] theme-blood:shadow-[0_0_20px_rgba(139,0,0,0.2)]"
               >
                 <Compass size={24} className="text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
                 <span className="text-[10px] font-heading font-black text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red tracking-[0.1em] uppercase whitespace-nowrap hidden min-[380px]:inline">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
@@ -742,7 +742,7 @@ export function Header() {
 
           <button
             onClick={toggleMenu}
-            className={`flex items-center gap-2 px-4 py-2.5 shadow-[0_0_20px_rgba(197,160,89,0.3)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.2)] border-2 transition-all duration-500 ${isMenuOpen ? 'bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-red border-white' : 'bg-mafia-black border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-red group hover:bg-mafia-gold/20'}`}
+            className={`flex items-center gap-2 px-4 py-2.5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.2)] border-2 transition-all duration-500 ${isMenuOpen ? 'bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-red border-white' : 'bg-mafia-black border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-red group hover:bg-mafia-gold/20'}`}
             aria-label="Open Hamburger Menu"
           >
             <div className="flex flex-col items-end">
@@ -775,6 +775,30 @@ export function Header() {
             </Link>
 
             <Link 
+              href="/#services" 
+              onClick={(e) => {
+                trackEvent("nav_link_click", { label: "sluzby" });
+                if (pathname === "/") {
+                  e.preventDefault();
+                  document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
+                }
+              }} 
+              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
+            >
+              <Briefcase size={16} style={{ color: 'var(--user-accent-color)' }} />
+              {t.header.services}
+            </Link>
+
+            <Link 
+              href="/cenik" 
+              onClick={() => trackEvent("nav_link_click", { label: "cenik" })} 
+              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
+            >
+              <CreditCard size={16} style={{ color: 'var(--user-accent-color)' }} />
+              {t.header.priceList}
+            </Link>
+
+            <Link 
               href="/#kontakt" 
               onClick={(e) => {
                 trackEvent("nav_link_click", { label: "kontakt" });
@@ -786,7 +810,7 @@ export function Header() {
               className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
             >
               <MapPin size={16} style={{ color: 'var(--user-accent-color)' }} />
-              {t.footer.contact}
+              {t.header.kudy_k_nam}
             </Link>
             <Link 
               href="/specialni-mise" 
@@ -804,7 +828,7 @@ export function Header() {
               <Link 
                 href="/vip-club" 
                 onClick={() => trackEvent("nav_link_click", { label: "vip-club-visiting" })} 
-                className="text-mafia-gold font-black transition-all duration-300 flex items-center gap-2 hover:scale-110 drop-shadow-[0_0_8px_rgba(197,160,89,0.5)] ml-4"
+                className="text-mafia-gold font-black transition-all duration-300 flex items-center gap-2 hover:scale-110 drop-shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.5)] ml-4"
               >
                 <Sparkles size={16} className="animate-pulse" />
                 VIP CLUB
@@ -918,7 +942,7 @@ export function Header() {
                       }}
                       className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left"
                     >
-                      <Palette size={18} style={{ color: isCustomLookActive ? userAccentColor : undefined }} className={!isCustomLookActive ? "opacity-30" : ""} />
+                      <Palette size={18} style={{ color: isCustomLookActive ? 'var(--color-mafia-gold)' : undefined }} className={!isCustomLookActive ? "opacity-30" : ""} />
                       <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
                         {lang === 'cs' ? "Vzhled" : "Appearance"}
                       </span>
@@ -929,7 +953,7 @@ export function Header() {
                       onClick={(e) => { e.stopPropagation(); toggleSound(); }}
                       className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left"
                     >
-                      {isSoundEnabled ? <Volume2 size={18} style={{ color: userAccentColor }} /> : <VolumeX size={18} className="opacity-30" />}
+                      {isSoundEnabled ? <Volume2 size={18} style={{ color: 'var(--color-mafia-gold)' }} /> : <VolumeX size={18} className="opacity-30" />}
                       <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
                         {lang === 'cs' ? "Zvuk" : "Sound"}
                       </span>
@@ -943,7 +967,7 @@ export function Header() {
                       }}
                       className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left"
                     >
-                      <Monitor size={18} className="opacity-30 group-hover:opacity-100 transition-opacity" style={{ color: userAccentColor }} />
+                      <Monitor size={18} className="opacity-30 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--color-mafia-gold)' }} />
                       <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
                         {lang === 'cs' ? "Grafika" : "Graphics"}
                       </span>
@@ -954,7 +978,7 @@ export function Header() {
                       onClick={(e) => { e.stopPropagation(); toggleRadio(); }}
                       className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left"
                     >
-                      <Radio size={18} className={isRadioPlaying ? 'animate-pulse' : 'opacity-30'} style={{ color: userAccentColor }} />
+                      <Radio size={18} className={isRadioPlaying ? 'animate-pulse' : 'opacity-30'} style={{ color: 'var(--color-mafia-gold)' }} />
                       <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
                         {lang === 'cs' ? "Rádio" : "Radio"}
                       </span>
@@ -973,8 +997,8 @@ export function Header() {
                   size={24} 
                   className="relative z-10 animate-pulse" 
                   style={{ 
-                    color: 'var(--user-accent-color)',
-                    filter: `drop-shadow(0 0 10px var(--user-glow-color))`
+                    color: 'var(--color-mafia-gold)',
+                    filter: `drop-shadow(0 0 10px var(--color-mafia-gold-glow))`
                   }} 
                 />
             </button>
@@ -1010,14 +1034,14 @@ export function Header() {
             }}
             className={`group relative overflow-hidden bg-mafia-dark border px-4 md:px-6 py-2 transition-all duration-300 header-booking-btn flex items-center gap-2 ${isMounted && (!isMobile || isMobileEffectsEnabled) && !activeMode ? 'animate-[pulse_1.5s_ease-in-out_infinite]' : ''}`}
             style={{ 
-              borderColor: 'var(--user-accent-color)',
-              boxShadow: !isMounted ? 'none' : (isMobile && !isMobileEffectsEnabled) ? 'none' : (activeMode ? `0 0 10px var(--user-accent-color)` : '0 0 15px var(--user-accent-color), inset 0 0 10px var(--user-accent-color)'),
+              borderColor: 'var(--color-mafia-gold)',
+              boxShadow: !isMounted ? 'none' : (isMobile && !isMobileEffectsEnabled) ? 'none' : (activeMode ? `0 0 10px var(--color-mafia-gold)` : '0 0 15px var(--color-mafia-gold), inset 0 0 10px var(--color-mafia-gold)'),
               animation: !isMounted || (isMobile && !isMobileEffectsEnabled) || activeMode ? 'none' : undefined
             }}
           >
-            <div className="absolute inset-0 block -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0" style={{ backgroundColor: 'var(--user-accent-color)' }}></div>
-            <Users size={18} className="relative z-10 transition-colors group-hover:text-black" style={{ color: 'var(--user-accent-color)' }} />
-            <span className="relative z-10 font-sans uppercase tracking-[0.2em] font-black group-hover:!text-black transition-colors whitespace-nowrap header-booking-btn-text" style={{ color: 'var(--user-accent-color)' }}>
+            <div className="absolute inset-0 block -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0" style={{ backgroundColor: 'var(--color-mafia-gold)' }}></div>
+            <Users size={18} className="relative z-10 transition-colors group-hover:text-black" style={{ color: 'var(--color-mafia-gold)' }} />
+            <span className="relative z-10 font-sans uppercase tracking-[0.2em] font-black group-hover:!text-black transition-colors whitespace-nowrap header-booking-btn-text" style={{ color: 'var(--color-mafia-gold)' }}>
               {lang === 'cs' ? "Rodina MMBarberu" : "MMBarber Family"}
             </span>
           </button>
@@ -1083,6 +1107,40 @@ export function Header() {
 
 
               <Link 
+                href="/#services" 
+                onClick={(e) => {
+                  handleNavLinkClick();
+                  if (pathname === "/") {
+                    e.preventDefault();
+                    document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
+                  }
+                }} 
+                className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
+              >
+                <div className="text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60">
+                   <Briefcase size={28} />
+                </div>
+                <div className="flex flex-col">
+                   <span className="text-[10px] font-mono text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60 uppercase tracking-widest">{lang === 'cs' ? 'NABÍDKA' : 'OFFER'}</span>
+                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.services}</span>
+                </div>
+              </Link>
+
+              <Link 
+                href="/cenik" 
+                onClick={handleNavLinkClick} 
+                className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
+              >
+                <div className="text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60">
+                   <CreditCard size={28} />
+                </div>
+                <div className="flex flex-col">
+                   <span className="text-[10px] font-mono text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60 uppercase tracking-widest">{lang === 'cs' ? 'TARIF' : 'TARIFF'}</span>
+                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.priceList}</span>
+                </div>
+              </Link>
+
+              <Link 
                 href="/#kontakt" 
                 onClick={(e) => {
                   handleNavLinkClick();
@@ -1098,7 +1156,7 @@ export function Header() {
                 </div>
                 <div className="flex flex-col">
                    <span className="text-[10px] font-mono text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60 uppercase tracking-widest">{lang === 'cs' ? 'SPOJENÍ' : 'CONNECTION'}</span>
-                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.footer?.contact || 'KONTAKT'}</span>
+                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.kudy_k_nam}</span>
                 </div>
               </Link>
 
@@ -1124,7 +1182,7 @@ export function Header() {
                 onClick={() => {
                   window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'));
                 }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isCompassActive ? 'border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-blood bg-mafia-gold/5 noir-mode:bg-mafia-silver/5 theme-blood:bg-mafia-blood/5 shadow-[0_0_20px_rgba(197,160,89,0.1)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.1)] theme-blood:shadow-[0_0_20px_rgba(139,0,0,0.1)]' : 'border-white/10'}`}
+                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isCompassActive ? 'border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-blood bg-mafia-gold/5 noir-mode:bg-mafia-silver/5 theme-blood:bg-mafia-blood/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.1)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.1)] theme-blood:shadow-[0_0_20px_rgba(139,0,0,0.1)]' : 'border-white/10'}`}
               >
                 <div className="flex items-center gap-5">
                   <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${isCompassActive ? 'border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-blood bg-mafia-gold/10 noir-mode:bg-mafia-silver/10 theme-blood:bg-mafia-blood/10' : 'border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-blood/30'}`}>
@@ -1155,25 +1213,27 @@ export function Header() {
                   window.dispatchEvent(new Event('mmbarber-elita-game-open'));
                 }}
                 className="bg-white/5 border border-white/10 px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 hover:bg-white/10"
-                style={{
-                  borderColor: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? 'rgba(139,0,0,0.3)' : undefined,
-                  backgroundColor: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? 'rgba(139,0,0,0.05)' : undefined
-                }}
               >
                 <div className="flex items-center gap-5">
-                  <div className="w-12 h-12 rounded-full border flex items-center justify-center bg-white/5"
-                    style={{ borderColor: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor }}
+                  <div 
+                    className="relative flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-700 bg-black/40 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                    style={{ borderColor: 'var(--color-mafia-gold)' }}
                   >
-                    <Target size={28} className="animate-pulse" 
-                      style={{ color: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor }}
+                    <Trophy 
+                      size={20} 
+                      className="transition-all duration-700"
+                      style={{ color: 'var(--color-mafia-gold)' }}
                     />
+                    <div className="absolute -top-1 -right-1 flex flex-col gap-0.5">
+                      <div className="w-4 h-[1px] bg-white opacity-20" />
+                    </div>
                   </div>
-                  <div className="flex flex-col items-start text-left">
-                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'ELITNÍ STŘELBA' : 'ELITE SHOOTING'}</span>
-                    <span className="text-[10px] font-mono uppercase" style={{ color: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor }}>{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
+                  <div className="flex flex-col items-start leading-none">
+                    <span className="text-[10px] font-mono uppercase" style={{ color: 'var(--color-mafia-gold)' }}>{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
+                    <span className="text-[8px] font-mono opacity-40 uppercase tracking-tighter">VIP_ACCESS</span>
                   </div>
                 </div>
-                <ChevronRight size={20} style={{ color: (typeof document !== 'undefined' && (document.documentElement.classList.contains('mode-blood') || document.documentElement.classList.contains('theme-blood'))) ? '#8b0000' : userAccentColor }} />
+                <ChevronRight size={20} style={{ color: 'var(--color-mafia-gold)' }} />
               </button>
 
               {/* EFFECTS TOGGLE TILE */}
@@ -1183,7 +1243,7 @@ export function Header() {
                   localStorage.setItem("mmbarber_mobile_effects_enabled", String(newState));
                   window.dispatchEvent(new CustomEvent('mmbarber-mobile-effects-update', { detail: newState }));
                 }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isMobileEffectsEnabled ? 'border-mafia-gold bg-mafia-gold/5 shadow-[0_0_20px_rgba(197,160,89,0.1)]' : 'border-white/10'}`}
+                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isMobileEffectsEnabled ? 'border-mafia-gold bg-mafia-gold/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.1)]' : 'border-white/10'}`}
               >
                 <div className="flex items-center gap-5">
                   <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${isMobileEffectsEnabled ? 'border-mafia-gold bg-mafia-gold/10' : 'border-mafia-gold/30'}`}>
@@ -1214,7 +1274,7 @@ export function Header() {
                 onClick={() => {
                   toggleSound();
                 }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isSoundEnabled ? 'border-mafia-gold bg-mafia-gold/5 shadow-[0_0_20px_rgba(197,160,89,0.1)]' : 'border-white/10'}`}
+                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isSoundEnabled ? 'border-mafia-gold bg-mafia-gold/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.1)]' : 'border-white/10'}`}
               >
                 <div className="flex items-center gap-5">
                   <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${isSoundEnabled ? 'border-mafia-gold bg-mafia-gold/10' : 'border-mafia-gold/30'}`}>

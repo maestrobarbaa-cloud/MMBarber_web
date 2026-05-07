@@ -79,7 +79,7 @@ export function CinematicSequence737() {
                   className="text-white text-3xl md:text-5xl lg:text-7xl font-heading font-black tracking-[0.2em] leading-relaxed uppercase"
                   style={{ 
                     fontFamily: "var(--font-playfair), serif",
-                    textShadow: "0 0 40px rgba(197,160,89,0.3)" 
+                    textShadow: "0 0 40px rgba(var(--color-mafia-gold-rgb),0.3)" 
                   }}
                 >
                   {STEPS[currentStep].text}

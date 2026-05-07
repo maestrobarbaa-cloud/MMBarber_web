@@ -124,7 +124,7 @@ export function PersonalVision() {
                href="https://is.mmbarber.cz" 
                target="_blank" 
                rel="noopener noreferrer"
-               className="w-full max-w-sm p-8 bg-mafia-gold text-mafia-black font-heading font-black uppercase italic tracking-[0.2em] hover:bg-white hover:scale-105 transition-all shadow-[0_0_50px_rgba(197,160,89,0.4)]"
+               className="w-full max-w-sm p-8 bg-mafia-gold text-mafia-black font-heading font-black uppercase italic tracking-[0.2em] hover:bg-white hover:scale-105 transition-all shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.4)]"
              >
                 Rezervovat v mém stylu
              </a>

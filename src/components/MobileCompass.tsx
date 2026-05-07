@@ -186,7 +186,7 @@ export function MobileCompass() {
                   window.dispatchEvent(new CustomEvent('mmbarber-compass-state', { detail: false }));
                 }, 0);
               }}
-              className="fixed top-6 right-6 flex items-center gap-2 text-mafia-gold z-50 p-2 pl-4 bg-mafia-black/80 rounded-full border border-mafia-gold/30 shadow-[0_0_20px_rgba(197,160,89,0.1)] active:scale-95 transition-all"
+              className="fixed top-6 right-6 flex items-center gap-2 text-mafia-gold z-50 p-2 pl-4 bg-mafia-black/80 rounded-full border border-mafia-gold/30 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.1)] active:scale-95 transition-all"
             >
               <span className="text-[10px] font-heading font-black tracking-[0.2em] uppercase">{lang === 'cs' ? 'ZAVŘÍT' : 'CLOSE'}</span>
               <X size={20} />
@@ -205,7 +205,7 @@ export function MobileCompass() {
             <div className="relative w-[80vw] h-[80vw] max-w-[320px] max-h-[320px] flex items-center justify-center mb-12" onClick={() => {
                if (!isPermissionRequested) requestPermission();
             }}>
-               <div className="absolute inset-[-20px] border border-mafia-gold/10 rounded-full shadow-[0_0_50px_rgba(197,160,89,0.1)]"></div>
+               <div className="absolute inset-[-20px] border border-mafia-gold/10 rounded-full shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.1)]"></div>
                
                <motion.div 
                  animate={{ rotate: userHeading !== null ? -(userHeading - calibrationOffset) : 0 }}
@@ -255,7 +255,7 @@ export function MobileCompass() {
                             <stop offset="100%" stopColor="#880000" />
                           </linearGradient>
                           <linearGradient id="needleGold" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="#C5A059" />
+                            <stop offset="0%" stopColor="var(--color-mafia-gold)" />
                             <stop offset="100%" stopColor="#443311" />
                           </linearGradient>
                         </defs>
@@ -270,7 +270,7 @@ export function MobileCompass() {
                    animate={{ scale: 1, opacity: 1 }}
                    className="relative z-30 flex flex-col items-center gap-4"
                  >
-                   <div className="w-24 h-24 rounded-full border-4 border-mafia-gold flex items-center justify-center bg-mafia-gold/20 shadow-[0_0_50px_rgba(197,160,89,0.6)] animate-bounce">
+                   <div className="w-24 h-24 rounded-full border-4 border-mafia-gold flex items-center justify-center bg-mafia-gold/20 shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.6)] animate-bounce">
                      <MapPin size={48} className="text-mafia-gold" />
                    </div>
                    <div className="text-center">
@@ -318,7 +318,7 @@ export function MobileCompass() {
 
                <button 
                   onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SEARCH_QUERY)}`, '_blank')}
-                  className="w-full py-6 bg-mafia-gold text-mafia-black font-heading font-black tracking-[0.4em] uppercase text-lg border-2 border-mafia-gold active:scale-95 transition-all shadow-[0_20px_60px_rgba(197,160,89,0.4)] mb-4"
+                  className="w-full py-6 bg-mafia-gold text-mafia-black font-heading font-black tracking-[0.4em] uppercase text-lg border-2 border-mafia-gold active:scale-95 transition-all shadow-[0_20px_60px_rgba(var(--color-mafia-gold-rgb),0.4)] mb-4"
                >
                   {lang === 'cs' ? 'SPUSTIT MAPU' : 'OPEN MAP'}
                </button>
@@ -335,7 +335,7 @@ export function MobileCompass() {
           </div>
 
           <div className="fixed inset-0 pointer-events-none opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
-          <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(197,160,89,0.03)_1px,transparent_1px)] bg-[size:100%_4px] animate-scanline"></div>
+          <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(var(--color-mafia-gold-rgb),0.03)_1px,transparent_1px)] bg-[size:100%_4px] animate-scanline"></div>
         </motion.div>
       )}
       </AnimatePresence>

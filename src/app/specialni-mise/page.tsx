@@ -86,7 +86,7 @@ export default function SpecialMissionPage() {
           <SpiritEffect />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-mafia-gold/5 via-transparent to-transparent"></div>
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')] opacity-20"></div>
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--color-mafia-gold-rgb),0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--color-mafia-gold-rgb),0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
         </div>
 
         <div className="max-w-5xl w-full relative z-10 flex flex-col items-center">
@@ -181,7 +181,7 @@ export default function SpecialMissionPage() {
                       }}
                       className="relative px-6 py-4 flex items-center justify-center"
                     >
-                      <h1 className="text-7xl md:text-9xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-smoke-white to-mafia-gold/40 tracking-normal uppercase leading-[1.1] drop-shadow-[0_10px_40px_rgba(197,160,89,0.3)] py-4">
+                      <h1 className="text-7xl md:text-9xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-smoke-white to-mafia-gold/40 tracking-normal uppercase leading-[1.1] drop-shadow-[0_10px_40px_rgba(var(--color-mafia-gold-rgb),0.3)] py-4">
                         T.M
                       </h1>
                       

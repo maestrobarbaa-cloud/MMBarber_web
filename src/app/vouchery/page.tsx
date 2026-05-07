@@ -17,7 +17,7 @@ export default function VouchersPage() {
     <main className="min-h-screen bg-black text-white selection:bg-mafia-gold selection:text-black overflow-x-hidden">
       {/* Background FX */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(197,160,89,0.05)_0%,transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)]"></div>
         <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-10"></div>
       </div>
 
@@ -79,7 +79,7 @@ export default function VouchersPage() {
                   transition={{ delay: 0.5 + i * 0.1 }}
                   className="flex items-center gap-5 text-smoke-white font-mono text-base md:text-lg uppercase tracking-widest group"
                 >
-                  <div className="w-2.5 h-2.5 bg-mafia-gold rotate-45 shadow-[0_0_15px_rgba(197,160,89,0.8)] group-hover:scale-125 transition-transform duration-300"></div>
+                  <div className="w-2.5 h-2.5 bg-mafia-gold rotate-45 shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.8)] group-hover:scale-125 transition-transform duration-300"></div>
                   {lang === 'cs' ? item.cs : item.en}
                 </motion.li>
               ))}
@@ -201,7 +201,7 @@ export default function VouchersPage() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-6">
             <Link 
               href="/"
-              className="px-16 py-6 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.5em] text-lg hover:bg-white transition-all duration-500 shadow-[0_20px_50px_rgba(197,160,89,0.3)] w-full md:w-auto relative z-10"
+              className="px-16 py-6 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.5em] text-lg hover:bg-white transition-all duration-500 shadow-[0_20px_50px_rgba(var(--color-mafia-gold-rgb),0.3)] w-full md:w-auto relative z-10"
             >
               {lang === 'cs' ? "ZPĚT DO SALONU" : "BACK TO SALON"}
             </Link>

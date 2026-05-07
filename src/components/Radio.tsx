@@ -16,6 +16,105 @@ export function Radio() {
   const pathname = usePathname();
   const isVip = pathname === "/vip-club";
   const [messageIndex, setMessageIndex] = useState(0);
+  const [activeTheme, setActiveTheme] = useState<'normal' | 'blood' | 'noir'>('normal');
+
+  useEffect(() => {
+    const updateTheme = () => {
+      const isBlood = document.documentElement.classList.contains('theme-blood') || document.documentElement.classList.contains('mode-blood');
+      const isNoir = document.documentElement.classList.contains('noir-mode');
+      if (isBlood) setActiveTheme('blood');
+      else if (isNoir) setActiveTheme('noir');
+      else setActiveTheme('normal');
+    };
+    updateTheme();
+    window.addEventListener('mmbarber-graphics-update', updateTheme);
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => {
+      window.removeEventListener('mmbarber-graphics-update', updateTheme);
+      observer.disconnect();
+    };
+  }, []);
+
+  const NoirLyrics = () => {
+    const [lyricIndex, setLyricIndex] = useState(0);
+    const lyrics = [
+      "Půlnoční stíny na mokré dlažbě...",
+      "Ostrá břitva, tichý slib v každé vazbě...",
+      "Respekt se kupuje krví a loajalitou...",
+      "V MMBarberu najdeš tvář svou skrytou...",
+      "Whisky, kouř a jazz v nočním vzduchu...",
+      "Rodina je víc než jen slova v uchu...",
+      "Tady se píše historie, milimetr po milimetru...",
+      "Vládci UH v každém metru..."
+    ];
+
+    useEffect(() => {
+      if (!isPlaying) return;
+      const interval = setInterval(() => {
+        setLyricIndex(prev => (prev + 1) % lyrics.length);
+      }, 5000);
+      return () => clearInterval(interval);
+    }, [isPlaying]);
+
+    return (
+      <AnimatePresence>
+        {isPlaying && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            className="absolute right-full mr-8 top-1/2 -translate-y-1/2 text-right pointer-events-none"
+          >
+            <motion.p
+              key={lyricIndex}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="text-mafia-gold/60 font-serif italic text-lg leading-relaxed whitespace-nowrap tracking-wider"
+              style={{ textShadow: '0 0 20px rgba(var(--color-mafia-gold-rgb),0.3)' }}
+            >
+              {lyrics[lyricIndex]}
+            </motion.p>
+            <div className="h-px w-32 bg-gradient-to-l from-mafia-gold/40 to-transparent ml-auto mt-2" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  };
+
+  const VinylRecord = () => {
+    const centerColor = {
+      normal: 'var(--color-mafia-gold)',
+      blood: '#ff0000',
+      noir: '#e5e5e5'
+    }[activeTheme];
+
+    return (
+      <motion.div
+        animate={{ rotate: isPlaying ? 360000 : 0 }} // Massive rotation for infinite feel
+        transition={{ 
+          duration: isPlaying ? 4000 : 2, 
+          ease: isPlaying ? "linear" : "easeOut" 
+        }}
+        className="relative w-24 h-24 rounded-full bg-[#0a0a0a] shadow-[0_0_50px_rgba(0,0,0,0.9)] flex items-center justify-center overflow-hidden border border-white/10"
+      >
+        {/* Grooves */}
+        {[4, 8, 12, 16, 20, 24, 28, 32].map(margin => (
+          <div key={margin} className="absolute inset-0 rounded-full border border-white/5 opacity-20" style={{ margin: `${margin}px` }} />
+        ))}
+        {/* Center Label */}
+        <div 
+          className="w-10 h-10 rounded-full shadow-2xl transition-colors duration-500 border border-black/20" 
+          style={{ backgroundColor: centerColor }} 
+        />
+        {/* Hole */}
+        <div className="absolute w-1.5 h-1.5 bg-black rounded-full" />
+        {/* Cinematic Reflections */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-40" />
+      </motion.div>
+    );
+  };
 
   const radioMessages = [
     "„Jen pro ty, co jsou ještě vzhůru.“",
@@ -169,7 +268,12 @@ export function Radio() {
       jazz.pause();
       setIsPlaying(false);
       setIsCustomTrack(false); // Reset on manual stop
-      setIsVisible(false); // Hide player when stopped manually
+      
+      // Delay hiding the player to allow the stylus arm to move back first
+      setTimeout(() => {
+        setIsVisible(false);
+      }, 1000);
+
       trackEvent("radio_stop_play");
       window.dispatchEvent(new CustomEvent('mmbarber-radio-update', { detail: false }));
     } else {
@@ -191,125 +295,67 @@ export function Radio() {
     }
   };
 
-  if (!isVisible) return null;
-
   return (
-    <div className={`hidden xl:flex fixed ${isVip ? 'bottom-6' : 'bottom-[84px]'} right-6 z-50 items-center transition-all duration-500 font-sans`}>
-      {/* Horizontal Hand-drawn Play Me CTA */}
-      {showCta && !isPlaying && (
-        <div className="absolute right-full mr-4 flex items-center pointer-events-none select-none whitespace-nowrap animate-bounce-x">
-          <svg className="absolute h-0 w-0">
-            <defs>
-              <filter id="ink-bleed">
-                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" />
-              </filter>
-            </defs>
-          </svg>
-          
-          <span 
-            className="text-mafia-gold text-sm font-bold tracking-tight mr-4 uppercase font-mono"
-          >
-            {t.radio.playMe}
-          </span>
+    <AnimatePresence>
+      {(isVisible || isPlaying) && (
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className={`fixed ${isVip ? 'bottom-12' : 'bottom-24'} right-12 z-[100]`}
+        >
+          <div className="relative">
+            <NoirLyrics />
+            
+            <button 
+              onClick={togglePlay}
+              className="relative group transition-all duration-500 active:scale-90"
+              aria-label="Toggle Radio"
+            >
+              <div className="absolute inset-[-30%] rounded-full bg-mafia-gold/5 opacity-0 group-hover:opacity-100 transition-opacity blur-3xl" />
+              
+              <div className="relative">
+                <VinylRecord />
+                
+                {/* Stylus / Needle arm visual */}
+                <motion.div 
+                  animate={{ rotate: isPlaying ? 25 : -20 }}
+                  transition={{ duration: 1, ease: "easeInOut" }}
+                  className="absolute -top-2 -right-6 w-16 h-1.5 bg-mafia-gold/30 origin-right"
+                  style={{ borderRadius: '3px', boxShadow: '0 5px 15px rgba(0,0,0,0.5)' }}
+                >
+                   <div className="absolute left-0 top-0 w-3 h-full bg-mafia-gold/50 rounded-l-sm" />
+                </motion.div>
 
-          <svg width="40" height="20" viewBox="0 0 50 30" fill="none" className="text-mafia-gold" filter="url(#ink-bleed)">
-            <path 
-              d="M 5,15 C 15,13 35,13 45,15 M 45,15 L 35,7 M 45,15 L 35,23" 
-              stroke="currentColor" 
-              strokeWidth="2.5" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-      )}
+                {/* Playing indicator ring */}
+                {isPlaying && (
+                  <motion.div 
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
+                    transition={{ duration: 2.5, repeat: Infinity }}
+                    className="absolute inset-0 rounded-full border-2 border-mafia-gold/20"
+                  />
+                )}
+              </div>
 
-      <button 
-        onClick={togglePlay}
-        className={`w-64 h-[72px] flex items-center justify-start px-6 gap-6 border-2 transition-all duration-700 rounded-none bg-mafia-dark/95 backdrop-blur-md group relative shadow-2xl overflow-hidden ${
-          isPlaying 
-            ? "border-mafia-gold bg-mafia-black" 
-            : "border-mafia-gold/30 text-mafia-gold hover:border-mafia-gold hover:bg-mafia-black"
-        }`}
-        aria-label="Toggle Jazz Music"
-      >
-        {/* Progress like bar at bottom */}
-        {isPlaying && (
-          <motion.div 
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
-            className="absolute bottom-0 left-0 right-0 h-0.5 bg-mafia-gold origin-left"
-          />
-        )}
-
-        <div className="relative flex items-center justify-center w-10 h-10 border border-mafia-gold/20 shrink-0">
-          <RadioReceiver 
-            size={24} 
-            className={`text-mafia-gold transition-all duration-700 ${isPlaying ? 'scale-110 drop-shadow-[0_0_10px_rgba(197,160,89,0.8)]' : ''}`} 
-          />
-          {isPlaying && (
-             <motion.div 
-               animate={{ opacity: [0.1, 0.4, 0.1] }}
-               transition={{ duration: 2, repeat: Infinity }}
-               className="absolute inset-0 bg-mafia-gold"
-             />
-          )}
-        </div>
-
-        <div className="flex flex-col items-start gap-0.5 overflow-hidden">
-          <div className="flex items-center gap-3">
-             <span className="font-heading font-black text-lg uppercase tracking-[0.2em] leading-none text-mafia-gold">Radio</span>
-             <AnimatePresence>
-               {isPlaying && (
-                 <motion.div 
-                   initial={{ opacity: 0, scale: 0 }}
-                   animate={{ opacity: 1, scale: 1 }}
-                   exit={{ opacity: 0, scale: 0 }}
-                   className="flex gap-0.5 h-3 items-end"
-                 >
-                   <span className="w-1 h-2 bg-mafia-red/80 animate-[pulse_0.8s_infinite_ease-in-out]" style={{animationDelay: "0ms"}}></span>
-                   <span className="w-1 h-3 bg-mafia-red/80 animate-[pulse_0.8s_infinite_ease-in-out]" style={{animationDelay: "150ms"}}></span>
-                   <span className="w-1 h-2 bg-mafia-red/80 animate-[pulse_0.8s_infinite_ease-in-out]" style={{animationDelay: "300ms"}}></span>
-                 </motion.div>
-               )}
-             </AnimatePresence>
+              {/* CTA Tooltip on hover */}
+              {!isPlaying && (
+                <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-6 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <span className="text-[10px] font-mono text-mafia-gold bg-mafia-black/80 backdrop-blur-md border border-mafia-gold/30 px-3 py-1 uppercase tracking-widest whitespace-nowrap shadow-2xl">
+                    Pustit Jazz
+                  </span>
+                </div>
+              )}
+            </button>
           </div>
-          
-            <span className="text-[10px] font-mono font-black text-mafia-gold uppercase leading-tight">
-              MM Radio je živě.
-            </span>
-            <div className="relative h-3 w-40 overflow-hidden" style={{ maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)' }}>
-               <AnimatePresence mode="popLayout">
-                  <motion.span 
-                    key={messageIndex}
-                    initial={{ x: "120%", opacity: 0 }}
-                    animate={{ x: "-120%", opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ 
-                      duration: 15, 
-                      ease: "linear",
-                      opacity: { duration: 1 }
-                    }}
-                    className="text-[8px] font-mono font-bold text-white/40 uppercase tracking-tighter leading-tight whitespace-nowrap absolute"
-                  >
-                    {radioMessages[messageIndex]}
-                  </motion.span>
-               </AnimatePresence>
-            </div>
-        </div>
-      </button>
 
-      <style jsx>{`
-        @keyframes bounce-x {
-          0%, 100% { transform: translateX(0); }
-          50% { transform: translateX(-10px); }
-        }
-        .animate-bounce-x {
-          animation: bounce-x 1s infinite ease-in-out;
-        }
-      `}</style>
-    </div>
+          <style jsx>{`
+            div {
+              filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
+            }
+          `}</style>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

@@ -37,8 +37,8 @@ const greatVibes = Great_Vibes({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mmbarber.cz"),
-  title: "Barbershop Uherské Hradiště | MMBARBER – pánské holičství Mařatice",
-  description: "Zažijte prémiovou péči v MMBARBER Barber & Shop. Nejlepší barbershop v Uherském Hradišti (Mařatice). Moderní pánský střih, skin fade a úprava vousů břitvou v unikátní noir atmosféře. Rezervujte si svůj termín online u mistrů v oboru.",
+  title: "MMBARBER | Barbershop Uherské Hradiště – střihy & vousy",
+  description: "MMBARBER v Uherském Hradišti – moderní pánské střihy, fade, vousy a styl. Rezervuj si svůj termín ještě dnes.",
   keywords: [
     "MMBARBER",
     "Barbershop Uherské Hradiště",
@@ -52,8 +52,10 @@ export const metadata: Metadata = {
     "barbershop Mařatice",
     "kadeřnictví Kunovice",
     "holič Staré Město",
-    "franchisa barbershop",
-    "investice do podnikání",
+    "moderní pánský střih",
+    "fade střih",
+    "úprava vousů",
+    "moderní barber",
     "MM BARBER rodina",
     "instalatér Uherské Hradiště",
     "elektrikář Slovácko",
@@ -95,8 +97,8 @@ export const metadata: Metadata = {
     shortcut: ["/icon.png?v=1"],
   },
   openGraph: {
-    title: "MMBARBER Barber & Shop | Barbershop | Pánské holičství",
-    description: "Premium grooming, heritage style, and unique community hub in Uherské Hradiště. Experience the global standard of male grooming.",
+    title: "MMBARBER | Barbershop Uherské Hradiště – střihy & vousy",
+    description: "MMBARBER v Uherském Hradišti – moderní pánské střihy, fade, vousy a styl. Rezervuj si svůj termín ještě dnes.",
     url: "https://mmbarber.cz",
     siteName: "MMBARBER",
     images: [
@@ -113,8 +115,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MMBARBER Barber & Shop | Uherské Hradiště",
-    description: "Nejlepší barbershop a pánské kadeřnictví v Uherském Hradišti. Mistrovský střih a unikátní styl.",
+    title: "MMBARBER | Barbershop Uherské Hradiště",
+    description: "MMBARBER v Uherském Hradišti – moderní pánské střihy, fade, vousy a styl.",
     images: ["/obr/main-hero.png"],
   },
   verification: {
@@ -348,7 +350,7 @@ export default function RootLayout({
             <ClientWrapper />
             
             {/* Global Web Frame - PC/Desktop Only (Theme Aware Border & Glow) */}
-            <div className="fixed inset-0 pointer-events-none z-[9999] border-[1px] border-mafia-gold/20 noir-mode:border-mafia-silver/20 theme-blood:border-mafia-red/20 shadow-[inset_0_0_15px_rgba(197,160,89,0.05)] noir-mode:shadow-[inset_0_0_15px_rgba(192,192,192,0.05)] theme-blood:shadow-[inset_0_0_15px_rgba(139,0,0,0.05)] hidden md:block">
+            <div className="fixed inset-0 pointer-events-none z-[9999] border-[1px] border-mafia-gold/20 noir-mode:border-mafia-silver/20 theme-blood:border-mafia-red/20 shadow-[inset_0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)] noir-mode:shadow-[inset_0_0_15px_rgba(192,192,192,0.05)] theme-blood:shadow-[inset_0_0_15px_rgba(139,0,0,0.05)] hidden md:block">
               <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
               <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
               <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@variant noir-mode (&:where(.noir-mode, .noir-mode *));
+@variant theme-blood (&:where(.theme-blood, .theme-blood *));
+
 @property --user-accent-color {
   syntax: '<color>';
   inherits: true;
@@ -9,7 +12,7 @@
 @property --user-glow-color {
   syntax: '<color>';
   inherits: true;
-  initial-value: rgba(197, 160, 89, 0.4);
+  initial-value: rgb(197, 160, 89, 0.4);
 }
 
 @property --user-glow-radius {
@@ -38,7 +41,7 @@ body::before {
   transform: translate(-50%, -50%) rotate(-30deg);
   font-size: 15vw;
   font-family: var(--font-mono);
-  color: rgba(197, 160, 89, 0.015);
+  color: rgb(var(--color-mafia-gold-rgb), 0.015);
   pointer-events: none;
   z-index: 99999;
   white-space: nowrap;
@@ -102,8 +105,9 @@ img {
   pointer-events: none;
 }
 
-html[data-graphics-tier='low'] body {
-  background: #000000 !important;
+html[data-graphics-tier='low'] body,
+html[data-graphics-tier='medium'] body {
+  background: #121212 !important;
 }
 
 html[data-graphics-tier='low'] *,
@@ -142,10 +146,29 @@ html[data-graphics-tier='medium'] [class*='parallax'] {
 
 html[data-graphics-tier='low'] .backdrop-blur-md,
 html[data-graphics-tier='low'] .backdrop-blur-xl,
-html[data-graphics-tier='low'] .backdrop-blur-2xl {
+html[data-graphics-tier='low'] .backdrop-blur-2xl,
+html.disable-blur .backdrop-blur-md,
+html.disable-blur .backdrop-blur-xl,
+html.disable-blur .backdrop-blur-2xl {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  background-color: rgba(0,0,0,0.95) !important;
+  background-color: rgb(10, 10, 10, 0.9) !important;
+}
+
+html[data-graphics-tier='low'] [class*='parallax'],
+html[data-graphics-tier='medium'] [class*='parallax'],
+html.disable-parallax [class*='parallax'] {
+  transform: none !important;
+  transition: none !important;
+}
+
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
 
 html[data-graphics-tier='low'] .atmosphere-container,
@@ -157,8 +180,13 @@ html[data-graphics-tier='low'] .global-web-frame {
 }
 
 /* ADVANCED GRAPHICS EFFECTS */
-html {
+html:not(.is-mobile-device) {
   --user-sharpness: 0.5;
+  image-rendering: auto;
+}
+
+html.is-mobile-device {
+  --user-sharpness: 0;
   image-rendering: auto;
 }
 
@@ -171,14 +199,14 @@ html.vignette-active body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.4) 100%);
+  background: radial-gradient(circle at center, transparent 40%, rgb(0, 0, 0, 0.4) 100%);
   pointer-events: none;
   z-index: 10008;
 }
 
 /* Chromatic Aberration Simulation */
 html.chromatic-active body {
-  text-shadow: 1px 0 0 rgba(255,0,0,0.2), -1px 0 0 rgba(0,255,255,0.2);
+  text-shadow: 1px 0 0 rgb(255, 0, 0, 0.2), -1px 0 0 rgb(0, 255, 255, 0.2);
 }
 
 /* Cinematic Letterbox (21:9) */
@@ -258,8 +286,8 @@ html.letterbox-active {
   filter: contrast(1.15) saturate(1.1) brightness(0.85) sepia(0.05) hue-rotate(-5deg) !important;
 }
 
-/* Sharpness control via contrast/brightness filter if needed */
-html {
+/* Sharpness control via contrast/brightness filter if needed - Disabled on Mobile */
+html:not(.is-mobile-device) {
   filter: contrast(calc(1 + (var(--user-sharpness, 0.5) - 0.5) * 0.2)) brightness(calc(1 - (var(--user-sharpness, 0.5) - 0.5) * 0.05));
 }
 
@@ -275,12 +303,19 @@ html {
   --color-mafia-dark: #121212;
   --color-mafia-sepia: #704214;
   --color-mafia-gold: var(--user-accent-color, #c5a059);
+  --color-mafia-gold-rgb: 197, 160, 89;
   --color-mafia-gold-accent: var(--user-accent-color);
   --color-mafia-red: var(--user-red-color, #8b0000);
   --color-mafia-silver: #e2e2e2;
   --color-mafia-blood: #8b0000;
   --color-neon-yellow: #fdfd96;
   --color-smoke-white: #e5e4e2;
+}
+
+html[data-graphics-tier='low'],
+html[data-graphics-tier='medium'] {
+  --color-mafia-black: #1a1a1a; /* Lighter gray to prevent 'too dark' feel on low spec */
+  background-color: #1a1a1a !important;
 }
 
 :root {
@@ -291,7 +326,7 @@ html {
   
   /* Derived Dynamic Properties */
   --user-glow-radius: calc(25px * var(--user-glow-intensity));
-  --user-glow-color: rgba(var(--user-accent-color-rgb), calc(0.4 * var(--user-glow-intensity)));
+  --user-glow-color: rgb(var(--user-accent-color-rgb), calc(0.4 * var(--user-glow-intensity)));
   --user-glow-shadow: 0 0 var(--user-glow-radius) var(--user-glow-color);
   
   --background: var(--color-mafia-black);
@@ -332,20 +367,25 @@ body {
   text-shadow: 0 0 calc(10px * var(--user-glow-intensity)) var(--user-accent-color);
 }
 
-html.noir-mode:not(.theme-blood) {
+html.noir-mode:not(.theme-blood):not(.is-mobile-device) {
   filter: grayscale(100%) contrast(1.1) brightness(1);
+}
+
+html.is-mobile-device.noir-mode:not(.theme-blood) {
+  /* Use a much cheaper filter or just grayscale on mobile */
+  filter: grayscale(100%);
 }
 
 html.noir-mode {
   --color-mafia-gold: #e2e2e2; /* Bright silver */
   --color-mafia-gold-rgb: 226, 226, 226;
-  --color-mafia-gold-glow: rgba(226, 226, 226, 0.3);
+  --color-mafia-gold-glow: rgb(226, 226, 226, 0.3);
   --user-accent-color: #e2e2e2;
   --user-accent-color-rgb: 226, 226, 226;
   --color-mafia-sepia: #888888; /* Silver sepia */
   --user-red-color: #aaaaaa;   /* Silvered red details by default */
   --user-glow-radius: 25px; /* Consistent glow */
-  --user-glow-color: rgba(255, 255, 255, 0.3);
+  --user-glow-color: rgb(255, 255, 255, 0.3);
 }
 
 html.noir-mode.theme-blood {
@@ -367,7 +407,7 @@ html.noir-mode [style*="background-image"] {
 }
 
 html.noir-mode img[src*="logo.png"] {
-  filter: grayscale(1) brightness(1.8) contrast(1.2) drop-shadow(0 0 8px rgba(255,255,255,0.4)) !important;
+  filter: grayscale(1) brightness(1.8) contrast(1.2) drop-shadow(0 0 8px rgb(255, 255, 255, 0.4)) !important;
 }
 
 /* Header Hiding Utility */
@@ -396,30 +436,30 @@ html.theme-ocean {
   --color-mafia-gold: #0077be;
   --color-mafia-gold-rgb: 0, 119, 190;
 }
-html.theme-silver {
+html.theme-silver, 
+html.noir-mode {
   --color-mafia-gold: #e2e2e2; /* Bright silver */
   --color-mafia-gold-rgb: 226, 226, 226;
-  --color-mafia-gold-glow: rgba(226, 226, 226, 0.3);
+  --color-mafia-gold-glow: rgb(226, 226, 226, 0.3);
   --user-accent-color: #e2e2e2;
   --user-accent-color-rgb: 226, 226, 226;
   --color-mafia-sepia: #888888; /* Silver sepia */
   --color-mafia-red: #aaaaaa;   /* Silver red */
   --user-glow-radius: 25px; /* Consistent glow */
-  --user-glow-color: rgba(255, 255, 255, 0.3);
+  --user-glow-color: rgb(255, 255, 255, 0.3);
   --neon-glow-color: #fff; /* White flicker for Noir Silver */
 }
 
 html.theme-blood {
-  --color-mafia-gold: #e2e2e2; /* Back to silver base */
-  --color-mafia-gold-rgb: 226, 226, 226;
-  --color-mafia-gold-glow: rgba(226, 226, 226, 0.3);
+  --color-mafia-gold: #8b0000; /* Deep Blood Red */
+  --color-mafia-gold-rgb: 139, 0, 0;
+  --color-mafia-gold-glow: rgb(139, 0, 0, 0.4);
   --user-accent-color: #8b0000;
   --user-accent-color-rgb: 139, 0, 0;
-  --color-mafia-sepia: #888888; /* Silver sepia */
-  --color-mafia-red: #8b0000;   /* Blood red detail - preserved! */
-  --user-glow-radius: 25px;
-  --user-glow-color: rgba(255, 255, 255, 0.3);
-  --neon-glow-color: #8b0000; /* Red flicker for Blood mode! */
+  --user-glow-color: rgb(139, 0, 0, 0.4);
+  --color-mafia-sepia: #880000; 
+  --color-mafia-red: #ff0000;
+  --neon-glow-color: #ff0000;
 }
 
 /* Image Overrides for Silver Theme - Applying globally now */
@@ -436,7 +476,7 @@ html.theme-blood [style*="background-image"] {
 /* Removed hero-background override to allow global grayscale */
 
 html.theme-silver img[src*="logo.png"] {
-  filter: grayscale(1) brightness(1.8) contrast(1.2) drop-shadow(0 0 8px rgba(255,255,255,0.4)) !important;
+  filter: grayscale(1) brightness(1.8) contrast(1.2) drop-shadow(0 0 8px rgb(255, 255, 255, 0.4)) !important;
 }
 
 /* Specifically for Hero background when glitching (if we want to keep glitch silver, but here we want color) */
@@ -460,7 +500,7 @@ html.crt-active::after {
   left: 0;
   bottom: 0;
   right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background: linear-gradient(rgb(18, 16, 16, 0) 50%, rgb(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgb(255, 0, 0, 0.06), rgb(0, 255, 0, 0.02), rgb(0, 0, 255, 0.06));
   z-index: 10008;
   background-size: 100% 4px, 3px 100%;
   pointer-events: none;
@@ -478,14 +518,14 @@ html.mode-crt body {
 html.mode-matrix {
   filter: hue-rotate(80deg) brightness(0.8) contrast(1.2);
   --color-mafia-gold: #00ff41; /* Iconic Matrix neon green */
-  --color-mafia-gold-glow: rgba(0, 255, 65, 0.4);
+  --color-mafia-gold-glow: rgb(0, 255, 65, 0.4);
 }
 
 html.mode-matrix body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.03) 0px, rgba(0, 255, 0, 0.03) 1px, transparent 1px, transparent 2px);
+  background: repeating-linear-gradient(0deg, rgb(0, 255, 0, 0.03) 0px, rgb(0, 255, 0, 0.03) 1px, transparent 1px, transparent 2px);
   z-index: 99998;
   pointer-events: none;
 }
@@ -502,7 +542,7 @@ html.mode-chaos .animate-float-subtle {
 html.mode-valentine {
   filter: sepia(0.2) hue-rotate(325deg) brightness(0.9) contrast(1.1);
   --color-mafia-gold: #ff3366;
-  --color-mafia-gold-glow: rgba(255, 51, 102, 0.5);
+  --color-mafia-gold-glow: rgb(255, 51, 102, 0.5);
 }
 
 html.mode-valentine .logo-neon {
@@ -517,7 +557,7 @@ html.mode-valentine .logo-neon {
 html.mode-st-patricks {
   filter: contrast(1.1) brightness(0.95);
   --color-mafia-gold: #00ff41; /* Emerald Green */
-  --color-mafia-gold-glow: rgba(0, 255, 65, 0.5);
+  --color-mafia-gold-glow: rgb(0, 255, 65, 0.5);
 }
 
 html.mode-st-patricks .logo-neon {
@@ -527,14 +567,14 @@ html.mode-st-patricks .logo-neon {
 
 @keyframes patricks-glow {
   from { text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41; }
-  to { text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41, 0 0 60px #c5a059; }
+  to { text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41, 0 0 60px var(--color-mafia-gold); }
 }
 
 html.mode-st-patricks body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at top right, rgba(0, 255, 65, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle at top right, rgb(0, 255, 65, 0.05) 0%, transparent 70%);
   pointer-events: none;
   z-index: 9999;
 }
@@ -542,14 +582,14 @@ html.mode-st-patricks body::after {
 html.mode-halloween {
   filter: brightness(0.7) contrast(1.4) sepia(0.4) hue-rotate(10deg);
   --color-mafia-gold: #ff6600;
-  --color-mafia-gold-glow: rgba(255, 102, 0, 0.6);
+  --color-mafia-gold-glow: rgb(255, 102, 0, 0.6);
 }
 
 html.mode-halloween body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.6) 100%);
+  background: radial-gradient(circle at center, transparent 20%, rgb(0, 0, 0, 0.6) 100%);
   pointer-events: none;
   z-index: 9999;
   animation: halloween-flicker 4s infinite;
@@ -565,7 +605,7 @@ html.mode-halloween body::after {
 html.mode-christmas {
   filter: contrast(1.1) brightness(1.1);
   --color-mafia-gold: #2e7d32;
-  --color-mafia-gold-glow: rgba(46, 125, 50, 0.5);
+  --color-mafia-gold-glow: rgb(46, 125, 50, 0.5);
 }
 
 html.mode-christmas body::before {
@@ -573,12 +613,12 @@ html.mode-christmas body::before {
   position: fixed;
   inset: 0;
   background-image: 
-    radial-gradient(4px 4px at 20px 30px, #fff, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 40px 70px, #fff, rgba(0,0,0,0)),
-    radial-gradient(5px 5px at 150px 160px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 290px 40px, #fff, rgba(0,0,0,0)),
-    radial-gradient(4px 4px at 330px 80px, #fff, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 460px 120px, #fff, rgba(0,0,0,0));
+    radial-gradient(4px 4px at 20px 30px, #fff, rgb(0, 0, 0, 0)),
+    radial-gradient(3px 3px at 40px 70px, #fff, rgb(0, 0, 0, 0)),
+    radial-gradient(5px 5px at 150px 160px, #fff, rgb(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 290px 40px, #fff, rgb(0, 0, 0, 0)),
+    radial-gradient(4px 4px at 330px 80px, #fff, rgb(0, 0, 0, 0)),
+    radial-gradient(3px 3px at 460px 120px, #fff, rgb(0, 0, 0, 0));
   background-size: 600px 600px;
   animation: snow-fall-large 12s linear infinite;
   pointer-events: none;
@@ -591,10 +631,10 @@ html.mode-christmas body::after {
   position: fixed;
   inset: 0;
   background-image: 
-    radial-gradient(2px 2px at 150px 300px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1.5px 1.5px at 340px 170px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 550px 260px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1.5px 1.5px at 190px 440px, #fff, rgba(0,0,0,0));
+    radial-gradient(2px 2px at 150px 300px, #fff, rgb(0, 0, 0, 0)),
+    radial-gradient(1.5px 1.5px at 340px 170px, #fff, rgb(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 550px 260px, #fff, rgb(0, 0, 0, 0)),
+    radial-gradient(1.5px 1.5px at 190px 440px, #fff, rgb(0, 0, 0, 0));
   background-size: 800px 800px;
   animation: snow-fall-small 25s linear infinite;
   pointer-events: none;
@@ -615,7 +655,7 @@ html.mode-christmas body::after {
 html.mode-newyear {
   filter: contrast(1.2) brightness(1.2) saturate(1.3);
   --color-mafia-gold: #ffca28;
-  --color-mafia-gold-glow: rgba(255, 202, 40, 0.7);
+  --color-mafia-gold-glow: rgb(255, 202, 40, 0.7);
 }
 
 html.mode-newyear .logo-neon {
@@ -631,7 +671,7 @@ html.mode-newyear .logo-neon {
 html.mode-czech {
   filter: contrast(1.1);
   --color-mafia-gold: #11457e; /* Czech Blue */
-  --color-mafia-gold-glow: rgba(17, 69, 126, 0.4);
+  --color-mafia-gold-glow: rgb(17, 69, 126, 0.4);
 }
 
 html.mode-czech .logo-neon {
@@ -649,7 +689,7 @@ html.mode-czech body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(17,69,126,0.02) 50%, rgba(215,20,26,0.02) 100%);
+  background: linear-gradient(135deg, rgb(255, 255, 255, 0.02) 0%, rgb(17, 69, 126, 0.02) 50%, rgb(215, 20, 26, 0.02) 100%);
   pointer-events: none;
   z-index: 9999;
 }
@@ -658,16 +698,16 @@ html.mode-czech body::after {
 html.mode-childrens-day {
   filter: contrast(1.05) saturate(1.5);
   --color-mafia-gold: #00E5FF; /* Electric Cyan */
-  --color-mafia-gold-glow: rgba(0, 229, 255, 0.6);
+  --color-mafia-gold-glow: rgb(0, 229, 255, 0.6);
   --user-accent-color: #00E5FF;
-  --user-font-sans: "Inter", sans-serif !important;
+  --user-font-sans: "Inter", sans-serif ;
 }
 
 html.mode-childrens-day body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: linear-gradient(45deg, rgba(255, 0, 127, 0.05) 0%, rgba(0, 229, 255, 0.05) 100%);
+  background: linear-gradient(45deg, rgb(255, 0, 127, 0.05) 0%, rgb(0, 229, 255, 0.05) 100%);
   pointer-events: none;
   z-index: 9998;
 }
@@ -688,7 +728,7 @@ html.mode-childrens-day .logo-neon {
 html.mode-poppy {
   filter: contrast(1.15) saturate(0.8) sepia(0.2);
   --color-mafia-gold: #e2062c; /* Poppy Red */
-  --color-mafia-gold-glow: rgba(226, 6, 44, 0.6);
+  --color-mafia-gold-glow: rgb(226, 6, 44, 0.6);
   --user-accent-color: #e2062c;
   --background: #111311; /* Dark subtle olive/black */
 }
@@ -698,8 +738,8 @@ html.mode-poppy body::after {
   position: fixed;
   inset: 0;
   background-image: 
-    radial-gradient(circle at center, transparent 30%, rgba(226, 6, 44, 0.05) 100%),
-    linear-gradient(rgba(226, 6, 44, 0.02) 1px, transparent 1px);
+    radial-gradient(circle at center, transparent 30%, rgb(226, 6, 44, 0.05) 100%),
+    linear-gradient(rgb(226, 6, 44, 0.02) 1px, transparent 1px);
   background-size: 100% 100%, 100% 4px;
   pointer-events: none;
   z-index: 9999;
@@ -727,7 +767,7 @@ html.mode-poppy body::before {
   pointer-events: none;
   z-index: 0;
   opacity: 0.3;
-  filter: blur(2px) drop-shadow(0 0 3px rgba(0,0,0,0.8));
+  filter: blur(2px) drop-shadow(0 0 3px rgb(0, 0, 0, 0.8));
 }
 
 /* Falling poppies effect - Foreground Layer (Faster, larger, spinning) */
@@ -741,14 +781,14 @@ html.mode-poppy::before {
   pointer-events: none;
   z-index: 0;
   opacity: 0.5;
-  filter: drop-shadow(0 0 5px rgba(0,0,0,1));
+  filter: drop-shadow(0 0 5px rgb(0, 0, 0, 1));
 }
 
 /* SECRET MODE: CRIMSON UNDERWORLD */
 html.mode-secret {
   filter: contrast(1.2) brightness(0.9);
   --color-mafia-gold: #8a0707; /* Crimson / Blood Red */
-  --color-mafia-gold-glow: rgba(138, 7, 7, 0.4);
+  --color-mafia-gold-glow: rgb(138, 7, 7, 0.4);
 }
 
 html.mode-secret .logo-neon {
@@ -758,15 +798,15 @@ html.mode-secret .logo-neon {
 
 @keyframes secret-glitch {
   0% { text-shadow: 0 0 10px #8a0707, 0 0 20px #8a0707; transform: skew(0.5deg); }
-  50% { text-shadow: 2px 0 15px #c5a059, -2px 0 15px #8a0707; transform: skew(-0.25deg); }
-  100% { text-shadow: 0 0 25px #8a0707, 0 0 45px #c5a059; transform: skew(0.5deg); opacity: 0.95; }
+  50% { text-shadow: 2px 0 15px var(--color-mafia-gold), -2px 0 15px #8a0707; transform: skew(-0.25deg); }
+  100% { text-shadow: 0 0 25px #8a0707, 0 0 45px var(--color-mafia-gold); transform: skew(0.5deg); opacity: 0.95; }
 }
 
 html.mode-secret body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 0%, rgba(138, 7, 7, 0.1) 100%);
+  background: radial-gradient(circle at center, transparent 0%, rgb(138, 7, 7, 0.1) 100%);
   pointer-events: none;
   z-index: 9999;
   animation: secret-pulse 4s ease-in-out infinite;
@@ -779,14 +819,14 @@ html.mode-secret body::before {
 
 html.mode-secret .btn-mafia-gold {
   border-color: #8a0707 !important;
-  box-shadow: 0 0 15px rgba(138, 7, 7, 0.3);
+  box-shadow: 0 0 15px rgb(138, 7, 7, 0.3);
 }
 
 /* FRIDAY THE 13TH MODE: CURSED BARBER */
 html.mode-friday13 {
   filter: contrast(1.3) brightness(0.8) sepia(0.2) hue-rotate(-10deg);
   --color-mafia-gold: #b30000; /* Blood Red */
-  --color-mafia-gold-glow: rgba(179, 0, 0, 0.6);
+  --color-mafia-gold-glow: rgb(179, 0, 0, 0.6);
   --color-mafia-gold-rgb: 179, 0, 0;
 }
 
@@ -795,9 +835,9 @@ html.mode-friday13 body::after {
   position: fixed;
   inset: 0;
   background: 
-    radial-gradient(circle at 20% 30%, rgba(138, 7, 7, 0.15) 0%, transparent 20%),
-    radial-gradient(circle at 80% 70%, rgba(138, 7, 7, 0.1) 0%, transparent 25%),
-    radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 100%);
+    radial-gradient(circle at 20% 30%, rgb(138, 7, 7, 0.15) 0%, transparent 20%),
+    radial-gradient(circle at 80% 70%, rgb(138, 7, 7, 0.1) 0%, transparent 25%),
+    radial-gradient(circle at center, transparent 30%, rgb(0, 0, 0, 0.8) 100%);
   pointer-events: none;
   z-index: 9999;
   animation: friday-flicker 5s infinite;
@@ -808,7 +848,7 @@ html.mode-friday13 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath d='M0,0 L1000,1000 M1000,0 L0,1000 M500,0 L500,1000 M0,500 L1000,500' stroke='rgba(255,255,255,0.05)' stroke-width='1' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath d='M0,0 L1000,1000 M1000,0 L0,1000 M500,0 L500,1000 M0,500 L1000,500' stroke='rgb(255, 255, 255, 0.05)' stroke-width='1' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-size: cover;
   pointer-events: none;
   z-index: 9998;
@@ -830,37 +870,37 @@ html.mode-friday13 .logo-neon {
 }
 
 @keyframes friday-glitch {
-  0% { text-shadow: 2px 0 0 rgba(255,0,0,0.5), -2px 0 0 rgba(0,255,255,0.5); transform: translate(0); }
+  0% { text-shadow: 2px 0 0 rgb(255, 0, 0, 0.5), -2px 0 0 rgb(0, 255, 255, 0.5); transform: translate(0); }
   20% { transform: translate(-2px, 1px); }
   40% { transform: translate(-2px, -1px); }
   60% { transform: translate(2px, 1px); }
   80% { transform: translate(2px, -1px); }
-  100% { text-shadow: -2px 0 0 rgba(255,0,0,0.5), 2px 0 0 rgba(0,255,255,0.5); transform: translate(0); }
+  100% { text-shadow: -2px 0 0 rgb(255, 0, 0, 0.5), 2px 0 0 rgb(0, 255, 255, 0.5); transform: translate(0); }
 }
 
 html.mode-friday13 .btn-mafia-gold {
-  background: rgba(138, 7, 7, 0.2) !important;
+  background: rgb(138, 7, 7, 0.2) !important;
   border-color: #b30000 !important;
-  box-shadow: 0 0 15px rgba(179, 0, 0, 0.4);
+  box-shadow: 0 0 15px rgb(179, 0, 0, 0.4);
 }
 
 html.mode-friday13 .btn-mafia-gold:hover {
   background: #b30000 !important;
   color: #fff !important;
-  box-shadow: 0 0 30px rgba(179, 0, 0, 0.8);
+  box-shadow: 0 0 30px rgb(179, 0, 0, 0.8);
 }
 
 html.mode-easter {
   filter: contrast(1.1) brightness(1.05);
-  --color-mafia-gold: #ffeb3b; /* Spring Yellow */
-  --color-mafia-gold-glow: rgba(255, 235, 59, 0.5);
+  --color-mafia-gold: #c5a059; /* Standard Mafia Gold */
+  --color-mafia-gold-glow: rgb(var(--color-mafia-gold-rgb), 0.5);
 }
 
 html.mode-easter body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(255, 235, 59, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgb(255, 235, 59, 0.05) 0%, transparent 70%);
   pointer-events: none;
   z-index: 9999;
 }
@@ -869,7 +909,7 @@ html.mode-easter body::after {
 html.mode-witches {
   filter: contrast(1.1) saturate(1.2);
   --color-mafia-gold: #ff6600; /* Fire Orange */
-  --color-mafia-gold-glow: rgba(255, 69, 0, 0.6);
+  --color-mafia-gold-glow: rgb(255, 69, 0, 0.6);
 }
 
 html.mode-witches body::after {
@@ -877,7 +917,7 @@ html.mode-witches body::after {
   position: fixed;
   inset: 0;
   background: 
-    radial-gradient(circle at 50% 120%, rgba(255, 69, 0, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 50% 120%, rgb(255, 69, 0, 0.15) 0%, transparent 60%),
     url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.05'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 9999;
@@ -886,28 +926,28 @@ html.mode-witches body::after {
 html.mode-witches .btn-mafia-gold {
   border-color: #ff4500 !important;
   color: #ff4500 !important;
-  box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
+  box-shadow: 0 0 15px rgb(255, 69, 0, 0.3);
 }
 
 html.mode-witches .btn-mafia-gold:hover {
   background: #ff4500 !important;
   color: #000 !important;
-  box-shadow: 0 0 30px rgba(255, 69, 0, 0.8);
+  box-shadow: 0 0 30px rgb(255, 69, 0, 0.8);
 }
 
 /* LEGACY MODE: ROYAL AMBER FOUNDER EDITION */
 html.mode-legacy {
   filter: contrast(1.15) brightness(0.9) sepia(0.3) hue-rotate(-5deg);
-  --color-mafia-gold: #ffb700;
-  --color-mafia-gold-glow: rgba(255, 183, 0, 0.4);
+  --color-mafia-gold: #c5a059;
+  --color-mafia-gold-glow: rgb(var(--color-mafia-gold-rgb), 0.4);
 }
 
 /* VICTORY DAY MODE: DEN VÍTĚZSTVÍ */
 html.mode-victory {
   filter: contrast(1.1) brightness(1.05) saturate(0.9);
-  --color-mafia-gold: #ffd700; /* Pure Triumphant Gold */
-  --color-mafia-gold-glow: rgba(255, 215, 0, 0.6);
-  --user-accent-color: #ffd700;
+  --color-mafia-gold: #c5a059; 
+  --color-mafia-gold-glow: rgb(var(--color-mafia-gold-rgb), 0.6);
+  --user-accent-color: #c5a059;
 }
 
 html.mode-victory body::after {
@@ -915,8 +955,8 @@ html.mode-victory body::after {
   position: fixed;
   inset: 0;
   background: 
-    radial-gradient(circle at center, transparent 30%, rgba(197, 160, 89, 0.1) 100%),
-    linear-gradient(rgba(255, 215, 0, 0.02) 1px, transparent 1px);
+    radial-gradient(circle at center, transparent 30%, rgb(var(--color-mafia-gold-rgb), 0.1) 100%),
+    linear-gradient(rgb(255, 215, 0, 0.02) 1px, transparent 1px);
   background-size: 100% 100%, 100% 3px;
   pointer-events: none;
   z-index: 9999;
@@ -940,7 +980,7 @@ html.mode-legacy .logo-neon {
 }
 
 @keyframes legacy-shimmer {
-  0% { text-shadow: 0 0 10px #ffb700, 0 0 20px #c5a059; letter-spacing: normal; }
+  0% { text-shadow: 0 0 10px #ffb700, 0 0 20px var(--color-mafia-gold); letter-spacing: normal; }
   100% { text-shadow: 0 0 30px #ffb700, 0 0 60px #ffb700, 0 0 80px #fff; letter-spacing: 0.1em; }
 }
 
@@ -949,7 +989,7 @@ html.mode-legacy body::after {
   position: fixed;
   inset: 0;
   background: 
-    radial-gradient(circle at center, transparent 30%, rgba(255, 183, 0, 0.08) 100%),
+    radial-gradient(circle at center, transparent 30%, rgb(255, 183, 0, 0.08) 100%),
     url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noise)" opacity="0.1"/%3E%3C/svg%3E');
   pointer-events: none;
   z-index: 9999;
@@ -978,7 +1018,7 @@ html.mode-legacy body::before {
 html.mode-falco {
   filter: contrast(1.1) brightness(1.1);
   --color-mafia-gold: #ff0000; /* Austrian Red */
-  --color-mafia-gold-glow: rgba(255, 0, 0, 0.5);
+  --color-mafia-gold-glow: rgb(255, 0, 0, 0.5);
   --user-accent-color: #ff0000;
   --user-font-sans: "Courier New", Courier, monospace;
 }
@@ -988,8 +1028,8 @@ html.mode-falco body::after {
   position: fixed;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(255, 0, 0, 0.05) 1px, transparent 1px),
-    radial-gradient(circle at center, transparent 30%, rgba(255, 0, 0, 0.02) 100%);
+    linear-gradient(rgb(255, 0, 0, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at center, transparent 30%, rgb(255, 0, 0, 0.02) 100%);
   background-size: 100% 40px, 100% 100%;
   pointer-events: none;
   z-index: 9999;
@@ -1013,7 +1053,7 @@ html.mode-vintage {
   filter: sepia(0.6) contrast(1.1) brightness(0.9);
 }
 html.mode-vintage .logo-neon {
-  text-shadow: 2px 2px 0px rgba(0,0,0,0.5), 0 0 10px #c5a059 !important;
+  text-shadow: 2px 2px 0px rgb(0, 0, 0, 0.5), 0 0 10px var(--color-mafia-gold) !important;
 }
 
 /* COLD NOIR */
@@ -1029,7 +1069,7 @@ html.mode-noirred body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 0%, rgba(138, 7, 7, 0.15) 100%);
+  background: radial-gradient(circle at center, transparent 0%, rgb(138, 7, 7, 0.15) 100%);
   pointer-events: none;
   z-index: 9999;
 }
@@ -1126,14 +1166,14 @@ button, input, select, textarea {
   /* Base state: off/dim */
   0%, 1.5%, 1.8%, 9.4%, 9.7%, 17.9%, 18.2%, 29.0%, 29.3%, 33.2%, 33.5%, 44.9%, 45.2%, 57.4%, 57.7%, 64.0%, 64.3%, 72.7%, 73.0%, 89.0%, 89.3%, 94.0%, 94.3%, 100% {
     text-shadow: none;
-    color: rgba(255,255,255,0.2);
+    color: rgb(255, 255, 255, 0.2);
     opacity: 0.4;
   }
   /* On states */
   1.6%, 9.5%, 18.0%, 29.1%, 33.3%, 45.0%, 57.5%, 64.1%, 72.8%, 89.1%, 94.1% {
     text-shadow: 
       0 0 4px #fff,
-      0 0 12px rgba(255, 255, 255, 0.9),
+      0 0 12px rgb(255, 255, 255, 0.9),
       0 0 25px var(--neon-glow-color, var(--color-mafia-gold));
     color: #fff;
     opacity: 1;
@@ -1183,7 +1223,7 @@ button, input, select, textarea {
 }
 
 .theme-blood .evasive-button-custom {
-  box-shadow: 0 0 50px rgba(139, 0, 0, 0.6) !important;
+  box-shadow: 0 0 50px rgb(139, 0, 0, 0.6) !important;
   border-color: #8b0000 !important;
 }
 
@@ -1196,12 +1236,12 @@ button, input, select, textarea {
 .theme-blood .barber-dialogue-text,
 .theme-blood .flavor-text {
   color: #8b0000 !important;
-  text-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+  text-shadow: 0 0 15px rgb(139, 0, 0, 0.3);
 }
 
 .theme-blood .section-underline {
   background: linear-gradient(to right, transparent, #8b0000, transparent) !important;
-  box-shadow: 0 0 20px rgba(139, 0, 0, 0.6) !important;
+  box-shadow: 0 0 20px rgb(139, 0, 0, 0.6) !important;
 }
 
 .theme-blood .address-side-bar {
@@ -1212,19 +1252,19 @@ button, input, select, textarea {
 .theme-blood .map-target-ring,
 .theme-blood .map-target-x {
   color: #8b0000 !important;
-  filter: drop-shadow(0 0 10px rgba(139, 0, 0, 0.8));
+  filter: drop-shadow(0 0 10px rgb(139, 0, 0, 0.8));
 }
 
 .theme-blood .compass-ring,
 .theme-blood .compass-mark,
 .theme-blood .compass-x {
-  border-color: rgba(139, 0, 0, 0.4) !important;
+  border-color: rgb(139, 0, 0, 0.4) !important;
   color: #8b0000 !important;
 }
 
 .theme-blood .barber-booking-text {
   color: #8b0000 !important;
-  text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+  text-shadow: 0 0 10px rgb(139, 0, 0, 0.5);
 }
 
 .theme-silver .logo-neon {

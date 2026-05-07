@@ -67,7 +67,7 @@ const BulletHoles = () => {
             style={{ left: `${hole.x}%`, top: `${hole.y}%`, rotate: `${hole.rotation}deg` }}
           >
              {/* The Bullet Hole - ULTRA REALISTIC GOLD */}
-             <div className="w-full h-full rounded-full bg-gradient-to-br from-[#1a1100] via-black to-[#2d1e00] border-[3px] border-mafia-gold shadow-[0_0_20px_rgba(197,160,89,0.4),inset_0_0_15px_rgba(0,0,0,1)] relative overflow-hidden">
+             <div className="w-full h-full rounded-full bg-gradient-to-br from-[#1a1100] via-black to-[#2d1e00] border-[3px] border-mafia-gold shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.4),inset_0_0_15px_rgba(0,0,0,1)] relative overflow-hidden">
                 {/* Metallic shine reflection */}
                 <div className="absolute top-0 left-0 w-full h-1/2 bg-white/10 -skew-y-12"></div>
              </div>
@@ -178,7 +178,7 @@ export default function GaleriePage() {
           <div className="flex flex-col items-center gap-10 mt-24 md:mt-40">
             <Link 
                 href="/#services"
-                className="group relative inline-flex items-center gap-6 bg-mafia-gold px-12 py-6 transition-all duration-700 hover:bg-white hover:scale-105 shadow-[0_30px_60px_rgba(0,0,0,0.8),0_0_20px_rgba(197,160,89,0.3)] active:scale-95"
+                className="group relative inline-flex items-center gap-6 bg-mafia-gold px-12 py-6 transition-all duration-700 hover:bg-white hover:scale-105 shadow-[0_30px_60px_rgba(0,0,0,0.8),0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] active:scale-95"
             >
                 <ArrowLeft size={32} className="text-mafia-black group-hover:-translate-x-2 transition-transform" />
                 <span className="text-mafia-black font-heading font-black text-2xl uppercase tracking-[0.4em]">{lang === 'cs' ? 'ZPĚT NA ÚVODNÍ STRANU' : 'BACK TO HOME PAGE'}</span>

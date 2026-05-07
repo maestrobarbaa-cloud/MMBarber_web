@@ -59,7 +59,7 @@ export function CareSEOArchive() {
 
   return (
     <div className="w-full bg-[#080808] border-t border-mafia-gold/20 py-24 px-6 relative overflow-hidden mt-20">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(197,160,89,0.03)_0%,transparent_70%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--color-mafia-gold-rgb),0.03)_0%,transparent_70%)] pointer-events-none"></div>
       
       <div className="max-w-7xl mx-auto">
         <motion.div 

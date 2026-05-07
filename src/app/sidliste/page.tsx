@@ -21,11 +21,11 @@ export default function HousingEstatePage() {
       
       {/* Cinematic Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(197,160,89,0.1)_0%,transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.03)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--color-mafia-gold-rgb),0.1)_0%,transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--color-mafia-gold-rgb),0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--color-mafia-gold-rgb),0.03)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
         
         {/* Animated Grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(197,160,89,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(197,160,89,0.05)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(var(--color-mafia-gold-rgb),0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(var(--color-mafia-gold-rgb),0.05)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
       </div>
 
       {/* Navigation */}
@@ -100,7 +100,7 @@ export default function HousingEstatePage() {
                         className="flex items-center gap-8 group/cta"
                         onClick={() => window.location.href = 'mailto:mmbarber@mmbarber.cz'}
                       >
-                         <div className="w-20 h-20 rounded-full border border-mafia-gold flex items-center justify-center bg-mafia-gold text-mafia-black shadow-[0_0_50px_rgba(197,160,89,0.3)] group-hover/cta:shadow-[0_0_70px_rgba(197,160,89,0.5)] transition-all duration-500">
+                         <div className="w-20 h-20 rounded-full border border-mafia-gold flex items-center justify-center bg-mafia-gold text-mafia-black shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.3)] group-hover/cta:shadow-[0_0_70px_rgba(var(--color-mafia-gold-rgb),0.5)] transition-all duration-500">
                             <ChevronRight size={32} />
                          </div>
                          <span className="text-mafia-gold font-heading font-black text-2xl md:text-4xl uppercase tracking-[0.4em] group-hover/cta:text-smoke-white transition-colors">

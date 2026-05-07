@@ -146,7 +146,7 @@ export function MafiaClickEffects() {
             >
               <div className="w-[320px] h-[320px] md:w-[400px] md:h-[400px] border-4 border-mafia-gold rounded-full flex items-center justify-center relative px-8">
                 <div className="absolute inset-0 bg-mafia-gold/10 blur-xl rounded-full" />
-                <span className="text-3xl md:text-5xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] text-center drop-shadow-[0_0_20px_rgba(197,160,89,1)]">
+                <span className="text-3xl md:text-5xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] text-center drop-shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),1)]">
                   JSI MI V PATÁCH !
                 </span>
               </div>

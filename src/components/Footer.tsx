@@ -72,7 +72,7 @@ const EasterEgg = () => {
           }}
           className="group relative flex flex-col items-center gap-3 cursor-pointer border-none bg-transparent"
         >
-          <div className={`w-16 h-16 rounded-full border border-mafia-gold/40 flex items-center justify-center transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.3)] ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:border-mafia-gold group-hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]' : ''}`}>
+          <div className={`w-16 h-16 rounded-full border border-mafia-gold/40 flex items-center justify-center transition-all duration-500 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:border-mafia-gold group-hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]' : ''}`}>
             <Zap size={24} className={`text-mafia-gold ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:animate-pulse' : ''}`} />
           </div>
           <span className="text-mafia-gold font-mono text-xs md:text-sm uppercase tracking-[0.5em] font-black drop-shadow-lg">{t?.footer?.neklikat || "NEKLIKAT"}</span>
@@ -113,7 +113,7 @@ const EasterEgg = () => {
               ))}
 
               {/* Digital Grid lines */}
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--color-mafia-gold-rgb),0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--color-mafia-gold-rgb),0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
             </div>
 
             <AnimatePresence>
@@ -158,7 +158,7 @@ const EasterEgg = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex flex-col items-center gap-8"
                 >
-                  <div className="flex flex-col items-center p-8 md:p-12 border-2 border-mafia-gold rounded-none bg-mafia-black/80 backdrop-blur-md shadow-[0_0_50px_rgba(197,160,89,0.3)]">
+                  <div className="flex flex-col items-center p-8 md:p-12 border-2 border-mafia-gold rounded-none bg-mafia-black/80 backdrop-blur-md shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.3)]">
                     <div className="w-20 h-20 border border-mafia-gold flex items-center justify-center mb-6">
                       <Trophy size={40} className="text-mafia-gold animate-pulse" />
                     </div>
@@ -280,7 +280,7 @@ export function Footer() {
     <footer className="w-full bg-[#050505] border-t border-mafia-gold/10 pt-24 pb-12 px-6 text-center z-10 relative mt-16 overflow-hidden">
 
       {/* AMBIENT BACKGROUND */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(197,160,89,0.05)_0%,transparent_70%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)] pointer-events-none"></div>
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
 
       {/* Responsible Person Modal */}
@@ -297,7 +297,7 @@ export function Footer() {
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, y: 10, opacity: 0 }}
-              className="relative p-8 md:p-12 border-2 border-mafia-gold bg-mafia-dark/95 shadow-[0_0_50px_rgba(197,160,89,0.3)] max-w-md w-full text-center"
+              className="relative p-8 md:p-12 border-2 border-mafia-gold bg-mafia-dark/95 shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.3)] max-w-md w-full text-center"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Decorative corners */}
@@ -342,13 +342,13 @@ export function Footer() {
           >
             <div className="absolute inset-0 z-0">
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-mafia-gold/10 via-transparent to-transparent opacity-40"></div>
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--color-mafia-gold-rgb),0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--color-mafia-gold-rgb),0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
             </div>
 
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="relative z-10 p-12 border-2 border-mafia-gold bg-mafia-black/80 backdrop-blur-md shadow-[0_0_100px_rgba(197,160,89,0.2)] flex flex-col items-center text-center"
+              className="relative z-10 p-12 border-2 border-mafia-gold bg-mafia-black/80 backdrop-blur-md shadow-[0_0_100px_rgba(var(--color-mafia-gold-rgb),0.2)] flex flex-col items-center text-center"
             >
               <div className="font-heading font-black text-mafia-gold text-4xl md:text-7xl tracking-widest mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,1)]">
                 MM BARBER
@@ -392,7 +392,7 @@ export function Footer() {
                   alt="MM"
                   width={80}
                   height={80}
-                  className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(197,160,89,0.2)] group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.2)] group-hover:scale-110 transition-transform duration-700"
                 />
               </div>
               {/* Golden pulse behind logo */}
@@ -423,7 +423,7 @@ export function Footer() {
               onClick={() => {
                 trackEvent("cta_footer_special_mission");
               }}
-              className={`group relative px-6 py-4 border border-mafia-gold/20 transition-all duration-700 bg-mafia-gold/[0.02] overflow-hidden shadow-[0_0_15px_rgba(197,160,89,0.05)] ${(!isMobile || isMobileEffectsEnabled) ? 'hover:border-mafia-gold hover:shadow-[0_0_30px_rgba(197,160,89,0.2)]' : ''}`}
+              className={`group relative px-6 py-4 border border-mafia-gold/20 transition-all duration-700 bg-mafia-gold/[0.02] overflow-hidden shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)] ${(!isMobile || isMobileEffectsEnabled) ? 'hover:border-mafia-gold hover:shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)]' : ''}`}
             >
               {/* Cinematic scanning effect */}
               {(!isMobile || isMobileEffectsEnabled) && (

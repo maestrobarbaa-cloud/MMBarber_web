@@ -323,7 +323,7 @@ export default function FamilyPage() {
                 className="inline-flex bg-mafia-black/80 backdrop-blur-xl border border-mafia-gold/20 p-2 gap-2 shadow-2xl mb-8"
               >
                 <button onClick={() => { setViewMode("grid"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'grid' ? 'bg-mafia-gold text-mafia-black' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.list}</button>
-                <button onClick={() => { setViewMode("network"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'network' ? 'bg-mafia-gold text-mafia-black shadow-[0_0_20px_rgba(197,160,89,0.4)]' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.network}</button>
+                <button onClick={() => { setViewMode("network"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'network' ? 'bg-mafia-gold text-mafia-black shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.4)]' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.network}</button>
               </motion.div>
             </div>
 
@@ -374,7 +374,7 @@ export default function FamilyPage() {
                             setActiveDivision(activeDivision === div.id ? "" : div.id);
                             playDoorbell();
                           }}
-                          className={`w-full group relative overflow-hidden border-2 p-6 text-left transition-all duration-500 cursor-pointer ${activeDivision === div.id ? 'border-mafia-gold bg-mafia-gold/10 shadow-[0_0_40px_rgba(197,160,89,0.3)]' : 'border-white/5 bg-white/[0.02] hover:border-mafia-gold/40'
+                          className={`w-full group relative overflow-hidden border-2 p-6 text-left transition-all duration-500 cursor-pointer ${activeDivision === div.id ? 'border-mafia-gold bg-mafia-gold/10 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'border-white/5 bg-white/[0.02] hover:border-mafia-gold/40'
                             }`}
                         >
                           <div className="relative z-10 flex items-center justify-between">
@@ -534,13 +534,13 @@ export default function FamilyPage() {
             className="fixed inset-0 z-[200] bg-[#0a0a0a] overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing"
           >
             {/* Tactical Grid Background */}
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.03)_1px,transparent_1px)] bg-[size:100px_100px] pointer-events-none"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--color-mafia-gold-rgb),0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--color-mafia-gold-rgb),0.03)_1px,transparent_1px)] bg-[size:100px_100px] pointer-events-none"></div>
 
             {/* Prominent Back Button */}
             <div className="absolute top-10 left-10 z-[300]">
               <button
                 onClick={() => { setViewMode('grid'); }}
-                className="group flex items-center gap-3 text-mafia-gold hover:text-smoke-white transition-all font-mono text-[11px] font-black uppercase tracking-[0.5em] bg-mafia-gold/10 backdrop-blur-xl px-8 py-4 border-2 border-mafia-gold shadow-[0_0_30px_rgba(197,160,89,0.2)] hover:shadow-[0_0_50px_rgba(197,160,89,0.4)]"
+                className="group flex items-center gap-3 text-mafia-gold hover:text-smoke-white transition-all font-mono text-[11px] font-black uppercase tracking-[0.5em] bg-mafia-gold/10 backdrop-blur-xl px-8 py-4 border-2 border-mafia-gold shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)] hover:shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.4)]"
               >
                 <ChevronLeft size={16} /> {t.rodina.closeNetwork}
               </button>
@@ -604,7 +604,7 @@ export default function FamilyPage() {
                           y1="50%"
                           x2={`${x}%`}
                           y2={`${y}%`}
-                          stroke={isHovered ? "#c5a059" : "#c5a059"}
+                          stroke={isHovered ? "var(--color-mafia-gold)" : "var(--color-mafia-gold)"}
                           strokeDasharray={isHovered ? "0" : "6,6"}
                         />
                       );
@@ -622,12 +622,12 @@ export default function FamilyPage() {
                     />
                     <motion.div
                       animate={{
-                        borderColor: hoveredNode ? "rgba(197, 160, 89, 0.8)" : "rgba(197, 160, 89, 0.4)",
-                        boxShadow: hoveredNode ? "0 0 60px rgba(197, 160, 89, 0.6)" : "0 0 100px rgba(197, 160, 89, 0.2)"
+                        borderColor: hoveredNode ? "rgba(var(--color-mafia-gold-rgb), 0.8)" : "rgba(var(--color-mafia-gold-rgb), 0.4)",
+                        boxShadow: hoveredNode ? "0 0 60px rgba(var(--color-mafia-gold-rgb), 0.6)" : "0 0 100px rgba(var(--color-mafia-gold-rgb), 0.2)"
                       }}
                       className="relative w-full h-full bg-mafia-black border-2 rounded-full flex items-center justify-center p-10 transition-all duration-500"
                     >
-                      <Image src="/logo.png" alt="MMBarber" width={160} height={160} className="w-48 h-48 object-contain drop-shadow-[0_0:30px_rgba(197,160,89,0.6)]" priority />
+                      <Image src="/logo.png" alt="MMBarber" width={160} height={160} className="w-48 h-48 object-contain drop-shadow-[0_0:30px_rgba(var(--color-mafia-gold-rgb),0.6)]" priority />
                     </motion.div>
                     <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-mafia-gold text-mafia-black px-8 py-1 font-heading font-black text-[10px] uppercase tracking-[0.5em] shadow-xl">
                       {t.rodina.headquarters}

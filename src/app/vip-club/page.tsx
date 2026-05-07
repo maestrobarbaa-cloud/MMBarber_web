@@ -133,7 +133,7 @@ export default function VipClub() {
     return (
       <main className="min-h-screen bg-mafia-black text-smoke-white pt-24 md:pt-32 px-4 relative overflow-hidden">
         {/* Background Atmosphere */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,160,89,0.05)_0%,rgba(10,10,10,1)_80%)] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(var(--color-mafia-gold-rgb),0.05)_0%,rgba(10,10,10,1)_80%)] pointer-events-none"></div>
         <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')]"></div>
 
         <div className="relative z-10 container mx-auto text-center mb-16">
@@ -142,7 +142,7 @@ export default function VipClub() {
             <span className="text-mafia-gold font-mono uppercase tracking-[0.4em] text-[10px] font-black">{t.club.topSecret}</span>
             <div className="h-px w-12 bg-mafia-gold/50"></div>
           </div>
-          <h1 className="text-4xl md:text-7xl lg:text-8xl font-heading font-black text-mafia-gold uppercase tracking-[0.1em] mb-4 drop-shadow-[0_0_30px_rgba(197,160,89,0.3)]">
+          <h1 className="text-4xl md:text-7xl lg:text-8xl font-heading font-black text-mafia-gold uppercase tracking-[0.1em] mb-4 drop-shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)]">
             {t.club.title}
           </h1>
           <p className="text-smoke-white/60 font-sans text-base md:text-xl italic max-w-2xl mx-auto border-y border-mafia-gold/20 py-4">
@@ -158,7 +158,7 @@ export default function VipClub() {
   return (
     <div className="fixed inset-0 z-[100] bg-mafia-black flex flex-col items-center justify-center p-6 select-none overflow-hidden">
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,160,89,0.08)_0%,rgba(5,5,5,1)_70%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(var(--color-mafia-gold-rgb),0.08)_0%,rgba(5,5,5,1)_70%)] pointer-events-none"></div>
 
       {/* Countdown Timer HUD style */}
       <div className="absolute top-12 md:top-20 font-mono text-mafia-red/40 text-sm md:text-xl tracking-[0.5em] flex flex-col items-center">
@@ -209,7 +209,7 @@ export default function VipClub() {
 
           <button
             type="submit"
-            className="w-full bg-mafia-gold text-mafia-black font-heading font-black py-4 uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-2 group relative overflow-hidden transition-all duration-700 shadow-[0_5px_30px_rgba(197,160,89,0.3)]"
+            className="w-full bg-mafia-gold text-mafia-black font-heading font-black py-4 uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-2 group relative overflow-hidden transition-all duration-700 shadow-[0_5px_30px_rgba(var(--color-mafia-gold-rgb),0.3)]"
           >
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             <ShieldCheck size={20} className="relative z-10 transition-transform group-hover:scale-110" />

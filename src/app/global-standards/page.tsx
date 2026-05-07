@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function GlobalStandardsPage() {
   return (
     <main className="min-h-screen bg-mafia-black text-smoke-white py-24 px-6 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(197,160,89,0.05)_0%,rgba(0,0,0,1)_80%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(var(--color-mafia-gold-rgb),0.05)_0%,rgba(0,0,0,1)_80%)]"></div>
       
       <div className="max-w-4xl mx-auto relative z-10">
         <Link 

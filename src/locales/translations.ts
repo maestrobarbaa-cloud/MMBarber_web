@@ -14,6 +14,8 @@ export const translations = {
       startMission: "JAK TO U NÁS CHODÍ",
       compass: "KOMPAS",
       web: "WEB",
+      priceList: "Ceník",
+      kudy_k_nam: "Kudy k nám",
       on: "ZAPNUTO",
       off: "VYPNUTO",
       tracking: "SLEDUJI POLOHU",
@@ -121,6 +123,12 @@ export const translations = {
       bookBtn: "REZERVOVAT KŘESLO"
     },
     services: {
+      recruit: {
+        title: "HLEDÁME TEBE!",
+        subtitle: "PŘIJĎ PRACOVAT K NÁM",
+        desc: "Zde se nekladou omezení. Vše závisí jen na tobě – tvoje pracovní doba, tvůj styl, tvoje všechno. Tato židle může být tvoje.",
+        cta: "ZAKLEPEJ NA DVEŘE"
+      },
       title: "Naše služby a ceny",
       subtitle: "Vyber si časový slot podle toho, co potřebuješ. Pokud váháš, u křesla to doladíme. Večerní termíny jsou po domluvě otevřené i pro dámy.",
       score: "Zkušenosti",
@@ -132,7 +140,7 @@ export const translations = {
       timeTariffNote: "Ceny jsou nastavené férově podle času, který tvému stylu věnuji. Platíš za poctivou práci, ne za značku.",
       addonsTitle: "Něco navíc",
       independentTitle: "Jen tak se zastavit",
-      specialTitle: "Noční zážitek",
+      specialTitle: "Večerní hodiny (18:00 - 20:00)",
       totalLabel: "Odhadovaná cena",
       timeLabel: "Čas v křesle",
       independentTimeLabel: "Čas odpočinku",
@@ -155,7 +163,9 @@ export const translations = {
         saturday: "Sobota",
         sunday: "Neděle",
         holiday: "Svátek",
-        night: "Noční hodiny"
+        night: "Večerní hodiny (18:00 - 20:00)",
+        eveningMode: "Aktivovat večerní tarif",
+        standardTime: "Standardní čas"
       },
       items: [
         { time: "5 m", name: "RYCHLÁ ÚPRAVA", desc: "Kontury, detaily nebo jen bleskový refresh. Stačí na chvíli naskočit.", price: "100 Kč", priceValue: 100 },
@@ -179,11 +189,30 @@ export const translations = {
         { id: "ind2", name: "Relaxační zóna (30 min)", priceValue: 180, time: 30, desc: "Klid, káva a chvíle pro sebe." }
       ],
       special: [
-        { id: "sp2", name: "Noční Full Service", priceValue: 2500, time: "1 h", desc: "Když potřebuješ vypadat skvěle a den ti byl krátký. Po domluvě." },
-        { id: "sp1", name: "Noční střih (45 min)", priceValue: 1300, time: "45 min", desc: "Individuální termín mimo běžné hodiny." },
-        { id: "sp4", name: "Rychlý noční refresh", priceValue: 900, time: "30 min", desc: "Když spěcháš i v noci." },
-        { id: "sp3", name: "Střih při svíčkách", priceValue: 1800, time: "30 min", desc: "Unikátní atmosféra pro ty, co hledají klid." }
-      ]
+        { id: "sp2", name: "Večerní Full Service", priceValue: 2500, time: "1 h", desc: "Když potřebuješ vypadat skvěle a den ti byl krátký. Dle domluvy." },
+        { id: "sp1", name: "Večerní střih (45 min)", priceValue: 1300, time: "45 min", desc: "Individuální termín 18:00 - 20:00. Dle domluvy." },
+        { id: "sp4", name: "Rychlý večerní refresh", priceValue: 900, time: "30 min", desc: "Když spěcháš i večer. Dle domluvy." },
+        { id: "sp3", name: "Střih při svíčkách", priceValue: 1800, time: "30 min", desc: "Unikátní atmosféra pro ty, co hledají klid. Dle domluvy." },
+        { id: "sp_diy", name: "Ostříhej se sám", priceValue: 850, time: "1 h", desc: "Klient se stříhá sám, já u toho nadávám a pak mu to poladím. Dle domluvy." }
+      ],
+      masterTimes: {
+        title: "KATALOG STYLŮ",
+        fadeLabel: "VÝTRATY (FADE)",
+        cutLabel: "STŘIHY (CUTS)",
+        note: "Časy odráží mou reálnou rychlost u křesla. Záleží na hustotě vlasů, propracovanosti stylingu a mytí.",
+        items: [
+          { id: "style_skinfade", label: "SKIN FADE (PROFI)", time: "8 min", type: "fade" },
+          { id: "style_fadenoshaver", label: "FADE (BEZ SHAVERU)", time: "5 min", type: "fade" },
+          { id: "style_lowmidhigh", label: "LOW / MID / HIGH FADE", time: "15 min", type: "fade" },
+          { id: "style_ornaments", label: "JEDNODUCHÉ ORNAMENTY", time: "5 min", type: "fade" },
+          { id: "style_topshort", label: "VRŠEK (KRATŠÍ VLASY)", time: "10 min", type: "cut" },
+          { id: "style_classicshort", label: "KRÁTKÝ STŘIH (KLASIKA)", time: "20-30 min", type: "cut" },
+          { id: "style_beardtop", label: "VOUSY + VRŠEK (STROJEK)", time: "30 min", type: "cut" },
+          { id: "style_longpompa", label: "DLOUHÉ VLASY / POMPADOUR", time: "40-60 min", type: "cut" },
+          { id: "style_beardfull", label: "VOUSY (NAPAŘOVÁNÍ & FULL)", time: "45 min", type: "cut" },
+          { id: "style_premium", label: "PREMIUM (RELAX & RUČNÍKY)", time: "60 min", type: "cut" }
+        ]
+      }
     },
     operatives: {
       title: "Mistři v oboru",
@@ -199,6 +228,14 @@ export const translations = {
           schedule: "Út–Pá 9:00 – 18:00 | So–Ne 9:00 – 12:00",
           englishSpeaking: "English Speaking",
           specializations: ["Hlavně pánské", "ale zvládnu i dámské styly"]
+        },
+        nella: {
+          name: "Nella",
+          role: "Mladé ucho",
+          motto: "Ochoč si svoji barberku",
+          story: "Čerstvá krev v našem týmu, která do každého střihu vkládá energii a chuť se neustále učit.",
+          schedule: "Individuální režim práce.",
+          specializations: ["Barvení", "Trvalá ondulace", "Stříhání pánské", "Stříhání dámské", "Děti"]
         }
       }
     },
@@ -292,7 +329,7 @@ export const translations = {
       divisions: "DIVIZE",
       backToHq: "Zpět domů",
       partnersTrust: "Firmy a lidi, za které dáme ruku do ohně.",
-      youForUs: "Vy pro nás. My pro vás.",
+      youForUs: "Vy pro smečku, smečka pro vás.",
       weAreFamily: "MMBARBER není jen o stříhání. Je to o lidech, kteří tvoří kvalitu napříč obory. Jsme jedna Rodina.",
       closeNetwork: "ZAVŘÍT SÍŤ",
       cameraFollows: "Kamera tě sleduje",
@@ -860,6 +897,8 @@ export const translations = {
       startMission: "HOW IT WORKS",
       compass: "COMPASS",
       web: "WEB",
+      priceList: "Price List",
+      kudy_k_nam: "Location",
       on: "ON",
       off: "OFF",
       tracking: "TRACKING POSITION",
@@ -978,7 +1017,7 @@ export const translations = {
       timeTariffNote: "Prices set fairly according to the time I dedicate to your style. You pay for honest work, not a brand.",
       addonsTitle: "Something extra",
       independentTitle: "Just stop by",
-      specialTitle: "Night experience",
+      specialTitle: "Evening hours (18:00 - 20:00)",
       totalLabel: "Estimated price",
       timeLabel: "Time in chair",
       independentTimeLabel: "Rest time",
@@ -1001,7 +1040,9 @@ export const translations = {
         saturday: "Saturday",
         sunday: "Sunday",
         holiday: "Holiday",
-        night: "Night hours"
+        night: "Evening hours (18:00 - 20:00)",
+        eveningMode: "Activate evening rate",
+        standardTime: "Standard time"
       },
       items: [
         { time: "5 m", name: "QUICK REFRESH", desc: "Contours, details or just a lightning refresh. Enough to hop on for a bit.", price: "100 Kč", priceValue: 100 },
@@ -1025,11 +1066,30 @@ export const translations = {
         { id: "ind2", name: "Relax zone (30 min)", priceValue: 180, time: 30, desc: "Peace, coffee and time for yourself." }
       ],
       special: [
-        { id: "sp2", name: "Night Full Service", priceValue: 2500, time: "1 h", desc: "When you need to look great and day was short. By appointment." },
-        { id: "sp1", name: "Night cut (45 min)", priceValue: 1300, time: "45 min", desc: "Individual slot outside normal hours." },
-        { id: "sp4", name: "Quick night refresh", priceValue: 900, time: "30 min", desc: "When you're in a hurry even at night." },
-        { id: "sp3", name: "Candlelight cut", priceValue: 1800, time: "30 min", desc: "Unique atmosphere for those seeking peace." }
-      ]
+        { id: "sp2", name: "Evening Full Service", priceValue: 2500, time: "1 h", desc: "When you need to look great and day was short. By arrangement." },
+        { id: "sp1", name: "Evening cut (45 min)", priceValue: 1300, time: "45 min", desc: "Individual slot 18:00 - 20:00. By arrangement." },
+        { id: "sp4", name: "Quick evening refresh", priceValue: 900, time: "30 min", desc: "When you're in a hurry even in the evening. By arrangement." },
+        { id: "sp3", name: "Candlelight cut", priceValue: 1800, time: "30 min", desc: "Unique atmosphere for those seeking peace. By arrangement." },
+        { id: "sp_diy", name: "Cut it yourself", priceValue: 850, time: "1 h", desc: "Client cuts their own hair, I swear at them, then I fix it. By arrangement." }
+      ],
+      masterTimes: {
+        title: "STYLE CATALOG",
+        fadeLabel: "FADES",
+        cutLabel: "CUTS",
+        note: "Times reflect my real speed at the chair. Depends on hair density, styling complexity and washing.",
+        items: [
+          { id: "style_skinfade", label: "SKIN FADE (PRO)", time: "8 min", type: "fade" },
+          { id: "style_fadenoshaver", label: "FADE (NO SHAVER)", time: "5 min", type: "fade" },
+          { id: "style_lowmidhigh", label: "LOW / MID / HIGH FADE", time: "15 min", type: "fade" },
+          { id: "style_ornaments", label: "SIMPLE ORNAMENTS", time: "5 min", type: "fade" },
+          { id: "style_topshort", label: "TOP (SHORT HAIR)", time: "10 min", type: "cut" },
+          { id: "style_classicshort", label: "CLASSIC SHORT CUT", time: "20-30 min", type: "cut" },
+          { id: "style_beardtop", label: "BEARD + TOP (CLIPPER)", time: "30 min", type: "cut" },
+          { id: "style_longpompa", label: "LONG HAIR / POMPADOUR", time: "40-60 min", type: "cut" },
+          { id: "style_beardfull", label: "BEARD (STEAM & FULL)", time: "45 min", type: "cut" },
+          { id: "style_premium", label: "PREMIUM (RELAX & TOWELS)", time: "60 min", type: "cut" }
+        ]
+      }
     },
     operatives: {
       title: "Masters of the craft",
@@ -1045,6 +1105,14 @@ export const translations = {
           schedule: "Tue–Fri 9:00 – 18:00 | Sat–Sun 9:00 – 12:00",
           englishSpeaking: "English Speaking",
           specializations: ["Mainly men's", "but can handle women's styles too"]
+        },
+        nella: {
+          name: "Nella",
+          role: "Young Blood",
+          motto: "Tame your own barberess",
+          story: "Fresh blood in our team, bringing energy and a desire to constantly learn to every cut.",
+          schedule: "Individual working mode.",
+          specializations: ["Coloring", "Perms", "Men's cuts", "Women's cuts", "Children"]
         }
       }
     },
@@ -1326,7 +1394,7 @@ export const translations = {
       divisions: "DIVISIONS",
       backToHq: "Back Home",
       partnersTrust: "Companies and people we'd put our hand in the fire for.",
-      youForUs: "You for us. Us for you.",
+      youForUs: "You for the pack, the pack for you.",
       weAreFamily: "MMBARBER is not just about cutting. It's about people who create quality across fields. We are one Family.",
       closeNetwork: "CLOSE NETWORK",
       cameraFollows: "Camera is following you",
@@ -1912,7 +1980,7 @@ export const translations = {
       divisions: "DIVIZE",
       backToHq: "Zpět domů",
       partnersTrust: "Firmy a lidi, za které dáme ruku do ohně.",
-      youForUs: "Vy pro nás. My pro vás.",
+      youForUs: "Vy pro smečku, smečka pro vás.",
       weAreFamily: "MMBARBER není jen o stříhání. Je to o lidech, kteří tvoří kvalitu napříč obory. Jsme jedna Rodina.",
       closeNetwork: "ZAVŘÍT SÍŤ",
       cameraFollows: "Kamera tě sleduje",
@@ -2063,6 +2131,12 @@ export const translations = {
         who: { title: "PRO KOHO?", desc: "Pro ty, co chtějí tvořit kvalitu.", motto: "Respekt k řemeslu." },
         how: { title: "JAK ZAČÍT?", steps: ["Kontakt", "Plánování", "Příprava"] }
       },
+      recruit: {
+        title: "HLEDÁME TEBE!",
+        subtitle: "PŘIJĎ PRACOVAT K NÁM",
+        desc: "Zde se nekladou omezení. Vše závisí jen na tobě – tvoje pracovní doba, tvůj styl, tvoje všechno. Tato židle může být tvoje.",
+        cta: "ZAKLEPEJ NA DVEŘE"
+      },
       contact: { title: "MÁTE ZÁJEM?", desc: "Ozveme se.", email: "POSLAT E-MAIL", instagram: "INSTAGRAM" },
       footer: "MMBARBER GLOBAL EXPANSION"
     },
@@ -2126,6 +2200,8 @@ export const translations = {
       more: "Exkluzivita",
       career: "Nábor ELITE",
       startMission: "JAK TO U NÁS CHODÍ",
+      priceList: "Preisliste",
+      kudy_k_nam: "Anfahrt",
       searchPlaceholder: "Alles klar?"
     },
     hero: {
@@ -2249,7 +2325,13 @@ export const translations = {
     sidliste: {
       title: "HOUSING ESTATE",
       sector: "SECTOR VII",
-      return: "BACK TO BASE"
+      return: "BACK TO BASE",
+      recruit: {
+        title: "WE ARE LOOKING FOR YOU!",
+        subtitle: "COME WORK WITH US",
+        desc: "No limits here. Everything depends on you – your hours, your style, your everything. This chair could be yours.",
+        cta: "KNOCK ON THE DOOR"
+      }
     },
     club: {
       topSecret: "STRENG GEHEIM // MM BARBER HQ",

@@ -148,7 +148,7 @@ export function Events() {
         <h2 className="text-3xl md:text-5xl font-heading font-black text-smoke-white mb-3 md:mb-4 tracking-widest uppercase">
           Rozvrh <span className="text-mafia-gold">Podsvětí</span>
         </h2>
-        <div className="w-16 md:w-24 h-1 bg-mafia-gold mx-auto mb-4 md:mb-6 shadow-[0_0_10px_rgba(197,160,89,0.8)]"></div>
+        <div className="w-16 md:w-24 h-1 bg-mafia-gold mx-auto mb-4 md:mb-6 shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.8)]"></div>
         <p className="text-smoke-white/60 font-sans max-w-2xl mx-auto text-xs md:text-base italic uppercase tracking-wider">
           Plánuj své mise strategicky. Každý den má svá specifika.
         </p>
@@ -197,7 +197,7 @@ export function Events() {
                 onClick={() => setSelectedEvent(day)}
                 className={`
                   relative h-20 sm:h-24 md:h-32 p-1 md:p-3 flex flex-col transition-all duration-300 cursor-pointer group cursor-hover
-                  ${day.isCurrentMonth ? 'bg-mafia-dark/40 border-mafia-gold/10 hover:border-mafia-gold hover:bg-mafia-dark/80 hover:shadow-[0_0_15px_rgba(197,160,89,0.3)]' : 'bg-transparent border-white/5 opacity-50'}
+                  ${day.isCurrentMonth ? 'bg-mafia-dark/40 border-mafia-gold/10 hover:border-mafia-gold hover:bg-mafia-dark/80 hover:shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-transparent border-white/5 opacity-50'}
                   ${day.isToday ? 'border-2 border-mafia-red bg-mafia-red/5' : 'border'}
                   ${isSunday ? 'opacity-60 grayscale' : ''}
                 `}

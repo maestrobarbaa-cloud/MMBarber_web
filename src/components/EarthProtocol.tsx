@@ -35,7 +35,7 @@ export function EarthProtocol({ isOpen, onClose, lang }: { isOpen: boolean, onCl
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: -20 }}
-          className="relative w-full max-w-5xl bg-mafia-black border border-mafia-gold/30 shadow-[0_0_100px_rgba(197,160,89,0.2)] overflow-hidden flex flex-col md:flex-row h-[90vh] md:h-auto"
+          className="relative w-full max-w-5xl bg-mafia-black border border-mafia-gold/30 shadow-[0_0_100px_rgba(var(--color-mafia-gold-rgb),0.2)] overflow-hidden flex flex-col md:flex-row h-[90vh] md:h-auto"
         >
           {/* Scanlines Overlay */}
           <div className="absolute inset-0 pointer-events-none z-50 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.15)_0px,rgba(0,0,0,0.15)_1px,transparent_1px,transparent_2px)] opacity-50"></div>

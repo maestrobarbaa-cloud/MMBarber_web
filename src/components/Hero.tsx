@@ -305,7 +305,7 @@ export function Hero() {
       
       {/* CINEMATIC GAMING TRANSITION - HIGH-END SHUTTER (Desktop only) */}
       <AnimatePresence mode="wait">
-        {!isMobile && isGlitching && graphicsTier !== 'low' && (
+        {!isMobile && isGlitching && graphicsTier !== 'low' && graphicsTier !== 'medium' && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -365,7 +365,9 @@ export function Hero() {
                 <div className="absolute inset-0 opacity-20 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/black-linen.png')]"></div>
                 <div className="flex flex-col items-center mt-10 gap-3 relative z-10">
                   <div className="flex items-center gap-10">
-                    <span className="text-mafia-gold/40 font-mono text-[8px] animate-pulse">AUTH_TOKEN: STATUS_OK</span>
+                    <span className="text-mafia-gold/40 font-mono text-[8px] animate-pulse">
+                      {lang === 'cs' ? "AUTORIZACE: V_POŘÁDKU" : "AUTH_TOKEN: STATUS_OK"}
+                    </span>
                     <div className="w-12 h-px bg-mafia-gold/30"></div>
                     <span className="text-mafia-gold/40 font-mono text-[8px] animate-pulse">VOCATIO_SYST_PARATA</span>
                   </div>
@@ -416,10 +418,10 @@ export function Hero() {
         <AnimatePresence mode="wait">
           <motion.div 
             key={activeHero}
-            initial={{ opacity: 0, scale: 1.1 }}
+            initial={{ opacity: 0, scale: 1 }}
             animate={{ 
               opacity: 1, 
-              scale: 1,
+              scale: (isMobile || graphicsTier === 'low' || graphicsTier === 'medium') ? 1 : 1.08,
               filter: isGlitching 
                 ? "brightness(1.1) blur(4px)" 
                 : "none" 
@@ -427,7 +429,9 @@ export function Hero() {
             exit={{ opacity: 0 }}
             transition={{ 
               opacity: { duration: 0.8, ease: "easeOut" },
-              scale: { duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }
+              scale: (isMobile || graphicsTier === 'low' || graphicsTier === 'medium') 
+                ? { duration: 0 } 
+                : { duration: 25, ease: "linear", repeat: Infinity, repeatType: "reverse" }
             }}
             className={`absolute inset-0 w-full h-full z-0 overflow-hidden ${isGlitching ? 'animate-glitch' : ''}`}
           >
@@ -516,7 +520,7 @@ export function Hero() {
                 playRazorSound();
               }}
               onMouseEnter={playRazorSound}
-              className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-8 py-3.5 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(197,160,89,0.2)] flex items-center justify-center w-fit mx-auto"
+              className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-8 py-3.5 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)] flex items-center justify-center w-fit mx-auto"
             >
               <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
               <span className="relative z-10 text-mafia-gold font-sans text-sm sm:text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center" style={{ textShadow: "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
@@ -582,7 +586,7 @@ export function Hero() {
                         opacity: 0.8, 
                         filter: "blur(0px)", 
                         scale: 1,
-                        textShadow: "0 0 15px rgba(197,160,89,0.3)"
+                        textShadow: "0 0 15px rgba(var(--color-mafia-gold-rgb),0.3)"
                       }}
                       exit={{ 
                         opacity: 0, 
@@ -668,7 +672,7 @@ export function Hero() {
           {/* Main Text */}
           <div 
             className="text-mafia-gold font-mono text-[10px] tracking-[0.4em] uppercase transition-all duration-700 group-hover:scale-105 group-hover:tracking-[0.6em] group-hover:text-white"
-            style={{ textShadow: "0 0 10px rgba(197, 160, 89, 0.4)" }}
+            style={{ textShadow: "0 0 10px rgba(var(--color-mafia-gold-rgb), 0.4)" }}
           >
             {isMounted && selectedMotto.split("").map((char: string, i: number) => {
               const firstPeriodIndex = selectedMotto.indexOf('.');
@@ -746,7 +750,7 @@ export function Hero() {
                   playRazorSound();
                 }}
                 onMouseEnter={playRazorSound}
-                className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-10 py-4 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(197,160,89,0.2)] flex items-center justify-center w-fit mx-auto"
+                className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-10 py-4 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)] flex items-center justify-center w-fit mx-auto"
               >
                 <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
                 <span className="relative z-10 text-mafia-gold font-sans text-lg uppercase tracking-[0.3em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center" style={{ textShadow: "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>

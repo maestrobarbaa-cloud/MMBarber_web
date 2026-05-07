@@ -254,7 +254,7 @@ export function VipControlBar() {
               <span className="text-[10px] font-bold text-mafia-gold/60 uppercase tracking-widest">{t.devPanel.accent}</span>
               <div className="grid grid-cols-3 gap-1">
                 {[
-                  { id: 'gold', color: '#c5a059', label: 'Gold' },
+                  { id: 'gold', color: 'var(--color-mafia-gold)', label: 'Gold' },
                   { id: 'silver', color: '#e2e2e2', label: 'Silver' },
                   { id: 'blood', color: '#8b0000', label: 'Blood' },
                 ].map((item) => (
@@ -358,7 +358,7 @@ export function VipControlBar() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`w-12 h-12 flex items-center justify-center border transition-all duration-300 ${
-          isOpen ? "bg-mafia-gold text-black border-mafia-gold rotate-180 shadow-[0_0_20px_rgba(197,160,89,0.4)]" : "bg-mafia-black/80 text-mafia-gold border-mafia-gold/30 hover:border-mafia-gold"
+          isOpen ? "bg-mafia-gold text-black border-mafia-gold rotate-180 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.4)]" : "bg-mafia-black/80 text-mafia-gold border-mafia-gold/30 hover:border-mafia-gold"
         }`}
       >
         {isOpen ? <ChevronUp size={24} /> : <Settings size={22} className="animate-spin-slow" />}
@@ -369,7 +369,7 @@ export function VipControlBar() {
         .animate-spin-slow { animation: spin-slow 8s linear infinite; }
         .thin-scrollbar::-webkit-scrollbar { width: 4px; }
         .thin-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
-        .thin-scrollbar::-webkit-scrollbar-thumb { background: rgba(197, 160, 89, 0.3); }
+        .thin-scrollbar::-webkit-scrollbar-thumb { background: rgba(var(--color-mafia-gold-rgb), 0.3); }
       `}</style>
     </div>
   );

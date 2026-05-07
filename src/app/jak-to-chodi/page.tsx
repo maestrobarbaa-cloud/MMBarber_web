@@ -63,10 +63,10 @@ export default function NewspaperPage() {
             style={{
               background: isNoirMode 
                 ? "radial-gradient(circle, #0a0a0a 40%, rgba(255,255,255,0.8) 55%, rgba(200,200,200,0.9) 70%, transparent 100%)"
-                : "radial-gradient(circle, #0a0a0a 40%, rgba(255,80,0,0.8) 55%, rgba(197,160,89,0.9) 70%, transparent 100%)",
+                : "radial-gradient(circle, #0a0a0a 40%, rgba(255,80,0,0.8) 55%, rgba(var(--color-mafia-gold-rgb),0.9) 70%, transparent 100%)",
               boxShadow: isNoirMode
                 ? "0 0 150px 80px rgba(255,255,255,0.4) inset, 0 0 250px 100px rgba(255,255,255,0.2)"
-                : "0 0 150px 80px rgba(255,50,0,0.8) inset, 0 0 250px 100px rgba(197,160,89,0.5)"
+                : "0 0 150px 80px rgba(255,50,0,0.8) inset, 0 0 250px 100px rgba(var(--color-mafia-gold-rgb),0.5)"
             }}
           />
         )}

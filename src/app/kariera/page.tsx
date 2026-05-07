@@ -78,7 +78,7 @@ export default function Kariera() {
           ))}
         </div>
 
-        <div className="min-h-[350px] relative border-2 border-mafia-gold/30 bg-mafia-black/80 backdrop-blur-md p-10 shadow-[0_0_30px_rgba(197,160,89,0.1)] overflow-hidden">
+        <div className="min-h-[350px] relative border-2 border-mafia-gold/30 bg-mafia-black/80 backdrop-blur-md p-10 shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.1)] overflow-hidden">
              <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-mafia-gold/60"></div>
             <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-mafia-gold/60"></div>
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-mafia-gold/60"></div>

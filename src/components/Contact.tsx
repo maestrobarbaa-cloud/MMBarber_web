@@ -189,7 +189,7 @@ export function Contact() {
                         }}
                         className={`group relative w-20 h-20 md:w-28 md:h-28 flex flex-col items-center justify-center transition-all duration-500 border-2 outline-none ${
                             activeCategory === cat.id 
-                            ? "bg-white/5 border-mafia-gold shadow-[0_0_30px_rgba(197,160,89,0.3)]" 
+                            ? "bg-white/5 border-mafia-gold shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)]" 
                             : "bg-mafia-dark/40 border-mafia-gold/20 hover:border-mafia-gold/60"
                         }`}
                     >
@@ -226,7 +226,7 @@ export function Contact() {
 
           {/* Map Section */}
           <div className="w-full h-[400px] lg:h-[500px] bg-mafia-black border-2 border-mafia-gold/20 p-1 relative group overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-            <div className="absolute inset-x-0 top-0 h-1 bg-mafia-gold/30 z-20 group-hover:bg-mafia-gold/60 transition-colors shadow-[0_0_15px_rgba(197,160,89,0)] group-hover:shadow-[0_0_15px_rgba(197,160,89,0.5)]"></div>
+            <div className="absolute inset-x-0 top-0 h-1 bg-mafia-gold/30 z-20 group-hover:bg-mafia-gold/60 transition-colors shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0)] group-hover:shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.5)]"></div>
             <div className="absolute inset-0 bg-mafia-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10"></div>
             <iframe 
               src="https://maps.google.com/maps?q=Sadov%C3%A1%201383,%20686%2005%20Uhersk%C3%A9%20Hradi%C5%A1t%C4%9B%205&t=&z=16&ie=UTF8&iwloc=&output=embed" 
@@ -241,7 +241,7 @@ export function Contact() {
 
             {/* HAND-DRAWN MARKER OVERLAY */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 flex flex-col items-center">
-                <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="map-target text-mafia-gold drop-shadow-[0_0_15px_rgba(197,160,89,0.8)] filter drop-shadow-[0_0_2px_rgba(0,0,0,1)]">
+                <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="map-target text-mafia-gold drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.8)] filter drop-shadow-[0_0_2px_rgba(0,0,0,1)]">
                     {/* Wobbly Circle */}
                     <path 
                         className="map-target-ring"

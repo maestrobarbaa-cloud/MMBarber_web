@@ -55,7 +55,7 @@ export function Services() {
               router.push('/rodina');
               trackEvent("cta_main_rodina");
             }}
-            className="w-full max-w-sm py-5 bg-mafia-gold text-mafia-black font-heading font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 shadow-[0_0_20px_rgba(197,160,89,0.3)] border-2 border-mafia-gold hover:bg-mafia-black hover:text-mafia-gold transition-all duration-300"
+            className="w-full max-w-sm py-5 bg-mafia-gold text-mafia-black font-heading font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] border-2 border-mafia-gold hover:bg-mafia-black hover:text-mafia-gold transition-all duration-300"
           >
             <Users size={24} />
             {lang === 'cs' ? "Rodina MMBarberu" : "MMBarber Family"}
@@ -292,7 +292,7 @@ export function Services() {
                           { cs: "Dárkové balení v obálce s pečetí", en: "Gift wrapped in an envelope with a seal" }
                         ].map((item, i) => (
                           <li key={i} className="flex items-center gap-4 text-smoke-white font-mono text-sm md:text-base uppercase tracking-wider">
-                             <div className="w-2 h-2 bg-mafia-gold rotate-45 shadow-[0_0_10px_rgba(197,160,89,0.5)]"></div>
+                             <div className="w-2 h-2 bg-mafia-gold rotate-45 shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.5)]"></div>
                              {lang === 'cs' ? item.cs : item.en}
                           </li>
                         ))}
@@ -492,7 +492,7 @@ export function Services() {
                      setShowMembers(false);
                      router.push('/');
                    }}
-                   className="mt-16 w-full py-5 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.4em] hover:bg-mafia-red hover:text-smoke-white transition-all duration-500 shadow-[0_10px_30px_rgba(197,160,89,0.3)]"
+                   className="mt-16 w-full py-5 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.4em] hover:bg-mafia-red hover:text-smoke-white transition-all duration-500 shadow-[0_10px_30px_rgba(var(--color-mafia-gold-rgb),0.3)]"
                  >
                     {t.others.hiddenPlaces.cta}
                  </motion.button>
@@ -619,7 +619,7 @@ export function Services() {
 
                         {/* Mobile Wallpaper */}
                         <div className="group/wallpaper relative">
-                          <span className="text-[11px] font-black text-mafia-gold uppercase tracking-[0.4em] mb-6 block text-center drop-shadow-[0_0_5px_rgba(197,160,89,0.5)]">{t.others.support.phoneLabel}</span>
+                          <span className="text-[11px] font-black text-mafia-gold uppercase tracking-[0.4em] mb-6 block text-center drop-shadow-[0_0_5px_rgba(var(--color-mafia-gold-rgb),0.5)]">{t.others.support.phoneLabel}</span>
                           <div className="relative aspect-[9/16] max-w-[320px] mx-auto border-2 border-mafia-gold/20 p-2 bg-mafia-dark/40 group-hover/wallpaper:border-mafia-gold/60 transition-all duration-500 overflow-hidden shadow-2xl">
                               <div className="absolute inset-0 border border-white/5 pointer-events-none z-10"></div>
                               <Image 
@@ -701,7 +701,7 @@ const MenuCard = React.memo(function MenuCard({
 
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
-  const [accentColor, setAccentColor] = useState("#c5a059");
+  const [accentColor, setAccentColor] = useState("var(--color-mafia-gold)");
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1280);
@@ -791,7 +791,7 @@ const MenuCard = React.memo(function MenuCard({
       >
         {/* FRONT SIDE */}
         <div 
-          className={`absolute inset-0 bg-[#0c0c0c] border border-mafia-gold/30 rounded-lg flex flex-col items-center justify-center p-4 md:p-8 text-center overflow-hidden transition-all duration-500 ${isFlipped ? 'pointer-events-none' : 'pointer-events-auto'} ${isMobile && isMobileEffectsEnabled ? 'shadow-[0_0_20px_rgba(197,160,89,0.3)] border-mafia-gold/50' : 'shadow-2xl'}`}
+          className={`absolute inset-0 bg-[#0c0c0c] border border-mafia-gold/30 rounded-lg flex flex-col items-center justify-center p-4 md:p-8 text-center overflow-hidden transition-all duration-500 ${isFlipped ? 'pointer-events-none' : 'pointer-events-auto'} ${isMobile && isMobileEffectsEnabled ? 'shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] border-mafia-gold/50' : 'shadow-2xl'}`}
           style={{ 
             backfaceVisibility: "hidden", 
             WebkitBackfaceVisibility: "hidden",
@@ -802,13 +802,13 @@ const MenuCard = React.memo(function MenuCard({
           <div className="absolute inset-0 bg-black/40 pointer-events-none z-0"></div>
           
           <div className="relative z-10 flex flex-col items-center gap-2 md:gap-8 justify-center w-full">
-            <div className={`p-3 md:p-6 border rounded-sm transition-all duration-500 ${isMobile && isMobileEffectsEnabled ? 'border-mafia-gold/50 bg-mafia-black/60 shadow-[0_0_15px_rgba(197,160,89,0.2)]' : 'border-mafia-gold/20 bg-mafia-black/40'}`}>
+            <div className={`p-3 md:p-6 border rounded-sm transition-all duration-500 ${isMobile && isMobileEffectsEnabled ? 'border-mafia-gold/50 bg-mafia-black/60 shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.2)]' : 'border-mafia-gold/20 bg-mafia-black/40'}`}>
                <div className="scale-100 md:scale-125 origin-center text-mafia-gold/50">
                  {icon}
                </div>
             </div>
             
-            <h3 className={`text-lg md:text-2xl font-heading font-black uppercase tracking-[0.2em] leading-tight transition-colors duration-500 ${isMobile && isMobileEffectsEnabled ? 'text-mafia-gold drop-shadow-[0_0_8px_rgba(197,160,89,0.5)]' : 'text-mafia-gold/60'}`}>
+            <h3 className={`text-lg md:text-2xl font-heading font-black uppercase tracking-[0.2em] leading-tight transition-colors duration-500 ${isMobile && isMobileEffectsEnabled ? 'text-mafia-gold drop-shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.5)]' : 'text-mafia-gold/60'}`}>
               {title}
             </h3>
           </div>

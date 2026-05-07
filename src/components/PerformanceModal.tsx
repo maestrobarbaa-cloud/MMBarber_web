@@ -133,14 +133,14 @@ export function PerformanceModal({ isOpen, onClose }: PerformanceModalProps) {
           />
 
           {/* Grid Overlay */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.05] bg-[linear-gradient(to_right,#c5a059_1px,transparent_1px),linear-gradient(to_bottom,#c5a059_1px,transparent_1px)] bg-[size:30px_30px]"></div>
+          <div className="absolute inset-0 pointer-events-none opacity-[0.05] bg-[linear-gradient(to_right,var(--color-mafia-gold)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-mafia-gold)_1px,transparent_1px)] bg-[size:30px_30px]"></div>
 
           {/* Content Container */}
           <motion.div 
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative w-full max-w-4xl bg-[#050505] border border-mafia-gold/40 shadow-[0_0_100px_rgba(197,160,89,0.1)] overflow-hidden flex flex-col"
+            className="relative w-full max-w-4xl bg-[#050505] border border-mafia-gold/40 shadow-[0_0_100px_rgba(var(--color-mafia-gold-rgb),0.1)] overflow-hidden flex flex-col"
           >
             {/* Header */}
             <div className="p-6 border-b border-mafia-gold/20 flex items-center justify-between bg-mafia-gold/5">

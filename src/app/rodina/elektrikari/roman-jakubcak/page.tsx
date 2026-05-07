@@ -45,7 +45,7 @@ export default function RomanJakubcakPage() {
     <main className="min-h-screen bg-mafia-black text-smoke-white overflow-hidden selection:bg-mafia-gold selection:text-mafia-black">
       {/* Background Grid Ambience */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(197,160,89,0.1)_0%,transparent_70%)] opacity-50" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--color-mafia-gold-rgb),0.1)_0%,transparent_70%)] opacity-50" />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]" />
         
         {/* Animated 'Wires' */}
@@ -92,7 +92,7 @@ export default function RomanJakubcakPage() {
                 {lang === 'cs' ? "Paragraf 7" : "Master Electrician // Paragraf 7"}
               </p>
 
-              <div className="w-24 h-1 bg-mafia-gold mb-12 shadow-[0_0_20px_rgba(197,160,89,0.5)]" />
+              <div className="w-24 h-1 bg-mafia-gold mb-12 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.5)]" />
               
               <div className="space-y-6 text-smoke-white/70 font-sans text-lg md:text-xl leading-relaxed italic border-l-2 border-mafia-gold/20 pl-8">
                 <p>

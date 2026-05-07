@@ -1,17 +1,22 @@
-
 const fs = require('fs');
-const content = fs.readFileSync('src/locales/translations.ts', 'utf8');
-let balance = 0;
-const lines = content.split('\n');
+const content = fs.readFileSync('c:\\Users\\micka\\Documents\\MMBarber_web\\src\\app\\globals.css', 'utf8');
+let stack = [];
+let lines = content.split('\n');
 for (let i = 0; i < lines.length; i++) {
-  const line = lines[i];
-  for (let j = 0; j < line.length; j++) {
-    if (line[j] === '{') balance++;
-    if (line[j] === '}') balance--;
-  }
-  if (line.includes('cs: {')) console.log(`CS start Line ${i + 1} balance: ${balance}`);
-  if (line.includes('en: {')) console.log(`EN start Line ${i + 1} balance: ${balance}`);
-  if (line.includes('boss: {')) console.log(`BOSS start Line ${i + 1} balance: ${balance}`);
-  if (line.includes('falco: {')) console.log(`FALCO start Line ${i + 1} balance: ${balance}`);
+    let line = lines[i];
+    for (let j = 0; j < line.length; j++) {
+        if (line[j] === '{') stack.push({ line: i + 1, char: j + 1 });
+        if (line[j] === '}') {
+            if (stack.length === 0) {
+                console.log(`Extra closing brace at line ${i + 1}, char ${j + 1}`);
+            } else {
+                stack.pop();
+            }
+        }
+    }
 }
-console.log('Final balance:', balance);
+if (stack.length > 0) {
+    stack.forEach(b => console.log(`Unclosed opening brace at line ${b.line}, char ${b.char}`));
+} else {
+    console.log('Braces are balanced');
+}

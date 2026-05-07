@@ -83,7 +83,7 @@ export default function HolictviMaraticePage() {
                  href="https://is.mmbarber.cz" 
                  target="_blank" 
                  rel="noopener noreferrer"
-                 className="block w-full p-8 bg-mafia-gold text-mafia-black text-center font-heading font-black uppercase italic tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(197,160,89,0.2)]"
+                 className="block w-full p-8 bg-mafia-gold text-mafia-black text-center font-heading font-black uppercase italic tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.2)]"
                >
                   Chci svůj termín v Mařaticích
                </a>

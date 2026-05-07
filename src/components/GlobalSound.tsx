@@ -154,7 +154,7 @@ export function GlobalSound() {
              initial={{ opacity: 1, scale: 0.2 }}
              animate={{ opacity: 0, scale: 2 }}
              transition={{ duration: 0.3 }}
-             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 rounded-full blur-md mix-blend-screen"
+             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[var(--user-accent-color)] rounded-full blur-md mix-blend-screen"
              style={{ width: hole.size, height: hole.size }}
           />
         </div>

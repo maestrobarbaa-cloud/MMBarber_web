@@ -78,7 +78,7 @@ export function EnvironmentSlider() {
           {(!isMobile ? [...DETAIL_PICS, ...DETAIL_PICS] : DETAIL_PICS).map((pic, i) => (
             <div 
                 key={`${pic}-${i}`} 
-                className="group/img flex-shrink-0 w-80 md:w-[380px] h-56 md:h-64 mx-3 relative overflow-hidden border border-mafia-gold/20 shadow-[0_0_15px_rgba(197,160,89,0.15)] cursor-pointer hover:border-mafia-gold/50 transition-all duration-700 snap-center"
+                className="group/img flex-shrink-0 w-80 md:w-[380px] h-56 md:h-64 mx-3 relative overflow-hidden border border-mafia-gold/20 shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.15)] cursor-pointer hover:border-mafia-gold/50 transition-all duration-700 snap-center"
                 onClick={() => setSelectedImage(pic)}
             >
                 {/* HUD Overlay on Hover */}
@@ -122,7 +122,7 @@ export function EnvironmentSlider() {
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 1.05, y: -20 }}
-                    className="relative max-w-2xl w-full max-h-[60vh] bg-mafia-black border border-mafia-gold/30 shadow-[0_0_100px_rgba(197,160,89,0.2)] overflow-hidden"
+                    className="relative max-w-2xl w-full max-h-[60vh] bg-mafia-black border border-mafia-gold/30 shadow-[0_0_100px_rgba(var(--color-mafia-gold-rgb),0.2)] overflow-hidden"
                 >
                     {/* HUD Corners */}
                     <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-mafia-gold z-20"></div>

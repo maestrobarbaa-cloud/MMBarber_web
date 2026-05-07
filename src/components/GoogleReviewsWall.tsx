@@ -70,7 +70,7 @@ export function GoogleReviewsWall() {
             className="flex gap-1 mb-6"
           >
             {[...Array(5)].map((_, i) => (
-              <Star key={i} size={24} className="fill-mafia-gold text-mafia-gold shadow-[0_0_15px_rgba(197,160,89,0.5)]" />
+              <Star key={i} size={24} className="fill-mafia-gold text-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.5)]" />
             ))}
           </motion.div>
           <h2 className="text-4xl md:text-6xl font-heading font-black uppercase tracking-tighter mb-4 italic">

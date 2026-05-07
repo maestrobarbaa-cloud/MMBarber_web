@@ -104,7 +104,7 @@ export default function CheatSheet() {
             initial={{ rotate: -180, scale: 0 }}
             animate={{ rotate: 0, scale: 1 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="w-16 h-16 border-2 border-mafia-gold flex items-center justify-center mb-8 bg-mafia-gold/10 backdrop-blur-xl shadow-[0_0_30px_rgba(197,160,89,0.3)]"
+            className="w-16 h-16 border-2 border-mafia-gold flex items-center justify-center mb-8 bg-mafia-gold/10 backdrop-blur-xl shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)]"
             style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
           >
             <Zap className="text-mafia-gold" size={28} />
@@ -112,7 +112,7 @@ export default function CheatSheet() {
 
           <h1 className="text-5xl md:text-8xl font-heading font-black text-white tracking-widest uppercase mb-6 text-center">
             {lang === "cs" ? "SYSTÉMOVÉ " : "SYSTEM "} 
-            <span className="text-mafia-gold drop-shadow-[0_0_20px_rgba(197,160,89,0.5)]">
+            <span className="text-mafia-gold drop-shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.5)]">
               {lang === "cs" ? "KÓDY" : "CODES"}
             </span>
           </h1>
@@ -158,7 +158,7 @@ export default function CheatSheet() {
                 {hoveredIndex === i && (
                   <motion.div 
                     layoutId="hover-border"
-                    className="absolute left-0 w-1.5 h-full bg-mafia-gold shadow-[0_0_15px_rgba(197,160,89,1)]"
+                    className="absolute left-0 w-1.5 h-full bg-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),1)]"
                   />
                 )}
 

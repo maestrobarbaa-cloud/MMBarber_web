@@ -106,7 +106,7 @@ export default function MojeCesta() {
 
                 {/* Marker Center */}
                 <div className="relative z-10 shrink-0 mb-8 md:mb-0">
-                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-mafia-black border-4 border-mafia-gold flex items-center justify-center text-mafia-gold shadow-[0_0_30px_rgba(197,160,89,0.3)] group hover:scale-110 transition-transform cursor-pointer">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-mafia-black border-4 border-mafia-gold flex items-center justify-center text-mafia-gold shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)] group hover:scale-110 transition-transform cursor-pointer">
                     {idx === 0 ? <Compass className="w-6 h-6" /> : idx === 1 ? <Map className="w-6 h-6" /> : idx === 2 ? <History className="w-6 h-6" /> : <Camera className="w-6 h-6" />}
                     
                     {/* Pulsing Ring */}

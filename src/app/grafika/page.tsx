@@ -30,7 +30,7 @@ export default function GraphicsPage() {
     <main className="min-h-screen bg-black text-white selection:bg-mafia-gold selection:text-black overflow-x-hidden">
       {/* Background FX */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(197,160,89,0.05)_0%,transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)]"></div>
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
       </div>
 
@@ -92,7 +92,7 @@ export default function GraphicsPage() {
                 )}
                 <button 
                   onClick={handleUnlock}
-                  className="w-full py-6 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.4em] hover:bg-white transition-all duration-300 shadow-[0_10px_30px_rgba(197,160,89,0.2)]"
+                  className="w-full py-6 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.4em] hover:bg-white transition-all duration-300 shadow-[0_10px_30px_rgba(var(--color-mafia-gold-rgb),0.2)]"
                 >
                   {lang === 'cs' ? "DEŠIFROVAT" : "DECRYPT"}
                 </button>
