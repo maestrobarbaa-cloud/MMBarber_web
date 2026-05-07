@@ -85,7 +85,11 @@ export function Gallery() {
       })
       // 2. Fade noise out, revealing new image
       .to(noiseRef.current, { opacity: 0.15, duration: 0.2 })
-      .to(imageRef.current, { filter: "brightness(1.1) contrast(1.1) sepia(0.4) grayscale(0.2)", opacity: 1, duration: 0.3 }, "<");
+      .to(imageRef.current, { 
+        filter: "brightness(1.1) contrast(1.1) sepia(var(--gallery-sepia)) grayscale(var(--gallery-grayscale))", 
+        opacity: 1, 
+        duration: 0.3 
+      }, "<");
   };
 
   const toggleAutoplay = () => {
@@ -130,7 +134,8 @@ export function Gallery() {
               ref={imageRef}
               src={PICS[currentIndex]} 
               alt="Archivní Foto" 
-              className="w-full h-full object-cover filter contrast-125 sepia-[0.4] grayscale-[0.2]" 
+              className="w-full h-full object-cover" 
+              style={{ filter: "brightness(1.1) contrast(1.1) sepia(var(--gallery-sepia)) grayscale(var(--gallery-grayscale))" }}
             />
             
             {/* Film Noise Overlay mapped to GSAP */}

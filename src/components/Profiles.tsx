@@ -297,7 +297,7 @@ function BarberCard({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: -10 }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="text-mafia-gold font-heading italic text-xs md:text-[14px] tracking-[0.15em] px-6 py-4 leading-relaxed uppercase bg-mafia-gold/5 border border-mafia-gold/10 rounded-lg backdrop-blur-sm shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+                        className="text-mafia-gold barber-dialogue-text font-heading italic text-xs md:text-[14px] tracking-[0.15em] px-6 py-4 leading-relaxed uppercase bg-mafia-gold/5 border border-mafia-gold/10 rounded-lg backdrop-blur-sm shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                       >
                         <span className="opacity-40 block mb-2 text-[8px] font-mono tracking-[0.5em]">
                           {lang === 'cs' ? "— ZÁZNAM KOMUNIKACE —" : "— MESSAGE_LOG —"}

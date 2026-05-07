@@ -9,6 +9,17 @@
   initial-value: #c5a059;
 }
 
+:root {
+  --gallery-sepia: 0.4;
+  --gallery-grayscale: 0.2;
+}
+
+html.noir-mode,
+html.theme-blood {
+  --gallery-sepia: 0;
+  --gallery-grayscale: 1;
+}
+
 @property --user-glow-color {
   syntax: '<color>';
   inherits: true;
@@ -367,48 +378,15 @@ body {
   text-shadow: 0 0 calc(10px * var(--user-glow-intensity)) var(--user-accent-color);
 }
 
-html.noir-mode:not(.theme-blood):not(.is-mobile-device) {
+html.noir-mode:not(.is-mobile-device) {
   filter: grayscale(100%) contrast(1.1) brightness(1);
 }
 
-html.is-mobile-device.noir-mode:not(.theme-blood) {
-  /* Use a much cheaper filter or just grayscale on mobile */
+html.is-mobile-device.noir-mode {
   filter: grayscale(100%);
 }
 
-html.noir-mode {
-  --color-mafia-gold: #e2e2e2; /* Bright silver */
-  --color-mafia-gold-rgb: 226, 226, 226;
-  --color-mafia-gold-glow: rgb(226, 226, 226, 0.3);
-  --user-accent-color: #e2e2e2;
-  --user-accent-color-rgb: 226, 226, 226;
-  --color-mafia-sepia: #888888; /* Silver sepia */
-  --user-red-color: #aaaaaa;   /* Silvered red details by default */
-  --user-glow-radius: 25px; /* Consistent glow */
-  --user-glow-color: rgb(255, 255, 255, 0.3);
-}
-
-html.noir-mode.theme-blood {
-  --user-red-color: #8b0000; /* Vivid Red details in Blood Mode */
-}
-
-html.noir-mode.theme-blood img:not([class*="flag"]),
-html.noir-mode.theme-blood img.barber-photo-img,
-html.noir-mode.theme-blood .bg-cover,
-html.noir-mode.theme-blood [style*="background-image"] {
-  filter: grayscale(1) contrast(1.1) brightness(0.9) !important;
-}
-
-html.noir-mode img:not([class*="flag"]),
-html.noir-mode img.barber-photo-img,
-html.noir-mode .bg-cover,
-html.noir-mode [style*="background-image"] {
-  filter: grayscale(1) brightness(1.1) contrast(1.1) !important;
-}
-
-html.noir-mode img[src*="logo.png"] {
-  filter: grayscale(1) brightness(1.8) contrast(1.2) drop-shadow(0 0 8px rgb(255, 255, 255, 0.4)) !important;
-}
+/* Header Hiding Utility */
 
 /* Header Hiding Utility */
 html.hide-header-mm header {
@@ -436,31 +414,7 @@ html.theme-ocean {
   --color-mafia-gold: #0077be;
   --color-mafia-gold-rgb: 0, 119, 190;
 }
-html.theme-silver, 
-html.noir-mode {
-  --color-mafia-gold: #e2e2e2; /* Bright silver */
-  --color-mafia-gold-rgb: 226, 226, 226;
-  --color-mafia-gold-glow: rgb(226, 226, 226, 0.3);
-  --user-accent-color: #e2e2e2;
-  --user-accent-color-rgb: 226, 226, 226;
-  --color-mafia-sepia: #888888; /* Silver sepia */
-  --color-mafia-red: #aaaaaa;   /* Silver red */
-  --user-glow-radius: 25px; /* Consistent glow */
-  --user-glow-color: rgb(255, 255, 255, 0.3);
-  --neon-glow-color: #fff; /* White flicker for Noir Silver */
-}
-
-html.theme-blood {
-  --color-mafia-gold: #8b0000; /* Deep Blood Red */
-  --color-mafia-gold-rgb: 139, 0, 0;
-  --color-mafia-gold-glow: rgb(139, 0, 0, 0.4);
-  --user-accent-color: #8b0000;
-  --user-accent-color-rgb: 139, 0, 0;
-  --user-glow-color: rgb(139, 0, 0, 0.4);
-  --color-mafia-sepia: #880000; 
-  --color-mafia-red: #ff0000;
-  --neon-glow-color: #ff0000;
-}
+/* Theme Presets moved to bottom */
 
 /* Image Overrides for Silver Theme - Applying globally now */
 html.theme-silver img:not([class*="flag"]),
@@ -950,13 +904,13 @@ html.mode-victory {
   --user-accent-color: #c5a059;
 }
 
-html.mode-victory body::after {
+html.mode-victory:not(.noir-mode):not(.theme-blood) body::after {
   content: "";
   position: fixed;
   inset: 0;
   background: 
-    radial-gradient(circle at center, transparent 30%, rgb(var(--color-mafia-gold-rgb), 0.1) 100%),
-    linear-gradient(rgb(255, 215, 0, 0.02) 1px, transparent 1px);
+    radial-gradient(circle at center, transparent 30%, rgba(var(--color-mafia-gold-rgb), 0.1) 100%),
+    linear-gradient(rgba(var(--color-mafia-gold-rgb), 0.02) 1px, transparent 1px);
   background-size: 100% 100%, 100% 3px;
   pointer-events: none;
   z-index: 9999;
@@ -970,8 +924,8 @@ html.mode-victory .logo-neon {
 }
 
 @keyframes victory-glow {
-  from { text-shadow: 0 0 15px #ffd700, 0 0 30px #ffd700; }
-  to { text-shadow: 0 0 30px #ffd700, 0 0 60px #ffd700, 0 0 90px #fff; }
+  from { text-shadow: 0 0 15px var(--color-mafia-gold), 0 0 30px var(--color-mafia-gold); }
+  to { text-shadow: 0 0 30px var(--color-mafia-gold), 0 0 60px var(--color-mafia-gold), 0 0 90px #fff; }
 }
 
 html.mode-legacy .logo-neon {
@@ -980,8 +934,8 @@ html.mode-legacy .logo-neon {
 }
 
 @keyframes legacy-shimmer {
-  0% { text-shadow: 0 0 10px #ffb700, 0 0 20px var(--color-mafia-gold); letter-spacing: normal; }
-  100% { text-shadow: 0 0 30px #ffb700, 0 0 60px #ffb700, 0 0 80px #fff; letter-spacing: 0.1em; }
+  0% { text-shadow: 0 0 10px var(--color-mafia-gold), 0 0 20px var(--color-mafia-gold); letter-spacing: normal; }
+  100% { text-shadow: 0 0 30px var(--color-mafia-gold), 0 0 60px var(--color-mafia-gold), 0 0 80px #fff; letter-spacing: 0.1em; }
 }
 
 html.mode-legacy body::after {
@@ -999,9 +953,9 @@ html.mode-legacy body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(1.5px 1.5px at 25% 25%, #ffb700, transparent),
+  background-image: radial-gradient(1.5px 1.5px at 25% 25%, var(--color-mafia-gold), transparent),
                     radial-gradient(2px 2px at 75% 50%, #fff, transparent),
-                    radial-gradient(1px 1px at 50% 80%, #ffb700, transparent);
+                    radial-gradient(1px 1px at 50% 80%, var(--color-mafia-gold), transparent);
   background-size: 300px 300px;
   animation: legacy-embers 15s linear infinite;
   pointer-events: none;
@@ -1209,12 +1163,12 @@ button, input, select, textarea {
 }
 
 .theme-blood .header-booking-btn:hover {
-  border-color: #8b0000 !important;
+  border-color: #600000 !important;
 }
 
 .theme-blood .card-symbol-front {
-  color: #aaaaaa !important;
-  opacity: 0.25 !important;
+  color: #8b0000 !important;
+  opacity: 0.6 !important;
 }
 
 .theme-blood .card-symbol-back-red {
@@ -1223,8 +1177,8 @@ button, input, select, textarea {
 }
 
 .theme-blood .evasive-button-custom {
-  box-shadow: 0 0 50px rgb(139, 0, 0, 0.6) !important;
-  border-color: #8b0000 !important;
+  box-shadow: 0 0 50px rgba(226, 226, 226, 0.2) !important;
+  border-color: #e2e2e2 !important;
 }
 
 .theme-blood .card-symbol-back-gray {
@@ -1234,40 +1188,95 @@ button, input, select, textarea {
 
 .theme-blood .hero-slogan,
 .theme-blood .barber-dialogue-text,
-.theme-blood .flavor-text {
+.theme-blood .flavor-text,
+.theme-blood .radio-lyrics-text {
   color: #8b0000 !important;
   text-shadow: 0 0 15px rgb(139, 0, 0, 0.3);
 }
 
 .theme-blood .section-underline {
-  background: linear-gradient(to right, transparent, #8b0000, transparent) !important;
-  box-shadow: 0 0 20px rgb(139, 0, 0, 0.6) !important;
+  background: linear-gradient(to right, transparent, #e2e2e2, transparent) !important;
+  box-shadow: 0 0 20px rgba(226, 226, 226, 0.1) !important;
 }
 
 .theme-blood .address-side-bar {
-  border-color: #8b0000 !important;
+  border-color: #e2e2e2 !important;
 }
 
 .theme-blood .map-target,
 .theme-blood .map-target-ring,
 .theme-blood .map-target-x {
-  color: #8b0000 !important;
-  filter: drop-shadow(0 0 10px rgb(139, 0, 0, 0.8));
+  color: #e2e2e2 !important;
+  filter: drop-shadow(0 0 10px rgba(226, 226, 226, 0.2));
 }
 
 .theme-blood .compass-ring,
 .theme-blood .compass-mark,
 .theme-blood .compass-x {
-  border-color: rgb(139, 0, 0, 0.4) !important;
-  color: #8b0000 !important;
+  border-color: rgba(226, 226, 226, 0.2) !important;
+  color: #e2e2e2 !important;
 }
 
 .theme-blood .barber-booking-text {
   color: #8b0000 !important;
-  text-shadow: 0 0 10px rgb(139, 0, 0, 0.5);
+  text-shadow: 0 0 10px rgb(139, 0, 0, 0.4);
 }
 
-.theme-silver .logo-neon {
-  animation: neon-flicker 2s infinite alternate;
+/* --- FINAL THEME OVERRIDES (CRITICAL FOR GOLD PURGE) --- */
+
+html.noir-mode {
+  --color-mafia-gold: #e2e2e2 !important;
+  --color-mafia-gold-rgb: 226, 226, 226 !important;
+  --color-mafia-gold-glow: rgb(226, 226, 226, 0.3) !important;
+  --user-accent-color: #e2e2e2 !important;
+  --user-accent-color-rgb: 226, 226, 226 !important;
+  --color-mafia-sepia: #888888 !important;
+  --user-red-color: #aaaaaa !important;
+  --user-glow-radius: 25px !important;
+  --user-glow-color: rgb(255, 255, 255, 0.3) !important;
+  --neon-glow-color: #fff !important;
+}
+
+html.theme-silver {
+  --color-mafia-gold: #e2e2e2 !important;
+  --color-mafia-gold-rgb: 226, 226, 226 !important;
+  --user-accent-color: #e2e2e2 !important;
+  --neon-glow-color: #fff !important;
+}
+
+html.theme-blood {
+  --color-mafia-gold: #e2e2e2 !important; /* Revert general accents to Silver */
+  --color-mafia-gold-rgb: 226, 226, 226 !important;
+  --color-mafia-gold-glow: rgb(226, 226, 226, 0.3) !important;
+  --user-accent-color: #e2e2e2 !important;
+  --user-accent-color-rgb: 226, 226, 226 !important;
+  --user-glow-color: rgb(226, 226, 226, 0.3) !important;
+  --color-mafia-sepia: #888888 !important; 
+  --color-mafia-red: #8b0000 !important; /* Keep Red as a sub-accent */
+  --neon-glow-color: #fff !important;    /* White flicker for base */
+  --user-red-color: #8b0000 !important;
+}
+
+/* Image Grayscale Overrides */
+html.noir-mode img:not([class*="flag"]),
+html.theme-silver img:not([class*="flag"]),
+html.theme-blood img:not([class*="flag"]),
+html.noir-mode .bg-cover,
+html.theme-blood .bg-cover,
+html.noir-mode [style*="background-image"],
+html.theme-blood [style*="background-image"] {
+  filter: grayscale(1) brightness(1.1) contrast(1.1) !important;
+}
+
+html.noir-mode.theme-blood img:not([class*="flag"]) {
+  filter: grayscale(1) contrast(1.1) brightness(0.9) !important;
+}
+
+html.noir-mode img[src*="logo.png"] {
+  filter: grayscale(1) brightness(1.8) contrast(1.2) drop-shadow(0 0 8px rgb(255, 255, 255, 0.4)) !important;
+}
+
+.theme-blood .logo-neon {
   color: #fff !important;
+  filter: drop-shadow(0 0 8px #8b0000) !important;
 }

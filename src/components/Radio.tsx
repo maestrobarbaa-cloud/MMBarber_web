@@ -71,7 +71,7 @@ export function Radio() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="text-mafia-gold/60 font-serif italic text-lg leading-relaxed whitespace-nowrap tracking-wider"
+              className="text-mafia-gold/60 radio-lyrics-text font-serif italic text-lg leading-relaxed whitespace-nowrap tracking-wider"
               style={{ textShadow: '0 0 20px rgba(var(--color-mafia-gold-rgb),0.3)' }}
             >
               {lyrics[lyricIndex]}
