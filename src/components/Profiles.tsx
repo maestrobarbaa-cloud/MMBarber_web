@@ -32,6 +32,42 @@ export interface BarberProfile {
   };
 }
 
+const JUNE_HISTORY_DIALOGUES = [
+  { tomas: "Tak už mám vlastní uklízeče, zahradníky, elektrikáře a další lidi. Začínám to hezky rozjíždět… ale v pohodě, jsem rád, že si toho zatím moc nevšímají.", nella: "Proč to neděláš jako všichni ostatní? Všude to sdílet, ukazovat, chlubit se…" },
+  { tomas: "Mám rád ten okamžik překvapení, až všichni zjistí, co se celou dobu budovalo potichu.", nella: "Ty jsi fakt divný případ. Většina lidí potřebuje obdiv hned." },
+  { tomas: "A právě proto většina zůstane jen u řečí. Já radši buduju v tichu. Než někdo stihne pochopit plán, já už jsem o tři kroky dál.", nella: "Takže tajný boss mode jo?" },
+  { tomas: "Spíš klid před bouří. Nejlepší pocit je, když tě podcení… a pak jim dojde, že ses celou dobu díval jinam než oni.", nella: "Ty si jedeš svůj film." },
+  { tomas: "Ne film. Vizi. A ta nepotřebuje potlesk každý druhý den.", nella: "Víš… já jsem si vždycky myslela, že kadeřníci jsou jiní." },
+  { tomas: "Nevěř báchorkám. Každá doba má svoje. Já se zabývám jinýma věcma…", nella: "A jakýma?" },
+  { tomas: "Podnikatelskýma.", nella: "Ty mě někdy děsíš tím klidem." },
+  { tomas: "Protože nejvíc hlučí ti, co nic nemají. Ti nejnebezpečnější většinou mluví potichu.", nella: "Ty fakt budeš jiné krve…" },
+  { tomas: "To musíme ještě ověřit.", nella: "A jak se tohle ověřuje?" },
+  { tomas: "Časem. Tlakem. A tím, co člověk udělá, když přijde chaos.", nella: "Ty odpovídáš jak mafián z filmu." },
+  { tomas: "Možná proto, že většina lidí dnes hraje komedii místo vlastního života.", nella: "A ty hraješ co?" },
+  { tomas: "Nic nehraju. Jen vím, kam jdu. To lidi mate nejvíc.", nella: "Víš, co je na tobě nejhorší?" },
+  { tomas: "Povídej.", nella: "Že ti to člověk skoro věří." },
+  { tomas: "„Skoro“ je začátek problémů, Nello.", nella: "A konec čeho?" },
+  { tomas: "Klidného života.", nella: "..." }
+];
+
+const JUNE_HISTORY_DIALOGUES_EN = [
+  { tomas: "I already have my own cleaners, gardeners, electricians, and others. I'm starting to move things along... but it's fine, I'm glad they haven't noticed much yet.", nella: "Why don't you do it like everyone else? Sharing it everywhere, showing off, bragging..." },
+  { tomas: "I like the element of surprise, when everyone finally realizes what's been building in silence all this time.", nella: "You're a strange case. Most people need admiration immediately." },
+  { tomas: "And that's why most people stay at just talk. I'd rather build in silence. Before anyone can grasp the plan, I'm already three steps ahead.", nella: "So, secret boss mode, huh?" },
+  { tomas: "More like the calm before the storm. The best feeling is when they underestimate you... and then they realize you were looking elsewhere the whole time.", nella: "You're living your own movie." },
+  { tomas: "Not a movie. A vision. And that doesn't need applause every other day.", nella: "You know... I always thought barbers were different." },
+  { tomas: "Don't believe the stories. Every era has its own. I'm dealing with other things...", nella: "Like what?" },
+  { tomas: "Business things.", nella: "You sometimes scare me with that calmness." },
+  { tomas: "Because those with nothing make the most noise. The most dangerous ones usually speak softly.", nella: "You really must be of a different blood..." },
+  { tomas: "We'll have to verify that.", nella: "And how is that verified?" },
+  { tomas: "With time. With pressure. And by what a person does when chaos arrives.", nella: "You answer like a movie mobster." },
+  { tomas: "Maybe because most people today play a comedy instead of their own life.", nella: "And what are you playing?" },
+  { tomas: "I'm not playing anything. I just know where I'm going. That's what confuses people the most.", nella: "You know what's the worst thing about you?" },
+  { tomas: "Tell me.", nella: "That one almost believes you." },
+  { tomas: "“Almost” is the beginning of problems, Nella.", nella: "And the end of what?" },
+  { tomas: "A peaceful life.", nella: "..." }
+];
+
 const MAY_HISTORY_DIALOGUES = [
   { tomas: "Ten den se nezapsal kvůli byznysu. Ne kvůli střihu. Ani kvůli penězům. Zapsal se kvůli návratu.", nella: "..." },
   { tomas: "Tak hele… zase zpátky. Dvakrát ven, jednou sama… a pořád stojíš tady.", nella: "Jen jsem chtěla zjistit, jestli to tu ještě žije." },
@@ -45,8 +81,9 @@ const MAY_HISTORY_DIALOGUES = [
   { tomas: "A jeden den, který už nikdo nevymaže: 7. 5. 2026 – den, kdy se někdo vrátil zpátky do hry.", nella: "..." }
 ];
 
-const BARBER_DIALOGUES = MAY_HISTORY_DIALOGUES;
-const BARBER_DIALOGUES_EN = MAY_HISTORY_DIALOGUES;
+const isJune2026_Dialogue = new Date() >= new Date(2026, 5, 1);
+const BARBER_DIALOGUES = isJune2026_Dialogue ? JUNE_HISTORY_DIALOGUES : MAY_HISTORY_DIALOGUES;
+const BARBER_DIALOGUES_EN = isJune2026_Dialogue ? JUNE_HISTORY_DIALOGUES_EN : MAY_HISTORY_DIALOGUES;
 
 const TOMAS_QUOTES_EN = [
   "Divide et impera.",
@@ -128,21 +165,73 @@ const MilitaryInsignia = ({ level, color = "currentColor" }: { level: number, co
 const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNella?: boolean }) => {
   const { t } = useTranslation();
   const [dynamicLevel, setDynamicLevel] = useState(rank?.level || 0);
+  const [isBloodMode, setIsBloodMode] = useState(false);
+  const [isNoirMode, setIsNoirMode] = useState(false);
+
+  useEffect(() => {
+    const checkThemes = () => {
+      const html = document.documentElement;
+      setIsBloodMode(html.classList.contains('theme-blood'));
+      setIsNoirMode(html.classList.contains('noir-mode'));
+    };
+    checkThemes();
+    window.addEventListener('mmbarber-theme-update', checkThemes);
+    
+    // Listen for ratings update
+    const handleRatingsUpdate = () => {
+      const savedRatings = localStorage.getItem("mmbarber_ratings");
+      if (savedRatings) {
+        const parsed = JSON.parse(savedRatings);
+        const barberId = isNella ? 'nella' : 'tomas';
+        const barberRatings = parsed[barberId];
+        if (barberRatings) {
+          const values = Object.values(barberRatings) as number[];
+          const avg = values.reduce((a, b) => a + b, 0) / values.length;
+          
+          // Map average to level 0-4
+          let newLevel = 0;
+          if (avg >= 4.5) newLevel = 4;
+          else if (avg >= 3.5) newLevel = 3;
+          else if (avg >= 2.5) newLevel = 2;
+          else if (avg >= 1.5) newLevel = 1;
+          else newLevel = 0;
+          
+          setDynamicLevel(newLevel);
+        }
+      }
+    };
+
+    handleRatingsUpdate();
+    window.addEventListener('mmbarber-ratings-update', handleRatingsUpdate);
+
+    return () => {
+      window.removeEventListener('mmbarber-theme-update', checkThemes);
+      window.removeEventListener('mmbarber-ratings-update', handleRatingsUpdate);
+    };
+  }, [isNella]);
 
   useEffect(() => {
     if (!isNella) return;
+    
+    // Disable rotation if ratings exist
+    const savedRatings = localStorage.getItem("mmbarber_ratings");
+    if (savedRatings) {
+      try {
+        const parsed = JSON.parse(savedRatings);
+        if (parsed.nella) return;
+      } catch (e) {}
+    }
+
     const interval = setInterval(() => {
       // Rotation for Nella: 0 -> 1 -> 2 -> 3
-      setDynamicLevel(prev => (prev + 1) % 4);
+      setDynamicLevel((prev: number) => (prev + 1) % 4);
     }, 4000);
     return () => clearInterval(interval);
   }, [isNella]);
 
   const isJune2026 = new Date() >= new Date(2026, 5, 1);
   const status = isNella && isJune2026 ? 'promoted' : rank.status;
-  const level = isNella 
-    ? (isJune2026 ? 3 : dynamicLevel) 
-    : (rank.level || 0);
+  const level = isNella && isJune2026 && dynamicLevel < 3 ? 3 : dynamicLevel;
 
   const rankTitles = [
     t.operatives.ranks.l0,
@@ -156,13 +245,22 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
   const statusLabel = status ? t.operatives.ranks.status[status] : '';
   const nextAttemptLabel = t.operatives.ranks.status.nextAttempt;
 
-  const statusColor = status === 'demoted' ? 'text-mafia-red' : 'text-mafia-gold';
-  const barColor = status === 'demoted' ? 'bg-mafia-red/50' : 'bg-mafia-gold';
+  const statusColor = isBloodMode 
+    ? 'text-mafia-blood' 
+    : (isNoirMode ? 'text-white' : 'text-mafia-gold');
+
+  const barColor = isBloodMode 
+    ? 'bg-mafia-blood' 
+    : (isNoirMode ? 'bg-white' : 'bg-mafia-gold');
+
+  const insigniaColor = isBloodMode 
+    ? 'var(--color-mafia-blood)' 
+    : (isNoirMode ? '#ffffff' : undefined);
 
   return (
     <div className="flex flex-col items-center xl:items-start gap-1 group/rank">
       <div className="flex items-center gap-3">
-        <MilitaryInsignia level={level} color={status === 'demoted' ? "#ff4d4d" : undefined} />
+        <MilitaryInsignia level={level} color={insigniaColor} />
         <div className="flex flex-col items-center xl:items-start">
           <div className="flex items-center gap-2">
             <AnimatePresence mode="wait">
@@ -531,12 +629,6 @@ function BarberCard({
                     </div>
 
                     <div className="flex flex-col items-center gap-1 mb-6 text-center relative">
-                        <h3 className="text-7xl font-heading font-black uppercase tracking-[0.2em] text-mafia-gold leading-none mr-[-0.2em] relative">
-                            {barber.name}
-                            {isHidden && (
-                              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black border border-mafia-gold/20 z-20 origin-left" />
-                            )}
-                        </h3>
                         {barber.motto && (
                           <div className="mt-8 text-2xl font-heading text-mafia-gold/90 tracking-[0.1em] uppercase font-black italic relative">
                             {barber.motto}

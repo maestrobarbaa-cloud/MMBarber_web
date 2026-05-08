@@ -139,6 +139,13 @@ export function HolidayCountdown() {
             isHighSeason: true
           },
           {
+            name: t?.holidayCountdown?.holidays?.slovackeLeto?.name || "Slovácké léto",
+            date: new Date(currentYear, 6, 3),
+            icon: <Sun className="w-5 h-5 text-mafia-gold" />,
+            desc: t?.holidayCountdown?.holidays?.slovackeLeto?.desc,
+            isHighSeason: true
+          },
+          {
             name: t?.holidayCountdown?.holidays?.independenceDay?.name || "Independence Day",
             date: new Date(currentYear, 6, 4),
             icon: <Flag className="w-5 h-5 text-mafia-gold" />,
@@ -315,6 +322,13 @@ export function HolidayCountdown() {
           date: new Date(currentYear, 11, 5),
           icon: <Gift className="w-5 h-5 text-mafia-gold" />,
           desc: t.holidayCountdown.holidays.st_nicholas.desc
+        },
+        {
+          name: t.holidayCountdown.holidays.slovackeLeto.name,
+          date: new Date(currentYear, 6, 3),
+          icon: <Sun className="w-5 h-5 text-mafia-gold" />,
+          desc: t.holidayCountdown.holidays.slovackeLeto.desc,
+          isHighSeason: true
         },
         {
           name: t.holidayCountdown.holidays.vacationSeason.name,

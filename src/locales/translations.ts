@@ -274,8 +274,8 @@ export const translations = {
         l0: "Čistič latrín",
         l1: "Velitel smetáku",
         l2: "Brigadýr",
-        l3: "Junior Barber",
-        l4: "The Don / Mistr Barber",
+        l3: "Cadet Barber",
+        l4: "Master Barber / Don Barber",
         status: {
           demoted: "STAV: DEGRADOVÁNA ZA DEZERCI",
           promoted: "STAV: POVÝŠENA",
@@ -808,6 +808,7 @@ export const translations = {
         vacationSeason: { name: "Dovolená", desc: "Na pláž jedině s čerstvým střihem." },
         lfs: { name: "Letní Filmová Škola", desc: "Kulturní událost roku v Hradišti." },
         slavnostiVina: { name: "Slavnosti vína", desc: "Vrchol sezóny na Slovácku." },
+        slovackeLeto: { name: "Slovácké léto", desc: "Deset dní sportu a hudby v Hradišti. Buďte u toho fresh." },
         christmas: { name: "Štědrý den", desc: "To nejdůležitější pod stromečkem jste vy." }
       }
     },
@@ -1196,8 +1197,8 @@ export const translations = {
         l0: "Latrine Scrubber",
         l1: "Broom Commander",
         l2: "Brigadier (Part-time)",
-        l3: "Barber Operative",
-        l4: "The Don / Master Barber",
+        l3: "Cadet Barber",
+        l4: "Master Barber / Don Barber",
         status: {
           demoted: "STATUS: DEMOTED FOR DESERTION",
           promoted: "STATUS: PROMOTED",
@@ -1545,6 +1546,7 @@ export const translations = {
         thanksgiving: { name: "Thanksgiving", desc: "Be grateful and well-groomed." },
         lfs: { name: "Summer Film School", desc: "The cultural event of the year." },
         slavnostiVina: { name: "Wine Festival", desc: "Peak season in the region." },
+        slovackeLeto: { name: "Slovácké léto", desc: "Ten days of sport and music in the heart of UH. Stay fresh." },
         christmas: { name: "Christmas Day", desc: "The best gift under the tree is you." }
       }
     },

@@ -121,10 +121,12 @@ export default function CareMagazinePage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [season, setSeason] = useState<'winter' | 'spring' | 'summer' | 'autumn'>('spring');
   const [testAnswers, setTestAnswers] = useState<number[]>([]);
+  const [currentSelections, setCurrentSelections] = useState<number[]>([]);
   const [testResult, setTestResult] = useState<string | null>(null);
 
   useEffect(() => {
     setTestAnswers([]);
+    setCurrentSelections([]);
     setTestResult(null);
   }, [currentPage]);
 
@@ -145,45 +147,78 @@ export default function CareMagazinePage() {
   };
 
   const handleTestAnswer = (val: number) => {
-    const newAnswers = [...testAnswers, val];
-    setTestAnswers(newAnswers);
-    const pageType = MAGAZINE_PAGES[currentPage].type;
+    setCurrentSelections(prev => 
+      prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]
+    );
+  };
 
-    if (pageType === 'test' && newAnswers.length === 6) {
-      const sum = newAnswers.reduce((a, b) => a + b, 0);
-      if (sum <= 9) setTestResult('borealis');
-      else if (sum <= 15) setTestResult('meridionalis');
-      else setTestResult('orientalis');
-    } 
-    else if (pageType === 'test-hair' && newAnswers.length === 3) {
-      const sum = newAnswers.reduce((a, b) => a + b, 0);
-      if (sum <= 4) setTestResult('low-porosity');
-      else if (sum <= 7) setTestResult('medium-porosity');
-      else setTestResult('high-porosity');
-    }
-    else if (pageType === 'test-scalp' && newAnswers.length === 3) {
-      const sum = newAnswers.reduce((a, b) => a + b, 0);
-      if (sum <= 4) setTestResult('dry');
-      else if (sum <= 7) setTestResult('oily');
-      else setTestResult('problematic');
-    }
-    else if (pageType === 'test-trichology' && newAnswers.length === 6) {
-      const sum = newAnswers.reduce((a, b) => a + b, 0);
-      if (sum <= 9) setTestResult('stable');
-      else if (sum <= 14) setTestResult('warning');
-      else setTestResult('critical');
-    }
-    else if (pageType === 'alter-ego' && newAnswers.length === 3) {
-      const sum = newAnswers.reduce((a, b) => a + b, 0);
-      if (sum <= 4) setTestResult('boss');
-      else if (sum <= 7) setTestResult('gangster');
-      else if (sum <= 10) setTestResult('outsider');
-      else setTestResult('gentleman');
+
+  // Improved navigation and evaluation
+  const [questionIndex, setQuestionIndex] = useState(0);
+
+  useEffect(() => {
+    setQuestionIndex(0);
+  }, [currentPage]);
+
+  const handleNextQuestion = () => {
+    if (currentSelections.length === 0) return;
+    
+    const newAnswers = [...testAnswers, ...currentSelections];
+    const nextIndex = questionIndex + 1;
+    const page = MAGAZINE_PAGES[currentPage] as any;
+    
+    if (nextIndex >= page.questions.length) {
+      const pageType = page.type;
+      const uniqueWinners = Array.from(new Set(newAnswers));
+      const resultKeys: string[] = [];
+
+      uniqueWinners.forEach(winner => {
+        if (pageType === 'test') {
+          if (winner === 1) resultKeys.push('borealis');
+          else if (winner === 2) resultKeys.push('meridionalis');
+          else resultKeys.push('orientalis');
+        } 
+        else if (pageType === 'test-hair') {
+          if (winner === 1) resultKeys.push('low-porosity');
+          else if (winner === 2) resultKeys.push('medium-porosity');
+          else resultKeys.push('high-porosity');
+        }
+        else if (pageType === 'test-scalp') {
+          if (winner === 1) resultKeys.push('dry');
+          else if (winner === 2) resultKeys.push('oily');
+          else resultKeys.push('problematic');
+        }
+        else if (pageType === 'test-trichology') {
+          if (winner === 1) resultKeys.push('stable');
+          else if (winner === 2) resultKeys.push('warning');
+          else resultKeys.push('critical');
+        }
+        else if (pageType === 'alter-ego') {
+          if (winner === 1) resultKeys.push('boss');
+          else if (winner === 2) resultKeys.push('gangster');
+          else if (winner === 3) resultKeys.push('outsider');
+          else resultKeys.push('gentleman');
+        }
+        else if (pageType === 'test-herbs') {
+          if (winner === 1) resultKeys.push('growth');
+          else if (winner === 2) resultKeys.push('pigment');
+          else resultKeys.push('soothing');
+        }
+      });
+      
+      setTestResult(resultKeys.join(','));
+      setTestAnswers(newAnswers);
+    } else {
+      setTestAnswers(newAnswers);
+      setQuestionIndex(nextIndex);
+      setCurrentSelections([]);
     }
   };
 
   const resetTest = () => {
     setTestAnswers([]);
+    setCurrentSelections([]);
+    setQuestionIndex(0);
     setTestResult(null);
   };
 
@@ -284,7 +319,7 @@ export default function CareMagazinePage() {
                  >
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                     <div className="flex-1 p-6 md:p-20 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-mafia-gold/20">
-                      {renderPageContent(MAGAZINE_PAGES[currentPage], season, { handleTestAnswer, testAnswers, testResult, resetTest, lang }, t_mag, SEASONAL_CONTENT)}
+                      {renderPageContent(MAGAZINE_PAGES[currentPage], season, { handleTestAnswer, handleNextQuestion, currentSelections, questionIndex, testAnswers, testResult, resetTest, lang }, t_mag, SEASONAL_CONTENT)}
                     </div>
                     <div className="absolute bottom-4 right-4 font-mono text-[9px] text-mafia-gold/30 uppercase tracking-widest">
                        {t_mag.ui.page} {currentPage + 1} / {MAGAZINE_PAGES.length}
@@ -343,7 +378,7 @@ export default function CareMagazinePage() {
 }
 
 function renderPageContent(page: any, season: string, testProps: any, t_mag: any, SEASONAL_CONTENT: any) {
-  const { handleTestAnswer, testAnswers, testResult, resetTest, lang } = testProps;
+  const { handleTestAnswer, handleNextQuestion, currentSelections, questionIndex, testAnswers, testResult, resetTest, lang } = testProps;
 
   switch (page.type) {
     case 'cover':
@@ -553,6 +588,32 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
            </div>
         </div>
       );
+    case 'herbs':
+      return (
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12 text-center md:text-left">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
+           </div>
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
+              {page.content}
+           </p>
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              {page.herbs.map((item: any, i: number) => (
+                <div key={i} className="p-6 md:p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/20 transition-all group">
+                   <div className="flex justify-between items-start mb-4">
+                      <h5 className="text-mafia-gold font-heading font-bold text-lg md:text-xl uppercase tracking-widest">{item.n}</h5>
+                      <div className="text-[8px] md:text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Herbální extrakt' : 'Herbal Extract'}</div>
+                   </div>
+                   <div className="text-white/80 text-[10px] font-mono mb-4 uppercase tracking-wider bg-white/5 inline-block px-2 py-1">
+                      {lang === 'cs' ? 'Latinsky:' : 'Latin:'} {item.f}
+                   </div>
+                   <p className="text-smoke-white/50 text-xs md:text-sm leading-relaxed">{item.d}</p>
+                </div>
+              ))}
+           </div>
+        </div>
+      );
     case 'expert':
       return (
         <div className="w-full flex flex-col pb-10">
@@ -687,49 +748,66 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
     case 'test-hair':
     case 'test-scalp':
     case 'test-trichology':
+    case 'test-herbs':
       const questions = page.questions;
       const results = page.results;
 
       if (testResult) {
-        const res = results[testResult];
+        const resultKeys = testResult.split(',');
         return (
-          <div className="h-full flex flex-col items-center justify-center py-6 md:py-10">
-             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="max-w-2xl w-full bg-white/[0.03] border border-mafia-gold/30 p-6 md:p-12 relative overflow-hidden">
-                <h2 className="text-mafia-gold font-heading font-black text-2xl md:text-4xl italic mb-2">{res.title}</h2>
-                <p className="text-smoke-white/80 text-sm md:text-lg leading-relaxed mb-6 md:mb-8 italic">{res.desc}</p>
-                
-                {res.advice && (
-                  <div className="p-4 bg-mafia-gold/5 border-l-2 border-mafia-gold mb-6 md:mb-8">
-                    <div className="text-mafia-gold font-mono text-[9px] md:text-[10px] uppercase mb-2 font-bold">
-                       {page.type === 'test-scalp' ? (lang === 'cs' ? 'Doporučení:' : 'Recommendation:') : (lang === 'cs' ? 'Expertní rada:' : 'Expert Advice:')}
-                    </div>
-                    <p className="text-xs md:text-sm text-white/70">{res.advice}</p>
-                  </div>
-                )}
+          <div className="h-full flex flex-col items-center justify-start py-4 md:py-6 overflow-y-auto scrollbar-thin scrollbar-thumb-mafia-gold/20 px-4">
+             <div className={`grid grid-cols-1 ${resultKeys.length > 1 ? 'md:grid-cols-2' : 'max-w-2xl'} gap-4 md:gap-6 w-full mb-8`}>
+                {resultKeys.map((key, idx) => {
+                  const res = results[key];
+                  if (!res) return null;
+                  return (
+                    <motion.div 
+                      key={key}
+                      initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+                      animate={{ opacity: 1, scale: 1, y: 0 }} 
+                      transition={{ delay: idx * 0.1 }}
+                      className="w-full bg-white/[0.03] border border-mafia-gold/30 p-6 md:p-8 relative overflow-hidden flex flex-col justify-between"
+                    >
+                       <div>
+                          <h2 className="text-mafia-gold font-heading font-black text-xl md:text-2xl italic mb-2">{res.title}</h2>
+                          <p className="text-smoke-white/80 text-xs md:text-sm leading-relaxed mb-6 italic">{res.desc}</p>
+                          
+                          {res.advice && (
+                            <div className="p-4 bg-mafia-gold/5 border-l-2 border-mafia-gold mb-6">
+                              <div className="text-mafia-gold font-mono text-[9px] md:text-[10px] uppercase mb-2 font-bold">
+                                 {page.type === 'test-scalp' ? (lang === 'cs' ? 'Doporučení:' : 'Recommendation:') : (lang === 'cs' ? 'Expertní rada:' : 'Expert Advice:')}
+                              </div>
+                              <p className="text-[10px] md:text-xs text-white/70 leading-relaxed">{res.advice}</p>
+                            </div>
+                          )}
+                       </div>
 
-                <div className="flex flex-col gap-4">
-                  {res.focus && (
-                    <div className="text-white/30 text-[9px] md:text-[10px] font-mono uppercase">
-                      {lang === 'cs' ? 'Hlavní složka:' : 'Key Ingredient:'} {res.focus}
-                    </div>
-                  )}
-                  
-                  {res.warning && (
-                    <div className="text-red-400/60 text-[8px] md:text-[9px] font-mono uppercase tracking-widest">
-                      {lang === 'cs' ? 'Varování:' : 'Warning:'} {res.warning}
-                    </div>
-                  )}
-                </div>
+                       <div className="flex flex-col gap-3 mt-auto">
+                         {res.focus && (
+                           <div className="text-white/30 text-[8px] md:text-[9px] font-mono uppercase">
+                             {lang === 'cs' ? 'Hlavní složka:' : 'Key Ingredient:'} {res.focus}
+                           </div>
+                         )}
+                         
+                         {res.warning && (
+                           <div className="text-red-400/60 text-[7px] md:text-[8px] font-mono uppercase tracking-widest">
+                             {lang === 'cs' ? 'Varování:' : 'Warning:'} {res.warning}
+                           </div>
+                         )}
+                       </div>
+                    </motion.div>
+                  );
+                })}
+             </div>
 
-                <button onClick={resetTest} className="mt-8 w-full py-4 border border-white/10 hover:bg-white/5 transition-all font-mono text-[9px] md:text-[10px] uppercase tracking-widest">
-                   {t_mag.ui.reset}
-                </button>
-             </motion.div>
+             <button onClick={resetTest} className="w-full max-w-xs py-4 border border-white/10 hover:bg-white/5 transition-all font-mono text-[9px] md:text-[10px] uppercase tracking-widest bg-black/40 backdrop-blur-sm sticky bottom-0">
+                {t_mag.ui.reset}
+             </button>
           </div>
         );
       }
 
-      const currentQ = questions[testAnswers.length];
+      const currentQ = questions[questionIndex];
       return (
         <div className="h-full flex flex-col items-center justify-center py-6 md:py-10">
            <div className="max-w-3xl w-full px-4">
@@ -740,12 +818,43 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
               <div className="space-y-6 md:space-y-8">
                  <h3 className="text-xl md:text-2xl font-heading font-bold text-white italic mb-6 md:mb-8 text-center">{currentQ.q}</h3>
                  <div className="grid grid-cols-1 gap-3 md:gap-4">
-                    {currentQ.options.map((opt: any, i: number) => (
-                      <button key={i} onClick={() => handleTestAnswer(opt.val)} className="p-5 md:p-6 border border-white/5 bg-white/[0.02] hover:border-mafia-gold/50 hover:bg-mafia-gold/5 text-left transition-all group">
-                         <p className="text-smoke-white/60 group-hover:text-white transition-colors text-sm md:text-base">{opt.text}</p>
-                      </button>
-                    ))}
+                    {currentQ.options.map((opt: any, i: number) => {
+                      const isSelected = currentSelections.includes(opt.val);
+                      return (
+                        <button 
+                          key={i} 
+                          onClick={() => handleTestAnswer(opt.val)} 
+                          className={`p-5 md:p-6 border transition-all group relative ${
+                            isSelected 
+                              ? 'border-mafia-gold bg-mafia-gold/10 shadow-[0_0_20px_rgba(212,175,55,0.1)]' 
+                              : 'border-white/5 bg-white/[0.02] hover:border-mafia-gold/50 hover:bg-mafia-gold/5'
+                          }`}
+                        >
+                           <p className={`transition-colors text-sm md:text-base ${isSelected ? 'text-white' : 'text-smoke-white/60 group-hover:text-white'}`}>
+                             {opt.text}
+                           </p>
+                           {isSelected && (
+                             <div className="absolute top-2 right-2 text-mafia-gold">
+                               <svg className="w-3 h-3 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 20 20">
+                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                               </svg>
+                             </div>
+                           )}
+                        </button>
+                      );
+                    })}
                  </div>
+
+                 {currentSelections.length > 0 && (
+                   <motion.button 
+                     initial={{ opacity: 0, y: 10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     onClick={handleNextQuestion}
+                     className="mt-10 w-full py-5 bg-mafia-gold text-black font-heading font-black text-sm md:text-base uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_30px_rgba(212,175,55,0.3)]"
+                   >
+                     {lang === 'cs' ? 'Pokračovat' : 'Continue'}
+                   </motion.button>
+                 )}
               </div>
            </div>
         </div>

@@ -112,6 +112,37 @@ export const MAGAZINE_CS = [
     }
   },
   {
+    type: 'herbs',
+    title: 'Herbální Medicína',
+    category: 'HERBOLOGIE',
+    shortTitle: 'Byliny',
+    subtitle: 'Síla přírody v boji za hustotu',
+    content: 'Tradiční medicína, zejména ta čínská (TCM), využívá sílu rostlin k harmonizaci organismu. Vlasy jsou v TCM považovány za „přebytek krve“. Pokud je krev slabá nebo stagnuje, vlasy strádají.',
+    herbs: [
+      { n: 'He Shou Wu (Rdesno)', f: 'Polygonum multiflorum', d: 'Legendární čínská bylina. Vyživuje játra a ledviny, posiluje krev a podle tradice navrací šedým vlasům jejich původní barvu.' },
+      { n: 'Saw Palmetto', f: 'Serenoa repens', d: 'Přírodní blokátor enzymu 5-alfa-reduktázy. Snižuje hladinu DHT v pokožce, čímž chrání folikuly před miniaturizací.' },
+      { n: 'Reishi', f: 'Ganoderma lucidum', d: '„Houba nesmrtelnosti“. Působí silně protizánětlivě a antioxidačně, stabilizuje imunitní reakce pokožky.' },
+      { n: 'Kopřiva & Přeslička', f: 'Urtica dioica / Equisetum', d: 'Bohaté zdroje křemíku a síry. Zpevňují strukturu vlasu a podporují tvorbu kolagenu.' }
+    ]
+  },
+  {
+    type: 'test-herbs',
+    title: 'Herbální Profiler',
+    category: 'HERBOLOGIE',
+    shortTitle: 'Byliny (Test)',
+    subtitle: 'Která rostlina je pro vás ta pravá?',
+    questions: [
+      { q: "Jaký je váš hlavní cíl v péči o vlasy/vousy?", options: [{ text: "Zastavit vypadávání a zahustit porost.", val: 1 }, { text: "Zpomalit šedivění a podpořit pigmentaci.", val: 2 }, { text: "Zklidnit pokožku a odstranit záněty.", val: 3 }] },
+      { q: "Jak pociťujete svou celkovou životní energii?", options: [{ text: "Jsem často unavený, pociťuji slabost.", val: 1 }, { text: "Energie je v normě, ale chybí mi vitalita.", val: 2 }, { text: "Cítím horkost, podráždění nebo stres.", val: 3 }] },
+      { q: "Jaká je struktura vašich vlasů v posledních letech?", options: [{ text: "Ztenčují se a slábnou.", val: 1 }, { text: "Ztrácejí barvu (šedivějí).", val: 2 }, { text: "Jsou suché, lámavé a kůže svědí.", val: 3 }] }
+    ],
+    results: {
+      'growth': { title: "DOPORUČENÍ: SAW PALMETTO", desc: "Váš profil naznačuje citlivost na DHT. Saw Palmetto pomůže chránit vaše kořínky.", advice: "Doplňte o masáže s rozmarýnovým olejem pro podporu cirkulace." },
+      'pigment': { title: "DOPORUČENÍ: HE SHOU WU", desc: "Potřebujete posílit krevní esenci a vyživit játra. He Shou Wu je pro vás ideální volbou.", advice: "Kombinujte s černým sezamem a kustovnicí čínskou (Goji)." },
+      'soothing': { title: "DOPORUČENÍ: REISHI & KOPŘIVA", desc: "Vaše pokožka potřebuje zklidnit a vyčistit od toxinů. Reishi podpoří imunitu a kopřiva dodá minerály.", advice: "Pijte kopřivový čaj v 3-týdenních kúrách a omezte cukr." }
+    }
+  },
+  {
     type: 'nutrition',
     title: 'Výživa zevnitř',
     category: 'BIOLOGIE',
@@ -355,6 +386,37 @@ export const MAGAZINE_EN = [
       borealis: { title: "PROFILE: BOREALIS", desc: "Your origin points to Northern and Central European lines. You have a finer skin and hair structure.", advice: "Choose fresh, woody and lightly spicy fragrances. Avoid heavy sweet perfumes." },
       meridionalis: { title: "PROFILE: MERIDIONALIS", desc: "Your profile bears signs of Mediterranean and continental influences. Skin is more resilient.", advice: "Citrus bases with a deep echo of leather or tobacco are ideal." },
       orientalis: { title: "PROFILE: ORIENTALIS", desc: "Your origin is associated with Southern and Oriental lines. You have high resilience and density.", advice: "Don't be afraid of bold, amber and spicy fragrances. Your skin can carry them." }
+    }
+  },
+  {
+    type: 'herbs',
+    title: 'Herbal Medicine',
+    category: 'HERBOLOGY',
+    shortTitle: 'Herbs',
+    subtitle: 'Nature\'s power in the fight for density',
+    content: 'Traditional medicine, especially Chinese medicine (TCM), utilizes the power of plants to harmonize the organism. In TCM, hair is considered a „surplus of blood“. If blood is weak or stagnant, hair suffers.',
+    herbs: [
+      { n: 'He Shou Wu', f: 'Polygonum multiflorum', d: 'Legendary Chinese herb. It nourishes the liver and kidneys, strengthens blood, and traditionally restores original color to gray hair.' },
+      { n: 'Saw Palmetto', f: 'Serenoa repens', d: 'Natural blocker of the 5-alpha-reductase enzyme. It reduces DHT levels in the skin, protecting follicles from miniaturization.' },
+      { n: 'Reishi', f: 'Ganoderma lucidum', d: '„Mushroom of Immortality“. It has strong anti-inflammatory and antioxidant effects, stabilizing skin immune responses.' },
+      { n: 'Nettle & Horsetail', f: 'Urtica dioica / Equisetum', d: 'Rich sources of silica and sulfur. They strengthen the hair structure and support collagen production.' }
+    ]
+  },
+  {
+    type: 'test-herbs',
+    title: 'Herbal Profiler',
+    category: 'HERBOLOGY',
+    shortTitle: 'Herbs (Test)',
+    subtitle: 'Which plant is the right one for you?',
+    questions: [
+      { q: "What is your main goal in hair/beard care?", options: [{ text: "Stop hair loss and increase density.", val: 1 }, { text: "Slow down graying and support pigmentation.", val: 2 }, { text: "Soothe the skin and remove inflammation.", val: 3 }] },
+      { q: "How do you feel your overall life energy?", options: [{ text: "I'm often tired, feeling weak.", val: 1 }, { text: "Energy is normal, but I lack vitality.", val: 2 }, { text: "I feel heat, irritation, or stress.", val: 3 }] },
+      { q: "What has your hair structure been like in recent years?", options: [{ text: "Thinning and weakening.", val: 1 }, { text: "Losing color (graying).", val: 2 }, { text: "Dry, brittle, and skin itches.", val: 3 }] }
+    ],
+    results: {
+      'growth': { title: "RECOMMENDATION: SAW PALMETTO", desc: "Your profile suggests sensitivity to DHT. Saw Palmetto will help protect your roots.", advice: "Supplement with rosemary oil massages to support circulation." },
+      'pigment': { title: "RECOMMENDATION: HE SHOU WU", desc: "You need to strengthen blood essence and nourish the liver. He Shou Wu is the ideal choice for you.", advice: "Combine with black sesame and Goji berries." },
+      'soothing': { title: "RECOMMENDATION: REISHI & NETTLE", desc: "Your skin needs to be calmed and cleared of toxins. Reishi will support immunity and nettle will provide minerals.", advice: "Drink nettle tea in 3-week cycles and limit sugar." }
     }
   },
   {

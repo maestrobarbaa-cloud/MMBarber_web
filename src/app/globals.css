@@ -50,14 +50,21 @@ body::before {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-30deg);
-  font-size: 15vw;
+  font-size: 14vw;
   font-family: var(--font-mono);
-  color: rgb(var(--color-mafia-gold-rgb), 0.015);
+  color: rgb(var(--color-mafia-gold-rgb), 0.006);
   pointer-events: none;
   z-index: 99999;
   white-space: nowrap;
   letter-spacing: 0.5em;
   font-weight: 900;
+  mix-blend-mode: overlay;
+}
+
+/* Hide watermark on high-performance tiers to ensure pristine visual quality */
+html[data-graphics-tier='high'] body::before,
+html[data-graphics-tier='ultra'] body::before {
+  display: none !important;
 }
 
 button, a {

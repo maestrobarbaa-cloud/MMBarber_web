@@ -13,6 +13,7 @@ import { FutureSEO } from "@/components/FutureSEO";
 
 import Script from "next/script";
 import { Scissors } from "lucide-react";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -338,27 +339,29 @@ export default function RootLayout({
               `}
             </Script>
 
-            <Atmosphere />
-            <FilmGrain />
-            <FutureSEO />
-            <Header />
+            <AuthProvider>
+              <Atmosphere />
+              <FilmGrain />
+              <FutureSEO />
+              <Header />
 
-            <main className="relative z-10 flex-col flex flex-1">
-              {children}
-            </main>
+              <main className="relative z-10 flex-col flex flex-1">
+                {children}
+              </main>
 
-            <ClientWrapper />
-            
-            {/* Global Web Frame - PC/Desktop Only (Theme Aware Border & Glow) */}
-            <div className="fixed inset-0 pointer-events-none z-[9999] border-[1px] border-mafia-gold/20 noir-mode:border-mafia-silver/20 theme-blood:border-mafia-red/20 shadow-[inset_0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)] noir-mode:shadow-[inset_0_0_15px_rgba(192,192,192,0.05)] theme-blood:shadow-[inset_0_0_15px_rgba(139,0,0,0.05)] hidden md:block">
-              <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
-              <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
-              <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
-              <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
-            </div>
+              <ClientWrapper />
+              
+              {/* Global Web Frame - PC/Desktop Only (Theme Aware Border & Glow) */}
+              <div className="fixed inset-0 pointer-events-none z-[9999] border-[1px] border-mafia-gold/20 noir-mode:border-mafia-silver/20 theme-blood:border-mafia-red/20 shadow-[inset_0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)] noir-mode:shadow-[inset_0_0_15px_rgba(192,192,192,0.05)] theme-blood:shadow-[inset_0_0_15px_rgba(139,0,0,0.05)] hidden md:block">
+                <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
+                <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
+                <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
+                <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
+              </div>
 
-            <ScrollIndicator />
-            <CustomCursor />
+              <ScrollIndicator />
+              <CustomCursor />
+            </AuthProvider>
           </SecurityProvider>
         </ErrorBoundary>
       </body>

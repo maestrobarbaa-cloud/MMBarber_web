@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Settings, Monitor, Shield, Zap, Sparkles, Eye, Ghost, Layers, Maximize, Scan, Target, Wind } from "lucide-react";
+import { X, Settings, Monitor, Shield, Zap, Sparkles, Eye, Ghost, Layers, Maximize, Scan, Target, Wind, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslation } from "../hooks/useTranslation";
 import { playSound } from "../utils/audio";
@@ -31,6 +32,7 @@ interface GraphicsConfig {
 export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const { lang } = useTranslation();
+  const router = useRouter();
   const [config, setConfig] = useState<GraphicsConfig>({
     tier: 'low',
     grainEnabled: false,
@@ -393,12 +395,15 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             {/* Footer */}
             <div className="p-8 bg-white/[0.02] border-t border-white/5 flex items-center justify-between">
                  <div className="text-[9px] font-mono text-white/20 uppercase tracking-[0.4em]">MM_ENGINE_INITIALIZED_001</div>
-                 <button 
-                    onClick={onClose}
-                    className="px-12 py-3 bg-mafia-gold text-mafia-black text-[10px] font-heading font-black uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)]"
-                 >
-                    {lang === 'cs' ? 'Aplikovat Nastavení' : 'Apply Settings'}
-                 </button>
+                  <button 
+                    onClick={() => {
+                        saveConfig(config);
+                        onClose();
+                    }}
+                    className="w-full py-4 bg-mafia-gold text-mafia-black font-heading font-black text-xs uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]"
+                  >
+                     {lang === 'cs' ? 'Aplikovat Nastavení' : 'Apply Settings'}
+                  </button>
             </div>
             
             {/* Scanline line */}

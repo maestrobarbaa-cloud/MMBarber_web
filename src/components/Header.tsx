@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
-import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, LayoutGrid, Menu, Volume2, VolumeX, Palette, Sparkles, Radio, Briefcase, CreditCard, MapPin, Monitor, Settings, Target, Handshake, Trophy } from "lucide-react";
+import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, LayoutGrid, Menu, Volume2, VolumeX, Palette, Sparkles, Radio, Briefcase, CreditCard, MapPin, Monitor, Settings, Target, Handshake, Trophy, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import dynamic from "next/dynamic";
@@ -114,6 +114,7 @@ export function Header() {
    const [isGameActive, setIsGameActive] = useState(false);
    const [userAccentColor, setUserAccentColor] = useState<string>("var(--color-mafia-gold)");
    const [isCustomLookActive, setIsCustomLookActive] = useState(false);
+   const [isBloodMode, setIsBloodMode] = useState(false);
 
   useEffect(() => {
     const savedSound = localStorage.getItem("mmbarber_sound_enabled");
@@ -211,6 +212,10 @@ export function Header() {
       setVisitCount(detail || parseInt(localStorage.getItem('mmbarber_visit_count') || '0'));
     };
 
+    const checkBloodMode = () => {
+      setIsBloodMode(document.documentElement.classList.contains('theme-blood'));
+    };
+
     window.addEventListener('mmbarber-visit-count-update', handleVisitUpdate as EventListener);
     
     setIsCompassActive(localStorage.getItem("mmbarber_compass_enabled") === "true");
@@ -233,9 +238,11 @@ export function Header() {
     const checkNoirMode = () => {
       const isNoir = document.documentElement.classList.contains('noir-mode');
       setIsNoirModeActive(isNoir);
+      checkBloodMode();
     };
     
     checkNoirMode();
+    checkBloodMode();
     window.addEventListener('mmbarber-theme-update', checkNoirMode);
     
     return () => {
@@ -983,6 +990,7 @@ export function Header() {
                         {lang === 'cs' ? "Rádio" : "Radio"}
                       </span>
                     </button>
+
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -997,8 +1005,8 @@ export function Header() {
                   size={24} 
                   className="relative z-10 animate-pulse" 
                   style={{ 
-                    color: 'var(--color-mafia-gold)',
-                    filter: `drop-shadow(0 0 10px var(--color-mafia-gold-glow))`
+                    color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
+                    filter: `drop-shadow(0 0 10px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})`
                   }} 
                 />
             </button>
@@ -1222,7 +1230,7 @@ export function Header() {
                     <Trophy 
                       size={20} 
                       className="transition-all duration-700"
-                      style={{ color: 'var(--color-mafia-gold)' }}
+                      style={{ color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)' }}
                     />
                     <div className="absolute -top-1 -right-1 flex flex-col gap-0.5">
                       <div className="w-4 h-[1px] bg-white opacity-20" />

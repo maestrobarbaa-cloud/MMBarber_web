@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'www.seznam.cz',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
       }
     ],
     qualities: [60, 75, 85, 90, 100],
