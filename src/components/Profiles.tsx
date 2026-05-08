@@ -2,7 +2,7 @@
 
 import Image from "./OptimizedImage";
 import { useState, useEffect, useRef, useMemo } from "react";
-import { CalendarDays, Languages, Sparkles, Heart, Clover } from "lucide-react";
+import { CalendarDays, Languages, Sparkles, Heart, Clover, TrendingDown, TrendingUp, Shield, Medal } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,6 +24,12 @@ export interface BarberProfile {
   favorites?: string;
   isHidden?: boolean;
   symbol: string;
+  rank?: {
+    level: number;
+    title: string;
+    status?: 'promoted' | 'demoted' | 'stable';
+    nextRankIn?: string;
+  };
 }
 
 const MAY_HISTORY_DIALOGUES = [
@@ -67,7 +73,12 @@ const barbers: BarberProfile[] = [
     schedule: "Út-Pá 9:00 - 18:00 | So-Ne 9:00 - 12:00",
     bookingLink: "https://mm.inthechair.com/micka",
     specializations: ["Primárně pánské", "ale zvládnu i dámy"],
-    symbol: "A"
+    symbol: "A",
+    rank: {
+      level: 4,
+      title: "MASTER OPERATIVE",
+      status: 'stable'
+    }
   },
   {
     name: "Nella",
@@ -77,9 +88,132 @@ const barbers: BarberProfile[] = [
     schedule: "Individuální režim práce.",
     bookingLink: "https://mmbarberx.setmore.com",
     specializations: ["Barvení", "Trvalá ondulace", "Stříhání pánské", "Stříhání dámské", "Děti"],
-    symbol: "Q"
+    symbol: "Q",
+    rank: {
+      level: 0,
+      title: "Manažer toalety",
+      status: 'demoted',
+      nextRankIn: "ČERVEN 2026"
+    }
   }
 ];
+
+const MilitaryInsignia = ({ level, color = "currentColor" }: { level: number, color?: string }) => {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" className="overflow-visible" style={{ color }}>
+      <defs>
+        <filter id="insigniaGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="1.2" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+      <g filter="url(#insigniaGlow)">
+        {level >= 1 && <path d="M4 8 L12 13 L20 8" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+        {level >= 2 && <path d="M4 12 L12 17 L20 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+        {level >= 3 && <path d="M4 16 L12 21 L20 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+        {level >= 4 && (
+          <motion.path 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            d="M12 2 L13.5 5.5 L17 6 L14.5 8.5 L15 12 L12 10.5 L9 12 L9.5 8.5 L7 6 L10.5 5.5 Z" 
+            fill="currentColor" 
+          />
+        )}
+        {level === 0 && <circle cx="12" cy="12" r="3" fill="currentColor" className="opacity-20 animate-pulse" />}
+      </g>
+    </svg>
+  );
+};
+
+const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNella?: boolean }) => {
+  const { t } = useTranslation();
+  const [dynamicLevel, setDynamicLevel] = useState(rank?.level || 0);
+
+  useEffect(() => {
+    if (!isNella) return;
+    const interval = setInterval(() => {
+      // Rotation for Nella: 0 -> 1 -> 2 -> 3
+      setDynamicLevel(prev => (prev + 1) % 4);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isNella]);
+
+  const isJune2026 = new Date() >= new Date(2026, 5, 1);
+  const status = isNella && isJune2026 ? 'promoted' : rank.status;
+  const level = isNella 
+    ? (isJune2026 ? 3 : dynamicLevel) 
+    : (rank.level || 0);
+
+  const rankTitles = [
+    t.operatives.ranks.l0,
+    t.operatives.ranks.l1,
+    t.operatives.ranks.l2,
+    t.operatives.ranks.l3,
+    t.operatives.ranks.l4,
+  ];
+
+  const currentRankTitle = rankTitles[level] || rank.title;
+  const statusLabel = status ? t.operatives.ranks.status[status] : '';
+  const nextAttemptLabel = t.operatives.ranks.status.nextAttempt;
+
+  const statusColor = status === 'demoted' ? 'text-mafia-red' : 'text-mafia-gold';
+  const barColor = status === 'demoted' ? 'bg-mafia-red/50' : 'bg-mafia-gold';
+
+  return (
+    <div className="flex flex-col items-center xl:items-start gap-1 group/rank">
+      <div className="flex items-center gap-3">
+        <MilitaryInsignia level={level} color={status === 'demoted' ? "#ff4d4d" : undefined} />
+        <div className="flex flex-col items-center xl:items-start">
+          <div className="flex items-center gap-2">
+            <AnimatePresence mode="wait">
+              <motion.span 
+                key={currentRankTitle}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className={`text-[10px] font-black tracking-[0.2em] uppercase leading-tight ${statusColor}`}
+              >
+                {currentRankTitle}
+              </motion.span>
+            </AnimatePresence>
+            {status === 'promoted' && (
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
+                <Medal size={12} className="text-mafia-gold" />
+              </motion.div>
+            )}
+          </div>
+          <div className="flex gap-0.5 mt-0.5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div 
+                key={i} 
+                className={`h-[2px] w-4 rounded-full transition-all duration-700 ${
+                  i <= level ? `${barColor} shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.6)]` : "bg-white/5"
+                }`} 
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      {status && status !== 'stable' && (
+        <motion.div 
+          initial={{ opacity: 0, x: -5 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          className={`flex items-center gap-1.5 ${statusColor} text-[7px] font-mono tracking-[0.2em] uppercase font-black mt-1`}
+        >
+          {status === 'demoted' ? <TrendingDown size={10} strokeWidth={3} /> : <TrendingUp size={10} strokeWidth={3} />}
+          <span className={status === 'demoted' ? 'animate-pulse' : ''}>{statusLabel}</span>
+        </motion.div>
+      )}
+
+      {rank.nextRankIn && !isJune2026 && (
+        <div className="text-[6px] font-mono text-white/10 tracking-[0.3em] uppercase mt-0.5">
+          {nextAttemptLabel} {rank.nextRankIn}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const MissionLoading = ({ isHovered, graphicsTier }: { isHovered: boolean, graphicsTier?: string }) => (
   <AnimatePresence>
@@ -192,6 +326,9 @@ function BarberCard({
           <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
             {barber.role}
           </span>
+          <div className="mt-2 scale-75 origin-top">
+            <BarberRanking rank={barber.rank} lang={lang} isNella={barber.name === 'Nella'} />
+          </div>
         </div>
 
         {!barber.isHidden && (
@@ -279,10 +416,13 @@ function BarberCard({
                   </h3>
                   <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest relative block">
                     {barber.role}
+                  </span>
+                  <div className="mt-4 relative">
+                    <BarberRanking rank={barber.rank} lang={lang} isNella={barber.name === 'Nella'} />
                     {isHidden && (
                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
                     )}
-                  </span>
+                  </div>
               </div>
             </div>
 
@@ -525,7 +665,6 @@ function ChairWithCard({
   const [isSitting, setIsSitting] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isCardHovered) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -543,6 +682,23 @@ function ChairWithCard({
       setTimeout(() => setIsSitting(false), 500); 
     }, 600); 
   };
+
+  const chairGreeting = useMemo(() => {
+    const isTomas = barber.name === 'Tomáš' || barber.name === 'Tomas';
+    const barberKey = isTomas ? 'tomas' : 'nella';
+    const greetings = t.operatives?.barbers?.[barberKey]?.chairGreetings;
+    
+    if (greetings && Array.isArray(greetings) && greetings.length > 0) {
+      const randomIndex = Math.floor(Math.random() * greetings.length);
+      return greetings[randomIndex];
+    }
+    
+    // Fallbacks
+    if (side === 'right') {
+      return lang === 'cs' ? "Pane, Vaše místo..." : "Sir, your seat...";
+    }
+    return lang === 'cs' ? "Tvoje místo je připravené." : "Your seat is ready.";
+  }, [t, barber.name, lang, side]);
 
   const targetScale = isSitting ? 1.0 : (isCardHovered ? 1.05 : 1);
   const filterStr = isCardHovered 
@@ -589,10 +745,7 @@ function ChairWithCard({
         >
           <div className="h-px w-8 bg-gradient-to-r from-transparent to-mafia-gold/30 mr-4"></div>
           <p className="font-heading text-lg text-mafia-gold italic tracking-[0.2em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
-            {side === 'right' 
-              ? (lang === 'cs' ? "Pane, Vaše místo..." : "Sir, your seat...")
-              : (lang === 'cs' ? "Tvoje místo je připravené." : "Your seat is ready.")
-            }
+            {chairGreeting}
           </p>
           <div className="h-px w-8 bg-gradient-to-l from-transparent to-mafia-gold/30 ml-4"></div>
         </motion.div>

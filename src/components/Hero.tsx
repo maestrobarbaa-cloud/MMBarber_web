@@ -301,7 +301,7 @@ export function Hero() {
     "/obr/hero-3.png";
 
   return (
-    <section id="hero" data-no-click-effect="true" className="relative w-full min-h-[100dvh] xl:min-h-screen flex flex-col items-center justify-start xl:justify-center px-0 xl:px-4 pt-20 xl:pt-20 pb-0 overflow-x-hidden">
+    <section id="hero" data-no-click-effect="true" className="relative w-full min-h-[100dvh] xl:min-h-screen flex flex-col items-center justify-start xl:justify-center px-0 xl:px-4 pt-28 xl:pt-28 pb-0 overflow-x-hidden">
       
       {/* CINEMATIC GAMING TRANSITION - HIGH-END SHUTTER (Desktop only) */}
       <AnimatePresence mode="wait">

@@ -680,12 +680,12 @@ export function Header() {
 
   return (
     <>
-      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-24 xl:h-28 block'}`} aria-hidden="true" />
+      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-[calc(7rem+env(safe-area-inset-top,0px))] block'}`} aria-hidden="true" />
       <header
-        className={`w-full left-0 z-[30000] py-4 md:py-6 px-4 md:px-12 flex items-center justify-between transition-all duration-700 pt-[calc(1rem+env(safe-area-inset-top,0px))] gpu-accelerate 
-          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-24' : `fixed top-0 h-24 xl:h-28 ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black/95 backdrop-blur-md xl:backdrop-blur-xl border-b border-white/5' : 'bg-transparent backdrop-blur-none border-b border-transparent'}`} 
+        className={`w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] gpu-accelerate 
+          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-[calc(7rem+env(safe-area-inset-top,0px))]' : `fixed top-0 h-[calc(7rem+env(safe-area-inset-top,0px))] ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black border-b border-white/5' : 'bg-transparent border-b border-transparent'}`} 
           ${(isIntroActive) ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} 
-          ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full shadow-none' : 'translate-y-0'}`}
+          ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full opacity-0 shadow-none' : 'translate-y-0 opacity-100'}`}
       >
         <div className="flex items-center gap-8">
           <button
@@ -693,12 +693,12 @@ export function Header() {
             className="group flex items-center outline-none"
             aria-label="MMBARBER Logo"
           >
-            <div className="relative w-12 h-10 md:w-20 md:h-14 flex-shrink-0 transition-transform duration-700 ease-in-out group-hover:rotate-[360deg] group-hover:scale-110">
+            <div className="relative w-11 h-9 md:w-16 md:h-12 flex-shrink-0 transition-transform duration-500 ease-in-out group-hover:rotate-[360deg] group-hover:scale-110">
               <Image
                 src="/logo.png"
                 alt="MM"
-                width={80}
-                height={56}
+                width={64}
+                height={48}
                 priority
                 className="w-full h-full object-contain"
               />
@@ -706,11 +706,11 @@ export function Header() {
             <div className="relative ml-2 flex flex-col justify-center">
               <span 
                 ref={logoRef}
-                className="text-lg md:text-3xl font-heading font-black text-mafia-gold noir-mode:text-smoke-white tracking-widest group-hover:text-smoke-white transition-all duration-300 logo-neon leading-none"
+                className="text-lg md:text-2xl font-heading font-black text-mafia-gold noir-mode:text-smoke-white tracking-widest group-hover:text-smoke-white transition-all duration-300 logo-neon leading-none"
               >
                 MMBARBER
               </span>
-              <span className="absolute top-[100%] left-0 text-[7px] md:text-[9px] text-mafia-gold/0 group-hover:text-mafia-gold/60 transition-all duration-700 font-mono uppercase tracking-[0.3em] whitespace-nowrap pt-1 blur-sm group-hover:blur-0 translate-y-1 group-hover:translate-y-0 pointer-events-none">
+              <span className="absolute -bottom-2 md:-bottom-3 left-0 text-[6px] md:text-[8px] text-mafia-gold/0 group-hover:text-mafia-gold/60 transition-all duration-700 font-mono uppercase tracking-[0.3em] whitespace-nowrap blur-sm group-hover:blur-0 translate-y-1 group-hover:translate-y-0 pointer-events-none">
                 Z lidí vzniká styl. Ze stylu vzniká značka.
               </span>
             </div>
@@ -749,9 +749,9 @@ export function Header() {
               <span className={`text-[10px] font-black tracking-[0.2em] uppercase leading-none ${isMenuOpen ? 'text-mafia-black' : 'text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red'}`}>{isMenuOpen ? (lang === 'cs' ? 'ZAVŘÍT' : '') : 'MENU'}</span>
             </div>
             {!isMenuOpen ? (
-              <Menu size={24} className="text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red transition-all duration-700 group-hover:scale-110" />
+              <Menu size={24} className="text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red transition-all duration-500 group-hover:scale-110" />
             ) : (
-              <X size={24} className="text-mafia-black transition-all duration-700 group-hover:scale-110" />
+              <X size={24} className="text-mafia-black transition-all duration-500 group-hover:scale-110" />
             )}
           </button>
         </div>

@@ -227,7 +227,39 @@ export const translations = {
           story: "Člověk, který věří, že v detailech je síla. Nehledá zkratky, ale poctivou cestu k nejlepšímu výsledku.",
           schedule: "Út–Pá 9:00 – 18:00 | So–Ne 9:00 – 12:00",
           englishSpeaking: "English Speaking",
-          specializations: ["Hlavně pánské", "ale zvládnu i dámské styly"]
+          specializations: ["Hlavně pánské", "ale zvládnu i dámské styly"],
+          chairGreetings: [
+            "Sedááj do trůnu, šéfe.",
+            "Křeslo čeká… respekt taky.",
+            "Sedni si, dneska se přepisuje styl.",
+            "Sedááj, jdeme na upgrade.",
+            "Trůn je tvůj… aspoň na chvíli.",
+            "Sedni. Vlasy to už vzdaly.",
+            "Sedááj, boss mode aktivován.",
+            "Křeslo ready, realita off.",
+            "Sedni si, dneska se rodí nový ty.",
+            "Sedááj, tady se nehraje.",
+            "Trůn pro krále, ne pro náhodný lidi.",
+            "Sedni… a sleduj kouzlo (bez magie).",
+            "Sedááj, začíná respekt session.",
+            "Křeslo tě přijalo. Už není cesta zpět.",
+            "Sedni si, chaos končí tady.",
+            "Sedááj, dneska to bude čistý.",
+            "Trůn zapnutej. Ty taky?",
+            "Sedni… a nech to na nás.",
+            "Sedááj do světa fresh looku.",
+            "Křeslo: “vítej zpět, šéfe.”",
+            "Sedni si, dneska se vylepšuje identita.",
+            "Sedááj, jdeme ostře a čistě.",
+            "Trůn čeká, legenda taky.",
+            "Sedni… a za chvíli tě nepoznají.",
+            "Sedááj, tady se z lidí stávají bossové.",
+            "Křeslo ready na tvůj restart.",
+            "Sedni si, vlasy dneska končí službu.",
+            "Sedááj, nový level loading…",
+            "Trůn aktivní. Ty jsi na řadě.",
+            "Sedni… a užij si upgrade."
+          ]
         },
         nella: {
           name: "Nella",
@@ -236,6 +268,19 @@ export const translations = {
           story: "Čerstvá krev v našem týmu, která do každého střihu vkládá energii a chuť se neustále učit.",
           schedule: "Individuální režim práce.",
           specializations: ["Barvení", "Trvalá ondulace", "Stříhání pánské", "Stříhání dámské", "Děti"]
+        }
+      },
+      ranks: {
+        l0: "Čistič latrín",
+        l1: "Velitel smetáku",
+        l2: "Brigadýr",
+        l3: "Junior Barber",
+        l4: "The Don / Mistr Barber",
+        status: {
+          demoted: "STAV: DEGRADOVÁNA ZA DEZERCI",
+          promoted: "STAV: POVÝŠENA",
+          stable: "STAV: STABILNÍ",
+          nextAttempt: "POKUS O POVÝŠENÍ:"
         }
       }
     },
@@ -1104,7 +1149,39 @@ export const translations = {
           story: "A man who believes strength is in details. Doesn't look for shortcuts, but honest path to best result.",
           schedule: "Tue–Fri 9:00 – 18:00 | Sat–Sun 9:00 – 12:00",
           englishSpeaking: "English Speaking",
-          specializations: ["Mainly men's", "but can handle women's styles too"]
+          specializations: ["Mainly men's", "but can handle women's styles too"],
+          chairGreetings: [
+            "Sit in the throne, boss.",
+            "The chair awaits… respect too.",
+            "Have a seat, style is being rewritten today.",
+            "Sit down, we're going for an upgrade.",
+            "The throne is yours… at least for a while.",
+            "Sit. Your hair has already given up.",
+            "Sit down, boss mode activated.",
+            "Chair ready, reality off.",
+            "Sit down, a new you is being born today.",
+            "Sit down, we're not playing here.",
+            "A throne for a king, not for random people.",
+            "Sit… and watch the magic (without magic).",
+            "Sit down, the respect session begins.",
+            "The chair has accepted you. There's no turning back.",
+            "Sit down, chaos ends here.",
+            "Sit down, it's going to be clean today.",
+            "Throne powered up. Are you?",
+            "Sit… and leave it to us.",
+            "Sit down into the world of fresh look.",
+            "Chair: “welcome back, boss.”",
+            "Sit down, identity is being improved today.",
+            "Sit down, let's go sharp and clean.",
+            "The throne awaits, the legend too.",
+            "Sit… and in a moment they won't recognize you.",
+            "Sit down, people become bosses here.",
+            "Chair ready for your restart.",
+            "Sit down, hair ends its service today.",
+            "Sit down, new level loading…",
+            "Throne active. You're up.",
+            "Sit… and enjoy the upgrade."
+          ]
         },
         nella: {
           name: "Nella",
@@ -1113,6 +1190,19 @@ export const translations = {
           story: "Fresh blood in our team, bringing energy and a desire to constantly learn to every cut.",
           schedule: "Individual working mode.",
           specializations: ["Coloring", "Perms", "Men's cuts", "Women's cuts", "Children"]
+        }
+      },
+      ranks: {
+        l0: "Latrine Scrubber",
+        l1: "Broom Commander",
+        l2: "Brigadier (Part-time)",
+        l3: "Barber Operative",
+        l4: "The Don / Master Barber",
+        status: {
+          demoted: "STATUS: DEMOTED FOR DESERTION",
+          promoted: "STATUS: PROMOTED",
+          stable: "STATUS: STABLE",
+          nextAttempt: "PROMOTION ATTEMPT:"
         }
       }
     },
