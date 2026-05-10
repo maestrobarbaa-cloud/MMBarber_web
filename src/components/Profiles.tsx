@@ -2,13 +2,20 @@
 
 import Image from "./OptimizedImage";
 import { useState, useEffect, useRef, useMemo } from "react";
-import { CalendarDays, Languages, Sparkles, Heart, Clover, TrendingDown, TrendingUp, Shield, Medal } from "lucide-react";
+import { CalendarDays, Languages, Sparkles, Heart, Clover, TrendingDown, TrendingUp, Shield, Medal, Trophy, Crown, Flame } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "../utils/audio";
+import { barbers } from "@/data/barbers";
+import { 
+  getGlobalLevelStats, 
+  subscribeToLevelVotes, 
+  getDominantLevel 
+} from "@/utils/voting";
 
 export interface BarberProfile {
+  id: string;
   name: string;
   role: string;
   image: string;
@@ -101,43 +108,11 @@ const TOMAS_QUOTES_EN = [
 
 
 
-const barbers: BarberProfile[] = [
-  {
-    name: "Tomáš",
-    role: "The Enforcer",
-    image: "/obr/tomasmicka.png",
-    desc: "Mistr komunikace a hrubé síly. Tvůj vous zlomí k naprosté poslušnosti.",
-    schedule: "Út-Pá 9:00 - 18:00 | So-Ne 9:00 - 12:00",
-    bookingLink: "https://mm.inthechair.com/micka",
-    specializations: ["Primárně pánské", "ale zvládnu i dámy"],
-    symbol: "A",
-    rank: {
-      level: 4,
-      title: "MASTER OPERATIVE",
-      status: 'stable'
-    }
-  },
-  {
-    name: "Nella",
-    role: "Mladé ucho",
-    image: "/obr/nellapelikanova.png",
-    desc: "Ochoč si svoji barberku. Čerstvá krev v našem týmu.",
-    schedule: "Individuální režim práce.",
-    bookingLink: "https://mmbarberx.setmore.com",
-    specializations: ["Barvení", "Trvalá ondulace", "Stříhání pánské", "Stříhání dámské", "Děti"],
-    symbol: "Q",
-    rank: {
-      level: 0,
-      title: "Manažer toalety",
-      status: 'demoted',
-      nextRankIn: "ČERVEN 2026"
-    }
-  }
-];
+// Barbers data moved to @/data/barbers.ts
 
-const MilitaryInsignia = ({ level, color = "currentColor" }: { level: number, color?: string }) => {
+export const MilitaryInsignia = ({ level, color = "currentColor" }: { level: number, color?: string }) => {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" className="overflow-visible" style={{ color }}>
+    <svg width="36" height="36" viewBox="0 0 24 24" className="overflow-visible" style={{ color }}>
       <defs>
         <filter id="insigniaGlow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="1.2" result="blur" />
@@ -145,18 +120,89 @@ const MilitaryInsignia = ({ level, color = "currentColor" }: { level: number, co
         </filter>
       </defs>
       <g filter="url(#insigniaGlow)">
-        {level >= 1 && <path d="M4 8 L12 13 L20 8" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
-        {level >= 2 && <path d="M4 12 L12 17 L20 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
-        {level >= 3 && <path d="M4 16 L12 21 L20 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
-        {level >= 4 && (
+        {/* Low levels: Chevrons */}
+        {level >= 1 && <path d="M4 10 L12 15 L20 10" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+        {level >= 2 && <path d="M4 14 L12 19 L20 14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+        {level >= 3 && <path d="M4 18 L12 23 L20 18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+        
+        {/* Level 4: Single Star */}
+        {level === 4 && (
           <motion.path 
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
+            initial={{ scale: 0, rotate: -45 }}
+            animate={{ scale: 1, rotate: 0 }}
             d="M12 2 L13.5 5.5 L17 6 L14.5 8.5 L15 12 L12 10.5 L9 12 L9.5 8.5 L7 6 L10.5 5.5 Z" 
             fill="currentColor" 
           />
         )}
-        {level === 0 && <circle cx="12" cy="12" r="3" fill="currentColor" className="opacity-20 animate-pulse" />}
+
+        {/* Level 5: Star + Ring */}
+        {level === 5 && (
+          <>
+            <motion.circle cx="12" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2" animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }} />
+            <motion.path 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              d="M12 2 L13.5 5.5 L17 6 L14.5 8.5 L15 12 L12 10.5 L9 12 L9.5 8.5 L7 6 L10.5 5.5 Z" 
+              fill="currentColor" 
+            />
+          </>
+        )}
+
+        {/* Level 6: Double Stars */}
+        {level === 6 && (
+          <>
+            <motion.path 
+              initial={{ x: -10, opacity: 0 }}
+              animate={{ x: -3, opacity: 1 }}
+              d="M8 2 L9.5 5.5 L13 6 L10.5 8.5 L11 12 L8 10.5 L5 12 L5.5 8.5 L3 6 L6.5 5.5 Z" 
+              fill="currentColor" 
+              className="scale-75 origin-center"
+            />
+            <motion.path 
+              initial={{ x: 10, opacity: 0 }}
+              animate={{ x: 3, opacity: 1 }}
+              d="M16 2 L17.5 5.5 L21 6 L18.5 8.5 L19 12 L16 10.5 L13 12 L13.5 8.5 L11 6 L14.5 5.5 Z" 
+              fill="currentColor" 
+              className="scale-75 origin-center"
+            />
+          </>
+        )}
+
+        {/* Level 7: The Don - Triple Stars / Central focus */}
+        {level >= 7 && (
+          <>
+             <motion.path 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1.2 }}
+              d="M12 2 L13.5 5.5 L17 6 L14.5 8.5 L15 12 L12 10.5 L9 12 L9.5 8.5 L7 6 L10.5 5.5 Z" 
+              fill="currentColor" 
+            />
+            <motion.path 
+              initial={{ x: -10, opacity: 0 }}
+              animate={{ x: -7, opacity: 1 }}
+              d="M4 8 L5.5 11.5 L9 12 L6.5 14.5 L7 18 L4 16.5 L1 18 L1.5 14.5 L-1 12 L2.5 11.5 Z" 
+              fill="currentColor" 
+              className="scale-50 origin-center"
+            />
+            <motion.path 
+              initial={{ x: 10, opacity: 0 }}
+              animate={{ x: 7, opacity: 1 }}
+              d="M20 8 L21.5 11.5 L25 12 L22.5 14.5 L23 18 L20 16.5 L17 18 L17.5 14.5 L15 12 L18.5 11.5 Z" 
+              fill="currentColor" 
+              className="scale-50 origin-center"
+            />
+            <motion.circle 
+              cx="12" cy="10" r="10" 
+              fill="none" stroke="currentColor" 
+              strokeWidth="0.5" strokeDasharray="1 4"
+              animate={{ rotate: -360 }}
+              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              className="opacity-40"
+            />
+          </>
+        )}
+        
+        {level === 0 && <circle cx="12" cy="12" r="5" fill="currentColor" className="opacity-30 animate-pulse" />}
       </g>
     </svg>
   );
@@ -168,6 +214,20 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
   const [isBloodMode, setIsBloodMode] = useState(false);
   const [isNoirMode, setIsNoirMode] = useState(false);
 
+  const [isWinnerToday, setIsWinnerToday] = useState(false);
+  const [totalVotes, setTotalVotes] = useState(0);
+
+  const calculateLevelFromVotes = (votes: number) => {
+    if (votes >= 1000) return 7;
+    if (votes >= 500) return 6;
+    if (votes >= 300) return 5;
+    if (votes >= 150) return 4;
+    if (votes >= 50) return 3;
+    if (votes >= 20) return 2;
+    if (votes >= 5) return 1;
+    return 0;
+  };
+
   useEffect(() => {
     const checkThemes = () => {
       const html = document.documentElement;
@@ -177,57 +237,36 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
     checkThemes();
     window.addEventListener('mmbarber-theme-update', checkThemes);
     
-    // Listen for ratings update
-    const handleRatingsUpdate = () => {
-      const savedRatings = localStorage.getItem("mmbarber_ratings");
-      if (savedRatings) {
-        const parsed = JSON.parse(savedRatings);
-        const barberId = isNella ? 'nella' : 'tomas';
-        const barberRatings = parsed[barberId];
-        if (barberRatings) {
-          const values = Object.values(barberRatings) as number[];
-          const avg = values.reduce((a, b) => a + b, 0) / values.length;
-          
-          // Map average to level 0-4
-          let newLevel = 0;
-          if (avg >= 4.5) newLevel = 4;
-          else if (avg >= 3.5) newLevel = 3;
-          else if (avg >= 2.5) newLevel = 2;
-          else if (avg >= 1.5) newLevel = 1;
-          else newLevel = 0;
-          
-          setDynamicLevel(newLevel);
-        }
-      }
-    };
+    const barberId = isNella ? 'nella' : 'tomas';
 
-    handleRatingsUpdate();
-    window.addEventListener('mmbarber-ratings-update', handleRatingsUpdate);
+    // Subscribe to Level Votes for community-driven ranking
+    const unsubscribeLevels = subscribeToLevelVotes(stats => {
+      const barberStats = stats[barberId];
+      const communityLevel = getDominantLevel(barberStats);
+      setDynamicLevel(communityLevel);
+      
+      const totalCount = Object.values(barberStats || {}).reduce((a, b) => a + b, 0);
+      setTotalVotes(totalCount);
+    });
 
     return () => {
       window.removeEventListener('mmbarber-theme-update', checkThemes);
-      window.removeEventListener('mmbarber-ratings-update', handleRatingsUpdate);
+      unsubscribeLevels();
     };
   }, [isNella]);
 
   useEffect(() => {
     if (!isNella) return;
     
-    // Disable rotation if ratings exist
-    const savedRatings = localStorage.getItem("mmbarber_ratings");
-    if (savedRatings) {
-      try {
-        const parsed = JSON.parse(savedRatings);
-        if (parsed.nella) return;
-      } catch (e) {}
-    }
+    // Disable automatic rotation if there are any real votes
+    if (totalVotes > 0) return;
 
     const interval = setInterval(() => {
       // Rotation for Nella: 0 -> 1 -> 2 -> 3
       setDynamicLevel((prev: number) => (prev + 1) % 4);
     }, 4000);
     return () => clearInterval(interval);
-  }, [isNella]);
+  }, [isNella, totalVotes]);
 
   const isJune2026 = new Date() >= new Date(2026, 5, 1);
   const status = isNella && isJune2026 ? 'promoted' : rank.status;
@@ -239,6 +278,9 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
     t.operatives.ranks.l2,
     t.operatives.ranks.l3,
     t.operatives.ranks.l4,
+    t.operatives.ranks.l5,
+    t.operatives.ranks.l6,
+    t.operatives.ranks.l7,
   ];
 
   const currentRankTitle = rankTitles[level] || rank.title;
@@ -258,34 +300,39 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
     : (isNoirMode ? '#ffffff' : undefined);
 
   return (
-    <div className="flex flex-col items-center xl:items-start gap-1 group/rank">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-col items-center xl:items-start gap-2 group/rank min-w-[180px]">
+      <div className="flex items-center gap-4">
         <MilitaryInsignia level={level} color={insigniaColor} />
-        <div className="flex flex-col items-center xl:items-start">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center">
+          <div className="flex items-center gap-2 h-4 min-w-[120px] justify-center xl:justify-start">
             <AnimatePresence mode="wait">
               <motion.span 
                 key={currentRankTitle}
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
-                className={`text-[10px] font-black tracking-[0.2em] uppercase leading-tight ${statusColor}`}
+                className={`text-[12px] font-black tracking-[0.2em] uppercase leading-tight whitespace-nowrap text-center xl:text-left ${statusColor}`}
               >
-                {currentRankTitle}
+                {isWinnerToday ? (lang === 'cs' ? 'BARBER DNE' : 'BARBER OF THE DAY') : currentRankTitle}
               </motion.span>
             </AnimatePresence>
-            {status === 'promoted' && (
+            {isWinnerToday && (
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
+                <Flame size={14} className="text-mafia-gold animate-pulse" />
+              </motion.div>
+            )}
+            {status === 'promoted' && !isWinnerToday && (
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
                 <Medal size={12} className="text-mafia-gold" />
               </motion.div>
             )}
           </div>
           <div className="flex gap-0.5 mt-0.5">
-            {[0, 1, 2, 3, 4].map((i) => (
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
               <div 
                 key={i} 
-                className={`h-[2px] w-4 rounded-full transition-all duration-700 ${
-                  i <= level ? `${barColor} shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.6)]` : "bg-white/5"
+                className={`h-[3px] w-4 rounded-full transition-all duration-700 ${
+                  i <= level ? `${barColor} shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.7)]` : "bg-white/10"
                 }`} 
               />
             ))}
@@ -297,15 +344,15 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
         <motion.div 
           initial={{ opacity: 0, x: -5 }}
           whileInView={{ opacity: 1, x: 0 }}
-          className={`flex items-center gap-1.5 ${statusColor} text-[7px] font-mono tracking-[0.2em] uppercase font-black mt-1`}
+          className={`flex items-center gap-2 ${statusColor} text-[9px] font-mono tracking-[0.25em] uppercase font-black mt-1.5`}
         >
-          {status === 'demoted' ? <TrendingDown size={10} strokeWidth={3} /> : <TrendingUp size={10} strokeWidth={3} />}
+          {status === 'demoted' ? <TrendingDown size={12} strokeWidth={3} /> : <TrendingUp size={12} strokeWidth={3} />}
           <span className={status === 'demoted' ? 'animate-pulse' : ''}>{statusLabel}</span>
         </motion.div>
       )}
 
       {rank.nextRankIn && !isJune2026 && (
-        <div className="text-[6px] font-mono text-white/10 tracking-[0.3em] uppercase mt-0.5">
+        <div className="text-[8px] font-mono text-white/20 tracking-[0.3em] uppercase mt-1">
           {nextAttemptLabel} {rank.nextRankIn}
         </div>
       )}
@@ -424,7 +471,7 @@ function BarberCard({
           <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
             {barber.role}
           </span>
-          <div className="mt-2 scale-75 origin-top">
+          <div className="mt-6 relative flex justify-center">
             <BarberRanking rank={barber.rank} lang={lang} isNella={barber.name === 'Nella'} />
           </div>
         </div>
@@ -515,7 +562,7 @@ function BarberCard({
                   <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest relative block">
                     {barber.role}
                   </span>
-                  <div className="mt-4 relative">
+                  <div className="mt-8 relative flex justify-center xl:justify-start">
                     <BarberRanking rank={barber.rank} lang={lang} isNella={barber.name === 'Nella'} />
                     {isHidden && (
                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />

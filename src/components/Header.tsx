@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
-import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, LayoutGrid, Menu, Volume2, VolumeX, Palette, Sparkles, Radio, Briefcase, CreditCard, MapPin, Monitor, Settings, Target, Handshake, Trophy, Star } from "lucide-react";
+import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, LayoutGrid, Menu, Volume2, VolumeX, Palette, Sparkles, Radio, Briefcase, CreditCard, MapPin, Monitor, Settings, Target, Handshake, Trophy, Star, Crown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import dynamic from "next/dynamic";
@@ -18,6 +18,7 @@ const GraphicsSettingsModal = dynamic(() => import("./GraphicsSettingsModal").th
 import { type Language } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { playSound } from "../utils/audio";
+
 
 const CzFlag = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" className="w-4 h-3 md:w-5 md:h-[14px] rounded-[2px] shadow-sm shrink-0">
@@ -114,7 +115,12 @@ export function Header() {
    const [isGameActive, setIsGameActive] = useState(false);
    const [userAccentColor, setUserAccentColor] = useState<string>("var(--color-mafia-gold)");
    const [isCustomLookActive, setIsCustomLookActive] = useState(false);
+   const [isOffline, setIsOffline] = useState(false);
    const [isBloodMode, setIsBloodMode] = useState(false);
+   const [isNoirMode, setIsNoirMode] = useState(false);
+   const [shouldFlashShooting, setShouldFlashShooting] = useState(false);
+   const [shouldFlashFamily, setShouldFlashFamily] = useState(false);
+   const [shouldFlashRating, setShouldFlashRating] = useState(false);
 
   useEffect(() => {
     const savedSound = localStorage.getItem("mmbarber_sound_enabled");
@@ -212,14 +218,24 @@ export function Header() {
       setVisitCount(detail || parseInt(localStorage.getItem('mmbarber_visit_count') || '0'));
     };
 
-    const checkBloodMode = () => {
+    const checkTheme = () => {
       setIsBloodMode(document.documentElement.classList.contains('theme-blood'));
+      setIsNoirMode(document.documentElement.classList.contains('noir-mode'));
     };
 
     window.addEventListener('mmbarber-visit-count-update', handleVisitUpdate as EventListener);
     
     setIsCompassActive(localStorage.getItem("mmbarber_compass_enabled") === "true");
     setIsMobileEffectsEnabled(localStorage.getItem("mmbarber_mobile_effects_enabled") === "true");
+
+    const checkRatingStatus = async () => {
+      const { getInternalIdentity } = await import("@/utils/identity");
+      const id = await getInternalIdentity();
+      const { getTodayMultiVote } = await import("@/utils/voting");
+      const votedRatings = await getTodayMultiVote(id);
+      setShouldFlashRating(!votedRatings);
+    };
+    checkRatingStatus();
 
     const handleCompassStateChange = (e: Event) => {
       const detail = (e as CustomEvent).detail;
@@ -238,18 +254,32 @@ export function Header() {
     const checkNoirMode = () => {
       const isNoir = document.documentElement.classList.contains('noir-mode');
       setIsNoirModeActive(isNoir);
-      checkBloodMode();
+      checkTheme();
     };
     
     checkNoirMode();
-    checkBloodMode();
+    checkTheme();
+
+    // Check flashing status
+    const checkFlashing = () => {
+      const today = new Date().toISOString().split('T')[0];
+      const lastShootingDate = localStorage.getItem('mmbarber_shooting_last_opened');
+      setShouldFlashShooting(lastShootingDate !== today);
+
+      const familyVisited = localStorage.getItem('mmbarber_family_visited') === 'true';
+      setShouldFlashFamily(!familyVisited);
+    };
+    checkFlashing();
+
     window.addEventListener('mmbarber-theme-update', checkNoirMode);
+    window.addEventListener('storage', checkFlashing); // Handle cross-tab updates if any
     
     return () => {
       window.removeEventListener('mmbarber-visit-count-update', handleVisitUpdate as EventListener);
       window.removeEventListener('mmbarber-compass-state', handleCompassStateChange as EventListener);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsStateChange as EventListener);
       window.removeEventListener('mmbarber-theme-update', checkNoirMode);
+      window.removeEventListener('storage', checkFlashing);
     };
   }, []);
 
@@ -683,6 +713,17 @@ export function Header() {
     document.documentElement.style.overflow = '';
   };
 
+  const markShootingOpened = () => {
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem('mmbarber_shooting_last_opened', today);
+    setShouldFlashShooting(false);
+  };
+
+  const markFamilyOpened = () => {
+    localStorage.setItem('mmbarber_family_visited', 'true');
+    setShouldFlashFamily(false);
+  };
+
 
 
   return (
@@ -997,16 +1038,37 @@ export function Header() {
             </div>
 
             <button
-                onClick={() => window.dispatchEvent(new Event('mmbarber-elita-game-open'))}
+                onClick={() => {
+                  markShootingOpened();
+                  window.dispatchEvent(new Event('mmbarber-elita-game-open'));
+                }}
                 className="p-2 transition-all duration-500 rounded-full hover:bg-white/5 group relative hover:scale-125 ml-1"
                 aria-label={lang === 'cs' ? "ELITNÍ STŘELBA" : "ELITE SHOOTING"}
             >
                 <Target 
                   size={24} 
-                  className="relative z-10 animate-pulse" 
+                  className={`relative z-10 ${shouldFlashShooting ? 'animate-pulse' : ''}`} 
                   style={{ 
                     color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
-                    filter: `drop-shadow(0 0 10px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})`
+                    filter: shouldFlashShooting ? `drop-shadow(0 0 10px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
+                  }} 
+                />
+            </button>
+
+            <button
+                onClick={() => {
+                  router.push("/hodnoceni");
+                  trackEvent("header_rating_click");
+                }}
+                className="p-2 transition-all duration-500 rounded-full hover:bg-white/5 group relative hover:scale-125 ml-1"
+                aria-label={lang === 'cs' ? "HODNOCENÍ ELITY" : "ELITE RATING"}
+            >
+                <Crown 
+                  size={24} 
+                  className={`relative z-10 ${shouldFlashRating ? 'animate-pulse' : ''}`} 
+                  style={{ 
+                    color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
+                    filter: shouldFlashRating ? `drop-shadow(0 0 10px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
                   }} 
                 />
             </button>
@@ -1035,16 +1097,17 @@ export function Header() {
 
           <button 
             onClick={() => { 
+                markFamilyOpened();
                 setIsMenuOpen(false);
                 trackEvent("cta_header_rodina"); 
                 playSound("/sounds/naboje.mp3", 0.2);
                 router.push("/rodina");
             }}
-            className={`group relative overflow-hidden bg-mafia-dark border px-4 md:px-6 py-2 transition-all duration-300 header-booking-btn flex items-center gap-2 ${isMounted && (!isMobile || isMobileEffectsEnabled) && !activeMode ? 'animate-[pulse_1.5s_ease-in-out_infinite]' : ''}`}
+            className={`group relative overflow-hidden bg-mafia-dark border px-4 md:px-6 py-2 transition-all duration-300 header-booking-btn flex items-center gap-2 ${isMounted && shouldFlashFamily && (!isMobile || isMobileEffectsEnabled) && !activeMode ? 'animate-[pulse_1.5s_ease-in-out_infinite]' : ''}`}
             style={{ 
               borderColor: 'var(--color-mafia-gold)',
-              boxShadow: !isMounted ? 'none' : (isMobile && !isMobileEffectsEnabled) ? 'none' : (activeMode ? `0 0 10px var(--color-mafia-gold)` : '0 0 15px var(--color-mafia-gold), inset 0 0 10px var(--color-mafia-gold)'),
-              animation: !isMounted || (isMobile && !isMobileEffectsEnabled) || activeMode ? 'none' : undefined
+              boxShadow: !isMounted ? 'none' : (isMobile && !isMobileEffectsEnabled) ? 'none' : (activeMode || !shouldFlashFamily ? (shouldFlashFamily ? `0 0 10px var(--color-mafia-gold)` : 'none') : '0 0 15px var(--color-mafia-gold), inset 0 0 10px var(--color-mafia-gold)'),
+              animation: !isMounted || (isMobile && !isMobileEffectsEnabled) || activeMode || !shouldFlashFamily ? 'none' : undefined
             }}
           >
             <div className="absolute inset-0 block -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0" style={{ backgroundColor: 'var(--color-mafia-gold)' }}></div>
@@ -1214,34 +1277,78 @@ export function Header() {
                 </div>
               </button>
 
+               {/* RODINA MMBARBERU TILE (Mobile) */}
+              <button 
+                onClick={() => {
+                  markFamilyOpened();
+                  handleNavLinkClick();
+                  router.push("/rodina");
+                }}
+                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${shouldFlashFamily ? 'border-mafia-gold bg-mafia-gold/5 animate-pulse shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.2)]' : 'border-white/10'}`}
+              >
+                <div className="flex items-center gap-5">
+                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${shouldFlashFamily ? 'border-mafia-gold bg-mafia-gold/20' : 'border-white/20'}`}>
+                    <Users size={28} className={shouldFlashFamily ? 'text-mafia-gold' : 'text-white/40'} />
+                  </div>
+                  <div className="flex flex-col items-start text-left">
+                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'RODINA' : 'FAMILY'}</span>
+                    <span className="text-[10px] font-mono text-mafia-gold/40 uppercase">{lang === 'cs' ? 'STAŇ SE ČLENEM' : 'BECOME A MEMBER'}</span>
+                  </div>
+                </div>
+                <ChevronRight size={20} className={shouldFlashFamily ? 'text-mafia-gold' : 'text-white/20'} />
+              </button>
+
+              {/* HODNOCENÍ ELITY TILE (Mobile) */}
+              <button 
+                onClick={() => {
+                  handleNavLinkClick();
+                  router.push("/hodnoceni");
+                }}
+                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 hover:bg-white/10 ${shouldFlashRating ? 'border-mafia-gold bg-mafia-gold/5 animate-pulse' : 'border-white/10'}`}
+              >
+                <div className="flex items-center gap-5">
+                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${shouldFlashRating ? 'border-mafia-gold bg-mafia-gold/10 shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'border-white/20'}`}>
+                    <Crown size={28} className={shouldFlashRating ? 'text-mafia-gold' : 'text-white/40'} />
+                  </div>
+                  <div className="flex flex-col items-start text-left">
+                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'HODNOCENÍ' : 'RATING'}</span>
+                    <span className="text-[10px] font-mono text-mafia-gold/40 uppercase">{lang === 'cs' ? 'KOMUNITNÍ HLASOVÁNÍ' : 'COMMUNITY VOTING'}</span>
+                  </div>
+                </div>
+                <ChevronRight size={20} className={shouldFlashRating ? 'text-mafia-gold' : 'text-white/20'} />
+              </button>
+
               {/* ELITNÍ STŘELBA TILE (Mobile Only Launcher) */}
               <button 
                 onClick={() => {
+                  markShootingOpened();
                   setIsMenuOpen(false);
                   window.dispatchEvent(new Event('mmbarber-elita-game-open'));
                 }}
-                className="bg-white/5 border border-white/10 px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 hover:bg-white/10"
+                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 hover:bg-white/10 ${shouldFlashShooting ? 'border-mafia-gold bg-mafia-gold/5 animate-pulse' : 'border-white/10'}`}
               >
                 <div className="flex items-center gap-5">
                   <div 
                     className="relative flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-700 bg-black/40 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-                    style={{ borderColor: 'var(--color-mafia-gold)' }}
+                    style={{ borderColor: shouldFlashShooting ? 'var(--color-mafia-gold)' : 'rgba(255,255,255,0.1)' }}
                   >
                     <Trophy 
                       size={20} 
                       className="transition-all duration-700"
-                      style={{ color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)' }}
+                      style={{ color: shouldFlashShooting ? (isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)') : 'rgba(255,255,255,0.4)' }}
                     />
-                    <div className="absolute -top-1 -right-1 flex flex-col gap-0.5">
-                      <div className="w-4 h-[1px] bg-white opacity-20" />
-                    </div>
+                    {shouldFlashShooting && (
+                      <div className="absolute -top-1 -right-1 flex flex-col gap-0.5">
+                        <div className="w-4 h-[1px] bg-white opacity-20" />
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col items-start leading-none">
-                    <span className="text-[10px] font-mono uppercase" style={{ color: 'var(--color-mafia-gold)' }}>{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
-                    <span className="text-[8px] font-mono opacity-40 uppercase tracking-tighter">VIP_ACCESS</span>
+                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'STŘELBA' : 'SHOOTING'}</span>
+                    <span className="text-[10px] font-mono uppercase" style={{ color: shouldFlashShooting ? 'var(--color-mafia-gold)' : 'rgba(255,255,255,0.3)' }}>{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
                   </div>
                 </div>
-                <ChevronRight size={20} style={{ color: 'var(--color-mafia-gold)' }} />
+                <ChevronRight size={20} style={{ color: shouldFlashShooting ? 'var(--color-mafia-gold)' : 'rgba(255,255,255,0.2)' }} />
               </button>
 
               {/* EFFECTS TOGGLE TILE */}
@@ -1274,7 +1381,6 @@ export function Header() {
                    />
                 </div>
               </button>
-
 
 
               {/* SOUNDS TOGGLE TILE */}

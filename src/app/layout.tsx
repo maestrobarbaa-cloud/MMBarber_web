@@ -13,7 +13,7 @@ import { FutureSEO } from "@/components/FutureSEO";
 
 import Script from "next/script";
 import { Scissors } from "lucide-react";
-import { AuthProvider } from "@/components/AuthProvider";
+
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -150,6 +150,7 @@ export default function RootLayout({
         <link rel="alternate" href="https://mmbarber.cz/" hrefLang="cs" />
         <link rel="alternate" href="https://mmbarber.cz/en" hrefLang="en" />
         <link rel="alternate" href="https://mmbarber.cz/" hrefLang="x-default" />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -339,7 +340,7 @@ export default function RootLayout({
               `}
             </Script>
 
-            <AuthProvider>
+            <>
               <Atmosphere />
               <FilmGrain />
               <FutureSEO />
@@ -361,7 +362,7 @@ export default function RootLayout({
 
               <ScrollIndicator />
               <CustomCursor />
-            </AuthProvider>
+            </>
           </SecurityProvider>
         </ErrorBoundary>
       </body>

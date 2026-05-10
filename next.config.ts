@@ -32,6 +32,19 @@ const nextConfig: NextConfig = {
     ],
     qualities: [60, 75, 85, 90, 100],
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy-Report-Only',
+            value: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com/gsi/client https://www.googletagmanager.com; frame-src 'self' https://accounts.google.com/gsi/ https://calendar.google.com; connect-src 'self' https://accounts.google.com/gsi/ https://*.google-analytics.com; font-src 'self' https://fonts.gstatic.com;"
+          }
+        ]
+      }
+    ];
+  },
 };
 
 export default nextConfig;

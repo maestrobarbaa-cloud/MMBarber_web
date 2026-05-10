@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Internal Identity & Voting System Security
+    match /level_votes/{voteId} {
+      
+      // Allow reading individual votes if the user knows the ID (for checking if they voted)
+      allow get: if true;
+      
+      // Allow listing votes for statistics (only the 'date' field should be filtered in queries)
+      allow list: if true;
+
+      // Crucial: Only allow creating or updating a vote if:
+      // 1. The ID of the document matches the provided userId + date
+      // 2. The levels provided are within the valid range (0-7)
+      // 3. The timestamp is recent
+      allow create, update: if request.resource.data.userId is string
+        && voteId == request.resource.data.userId + "_" + request.resource.data.date
+        && request.resource.data.ratings.values().all(val => val >= 0 && val <= 7)
+        && request.resource.data.timestamp == request.time;
+
+      // Prevent anyone from deleting votes
+      allow delete: if false;
+    }
+
+    // Global Stats (if we move aggregation to a dedicated doc later)
+    match /stats/{docId} {
+      allow read: if true;
+      allow write: if false; // Only updated via Cloud Functions (recommended for future)
+    }
+
+    // Default: Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

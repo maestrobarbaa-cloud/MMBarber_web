@@ -271,16 +271,19 @@ export const translations = {
         }
       },
       ranks: {
-        l0: "Čistič latrín",
-        l1: "Velitel smetáku",
-        l2: "Brigadýr",
-        l3: "Cadet Barber",
-        l4: "Master Barber / Don Barber",
+        l0: "ČISTIČ LATRÍN",
+        l1: "VELITEL SMETÁKU",
+        l2: "ŠAMPONOVÝ OPERATIVEC",
+        l3: "REKRUT RODINY",
+        l4: "ELITNÍ BŘITVA",
+        l5: "CAPO DI TUTTI CAPI",
+        l6: "BARBER PORUČÍK",
+        l7: "THE DON",
         status: {
           demoted: "STAV: DEGRADOVÁNA ZA DEZERCI",
           promoted: "STAV: POVÝŠENA",
           stable: "STAV: STABILNÍ",
-          nextAttempt: "POKUS O POVÝŠENÍ:"
+          nextAttempt: "TERMÍN POVÝŠENÍ:"
         }
       }
     },
@@ -1194,11 +1197,14 @@ export const translations = {
         }
       },
       ranks: {
-        l0: "Latrine Scrubber",
-        l1: "Broom Commander",
-        l2: "Brigadier (Part-time)",
-        l3: "Cadet Barber",
-        l4: "Master Barber / Don Barber",
+        l0: "LATRINE SCRUBBER",
+        l1: "BROOM COMMANDER",
+        l2: "SHAMPOO OPERATIVE",
+        l3: "FAMILY RECRUIT",
+        l4: "ELITE RAZOR",
+        l5: "CAPO DI TUTTI CAPI",
+        l6: "BARBER LIEUTENANT",
+        l7: "THE DON",
         status: {
           demoted: "STATUS: DEMOTED FOR DESERTION",
           promoted: "STATUS: PROMOTED",
