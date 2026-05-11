@@ -385,13 +385,8 @@ body {
   text-shadow: 0 0 calc(10px * var(--user-glow-intensity)) var(--user-accent-color);
 }
 
-html.noir-mode:not(.is-mobile-device) {
-  filter: grayscale(100%) contrast(1.1) brightness(1);
-}
+/* Global filters removed per user request to allow selective coloring */
 
-html.is-mobile-device.noir-mode {
-  filter: grayscale(100%);
-}
 
 /* Header Hiding Utility */
 
@@ -424,13 +419,36 @@ html.theme-ocean {
 /* Theme Presets moved to bottom */
 
 /* Image Overrides for Silver Theme - Applying globally now */
+/* Selective grayscale for images in all Noir/Thematic modes */
+html.noir-mode img:not([class*="flag"]):not(.hero-blood-img),
 html.theme-silver img:not([class*="flag"]),
-html.theme-blood img:not([class*="flag"]),
+html.theme-blood img:not([class*="flag"]):not(.hero-blood-img),
+html.mode-blood img:not([class*="flag"]):not(.hero-blood-img),
+html.noir-mode video,
+html.theme-silver video,
+html.theme-blood video,
+html.mode-blood video,
+html.noir-mode .bg-cover,
 html.theme-silver .bg-cover,
 html.theme-blood .bg-cover,
+html.mode-blood .bg-cover,
+html.noir-mode [style*="background-image"],
 html.theme-silver [style*="background-image"],
-html.theme-blood [style*="background-image"] {
+html.theme-blood [style*="background-image"],
+html.mode-blood [style*="background-image"] {
   filter: grayscale(1) brightness(1.1) contrast(1.1) !important;
+}
+
+html.theme-blood .hero-blood-img,
+html.mode-blood .hero-blood-img,
+html.theme-blood img.hero-blood-img,
+html.mode-blood img.hero-blood-img,
+.hero-blood-wrapper,
+.hero-blood-wrapper img,
+img[src*="main-hero-blood"],
+#hero img.hero-blood-img {
+  filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(1px) !important;
+  -webkit-filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(1px) !important;
 }
 
 /* Also ensure hero background div with direct inline style is handled */
@@ -1197,8 +1215,8 @@ button, input, select, textarea {
 .theme-blood .barber-dialogue-text,
 .theme-blood .flavor-text,
 .theme-blood .radio-lyrics-text {
-  color: #8b0000 !important;
-  text-shadow: 0 0 15px rgb(139, 0, 0, 0.3);
+  color: #ffffff !important;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
 .theme-blood .section-underline {
@@ -1225,8 +1243,8 @@ button, input, select, textarea {
 }
 
 .theme-blood .barber-booking-text {
-  color: #8b0000 !important;
-  text-shadow: 0 0 10px rgb(139, 0, 0, 0.4);
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
 
 /* --- FINAL THEME OVERRIDES (CRITICAL FOR GOLD PURGE) --- */
@@ -1285,5 +1303,5 @@ html.noir-mode img[src*="logo.png"] {
 
 .theme-blood .logo-neon {
   color: #fff !important;
-  filter: drop-shadow(0 0 8px #8b0000) !important;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)) !important;
 }

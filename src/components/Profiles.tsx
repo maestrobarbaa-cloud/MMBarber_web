@@ -110,9 +110,9 @@ const TOMAS_QUOTES_EN = [
 
 // Barbers data moved to @/data/barbers.ts
 
-export const MilitaryInsignia = ({ level, color = "currentColor" }: { level: number, color?: string }) => {
+export const MilitaryInsignia = ({ level, color = "currentColor", size = 36 }: { level: number, color?: string, size?: number }) => {
   return (
-    <svg width="36" height="36" viewBox="0 0 24 24" className="overflow-visible" style={{ color }}>
+    <svg width={size} height={size} viewBox="0 0 24 24" className="overflow-visible" style={{ color }}>
       <defs>
         <filter id="insigniaGlow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="1.2" result="blur" />
@@ -120,84 +120,154 @@ export const MilitaryInsignia = ({ level, color = "currentColor" }: { level: num
         </filter>
       </defs>
       <g filter="url(#insigniaGlow)">
-        {/* Low levels: Chevrons */}
-        {level >= 1 && <path d="M4 10 L12 15 L20 10" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
-        {level >= 2 && <path d="M4 14 L12 19 L20 14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
-        {level >= 3 && <path d="M4 18 L12 23 L20 18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+        {/* Low levels: Tactical Chevrons (Optimized Spacing) */}
+        {level >= 1 && (
+          <g>
+            <path d="M4 14 L12 18 L20 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 14 L12 18 L20 14" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
+          </g>
+        )}
+        {level >= 2 && (
+          <g>
+            <path d="M4 10 L12 14 L20 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 10 L12 14 L20 10" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
+          </g>
+        )}
+        {level >= 3 && (
+          <g>
+            <path d="M4 6 L12 10 L20 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 6 L12 10 L20 6" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
+          </g>
+        )}
+        {level >= 4 && (
+          <g>
+            <path d="M4 2 L12 6 L20 2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 2 L12 6 L20 2" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
+          </g>
+        )}
+        {level >= 5 && (
+          <g>
+            <path d="M4 -2 L12 2 L20 -2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 -2 L12 2 L20 -2" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
+          </g>
+        )}
         
-        {/* Level 4: Single Star */}
-        {level === 4 && (
+        {/* Level 6: Single Star */}
+        {level === 6 && (
           <motion.path 
             initial={{ scale: 0, rotate: -45 }}
             animate={{ scale: 1, rotate: 0 }}
-            d="M12 2 L13.5 5.5 L17 6 L14.5 8.5 L15 12 L12 10.5 L9 12 L9.5 8.5 L7 6 L10.5 5.5 Z" 
+            d="M12 0 L13.5 3.5 L17 4 L14.5 6.5 L15 10 L12 8.5 L9 10 L9.5 6.5 L7 4 L10.5 3.5 Z" 
             fill="currentColor" 
           />
         )}
 
-        {/* Level 5: Star + Ring */}
-        {level === 5 && (
+        {/* Level 7: Star + Ring */}
+        {level === 7 && (
           <>
-            <motion.circle cx="12" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2" animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }} />
+            <motion.circle cx="12" cy="5" r="5" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2" animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }} />
             <motion.path 
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              d="M12 2 L13.5 5.5 L17 6 L14.5 8.5 L15 12 L12 10.5 L9 12 L9.5 8.5 L7 6 L10.5 5.5 Z" 
+              d="M12 0 L13.5 3.5 L17 4 L14.5 6.5 L15 10 L12 8.5 L9 10 L9.5 6.5 L7 4 L10.5 3.5 Z" 
               fill="currentColor" 
             />
           </>
         )}
 
-        {/* Level 6: Double Stars */}
-        {level === 6 && (
+        {/* Level 8: Double Stars */}
+        {level === 8 && (
           <>
             <motion.path 
-              initial={{ x: -10, opacity: 0 }}
-              animate={{ x: -3, opacity: 1 }}
-              d="M8 2 L9.5 5.5 L13 6 L10.5 8.5 L11 12 L8 10.5 L5 12 L5.5 8.5 L3 6 L6.5 5.5 Z" 
+              initial={{ x: -15, opacity: 0 }}
+              animate={{ x: -5, opacity: 1 }}
+              d="M8 0 L9.5 3.5 L13 4 L10.5 6.5 L11 10 L8 8.5 L5 10 L5.5 6.5 L3 4 L6.5 3.5 Z" 
               fill="currentColor" 
               className="scale-75 origin-center"
             />
             <motion.path 
-              initial={{ x: 10, opacity: 0 }}
-              animate={{ x: 3, opacity: 1 }}
-              d="M16 2 L17.5 5.5 L21 6 L18.5 8.5 L19 12 L16 10.5 L13 12 L13.5 8.5 L11 6 L14.5 5.5 Z" 
+              initial={{ x: 15, opacity: 0 }}
+              animate={{ x: 5, opacity: 1 }}
+              d="M16 0 L17.5 3.5 L21 4 L18.5 6.5 L19 10 L16 8.5 L13 10 L13.5 6.5 L11 4 L14.5 3.5 Z" 
               fill="currentColor" 
               className="scale-75 origin-center"
             />
           </>
         )}
 
-        {/* Level 7: The Don - Triple Stars / Central focus */}
-        {level >= 7 && (
+        {/* Level 9-10: High Command - Triple Stars / Central focus */}
+        {level >= 9 && (
           <>
              <motion.path 
               initial={{ scale: 0 }}
               animate={{ scale: 1.2 }}
-              d="M12 2 L13.5 5.5 L17 6 L14.5 8.5 L15 12 L12 10.5 L9 12 L9.5 8.5 L7 6 L10.5 5.5 Z" 
+              d="M12 0 L13.5 3.5 L17 4 L14.5 6.5 L15 10 L12 8.5 L9 10 L9.5 6.5 L7 4 L10.5 3.5 Z" 
               fill="currentColor" 
             />
             <motion.path 
-              initial={{ x: -10, opacity: 0 }}
-              animate={{ x: -7, opacity: 1 }}
-              d="M4 8 L5.5 11.5 L9 12 L6.5 14.5 L7 18 L4 16.5 L1 18 L1.5 14.5 L-1 12 L2.5 11.5 Z" 
+              initial={{ x: -15, opacity: 0 }}
+              animate={{ x: -9, opacity: 1 }}
+              d="M4 6 L5.5 9.5 L9 10 L6.5 12.5 L7 16 L4 14.5 L1 16 L1.5 12.5 L-1 10 L2.5 9.5 Z" 
               fill="currentColor" 
               className="scale-50 origin-center"
             />
             <motion.path 
-              initial={{ x: 10, opacity: 0 }}
-              animate={{ x: 7, opacity: 1 }}
-              d="M20 8 L21.5 11.5 L25 12 L22.5 14.5 L23 18 L20 16.5 L17 18 L17.5 14.5 L15 12 L18.5 11.5 Z" 
+              initial={{ x: 15, opacity: 0 }}
+              animate={{ x: 9, opacity: 1 }}
+              d="M20 6 L21.5 9.5 L25 10 L22.5 12.5 L23 16 L20 14.5 L17 16 L17.5 12.5 L15 10 L18.5 9.5 Z" 
               fill="currentColor" 
               className="scale-50 origin-center"
             />
+            
+            {/* Level 9 Special: Crown Ring */}
+            {level === 9 && (
+              <motion.path
+                d="M12 22 L14 18 L18 18 L16 14 L20 10 L15 10 L12 5 L9 10 L4 10 L8 14 L6 18 L10 18 Z"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 0.8, scale: 1.4, rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              />
+            )}
+
             <motion.circle 
               cx="12" cy="10" r="10" 
               fill="none" stroke="currentColor" 
               strokeWidth="0.5" strokeDasharray="1 4"
-              animate={{ rotate: -360 }}
-              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              animate={{ rotate: level >= 9 ? -720 : -360 }}
+              transition={{ duration: level >= 9 ? 8 : 15, repeat: Infinity, ease: "linear" }}
               className="opacity-40"
+            />
+          </>
+        )}
+
+        {/* Level 10: Elite Diamond */}
+        {level === 10 && (
+          <>
+            <motion.path
+              d="M12 2 L18 8 L12 22 L6 8 Z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <motion.path
+              d="M12 2 L18 8 L12 10 L6 8 Z"
+              fill="currentColor"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="opacity-30"
+            />
+             <motion.circle 
+              cx="12" cy="10" r="11" 
+              fill="none" stroke="currentColor" 
+              strokeWidth="0.3"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
+              transition={{ duration: 4, repeat: Infinity }}
             />
           </>
         )}
@@ -208,7 +278,7 @@ export const MilitaryInsignia = ({ level, color = "currentColor" }: { level: num
   );
 };
 
-const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNella?: boolean }) => {
+const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string }) => {
   const { t } = useTranslation();
   const [dynamicLevel, setDynamicLevel] = useState(rank?.level || 0);
   const [isBloodMode, setIsBloodMode] = useState(false);
@@ -217,7 +287,12 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
   const [isWinnerToday, setIsWinnerToday] = useState(false);
   const [totalVotes, setTotalVotes] = useState(0);
 
+  const isNellaBarber = id === 'nella';
+  const isJune2026 = new Date() >= new Date(2026, 5, 1);
+
   const calculateLevelFromVotes = (votes: number) => {
+    if (votes >= 2000) return 9;
+    if (votes >= 1500) return 8;
     if (votes >= 1000) return 7;
     if (votes >= 500) return 6;
     if (votes >= 300) return 5;
@@ -237,7 +312,7 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
     checkThemes();
     window.addEventListener('mmbarber-theme-update', checkThemes);
     
-    const barberId = isNella ? 'nella' : 'tomas';
+    const barberId = id;
 
     // Subscribe to Level Votes for community-driven ranking
     const unsubscribeLevels = subscribeToLevelVotes(stats => {
@@ -260,10 +335,10 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
       window.removeEventListener('mmbarber-theme-update', checkThemes);
       unsubscribeLevels();
     };
-  }, [isNella, rank?.level]);
+  }, [rank?.level, id]);
 
   useEffect(() => {
-    if (!isNella) return;
+    if (!isNellaBarber) return;
     
     // Disable automatic rotation if there are any real votes
     if (totalVotes > 0) return;
@@ -273,26 +348,24 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
       setDynamicLevel((prev: number) => (prev + 1) % 4);
     }, 4000);
     return () => clearInterval(interval);
-  }, [isNella, totalVotes]);
+  }, [isNellaBarber, totalVotes]);
 
-  const isJune2026 = new Date() >= new Date(2026, 5, 1);
-  
   // Dynamic status based on community consensus vs base rank
   let status = rank?.status || 'stable';
   
   // Nella's Desertion override: Forced demotion until June 2026
-  if (isNella && !isJune2026) {
+  if (isNellaBarber && !isJune2026) {
     status = 'demotedDesertion';
   } else if (totalVotes > 0) {
     if (dynamicLevel > (rank?.level ?? 0)) status = 'promoted';
     else if (dynamicLevel < (rank?.level ?? 0)) status = 'demoted';
     else status = 'stable';
-  } else if (isNella && isJune2026) {
+  } else if (isNellaBarber && isJune2026) {
     status = 'promoted';
   }
 
   // Effective level calculation
-  const level = (isNella && isJune2026 && dynamicLevel < 3 && totalVotes === 0) ? 3 : dynamicLevel;
+  const level = (isNellaBarber && isJune2026 && dynamicLevel < 3 && totalVotes === 0) ? 3 : dynamicLevel;
 
   const rankTitles = [
     t.operatives.ranks.l0,
@@ -303,6 +376,9 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
     t.operatives.ranks.l5,
     t.operatives.ranks.l6,
     t.operatives.ranks.l7,
+    t.operatives.ranks.l8,
+    t.operatives.ranks.l9,
+    isNellaBarber ? (t.operatives.ranks.l10F || t.operatives.ranks.l10) : t.operatives.ranks.l10,
   ];
 
   const currentRankTitle = rankTitles[level] || rank.title;
@@ -312,7 +388,7 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
     if (!status || status === 'stable') return t.operatives.ranks.status.stable;
     if (status === 'demotedDesertion') return t.operatives.ranks.status.demotedDesertion;
     
-    const key = isNella ? `${status}F` : status;
+    const key = isNellaBarber ? `${status}F` : status;
     return t.operatives.ranks.status[key] || t.operatives.ranks.status[status];
   };
 
@@ -329,12 +405,12 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
 
   const insigniaColor = isBloodMode 
     ? 'var(--color-mafia-blood)' 
-    : (isNoirMode ? '#ffffff' : undefined);
+    : (isNoirMode ? '#ffffff' : 'var(--color-mafia-gold)');
 
   return (
-    <div className="flex flex-col items-center xl:items-start gap-2 group/rank min-w-[180px]">
+    <div className={`flex flex-col items-center xl:items-start gap-2 group/rank min-w-[180px] ${statusColor}`}>
       <div className="flex items-center gap-4">
-        <MilitaryInsignia level={level} color={insigniaColor} />
+        <MilitaryInsignia level={level} color={insigniaColor} size={48} />
         <div className="flex flex-col items-center">
           <div className="flex items-center gap-2 h-4 min-w-[120px] justify-center xl:justify-start">
             <AnimatePresence mode="wait">
@@ -343,7 +419,7 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
-                className={`text-[12px] font-black tracking-[0.2em] uppercase leading-tight whitespace-nowrap text-center xl:text-left ${statusColor}`}
+                className="text-[12px] font-black tracking-[0.2em] uppercase leading-tight whitespace-nowrap text-center xl:text-left"
               >
                 {isWinnerToday ? (lang === 'cs' ? 'BARBER DNE' : 'BARBER OF THE DAY') : currentRankTitle}
               </motion.span>
@@ -360,10 +436,10 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
             )}
           </div>
           <div className="flex gap-0.5 mt-0.5">
-            {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
               <div 
                 key={i} 
-                className={`h-[3px] w-4 rounded-full transition-all duration-700 ${
+                className={`h-[3px] w-3.5 rounded-full transition-all duration-700 ${
                   i <= level ? `${barColor} shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.7)]` : "bg-white/10"
                 }`} 
               />
@@ -504,7 +580,7 @@ function BarberCard({
             {barber.role}
           </span>
           <div className="mt-6 relative flex justify-center">
-            <BarberRanking rank={barber.rank} lang={lang} isNella={barber.name === 'Nella'} />
+            <BarberRanking rank={barber.rank} lang={lang} id={barber.id} />
           </div>
         </div>
 
@@ -595,7 +671,7 @@ function BarberCard({
                     {barber.role}
                   </span>
                   <div className="mt-8 relative flex justify-center xl:justify-start">
-                    <BarberRanking rank={barber.rank} lang={lang} isNella={barber.name === 'Nella'} />
+                    <BarberRanking rank={barber.rank} lang={lang} id={barber.id} />
                     {isHidden && (
                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
                     )}

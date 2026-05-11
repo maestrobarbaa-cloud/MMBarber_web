@@ -299,7 +299,11 @@ export function Hero() {
 
   useEffect(() => {
     const checkTheme = () => {
-      setIsBloodMode(document.documentElement.classList.contains('theme-blood'));
+      const html = document.documentElement;
+      const isBlood = html.classList.contains('theme-blood') || 
+                      html.classList.contains('mode-blood') || 
+                      (typeof window !== 'undefined' && localStorage.getItem('mmbarber_dev_accent_color') === 'blood');
+      setIsBloodMode(isBlood);
     };
     checkTheme();
     window.addEventListener('mmbarber-theme-update', checkTheme);
@@ -307,10 +311,12 @@ export function Hero() {
   }, []);
 
   const heroImage = 
-    isBloodMode && activeHero === 1 ? "/obr/main-hero-blood.png" :
+    isBloodMode ? "/obr/main-hero-blood.png" :
     activeHero === 1 ? "/obr/main-hero.png" : 
     activeHero === 2 ? "/obr/hero-2.png" : 
     "/obr/hero-3.png";
+
+  const isBloodImage = heroImage.includes('blood');
 
   return (
     <section id="hero" data-no-click-effect="true" className="relative w-full min-h-[100dvh] xl:min-h-screen flex flex-col items-center justify-start xl:justify-center px-0 xl:px-4 pt-28 xl:pt-28 pb-0 overflow-x-hidden">
@@ -324,8 +330,8 @@ export function Hero() {
             exit={{ opacity: 0 }}
             className="absolute inset-0 z-[100] pointer-events-none flex items-center justify-center overflow-hidden"
           >
-             {/* Background Filler with Hex Pattern & Digital Noise */}
-             <div className="absolute inset-0 bg-[#050505]">
+              {/* Background Filler with Hex Pattern & Digital Noise */}
+              <div className="absolute inset-0 bg-[#050505]">
                 <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                 <div className="absolute inset-0 opacity-10 animate-pulse bg-gradient-to-br from-mafia-gold/5 via-transparent to-mafia-gold/5"></div>
              </div>
@@ -434,9 +440,9 @@ export function Hero() {
             animate={{ 
               opacity: 1, 
               scale: (isMobile || graphicsTier === 'low' || graphicsTier === 'medium') ? 1 : 1.08,
-              filter: isGlitching 
-                ? "brightness(1.1) blur(4px)" 
-                : "none" 
+              filter: (isBloodMode && activeHero === 1)
+                ? "grayscale(0) brightness(1.1) contrast(1.1)"
+                : (isGlitching ? "brightness(1.1) blur(4px)" : "none") 
             }}
             exit={{ opacity: 0 }}
             transition={{ 
@@ -445,19 +451,32 @@ export function Hero() {
                 ? { duration: 0 } 
                 : { duration: 25, ease: "linear", repeat: Infinity, repeatType: "reverse" }
             }}
-            className={`absolute inset-0 w-full h-full z-0 overflow-hidden ${isGlitching ? 'animate-glitch' : ''}`}
+            className={`absolute inset-0 w-full h-full z-0 overflow-hidden ${isGlitching ? 'animate-glitch' : ''} ${heroImage.includes('blood') ? 'hero-blood-wrapper' : ''}`}
           >
-            <NextImage
+            <style>{`
+              html.theme-blood .hero-blood-img,
+              html.mode-blood .hero-blood-img,
+              html.theme-blood img.hero-blood-img,
+              html.mode-blood img.hero-blood-img,
+              .hero-blood-wrapper,
+              .hero-blood-wrapper img,
+              img[src*="main-hero-blood"],
+              #hero img.hero-blood-img {
+                filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(0.7px) !important;
+                -webkit-filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(0.7px) !important;
+              }
+            `}</style>
+            <img
               src={heroImage}
               alt="MMBARBER Background"
-              fill
-              priority
-              loading="eager"
-              {...({ fetchPriority: "high" } as any)}
-              quality={90}
-              className="object-cover xl:object-cover object-center"
-              sizes="100vw"
+              className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${heroImage.includes('blood') ? 'hero-blood-img' : ''}`}
+              style={{ 
+                filter: heroImage.includes('blood') ? 'grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(0.7px)' : undefined 
+              }}
             />
+            {/* Overlay Gradient - Reduced in Blood Mode for color vibrancy */}
+            <div className={`absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/90 z-1 ${heroImage.includes('blood') ? 'opacity-40' : 'opacity-100'}`} />
+            <div className={`absolute inset-0 bg-black/20 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
           </motion.div>
         </AnimatePresence>
 
@@ -497,7 +516,7 @@ export function Hero() {
                   className="flex flex-col items-center"
                 >
                   <motion.h1
-                    className={`hero-slogan tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white'} text-2xl xs:text-3xl sm:text-5xl md:text-6xl`}
+                    className={`hero-slogan tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-2xl xs:text-3xl sm:text-5xl md:text-6xl`}
                     style={{
                       fontFamily: "var(--font-great-vibes), cursive",
                       filter: (graphicsTier === 'low') ? "none" : (isEasterEgg 
@@ -535,14 +554,14 @@ export function Hero() {
               className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-8 py-3.5 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)] flex items-center justify-center w-fit mx-auto"
             >
               <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
-              <span className="relative z-10 text-mafia-gold font-sans text-sm sm:text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center" style={{ textShadow: "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
+              <span className={`relative z-10 ${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-sans text-sm sm:text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center`} style={{ textShadow: isBloodImage ? "0 0 10px rgba(255,255,255,0.4)" : "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
                 {t.hero.bookBtn}
               </span>
             </motion.a>
           </div>
 
           {/* MOBILE GOLD MOTTO - MOVED TO BOTTOM */}
-          <div className="absolute bottom-8 left-0 right-0 text-mafia-gold/70 font-mono text-[9px] tracking-[0.2em] uppercase text-center px-6">
+          <div className={`absolute bottom-8 left-0 right-0 ${isBloodImage ? 'text-white' : 'text-mafia-gold/70'} font-mono text-[9px] tracking-[0.2em] uppercase text-center px-6 transition-colors duration-700`}>
             {isMounted && selectedMotto}
           </div>
         </div>
@@ -578,7 +597,7 @@ export function Hero() {
               className="flex flex-col items-center"
             >
               <motion.h1
-                className={`hero-slogan tracking-normal mb-2 leading-[1.3] w-full max-w-none px-4 whitespace-nowrap transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white'} text-5xl md:text-6xl`}
+                className={`hero-slogan tracking-normal mb-2 leading-[1.3] w-full max-w-none px-4 whitespace-nowrap transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-5xl md:text-6xl`}
                 style={{
                   fontFamily: "var(--font-great-vibes), cursive",
                   filter: (graphicsTier === 'low') ? "none" : (isEasterEgg 
@@ -598,7 +617,7 @@ export function Hero() {
                         opacity: 0.8, 
                         filter: "blur(0px)", 
                         scale: 1,
-                        textShadow: "0 0 15px rgba(var(--color-mafia-gold-rgb),0.3)"
+                        textShadow: isBloodImage ? "0 0 15px rgba(255,255,255,0.3)" : "0 0 15px rgba(var(--color-mafia-gold-rgb),0.3)"
                       }}
                       exit={{ 
                         opacity: 0, 
@@ -635,7 +654,7 @@ export function Hero() {
                     }}
                   >
                     <h2 
-                      className={`text-5xl md:text-6xl tracking-normal leading-[1.3] whitespace-nowrap ${isEasterEgg ? 'text-mafia-gold' : 'text-white/60'}`}
+                      className={`text-5xl md:text-6xl tracking-normal leading-[1.3] whitespace-nowrap ${isBloodImage ? 'text-white/40' : (isEasterEgg ? 'text-mafia-gold' : 'text-white/60')}`}
                       style={{ fontFamily: "var(--font-great-vibes), cursive" }}
                     >
                       {isMounted && displayText && (LATIN_SLOGANS[displayText] || displayText).split("").map((char, i) => (
@@ -683,8 +702,8 @@ export function Hero() {
         <div className="relative">
           {/* Main Text */}
           <div 
-            className="text-mafia-gold font-mono text-[10px] tracking-[0.4em] uppercase transition-all duration-700 group-hover:scale-105 group-hover:tracking-[0.6em] group-hover:text-white"
-            style={{ textShadow: "0 0 10px rgba(var(--color-mafia-gold-rgb), 0.4)" }}
+            className={`${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-mono text-[10px] tracking-[0.4em] uppercase transition-all duration-700 group-hover:scale-105 group-hover:tracking-[0.6em] group-hover:text-white`}
+            style={{ textShadow: isBloodImage ? "0 0 10px rgba(255,255,255, 0.4)" : "0 0 10px rgba(var(--color-mafia-gold-rgb), 0.4)" }}
           >
             {isMounted && selectedMotto.split("").map((char: string, i: number) => {
               const firstPeriodIndex = selectedMotto.indexOf('.');
@@ -714,7 +733,7 @@ export function Hero() {
               WebkitMaskImage: "linear-gradient(to bottom, white, transparent)"
             }}
           >
-            <div className="text-mafia-gold font-mono text-[10px] tracking-[0.4em] uppercase">
+            <div className={`${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-mono text-[10px] tracking-[0.4em] uppercase`}>
               {isMounted && (LATIN_SLOGANS[selectedMotto] || selectedMotto)}
             </div>
           </div>
@@ -722,7 +741,7 @@ export function Hero() {
         
         {/* Subtle decorative line under motto on hover */}
         <motion.div 
-          className="h-[1px] bg-mafia-gold mt-6 w-0 group-hover:w-full transition-all duration-1000 ease-in-out opacity-30"
+          className={`h-[1px] ${isBloodImage ? 'bg-white' : 'bg-mafia-gold'} mt-6 w-0 group-hover:w-full transition-all duration-1000 ease-in-out opacity-30`}
         />
       </motion.div>
 
@@ -746,7 +765,7 @@ export function Hero() {
                     />
                   ))}
                 </div>
-                <span className="text-mafia-gold font-mono text-xs tracking-[1.5em] uppercase font-black ml-[1.5em]">
+                <span className={`${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-mono text-xs tracking-[1.5em] uppercase font-black ml-[1.5em]`}>
                   ONERANDI...
                 </span>
               </motion.div>
@@ -765,7 +784,7 @@ export function Hero() {
                 className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-10 py-4 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)] flex items-center justify-center w-fit mx-auto"
               >
                 <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
-                <span className="relative z-10 text-mafia-gold font-sans text-lg uppercase tracking-[0.3em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center" style={{ textShadow: "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
+                <span className={`relative z-10 ${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-sans text-lg uppercase tracking-[0.3em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center`} style={{ textShadow: isBloodImage ? "0 0 10px rgba(255,255,255,0.4)" : "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
                   {t.hero.bookBtn}
                 </span>
               </motion.a>

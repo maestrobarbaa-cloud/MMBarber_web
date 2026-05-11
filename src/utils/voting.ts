@@ -5,7 +5,7 @@
 
 export interface LevelVote {
   userId: string;
-  ratings: Record<string, number>; // barberId -> level (0-7)
+  ratings: Record<string, number>; // barberId -> level (0-9)
   date: string;
 }
 
@@ -32,19 +32,8 @@ const getLocalIdentity = (): string => {
  * Since we are local-only, we provide some base "pre-voted" stats 
  * to make the system feel populated.
  */
-const MOCK_COMMUNITY_STATS: Record<string, Record<number, number>> = {
-  tomas: {
-    7: 42, // The Don
-    6: 12,
-    5: 3
-  },
-  nella: {
-    0: 15, // Čistič latrín
-    1: 28,
-    2: 10,
-    3: 5
-  }
-};
+// Community stats will be built purely from user votes.
+const MOCK_COMMUNITY_STATS: Record<string, Record<number, number>> = {};
 
 /**
  * Casts multi-barber level votes for a user.
@@ -132,16 +121,16 @@ export const subscribeToLevelVotes = (callback: (stats: Record<string, Record<nu
 export const getDominantLevel = (barberStats: Record<number, number> | undefined): number => {
   if (!barberStats) return 0;
   
-  let maxVotes = -1;
-  let dominantLevel = 0;
+  let totalVotes = 0;
+  let weightedSum = 0;
   
-  // Find level with most votes
+  // Calculate weighted average
   Object.entries(barberStats).forEach(([level, count]) => {
-    if (count > maxVotes) {
-      maxVotes = count;
-      dominantLevel = parseInt(level);
-    }
+    const l = parseInt(level);
+    weightedSum += l * count;
+    totalVotes += count;
   });
   
-  return dominantLevel;
+  if (totalVotes === 0) return 0;
+  return Math.round(weightedSum / totalVotes);
 };

@@ -12,8 +12,8 @@ export const barbers: BarberProfile[] = [
     specializations: ["Primárně pánské", "ale zvládnu i dámy"],
     symbol: "A",
     rank: {
-      level: 7,
-      title: "THE DON",
+      level: 9,
+      title: "GENERÁLNÍ ŘEDITEL STŘIHU",
       status: 'stable'
     }
   },
@@ -29,7 +29,7 @@ export const barbers: BarberProfile[] = [
     symbol: "Q",
     rank: {
       level: 0,
-      title: "Čistič latrín",
+      title: "KOSMETIK PLOVOUCÍCH KRYTIN",
       status: 'demoted',
       nextRankIn: "ČERVEN 2026"
     }

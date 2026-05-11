@@ -80,8 +80,8 @@ export default function RatingPage() {
   }, []);
 
   const handleLevelChange = (barberId: string, level: number) => {
-    if (isSubmittedToday) return;
-    const newLevel = Math.max(0, Math.min(7, level));
+    // Allow editing even if submitted today
+    const newLevel = Math.max(0, Math.min(10, level));
     setDraftRatings(prev => ({ ...prev, [barberId]: newLevel }));
     playSound("/sounds/bullet-hit.mp3", 0.2);
   };
@@ -124,6 +124,9 @@ export default function RatingPage() {
     t.operatives.ranks.l5,
     t.operatives.ranks.l6,
     t.operatives.ranks.l7,
+    t.operatives.ranks.l8,
+    t.operatives.ranks.l9,
+    t.operatives.ranks.l10,
   ];
 
   if (!isClient) return null;
@@ -175,13 +178,15 @@ export default function RatingPage() {
           {barbers.map((barber, idx) => {
             const barberStats = communityStats[barber.id];
             const dominantLv = getDominantLevel(barberStats);
-            const currentDraftLv = draftRatings[barber.id] ?? dominantLv;
             
             const isNella = barber.id === 'nella';
             const isJune2026 = new Date() >= new Date(2026, 5, 1);
             
             // Dynamic status for preview
             const hasVotes = barberStats && Object.values(barberStats).some(v => v > 0);
+            const displayLevel = hasVotes ? dominantLv : (barber.rank?.level ?? 0);
+            const currentDraftLv = draftRatings[barber.id] ?? displayLevel;
+
             let status: 'promoted' | 'demoted' | 'stable' | 'demotedDesertion' = hasVotes 
               ? (dominantLv > (barber.rank?.level ?? 0) ? 'promoted' : (dominantLv < (barber.rank?.level ?? 0) ? 'demoted' : 'stable'))
               : (barber.rank?.status ?? 'stable');
@@ -233,8 +238,8 @@ export default function RatingPage() {
                           </div>
                         )}
                       </div>
-                      <p className={`text-[10px] font-mono font-bold tracking-[0.3em] uppercase mt-1 ${isBloodMode ? 'text-mafia-blood' : 'text-mafia-gold'}`}>
-                        RANK: {rankTitles[hasVotes ? dominantLv : (barber.rank?.level ?? 0)]}
+                      <p className={`text-[10px] font-mono font-bold tracking-[0.3em] uppercase mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
+                        RANK: {rankTitles[displayLevel]}
                       </p>
                     </div>
                   </div>
@@ -248,24 +253,24 @@ export default function RatingPage() {
                     <div className="flex justify-between items-center relative z-10">
                       <div className="flex items-center gap-4">
                         <div className={`w-12 h-12 border flex items-center justify-center rounded-sm shadow-inner ${isBloodMode ? 'bg-mafia-blood/10 border-mafia-blood/20' : isNoirMode ? 'bg-white/10 border-white/20' : 'bg-mafia-gold/10 border-mafia-gold/20'}`}>
-                           <MilitaryInsignia level={currentDraftLv} color={isBloodMode ? "var(--color-mafia-blood)" : isNoirMode ? "#ffffff" : "var(--color-mafia-gold)"} />
+                           <MilitaryInsignia level={currentDraftLv} color={isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "var(--color-mafia-gold)"} size={64} />
                         </div>
                         <div className="flex flex-col">
                           <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">Úroveň protokolu</span>
-                          <span className={`text-xl font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-mafia-blood' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>{rankTitles[currentDraftLv]}</span>
+                          <span className={`text-xl font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>{rankTitles[currentDraftLv]}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
                          <button 
                            onClick={() => handleLevelChange(barber.id, currentDraftLv - 1)}
-                           disabled={isSubmittedToday || currentDraftLv <= 0}
-                           className={`w-10 h-10 flex items-center justify-center border transition-all disabled:opacity-20 disabled:cursor-not-allowed ${isBloodMode ? 'border-mafia-blood/30 text-mafia-blood hover:bg-mafia-blood hover:text-white' : isNoirMode ? 'border-white/30 text-white hover:bg-white hover:text-black' : 'border-mafia-gold/30 text-mafia-gold hover:bg-mafia-gold hover:text-black'}`}
+                           disabled={currentDraftLv <= 0}
+                           className={`w-10 h-10 flex items-center justify-center border transition-all disabled:opacity-20 disabled:cursor-not-allowed ${isBloodMode ? 'border-white/30 text-white hover:bg-white hover:text-black' : isNoirMode ? 'border-white/30 text-white hover:bg-white hover:text-black' : 'border-mafia-gold/30 text-mafia-gold hover:bg-mafia-gold hover:text-black'}`}
                          >
                            <Minus size={16} />
                          </button>
                          <button 
                            onClick={() => handleLevelChange(barber.id, currentDraftLv + 1)}
-                           disabled={isSubmittedToday || currentDraftLv >= 7}
+                           disabled={currentDraftLv >= 10}
                            className={`w-10 h-10 flex items-center justify-center border transition-all disabled:opacity-20 disabled:cursor-not-allowed ${isBloodMode ? 'border-mafia-blood/30 text-mafia-blood hover:bg-mafia-blood hover:text-white' : isNoirMode ? 'border-white/30 text-white hover:bg-white hover:text-black' : 'border-mafia-gold/30 text-mafia-gold hover:bg-mafia-gold hover:text-black'}`}
                          >
                            <Plus size={16} />
@@ -279,7 +284,7 @@ export default function RatingPage() {
                       
                       {/* Discrete Steps Background */}
                       <div className="absolute inset-x-0 flex justify-between px-4">
-                        {[0, 1, 2, 3, 4, 5, 6, 7].map((lv) => (
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => (
                           <div 
                             key={lv}
                             className={`w-0.5 h-3 ${lv <= currentDraftLv ? "bg-mafia-gold/40" : "bg-white/10"}`}
@@ -291,24 +296,24 @@ export default function RatingPage() {
                       <input 
                         type="range"
                         min="0"
-                        max="7"
+                        max="10"
                         step="1"
                         value={currentDraftLv}
-                        disabled={isSubmittedToday}
+                        disabled={false}
                         onChange={(e) => handleLevelChange(barber.id, parseInt(e.target.value))}
                         className="absolute inset-x-0 w-full opacity-0 cursor-pointer h-12 z-20"
                       />
 
                       {/* Level Indicators (Bars) */}
                       <div className="absolute inset-x-0 flex justify-between px-0.5 pointer-events-none">
-                        {[0, 1, 2, 3, 4, 5, 6, 7].map((lv) => (
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => (
                           <motion.div 
                             key={lv}
                             animate={{ 
                               height: lv === currentDraftLv ? 32 : 12,
                               opacity: lv <= currentDraftLv ? 1 : 0.05,
-                              backgroundColor: lv === currentDraftLv ? (isNoirMode ? "#ffffff" : "#C5A059") : "rgba(255,255,255,0.2)",
-                              boxShadow: lv === currentDraftLv ? (isBloodMode ? "0 0 25px rgba(255,0,0,0.8), 0 0 10px #C5A059" : isNoirMode ? "0 0 15px rgba(255,255,255,0.5)" : "0 0 15px rgba(197,160,89,0.5)") : "none"
+                              backgroundColor: lv === currentDraftLv ? (isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "#C5A059") : "rgba(255,255,255,0.2)",
+                              boxShadow: lv === currentDraftLv ? (isBloodMode ? "0 0 25px rgba(255,255,255,0.8), 0 0 10px #ffffff" : isNoirMode ? "0 0 15px rgba(255,255,255,0.5)" : "0 0 15px rgba(197,160,89,0.5)") : "none"
                             }}
                             className="w-2 rounded-full"
                           />
@@ -326,7 +331,7 @@ export default function RatingPage() {
                          </div>
                        </div>
                        <div className="flex items-end gap-1.5 h-10 px-1">
-                         {[0, 1, 2, 3, 4, 5, 6, 7].map((lv) => {
+                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => {
                            const count = barberStats?.[lv] || 0;
                            const total = Object.values(barberStats || {}).reduce((a, b) => a + b, 0) || 1;
                            const height = (count / total) * 100;
@@ -335,7 +340,7 @@ export default function RatingPage() {
                                <motion.div 
                                  initial={{ height: 0 }}
                                  animate={{ height: `${height}%` }}
-                                 className={`w-full absolute bottom-0 transition-colors duration-500 ${lv === dominantLv ? (isBloodMode ? 'bg-mafia-blood/40' : isNoirMode ? 'bg-white/40' : 'bg-mafia-gold/40') : 'bg-white/10 group-hover/lv:bg-white/20'}`}
+                                 className={`w-full absolute bottom-0 transition-colors duration-500 ${lv === dominantLv ? (isBloodMode ? 'bg-white/60' : isNoirMode ? 'bg-white/40' : 'bg-mafia-gold/40') : 'bg-white/10 group-hover/lv:bg-white/20'}`}
                                />
                                {count > 0 && (
                                  <div className={`absolute -top-5 left-1/2 -translate-x-1/2 text-[7px] font-mono opacity-0 group-hover/lv:opacity-100 transition-opacity whitespace-nowrap bg-black/80 px-1 rounded-sm border ${isBloodMode ? 'text-mafia-blood border-mafia-blood/20' : isNoirMode ? 'text-white border-white/20' : 'text-mafia-gold border-mafia-gold/20'}`}>
