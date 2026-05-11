@@ -116,8 +116,14 @@ export default function RatingPage() {
   };
 
   const rankTitles = [
-    "ČISTIČ LATRÍN", "VELITEL SMETÁKU", "ŠAMPONOVÝ OPERATIVEC", "REKRUT RODINY", 
-    "ELITNÍ BŘITVA", "CAPO DI TUTTI CAPI", "BARBER PORUČÍK", "THE DON"
+    t.operatives.ranks.l0,
+    t.operatives.ranks.l1,
+    t.operatives.ranks.l2,
+    t.operatives.ranks.l3,
+    t.operatives.ranks.l4,
+    t.operatives.ranks.l5,
+    t.operatives.ranks.l6,
+    t.operatives.ranks.l7,
   ];
 
   if (!isClient) return null;
@@ -158,10 +164,10 @@ export default function RatingPage() {
             animate={{ opacity: 1 }}
             className="text-5xl md:text-7xl font-heading font-black tracking-tighter uppercase text-mafia-gold drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]"
           >
-            Hlasování <span className="text-white">Elity</span>
+            {lang === 'cs' ? 'Hlasování' : 'Elite'} <span className="text-white">{lang === 'cs' ? 'Elity' : 'Voting'}</span>
           </motion.h1>
           <p className="text-mafia-gold/60 font-mono tracking-[0.3em] uppercase text-xs md:text-sm max-w-2xl mx-auto leading-relaxed">
-            Komunita rozhoduje o osudu. Tvůj hlas určuje hodnost, moc a prestiž v rodině MMBarberu.
+            {lang === 'cs' ? 'Komunita rozhoduje o osudu. Tvůj hlas určuje hodnost, moc a prestiž v rodině MMBarberu.' : 'The community decides the fate. Your voice determines rank, power, and prestige within the MMBarber family.'}
           </p>
         </header>
 
@@ -170,6 +176,20 @@ export default function RatingPage() {
             const barberStats = communityStats[barber.id];
             const dominantLv = getDominantLevel(barberStats);
             const currentDraftLv = draftRatings[barber.id] ?? dominantLv;
+            
+            const isNella = barber.id === 'nella';
+            const isJune2026 = new Date() >= new Date(2026, 5, 1);
+            
+            // Dynamic status for preview
+            const hasVotes = barberStats && Object.values(barberStats).some(v => v > 0);
+            let status: 'promoted' | 'demoted' | 'stable' | 'demotedDesertion' = hasVotes 
+              ? (dominantLv > (barber.rank?.level ?? 0) ? 'promoted' : (dominantLv < (barber.rank?.level ?? 0) ? 'demoted' : 'stable'))
+              : (barber.rank?.status ?? 'stable');
+
+            // Nella's Desertion override
+            if (isNella && !isJune2026) {
+              status = 'demotedDesertion';
+            }
 
             return (
               <motion.div
@@ -198,11 +218,23 @@ export default function RatingPage() {
                       )}
                     </div>
                     <div className="flex-grow">
-                      <h3 className="text-2xl md:text-4xl font-heading font-black text-white uppercase tracking-wider group-hover:text-mafia-gold transition-colors">
-                        {barber.name}
-                      </h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-2xl md:text-4xl font-heading font-black text-white uppercase tracking-wider group-hover:text-mafia-gold transition-colors">
+                          {barber.name}
+                        </h3>
+                        {status && status !== 'stable' && (
+                          <div className={`px-2 py-0.5 text-[8px] font-mono uppercase tracking-widest ${status === 'promoted' ? 'bg-mafia-gold text-black' : 'bg-red-900/40 text-red-400 border border-red-500/30'}`}>
+                            {status === 'promoted' 
+                              ? (lang === 'cs' ? (isNella ? 'POVÝŠENA' : 'POVÝŠEN') : 'PROMOTED') 
+                              : (status === 'demotedDesertion' 
+                                  ? (lang === 'cs' ? 'DEGRADOVÁNA ZA DEZERCI' : 'DEMOTED FOR DESERTION')
+                                  : (lang === 'cs' ? (isNella ? 'DEGRADOVÁNA' : 'DEGRADOVÁN') : 'DEMOTED')
+                                )}
+                          </div>
+                        )}
+                      </div>
                       <p className={`text-[10px] font-mono font-bold tracking-[0.3em] uppercase mt-1 ${isBloodMode ? 'text-mafia-blood' : 'text-mafia-gold'}`}>
-                        RANK: {rankTitles[dominantLv]}
+                        RANK: {rankTitles[hasVotes ? dominantLv : (barber.rank?.level ?? 0)]}
                       </p>
                     </div>
                   </div>

@@ -295,7 +295,19 @@ export function Hero() {
     }
   };
 
+  const [isBloodMode, setIsBloodMode] = useState(false);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsBloodMode(document.documentElement.classList.contains('theme-blood'));
+    };
+    checkTheme();
+    window.addEventListener('mmbarber-theme-update', checkTheme);
+    return () => window.removeEventListener('mmbarber-theme-update', checkTheme);
+  }, []);
+
   const heroImage = 
+    isBloodMode && activeHero === 1 ? "/obr/main-hero-blood.png" :
     activeHero === 1 ? "/obr/main-hero.png" : 
     activeHero === 2 ? "/obr/hero-2.png" : 
     "/obr/hero-3.png";

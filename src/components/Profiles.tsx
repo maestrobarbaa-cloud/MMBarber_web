@@ -34,7 +34,7 @@ export interface BarberProfile {
   rank?: {
     level: number;
     title: string;
-    status?: 'promoted' | 'demoted' | 'stable';
+    status?: 'promoted' | 'demoted' | 'stable' | 'demotedDesertion';
     nextRankIn?: string;
   };
 }
@@ -242,8 +242,15 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
     // Subscribe to Level Votes for community-driven ranking
     const unsubscribeLevels = subscribeToLevelVotes(stats => {
       const barberStats = stats[barberId];
-      const communityLevel = getDominantLevel(barberStats);
-      setDynamicLevel(communityLevel);
+      const hasVotes = barberStats && Object.values(barberStats).some(v => v > 0);
+      
+      if (hasVotes) {
+        const communityLevel = getDominantLevel(barberStats);
+        setDynamicLevel(communityLevel);
+      } else {
+        // Fallback to static rank if no community data yet
+        setDynamicLevel(rank?.level || 0);
+      }
       
       const totalCount = Object.values(barberStats || {}).reduce((a, b) => a + b, 0);
       setTotalVotes(totalCount);
@@ -253,7 +260,7 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
       window.removeEventListener('mmbarber-theme-update', checkThemes);
       unsubscribeLevels();
     };
-  }, [isNella]);
+  }, [isNella, rank?.level]);
 
   useEffect(() => {
     if (!isNella) return;
@@ -269,8 +276,23 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
   }, [isNella, totalVotes]);
 
   const isJune2026 = new Date() >= new Date(2026, 5, 1);
-  const status = isNella && isJune2026 ? 'promoted' : rank.status;
-  const level = isNella && isJune2026 && dynamicLevel < 3 ? 3 : dynamicLevel;
+  
+  // Dynamic status based on community consensus vs base rank
+  let status = rank?.status || 'stable';
+  
+  // Nella's Desertion override: Forced demotion until June 2026
+  if (isNella && !isJune2026) {
+    status = 'demotedDesertion';
+  } else if (totalVotes > 0) {
+    if (dynamicLevel > (rank?.level ?? 0)) status = 'promoted';
+    else if (dynamicLevel < (rank?.level ?? 0)) status = 'demoted';
+    else status = 'stable';
+  } else if (isNella && isJune2026) {
+    status = 'promoted';
+  }
+
+  // Effective level calculation
+  const level = (isNella && isJune2026 && dynamicLevel < 3 && totalVotes === 0) ? 3 : dynamicLevel;
 
   const rankTitles = [
     t.operatives.ranks.l0,
@@ -284,7 +306,17 @@ const BarberRanking = ({ rank, lang, isNella }: { rank: any, lang: string, isNel
   ];
 
   const currentRankTitle = rankTitles[level] || rank.title;
-  const statusLabel = status ? t.operatives.ranks.status[status] : '';
+  
+  // Gender-aware status label selector
+  const getStatusLabel = () => {
+    if (!status || status === 'stable') return t.operatives.ranks.status.stable;
+    if (status === 'demotedDesertion') return t.operatives.ranks.status.demotedDesertion;
+    
+    const key = isNella ? `${status}F` : status;
+    return t.operatives.ranks.status[key] || t.operatives.ranks.status[status];
+  };
+
+  const statusLabel = getStatusLabel();
   const nextAttemptLabel = t.operatives.ranks.status.nextAttempt;
 
   const statusColor = isBloodMode 

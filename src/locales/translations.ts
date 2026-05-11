@@ -280,8 +280,11 @@ export const translations = {
         l6: "BARBER PORUČÍK",
         l7: "THE DON",
         status: {
-          demoted: "STAV: DEGRADOVÁNA ZA DEZERCI",
-          promoted: "STAV: POVÝŠENA",
+          demoted: "STAV: DEGRADOVÁN",
+          demotedF: "STAV: DEGRADOVÁNA",
+          demotedDesertion: "STAV: DEGRADOVÁNA ZA DEZERCI",
+          promoted: "STAV: POVÝŠEN",
+          promotedF: "STAV: POVÝŠENA",
           stable: "STAV: STABILNÍ",
           nextAttempt: "TERMÍN POVÝŠENÍ:"
         }
@@ -1206,8 +1209,11 @@ export const translations = {
         l6: "BARBER LIEUTENANT",
         l7: "THE DON",
         status: {
-          demoted: "STATUS: DEMOTED FOR DESERTION",
+          demoted: "STATUS: DEMOTED",
+          demotedF: "STATUS: DEMOTED",
+          demotedDesertion: "STATUS: DEMOTED FOR DESERTION",
           promoted: "STATUS: PROMOTED",
+          promotedF: "STATUS: PROMOTED",
           stable: "STATUS: STABLE",
           nextAttempt: "PROMOTION ATTEMPT:"
         }

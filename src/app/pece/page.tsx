@@ -104,7 +104,7 @@ function DNAHelix() {
         transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
         className="absolute inset-0 flex flex-col items-center gap-24 opacity-5"
       >
-        {[...Array(8)].map((_, i) => (
+        {[...Array(8)].map((_: any, i: number) => (
           <div key={i} className="w-px h-40 bg-gradient-to-b from-transparent via-mafia-gold noir-mode:via-mafia-silver theme-blood:via-mafia-blood to-transparent" />
         ))}
       </motion.div>
@@ -235,11 +235,11 @@ export default function CareMagazinePage() {
              style={{ maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)' }}>
           <div className="sticky top-0 h-screen flex flex-col justify-center pointer-events-auto pl-8 gap-8 translate-y-8">
             <div className="h-12 w-px bg-mafia-gold/20 mx-auto mb-2"></div>
-            {Object.entries(MAGAZINE_PAGES.reduce((acc, page, i) => {
+            {Object.entries(MAGAZINE_PAGES.reduce((acc, page: any, i: number) => {
                if (!acc[page.category]) acc[page.category] = [];
                acc[page.category].push({ ...page, index: i });
                return acc;
-            }, {} as Record<string, any[]>)).map(([category, pages]) => (
+            }, {} as Record<string, any[]>)).map(([category, pages]: [string, any[]]) => (
                <div key={category} className="flex flex-col gap-4">
                   <div className="flex items-center gap-3 mb-1">
                      <div className="w-1.5 h-1.5 bg-mafia-gold rotate-45 shadow-[0_0_5px_rgba(var(--color-mafia-gold-rgb),0.3)]"></div>
@@ -248,7 +248,7 @@ export default function CareMagazinePage() {
                      </span>
                   </div>
                   <div className="flex flex-col gap-3 pl-4 border-l border-white/10">
-                     {pages.map((page) => (
+                     {pages.map((page: any) => (
                        <button 
                          key={page.index}
                          onClick={() => setCurrentPage(page.index)}
@@ -270,7 +270,7 @@ export default function CareMagazinePage() {
         {/* Mobile Navigation Header */}
         <div className="xl:hidden border-b border-white/5 bg-black/60 backdrop-blur-md sticky top-24 z-[90] overflow-x-auto no-scrollbar scroll-smooth">
            <div className="flex px-4 py-3 gap-6 whitespace-nowrap min-w-max">
-              {MAGAZINE_PAGES.map((page, i) => (
+              {MAGAZINE_PAGES.map((page: any, i: number) => (
                 <button 
                   key={i}
                   onClick={() => {
@@ -336,7 +336,7 @@ export default function CareMagazinePage() {
                   <ChevronLeft size={20} />
                  </button>
                  <div className="flex-1 max-w-[200px] flex gap-1 md:gap-2">
-                    {MAGAZINE_PAGES.map((_, i) => (
+                    {MAGAZINE_PAGES.map((_: any, i: number) => (
                       <div 
                         key={i} 
                         className={`h-1 flex-1 transition-all duration-500 ${i === currentPage ? 'bg-mafia-gold shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.5)]' : 'bg-white/10'}`}
@@ -757,7 +757,7 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
         return (
           <div className="h-full flex flex-col items-center justify-start py-4 md:py-6 overflow-y-auto scrollbar-thin scrollbar-thumb-mafia-gold/20 px-4">
              <div className={`grid grid-cols-1 ${resultKeys.length > 1 ? 'md:grid-cols-2' : 'max-w-2xl'} gap-4 md:gap-6 w-full mb-8`}>
-                {resultKeys.map((key, idx) => {
+                {resultKeys.map((key: string, idx: number) => {
                   const res = results[key];
                   if (!res) return null;
                   return (
