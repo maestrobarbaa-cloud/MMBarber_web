@@ -408,18 +408,18 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
     : (isNoirMode ? '#ffffff' : 'var(--color-mafia-gold)');
 
   return (
-    <div className={`flex flex-col items-center xl:items-start gap-2 group/rank min-w-[180px] ${statusColor}`}>
-      <div className="flex items-center gap-4">
-        <MilitaryInsignia level={level} color={insigniaColor} size={48} />
+    <div className={`flex flex-col items-center gap-2 group/rank min-w-[160px] ${statusColor}`}>
+      <div className="flex items-center gap-2.5">
+        <MilitaryInsignia level={level} color={insigniaColor} size={42} />
         <div className="flex flex-col items-center">
-          <div className="flex items-center gap-2 h-4 min-w-[120px] justify-center xl:justify-start">
+          <div className="flex items-center gap-2 min-h-[18px] min-w-[120px] justify-center">
             <AnimatePresence mode="wait">
               <motion.span 
                 key={currentRankTitle}
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
-                className="text-[12px] font-black tracking-[0.2em] uppercase leading-tight whitespace-nowrap text-center xl:text-left"
+                className="text-[11px] font-black tracking-[0.05em] uppercase leading-tight text-center"
               >
                 {isWinnerToday ? (lang === 'cs' ? 'BARBER DNE' : 'BARBER OF THE DAY') : currentRankTitle}
               </motion.span>
@@ -435,7 +435,7 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
               </motion.div>
             )}
           </div>
-          <div className="flex gap-0.5 mt-0.5">
+          <div className="flex gap-0.5 mt-2">
             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
               <div 
                 key={i} 
@@ -452,7 +452,7 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
         <motion.div 
           initial={{ opacity: 0, x: -5 }}
           whileInView={{ opacity: 1, x: 0 }}
-          className={`flex items-center gap-2 ${statusColor} text-[9px] font-mono tracking-[0.25em] uppercase font-black mt-1.5`}
+          className={`flex items-center gap-2 ${statusColor} text-[8.5px] font-mono tracking-[0.1em] uppercase font-black mt-3`}
         >
           {status === 'demoted' ? <TrendingDown size={12} strokeWidth={3} /> : <TrendingUp size={12} strokeWidth={3} />}
           <span className={status === 'demoted' ? 'animate-pulse' : ''}>{statusLabel}</span>
@@ -460,7 +460,7 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
       )}
 
       {rank.nextRankIn && !isJune2026 && (
-        <div className="text-[8px] font-mono text-white/20 tracking-[0.3em] uppercase mt-1">
+        <div className="text-[8px] font-mono text-white/20 tracking-[0.05em] uppercase mt-2">
           {nextAttemptLabel} {rank.nextRankIn}
         </div>
       )}
@@ -660,7 +660,7 @@ function BarberCard({
                     )}
                   </div>
               </div>
-              <div className="text-right relative">
+              <div className="flex-1 flex flex-col items-center text-center relative">
                   <h3 className="text-4xl font-heading font-black uppercase text-mafia-gold tracking-widest relative">
                     {barber.name}
                     {isHidden && (
@@ -670,7 +670,7 @@ function BarberCard({
                   <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest relative block">
                     {barber.role}
                   </span>
-                  <div className="mt-8 relative flex justify-center xl:justify-start">
+                  <div className="mt-8 relative flex justify-center">
                     <BarberRanking rank={barber.rank} lang={lang} id={barber.id} />
                     {isHidden && (
                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
