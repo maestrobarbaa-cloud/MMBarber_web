@@ -745,7 +745,7 @@ export function Header() {
 
   return (
     <>
-      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-[calc(7rem+env(safe-area-inset-top,0px))] block'}`} aria-hidden="true" />
+      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-[calc(112px+env(safe-area-inset-top,0px))] block'}`} aria-hidden="true" />
       <header
         className={`w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] gpu-accelerate 
           ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-[calc(7rem+env(safe-area-inset-top,0px))]' : `fixed top-0 h-[calc(7rem+env(safe-area-inset-top,0px))] ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black border-b border-white/5' : 'bg-transparent border-b border-transparent'}`} 
@@ -1064,6 +1064,28 @@ export function Header() {
                       </span>
                     </button>
 
+                    {/* Elite Rating */}
+                    <button
+                      onClick={() => {
+                        router.push("/hodnoceni");
+                        trackEvent("header_rating_click");
+                        setIsSettingsOpen(false);
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left border-t border-mafia-gold/10 mt-1"
+                    >
+                      <Crown 
+                        size={18} 
+                        className={shouldFlashRating ? 'animate-pulse' : 'opacity-30 group-hover:opacity-100'} 
+                        style={{ 
+                          color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
+                          filter: shouldFlashRating ? `drop-shadow(0 0 8px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
+                        }} 
+                      />
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
+                        {lang === 'cs' ? "Hodnocení" : "Rating"}
+                      </span>
+                    </button>
+
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -1087,24 +1109,7 @@ export function Header() {
                 />
             </button>
 
-            <button
-                onClick={() => {
-                  router.push("/hodnoceni");
-                  trackEvent("header_rating_click");
-                }}
-                className="p-2 transition-all duration-500 rounded-full hover:bg-white/5 group relative hover:scale-125 ml-1"
-                aria-label={lang === 'cs' ? "HODNOCENÍ ELITY" : "ELITE RATING"}
-            >
-                <Crown 
-                  size={24} 
-                  className={`relative z-10 ${shouldFlashRating ? 'animate-pulse' : ''}`} 
-                  style={{ 
-                    color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
-                    filter: shouldFlashRating ? `drop-shadow(0 0 10px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
-                  }} 
-                />
-            </button>
-          </div>
+            </div>
 
           {/* Language Selector */}
           <div className="relative group cursor-pointer h-full flex items-center py-2 mx-2">

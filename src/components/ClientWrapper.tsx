@@ -124,7 +124,7 @@ export function ClientWrapper() {
           glowIntensity: detectedTier === "low" ? 0.2 : 0.4,
           vignetteEnabled: detectedTier === "high" || detectedTier === "ultra",
           chromaticAberration: detectedTier === "ultra",
-          letterboxEnabled: detectedTier === "ultra",
+          letterboxEnabled: false, // Disabled by default as it interferes with the fixed header during zoom
           sharpness: detectedTier === "low" ? 0.1 : 0.3
         };
         

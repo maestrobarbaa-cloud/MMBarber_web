@@ -126,7 +126,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
         newConfig = { 
             tier, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 1.0, 
-            vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: true, sharpness: 1.0,
+            vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 1.0,
             autoDetectEnabled: false
         };
         break;

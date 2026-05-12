@@ -119,7 +119,6 @@ export default function Home() {
             }}
             className="flex flex-col w-full"
           >
-            <Atmosphere />
             <CinematicSequence737 />
             <Hero />
             

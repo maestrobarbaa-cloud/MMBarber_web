@@ -469,6 +469,8 @@ export function Hero() {
             <img
               src={heroImage}
               alt="MMBARBER Background"
+              fetchPriority="high"
+              loading="eager"
               className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${heroImage.includes('blood') ? 'hero-blood-img' : ''}`}
               style={{ 
                 filter: heroImage.includes('blood') ? 'grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(0.7px)' : undefined 
