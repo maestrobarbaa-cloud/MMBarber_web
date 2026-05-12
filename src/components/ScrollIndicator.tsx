@@ -151,19 +151,15 @@ export function ScrollIndicator() {
     
     const visibilityTimer = setTimeout(() => setIsVisibleAfterLoad(true), 1200);
     
-    // Force reset on mount
+    // Reset on mount
+    window.scrollTo(0, 0);
     dragProgress.set(0);
     setIsTopReached(true);
     setIsBottomReached(false);
-    window.scrollTo(0, 0);
     
-    // Multiple passes to fight browser scroll restoration and layout shifts
+    // One quick pass to ensure sync after layout
     const timers = [
-      setTimeout(() => { dragProgress.set(0); window.scrollTo(0, 0); checkScrollable(); }, 50),
-      setTimeout(() => { dragProgress.set(0); window.scrollTo(0, 0); checkScrollable(); }, 250),
-      setTimeout(() => { dragProgress.set(0); window.scrollTo(0, 0); checkScrollable(); }, 500),
-      setTimeout(() => { dragProgress.set(0); window.scrollTo(0, 0); checkScrollable(); }, 1000),
-      setTimeout(() => { dragProgress.set(0); window.scrollTo(0, 0); checkScrollable(); }, 2000)
+      setTimeout(() => { checkScrollable(); }, 100)
     ];
     
     return () => {

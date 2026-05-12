@@ -37,9 +37,6 @@ export function Services() {
   const [showMembers, setShowMembers] = useState(false);
   const [showSupport, setShowSupport] = useState(false);
   const [showVouchers, setShowVouchers] = useState(false);
-  const [supportPassword, setSupportPassword] = useState("");
-  const [isSupportUnlocked, setIsSupportUnlocked] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const playCardSound = () => {
     playSound("/sounds/card.mp3", 0.9);
@@ -508,9 +505,6 @@ export function Services() {
               exit={{ opacity: 0 }}
               onClick={() => {
                 setShowSupport(false);
-                setSupportPassword("");
-                setIsSupportUnlocked(false);
-                setPasswordError(false);
               }}
               className="absolute inset-0 bg-black/95 backdrop-blur-xl"
             />
@@ -525,60 +519,10 @@ export function Services() {
                 <h3 className="text-2xl font-heading font-bold text-mafia-gold uppercase tracking-widest">{t.others.support.title}</h3>
                 <button onClick={() => {
                   setShowSupport(false);
-                  setSupportPassword("");
-                  setIsSupportUnlocked(false);
-                  setPasswordError(false);
                 }} className="text-mafia-gold hover:text-mafia-red transition-colors"><X size={24} /></button>
               </div>
 
               <div className="p-6 md:p-12 space-y-12">
-                {!isSupportUnlocked ? (
-                  <div className="max-w-md mx-auto text-center py-12">
-                    <Lock className="text-mafia-gold mx-auto mb-6 opacity-50" size={64} />
-                    <h4 className="text-mafia-gold font-heading font-bold text-xl uppercase tracking-widest mb-4">
-                      {t.others.support.passwordLabel}
-                    </h4>
-                    <p className="text-smoke-white/60 text-sm italic mb-8">
-                      {t.others.support.passwordHint}
-                    </p>
-                    <div className="space-y-4">
-                      {/* Hidden username field for accessibility/password managers */}
-                      <input type="text" name="username" value="support-user" readOnly className="hidden" aria-hidden="true" />
-                      <input 
-                        type="password"
-                        name="password"
-                        autoComplete="current-password"
-                        value={supportPassword}
-                        onChange={(e) => {
-                          setSupportPassword(e.target.value);
-                          if (e.target.value.toLowerCase() === "grafika") {
-                            setIsSupportUnlocked(true);
-                            setPasswordError(false);
-                          } else if (e.target.value.length >= 7) {
-                            setPasswordError(true);
-                          }
-                        }}
-                        className={`w-full bg-mafia-black/60 border ${passwordError ? 'border-mafia-red/50' : 'border-mafia-gold/30'} p-4 text-center font-mono text-mafia-gold tracking-widest focus:outline-none focus:border-mafia-gold transition-all duration-300`}
-                      />
-                      {passwordError && (
-                        <p className="text-mafia-red text-xs uppercase tracking-widest animate-pulse">{t.others.support.denied}</p>
-                      )}
-                      <button 
-                         onClick={() => {
-                            if (supportPassword.toLowerCase() === "grafika") {
-                               setIsSupportUnlocked(true);
-                               setPasswordError(false);
-                            } else {
-                               setPasswordError(true);
-                            }
-                         }}
-                         className="w-full py-4 bg-mafia-gold text-mafia-black font-black uppercase tracking-widest hover:bg-white transition-colors duration-300"
-                      >
-                         {t.others.support.unlock}
-                      </button>
-                    </div>
-                  </div>
-                ) : (
                   <>
                     <div className="text-center max-w-3xl mx-auto">
                         <div className="w-full h-px bg-gradient-to-r from-transparent via-mafia-gold/30 to-transparent mb-10"></div>
@@ -651,7 +595,6 @@ export function Services() {
                         <p className="text-smoke-white/20 font-mono text-[8px] uppercase tracking-[0.5em] text-center border-t border-white/5 pt-8 w-full">RODINA PŘEVŠÍM / MMBARBER OFFICIAL REWARD</p>
                     </div>
                   </>
-                )}
               </div>
             </motion.div>
           </div>

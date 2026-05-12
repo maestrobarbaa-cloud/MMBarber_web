@@ -15,11 +15,11 @@ export function SupportSEOArchive() {
       faq: [
         {
           q: "Co obsahuje balíček grafické podpory?",
-          a: "Náš systém odměn zahrnuje exkluzivní digitální aktiva, jako jsou 4K tapety pro PC a mobilní zařízení, které odrážejí noir estetiku MM BARBER. Tato aktiva jsou dostupná pro naše nejvěrnější podporovatele."
+          a: "Náš systém odměn zahrnuje exkluzivní digitální aktiva, jako jsou HD tapety pro PC a mobilní zařízení, které odrážejí noir estetiku MM BARBER. Tato aktiva jsou dostupná pro naše nejvěrnější podporovatele."
         },
         {
-          q: "Proč je k přístupu vyžadováno heslo?",
-          a: "Chceme, aby naše speciální odměny byly exkluzivní. Heslo (grafika) je symbolem příslušnosti k užšímu okruhu rodiny MM BARBER, kteří chápou naši vizuální identitu a hodnoty."
+          q: "Proč jsou tyto materiály zdarma?",
+          a: "Chceme, aby naše speciální odměny byly dostupné všem našim fanouškům. Tyto materiály jsou symbolem příslušnosti k rodině MM BARBER a naším poděkováním za vaši věrnost."
         },
         {
           q: "Jak mohu salon dále podpořit?",
@@ -34,11 +34,11 @@ export function SupportSEOArchive() {
       faq: [
         {
           q: "What does the graphic support package contain?",
-          a: "Our rewards system includes exclusive digital assets such as 4K wallpapers for PC and mobile devices reflecting the MM BARBER noir aesthetic. These assets are available for our most loyal supporters."
+          a: "Our rewards system includes exclusive digital assets such as HD wallpapers for PC and mobile devices reflecting the MM BARBER noir aesthetic. These assets are available for our most loyal supporters."
         },
         {
-          q: "Why is a password required for access?",
-          a: "We want our special rewards to be exclusive. The password (grafika) is a symbol of belonging to the inner circle of the MM BARBER family who understand our visual identity and values."
+          q: "Why are these materials free?",
+          a: "We want our special rewards to be available to all our fans. These materials are a symbol of belonging to the MM BARBER family and our thanks for your loyalty."
         },
         {
           q: "How can I further support the salon?",

@@ -9,9 +9,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "../utils/audio";
 import { barbers } from "@/data/barbers";
 import { 
-  getGlobalLevelStats, 
-  subscribeToLevelVotes, 
-  getDominantLevel 
+  subscribeToUserRatings,
+  useBarberLocalSettings
 } from "@/utils/voting";
 
 export interface BarberProfile {
@@ -252,15 +251,12 @@ export const MilitaryInsignia = ({ level, color = "currentColor", size = 36 }: {
   );
 };
 
-const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string }) => {
+const BarberRanking = ({ rank, lang, id, defaultName }: { rank: any, lang: string, id: string, defaultName: string }) => {
   const { t } = useTranslation();
-  const [dynamicLevel, setDynamicLevel] = useState(rank?.level || 0);
-  const [dynamicTitleIndex, setDynamicTitleIndex] = useState(rank?.level || 0);
+  const settings = useBarberLocalSettings(id, defaultName, rank?.level || 0);
+  
   const [isBloodMode, setIsBloodMode] = useState(false);
   const [isNoirMode, setIsNoirMode] = useState(false);
-
-  const [isWinnerToday, setIsWinnerToday] = useState(false);
-  const [totalVotes, setTotalVotes] = useState(0);
 
   const isNellaBarber = id === 'nella';
   const isJune2026 = new Date() >= new Date(2026, 5, 1);
@@ -274,88 +270,18 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
     checkThemes();
     window.addEventListener('mmbarber-theme-update', checkThemes);
     
-    const barberId = id;
-
-    const unsubscribeLevels = subscribeToLevelVotes(stats => {
-      const levelStats = stats.levels[barberId];
-      const titleStats = stats.titles[barberId];
-      
-      const hasVotes = levelStats && Object.values(levelStats).some(v => v > 0);
-      
-      if (hasVotes) {
-        setDynamicLevel(getDominantLevel(levelStats));
-        setDynamicTitleIndex(getDominantLevel(titleStats));
-      } else {
-        setDynamicLevel(rank?.level || 0);
-        setDynamicTitleIndex(rank?.level || 0);
-      }
-      
-      const totalCount = Object.values(levelStats || {}).reduce((a, b) => a + b, 0);
-      setTotalVotes(totalCount);
-    });
-
     return () => {
       window.removeEventListener('mmbarber-theme-update', checkThemes);
-      unsubscribeLevels();
     };
-  }, [rank?.level, id]);
+  }, [id]);
 
-  useEffect(() => {
-    if (!isNellaBarber) return;
-    if (totalVotes > 0) return;
+  const level = settings.level;
+  const titleIndex = settings.title;
+  const customTitle = settings.customTitle;
 
-    const interval = setInterval(() => {
-      setDynamicLevel((prev: number) => (prev + 1) % 4);
-      setDynamicTitleIndex((prev: number) => (prev + 1) % 4);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isNellaBarber, totalVotes]);
-
-  let status = rank?.status || 'stable';
-  
-  if (isNellaBarber && !isJune2026) {
-    status = 'demotedDesertion';
-  } else if (totalVotes > 0) {
-    if (dynamicLevel > (rank?.level ?? 0)) status = 'promoted';
-    else if (dynamicLevel < (rank?.level ?? 0)) status = 'demoted';
-    else status = 'stable';
-  } else if (isNellaBarber && isJune2026) {
-    status = 'promoted';
-  }
-
-  const level = (isNellaBarber && isJune2026 && dynamicLevel < 3 && totalVotes === 0) ? 3 : dynamicLevel;
-  const titleIndex = (isNellaBarber && isJune2026 && dynamicTitleIndex < 3 && totalVotes === 0) ? 3 : dynamicTitleIndex;
-
-  const rankTitles = [
-    t.operatives.ranks.l0,
-    t.operatives.ranks.l1,
-    t.operatives.ranks.l2,
-    t.operatives.ranks.l3,
-    t.operatives.ranks.l4,
-    t.operatives.ranks.l5,
-    t.operatives.ranks.l6,
-    t.operatives.ranks.l7,
-    t.operatives.ranks.l8,
-    t.operatives.ranks.l9,
-    t.operatives.ranks.l10,
-  ];
-
-  const rankTitlesF = [
-    t.operatives.ranks.l0F || t.operatives.ranks.l0,
-    t.operatives.ranks.l1F || t.operatives.ranks.l1,
-    t.operatives.ranks.l1 || t.operatives.ranks.l1, // Fallback logic
-    t.operatives.ranks.l3,
-    t.operatives.ranks.l4,
-    t.operatives.ranks.l5,
-    t.operatives.ranks.l6,
-    t.operatives.ranks.l7,
-    t.operatives.ranks.l8,
-    t.operatives.ranks.l9,
-    t.operatives.ranks.l10,
-  ];
-
-  // Helper to get gender-correct rank title
   const getRankTitle = (idx: number) => {
+    if (customTitle) return customTitle;
+    
     if (isNellaBarber) {
       const femaleKey = `l${idx}F`;
       return t.operatives.ranks[femaleKey] || t.operatives.ranks[`l${idx}`];
@@ -365,16 +291,31 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
 
   const currentRankTitle = getRankTitle(titleIndex);
   
+  let status: 'promoted' | 'demoted' | 'stable' | 'demotedDesertion' = settings.level !== (rank?.level || 0) 
+    ? (settings.level > (rank?.level || 0) ? 'promoted' : 'demoted')
+    : 'stable';
+    
+  if (isNellaBarber && !isJune2026) {
+    status = 'demotedDesertion';
+  }
+
   const getStatusLabel = () => {
     if (!status || status === 'stable') return t.operatives.ranks.status.stable;
     if (status === 'demotedDesertion') return t.operatives.ranks.status.demotedDesertion;
     
     const key = isNellaBarber ? `${status}F` : status;
-    return t.operatives.ranks.status[key] || t.operatives.ranks.status[status];
+    return t.operatives.ranks.status[key] || (t.operatives.ranks.status as any)[status];
   };
 
   const statusLabel = getStatusLabel();
   const nextAttemptLabel = t.operatives.ranks.status.nextAttempt;
+
+  let statusLabelText = "";
+  if (status !== 'stable') {
+    statusLabelText = statusLabel;
+  }
+  
+  const isWinnerToday = false; 
 
   const statusColor = isBloodMode 
     ? 'text-mafia-blood' 
@@ -402,7 +343,7 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
                 exit={{ opacity: 0, y: -5 }}
                 className="text-[11px] font-black tracking-[0.05em] uppercase leading-tight text-center"
               >
-                {isWinnerToday ? (lang === 'cs' ? 'BARBER DNE' : 'BARBER OF THE DAY') : currentRankTitle}
+                {currentRankTitle}
               </motion.span>
             </AnimatePresence>
             {isWinnerToday && (
@@ -429,14 +370,14 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
         </div>
       </div>
       
-      {status && status !== 'stable' && (
+      {statusLabelText && (
         <motion.div 
           initial={{ opacity: 0, x: -5 }}
           whileInView={{ opacity: 1, x: 0 }}
           className={`flex items-center gap-2 ${statusColor} text-[8.5px] font-mono tracking-[0.1em] uppercase font-black mt-3`}
         >
-          {status === 'demoted' ? <TrendingDown size={12} strokeWidth={3} /> : <TrendingUp size={12} strokeWidth={3} />}
-          <span className={status === 'demoted' ? 'animate-pulse' : ''}>{statusLabel}</span>
+          {(status === 'demoted' || status === 'demotedDesertion') ? <TrendingDown size={12} strokeWidth={3} /> : <TrendingUp size={12} strokeWidth={3} />}
+          <span className={(status === 'demoted' || status === 'demotedDesertion') ? 'animate-pulse' : ''}>{statusLabelText}</span>
         </motion.div>
       )}
 
@@ -519,6 +460,7 @@ function BarberCard({
   graphicsTier?: string
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const settings = useBarberLocalSettings(barber.id, barber.name, barber.rank?.level || 0);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -532,6 +474,7 @@ function BarberCard({
   };
 
   const isHidden = barber.isHidden;
+  const barberDisplayName = settings.name;
 
   return (
     <>
@@ -555,13 +498,13 @@ function BarberCard({
         
         <div className="text-center space-y-1 relative">
           <h3 className="text-3xl font-heading font-black uppercase text-mafia-gold tracking-widest leading-none relative">
-            {barber.name}
+            {barberDisplayName}
           </h3>
           <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
             {barber.role}
           </span>
           <div className="mt-6 relative flex justify-center">
-            <BarberRanking rank={barber.rank} lang={lang} id={barber.id} />
+            <BarberRanking rank={barber.rank} lang={lang} id={barber.id} defaultName={barber.name} />
           </div>
         </div>
 
@@ -643,7 +586,7 @@ function BarberCard({
               </div>
               <div className="flex-1 flex flex-col items-center text-center relative">
                   <h3 className="text-4xl font-heading font-black uppercase text-mafia-gold tracking-widest relative">
-                    {barber.name}
+                    {barberDisplayName}
                     {isHidden && (
                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black border border-mafia-gold/20 z-20 origin-left" />
                     )}
@@ -652,7 +595,7 @@ function BarberCard({
                     {barber.role}
                   </span>
                   <div className="mt-8 relative flex justify-center">
-                    <BarberRanking rank={barber.rank} lang={lang} id={barber.id} />
+                    <BarberRanking rank={barber.rank} lang={lang} id={barber.id} defaultName={barber.name} />
                     {isHidden && (
                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
                     )}

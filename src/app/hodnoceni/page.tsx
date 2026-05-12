@@ -6,16 +6,14 @@ import { getInternalIdentity } from "@/utils/identity";
 import { barbers } from "@/data/barbers";
 import { 
   castMultiVote, 
-  getTodayMultiVote, 
-  subscribeToLevelVotes, 
-  getDominantLevel,
-  AggregatedStats,
+  getUserRatings, 
+  subscribeToUserRatings,
   BarberRating
 } from "@/utils/voting";
 import { 
   Crown, Flame, User, Shield, 
   Target, ArrowRight, Settings, Check, Plus, Minus,
-  ArrowLeft, Home, UserCircle
+  ArrowLeft, Home, UserCircle, ChevronDown
 } from "lucide-react";
 import { MilitaryInsignia } from "@/components/Profiles";
 import Image from "next/image";
@@ -30,8 +28,7 @@ export default function RatingPage() {
   const { t, lang } = useTranslation();
   const [internalId, setInternalId] = useState<string | null>(null);
   const [draftRatings, setDraftRatings] = useState<Record<string, BarberRating>>({});
-  const [isSubmittedToday, setIsSubmittedToday] = useState(false);
-  const [communityStats, setCommunityStats] = useState<AggregatedStats>({ levels: {}, titles: {} });
+  const [userRatings, setUserRatings] = useState<Record<string, BarberRating>>({});
   const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -46,11 +43,6 @@ export default function RatingPage() {
     const initIdentity = async () => {
       const id = await getInternalIdentity();
       setInternalId(id);
-      const savedRatings = await getTodayMultiVote(id);
-      if (savedRatings) {
-        setDraftRatings(savedRatings);
-        setIsSubmittedToday(true);
-      }
     };
 
     initIdentity();
@@ -62,8 +54,11 @@ export default function RatingPage() {
     checkTheme();
     window.addEventListener('mmbarber-theme-update', checkTheme);
 
-    const unsubscribe = subscribeToLevelVotes((stats) => {
-      setCommunityStats(stats);
+    const unsubscribe = subscribeToUserRatings((ratings) => {
+      if (ratings) {
+        setUserRatings(ratings);
+        setDraftRatings(ratings);
+      }
       setLoading(false);
       setIsOffline(false);
     });
@@ -98,11 +93,75 @@ export default function RatingPage() {
     setDraftRatings(prev => ({ 
       ...prev, 
       [barberId]: { 
+        ...prev[barberId],
         level: prev[barberId]?.level ?? newTitle, 
-        title: newTitle 
+        title: newTitle,
+        customTitle: prev[barberId]?.customTitle || "" // Clear or keep custom title? Let's keep it but maybe user wants both.
       } 
     }));
     playSound("/sounds/bullet-hit.mp3", 0.1);
+  };
+
+  const handleNicknameChange = (barberId: string, nickname: string) => {
+    setDraftRatings(prev => ({
+      ...prev,
+      [barberId]: {
+        ...prev[barberId],
+        level: prev[barberId]?.level ?? 0,
+        title: prev[barberId]?.title ?? 0,
+        nickname
+      }
+    }));
+  };
+
+  const handleCustomTitleChange = (barberId: string, customTitle: string) => {
+    setDraftRatings(prev => ({
+      ...prev,
+      [barberId]: {
+        ...prev[barberId],
+        level: prev[barberId]?.level ?? 0,
+        title: prev[barberId]?.title ?? 0,
+        customTitle
+      }
+    }));
+  };
+
+  const handlePrefixChange = (barberId: string, prefixId: string) => {
+    setDraftRatings(prev => {
+      const current = prev[barberId] || { level: 0, title: 0 };
+      const prefixObj = TITLE_PREFIXES.find(p => p.id === prefixId);
+      const suffixObj = TITLE_SUFFIXES.find(s => s.id === (current.suffix || 'none'));
+      const prefixLabel = lang === 'cs' ? prefixObj?.cs : prefixObj?.en;
+      const suffixLabel = lang === 'cs' ? suffixObj?.cs : suffixObj?.en;
+      
+      return {
+        ...prev,
+        [barberId]: {
+          ...current,
+          prefix: prefixId,
+          customTitle: buildTitle(prefixLabel || "", suffixLabel || "")
+        }
+      };
+    });
+  };
+
+  const handleSuffixChange = (barberId: string, suffixId: string) => {
+    setDraftRatings(prev => {
+      const current = prev[barberId] || { level: 0, title: 0 };
+      const prefixObj = TITLE_PREFIXES.find(p => p.id === (current.prefix || 'none'));
+      const suffixObj = TITLE_SUFFIXES.find(s => s.id === suffixId);
+      const prefixLabel = lang === 'cs' ? prefixObj?.cs : prefixObj?.en;
+      const suffixLabel = lang === 'cs' ? suffixObj?.cs : suffixObj?.en;
+      
+      return {
+        ...prev,
+        [barberId]: {
+          ...current,
+          suffix: suffixId,
+          customTitle: buildTitle(prefixLabel || "", suffixLabel || "")
+        }
+      };
+    });
   };
 
   const handleFinalSubmit = async () => {
@@ -118,8 +177,7 @@ export default function RatingPage() {
       await castMultiVote(internalId, draftRatings);
       
       setIsSuccess(true);
-      setIsSubmittedToday(true);
-      trackEvent("multi_vote_submitted", { count: Object.keys(draftRatings).length });
+      trackEvent("ratings_saved_locally", { count: Object.keys(draftRatings).length });
       
       setTimeout(() => {
         window.location.href = "/";
@@ -146,6 +204,51 @@ export default function RatingPage() {
     t.operatives.ranks.l9,
     t.operatives.ranks.l10,
   ];
+
+  const TITLE_PREFIXES = [
+    { id: 'none', cs: 'ŽÁDNÝ', en: 'NONE' },
+    { id: 'ceo', cs: 'CEO', en: 'CEO' },
+    { id: 'manager', cs: 'MANAŽER', en: 'MANAGER' },
+    { id: 'general', cs: 'GENERÁL', en: 'GENERAL' },
+    { id: 'marshal', cs: 'MARŠÁL', en: 'MARSHAL' },
+    { id: 'lieutenant', cs: 'PORUČÍK', en: 'LIEUTENANT' },
+    { id: 'recruit', cs: 'REKRUT', en: 'RECRUIT' },
+    { id: 'commander', cs: 'VELITEL', en: 'COMMANDER' },
+    { id: 'guardian', cs: 'STRÁŽCE', en: 'GUARDIAN' },
+    { id: 'cosmetic', cs: 'KOSMETIK', en: 'COSMETICIAN' },
+    { id: 'boss', cs: 'ŠÉF', en: 'BOSS' },
+    { id: 'cho', cs: 'REFERENT ŠTĚSTÍ', en: 'CHIEF HAPPINESS OFFICER' },
+    { id: 'visionary', cs: 'KREATIVNÍ VIZIONÁŘ', en: 'CREATIVE VISIONARY' },
+    { id: 'vibe', cs: 'ŘEDITEL ATMOSFÉRY', en: 'EXECUTIVE OF VIBES' },
+    { id: 'architect', cs: 'ARCHITEKT RUČNÍKŮ', en: 'TOWEL ARCHITECT' },
+    { id: 'strategy', cs: 'ŠÉF STRATEGIE', en: 'HEAD OF STRATEGY' },
+    { id: 'consultant', cs: 'KONZULTANT ÚČESŮ', en: 'HAIR CONSULTANT' },
+    { id: 'engineer', cs: 'INŽENÝR SMETÁKU', en: 'BROOM ENGINEER' },
+    { id: 'vp', cs: 'VICEPREZIDENT PRO ŠAMPON', en: 'VP OF SHAMPOO' },
+    { id: 'director', cs: 'ŘEDITEL OSTRÝCH PŘEDMĚTŮ', en: 'DIRECTOR OF SHARP OBJECTS' },
+    { id: 'fades', cs: 'HLAVNÍ STŘIHAČ PŘECHODŮ', en: 'HEAD OF FADES' },
+  ];
+
+  const TITLE_SUFFIXES = [
+    { id: 'none', cs: 'ŽÁDNÝ', en: 'NONE' },
+    { id: 'toilet', cs: 'TOALETY', en: 'OF TOILET' },
+    { id: 'cleaning', cs: 'ÚKLIDU', en: 'OF CLEANING' },
+    { id: 'cut', cs: 'STŘIHU', en: 'OF CUTS' },
+    { id: 'flooring', cs: 'PLOVOUCÍCH KRYTIN', en: 'OF FLOORING' },
+    { id: 'broom', cs: 'SMETÁKU', en: 'OF THE BROOM' },
+    { id: 'towels', cs: 'ČISTÝCH RUČNÍKŮ', en: 'OF CLEAN TOWELS' },
+    { id: 'washer', cs: 'MYČ HLAV', en: 'HEAD WASHER' },
+    { id: 'razor', cs: 'BŘITVY', en: 'OF THE RAZOR' },
+    { id: 'chair', cs: 'KŘESLA', en: 'OF THE CHAIR' },
+  ];
+
+  const buildTitle = (prefix: string, suffix: string) => {
+    const noneLabel = lang === 'cs' ? 'ŽÁDNÝ' : 'NONE';
+    if (prefix === noneLabel && suffix === noneLabel) return "";
+    if (prefix === noneLabel) return suffix;
+    if (suffix === noneLabel) return prefix;
+    return `${prefix} ${suffix}`;
+  };
 
   if (!isClient) return null;
 
@@ -184,21 +287,16 @@ export default function RatingPage() {
             animate={{ opacity: 1 }}
             className="text-5xl md:text-7xl font-heading font-black tracking-tighter uppercase text-mafia-gold drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]"
           >
-            {lang === 'cs' ? 'Hlasování' : 'Elite'} <span className="text-white">{lang === 'cs' ? 'Elity' : 'Voting'}</span>
+            {lang === 'cs' ? 'Nastavení' : 'Elite'} <span className="text-white">{lang === 'cs' ? 'Hodností' : 'Ranks'}</span>
           </motion.h1>
           <p className="text-mafia-gold/60 font-mono tracking-[0.3em] uppercase text-xs md:text-sm max-w-2xl mx-auto leading-relaxed">
-            {lang === 'cs' ? 'Komunita rozhoduje o osudu. Tvůj hlas určuje hodnost, titul a prestiž v rodině MMBarberu.' : 'The community decides the fate. Your voice determines rank, title, and prestige within the MMBarber family.'}
+            {lang === 'cs' ? 'Urči si vlastní hierarchii. Nastavené hodnosti a tituly uvidíš napříč celým systémem.' : 'Define your own hierarchy. Your chosen ranks and titles will be reflected across the entire system.'}
           </p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
           {barbers.map((barber, idx) => {
-            const barberStats = communityStats.levels[barber.id];
-            const dominantLv = getDominantLevel(barberStats);
-            const dominantTitle = getDominantLevel(communityStats.titles[barber.id]);
-            
-            const displayLevel = dominantLv || (barber.rank?.level ?? 0);
-            const currentDraft = draftRatings[barber.id] || { level: displayLevel, title: dominantTitle || displayLevel };
+            const currentDraft = draftRatings[barber.id] || userRatings[barber.id] || { level: barber.rank?.level ?? 0, title: barber.rank?.level ?? 0 };
 
             return (
               <motion.div
@@ -207,7 +305,7 @@ export default function RatingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
                 className={`relative group bg-[#050505] border-2 transition-all duration-700 overflow-hidden rounded-sm ${
-                  isSubmittedToday ? "border-mafia-gold/20" : "border-white/5 hover:border-mafia-gold/30"
+                  Object.keys(userRatings).length > 0 ? "border-mafia-gold/20" : "border-white/5 hover:border-mafia-gold/30"
                 }`}
               >
                 <div className="p-6 md:p-8 flex flex-col gap-8">
@@ -222,12 +320,19 @@ export default function RatingPage() {
                         className={`w-full h-full object-cover rounded-lg grayscale transition-all duration-700 ${isBloodMode ? 'group-hover/photo:grayscale-0 group-hover/photo:sepia-[1] group-hover/photo:hue-rotate-[320deg] group-hover/photo:saturate-[5]' : 'group-hover:grayscale-0'}`}
                       />
                     </div>
-                    <div className="flex-grow">
-                      <h3 className="text-2xl md:text-4xl font-heading font-black text-white uppercase tracking-wider group-hover:text-mafia-gold transition-colors">
-                        {barber.name}
-                      </h3>
+                    <div className="flex-grow space-y-2">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">{lang === 'cs' ? 'Původní jméno:' : 'Original name:'} {barber.name}</span>
+                        <input 
+                          type="text"
+                          placeholder={lang === 'cs' ? "Zadej přezdívku..." : "Enter nickname..."}
+                          value={currentDraft.nickname || ""}
+                          onChange={(e) => handleNicknameChange(barber.id, e.target.value)}
+                          className="bg-transparent border-b border-white/10 text-2xl md:text-3xl font-heading font-black text-white uppercase tracking-wider focus:border-mafia-gold outline-none transition-colors w-full"
+                        />
+                      </div>
                       <p className={`text-[10px] font-mono font-bold tracking-[0.3em] uppercase mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
-                        KOMUNITNÍ STATUS: {rankTitles[dominantTitle || displayLevel]}
+                        {lang === 'cs' ? 'AKTUÁLNÍ STATUS:' : 'CURRENT STATUS:'} {currentDraft.customTitle || rankTitles[currentDraft.title]}
                       </p>
                     </div>
                   </div>
@@ -244,8 +349,8 @@ export default function RatingPage() {
                              <MilitaryInsignia level={currentDraft.level} color={isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "var(--color-mafia-gold)"} size={64} />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">Úroveň šarže</span>
-                            <span className={`text-sm font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>STUPEŇ {currentDraft.level}</span>
+                            <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">{lang === 'cs' ? 'Úroveň šarže' : 'Rank Level'}</span>
+                            <span className={`text-sm font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>{lang === 'cs' ? 'STUPEŇ' : 'LEVEL'} {currentDraft.level}</span>
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
@@ -278,41 +383,71 @@ export default function RatingPage() {
                     </div>
 
                     <div className="space-y-6 pt-6 border-t border-white/5 relative z-10">
-                      <div className="flex justify-between items-center">
+                      <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-4">
                           <div className={`w-12 h-12 border flex items-center justify-center rounded-sm ${isBloodMode ? 'bg-mafia-blood/10 border-mafia-blood/20' : isNoirMode ? 'bg-white/10 border-white/20' : 'bg-mafia-gold/10 border-mafia-gold/20'}`}>
                              <UserCircle size={24} className={isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'} />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">Výběr titulu</span>
-                            <span className={`text-base font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>{rankTitles[currentDraft.title]}</span>
+                            <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">{lang === 'cs' ? 'Sestavit titul' : 'Build Title'}</span>
+                            <span className={`text-base font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
+                              {currentDraft.customTitle || rankTitles[currentDraft.title]}
+                            </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                           <button onClick={() => handleTitleChange(barber.id, currentDraft.title - 1)} disabled={currentDraft.title <= 0} className="w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-all disabled:opacity-10"><Minus size={14} /></button>
-                           <button onClick={() => handleTitleChange(barber.id, currentDraft.title + 1)} disabled={currentDraft.title >= 10} className="w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-all disabled:opacity-10"><Plus size={14} /></button>
-                        </div>
-                      </div>
 
-                      <div className="relative h-8 flex items-center px-1">
-                        <div className="absolute inset-x-0 h-0.5 bg-white/10 rounded-full" />
-                        <input 
-                          type="range" min="0" max="10" step="1" value={currentDraft.title}
-                          onChange={(e) => handleTitleChange(barber.id, parseInt(e.target.value))}
-                          className="absolute inset-x-0 w-full opacity-0 cursor-pointer h-8 z-20"
-                        />
-                        <div className="absolute inset-x-0 flex justify-between pointer-events-none px-1">
-                          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => (
-                            <motion.div 
-                              key={lv}
-                              animate={{ 
-                                height: lv === currentDraft.title ? 20 : 6,
-                                opacity: lv <= currentDraft.title ? 1 : 0.1,
-                                backgroundColor: lv === currentDraft.title ? (isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "#C5A059") : "rgba(255,255,255,0.4)"
-                              }}
-                              className="w-1.5 rounded-full"
-                            />
-                          ))}
+                        {/* Modular Builder */}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest px-1">{lang === 'cs' ? 'Role / Šarže' : 'Role / Rank'}</span>
+                            <div className="relative group/sel">
+                              <select 
+                                value={currentDraft.prefix || "none"}
+                                onChange={(e) => handlePrefixChange(barber.id, e.target.value)}
+                                className="w-full bg-white/[0.03] border border-white/10 px-3 py-3 rounded-sm text-[11px] font-mono uppercase text-white/90 outline-none focus:border-mafia-gold focus:bg-white/5 transition-all appearance-none cursor-pointer hover:border-white/20"
+                              >
+                                {TITLE_PREFIXES.map(p => (
+                                  <option key={p.id} value={p.id} className="bg-[#0a0a0a] text-white py-2">
+                                    {lang === 'cs' ? p.cs : p.en}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover/sel:text-mafia-gold transition-colors">
+                                <ChevronDown size={14} />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest px-1">{lang === 'cs' ? 'Oblast / Kontext' : 'Area / Context'}</span>
+                            <div className="relative group/sel">
+                              <select 
+                                value={currentDraft.suffix || "none"}
+                                onChange={(e) => handleSuffixChange(barber.id, e.target.value)}
+                                className="w-full bg-white/[0.03] border border-white/10 px-3 py-3 rounded-sm text-[11px] font-mono uppercase text-white/90 outline-none focus:border-mafia-gold focus:bg-white/5 transition-all appearance-none cursor-pointer hover:border-white/20"
+                              >
+                                {TITLE_SUFFIXES.map(s => (
+                                  <option key={s.id} value={s.id} className="bg-[#0a0a0a] text-white py-2">
+                                    {lang === 'cs' ? s.cs : s.en}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover/sel:text-mafia-gold transition-colors">
+                                <ChevronDown size={14} />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Manual Override */}
+                        <div className="space-y-2">
+                          <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest">{lang === 'cs' ? 'Nebo napiš vlastní' : 'Or write your own'}</span>
+                          <input 
+                            type="text"
+                            placeholder={lang === 'cs' ? "Zadej libovolný titul..." : "Enter any title..."}
+                            value={currentDraft.customTitle || ""}
+                            onChange={(e) => handleCustomTitleChange(barber.id, e.target.value)}
+                            className="bg-white/5 border border-white/10 px-4 py-3 rounded-sm text-[11px] font-mono uppercase tracking-widest text-white focus:border-mafia-gold outline-none transition-all w-full"
+                          />
                         </div>
                       </div>
                     </div>
@@ -346,14 +481,14 @@ export default function RatingPage() {
                   <ArrowRight className="w-6 h-6 text-black group-hover:translate-x-2 transition-transform" />
                 )}
                 <span className={`font-heading font-black text-xl tracking-[0.3em] uppercase ${isSuccess ? "text-white" : "text-black"}`}>
-                  {isSaving ? "ZAPISUJI..." : isSuccess ? "ZAPSÁNO" : isSubmittedToday ? "UPRAVIT PROTOKOL" : "ZAZNAMENAT PROTOKOL"}
+                  {isSaving ? (lang === 'cs' ? "ZAPISUJI..." : "SAVING...") : isSuccess ? (lang === 'cs' ? "ULOŽENO" : "SAVED") : (lang === 'cs' ? "ULOŽIT NASTAVENÍ" : "SAVE SETTINGS")}
                 </span>
               </div>
             </button>
           </motion.div>
         )}
 
-        {isSubmittedToday && !isSuccess && (
+        {isSuccess && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -364,9 +499,9 @@ export default function RatingPage() {
             </div>
             <div className="text-center">
               <p className={`font-heading font-black text-2xl tracking-widest uppercase mb-2 ${isBloodMode ? 'text-mafia-blood' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
-                Protokol byl úspěšně zaznamenán.
+                {lang === 'cs' ? 'Nastavení bylo úspěšně uloženo.' : 'Settings successfully saved.'}
               </p>
-              <p className="text-white/40 text-sm">Děkujeme za tvůj vliv na hierarchii rodiny.</p>
+              <p className="text-white/40 text-sm">{lang === 'cs' ? 'Tvoje nová hierarchie je aktivní v tvém prohlížeči.' : 'Your new hierarchy is active in your browser.'}</p>
             </div>
             
             <Link href="/" className={`group flex items-center gap-4 px-10 py-4 border-2 transition-all duration-500 ${isBloodMode ? 'border-mafia-blood text-mafia-blood hover:bg-mafia-blood hover:text-white' : isNoirMode ? 'border-white text-white hover:bg-white hover:text-black' : 'border-mafia-gold text-mafia-gold hover:bg-mafia-gold hover:text-black'}`}>
@@ -377,12 +512,7 @@ export default function RatingPage() {
         )}
 
         <footer className="mt-20 text-center space-y-6">
-          <div className="inline-flex items-center gap-4 px-6 py-3 border border-white/10 bg-white/5 rounded-full backdrop-blur-sm">
-            <Flame size={20} className="text-mafia-gold animate-pulse" />
-            <span className="text-[10px] font-mono text-white/60 tracking-[0.2em] uppercase">
-              Vítěz dne získá titul <span className="text-mafia-gold font-bold">Barber of the Day</span> v 00:01
-            </span>
-          </div>
+
           
           <motion.div 
             initial={{ opacity: 0 }}
@@ -392,11 +522,11 @@ export default function RatingPage() {
             <div className="flex items-center gap-2 px-3 py-1 bg-mafia-gold/5 border border-mafia-gold/20 rounded-sm">
               <Shield size={12} className="text-mafia-gold" />
               <span className="text-white/40 text-[9px] font-mono tracking-[0.1em] uppercase">
-                MM-SECURE IDENTITY: {internalId ? `${internalId.substring(0, 8)}...` : "IDENTIFIKACE..."}
+                MM-SECURE IDENTITY: {internalId ? `${internalId.substring(0, 8)}...` : (lang === 'cs' ? "IDENTIFIKACE..." : "IDENTIFICATION...")}
               </span>
             </div>
             <p className="text-white/20 text-[8px] font-mono uppercase tracking-widest">
-              * Systém využívá anonymní validaci k zamezení vícenásobného hlasování.
+              {lang === 'cs' ? '* Nastavení se ukládá lokálně do paměti tvého prohlížeče.' : '* Settings are stored locally in your browser\'s memory.'}
             </p>
 
             {isOffline && (
@@ -406,7 +536,7 @@ export default function RatingPage() {
                 className="mt-4 px-4 py-2 bg-mafia-red/20 border border-mafia-red/40 rounded-sm"
               >
                 <p className="text-mafia-red text-[9px] font-mono uppercase tracking-[0.2em] animate-pulse">
-                  Pozor: Jste offline. Synchronizace s archivem přerušena.
+                  {lang === 'cs' ? 'Pozor: Jste offline. Synchronizace s archivem přerušena.' : 'Warning: You are offline. Sync with archive interrupted.'}
                 </p>
               </motion.div>
             )}
