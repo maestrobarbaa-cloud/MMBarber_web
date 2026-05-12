@@ -437,7 +437,7 @@ export function Footer() {
 
               <div className="relative z-10 flex flex-col items-center gap-1">
                 <p className={`text-mafia-gold font-heading font-black text-sm uppercase tracking-[0.2em] transition-colors ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:text-white' : ''}`}>
-                  {t?.footer?.likeWeb || (lang === 'cs' ? "LÍBÍ SE TI WEB?" : "LIKE THE WEB?") }
+                  {t?.footer?.likeWeb || (lang === 'cs' ? "LÍBÍ SE TI WEB?" : "LIKE THE WEB?")}
                 </p>
                 <p className="text-[8px] font-mono text-white/20 uppercase tracking-[0.3em] group-hover:text-mafia-gold/40 transition-colors">
                   Status: High Priority
@@ -564,7 +564,7 @@ export function Footer() {
         <div className="flex flex-col items-center gap-4">
           <div className="font-mono text-smoke-white/50 text-xs md:text-sm tracking-[0.2em] uppercase text-center flex flex-wrap items-center justify-center gap-2">
             <span>© {t?.footer?.copyright || (lang === 'cs' ? 'Všechna práva vyhrazena' : 'All rights reserved')}</span>
-            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V.3.4.4</span>
+            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2">V.3.5</span>
           </div>
           <div className="sr-only">
             <h2>{t.seo?.title}</h2>
