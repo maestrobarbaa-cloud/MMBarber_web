@@ -533,6 +533,7 @@ function BarberCard({
               height={192} 
               priority 
               quality={100}
+              loading="eager"
               className="w-full h-full object-cover" 
             />
           )}
@@ -726,7 +727,7 @@ function BarberCard({
                         isHovered ? "shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]" : ""
                     }`}>
                         <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
-                          <Image src={barber.image} alt={barber.name} width={300} height={300} className="w-full h-full object-cover grayscale-[0.2]" />
+                          <Image src={barber.image} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
                         </motion.div>
                     </div>
                     <div className="text-center px-6 mt-4">
@@ -744,7 +745,7 @@ function BarberCard({
                           <div className="text-mafia-gold/30 font-heading text-[12rem] animate-pulse italic drop-shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]">?</div>
                         ) : (
                           <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
-                            <Image src={barber.image} alt={barber.name} width={300} height={300} className="w-full h-full object-cover grayscale-[0.2]" />
+                            <Image src={barber.image} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
                           </motion.div>
                         )}
                     </div>
@@ -1002,6 +1003,9 @@ function ChairWithCard({
             src="/obr/kreslo.png" 
             alt={`Barber Chair ${barber.name}`}
             fill 
+            priority
+            quality={100}
+            loading="eager"
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-contain"
           />

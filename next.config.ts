@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
       }
     ],
     qualities: [60, 65, 75, 80, 85, 90, 95, 100],
+    unoptimized: true,
   },
   async headers() {
     return [
