@@ -6,7 +6,7 @@ import { getInternalIdentity } from "@/utils/identity";
 import { barbers } from "@/data/barbers";
 import { 
   castMultiVote, 
-  getUserRatings, 
+  getUserRatingsData, 
   subscribeToUserRatings,
   BarberRating
 } from "@/utils/voting";
@@ -29,6 +29,8 @@ export default function RatingPage() {
   const [internalId, setInternalId] = useState<string | null>(null);
   const [draftRatings, setDraftRatings] = useState<Record<string, BarberRating>>({});
   const [userRatings, setUserRatings] = useState<Record<string, BarberRating>>({});
+  const [clientNickname, setClientNickname] = useState("");
+  const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -55,9 +57,11 @@ export default function RatingPage() {
     window.addEventListener('mmbarber-theme-update', checkTheme);
 
     const unsubscribe = subscribeToUserRatings((ratings) => {
-      if (ratings) {
-        setUserRatings(ratings);
-        setDraftRatings(ratings);
+      const data = getUserRatingsData();
+      if (data) {
+        setUserRatings(data.ratings);
+        setDraftRatings(data.ratings);
+        setClientNickname(data.clientNickname || "");
       }
       setLoading(false);
       setIsOffline(false);
@@ -174,7 +178,7 @@ export default function RatingPage() {
       playSound("/sounds/reload.mp3", 0.5);
       console.log("Submitting protocol for ID:", internalId);
       
-      await castMultiVote(internalId, draftRatings);
+      await castMultiVote(internalId, draftRatings, clientNickname);
       
       setIsSuccess(true);
       trackEvent("ratings_saved_locally", { count: Object.keys(draftRatings).length });
@@ -250,6 +254,33 @@ export default function RatingPage() {
     return `${prefix} ${suffix}`;
   };
 
+  const getVocative = (name: string) => {
+    if (!name) return "";
+    const n = name.trim().toUpperCase();
+    if (lang !== 'cs') return name;
+
+    // Basic Czech vocative heuristics
+    if (n.endsWith('A')) return n.slice(0, -1) + 'O';
+    if (n.endsWith('EK')) return n.slice(0, -2) + 'KU';
+    if (n.endsWith('ÍK')) return n.slice(0, -2) + 'ÍKU';
+    if (n.endsWith('US')) return n.slice(0, -2) + 'E';
+    if (n.endsWith('ES')) return n.slice(0, -2) + 'E';
+    if (n.endsWith('O')) return n;
+    if (n.endsWith('I') || n.endsWith('Í')) return n;
+    if (n.endsWith('E') || n.endsWith('Ě')) return n;
+    
+    // Soft consonants
+    if (['Š', 'Ž', 'Č', 'Ř', 'C', 'J', 'Ď', 'Ť', 'Ň'].includes(n.slice(-1))) return n + 'I';
+    // Hard/Velar consonants
+    if (n.endsWith('H') || n.endsWith('CH') || n.endsWith('K') || n.endsWith('G')) return n + 'U';
+    // Others
+    if (['S', 'Z', 'T', 'D', 'M', 'B', 'P', 'V', 'N', 'R', 'L'].includes(n.slice(-1))) return n + 'E';
+    
+    return n;
+  };
+
+  const vocativeName = getVocative(clientNickname);
+
   if (!isClient) return null;
 
   return (
@@ -289,12 +320,120 @@ export default function RatingPage() {
           >
             {lang === 'cs' ? 'Nastavení' : 'Elite'} <span className="text-white">{lang === 'cs' ? 'Hodností' : 'Ranks'}</span>
           </motion.h1>
-          <p className="text-mafia-gold/60 font-mono tracking-[0.3em] uppercase text-xs md:text-sm max-w-2xl mx-auto leading-relaxed">
-            {lang === 'cs' ? 'Urči si vlastní hierarchii. Nastavené hodnosti a tituly uvidíš napříč celým systémem.' : 'Define your own hierarchy. Your chosen ranks and titles will be reflected across the entire system.'}
+          <p className="text-mafia-gold/60 font-mono tracking-[0.3em] uppercase text-xs md:text-sm max-w-2xl mx-auto leading-relaxed italic">
+            {clientNickname ? (
+              lang === 'cs' 
+                ? `Vítejte zpět, operativče ${clientNickname}. Určete vlastní hierarchii pro váš terminál.` 
+                : `Welcome back, operative ${clientNickname}. Define your own hierarchy for your terminal.`
+            ) : (
+              lang === 'cs' 
+                ? 'Urči si vlastní hierarchii. Nastavené hodnosti a tituly uvidíš napříč celým systémem.' 
+                : 'Define your own hierarchy. Your chosen ranks and titles will be reflected across the entire system.'
+            )}
           </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
+        <div className="space-y-12 mb-20">
+          <AnimatePresence mode="wait">
+            {!isEditingNickname && clientNickname ? (
+              <motion.div 
+                key="greeting"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="p-8 bg-mafia-black border-2 border-mafia-gold/20 rounded-sm relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 group"
+              >
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 bg-mafia-gold/10 border border-mafia-gold/30 flex items-center justify-center rounded-full shrink-0 shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.1)]">
+                     <User size={28} className="text-mafia-gold" />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-[0.4em] block">
+                       {lang === 'cs' ? 'STATUS OPERATIVCE' : 'OPERATIVE STATUS'}
+                    </span>
+                    <h2 className="text-2xl md:text-3xl font-heading font-black text-white uppercase tracking-wider italic">
+                       {lang === 'cs' 
+                         ? [
+                            `Ale, ale... koho to tu máme? ${vocativeName}, vítej zpět v akci.`,
+                            `Pozor na palubě! Šéf ${clientNickname} se právě přihlásil k systému.`,
+                            `${vocativeName}? To je tvoje krycí jméno, nebo tě tak vážně oslovují?`,
+                            `Systém hlásí přítomnost legendy. Nazdar, ${vocativeName}!`,
+                            `Zase ty, ${vocativeName}? Doufám, že dneska ty kluky nebudeme moc šikanovat...`,
+                            `Protokol MMBarber aktivován pro uživatele: ${clientNickname}.`,
+                            `Ověřeno. Identita potvrzena. Vstup povolen, ${vocativeName}.`,
+                         ][(clientNickname.length % 7)]
+                         : [
+                            `Well, well, well... look who's back. ${clientNickname}, welcome to the action.`,
+                            `Attention on deck! Boss ${clientNickname} just logged in.`,
+                            `${clientNickname}? Is that your cover name or do people actually call you that?`,
+                            `System reports a legend is present. Greetings, ${clientNickname}!`,
+                            `You again, ${clientNickname}? Ready to judge the squad?`,
+                            `MMBarber protocol activated for: ${clientNickname}.`,
+                            `Verified. Identity confirmed. Access granted, ${clientNickname}.`,
+                         ][(clientNickname.length % 7)]
+                       }
+                    </h2>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsEditingNickname(true)}
+                  className="px-6 py-3 border border-mafia-gold/30 text-mafia-gold font-mono text-[10px] uppercase tracking-[0.3em] hover:bg-mafia-gold hover:text-black transition-all flex items-center gap-2 group-hover:border-mafia-gold"
+                >
+                  <Settings size={14} />
+                  {lang === 'cs' ? 'UPRAVIT IDENTITU' : 'EDIT IDENTITY'}
+                </button>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="editor"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="p-8 bg-[#070707] border-2 border-mafia-gold/40 rounded-sm relative overflow-hidden group shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.1)]"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity">
+                   <UserCircle size={120} className="text-mafia-gold" />
+                </div>
+                
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                  <div className="w-20 h-20 bg-mafia-gold/10 border border-mafia-gold/30 flex items-center justify-center rounded-full shrink-0">
+                     <User size={32} className="text-mafia-gold" />
+                  </div>
+                  <div className="flex-grow space-y-4 w-full">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.4em] mb-2">
+                        {lang === 'cs' ? 'IDENTIFIKACE OPERATIVCE (KLIENTA):' : 'OPERATIVE IDENTIFICATION (CLIENT):'}
+                      </span>
+                      <div className="flex flex-col md:flex-row gap-4">
+                        <input 
+                          type="text"
+                          placeholder={lang === 'cs' ? "ZADEJTE JMÉNO..." : "ENTER NAME..."}
+                          value={clientNickname}
+                          onChange={(e) => setClientNickname(e.target.value.toUpperCase())}
+                          autoFocus
+                          className="bg-transparent border-b-2 border-white/20 text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter focus:border-mafia-gold outline-none transition-all flex-grow placeholder:opacity-20"
+                        />
+                        <button 
+                          onClick={() => setIsEditingNickname(false)}
+                          className="px-8 py-4 bg-mafia-gold text-black font-heading font-black uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]"
+                        >
+                          {lang === 'cs' ? 'POTVRDIT' : 'CONFIRM'}
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-smoke-white/40 italic font-light">
+                      {lang === 'cs' 
+                        ? "Tento údaj se ukládá pouze ve vašem prohlížeči a slouží k personalizaci vašeho rozhraní." 
+                        : "This data is stored only in your browser and is used to personalize your interface."}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 relative pb-40">
           {barbers.map((barber, idx) => {
             const currentDraft = draftRatings[barber.id] || userRatings[barber.id] || { level: barber.rank?.level ?? 0, title: barber.rank?.level ?? 0 };
 
@@ -332,7 +471,7 @@ export default function RatingPage() {
                         />
                       </div>
                       <p className={`text-[10px] font-mono font-bold tracking-[0.3em] uppercase mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
-                        {lang === 'cs' ? 'AKTUÁLNÍ STATUS:' : 'CURRENT STATUS:'} {currentDraft.customTitle || rankTitles[currentDraft.title]}
+                        {lang === 'cs' ? `DLE ${vocativeName || 'VÁS'}:` : `ACCORDING TO ${clientNickname || 'YOU'}:`} {currentDraft.customTitle || rankTitles[currentDraft.title]}
                       </p>
                     </div>
                   </div>

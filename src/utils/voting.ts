@@ -11,17 +11,31 @@ export interface BarberRating {
 
 export interface UserRatings {
   ratings: Record<string, BarberRating>; // barberId -> { level, title }
+  clientNickname?: string;
   updatedAt: string;
 }
 
 const STORAGE_KEY = 'mmbarber_user_settings_v1';
 
 /**
- * Saves user ratings to local storage.
+ * Saves user ratings and nickname to local storage.
  */
-export const castMultiVote = async (userId: string, ratings: Record<string, BarberRating>) => {
+export const castMultiVote = async (userId: string, ratings: Record<string, BarberRating>, clientNickname?: string) => {
+  const currentData = localStorage.getItem(STORAGE_KEY);
+  let existingNickname = clientNickname;
+  
+  if (!clientNickname && currentData) {
+    try {
+      const parsed = JSON.parse(currentData) as UserRatings;
+      existingNickname = parsed.clientNickname;
+    } catch (e) {
+      console.error("Failed to parse existing user settings", e);
+    }
+  }
+
   const data: UserRatings = {
     ratings,
+    clientNickname: existingNickname,
     updatedAt: new Date().toISOString()
   };
   
@@ -30,19 +44,26 @@ export const castMultiVote = async (userId: string, ratings: Record<string, Barb
 };
 
 /**
- * Gets the current user's ratings.
+ * Gets the current user's settings (ratings and nickname).
  */
-export const getUserRatings = (): Record<string, BarberRating> | null => {
+export const getUserRatingsData = (): UserRatings | null => {
   if (typeof window === 'undefined') return null;
   const data = localStorage.getItem(STORAGE_KEY);
   if (!data) return null;
   try {
-    const parsed = JSON.parse(data) as UserRatings;
-    return parsed.ratings;
+    return JSON.parse(data) as UserRatings;
   } catch (e) {
-    console.error("Failed to parse user ratings", e);
+    console.error("Failed to parse user settings", e);
     return null;
   }
+};
+
+/**
+ * Gets the current user's ratings.
+ */
+export const getUserRatings = (): Record<string, BarberRating> | null => {
+  const data = getUserRatingsData();
+  return data ? data.ratings : null;
 };
 
 /**

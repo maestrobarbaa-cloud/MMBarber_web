@@ -251,6 +251,31 @@ export const MilitaryInsignia = ({ level, color = "currentColor", size = 36 }: {
   );
 };
 
+const getVocative = (name: string, lang: string) => {
+  if (!name) return "";
+  const n = name.trim().toUpperCase();
+  if (lang !== 'cs') return name;
+
+  // Basic Czech vocative heuristics
+  if (n.endsWith('A')) return n.slice(0, -1) + 'O';
+  if (n.endsWith('EK')) return n.slice(0, -2) + 'KU';
+  if (n.endsWith('ÍK')) return n.slice(0, -2) + 'ÍKU';
+  if (n.endsWith('US')) return n.slice(0, -2) + 'E';
+  if (n.endsWith('ES')) return n.slice(0, -2) + 'E';
+  if (n.endsWith('O')) return n;
+  if (n.endsWith('I') || n.endsWith('Í')) return n;
+  if (n.endsWith('E') || n.endsWith('Ě')) return n;
+  
+  // Soft consonants
+  if (['Š', 'Ž', 'Č', 'Ř', 'C', 'J', 'Ď', 'Ť', 'Ň'].includes(n.slice(-1))) return n + 'I';
+  // Hard/Velar consonants
+  if (n.endsWith('H') || n.endsWith('CH') || n.endsWith('K') || n.endsWith('G')) return n + 'U';
+  // Others
+  if (['S', 'Z', 'T', 'D', 'M', 'B', 'P', 'V', 'N', 'R', 'L'].includes(n.slice(-1))) return n + 'E';
+  
+  return n;
+};
+
 const BarberRanking = ({ rank, lang, id, defaultName }: { rank: any, lang: string, id: string, defaultName: string }) => {
   const { t } = useTranslation();
   const settings = useBarberLocalSettings(id, defaultName, rank?.level || 0);
@@ -299,12 +324,29 @@ const BarberRanking = ({ rank, lang, id, defaultName }: { rank: any, lang: strin
     status = 'demotedDesertion';
   }
 
+  const [clientNickname, setClientNickname] = useState<string | null>(null);
+
+  useEffect(() => {
+    const { getUserRatingsData } = require("@/utils/voting");
+    const data = getUserRatingsData();
+    if (data && data.clientNickname) setClientNickname(data.clientNickname);
+  }, []);
+
+  const vocativeName = getVocative(clientNickname || "", lang);
+
   const getStatusLabel = () => {
-    if (!status || status === 'stable') return t.operatives.ranks.status.stable;
-    if (status === 'demotedDesertion') return t.operatives.ranks.status.demotedDesertion;
-    
-    const key = isNellaBarber ? `${status}F` : status;
-    return t.operatives.ranks.status[key] || (t.operatives.ranks.status as any)[status];
+    let label = "";
+    if (!status || status === 'stable') {
+      label = `${lang === 'cs' ? 'DLE' : 'BY'} ${vocativeName || (lang === 'cs' ? 'VÁS' : 'YOU')}`;
+    } else if (status === 'demotedDesertion') {
+      label = t.operatives.ranks.status.demotedDesertion;
+      if (vocativeName) label += ` ${lang === 'cs' ? 'DLE' : 'BY'} ${vocativeName}`;
+    } else {
+      const key = isNellaBarber ? `${status}F` : status;
+      label = t.operatives.ranks.status[key] || (t.operatives.ranks.status as any)[status];
+      if (vocativeName) label += ` ${lang === 'cs' ? 'DLE' : 'BY'} ${vocativeName}`;
+    }
+    return label;
   };
 
   const statusLabel = getStatusLabel();
@@ -854,6 +896,16 @@ function ChairWithCard({
     }, 600); 
   };
 
+  const [clientNickname, setClientNickname] = useState<string | null>(null);
+
+  useEffect(() => {
+    const { getUserRatingsData } = require("@/utils/voting");
+    const data = getUserRatingsData();
+    if (data && data.clientNickname) setClientNickname(data.clientNickname);
+  }, []);
+
+  const vocativeName = getVocative(clientNickname || "", lang);
+
   const chairGreeting = useMemo(() => {
     const isTomas = barber.name === 'Tomáš' || barber.name === 'Tomas';
     const barberKey = isTomas ? 'tomas' : 'nella';
@@ -861,15 +913,29 @@ function ChairWithCard({
     
     if (greetings && Array.isArray(greetings) && greetings.length > 0) {
       const randomIndex = Math.floor(Math.random() * greetings.length);
-      return greetings[randomIndex];
+      let greeting = greetings[randomIndex];
+      
+      // Personalize if possible
+      if (vocativeName) {
+        const personalAdditions = lang === 'cs' 
+          ? [`, ${vocativeName}!`, `... nazdar ${vocativeName}.`, `. Čekáme na tebe, ${vocativeName}.`] 
+          : [`, ${vocativeName}!`, `... greetings, ${vocativeName}.`, `. We've been waiting, ${vocativeName}.`];
+        greeting += personalAdditions[Math.floor(Math.random() * personalAdditions.length)];
+      }
+
+      return greeting;
     }
     
     // Fallbacks
     if (side === 'right') {
-      return lang === 'cs' ? "Pane, Vaše místo..." : "Sir, your seat...";
+      return vocativeName 
+        ? (lang === 'cs' ? `Pane ${vocativeName}, Vaše místo...` : `Sir ${vocativeName}, your seat...`)
+        : (lang === 'cs' ? "Pane, Vaše místo..." : "Sir, your seat...");
     }
-    return lang === 'cs' ? "Tvoje místo je připravené." : "Your seat is ready.";
-  }, [t, barber.name, lang, side]);
+    return vocativeName 
+      ? (lang === 'cs' ? `${vocativeName}, tvoje místo je ready.` : `${vocativeName}, your seat is ready.`)
+      : (lang === 'cs' ? "Tvoje místo je připravené." : "Your seat is ready.");
+  }, [t, barber.name, lang, side, vocativeName]);
 
   const targetScale = isSitting ? 1.0 : (isCardHovered ? 1.05 : 1);
   const filterStr = isCardHovered 

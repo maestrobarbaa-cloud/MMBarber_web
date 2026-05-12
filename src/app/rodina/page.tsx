@@ -227,7 +227,7 @@ const members = [
   {
     name: "Adam Horňák",
     div: "team",
-    role: "Web designer", roleEn: "Web Designer",
+    role: "Web designer", roleEn: "Web Developer",
     img: "/logo.png",
     link: "tel:+420577544073",
     year: 2025
@@ -312,20 +312,20 @@ export default function FamilyPage() {
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,20,20,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none"></div>
 
-            <div className="text-center mb-16 max-w-4xl mx-auto relative">
-              <h1 className="text-4xl md:text-6xl font-heading font-black text-smoke-white uppercase mb-4">{t.rodina.title}</h1>
-              <p className="text-mafia-gold font-heading text-xl uppercase tracking-[0.2em] italic font-black mb-12">{t.rodina.youForUs}</p>
-              
-              {/* View Mode Toggle moved to top as requested */}
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                className="inline-flex bg-mafia-black/80 backdrop-blur-xl border border-mafia-gold/20 p-2 gap-2 shadow-2xl mb-8"
-              >
-                <button onClick={() => { setViewMode("grid"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'grid' ? 'bg-mafia-gold text-mafia-black' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.list}</button>
-                <button onClick={() => { setViewMode("network"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'network' ? 'bg-mafia-gold text-mafia-black shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.4)]' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.network}</button>
-              </motion.div>
-            </div>
+      <div className="text-center mb-16 max-w-4xl mx-auto relative">
+        <h1 className="text-4xl md:text-6xl font-heading font-black text-smoke-white uppercase mb-4">{t.rodina.title}</h1>
+        <p className="text-mafia-gold font-heading text-xl uppercase tracking-[0.2em] italic font-black mb-12">{t.rodina.youForUs}</p>
+
+        {/* View Mode Toggle moved to top as requested */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-flex bg-mafia-black/80 backdrop-blur-xl border border-mafia-gold/20 p-2 gap-2 shadow-2xl mb-8"
+        >
+          <button onClick={() => { setViewMode("grid"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'grid' ? 'bg-mafia-gold text-mafia-black' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.list}</button>
+          <button onClick={() => { setViewMode("network"); playDoorbell(); }} className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'network' ? 'bg-mafia-gold text-mafia-black shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.4)]' : 'text-mafia-gold/40 hover:text-mafia-gold'}`}>{t.rodina.network}</button>
+        </motion.div>
+      </div>
 
       {/* Cinematic Dust/Particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -348,7 +348,7 @@ export default function FamilyPage() {
               <ChevronLeft size={16} /> {t.rodina.backToHq}
             </Link>
             <div className="absolute top-0 right-0 w-12 h-12 border border-mafia-gold/10 flex items-center justify-center overflow-hidden p-1 opacity-40">
-               <Image src="/logo.png" alt="MM" width={40} height={40} className="w-full h-full object-contain" />
+              <Image src="/logo.png" alt="MM" width={40} height={40} className="w-full h-full object-contain" />
             </div>
           </motion.div>
         )}
@@ -390,9 +390,9 @@ export default function FamilyPage() {
                         {/* Mobile Accordion Content */}
                         <AnimatePresence>
                           {activeDivision === div.id && (
-                            <motion.div 
-                              initial={{ height: 0, opacity: 0 }} 
-                              animate={{ height: "auto", opacity: 1 }} 
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
                               className="lg:hidden mt-6 grid grid-cols-2 gap-3 pb-6"
                             >
@@ -481,7 +481,7 @@ export default function FamilyPage() {
                         const currentMonthIdx = new Date().getMonth();
                         const isReleased = idx <= currentMonthIdx;
                         return (
-                          <motion.div 
+                          <motion.div
                             key={idx}
                             className={`p-4 border transition-all duration-500 ${isReleased ? 'border-mafia-gold/30 bg-white/[0.01] hover:bg-mafia-gold/5' : 'border-white/5 opacity-10'}`}
                           >
@@ -582,138 +582,138 @@ export default function FamilyPage() {
 
                 {/* SVG Connections (Strings) */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-                    {members.filter(m => m.div !== 'team').map((member, i, arr) => {
-                      const angle = (i / arr.length) * 2 * Math.PI;
-                      const distance = 450 + (Math.sin(i * 13) * 150) + (i * 15);
-                      const x = 50 + (Math.cos(angle) * distance / 35);
-                      const y = 50 + (Math.sin(angle) * distance / 25);
-                      const isHovered = hoveredNode === member.name;
-
-                      return (
-                        <motion.line
-                          key={`string-${member.name}`}
-                          initial={{ pathLength: 0, opacity: 0, strokeWidth: 1 }}
-                          animate={{
-                            pathLength: 1,
-                            opacity: isHovered ? 0.9 : 0.25,
-                            strokeWidth: isHovered ? 2 : 1
-                          }}
-                          style={{ strokeWidth: isHovered ? 2 : 1 }}
-                          transition={{ duration: 0.4 }}
-                          x1="50%"
-                          y1="50%"
-                          x2={`${x}%`}
-                          y2={`${y}%`}
-                          stroke={isHovered ? "var(--color-mafia-gold)" : "var(--color-mafia-gold)"}
-                          strokeDasharray={isHovered ? "0" : "6,6"}
-                        />
-                      );
-                    })}
-                  </svg>
-
-                  {/* Center Node (MMBarber) - Perfectly Central */}
-                  <div className="absolute z-30 w-64 h-64 flex items-center justify-center pointer-events-auto -translate-x-1/2 -translate-y-1/2" style={{ left: '50%', top: '50%' }}>
-                    <motion.div
-                      animate={{
-                        scale: hoveredNode ? 1.2 : 1,
-                        opacity: hoveredNode ? 0.4 : 0.15
-                      }}
-                      className="absolute inset-0 bg-mafia-gold rounded-full blur-3xl animate-pulse"
-                    />
-                    <motion.div
-                      animate={{
-                        borderColor: hoveredNode ? "rgba(var(--color-mafia-gold-rgb), 0.8)" : "rgba(var(--color-mafia-gold-rgb), 0.4)",
-                        boxShadow: hoveredNode ? "0 0 60px rgba(var(--color-mafia-gold-rgb), 0.6)" : "0 0 100px rgba(var(--color-mafia-gold-rgb), 0.2)"
-                      }}
-                      className="relative w-full h-full bg-mafia-black border-2 rounded-full flex items-center justify-center p-10 transition-all duration-500"
-                    >
-                      <Image src="/logo.png" alt="MMBarber" width={160} height={160} className="w-48 h-48 object-contain drop-shadow-[0_0:30px_rgba(var(--color-mafia-gold-rgb),0.6)]" priority />
-                    </motion.div>
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-mafia-gold text-mafia-black px-8 py-1 font-heading font-black text-[10px] uppercase tracking-[0.5em] shadow-xl">
-                      {t.rodina.headquarters}
-                    </div>
-                  </div>
-
-                  {/* Partner Nodes (Spread out to avoid Centrála overlap) */}
                   {members.filter(m => m.div !== 'team').map((member, i, arr) => {
                     const angle = (i / arr.length) * 2 * Math.PI;
                     const distance = 450 + (Math.sin(i * 13) * 150) + (i * 15);
                     const x = 50 + (Math.cos(angle) * distance / 35);
                     const y = 50 + (Math.sin(angle) * distance / 25);
+                    const isHovered = hoveredNode === member.name;
 
                     return (
-                      <motion.div
-                        key={`node-${member.name}`}
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.03 }}
-                        onMouseEnter={() => setHoveredNode(member.name)}
-                        onMouseLeave={() => setHoveredNode(null)}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (member.link.startsWith('tel:')) {
-                            setContactModal({ name: member.name, phone: member.link.replace('tel:', '') });
-                          } else {
-                            window.open(member.link, "_blank", "noopener,noreferrer");
-                          }
+                      <motion.line
+                        key={`string-${member.name}`}
+                        initial={{ pathLength: 0, opacity: 0, strokeWidth: 1 }}
+                        animate={{
+                          pathLength: 1,
+                          opacity: isHovered ? 0.9 : 0.25,
+                          strokeWidth: isHovered ? 2 : 1
                         }}
-                        className="absolute z-20 w-56 h-56 flex flex-col items-center justify-center group pointer-events-auto -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                        style={{ left: `${x}%`, top: `${y}%` }}
-                      >
-                        <div className="relative w-40 h-40 mb-2 group-hover:scale-125 transition-transform duration-700 ease-out">
-                          <div className="absolute inset-0 bg-white/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                          <Image
-                            src={member.img}
-                            alt={member.name}
-                            width={200}
-                            height={200}
-                            className="w-full h-full object-contain grayscale opacity-50 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000"
-                            priority={i < 10}
-                          />
-                        </div>
-
-                        <div className="text-center opacity-30 group-hover:opacity-100 group-hover:translate-y-2 transition-all duration-500">
-                          <p className="text-[12px] font-mono font-black text-smoke-white uppercase tracking-[0.2em] leading-none mb-1 drop-shadow-lg">{member.name}</p>
-                          <p className="text-[8px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] italic mb-1">{lang === 'cs' ? member.role : member.roleEn}</p>
-
-                          {/* Joining Year with Sand/Wind Effect */}
-                          <AnimatePresence mode="wait">
-                            {hoveredNode === member.name && (
-                              <motion.div
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                className="flex justify-center"
-                              >
-                                <div className="relative">
-                                  <span className="text-[14px] font-heading font-black text-mafia-gold tracking-[0.2em]">
-                                    {member.year}
-                                  </span>
-                                  {/* Sand Particle Effects */}
-                                  {[...Array(6)].map((_, pi) => (
-                                    <motion.div
-                                      key={pi}
-                                      variants={{
-                                        initial: { opacity: 0, x: 0, y: 0 },
-                                        animate: {
-                                          opacity: [0, 1, 0],
-                                          x: (Math.random() - 0.5) * 40,
-                                          y: (Math.random() - 0.5) * 40,
-                                          scale: [0, 1, 0]
-                                        }
-                                      }}
-                                      transition={{ duration: 1.5, repeat: Infinity, delay: pi * 0.2 }}
-                                      className="absolute top-1/2 left-1/2 w-1 h-1 bg-mafia-gold/60 rounded-full blur-[1px]"
-                                    />
-                                  ))}
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </motion.div>
+                        style={{ strokeWidth: isHovered ? 2 : 1 }}
+                        transition={{ duration: 0.4 }}
+                        x1="50%"
+                        y1="50%"
+                        x2={`${x}%`}
+                        y2={`${y}%`}
+                        stroke={isHovered ? "var(--color-mafia-gold)" : "var(--color-mafia-gold)"}
+                        strokeDasharray={isHovered ? "0" : "6,6"}
+                      />
                     );
                   })}
+                </svg>
+
+                {/* Center Node (MMBarber) - Perfectly Central */}
+                <div className="absolute z-30 w-64 h-64 flex items-center justify-center pointer-events-auto -translate-x-1/2 -translate-y-1/2" style={{ left: '50%', top: '50%' }}>
+                  <motion.div
+                    animate={{
+                      scale: hoveredNode ? 1.2 : 1,
+                      opacity: hoveredNode ? 0.4 : 0.15
+                    }}
+                    className="absolute inset-0 bg-mafia-gold rounded-full blur-3xl animate-pulse"
+                  />
+                  <motion.div
+                    animate={{
+                      borderColor: hoveredNode ? "rgba(var(--color-mafia-gold-rgb), 0.8)" : "rgba(var(--color-mafia-gold-rgb), 0.4)",
+                      boxShadow: hoveredNode ? "0 0 60px rgba(var(--color-mafia-gold-rgb), 0.6)" : "0 0 100px rgba(var(--color-mafia-gold-rgb), 0.2)"
+                    }}
+                    className="relative w-full h-full bg-mafia-black border-2 rounded-full flex items-center justify-center p-10 transition-all duration-500"
+                  >
+                    <Image src="/logo.png" alt="MMBarber" width={160} height={160} className="w-48 h-48 object-contain drop-shadow-[0_0:30px_rgba(var(--color-mafia-gold-rgb),0.6)]" priority />
+                  </motion.div>
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-mafia-gold text-mafia-black px-8 py-1 font-heading font-black text-[10px] uppercase tracking-[0.5em] shadow-xl">
+                    {t.rodina.headquarters}
+                  </div>
+                </div>
+
+                {/* Partner Nodes (Spread out to avoid Centrála overlap) */}
+                {members.filter(m => m.div !== 'team').map((member, i, arr) => {
+                  const angle = (i / arr.length) * 2 * Math.PI;
+                  const distance = 450 + (Math.sin(i * 13) * 150) + (i * 15);
+                  const x = 50 + (Math.cos(angle) * distance / 35);
+                  const y = 50 + (Math.sin(angle) * distance / 25);
+
+                  return (
+                    <motion.div
+                      key={`node-${member.name}`}
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.03 }}
+                      onMouseEnter={() => setHoveredNode(member.name)}
+                      onMouseLeave={() => setHoveredNode(null)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (member.link.startsWith('tel:')) {
+                          setContactModal({ name: member.name, phone: member.link.replace('tel:', '') });
+                        } else {
+                          window.open(member.link, "_blank", "noopener,noreferrer");
+                        }
+                      }}
+                      className="absolute z-20 w-56 h-56 flex flex-col items-center justify-center group pointer-events-auto -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                      style={{ left: `${x}%`, top: `${y}%` }}
+                    >
+                      <div className="relative w-40 h-40 mb-2 group-hover:scale-125 transition-transform duration-700 ease-out">
+                        <div className="absolute inset-0 bg-white/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <Image
+                          src={member.img}
+                          alt={member.name}
+                          width={200}
+                          height={200}
+                          className="w-full h-full object-contain grayscale opacity-50 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000"
+                          priority={i < 10}
+                        />
+                      </div>
+
+                      <div className="text-center opacity-30 group-hover:opacity-100 group-hover:translate-y-2 transition-all duration-500">
+                        <p className="text-[12px] font-mono font-black text-smoke-white uppercase tracking-[0.2em] leading-none mb-1 drop-shadow-lg">{member.name}</p>
+                        <p className="text-[8px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] italic mb-1">{lang === 'cs' ? member.role : member.roleEn}</p>
+
+                        {/* Joining Year with Sand/Wind Effect */}
+                        <AnimatePresence mode="wait">
+                          {hoveredNode === member.name && (
+                            <motion.div
+                              initial="initial"
+                              animate="animate"
+                              exit="exit"
+                              className="flex justify-center"
+                            >
+                              <div className="relative">
+                                <span className="text-[14px] font-heading font-black text-mafia-gold tracking-[0.2em]">
+                                  {member.year}
+                                </span>
+                                {/* Sand Particle Effects */}
+                                {[...Array(6)].map((_, pi) => (
+                                  <motion.div
+                                    key={pi}
+                                    variants={{
+                                      initial: { opacity: 0, x: 0, y: 0 },
+                                      animate: {
+                                        opacity: [0, 1, 0],
+                                        x: (Math.random() - 0.5) * 40,
+                                        y: (Math.random() - 0.5) * 40,
+                                        scale: [0, 1, 0]
+                                      }
+                                    }}
+                                    transition={{ duration: 1.5, repeat: Infinity, delay: pi * 0.2 }}
+                                    className="absolute top-1/2 left-1/2 w-1 h-1 bg-mafia-gold/60 rounded-full blur-[1px]"
+                                  />
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </motion.div>
             </div>
           </motion.div>
@@ -752,7 +752,7 @@ export default function FamilyPage() {
       <div className="mt-20">
         <BottomTerminalReveal thresholdMultiplier={2}>
           {(unlockLevel) => (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={unlockLevel >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
               className="space-y-24"
@@ -760,16 +760,16 @@ export default function FamilyPage() {
               <div className="max-w-7xl mx-auto">
                 <FamilySEOInterlink />
               </div>
-              
+
               <div className="max-w-4xl mx-auto">
                 <FamilyFAQ />
               </div>
 
               <div className="max-w-2xl mx-auto pb-32">
                 <div className="flex items-center gap-4 mb-8 opacity-20 justify-center">
-                   <div className="h-px w-12 bg-mafia-gold"></div>
-                   <span className="font-mono text-[8px] uppercase tracking-[1em]">Intelligence_Archive</span>
-                   <div className="h-px w-12 bg-mafia-gold"></div>
+                  <div className="h-px w-12 bg-mafia-gold"></div>
+                  <span className="font-mono text-[8px] uppercase tracking-[1em]">Intelligence_Archive</span>
+                  <div className="h-px w-12 bg-mafia-gold"></div>
                 </div>
                 <FamilyIntelligence />
               </div>
@@ -777,7 +777,7 @@ export default function FamilyPage() {
           )}
         </BottomTerminalReveal>
       </div>
-      
+
       {/* 
           SEO STRATEGY - HIDDEN DATA LAYER 
           Tato sekce zajišťuje indexaci klíčových slov pro Uherské Hradiště a okolí.
@@ -787,26 +787,26 @@ export default function FamilyPage() {
         <div className="max-w-7xl mx-auto">
           <h2>Nejlepší řemeslníci, instalatéři a služby Uherské Hradiště - MM BARBER Rodina</h2>
           <p>
-            Hledáte nejlepší a prověřené řemeslníky v Uherském Hradišti? Naše komunita MM BARBER Rodina sdružuje mistry svého oboru v regionu Slovácko. 
-            Špičkoví vodaři a topenáři Uherské Hradiště (Vodo Topo Jahoda, Zdeněk Mička Bílovice) pro rychlé opravy, havárie vody a instalace topení. 
-            Profesionální elektrikáři a revize elektro Uherské Hradiště (Roman Jakubčák) – kompletní elektroinstalace a revizní zprávy. 
-            Nejlepší gastronomie a poctivé restaurace v UH (O Shawarma Beef - nejlepší maso, Poe Poe - rychlé občerstvení, Dvůr pod Starýma Horama - víno a ubytování). 
-            Top profesionální fotografové a svatební foto (Malina Photo Uherské Hradiště). 
-            Umělci, hudba na svatbu a DJové (Šimon Král, rocková legenda Argema). 
-            Spolehlivé realitní kanceláře a nejlepší makléři (Sluneční Reality, Comites - reality a finance). 
-            Kvalitní stínící technika, montáž oken a garážová vrata (Kudielka Uherské Hradiště). 
-            Výroba obalů, krabice na zakázku a logistika (Kofipack). 
-            Profesionální účetnictví, daně a mzdová agenda (Romana Mičková). 
+            Hledáte nejlepší a prověřené řemeslníky v Uherském Hradišti? Naše komunita MM BARBER Rodina sdružuje mistry svého oboru v regionu Slovácko.
+            Špičkoví vodaři a topenáři Uherské Hradiště (Vodo Topo Jahoda, Zdeněk Mička Bílovice) pro rychlé opravy, havárie vody a instalace topení.
+            Profesionální elektrikáři a revize elektro Uherské Hradiště (Roman Jakubčák) – kompletní elektroinstalace a revizní zprávy.
+            Nejlepší gastronomie a poctivé restaurace v UH (O Shawarma Beef - nejlepší maso, Poe Poe - rychlé občerstvení, Dvůr pod Starýma Horama - víno a ubytování).
+            Top profesionální fotografové a svatební foto (Malina Photo Uherské Hradiště).
+            Umělci, hudba na svatbu a DJové (Šimon Král, rocková legenda Argema).
+            Spolehlivé realitní kanceláře a nejlepší makléři (Sluneční Reality, Comites - reality a finance).
+            Kvalitní stínící technika, montáž oken a garážová vrata (Kudielka Uherské Hradiště).
+            Výroba obalů, krabice na zakázku a logistika (Kofipack).
+            Profesionální účetnictví, daně a mzdová agenda (Romana Mičková).
             Nejlepší servis jízdních kol, prodej elektrokol a cykloservis UH (O Kolečko víc).
           </p>
           <p>
-            Prověřené služby a řemesla Uherské Hradiště, Kunovice, Staré Město, Bílovice, Jarošov, Mařatice a okolí Slovácka. 
-            Důraz na maximální kvalitu, lokální patriotismus a poctivé reference od stovek spokojených klientů. 
+            Prověřené služby a řemesla Uherské Hradiště, Kunovice, Staré Město, Bílovice, Jarošov, Mařatice a okolí Slovácka.
+            Důraz na maximální kvalitu, lokální patriotismus a poctivé reference od stovek spokojených klientů.
             Barber shop Uherské Hradiště jako centrum regionální komunity a mistrovské péče o vzhled muže.
             Pánské kadeřnictví UH, precizní střih vlasů, tradiční úprava vousů břitvou a unikátní networking.
           </p>
           <p>
-            Nejlepší živnostníci Uherské Hradiště, doporučení řemeslníci Slovácko, stavební práce, rekonstrukce, 
+            Nejlepší živnostníci Uherské Hradiště, doporučení řemeslníci Slovácko, stavební práce, rekonstrukce,
             vodoinstalace, elektroinstalace, profesionální focení, firemní akce a podpora dětí (Dětský domov UH).
             Když hledáte kvalitu v UH, hledáte MM BARBER Rodinu.
           </p>
@@ -816,20 +816,20 @@ export default function FamilyPage() {
         <div className="mt-8">
           <h2>MM BARBER Family - Best Local Professionals & Top Trade Services Network</h2>
           <p>
-            Looking for the best craftsmen and top-rated professionals in Central Europe? 
-            Our MM BARBER Family community brings together the masters of their craft in the Slovácko region. 
-            From best-in-class plumbers and electricians to top real estate experts and gastronomy professionals - 
+            Looking for the best craftsmen and top-rated professionals in Central Europe?
+            Our MM BARBER Family community brings together the masters of their craft in the Slovácko region.
+            From best-in-class plumbers and electricians to top real estate experts and gastronomy professionals -
             we offer a network of trust and excellence.
           </p>
           <p>
-            Professional photography, high-end music events, independent accounting, and expert bicycle services - 
-            we promote elite local craftsmanship and honest work. 
+            Professional photography, high-end music events, independent accounting, and expert bicycle services -
+            we promote elite local craftsmanship and honest work.
             Discover the most reliable partners that define the quality of professional services in Uherské Hradiště and the Czech Republic.
           </p>
           <p>
-            Keywords: best local professionals Uherské Hradiště, top-rated craftsmen Czech Republic, 
-            professional trade network, Slovácko regional services, elite business community, 
-            trusted plumbers and electricians UH, professional wedding photography, local business hub Europe, 
+            Keywords: best local professionals Uherské Hradiště, top-rated craftsmen Czech Republic,
+            professional trade network, Slovácko regional services, elite business community,
+            trusted plumbers and electricians UH, professional wedding photography, local business hub Europe,
             MM BARBER partners, high-quality maintenance services, best gastronomy UH.
           </p>
         </div>

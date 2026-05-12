@@ -18,6 +18,7 @@ const GraphicsSettingsModal = dynamic(() => import("./GraphicsSettingsModal").th
 import { type Language } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { playSound } from "../utils/audio";
+import { getUserRatingsData } from "@/utils/voting";
 
 
 const CzFlag = () => (
@@ -121,6 +122,7 @@ export function Header() {
    const [shouldFlashShooting, setShouldFlashShooting] = useState(false);
    const [shouldFlashFamily, setShouldFlashFamily] = useState(false);
    const [shouldFlashRating, setShouldFlashRating] = useState(false);
+   const [clientNickname, setClientNickname] = useState<string | null>(null);
 
   useEffect(() => {
     const savedSound = localStorage.getItem("mmbarber_sound_enabled");
@@ -274,7 +276,22 @@ export function Header() {
     window.addEventListener('mmbarber-theme-update', checkNoirMode);
     window.addEventListener('storage', checkFlashing); // Handle cross-tab updates if any
     
+    const checkNickname = () => {
+      const data = getUserRatingsData();
+      if (data && data.clientNickname) {
+        setClientNickname(data.clientNickname);
+      } else {
+        setClientNickname(null);
+      }
+    };
+    
+    checkNickname();
+    window.addEventListener('mmbarber_ratings_updated', checkNickname);
+    window.addEventListener('storage', checkNickname);
+    
     return () => {
+      window.removeEventListener('mmbarber_ratings_updated', checkNickname);
+      window.removeEventListener('storage', checkNickname);
       window.removeEventListener('mmbarber-visit-count-update', handleVisitUpdate as EventListener);
       window.removeEventListener('mmbarber-compass-state', handleCompassStateChange as EventListener);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsStateChange as EventListener);
@@ -948,12 +965,27 @@ export function Header() {
                 <motion.div
                   key="search-glow"
                   className="absolute inset-0 rounded-full blur-md"
-                  style={{ backgroundColor: 'var(--user-glow-color)', opacity: 0.2 }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.2 }}
+                  style={{ backgroundColor: 'var(--user-accent-color)', opacity: 0.2 }}
                 />
               )}
             </button>
+
+            {clientNickname && (
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] border border-mafia-gold/20 rounded-sm ml-2 group hover:border-mafia-gold/50 transition-colors"
+                title={lang === 'cs' ? `Přihlášen jako: ${clientNickname}` : `Logged in as: ${clientNickname}`}
+              >
+                <div className="relative w-2 h-2">
+                  <div className="absolute inset-0 rounded-full bg-mafia-gold animate-ping opacity-20" />
+                  <div className="relative w-2 h-2 rounded-full bg-mafia-gold" />
+                </div>
+                <span className="text-[10px] font-heading font-black text-mafia-gold tracking-widest uppercase truncate max-w-[120px] drop-shadow-[0_0_5px_rgba(var(--color-mafia-gold-rgb),0.3)]">
+                  {clientNickname}
+                </span>
+              </motion.div>
+            )}
 
             {/* Unified Settings Gear */}
             <div className="relative">

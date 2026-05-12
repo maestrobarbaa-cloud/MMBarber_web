@@ -266,6 +266,15 @@ export const translations = {
           role: "Mladé ucho",
           motto: "Ochoč si svoji barberku",
           story: "Čerstvá krev v našem týmu, která do každého střihu vkládá energii a chuť se neustále učit.",
+          chairGreetings: [
+            "Ahoj, posaď se u mě.",
+            "Křeslo je volné, jdeme na to?",
+            "Sedni si, dneska ti to vylepšíme.",
+            "Ready na změnu? Křeslo čeká.",
+            "Posaď se, u mě jsi v dobrých rukou.",
+            "Můžeme začít? Stačí si sednout.",
+            "Čekala jsem na tebe, posaď se."
+          ],
           schedule: "Individuální režim práce.",
           specializations: ["Barvení", "Trvalá ondulace", "Stříhání pánské", "Stříhání dámské", "Děti"]
         }
@@ -1200,6 +1209,15 @@ export const translations = {
           role: "Young Blood",
           motto: "Tame your own barberess",
           story: "Fresh blood in our team, bringing energy and a desire to constantly learn to every cut.",
+          chairGreetings: [
+            "Hi, take a seat here.",
+            "The chair is free, ready to go?",
+            "Sit down, let's upgrade you today.",
+            "Ready for a change? The chair is waiting.",
+            "Have a seat, you're in good hands.",
+            "Shall we begin? Just sit down.",
+            "I've been waiting for you, take a seat."
+          ],
           schedule: "Individual working mode.",
           specializations: ["Coloring", "Perms", "Men's cuts", "Women's cuts", "Children"]
         }
