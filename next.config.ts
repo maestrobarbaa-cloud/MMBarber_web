@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
         hostname: 'lh3.googleusercontent.com',
       }
     ],
-    qualities: [60, 75, 85, 90, 100],
+    qualities: [60, 65, 75, 80, 85, 90, 95, 100],
   },
   async headers() {
     return [

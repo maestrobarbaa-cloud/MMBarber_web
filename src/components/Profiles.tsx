@@ -836,7 +836,7 @@ function SlotReel({
               alt={barber.name}
               width={200}
               height={200}
-              priority={i < 4}
+              priority
               className="object-cover barber-photo-img"
               style={{
                 width: '180px',
@@ -957,7 +957,7 @@ function ChairWithCard({
         animate={{ 
           y: actualY,
           x: actualX,
-          opacity: isSitting || isCardHovered ? 1 : 0,
+          opacity: isSitting || isCardHovered ? 1 : 0.7,
           scale: targetScale,
           filter: filterStr,
         }}
