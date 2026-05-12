@@ -8,12 +8,14 @@ import {
   castMultiVote, 
   getTodayMultiVote, 
   subscribeToLevelVotes, 
-  getDominantLevel 
+  getDominantLevel,
+  AggregatedStats,
+  BarberRating
 } from "@/utils/voting";
 import { 
-  Star, Crown, Flame, Trophy, ChevronRight, User, Shield, 
-  Target, Medal, ArrowRight, Settings, Check, Plus, Minus,
-  ArrowLeft, Home
+  Crown, Flame, User, Shield, 
+  Target, ArrowRight, Settings, Check, Plus, Minus,
+  ArrowLeft, Home, UserCircle
 } from "lucide-react";
 import { MilitaryInsignia } from "@/components/Profiles";
 import Image from "next/image";
@@ -27,9 +29,9 @@ export default function RatingPage() {
   const router = useRouter();
   const { t, lang } = useTranslation();
   const [internalId, setInternalId] = useState<string | null>(null);
-  const [draftRatings, setDraftRatings] = useState<Record<string, number>>({});
+  const [draftRatings, setDraftRatings] = useState<Record<string, BarberRating>>({});
   const [isSubmittedToday, setIsSubmittedToday] = useState(false);
-  const [communityStats, setCommunityStats] = useState<Record<string, Record<number, number>>>({});
+  const [communityStats, setCommunityStats] = useState<AggregatedStats>({ levels: {}, titles: {} });
   const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -80,10 +82,27 @@ export default function RatingPage() {
   }, []);
 
   const handleLevelChange = (barberId: string, level: number) => {
-    // Allow editing even if submitted today
     const newLevel = Math.max(0, Math.min(10, level));
-    setDraftRatings(prev => ({ ...prev, [barberId]: newLevel }));
+    setDraftRatings(prev => ({ 
+      ...prev, 
+      [barberId]: { 
+        level: newLevel, 
+        title: prev[barberId]?.title ?? newLevel 
+      } 
+    }));
     playSound("/sounds/bullet-hit.mp3", 0.2);
+  };
+
+  const handleTitleChange = (barberId: string, titleIndex: number) => {
+    const newTitle = Math.max(0, Math.min(10, titleIndex));
+    setDraftRatings(prev => ({ 
+      ...prev, 
+      [barberId]: { 
+        level: prev[barberId]?.level ?? newTitle, 
+        title: newTitle 
+      } 
+    }));
+    playSound("/sounds/bullet-hit.mp3", 0.1);
   };
 
   const handleFinalSubmit = async () => {
@@ -102,7 +121,6 @@ export default function RatingPage() {
       setIsSubmittedToday(true);
       trackEvent("multi_vote_submitted", { count: Object.keys(draftRatings).length });
       
-      // Dramatic delay before redirect to ensure they see "ZAPSÁNO"
       setTimeout(() => {
         window.location.href = "/";
       }, 1000);
@@ -133,7 +151,6 @@ export default function RatingPage() {
 
   return (
     <div className="min-h-screen bg-black text-white pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
-      {/* Cinematic Background */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(197,160,89,0.05),transparent)] opacity-50" />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
@@ -170,31 +187,18 @@ export default function RatingPage() {
             {lang === 'cs' ? 'Hlasování' : 'Elite'} <span className="text-white">{lang === 'cs' ? 'Elity' : 'Voting'}</span>
           </motion.h1>
           <p className="text-mafia-gold/60 font-mono tracking-[0.3em] uppercase text-xs md:text-sm max-w-2xl mx-auto leading-relaxed">
-            {lang === 'cs' ? 'Komunita rozhoduje o osudu. Tvůj hlas určuje hodnost, moc a prestiž v rodině MMBarberu.' : 'The community decides the fate. Your voice determines rank, power, and prestige within the MMBarber family.'}
+            {lang === 'cs' ? 'Komunita rozhoduje o osudu. Tvůj hlas určuje hodnost, titul a prestiž v rodině MMBarberu.' : 'The community decides the fate. Your voice determines rank, title, and prestige within the MMBarber family.'}
           </p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
           {barbers.map((barber, idx) => {
-            const barberStats = communityStats[barber.id];
+            const barberStats = communityStats.levels[barber.id];
             const dominantLv = getDominantLevel(barberStats);
+            const dominantTitle = getDominantLevel(communityStats.titles[barber.id]);
             
-            const isNella = barber.id === 'nella';
-            const isJune2026 = new Date() >= new Date(2026, 5, 1);
-            
-            // Dynamic status for preview
-            const hasVotes = barberStats && Object.values(barberStats).some(v => v > 0);
-            const displayLevel = hasVotes ? dominantLv : (barber.rank?.level ?? 0);
-            const currentDraftLv = draftRatings[barber.id] ?? displayLevel;
-
-            let status: 'promoted' | 'demoted' | 'stable' | 'demotedDesertion' = hasVotes 
-              ? (dominantLv > (barber.rank?.level ?? 0) ? 'promoted' : (dominantLv < (barber.rank?.level ?? 0) ? 'demoted' : 'stable'))
-              : (barber.rank?.status ?? 'stable');
-
-            // Nella's Desertion override
-            if (isNella && !isJune2026) {
-              status = 'demotedDesertion';
-            }
+            const displayLevel = dominantLv || (barber.rank?.level ?? 0);
+            const currentDraft = draftRatings[barber.id] || { level: displayLevel, title: dominantTitle || displayLevel };
 
             return (
               <motion.div
@@ -207,8 +211,7 @@ export default function RatingPage() {
                 }`}
               >
                 <div className="p-6 md:p-8 flex flex-col gap-8">
-                  {/* Header: Photo & Name */}
-                    <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-6">
                     <div className="relative w-24 h-24 md:w-32 md:h-32 shrink-0 group/photo">
                       <div className={`absolute inset-0 border border-mafia-gold/30 rounded-lg z-10`} />
                       <Image 
@@ -218,139 +221,100 @@ export default function RatingPage() {
                         height={128} 
                         className={`w-full h-full object-cover rounded-lg grayscale transition-all duration-700 ${isBloodMode ? 'group-hover/photo:grayscale-0 group-hover/photo:sepia-[1] group-hover/photo:hue-rotate-[320deg] group-hover/photo:saturate-[5]' : 'group-hover:grayscale-0'}`}
                       />
-                      {isBloodMode && (
-                        <div className="absolute inset-0 bg-mafia-blood/20 opacity-0 group-hover/photo:opacity-100 transition-opacity rounded-lg z-20 pointer-events-none" />
-                      )}
                     </div>
                     <div className="flex-grow">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-2xl md:text-4xl font-heading font-black text-white uppercase tracking-wider group-hover:text-mafia-gold transition-colors">
-                          {barber.name}
-                        </h3>
-                        {status && status !== 'stable' && (
-                          <div className={`px-2 py-0.5 text-[8px] font-mono uppercase tracking-widest ${status === 'promoted' ? 'bg-mafia-gold text-black' : 'bg-red-900/40 text-red-400 border border-red-500/30'}`}>
-                            {status === 'promoted' 
-                              ? (lang === 'cs' ? (isNella ? 'POVÝŠENA' : 'POVÝŠEN') : 'PROMOTED') 
-                              : (status === 'demotedDesertion' 
-                                  ? (lang === 'cs' ? 'DEGRADOVÁNA ZA DEZERCI' : 'DEMOTED FOR DESERTION')
-                                  : (lang === 'cs' ? (isNella ? 'DEGRADOVÁNA' : 'DEGRADOVÁN') : 'DEMOTED')
-                                )}
-                          </div>
-                        )}
-                      </div>
+                      <h3 className="text-2xl md:text-4xl font-heading font-black text-white uppercase tracking-wider group-hover:text-mafia-gold transition-colors">
+                        {barber.name}
+                      </h3>
                       <p className={`text-[10px] font-mono font-bold tracking-[0.3em] uppercase mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
-                        RANK: {rankTitles[displayLevel]}
+                        KOMUNITNÍ STATUS: {rankTitles[dominantTitle || displayLevel]}
                       </p>
                     </div>
                   </div>
 
-                  {/* Tactical Level Picker */}
-                  <div className="space-y-8 bg-white/[0.02] border border-white/5 p-6 rounded-lg backdrop-blur-sm relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-2 opacity-10">
-                       <Target size={40} className="text-mafia-gold" />
+                  <div className="space-y-12 bg-white/[0.02] border border-white/5 p-6 rounded-lg backdrop-blur-sm relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-2 opacity-5 pointer-events-none">
+                       <Target size={120} className="text-mafia-gold" />
                     </div>
 
-                    <div className="flex justify-between items-center relative z-10">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 border flex items-center justify-center rounded-sm shadow-inner ${isBloodMode ? 'bg-mafia-blood/10 border-mafia-blood/20' : isNoirMode ? 'bg-white/10 border-white/20' : 'bg-mafia-gold/10 border-mafia-gold/20'}`}>
-                           <MilitaryInsignia level={currentDraftLv} color={isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "var(--color-mafia-gold)"} size={64} />
+                    <div className="space-y-6 relative z-10">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 border flex items-center justify-center rounded-sm shadow-inner ${isBloodMode ? 'bg-mafia-blood/10 border-mafia-blood/20' : isNoirMode ? 'bg-white/10 border-white/20' : 'bg-mafia-gold/10 border-mafia-gold/20'}`}>
+                             <MilitaryInsignia level={currentDraft.level} color={isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "var(--color-mafia-gold)"} size={64} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">Úroveň šarže</span>
+                            <span className={`text-sm font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>STUPEŇ {currentDraft.level}</span>
+                          </div>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">Úroveň protokolu</span>
-                          <span className={`text-xl font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>{rankTitles[currentDraftLv]}</span>
+                        <div className="flex items-center gap-1">
+                           <button onClick={() => handleLevelChange(barber.id, currentDraft.level - 1)} disabled={currentDraft.level <= 0} className="w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-all disabled:opacity-10"><Minus size={14} /></button>
+                           <button onClick={() => handleLevelChange(barber.id, currentDraft.level + 1)} disabled={currentDraft.level >= 10} className="w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-all disabled:opacity-10"><Plus size={14} /></button>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                         <button 
-                           onClick={() => handleLevelChange(barber.id, currentDraftLv - 1)}
-                           disabled={currentDraftLv <= 0}
-                           className={`w-10 h-10 flex items-center justify-center border transition-all disabled:opacity-20 disabled:cursor-not-allowed ${isBloodMode ? 'border-white/30 text-white hover:bg-white hover:text-black' : isNoirMode ? 'border-white/30 text-white hover:bg-white hover:text-black' : 'border-mafia-gold/30 text-mafia-gold hover:bg-mafia-gold hover:text-black'}`}
-                         >
-                           <Minus size={16} />
-                         </button>
-                         <button 
-                           onClick={() => handleLevelChange(barber.id, currentDraftLv + 1)}
-                           disabled={currentDraftLv >= 10}
-                           className={`w-10 h-10 flex items-center justify-center border transition-all disabled:opacity-20 disabled:cursor-not-allowed ${isBloodMode ? 'border-mafia-blood/30 text-mafia-blood hover:bg-mafia-blood hover:text-white' : isNoirMode ? 'border-white/30 text-white hover:bg-white hover:text-black' : 'border-mafia-gold/30 text-mafia-gold hover:bg-mafia-gold hover:text-black'}`}
-                         >
-                           <Plus size={16} />
-                         </button>
-                      </div>
-                    </div>
-
-                    <div className="relative h-12 flex items-center px-4">
-                      {/* Slider Track */}
-                      <div className="absolute inset-x-0 h-1 bg-white/5 rounded-full" />
                       
-                      {/* Discrete Steps Background */}
-                      <div className="absolute inset-x-0 flex justify-between px-4">
-                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => (
-                          <div 
-                            key={lv}
-                            className={`w-0.5 h-3 ${lv <= currentDraftLv ? "bg-mafia-gold/40" : "bg-white/10"}`}
-                          />
-                        ))}
-                      </div>
-
-                      {/* Interactive Slider Input */}
-                      <input 
-                        type="range"
-                        min="0"
-                        max="10"
-                        step="1"
-                        value={currentDraftLv}
-                        disabled={false}
-                        onChange={(e) => handleLevelChange(barber.id, parseInt(e.target.value))}
-                        className="absolute inset-x-0 w-full opacity-0 cursor-pointer h-12 z-20"
-                      />
-
-                      {/* Level Indicators (Bars) */}
-                      <div className="absolute inset-x-0 flex justify-between px-0.5 pointer-events-none">
-                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => (
-                          <motion.div 
-                            key={lv}
-                            animate={{ 
-                              height: lv === currentDraftLv ? 32 : 12,
-                              opacity: lv <= currentDraftLv ? 1 : 0.05,
-                              backgroundColor: lv === currentDraftLv ? (isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "#C5A059") : "rgba(255,255,255,0.2)",
-                              boxShadow: lv === currentDraftLv ? (isBloodMode ? "0 0 25px rgba(255,255,255,0.8), 0 0 10px #ffffff" : isNoirMode ? "0 0 15px rgba(255,255,255,0.5)" : "0 0 15px rgba(197,160,89,0.5)") : "none"
-                            }}
-                            className="w-2 rounded-full"
-                          />
-                        ))}
+                      <div className="relative h-8 flex items-center px-1">
+                        <div className="absolute inset-x-0 h-0.5 bg-white/10 rounded-full" />
+                        <input 
+                          type="range" min="0" max="10" step="1" value={currentDraft.level}
+                          onChange={(e) => handleLevelChange(barber.id, parseInt(e.target.value))}
+                          className="absolute inset-x-0 w-full opacity-0 cursor-pointer h-8 z-20"
+                        />
+                        <div className="absolute inset-x-0 flex justify-between pointer-events-none px-1">
+                          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => (
+                            <motion.div 
+                              key={lv}
+                              animate={{ 
+                                height: lv === currentDraft.level ? 20 : 6,
+                                opacity: lv <= currentDraft.level ? 1 : 0.1,
+                                backgroundColor: lv === currentDraft.level ? (isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "#C5A059") : "rgba(255,255,255,0.4)"
+                              }}
+                              className="w-1.5 rounded-full"
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
 
-                    {/* Community Distribution (Mini Graph) */}
-                    <div className="pt-4 border-t border-white/5">
-                       <div className="flex justify-between text-[8px] font-mono text-white/20 uppercase tracking-widest mb-3">
-                         <span>Distribuce vlivu</span>
-                         <div className="flex gap-1">
-                           <div className="w-2 h-2 bg-mafia-gold/40" />
-                           <span>Dominantní trend</span>
-                         </div>
-                       </div>
-                       <div className="flex items-end gap-1.5 h-10 px-1">
-                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => {
-                           const count = barberStats?.[lv] || 0;
-                           const total = Object.values(barberStats || {}).reduce((a, b) => a + b, 0) || 1;
-                           const height = (count / total) * 100;
-                           return (
-                             <div key={lv} className="flex-grow bg-white/[0.02] relative group/lv border-x border-white/5 h-full">
-                               <motion.div 
-                                 initial={{ height: 0 }}
-                                 animate={{ height: `${height}%` }}
-                                 className={`w-full absolute bottom-0 transition-colors duration-500 ${lv === dominantLv ? (isBloodMode ? 'bg-white/60' : isNoirMode ? 'bg-white/40' : 'bg-mafia-gold/40') : 'bg-white/10 group-hover/lv:bg-white/20'}`}
-                               />
-                               {count > 0 && (
-                                 <div className={`absolute -top-5 left-1/2 -translate-x-1/2 text-[7px] font-mono opacity-0 group-hover/lv:opacity-100 transition-opacity whitespace-nowrap bg-black/80 px-1 rounded-sm border ${isBloodMode ? 'text-mafia-blood border-mafia-blood/20' : isNoirMode ? 'text-white border-white/20' : 'text-mafia-gold border-mafia-gold/20'}`}>
-                                   {count} HLASŮ
-                                 </div>
-                               )}
-                             </div>
-                           );
-                         })}
-                       </div>
+                    <div className="space-y-6 pt-6 border-t border-white/5 relative z-10">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 border flex items-center justify-center rounded-sm ${isBloodMode ? 'bg-mafia-blood/10 border-mafia-blood/20' : isNoirMode ? 'bg-white/10 border-white/20' : 'bg-mafia-gold/10 border-mafia-gold/20'}`}>
+                             <UserCircle size={24} className={isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">Výběr titulu</span>
+                            <span className={`text-base font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>{rankTitles[currentDraft.title]}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                           <button onClick={() => handleTitleChange(barber.id, currentDraft.title - 1)} disabled={currentDraft.title <= 0} className="w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-all disabled:opacity-10"><Minus size={14} /></button>
+                           <button onClick={() => handleTitleChange(barber.id, currentDraft.title + 1)} disabled={currentDraft.title >= 10} className="w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-all disabled:opacity-10"><Plus size={14} /></button>
+                        </div>
+                      </div>
+
+                      <div className="relative h-8 flex items-center px-1">
+                        <div className="absolute inset-x-0 h-0.5 bg-white/10 rounded-full" />
+                        <input 
+                          type="range" min="0" max="10" step="1" value={currentDraft.title}
+                          onChange={(e) => handleTitleChange(barber.id, parseInt(e.target.value))}
+                          className="absolute inset-x-0 w-full opacity-0 cursor-pointer h-8 z-20"
+                        />
+                        <div className="absolute inset-x-0 flex justify-between pointer-events-none px-1">
+                          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => (
+                            <motion.div 
+                              key={lv}
+                              animate={{ 
+                                height: lv === currentDraft.title ? 20 : 6,
+                                opacity: lv <= currentDraft.title ? 1 : 0.1,
+                                backgroundColor: lv === currentDraft.title ? (isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "#C5A059") : "rgba(255,255,255,0.4)"
+                              }}
+                              className="w-1.5 rounded-full"
+                            />
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -359,7 +323,6 @@ export default function RatingPage() {
           })}
         </div>
 
-        {/* Action Button */}
         {Object.keys(draftRatings).length > 0 && (
           <motion.div 
             initial={{ opacity: 0, y: 50 }}

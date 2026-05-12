@@ -120,159 +120,133 @@ export const MilitaryInsignia = ({ level, color = "currentColor", size = 36 }: {
         </filter>
       </defs>
       <g filter="url(#insigniaGlow)">
-        {/* Low levels: Tactical Chevrons (Optimized Spacing) */}
-        {level >= 1 && (
-          <g>
-            <path d="M4 14 L12 18 L20 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M4 14 L12 18 L20 14" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
-          </g>
-        )}
-        {level >= 2 && (
-          <g>
-            <path d="M4 10 L12 14 L20 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M4 10 L12 14 L20 10" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
-          </g>
-        )}
-        {level >= 3 && (
-          <g>
-            <path d="M4 6 L12 10 L20 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M4 6 L12 10 L20 6" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
-          </g>
-        )}
-        {level >= 4 && (
-          <g>
-            <path d="M4 2 L12 6 L20 2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M4 2 L12 6 L20 2" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
-          </g>
-        )}
-        {level >= 5 && (
-          <g>
-            <path d="M4 -2 L12 2 L20 -2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M4 -2 L12 2 L20 -2" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-40" transform="translate(0, 1)" />
-          </g>
-        )}
-        
-        {/* Level 6: Single Star */}
-        {level === 6 && (
-          <motion.path 
-            initial={{ scale: 0, rotate: -45 }}
-            animate={{ scale: 1, rotate: 0 }}
-            d="M12 0 L13.5 3.5 L17 4 L14.5 6.5 L15 10 L12 8.5 L9 10 L9.5 6.5 L7 4 L10.5 3.5 Z" 
-            fill="currentColor" 
+        {/* Level 0: FOUNDATION */}
+        {level === 0 && (
+          <motion.circle 
+            cx="12" cy="12" r="4" 
+            fill="none" stroke="currentColor" 
+            strokeWidth="1.5" strokeDasharray="1 3"
+            animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+            className="opacity-20"
           />
         )}
 
-        {/* Level 7: Star + Ring */}
-        {level === 7 && (
-          <>
-            <motion.circle cx="12" cy="5" r="5" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2" animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }} />
-            <motion.path 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              d="M12 0 L13.5 3.5 L17 4 L14.5 6.5 L15 10 L12 8.5 L9 10 L9.5 6.5 L7 4 L10.5 3.5 Z" 
-              fill="currentColor" 
-            />
-          </>
-        )}
-
-        {/* Level 8: Double Stars */}
-        {level === 8 && (
-          <>
-            <motion.path 
-              initial={{ x: -15, opacity: 0 }}
-              animate={{ x: -5, opacity: 1 }}
-              d="M8 0 L9.5 3.5 L13 4 L10.5 6.5 L11 10 L8 8.5 L5 10 L5.5 6.5 L3 4 L6.5 3.5 Z" 
-              fill="currentColor" 
-              className="scale-75 origin-center"
-            />
-            <motion.path 
-              initial={{ x: 15, opacity: 0 }}
-              animate={{ x: 5, opacity: 1 }}
-              d="M16 0 L17.5 3.5 L21 4 L18.5 6.5 L19 10 L16 8.5 L13 10 L13.5 6.5 L11 4 L14.5 3.5 Z" 
-              fill="currentColor" 
-              className="scale-75 origin-center"
-            />
-          </>
-        )}
-
-        {/* Level 9-10: High Command - Triple Stars / Central focus */}
-        {level >= 9 && (
-          <>
-             <motion.path 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1.2 }}
-              d="M12 0 L13.5 3.5 L17 4 L14.5 6.5 L15 10 L12 8.5 L9 10 L9.5 6.5 L7 4 L10.5 3.5 Z" 
-              fill="currentColor" 
-            />
-            <motion.path 
-              initial={{ x: -15, opacity: 0 }}
-              animate={{ x: -9, opacity: 1 }}
-              d="M4 6 L5.5 9.5 L9 10 L6.5 12.5 L7 16 L4 14.5 L1 16 L1.5 12.5 L-1 10 L2.5 9.5 Z" 
-              fill="currentColor" 
-              className="scale-50 origin-center"
-            />
-            <motion.path 
-              initial={{ x: 15, opacity: 0 }}
-              animate={{ x: 9, opacity: 1 }}
-              d="M20 6 L21.5 9.5 L25 10 L22.5 12.5 L23 16 L20 14.5 L17 16 L17.5 12.5 L15 10 L18.5 9.5 Z" 
-              fill="currentColor" 
-              className="scale-50 origin-center"
-            />
+        {/* Levels 1-6: REFINED TACTICAL CHEVRONS (Lower Ranks) */}
+        {level >= 1 && level <= 6 && (
+          <g>
+            {/* Standard Chevrons (V-Shapes) */}
+            {level >= 1 && <path d="M4 10.5 L12 14.5 L20 10.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />}
+            {level >= 2 && <path d="M4 7.5 L12 11.5 L20 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />}
+            {level >= 3 && <path d="M4 4.5 L12 8.5 L20 4.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />}
             
-            {/* Level 9 Special: Crown Ring */}
-            {level === 9 && (
-              <motion.path
-                d="M12 22 L14 18 L18 18 L16 14 L20 10 L15 10 L12 5 L9 10 L4 10 L8 14 L6 18 L10 18 Z"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="0.5"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 0.8, scale: 1.4, rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            {/* Rockers (Curved Arcs at Bottom - Inverted style) - Flatter radii for authentic look */}
+            {level >= 4 && <path d="M5 14 A 25 25 0 0 0 19 14" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />}
+            {level >= 5 && <path d="M6 16.5 A 22 22 0 0 0 18 16.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />}
+            {level >= 6 && <path d="M7 19 A 20 20 0 0 0 17 19" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />}
+            
+            {/* Precision Detail (Inner line) */}
+            <path d="M12 8.5 L12 11.5" fill="none" stroke="currentColor" strokeWidth="0.5" className="opacity-30" />
+          </g>
+        )}
+
+        {/* Levels 7-10: HIGH RANK COMMAND (Stars only) */}
+        {level >= 7 && (
+          <g>
+            {/* Level 7: Single Central Star */}
+            {level === 7 && (
+              <motion.path 
+                initial={{ scale: 0, rotate: -45 }}
+                animate={{ scale: 1, rotate: 0 }}
+                d="M12 4 L13.5 9 L18.5 9 L14.5 12 L16 17 L12 14.5 L8 17 L9.5 12 L5.5 9 L10.5 9 Z" 
+                fill="currentColor" 
               />
             )}
 
-            <motion.circle 
-              cx="12" cy="10" r="10" 
-              fill="none" stroke="currentColor" 
-              strokeWidth="0.5" strokeDasharray="1 4"
-              animate={{ rotate: level >= 9 ? -720 : -360 }}
-              transition={{ duration: level >= 9 ? 8 : 15, repeat: Infinity, ease: "linear" }}
-              className="opacity-40"
-            />
-          </>
-        )}
+            {/* Level 8: Dual Horizontal Stars */}
+            {level === 8 && (
+              <g>
+                <motion.path 
+                  initial={{ x: -10, opacity: 0 }}
+                  animate={{ x: -5, opacity: 1 }}
+                  d="M12 6 L13.5 11 L18.5 11 L14.5 14 L16 19 L12 16.5 L8 19 L9.5 14 L5.5 11 L10.5 11 Z" 
+                  fill="currentColor" 
+                  className="scale-75 origin-center"
+                />
+                <motion.path 
+                  initial={{ x: 10, opacity: 0 }}
+                  animate={{ x: 5, opacity: 1 }}
+                  d="M12 6 L13.5 11 L18.5 11 L14.5 14 L16 19 L12 16.5 L8 19 L9.5 14 L5.5 11 L10.5 11 Z" 
+                  fill="currentColor" 
+                  className="scale-75 origin-center"
+                />
+              </g>
+            )}
 
-        {/* Level 10: Elite Diamond */}
-        {level === 10 && (
-          <>
-            <motion.path
-              d="M12 2 L18 8 L12 22 L6 8 Z"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <motion.path
-              d="M12 2 L18 8 L12 10 L6 8 Z"
-              fill="currentColor"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="opacity-30"
-            />
-             <motion.circle 
-              cx="12" cy="10" r="11" 
-              fill="none" stroke="currentColor" 
-              strokeWidth="0.3"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
-              transition={{ duration: 4, repeat: Infinity }}
-            />
-          </>
+            {/* Level 9: Triple Star Formation (Triangle) */}
+            {level === 9 && (
+              <g>
+                <motion.path 
+                  initial={{ y: -10, opacity: 0 }}
+                  animate={{ y: -4, opacity: 1 }}
+                  d="M12 4 L13.5 9 L18.5 9 L14.5 12 L16 17 L12 14.5 L8 17 L9.5 12 L5.5 9 L10.5 9 Z" 
+                  fill="currentColor" 
+                  className="scale-60 origin-center"
+                />
+                <motion.path 
+                  initial={{ x: -10, y: 10, opacity: 0 }}
+                  animate={{ x: -6, y: 4, opacity: 1 }}
+                  d="M12 4 L13.5 9 L18.5 9 L14.5 12 L16 17 L12 14.5 L8 17 L9.5 12 L5.5 9 L10.5 9 Z" 
+                  fill="currentColor" 
+                  className="scale-60 origin-center"
+                />
+                <motion.path 
+                  initial={{ x: 10, y: 10, opacity: 0 }}
+                  animate={{ x: 6, y: 4, opacity: 1 }}
+                  d="M12 4 L13.5 9 L18.5 9 L14.5 12 L16 17 L12 14.5 L8 17 L9.5 12 L5.5 9 L10.5 9 Z" 
+                  fill="currentColor" 
+                  className="scale-60 origin-center"
+                />
+                {/* Tactical Ring */}
+                <motion.circle 
+                  cx="12" cy="11" r="9" 
+                  fill="none" stroke="currentColor" 
+                  strokeWidth="0.5" strokeDasharray="2 2"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="opacity-40"
+                />
+              </g>
+            )}
+
+            {/* Level 10: ELITE MARSHAL (Central focal point) */}
+            {level === 10 && (
+              <g>
+                <motion.path
+                  d="M12 2 L20 10 L12 22 L4 10 Z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                <motion.path
+                  d="M12 5 L17 10 L12 17 L7 10 Z"
+                  fill="currentColor"
+                  className="opacity-30"
+                />
+                {/* Rotating Inner Star */}
+                <motion.path 
+                  d="M12 7 L13 9 L15 9 L13.5 10.5 L14 12.5 L12 11.5 L10 12.5 L10.5 10.5 L9 9 L11 9 Z" 
+                  fill="currentColor"
+                  animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 180, 270, 360] }}
+                  transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                />
+              </g>
+            )}
+          </g>
         )}
-        
-        {level === 0 && <circle cx="12" cy="12" r="5" fill="currentColor" className="opacity-30 animate-pulse" />}
       </g>
     </svg>
   );
@@ -281,6 +255,7 @@ export const MilitaryInsignia = ({ level, color = "currentColor", size = 36 }: {
 const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string }) => {
   const { t } = useTranslation();
   const [dynamicLevel, setDynamicLevel] = useState(rank?.level || 0);
+  const [dynamicTitleIndex, setDynamicTitleIndex] = useState(rank?.level || 0);
   const [isBloodMode, setIsBloodMode] = useState(false);
   const [isNoirMode, setIsNoirMode] = useState(false);
 
@@ -289,19 +264,6 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
 
   const isNellaBarber = id === 'nella';
   const isJune2026 = new Date() >= new Date(2026, 5, 1);
-
-  const calculateLevelFromVotes = (votes: number) => {
-    if (votes >= 2000) return 9;
-    if (votes >= 1500) return 8;
-    if (votes >= 1000) return 7;
-    if (votes >= 500) return 6;
-    if (votes >= 300) return 5;
-    if (votes >= 150) return 4;
-    if (votes >= 50) return 3;
-    if (votes >= 20) return 2;
-    if (votes >= 5) return 1;
-    return 0;
-  };
 
   useEffect(() => {
     const checkThemes = () => {
@@ -314,20 +276,21 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
     
     const barberId = id;
 
-    // Subscribe to Level Votes for community-driven ranking
     const unsubscribeLevels = subscribeToLevelVotes(stats => {
-      const barberStats = stats[barberId];
-      const hasVotes = barberStats && Object.values(barberStats).some(v => v > 0);
+      const levelStats = stats.levels[barberId];
+      const titleStats = stats.titles[barberId];
+      
+      const hasVotes = levelStats && Object.values(levelStats).some(v => v > 0);
       
       if (hasVotes) {
-        const communityLevel = getDominantLevel(barberStats);
-        setDynamicLevel(communityLevel);
+        setDynamicLevel(getDominantLevel(levelStats));
+        setDynamicTitleIndex(getDominantLevel(titleStats));
       } else {
-        // Fallback to static rank if no community data yet
         setDynamicLevel(rank?.level || 0);
+        setDynamicTitleIndex(rank?.level || 0);
       }
       
-      const totalCount = Object.values(barberStats || {}).reduce((a, b) => a + b, 0);
+      const totalCount = Object.values(levelStats || {}).reduce((a, b) => a + b, 0);
       setTotalVotes(totalCount);
     });
 
@@ -339,21 +302,17 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
 
   useEffect(() => {
     if (!isNellaBarber) return;
-    
-    // Disable automatic rotation if there are any real votes
     if (totalVotes > 0) return;
 
     const interval = setInterval(() => {
-      // Rotation for Nella: 0 -> 1 -> 2 -> 3
       setDynamicLevel((prev: number) => (prev + 1) % 4);
+      setDynamicTitleIndex((prev: number) => (prev + 1) % 4);
     }, 4000);
     return () => clearInterval(interval);
   }, [isNellaBarber, totalVotes]);
 
-  // Dynamic status based on community consensus vs base rank
   let status = rank?.status || 'stable';
   
-  // Nella's Desertion override: Forced demotion until June 2026
   if (isNellaBarber && !isJune2026) {
     status = 'demotedDesertion';
   } else if (totalVotes > 0) {
@@ -364,8 +323,8 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
     status = 'promoted';
   }
 
-  // Effective level calculation
   const level = (isNellaBarber && isJune2026 && dynamicLevel < 3 && totalVotes === 0) ? 3 : dynamicLevel;
+  const titleIndex = (isNellaBarber && isJune2026 && dynamicTitleIndex < 3 && totalVotes === 0) ? 3 : dynamicTitleIndex;
 
   const rankTitles = [
     t.operatives.ranks.l0,
@@ -378,12 +337,34 @@ const BarberRanking = ({ rank, lang, id }: { rank: any, lang: string, id: string
     t.operatives.ranks.l7,
     t.operatives.ranks.l8,
     t.operatives.ranks.l9,
-    isNellaBarber ? (t.operatives.ranks.l10F || t.operatives.ranks.l10) : t.operatives.ranks.l10,
+    t.operatives.ranks.l10,
   ];
 
-  const currentRankTitle = rankTitles[level] || rank.title;
+  const rankTitlesF = [
+    t.operatives.ranks.l0F || t.operatives.ranks.l0,
+    t.operatives.ranks.l1F || t.operatives.ranks.l1,
+    t.operatives.ranks.l1 || t.operatives.ranks.l1, // Fallback logic
+    t.operatives.ranks.l3,
+    t.operatives.ranks.l4,
+    t.operatives.ranks.l5,
+    t.operatives.ranks.l6,
+    t.operatives.ranks.l7,
+    t.operatives.ranks.l8,
+    t.operatives.ranks.l9,
+    t.operatives.ranks.l10,
+  ];
+
+  // Helper to get gender-correct rank title
+  const getRankTitle = (idx: number) => {
+    if (isNellaBarber) {
+      const femaleKey = `l${idx}F`;
+      return t.operatives.ranks[femaleKey] || t.operatives.ranks[`l${idx}`];
+    }
+    return t.operatives.ranks[`l${idx}`];
+  };
+
+  const currentRankTitle = getRankTitle(titleIndex);
   
-  // Gender-aware status label selector
   const getStatusLabel = () => {
     if (!status || status === 'stable') return t.operatives.ranks.status.stable;
     if (status === 'demotedDesertion') return t.operatives.ranks.status.demotedDesertion;
