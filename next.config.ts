@@ -46,6 +46,9 @@ const nextConfig: NextConfig = {
       }
     ];
   },
+  experimental: {
+    workerThreads: false,
+  },
 };
 
 export default nextConfig;
