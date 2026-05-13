@@ -121,10 +121,10 @@ export const metadata: Metadata = {
     images: ["/obr/main-hero.png"],
   },
   verification: {
-    google: "google-site-verification-placeholder", // User should replace with actual code
+    google: "google-site-verification-placeholder",
   },
   other: {
-    "seznam-wmt": "seznam-verification-placeholder", // User should replace with actual code
+    "seznam-wmt": "seznam-verification-placeholder",
   }
 };
 export const viewport: Viewport = {
@@ -257,9 +257,14 @@ export default function RootLayout({
             })
           }}
         />
-        <script dangerouslySetInnerHTML={{ __html: `
+      </head>
+      <body 
+        className={`${playfair.variable} ${inter.variable} ${greatVibes.variable} antialiased selection:bg-mafia-gold selection:text-mafia-black min-h-screen relative bg-mafia-black overflow-x-hidden`}
+        suppressHydrationWarning
+      >
+        <Script id="mmbarber-early-init" strategy="beforeInteractive">
+          {`
           try {
-            // Early detection for mobile and graphics tier to prevent layout shifts
             const isMobile = window.innerWidth < 1280;
             if (isMobile) {
               document.documentElement.classList.add('is-mobile-device');
@@ -270,35 +275,15 @@ export default function RootLayout({
               const tier = JSON.parse(savedConfig).tier;
               document.documentElement.setAttribute('data-graphics-tier', tier);
             } else {
-              // Advanced adaptive deduction for first visit
               const cores = navigator.hardwareConcurrency || 0;
-              // @ts-ignore
-              const ram = navigator.deviceMemory || 0;
-              const isMobile = window.innerWidth < 1280;
+              const ram = (navigator as any).deviceMemory || 0;
+              let tier = 'low';
+              if (cores >= 12 && ram >= 16) tier = 'ultra';
+              else if (cores >= 8 && ram >= 8) tier = 'high';
+              else if (cores >= 6 && ram >= 4) tier = 'medium';
+              else tier = 'low';
               
-              let tier = 'low'; // Conservative default
-              
-              if (isMobile) {
-                // Mobile deduction logic
-                if (cores >= 8 && ram >= 6) tier = 'medium';
-                else tier = 'low';
-              } else {
-                // Desktop/PC deduction logic
-                // We only upgrade from 'low' if we are sure the hardware is capable
-                if (cores >= 12 && ram >= 16) {
-                  tier = 'ultra';
-                } else if (cores >= 8 && ram >= 8) {
-                  tier = 'high';
-                } else if (cores >= 6 && ram >= 4) {
-                  tier = 'medium';
-                } else {
-                  tier = 'low';
-                }
-              }
-              
-              // If hardware info is missing (0), stay on low
               if (cores === 0 || ram === 0) tier = 'low';
-              
               document.documentElement.setAttribute('data-graphics-tier', tier);
             }
 
@@ -309,12 +294,8 @@ export default function RootLayout({
               document.documentElement.classList.add('noir-mode');
             }
           } catch (e) {}
-        `}} />
-      </head>
-      <body 
-        className={`${playfair.variable} ${inter.variable} ${greatVibes.variable} antialiased selection:bg-mafia-gold selection:text-mafia-black min-h-screen relative bg-mafia-black overflow-x-hidden`}
-        suppressHydrationWarning
-      >
+        `}
+        </Script>
         <ErrorBoundary>
           <SecurityProvider>
             {/* Google Analytics */}

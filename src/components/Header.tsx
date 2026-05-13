@@ -643,9 +643,14 @@ export function Header() {
     
     const handleIntroDismissed = () => {
        setIsIntroActive(false);
-       if (window.scrollY < 10) setIsVisible(true);
+       setIsVisible(true);
     };
     window.addEventListener("introDismissed", handleIntroDismissed);
+
+    // Safety timeout for Intro - ensure header eventually shows up
+    const safetyTimer = setTimeout(() => {
+      if (isIntroActive) handleIntroDismissed();
+    }, 8000);
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -680,6 +685,7 @@ export function Header() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("introDismissed", handleIntroDismissed);
+      clearTimeout(safetyTimer);
     };
   }, [pathname, isIntroActive, isVisible, isMobile]);
 
@@ -749,8 +755,8 @@ export function Header() {
       <header
         className={`w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] gpu-accelerate 
           ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-[calc(7rem+env(safe-area-inset-top,0px))]' : `fixed top-0 h-[calc(7rem+env(safe-area-inset-top,0px))] ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black border-b border-white/5' : 'bg-transparent border-b border-transparent'}`} 
-          ${(isIntroActive) ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} 
-          ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full opacity-0 shadow-none' : 'translate-y-0 opacity-100'}`}
+          ${(isIntroActive && pathname === "/") ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} 
+          ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}
       >
         <div className="flex items-center gap-8">
           <button

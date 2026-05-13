@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/Hero";
@@ -9,7 +9,7 @@ import { Hero } from "@/components/Hero";
 const Services = dynamic(() => import("@/components/Services").then(mod => mod.Services), { ssr: false });
 const Profiles = dynamic(() => import("@/components/Profiles").then(mod => mod.Profiles), { ssr: false });
 const HolidayCountdown = dynamic(() => import("@/components/HolidayCountdown").then(mod => mod.HolidayCountdown), { ssr: false });
-const EnvironmentSlider = dynamic(() => import("@/components/EnvironmentSlider").then(mod => mod.EnvironmentSlider), { ssr: false });
+const Atmosphere = dynamic(() => import("@/components/Atmosphere").then(mod => mod.Atmosphere), { ssr: false });
 const Contact = dynamic(() => import("@/components/Contact").then(mod => mod.Contact), { ssr: false });
 const Partners = dynamic(() => import("@/components/Partners").then(mod => mod.Partners), { ssr: false });
 const Footer = dynamic(() => import("@/components/Footer").then(mod => mod.Footer), { ssr: false });
@@ -23,13 +23,32 @@ const OperationalJournal = dynamic(() => import("@/components/OperationalJournal
 const PersonalVision = dynamic(() => import("@/components/PersonalVision").then(mod => mod.PersonalVision), { ssr: false });
 const GlobalIntelligenceArchive = dynamic(() => import("@/components/GlobalIntelligenceArchive").then(mod => mod.GlobalIntelligenceArchive), { ssr: false });
 const GroomingGuideArchive = dynamic(() => import("@/components/GroomingGuideArchive").then(mod => mod.GroomingGuideArchive), { ssr: false });
+const DailyIntelligence = dynamic(() => import("@/components/DailyIntelligence").then(mod => mod.DailyIntelligence), { ssr: false });
 
 import { CinematicIntro } from "@/components/Intro";
-import { Atmosphere } from "@/components/Atmosphere";
 import { CinematicSequence737 } from "@/components/CinematicSequence737";
 import { MafiaClickEffects } from "@/components/MafiaClickEffects";
 import { useTranslation } from "@/hooks/useTranslation";
 import { LocalSEOHomepage } from "@/components/LocalSEOHomepage";
+
+// SectionReveal defined outside to prevent re-initialization on parent render
+const SectionReveal = ({ children, delay = 0, isMobile, isMobileEffectsEnabled }: { children: React.ReactNode, delay?: number, isMobile: boolean, isMobileEffectsEnabled: boolean }) => {
+  if (isMobile && !isMobileEffectsEnabled) {
+    return <div className="w-full">{children}</div>;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "50px" }}
+      transition={{ duration: 0.8, delay: isMobile ? delay * 0.2 : delay }}
+      className="w-full"
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 export default function Home() {
   const { t } = useTranslation();
@@ -39,68 +58,27 @@ export default function Home() {
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
 
   useEffect(() => {
-    // Automatically mark as visited to ensure intro is skipped
     localStorage.setItem("mmbarber_visited", "true");
-    
     const checkMobile = () => setIsMobile(window.innerWidth < 1280);
     checkMobile();
     window.addEventListener('resize', checkMobile);
-
     const initialEffectsState = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
     setIsMobileEffectsEnabled(initialEffectsState);
-
-    const handleMobileEffectsUpdate = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      setIsMobileEffectsEnabled(detail);
-    };
+    const handleMobileEffectsUpdate = (e: Event) => setIsMobileEffectsEnabled((e as CustomEvent).detail);
     window.addEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
-
     return () => {
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
     };
   }, []);
 
-  const SectionReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => {
-    // Disable heavy effects on low-tier or if user disabled them
-    if (isMobile && !isMobileEffectsEnabled) {
-      return <div className="w-full">{children}</div>;
-    }
-
-    return (
-      <motion.div
-        initial={{ 
-          opacity: 0, 
-          y: isMobile ? 30 : 80, 
-          filter: isMobile ? "none" : "blur(25px)",
-          scale: isMobile ? 1 : 0.98
-        }}
-        whileInView={{ 
-          opacity: 1, 
-          y: 0, 
-          filter: "none",
-          scale: 1
-        }}
-        viewport={{ 
-          once: true, 
-          margin: isMobile ? "-5% 0px -5% 0px" : "-20% 0px -20% 0px" 
-        }}
-        transition={{ 
-          duration: isMobile ? 0.8 : 2.5, 
-          delay: isMobile ? delay * 0.3 : delay,
-          ease: [0.16, 1, 0.3, 1] 
-        }}
-        style={{ willChange: "transform, opacity, filter", transform: "translateZ(0)" }}
-        className="w-full"
-      >
-        {children}
-      </motion.div>
-    );
-  };
-
   return (
-    <div className="flex flex-col min-h-screen relative overflow-x-hidden">
+    <div className="flex flex-col min-h-screen relative">
       <MafiaClickEffects />
+      
+      {/* Global Atmosphere is now outside any reveal animations to ensure it shows everywhere */}
+      <Atmosphere />
+
       {!isIntroDismissed && (
         <CinematicIntro onDismiss={() => {
            setShowContent(true);
@@ -110,155 +88,82 @@ export default function Home() {
       
       <AnimatePresence>
         {showContent && (
-          <motion.div
-            initial={isMobile ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 100, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ 
-              duration: isMobile ? 0.01 : 1.2, 
-              ease: [0.16, 1, 0.3, 1], 
-            }}
-            className="flex flex-col w-full"
-          >
+          <motion.div initial={{ opacity: 1 }} animate={{ opacity: 1 }} className="flex flex-col w-full">
             <CinematicSequence737 />
             <Hero />
             
-            <div className="relative bg-transparent w-full section-optimize">
-              <div className="hidden xl:block">
-              </div>
-              
-              <SectionReveal>
-                <div className="section-optimize">
-                  <Profiles />
-                </div>
+            <div className="relative bg-transparent w-full">
+              {/* Core sections */}
+              <div id="operativi" className="section-optimize"><Profiles /></div>
+              <div id="services" className="section-optimize"><Services /></div>
+
+              {/* Sequential reveals */}
+              <SectionReveal delay={0.1} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                <div className="section-optimize"><HolidayCountdown /></div>
               </SectionReveal>
 
-              <SectionReveal>
-                <div className="section-optimize">
-                  <Services />
-                </div>
+              <SectionReveal delay={0.2} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                <div className="section-optimize"><StyleDefinition /></div>
               </SectionReveal>
 
-              <SectionReveal>
-                <div className="section-optimize">
-                  <HolidayCountdown />
-                </div>
+              <SectionReveal delay={0.4} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                <div id="kontakt" className="section-optimize"><Contact /></div>
               </SectionReveal>
 
-              <SectionReveal>
-                <div className="section-optimize">
-                  <StyleDefinition />
-                </div>
+              <SectionReveal delay={0.5} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                <div className="section-optimize"><Partners /></div>
               </SectionReveal>
 
-              <SectionReveal>
-                <div className="section-optimize">
-                  <EnvironmentSlider />
-                </div>
-              </SectionReveal>
-            </div>
-
-            <SectionReveal>
-              <div className="section-optimize">
-                <Contact />
-              </div>
-            </SectionReveal>
-
-            <SectionReveal>
-              <div className="section-optimize">
-                <Partners />
-              </div>
-            </SectionReveal>
-
-
-            <SectionReveal>
-              <div className="section-optimize">
+              <div className="pt-24 pb-12">
                 <Footer />
               </div>
-            </SectionReveal>
-
+            </div>
+            
             <BottomTerminalReveal thresholdMultiplier={2}>
               {(level) => (
-                <>
-                  <SectionReveal>
-                    <div className="section-optimize">
-                      <FooterSecrets />
-                    </div>
-                  </SectionReveal>
-
-                  <SectionReveal>
-                    <div className="section-optimize">
-                      <GlobalIntelligenceArchive />
-                    </div>
-                  </SectionReveal>
-
-                  <SectionReveal>
-                    <div className="section-optimize">
-                      <GroomingGuideArchive />
-                    </div>
-                  </SectionReveal>
-
-                  <SectionReveal>
-                    <div className="section-optimize">
-                      <SEOFAQ />
-                    </div>
-                  </SectionReveal>
+                <div className="w-full flex flex-col gap-12 pb-32">
+                  {level >= 1 && (
+                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                      <div className="max-w-4xl mx-auto px-6"><DailyIntelligence /></div>
+                    </SectionReveal>
+                  )}
 
                   {level >= 2 && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 1.5 }}
-                    >
-                      <SectionReveal>
-                        <div className="section-optimize">
-                          <RegionalSEOCloud />
-                        </div>
-                      </SectionReveal>
-                    </motion.div>
+                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                      <div className="w-full flex flex-col gap-12">
+                        <FooterSecrets />
+                        <RegionalSEOCloud />
+                      </div>
+                    </SectionReveal>
                   )}
 
                   {level >= 3 && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 1.5 }}
-                    >
-                      <SectionReveal>
-                        <div className="section-optimize">
-                          <GoogleReviewsWall />
-                        </div>
-                      </SectionReveal>
-                    </motion.div>
+                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                      <div className="w-full flex flex-col gap-12">
+                        <SEOFAQ />
+                        <GoogleReviewsWall />
+                      </div>
+                    </SectionReveal>
                   )}
 
                   {level >= 4 && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 1.5 }}
-                    >
-                      <SectionReveal>
-                        <div className="section-optimize">
-                          <OperationalJournal />
-                        </div>
-                      </SectionReveal>
-                    </motion.div>
+                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                      <div className="w-full flex flex-col gap-12">
+                        <GlobalIntelligenceArchive />
+                        <OperationalJournal />
+                      </div>
+                    </SectionReveal>
                   )}
 
                   {level >= 5 && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 1.5 }}
-                    >
-                      <SectionReveal>
-                        <div className="section-optimize">
-                          <PersonalVision />
-                        </div>
-                      </SectionReveal>
-                    </motion.div>
+                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                      <div className="w-full flex flex-col gap-12">
+                        <GroomingGuideArchive />
+                        <PersonalVision />
+                      </div>
+                    </SectionReveal>
                   )}
-                </>
+                </div>
               )}
             </BottomTerminalReveal>
           </motion.div>
@@ -270,15 +175,7 @@ export default function Home() {
           <h1>MMBARBER | Barbershop Uherské Hradiště – střihy & vousy</h1>
           <p>{t.seo.description}</p>
           <div className="space-y-1">
-            <p>
-              Barbershop Uherské Hradiště, pánské holičství Mařatice, nejlepší střih UH, skin fade Slovácko. 
-              Micka style, žádný korporát, autentický přístup, gangster vibe, poctivé řemeslo.
-              Sadová 1383 Mařatice, parkování zdarma, online rezervace 24/7.
-              Moderní pánský střih, fade střih, úprava vousů, moderní barber, péče o vousy.
-            </p>
-            <p>Jak vybrat správný střih podle tvaru obličeje? Co je fade a jak ho nosit? Jak pečovat o vousy? Kolik stojí barber vs. kadeřník?</p>
-            <p>{t.seo.extraContent}</p>
-            <p>Keywords: {t.seo.keywords}, fade střih, úprava vousů, moderní barber, barbershop Uherské Hradiště</p>
+            <p>Barbershop Uherské Hradiště, pánské holičství Mařatice, nejlepší střih UH, skin fade Slovácko. Sadová 1383 Mařatice.</p>
           </div>
         </div>
       </div>

@@ -276,9 +276,8 @@ export function Hero() {
   const [isSloganHovered, setIsSloganHovered] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsMissionReady(true), (graphicsTier === 'low') ? 0 : 1800);
-    return () => clearTimeout(timer);
-  }, [graphicsTier]);
+    setIsMissionReady(true);
+  }, []);
 
   const handleBookingScroll = () => {
     if (!isMissionReady) return;
@@ -749,29 +748,6 @@ export function Hero() {
 
       <div className="hidden xl:flex relative z-20 mt-10 xl:mt-10 w-full justify-center pb-12 xl:pb-0 min-h-[60px]">
           <AnimatePresence mode="wait">
-            {!isMissionReady ? (
-              <motion.div 
-                key="mission-loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center justify-center gap-2"
-              >
-                <div className="flex gap-1.5 mb-1">
-                  {[1,2,3].map(i => (
-                    <motion.div 
-                      key={i}
-                      animate={{ opacity: [0.4, 1, 0.4] }}
-                      transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity }}
-                      className="w-2 h-2 bg-mafia-gold shadow-[0_0_10px_var(--color-mafia-gold-glow)]"
-                    />
-                  ))}
-                </div>
-                <span className={`${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-mono text-xs tracking-[1.5em] uppercase font-black ml-[1.5em]`}>
-                  ONERANDI...
-                </span>
-              </motion.div>
-            ) : (
               <motion.a
                 key="mission-ready"
                 initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
@@ -790,7 +766,6 @@ export function Hero() {
                   {t.hero.bookBtn}
                 </span>
               </motion.a>
-            )}
           </AnimatePresence>
       </div>
 

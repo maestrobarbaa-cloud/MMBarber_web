@@ -15,11 +15,11 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
   const [overscrollProgress, setOverscrollProgress] = useState(0);
   const { lang } = useTranslation();
   
-  const STAGE_1_THRESHOLD = 500 * thresholdMultiplier;
-  const STAGE_2_THRESHOLD = 1500 * thresholdMultiplier;
-  const STAGE_3_THRESHOLD = 3500 * thresholdMultiplier;
-  const STAGE_4_THRESHOLD = 6000 * thresholdMultiplier;
-  const STAGE_5_THRESHOLD = 10000 * thresholdMultiplier; 
+  const STAGE_1_THRESHOLD = 3000 * thresholdMultiplier;
+  const STAGE_2_THRESHOLD = 5000 * thresholdMultiplier;
+  const STAGE_3_THRESHOLD = 8000 * thresholdMultiplier;
+  const STAGE_4_THRESHOLD = 12000 * thresholdMultiplier;
+  const STAGE_5_THRESHOLD = 18000 * thresholdMultiplier; 
   
   const scrollAccumulator = useRef(0);
   const lastScrollTime = useRef(0);
@@ -27,10 +27,14 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
-      const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
+      const doc = document.documentElement;
+      // Robust detection: Only trigger if scrolled away from top and close to bottom
+      const isAtBottom = window.scrollY > 300 && (window.innerHeight + Math.ceil(window.scrollY) >= doc.scrollHeight - 100);
       
       if (isAtBottom && e.deltaY > 0) {
-        scrollAccumulator.current += Math.abs(e.deltaY);
+        // Normalize Firefox line scrolling (deltaMode 1) or page scrolling (deltaMode 2)
+        const delta = e.deltaMode === 1 ? e.deltaY * 150 : (e.deltaMode === 2 ? window.innerHeight : e.deltaY);
+        scrollAccumulator.current += Math.abs(delta);
         
         if (unlockLevel < 1 && scrollAccumulator.current >= STAGE_1_THRESHOLD) setUnlockLevel(1);
         if (unlockLevel === 1 && scrollAccumulator.current >= STAGE_2_THRESHOLD) setUnlockLevel(2);
@@ -49,7 +53,8 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
         setOverscrollProgress(Math.min(progress, 100));
         lastScrollTime.current = Date.now();
       } else if (e.deltaY < 0 && isAtBottom && scrollAccumulator.current > 0) {
-          scrollAccumulator.current = Math.max(0, scrollAccumulator.current - Math.abs(e.deltaY));
+          const delta = e.deltaMode === 1 ? e.deltaY * 150 : (e.deltaMode === 2 ? window.innerHeight : e.deltaY);
+          scrollAccumulator.current = Math.max(0, scrollAccumulator.current - Math.abs(delta));
           
           if (unlockLevel === 5 && scrollAccumulator.current < STAGE_5_THRESHOLD) setUnlockLevel(4);
           else if (unlockLevel === 4 && scrollAccumulator.current < STAGE_4_THRESHOLD) setUnlockLevel(3);
@@ -67,11 +72,11 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
 
     const handleTouchMove = (e: TouchEvent) => {
       const deltaY = touchStartY.current - e.touches[0].clientY;
-      const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
+      const doc = document.documentElement;
+      const isAtBottom = window.scrollY > 300 && (window.innerHeight + Math.ceil(window.scrollY) >= doc.scrollHeight - 100);
       
       if (isAtBottom && deltaY > 0) {
         scrollAccumulator.current += Math.abs(deltaY) * 0.5;
-        // Logic same as wheel... but for simplicity we trigger levels faster on touch
         if (unlockLevel < 1 && scrollAccumulator.current >= STAGE_1_THRESHOLD) setUnlockLevel(1);
         lastScrollTime.current = Date.now();
       }
@@ -94,10 +99,6 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
     };
   }, [unlockLevel]);
 
-  // Clone children and pass the unlock level if they are components that can receive it,
-  // or simply use a context. For simplicity, we'll just render everything if level > 0
-  // but with different animations for the deeper parts in the parent component.
-  
   return (
     <div className="relative w-full">
       {!unlockLevel && (

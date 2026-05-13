@@ -27,6 +27,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
     if (window.innerWidth < 1280) {
       setIsActuallyMobile(true);
       localStorage.setItem("mmbarber_visited", "true");
+      window.dispatchEvent(new Event("introDismissed"));
       onDismiss?.();
       return;
     }
@@ -35,7 +36,9 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
     const tier = document.documentElement.getAttribute('data-graphics-tier');
     if (tier === 'low') {
         setIsLowTier(true);
-        localStorage.setItem("mmbarber_visited", "true"); // Automatically skip next time
+        localStorage.setItem("mmbarber_visited", "true");
+        window.dispatchEvent(new Event("introDismissed"));
+        onDismiss?.();
         return;
     }
     
@@ -164,7 +167,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
       </div>
 
       {/* Behind the Curtain Content - Background & Logo Layer */}
-      <div className={`fixed inset-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden z-[9990] transition-all duration-1000 ${isAnimating ? 'opacity-100' : 'opacity-0 bg-[#020202]'}`}>
+      <div className={`fixed inset-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden z-[9990] transition-all duration-1000 ${isAnimating ? 'opacity-100' : 'opacity-0 bg-[#020202] pointer-events-none'} ${isDismissed ? 'pointer-events-none invisible' : ''}`}>
         {/* Cinematic Layers */}
         <div 
           ref={grainRef}

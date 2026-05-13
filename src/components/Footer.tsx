@@ -12,7 +12,7 @@ import {
   X
 } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
-import { DailyIntelligence } from "./DailyIntelligence";
+
 import { trackEvent } from "../utils/analytics";
 import { EvasiveButton } from "./EvasiveButton";
 

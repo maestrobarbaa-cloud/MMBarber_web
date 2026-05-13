@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "@/hooks/useTranslation";
+
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useMotionValue, animate, useTransform, useMotionValueEvent } from "framer-motion";
 import {
@@ -69,368 +71,7 @@ interface StarBg {
   color: string;
 }
 
-const STORY_NODES: StoryNode[] = [
-  // --- LEVEL 1: SOUČASNOST (Central Core Hub) ---
-  {
-    id: "origin",
-    title: "Srdce Rodiny",
-    year: "DNES",
-    content: "Vše začíná zde. V našem křesle, kde se čas zastaví. Tady se tvoří respekt, který se nedá koupit. Jsme MMBarber a toto je naše teritorium.",
-    icon: <Users />,
-    x: 50, y: 50,
-    constellation: "core",
-    requiredVisits: 1,
-    connections: ["vibe", "rules", "loyalty"]
-  },
-  {
-    id: "vibe",
-    title: "Noir Atmosféra",
-    year: "2024",
-    content: "Černá a bílá. Žádné kompromisy. Naše estetika odráží naši filozofii – čistota, kontrast a neúprosná kvalita v každém detailu.",
-    icon: <Moon />,
-    x: 52, y: 48,
-    constellation: "core",
-    requiredVisits: 1,
-    connections: ["style", "secret_vibe"]
-  },
-  {
-    id: "rules",
-    title: "Kodex Mlčení",
-    year: "STÁLÉ",
-    content: "To, co se řekne v barberu, zůstane v barberu. Jsme důvěrníci, psychologové i spojenci našich hostů. Respektujeme vaše soukromí jako vlastní.",
-    icon: <Shield />,
-    x: 48, y: 52,
-    constellation: "core",
-    requiredVisits: 1,
-    connections: ["loyalty"]
-  },
-  {
-    id: "loyalty",
-    title: "Pouto Krve",
-    year: "VŽDY",
-    content: "Naši zákazníci nejsou jen klienti, jsou to členové širší rodiny. Loajalita je měnou, kterou si u nás ceníme nejvíce.",
-    icon: <Heart />,
-    x: 49, y: 49,
-    constellation: "core",
-    requiredVisits: 1,
-    connections: ["origin"]
-  },
-  {
-    id: "style",
-    title: "Estetika Moci",
-    year: "2024",
-    content: "Styl není móda. Móda pomíjí, styl je věčný. My tvoříme identitu, která vyzařuje sílu a sebevědomí v každém kroku.",
-    icon: <Zap />,
-    x: 51, y: 51,
-    constellation: "core",
-    requiredVisits: 1,
-    connections: ["vibe"]
-  },
-  {
-    id: "secret_vibe",
-    title: "Půlnoční Kšeft",
-    year: "UTAJENO",
-    content: "Někdy se ty nejdůležitější věci řeší, když město spí. Naše dveře se občas otevírají i pro ty, kteří nepotřebují jen střih, ale i radu.",
-    type: "secret",
-    secretContent: "V noci se v MMBarberu scházejí lidé, kteří hýbou tímto městem. Jsme neutrální půda pro velké kšefty.",
-    icon: <Lock />,
-    x: 50, y: 44,
-    constellation: "core",
-    requiredVisits: 1,
-    connections: ["vibe"]
-  },
-
-  // --- LEVEL 2: KOŘENY (Origins Cluster) ---
-  {
-    id: "roots_start",
-    title: "První Nůžky",
-    year: "MINULOST",
-    content: "Zde v Hradišti to všechno začalo. Jeden sen, jedny nůžky a nekonečná touha dělat věci jinak – poctivě a s respektem k řemeslu.",
-    icon: <Scissors />,
-    x: 8, y: 12,
-    constellation: "origins",
-    requiredVisits: 2,
-    connections: ["tradition", "childhood"]
-  },
-  {
-    id: "tradition",
-    title: "Rodinný Odkaz",
-    year: "1984",
-    content: "Respekt k řemeslu se u nás dědí. Učili jsme se od those nejlepších, abychom dnes mohli sami určovat pravidla hry.",
-    icon: <Star />,
-    x: 3, y: 18,
-    constellation: "origins",
-    requiredVisits: 2,
-    connections: ["hard_times", "secret_roots"]
-  },
-  {
-    id: "childhood",
-    title: "Ulicemi Hradiště",
-    year: "RETRO",
-    content: "Každý kout tohoto města známe. Tady jsme vyrůstali a tady jsme pochopili, co znamená slovo domov a teritorium.",
-    icon: <MapPin />,
-    x: 14, y: 5,
-    constellation: "origins",
-    requiredVisits: 2,
-    connections: ["first_shop"]
-  },
-  {
-    id: "hard_times",
-    title: "Zkouška Ohněm",
-    year: "KRITICKÉ",
-    content: "Nebylo to vždy snadné. Každá jizva na naší cestě nás posílila. Naučili jsme se, že pád není konec, ale lekce.",
-    icon: <Target />,
-    x: 2, y: 30,
-    constellation: "origins",
-    requiredVisits: 2,
-    connections: ["first_shop"]
-  },
-  {
-    id: "first_shop",
-    title: "Stará Garáž",
-    year: "START",
-    content: "První neoficiální křeslo v garáži. Tam se rodila legenda. Bez marketingu, jen díky šeptandě o nejlepším střihu v okolí.",
-    icon: <Briefcase />,
-    x: 10, y: 22,
-    constellation: "origins",
-    requiredVisits: 2,
-    connections: ["roots_start"]
-  },
-  {
-    id: "mentor",
-    title: "Starý Mistr",
-    year: "MOUDROST",
-    content: "Každý šéf měl svého mentora. Člověka, který mu ukázal, že nůžky jsou jen nástroj, ale ruka je vedená duší.",
-    icon: <Bookmark />,
-    x: 18, y: 18,
-    constellation: "origins",
-    requiredVisits: 2,
-    connections: ["roots_start"]
-  },
-  {
-    id: "secret_roots",
-    title: "Ztracený Deník",
-    year: "KLASIFIKOVÁNO",
-    content: "Existují záznamy o prvních klientech, kteří u nás hledali azyl. Příběhy, které by neměly být nikdy vyprávěny nahlas.",
-    type: "secret",
-    secretContent: "Prvním hostem v garáži byl místní boss, který nám daroval první profesionální břitvu za zachování mlčení.",
-    icon: <FileText />,
-    x: 5, y: 4,
-    constellation: "origins",
-    requiredVisits: 2,
-    connections: ["tradition"]
-  },
-
-  // --- LEVEL 3: TALENT (Talent Cluster) ---
-  {
-    id: "talent_start",
-    title: "Absolutní Přesnost",
-    year: "MISTROVSTVÍ",
-    content: "Chyba není v našem slovníku. Každý milimetr hraje roli. Naše práce je geometrie aplikovaná na tvář moderního muže.",
-    icon: <Target />,
-    x: 92, y: 12,
-    constellation: "talent",
-    requiredVisits: 3,
-    connections: ["sharp_blade", "steady_hand"]
-  },
-  {
-    id: "sharp_blade",
-    title: "Ocel a Kůže",
-    year: "ZRUČNOST",
-    content: "Břitva je prodloužením naší ruky. Pocit ostří na kůži je rituál, který vyžaduje absolutní důvěru mezi barberem a hostem.",
-    icon: <Zap />,
-    x: 97, y: 5,
-    constellation: "talent",
-    requiredVisits: 3,
-    connections: ["alchemy", "secret_talent"]
-  },
-  {
-    id: "steady_hand",
-    title: "Klidná Ruka",
-    year: "TRÉNINK",
-    content: "Tisíce hodin tréninku vedou k jedinému okamžiku dokonalosti. Naše ruce se nechvějí ani v největším tlaku.",
-    icon: <Activity />,
-    x: 88, y: 6,
-    constellation: "talent",
-    requiredVisits: 3,
-    connections: ["philosophy"]
-  },
-  {
-    id: "alchemy",
-    title: "Vůně Respektu",
-    year: "MAGIE",
-    content: "Výběr vůně je jako podpis. Namícháme pro vás esenci, která bude vyprávět váš příběh dřív, než promluvíte.",
-    icon: <FlaskConical />,
-    x: 96, y: 20,
-    constellation: "talent",
-    requiredVisits: 3,
-    connections: ["talent_start"]
-  },
-  {
-    id: "philosophy",
-    title: "Tichá Síla",
-    year: "FILOZOFIE",
-    content: "Skutečný talent nepotřebuje křičet. Naše výsledky mluví samy za sebe. Jsme tiší tvůrci vašeho veřejného obrazu.",
-    icon: <Eye />,
-    x: 82, y: 22,
-    constellation: "talent",
-    requiredVisits: 3,
-    connections: ["talent_start"]
-  },
-  {
-    id: "secret_talent",
-    title: "Zakázaná Technika",
-    year: "EXPERIMENTÁLNÍ",
-    content: "Existují postupy, které běžné oko nespatří. Práce s texturou, která hraničí s uměním. Jen pro vyvolené.",
-    type: "secret",
-    secretContent: "Naše speciální technika 'Fantomový Fade' vytváří přechod, který vypadá přirozeně i po dvou týdnech.",
-    icon: <Flame />,
-    x: 94, y: 3,
-    constellation: "talent",
-    requiredVisits: 3,
-    connections: ["sharp_blade"]
-  },
-
-  // --- LEVEL 4: CESTA (Career Cluster) ---
-  {
-    id: "career_start",
-    title: "Expanze",
-    year: "RŮST",
-    content: "Hradiště nám začalo být malé. Naše jméno se začalo šířit dál. Vybudovat impérium vyžaduje strategii a správné lidi po boku.",
-    icon: <Navigation />,
-    x: 12, y: 85,
-    constellation: "career",
-    requiredVisits: 4,
-    connections: ["team_power", "territory"]
-  },
-  {
-    id: "team_power",
-    title: "Smečka",
-    year: "RODINA",
-    content: "Barber je jen tak dobrý, jako jeho nejslabší článek. My žádné slabé články nemáme. Jsme jednotka se společným cílem.",
-    icon: <Users />,
-    x: 4, y: 94,
-    constellation: "career",
-    requiredVisits: 4,
-    connections: ["standards", "secret_career"]
-  },
-  {
-    id: "territory",
-    title: "Dobytí Trhu",
-    year: "DOMINANCE",
-    content: "Nejsme jen další barber. Jsme standard, podle kterého se měří ostatní. Ovládli jsme prostor kvalitou, ne reklamou.",
-    icon: <Map />,
-    x: 20, y: 92,
-    constellation: "career",
-    requiredVisits: 4,
-    connections: ["legacy_building"]
-  },
-  {
-    id: "standards",
-    title: "Železná Pravidla",
-    year: "PROVOZ",
-    content: "Naše standardy jsou neúprosné. Hygiena, servis, drink – vše musí být na 110 %. Jinak nejsme rodina MM.",
-    icon: <ShieldCheck />,
-    x: 3, y: 82,
-    constellation: "career",
-    requiredVisits: 4,
-    connections: ["career_start"]
-  },
-  {
-    id: "legacy_building",
-    title: "Budování Jména",
-    year: "ZNAČKA",
-    content: "MMBarber není jen nápis na dveřích. Je to příslib zážitku. Investujeme do budoucnosti, aby naše jméno přežilo nás všechny.",
-    icon: <Award />,
-    x: 10, y: 97,
-    constellation: "career",
-    requiredVisits: 4,
-    connections: ["career_start"]
-  },
-  {
-    id: "secret_career",
-    title: "Stínový Poradce",
-    year: "NEOFICIÁLNÍ",
-    content: "Některá rozhodnutí se nedělají u stolu, ale za zavřenými dveřmi v zadní místnosti. Tam se kreslí mapa naší expanze.",
-    type: "secret",
-    secretContent: "Plánujeme otevření utajeného klubu pro naše VIP členy, kde barbering bude jen začátkem večera.",
-    icon: <EyeOff />,
-    x: 5, y: 72,
-    constellation: "career",
-    requiredVisits: 4,
-    connections: ["team_power"]
-  },
-
-  // --- LEVEL 5: CÍL (Ultimate Cluster) ---
-  {
-    id: "ultimate_goal",
-    title: "Absolutní Vize",
-    year: "BUDOUCNOST",
-    content: "Naše cesta nekončí. Míříme ke hvězdám. Chceme změnit vnímání mužské péče v celém regionu i mimo něj.",
-    icon: <Trophy />,
-    x: 88, y: 85,
-    constellation: "ultimate",
-    requiredVisits: 5,
-    connections: ["perfection", "immortality"]
-  },
-  {
-    id: "perfection",
-    title: "Bod Nula",
-    year: "DOKONALOST",
-    content: "Hledáme bod, kde už není co zlepšit. Neustálý progres je náš motor. Spokojenost je pro nás jen dočasná zastávka.",
-    icon: <Zap />,
-    x: 95, y: 82,
-    constellation: "ultimate",
-    requiredVisits: 5,
-    connections: ["new_era", "secret_ultimate"]
-  },
-  {
-    id: "immortality",
-    title: "Nesmrtelnost",
-    year: "ODKAZ",
-    content: "Chceme vytvořit něco, co tu bude i za sto let. Odkaz MMBarber je vrytý do tváří tisíců mužů, kteří prošli naším křeslem.",
-    icon: <Compass />,
-    x: 82, y: 94,
-    constellation: "ultimate",
-    requiredVisits: 5,
-    connections: ["new_era"]
-  },
-  {
-    id: "new_era",
-    title: "Nová Éra",
-    year: "2030+",
-    content: "Připravujeme půdu pro příští generaci. Technologie, tradice a noir styl v dokonalé symbióze příští dekády.",
-    icon: <Radio />,
-    x: 97, y: 92,
-    constellation: "ultimate",
-    requiredVisits: 5,
-    connections: ["ultimate_goal"]
-  },
-  {
-    id: "secret_ultimate",
-    title: "Původní Plán",
-    year: "GENESIS",
-    content: "Všechno, co vidíte, bylo naplánováno už na úplném začátku. Každý krok v této galaxii byl zapsán v naší první vizi.",
-    type: "secret",
-    secretContent: "Konečným cílem je vytvořit globální síť MMBarber, kde se loajalita odměňuje doživotním členstvím v elitním klubu.",
-    icon: <Key />,
-    x: 92, y: 97,
-    constellation: "ultimate",
-    requiredVisits: 5,
-    connections: ["perfection"]
-  },
-  {
-    id: "legacy_myth",
-    title: "Mýtus o Barberovi",
-    year: "NEKONEČNO",
-    content: "Některé příběhy se stávají legendami. Traduje se, že první MM střih změnil osud celého rodu. Pravda je ale mnohem hlubší.",
-    icon: <Award />,
-    x: 2, y: 2,
-    constellation: "ultimate",
-    requiredVisits: 5,
-    connections: []
-  }
-];
+  // STORY_NODES logic moved inside component to access translations
 
 const ShootingStar = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -481,7 +122,8 @@ const ShootingStar = () => {
 };
 
 export default function StoryPage() {
-  const [selectedNode, setSelectedNode] = useState<StoryNode | null>(STORY_NODES[0]);
+  const { t, lang } = useTranslation();
+
   const [visitedNodes, setVisitedNodes] = useState<Set<string>>(new Set(["origin"]));
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -504,7 +146,377 @@ export default function StoryPage() {
   const [textDistance, setTextDistance] = useState("15625");
   const [graphicsTier, setGraphicsTier] = useState<string>("low");
 
+  // Localized STORY_NODES
+  const STORY_NODES: StoryNode[] = React.useMemo(() => [
+    {
+      id: "origin",
+      title: t.story?.nodes.origin.title || "...",
+      year: t.story?.nodes.origin.year || "...",
+      content: t.story?.nodes.origin.content || "...",
+      icon: <Users />,
+      x: 50, y: 50,
+      constellation: "core",
+      requiredVisits: 1,
+      connections: ["vibe", "rules", "loyalty"]
+    },
+    {
+      id: "vibe",
+      title: t.story?.nodes.vibe.title || "...",
+      year: t.story?.nodes.vibe.year || "...",
+      content: t.story?.nodes.vibe.content || "...",
+      icon: <Moon />,
+      x: 52, y: 48,
+      constellation: "core",
+      requiredVisits: 1,
+      connections: ["style", "secret_vibe"]
+    },
+    {
+      id: "rules",
+      title: t.story?.nodes.rules.title || "...",
+      year: t.story?.nodes.rules.year || "...",
+      content: t.story?.nodes.rules.content || "...",
+      icon: <Shield />,
+      x: 48, y: 52,
+      constellation: "core",
+      requiredVisits: 1,
+      connections: ["loyalty"]
+    },
+    {
+      id: "loyalty",
+      title: t.story?.nodes.loyalty.title || "...",
+      year: t.story?.nodes.loyalty.year || "...",
+      content: t.story?.nodes.loyalty.content || "...",
+      icon: <Heart />,
+      x: 49, y: 49,
+      constellation: "core",
+      requiredVisits: 1,
+      connections: ["origin"]
+    },
+    {
+      id: "style",
+      title: t.story?.nodes.style.title || "...",
+      year: t.story?.nodes.style.year || "...",
+      content: t.story?.nodes.style.content || "...",
+      icon: <Zap />,
+      x: 51, y: 51,
+      constellation: "core",
+      requiredVisits: 1,
+      connections: ["vibe"]
+    },
+    {
+      id: "secret_vibe",
+      title: t.story?.nodes.secret_vibe.title || "...",
+      year: t.story?.nodes.secret_vibe.year || "...",
+      content: t.story?.nodes.secret_vibe.content || "...",
+      secretContent: t.story?.nodes.secret_vibe.secret || "...",
+      type: "secret",
+      icon: <Lock />,
+      x: 50, y: 44,
+      constellation: "core",
+      requiredVisits: 1,
+      connections: ["vibe"]
+    },
+    {
+      id: "roots_start",
+      title: t.story?.nodes.roots_start.title || "...",
+      year: t.story?.nodes.roots_start.year || "...",
+      content: t.story?.nodes.roots_start.content || "...",
+      icon: <Scissors />,
+      x: 8, y: 12,
+      constellation: "origins",
+      requiredVisits: 2,
+      connections: ["tradition", "childhood"]
+    },
+    {
+      id: "tradition",
+      title: t.story?.nodes.tradition.title || "...",
+      year: t.story?.nodes.tradition.year || "...",
+      content: t.story?.nodes.tradition.content || "...",
+      icon: <Star />,
+      x: 3, y: 18,
+      constellation: "origins",
+      requiredVisits: 2,
+      connections: ["hard_times", "secret_roots"]
+    },
+    {
+      id: "childhood",
+      title: t.story?.nodes.childhood.title || "...",
+      year: t.story?.nodes.childhood.year || "...",
+      content: t.story?.nodes.childhood.content || "...",
+      icon: <MapPin />,
+      x: 14, y: 5,
+      constellation: "origins",
+      requiredVisits: 2,
+      connections: ["first_shop"]
+    },
+    {
+      id: "hard_times",
+      title: t.story?.nodes.hard_times.title || "...",
+      year: t.story?.nodes.hard_times.year || "...",
+      content: t.story?.nodes.hard_times.content || "...",
+      icon: <Target />,
+      x: 2, y: 30,
+      constellation: "origins",
+      requiredVisits: 2,
+      connections: ["first_shop"]
+    },
+    {
+      id: "first_shop",
+      title: t.story?.nodes.first_shop.title || "...",
+      year: t.story?.nodes.first_shop.year || "...",
+      content: t.story?.nodes.first_shop.content || "...",
+      icon: <Briefcase />,
+      x: 10, y: 22,
+      constellation: "origins",
+      requiredVisits: 2,
+      connections: ["roots_start"]
+    },
+    {
+      id: "mentor",
+      title: t.story?.nodes.mentor.title || "...",
+      year: t.story?.nodes.mentor.year || "...",
+      content: t.story?.nodes.mentor.content || "...",
+      icon: <Bookmark />,
+      x: 18, y: 18,
+      constellation: "origins",
+      requiredVisits: 2,
+      connections: ["roots_start"]
+    },
+    {
+      id: "secret_roots",
+      title: t.story?.nodes.secret_roots.title || "...",
+      year: t.story?.nodes.secret_roots.year || "...",
+      content: t.story?.nodes.secret_roots.content || "...",
+      secretContent: t.story?.nodes.secret_roots.secret || "...",
+      type: "secret",
+      icon: <FileText />,
+      x: 5, y: 4,
+      constellation: "origins",
+      requiredVisits: 2,
+      connections: ["tradition"]
+    },
+    {
+      id: "talent_start",
+      title: t.story?.nodes.talent_start.title || "...",
+      year: t.story?.nodes.talent_start.year || "...",
+      content: t.story?.nodes.talent_start.content || "...",
+      icon: <Target />,
+      x: 92, y: 12,
+      constellation: "talent",
+      requiredVisits: 3,
+      connections: ["sharp_blade", "steady_hand"]
+    },
+    {
+      id: "sharp_blade",
+      title: t.story?.nodes.sharp_blade.title || "...",
+      year: t.story?.nodes.sharp_blade.year || "...",
+      content: t.story?.nodes.sharp_blade.content || "...",
+      icon: <Zap />,
+      x: 97, y: 5,
+      constellation: "talent",
+      requiredVisits: 3,
+      connections: ["alchemy", "secret_talent"]
+    },
+    {
+      id: "steady_hand",
+      title: t.story?.nodes.steady_hand.title || "...",
+      year: t.story?.nodes.steady_hand.year || "...",
+      content: t.story?.nodes.steady_hand.content || "...",
+      icon: <Activity />,
+      x: 88, y: 6,
+      constellation: "talent",
+      requiredVisits: 3,
+      connections: ["philosophy"]
+    },
+    {
+      id: "alchemy",
+      title: t.story?.nodes.alchemy.title || "...",
+      year: t.story?.nodes.alchemy.year || "...",
+      content: t.story?.nodes.alchemy.content || "...",
+      icon: <FlaskConical />,
+      x: 96, y: 20,
+      constellation: "talent",
+      requiredVisits: 3,
+      connections: ["talent_start"]
+    },
+    {
+      id: "philosophy",
+      title: t.story?.nodes.philosophy.title || "...",
+      year: t.story?.nodes.philosophy.year || "...",
+      content: t.story?.nodes.philosophy.content || "...",
+      icon: <Eye />,
+      x: 82, y: 22,
+      constellation: "talent",
+      requiredVisits: 3,
+      connections: ["talent_start"]
+    },
+    {
+      id: "secret_talent",
+      title: t.story?.nodes.secret_talent.title || "...",
+      year: t.story?.nodes.secret_talent.year || "...",
+      content: t.story?.nodes.secret_talent.content || "...",
+      secretContent: t.story?.nodes.secret_talent.secret || "...",
+      type: "secret",
+      icon: <Flame />,
+      x: 94, y: 3,
+      constellation: "talent",
+      requiredVisits: 3,
+      connections: ["sharp_blade"]
+    },
+    {
+      id: "career_start",
+      title: t.story?.nodes.career_start.title || "...",
+      year: t.story?.nodes.career_start.year || "...",
+      content: t.story?.nodes.career_start.content || "...",
+      icon: <Navigation />,
+      x: 12, y: 85,
+      constellation: "career",
+      requiredVisits: 4,
+      connections: ["team_power", "territory"]
+    },
+    {
+      id: "team_power",
+      title: t.story?.nodes.team_power.title || "...",
+      year: t.story?.nodes.team_power.year || "...",
+      content: t.story?.nodes.team_power.content || "...",
+      icon: <Users />,
+      x: 4, y: 94,
+      constellation: "career",
+      requiredVisits: 4,
+      connections: ["standards", "secret_career"]
+    },
+    {
+      id: "territory",
+      title: t.story?.nodes.territory.title || "...",
+      year: t.story?.nodes.territory.year || "...",
+      content: t.story?.nodes.territory.content || "...",
+      icon: <Map />,
+      x: 20, y: 92,
+      constellation: "career",
+      requiredVisits: 4,
+      connections: ["legacy_building"]
+    },
+    {
+      id: "standards",
+      title: t.story?.nodes.standards.title || "...",
+      year: t.story?.nodes.standards.year || "...",
+      content: t.story?.nodes.standards.content || "...",
+      icon: <ShieldCheck />,
+      x: 3, y: 82,
+      constellation: "career",
+      requiredVisits: 4,
+      connections: ["career_start"]
+    },
+    {
+      id: "legacy_building",
+      title: t.story?.nodes.legacy_building.title || "...",
+      year: t.story?.nodes.legacy_building.year || "...",
+      content: t.story?.nodes.legacy_building.content || "...",
+      icon: <Award />,
+      x: 10, y: 97,
+      constellation: "career",
+      requiredVisits: 4,
+      connections: ["career_start"]
+    },
+    {
+      id: "secret_career",
+      title: t.story?.nodes.secret_career.title || "...",
+      year: t.story?.nodes.secret_career.year || "...",
+      content: t.story?.nodes.secret_career.content || "...",
+      secretContent: t.story?.nodes.secret_career.secret || "...",
+      type: "secret",
+      icon: <EyeOff />,
+      x: 5, y: 72,
+      constellation: "career",
+      requiredVisits: 4,
+      connections: ["team_power"]
+    },
+    {
+      id: "ultimate_goal",
+      title: t.story?.nodes.ultimate_goal.title || "...",
+      year: t.story?.nodes.ultimate_goal.year || "...",
+      content: t.story?.nodes.ultimate_goal.content || "...",
+      icon: <Trophy />,
+      x: 88, y: 85,
+      constellation: "ultimate",
+      requiredVisits: 5,
+      connections: ["perfection", "immortality"]
+    },
+    {
+      id: "perfection",
+      title: t.story?.nodes.perfection.title || "...",
+      year: t.story?.nodes.perfection.year || "...",
+      content: t.story?.nodes.perfection.content || "...",
+      icon: <Zap />,
+      x: 95, y: 82,
+      constellation: "ultimate",
+      requiredVisits: 5,
+      connections: ["new_era", "secret_ultimate"]
+    },
+    {
+      id: "immortality",
+      title: t.story?.nodes.immortality.title || "...",
+      year: t.story?.nodes.immortality.year || "...",
+      content: t.story?.nodes.immortality.content || "...",
+      icon: <Compass />,
+      x: 82, y: 94,
+      constellation: "ultimate",
+      requiredVisits: 5,
+      connections: ["new_era"]
+    },
+    {
+      id: "new_era",
+      title: t.story?.nodes.new_era.title || "...",
+      year: t.story?.nodes.new_era.year || "...",
+      content: t.story?.nodes.new_era.content || "...",
+      icon: <Radio />,
+      x: 97, y: 92,
+      constellation: "ultimate",
+      requiredVisits: 5,
+      connections: ["ultimate_goal"]
+    },
+    {
+      id: "secret_ultimate",
+      title: t.story?.nodes.secret_ultimate.title || "...",
+      year: t.story?.nodes.secret_ultimate.year || "...",
+      content: t.story?.nodes.secret_ultimate.content || "...",
+      secretContent: t.story?.nodes.secret_ultimate.secret || "...",
+      type: "secret",
+      icon: <Key />,
+      x: 92, y: 97,
+      constellation: "ultimate",
+      requiredVisits: 5,
+      connections: ["perfection"]
+    },
+    {
+      id: "legacy_myth",
+      title: t.story?.nodes.legacy_myth.title || "...",
+      year: t.story?.nodes.legacy_myth.year || "...",
+      content: t.story?.nodes.legacy_myth.content || "...",
+      icon: <Award />,
+      x: 2, y: 2,
+      constellation: "ultimate",
+      requiredVisits: 5,
+      connections: []
+    }
+  ], [t]);
+
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  
+  // Find the actual node object based on the selected ID
+  const selectedNode = React.useMemo(() => 
+    STORY_NODES.find(n => n.id === selectedNodeId) || null
+  , [STORY_NODES, selectedNodeId]);
+
+  // Set initial node once translations are ready
   useEffect(() => {
+    if (STORY_NODES.length > 0 && !selectedNodeId) {
+      setSelectedNodeId("origin");
+    }
+  }, [STORY_NODES, selectedNodeId]);
+
+  useEffect(() => {
+    setIsMounted(true);
     const updateTier = () => {
       const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
       setGraphicsTier(tier);
@@ -582,14 +594,7 @@ export default function StoryPage() {
   }, []);
 
   const getSectorName = (constellation: string) => {
-    const sectors: Record<string, string> = {
-      core: "Souhvězdí Kodexu",
-      origins: "Souhvězdí Původu",
-      talent: "Souhvězdí Mistrů",
-      career: "Souhvězdí Teritoria",
-      ultimate: "Souhvězdí Odkazu"
-    };
-    return sectors[constellation] || "Neznámé Souhvězdí";
+    return t.story?.sectors[constellation as keyof typeof t.story.sectors] || t.story?.sectors.core || "Unknown";
   };
 
   const getGalaxyColor = (baseColor: string) => {
@@ -634,17 +639,17 @@ export default function StoryPage() {
   };
 
   useEffect(() => {
-    if (selectedNode && !visitedNodes.has(selectedNode.id)) {
+    if (selectedNodeId && !visitedNodes.has(selectedNodeId)) {
       const nextVisited = new Set(visitedNodes);
-      nextVisited.add(selectedNode.id);
+      nextVisited.add(selectedNodeId);
       setVisitedNodes(nextVisited);
       localStorage.setItem("mmbarber_story_progress", JSON.stringify(Array.from(nextVisited)));
-      setJustUnlocked(selectedNode.id);
+      setJustUnlocked(selectedNodeId);
       setTimeout(() => setJustUnlocked(null), 1500);
     }
     setIsSecretRevealed(false);
     setHackingProgress(0);
-  }, [selectedNode]);
+  }, [selectedNodeId]);
 
   const handleCenterCamera = async (targetNode: StoryNode, customZoom?: number) => {
     const flightId = ++flightControlRef.current;
@@ -693,18 +698,18 @@ export default function StoryPage() {
   const handleMouseUp = () => setIsDragging(false);
 
   const handleNextNode = () => {
-    const currentIndex = STORY_NODES.findIndex(n => n.id === selectedNode?.id);
+    const currentIndex = STORY_NODES.findIndex(n => n.id === selectedNodeId);
     const nextNode = STORY_NODES[currentIndex + 1];
     if (nextNode && unlockedLevels.has(nextNode.requiredVisits || 1)) {
-      setSelectedNode(nextNode);
+      setSelectedNodeId(nextNode.id);
       handleCenterCamera(nextNode);
     }
   };
   const handlePrevNode = () => {
-    const currentIndex = STORY_NODES.findIndex(n => n.id === selectedNode?.id);
+    const currentIndex = STORY_NODES.findIndex(n => n.id === selectedNodeId);
     const prevNode = STORY_NODES[currentIndex - 1];
     if (prevNode && unlockedLevels.has(prevNode.requiredVisits || 1)) {
-      setSelectedNode(prevNode);
+      setSelectedNodeId(prevNode.id);
       handleCenterCamera(prevNode);
     }
   };
@@ -724,7 +729,7 @@ export default function StoryPage() {
       window.removeEventListener('keydown', handleKey);
       window.removeEventListener('wheel', handleWheel);
     };
-  }, [selectedNode, unlockedLevels]);
+  }, [selectedNodeId, unlockedLevels]);
 
   const starLayer1 = React.useMemo(() => {
     const sliceEnd = graphicsTier === 'ultra' ? 200 : (graphicsTier === 'high' ? 150 : (graphicsTier === 'medium' ? 100 : 50));
@@ -777,6 +782,7 @@ export default function StoryPage() {
     );
   }, [stars, graphicsTier]);
 
+
   if (!isMounted) return null;
 
   return (
@@ -798,25 +804,30 @@ export default function StoryPage() {
             <AnimatePresence mode="wait">
               {selectedNode && (
                 <motion.div 
-                  key={selectedNode.id} 
-                  initial={{ opacity: 0, rotateX: 45, y: 100, z: -100 }} 
-                  animate={{ opacity: 1, rotateX: 0, y: 0, z: 0 }} 
-                  exit={{ opacity: 0, rotateX: -45, y: -100, z: -100 }} 
-                  transition={{ duration: 1.2, ease: "easeOut" }}
-                  className="space-y-6 pointer-events-auto"
-                  style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
+                  key={`${selectedNode.id}-${lang}`} 
+                  initial={{ opacity: 0, x: -20 }} 
+                  animate={{ opacity: 1, x: 0 }} 
+                  exit={{ opacity: 0, x: 20 }} 
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="space-y-6 pointer-events-auto relative z-50"
                 >
-                  <span className="text-mafia-gold/40 font-mono text-[10px] tracking-widest block uppercase">Období: {selectedNode.year}</span>
-                  <h2 className="text-4xl font-heading font-black text-white uppercase italic leading-tight" style={{ textShadow: "0 0 20px rgba(var(--color-mafia-gold-rgb),0.3)" }}>{selectedNode.title}</h2>
-                  <p className="text-white/80 text-lg italic leading-relaxed" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>{selectedNode.content}</p>
+                  <span className="text-mafia-gold/40 font-mono text-[10px] tracking-widest block uppercase">
+                    {(t.story?.hud?.period || "PERIOD") + " " + (selectedNode.year || "...")}
+                  </span>
+                  <h2 className="text-4xl font-heading font-black text-white uppercase italic leading-tight" style={{ textShadow: "0 0 20px rgba(212,175,55,0.3)", fontFamily: "var(--font-playfair), serif" }}>
+                    {selectedNode.title}
+                  </h2>
+                  <p className="text-white/80 text-lg italic leading-relaxed" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.5)", fontFamily: "var(--font-inter), sans-serif" }}>
+                    {selectedNode.content}
+                  </p>
 
                   {selectedNode.type === 'secret' && !isSecretRevealed ? (
                     <button onClick={handleRevealSecret} className="w-full py-4 border border-mafia-red/40 text-mafia-red font-mono text-[10px] uppercase hover:bg-mafia-red hover:text-white transition-all">
-                      {hackingProgress > 0 ? `DEŠIFROVÁNÍ: ${hackingProgress}%` : "ZAHÁJIT_DEŠIFROVÁNÍ"}
+                      {hackingProgress > 0 ? `${t.story?.hud.hacking} ${hackingProgress}%` : t.story?.hud.startHacking}
                     </button>
                   ) : isSecretRevealed && selectedNode.secretContent && (
                     <div className="p-6 border border-mafia-red/20 bg-mafia-red/5 text-mafia-red italic rounded-sm">
-                      <div className="text-[9px] font-mono mb-2 opacity-50">DEŠIFROVANÁ_DATA:</div>
+                      <div className="text-[9px] font-mono mb-2 opacity-50">{t.story?.hud.decryptedData}</div>
                       {selectedNode.secretContent}
                     </div>
                   )}
@@ -849,9 +860,16 @@ export default function StoryPage() {
             const isVisited = visitedNodes.has(node.id);
             return (
               <motion.div key={node.id} className="absolute" style={{ left: `${node.x}%`, top: `${node.y}%`, x: "-50%", y: "-50%" }}>
-                <button onClick={() => { if (isAccessible) { setSelectedNode(node); handleCenterCamera(node); } }}
-                  className={`w-14 h-14 rounded-sm border-2 flex items-center justify-center transition-all duration-500 pointer-events-auto ${selectedNode?.id === node.id ? "bg-mafia-gold text-mafia-black border-white" : isVisited ? "bg-black text-mafia-gold border-mafia-gold" : "bg-black/80 text-white/20 border-white/10"}`}>
-                  {isVisited ? React.cloneElement(node.icon as any, { size: 20 }) : isAccessible ? <Activity size={20} className="animate-pulse" /> : <Lock size={20} className="opacity-20" />}
+                <button 
+                  onClick={(e) => { 
+                    e.stopPropagation();
+                    if (isAccessible) { 
+                      setSelectedNodeId(node.id); 
+                      handleCenterCamera(node); 
+                    } 
+                  }}
+                  className={`w-14 h-14 rounded-sm border-2 flex items-center justify-center transition-all duration-500 pointer-events-auto relative z-20 ${selectedNodeId === node.id ? "bg-mafia-gold text-mafia-black border-white scale-110 shadow-[0_0_20px_rgba(255,255,255,0.4)]" : isVisited ? "bg-black text-mafia-gold border-mafia-gold" : "bg-black/80 text-white/20 border-white/10"}`}>
+                  {isVisited ? (React.isValidElement(node.icon) ? React.cloneElement(node.icon as any, { size: 20 }) : <span>●</span>) : isAccessible ? <Activity size={20} className="animate-pulse" /> : <Lock size={20} className="opacity-20" />}
                 </button>
               </motion.div>
             );
@@ -864,8 +882,8 @@ export default function StoryPage() {
         <button onClick={() => handleZoom(0.2)} className="w-12 h-12 bg-black/40 border border-white/10 text-mafia-gold flex items-center justify-center rounded-sm hover:bg-mafia-gold hover:text-black transition-all"><Plus size={20} /></button>
         <button onClick={() => handleZoom(-0.2)} className="w-12 h-12 bg-black/40 border border-white/10 text-mafia-gold flex items-center justify-center rounded-sm hover:bg-mafia-gold hover:text-black transition-all"><Minus size={20} /></button>
         <div className="mt-2 p-4 bg-black/60 border border-mafia-gold/20 backdrop-blur-md text-[9px] font-mono text-mafia-gold/60 uppercase space-y-2">
-          <div className="flex justify-between gap-8"><span>VZDÁLENOST:</span><span className="text-mafia-gold font-bold">{textDistance} LY</span></div>
-          <div className="flex justify-between gap-8"><span>GALAXIE:</span><span className="text-mafia-gold font-bold">{getSectorName(selectedNode?.constellation || "core")}</span></div>
+          <div className="flex justify-between gap-8"><span>{t.story?.hud.distance}</span><span className="text-mafia-gold font-bold">{textDistance} LY</span></div>
+          <div className="flex justify-between gap-8"><span>{t.story?.hud.galaxy}</span><span className="text-mafia-gold font-bold">{getSectorName(selectedNode?.constellation || "core")}</span></div>
         </div>
       </div>
 

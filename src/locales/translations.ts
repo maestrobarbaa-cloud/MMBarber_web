@@ -24,6 +24,190 @@ export const translations = {
       searchPlaceholder: "Ptej se právně.",
       reviews: "Recenze"
     },
+    story: {
+      sectors: {
+        core: "Souhvězdí Kodexu",
+        origins: "Souhvězdí Původu",
+        talent: "Souhvězdí Mistrů",
+        career: "Souhvězdí Teritoria",
+        ultimate: "Souhvězdí Odkazu"
+      },
+      hud: {
+        distance: "VZDÁLENOST:",
+        galaxy: "GALAXIE:",
+        period: "Období:",
+        hacking: "DEŠIFROVÁNÍ:",
+        startHacking: "ZAHÁJIT_DEŠIFROVÁNÍ",
+        decryptedData: "DEŠIFROVANÁ_DATA:"
+      },
+      terminal: {
+        input: "ZADEJTE_KÓD...",
+        authorized: "PŘÍSTUP_AUTORIZOVÁN",
+        denied: "PŘÍSTUP_ZAMÍTNUT"
+      },
+      nodes: {
+        origin: {
+          title: "Srdce Rodiny",
+          year: "DNES",
+          content: "Vše začíná zde. V našem křesle, kde se čas zastaví. Tady se tvoří respekt, který se nedá koupit. Jsme MMBarber a toto je naše teritorium."
+        },
+        vibe: {
+          title: "Noir Atmosféra",
+          year: "2024",
+          content: "Černá a bílá. Žádné kompromisy. Naše estetika odráží naši filozofii – čistota, kontrast a neúprosná kvalita v každém detailu."
+        },
+        rules: {
+          title: "Kodex Mlčení",
+          year: "STÁLÉ",
+          content: "To, co se řekne v barberu, zůstane v barberu. Jsme důvěrníci, psychologové i spojenci našich hostů. Respektujeme vaše soukromí jako vlastní."
+        },
+        loyalty: {
+          title: "Pouto Krve",
+          year: "VŽDY",
+          content: "Naši zákazníci nejsou jen klienti, jsou to členové širší rodiny. Loajalita je měnou, kterou si u nás ceníme nejvíce."
+        },
+        style: {
+          title: "Estetika Moci",
+          year: "2024",
+          content: "Styl není móda. Móda pomíjí, styl je věčný. My tvoříme identitu, která vyzařuje sílu a sebevědomí v každém kroku."
+        },
+        secret_vibe: {
+          title: "Půlnoční Kšeft",
+          year: "UTAJENO",
+          content: "Někdy se ty nejdůležitější věci řeší, když město spí. Naše dveře se občas otevírají i pro ty, kteří nepotřebují jen střih, ale i radu.",
+          secret: "V noci se v MMBarberu scházejí lidé, kteří hýbou tímto městem. Jsme neutrální půda pro velké kšefty."
+        },
+        roots_start: {
+          title: "První Nůžky",
+          year: "MINULOST",
+          content: "Zde v Hradišti to všechno začalo. Jeden sen, jedny nůžky a nekonečná touha dělat věci jinak – poctivě a s respektem k řemeslu."
+        },
+        tradition: {
+          title: "Rodinný Odkaz",
+          year: "1984",
+          content: "Respekt k řemeslu se u nás dědí. Učili jsme se od those nejlepších, abychom dnes mohli sami určovat pravidla hry."
+        },
+        childhood: {
+          title: "Ulicemi Hradiště",
+          year: "RETRO",
+          content: "Každý kout tohoto města známe. Tady jsme vyrůstali a tady jsme pochopili, co znamená slovo domov a teritorium."
+        },
+        hard_times: {
+          title: "Zkouška Ohněm",
+          year: "KRITICKÉ",
+          content: "Nebylo to vždy snadné. Každá jizva na naší cestě nás posílila. Naučili jsme se, že pád není konec, ale lekce."
+        },
+        first_shop: {
+          title: "Stará Garáž",
+          year: "START",
+          content: "První neoficiální křeslo v garáži. Tam se rodila legenda. Bez marketingu, jen díky šeptandě o nejlepším střihu v okolí."
+        },
+        mentor: {
+          title: "Starý Mistr",
+          year: "MOUDROST",
+          content: "Každý šéf měl svého mentora. Člověka, který mu ukázal, že nůžky jsou jen nástroj, ale ruka je vedená duší."
+        },
+        secret_roots: {
+          title: "Ztracený Deník",
+          year: "KLASIFIKOVÁNO",
+          content: "Existují záznamy o prvních klientech, kteří u nás hledali azyl. Příběhy, které by neměly být nikdy vyprávěny nahlas.",
+          secret: "Prvním hostem v garáži byl místní boss, který nám daroval první profesionální břitvu za zachování mlčení."
+        },
+        talent_start: {
+          title: "Absolutní Přesnost",
+          year: "MISTROVSTVÍ",
+          content: "Chyba není v našem slovníku. Každý milimetr hraje roli. Naše práce je geometrie aplikovaná na tvář moderního muže."
+        },
+        sharp_blade: {
+          title: "Ocel a Kůže",
+          year: "ZRUČNOST",
+          content: "Břitva je prodloužením naší ruky. Pocit ostří na kůži je rituál, který vyžaduje absolutní důvěru mezi barberem a hostem."
+        },
+        steady_hand: {
+          title: "Klidná Ruka",
+          year: "TRÉNINK",
+          content: "Tisíce hodin tréninku vedou k jedinému okamžiku dokonalosti. Naše ruce se nechvějí ani v největším tlaku."
+        },
+        alchemy: {
+          title: "Vůně Respektu",
+          year: "MAGIE",
+          content: "Výběr vůně je jako podpis. Namícháme pro vás esenci, která bude vyprávět váš příběh dřív, než promluvíte."
+        },
+        philosophy: {
+          title: "Tichá Síla",
+          year: "FILOZOFIE",
+          content: "Skutečný talent nepotřebuje křičet. Naše výsledky mluví samy za sebe. Jsme tiší tvůrci vašeho veřejného obrazu."
+        },
+        secret_talent: {
+          title: "Zakázaná Technika",
+          year: "EXPERIMENTÁLNÍ",
+          content: "Existují postupy, které běžné oko nespatří. Práce s texturou, která hraničí s uměním. Jen pro vyvolené.",
+          secret: "Naše speciální technika 'Fantomový Fade' vytváří přechod, který vypadá přirozeně i po dvou týdnech."
+        },
+        career_start: {
+          title: "Expanze",
+          year: "RŮST",
+          content: "Hradiště nám začalo být malé. Naše jméno se začalo šířit dál. Vybudovat impérium vyžaduje strategii a správné lidi po boku."
+        },
+        team_power: {
+          title: "Smečka",
+          year: "RODINA",
+          content: "Barber je jen tak dobrý, jako jeho nejslabší článek. My žádné slabé články nemáme. Jsme jednotka se společným cílem."
+        },
+        territory: {
+          title: "Dobytí Trhu",
+          year: "DOMINANCE",
+          content: "Nejsme jen další barber. Jsme standard, podle kterého se měří ostatní. Ovládli jsme prostor kvalitou, ne reklamou."
+        },
+        standards: {
+          title: "Železná Pravidla",
+          year: "PROVOZ",
+          content: "Naše standardy jsou neúprosné. Hygiena, servis, drink – vše musí být na 110 %. Jinak nejsme rodina MM."
+        },
+        legacy_building: {
+          title: "Budování Jména",
+          year: "ZNAČKA",
+          content: "MMBarber není jen nápis na dveřích. Je to příslib zážitku. Investujeme do budoucnosti, aby naše jméno přežilo nás všechny."
+        },
+        secret_career: {
+          title: "Stínový Poradce",
+          year: "NEOFICIÁLNÍ",
+          content: "Někdy se ty nejdůležitější věci řeší, když město spí. Tam se kreslí mapa naší expanze.",
+          secret: "Plánujeme otevření utajeného klubu pro naše VIP členy, kde barbering bude jen začátkem večera."
+        },
+        ultimate_goal: {
+          title: "Absolutní Vize",
+          year: "BUDOUCNOST",
+          content: "Naše cesta nekončí. Míříme ke hvězdám. Chceme změnit vnímání mužské péče v celém regionu i mimo něj."
+        },
+        perfection: {
+          title: "Bod Nula",
+          year: "DOKONALOST",
+          content: "Hledáme bod, kde už není co zlepšit. Neustálý progres je náš motor. Spokojenost je pro nás jen dočasná zastávka."
+        },
+        immortality: {
+          title: "Nesmrtelnost",
+          year: "ODKAZ",
+          content: "Chceme vytvořit něco, co tu bude i za sto let. Odkaz MMBarber je vrytý do tváří tisíců mužů, kteří prošli naším křeslem."
+        },
+        new_era: {
+          title: "Nová Éra",
+          year: "2030+",
+          content: "Připravujeme půdu pro příští generaci. Technologie, tradice a noir styl v dokonalé symbióze příští dekády."
+        },
+        secret_ultimate: {
+          title: "Původní Plán",
+          year: "GENESIS",
+          content: "Všechno, co vidíte, bylo naplánováno už na úplném začátku. Každý krok v této galaxii byl zapsán v naší první vizi.",
+          secret: "Konečným cílem je vytvořit globální síť MMBarber, kde se loajalita odměňuje doživotním členstvím v elitním klubu."
+        },
+        legacy_myth: {
+          title: "Mýtus o Barberovi",
+          year: "NEKONEČNO",
+          content: "Některé příběhy se stávají legendami. Traduje se, že první MM střih změnil osud celého rodu. Pravda je ale mnohem hlubší."
+        }
+      }
+    },
     intelligence: [
       "Dneska je ideální tlak pro ten nejostřejší skin fade. V UH je vzduch tak akorát.",
       "Vypadá to, že se v Hradišti začínají dít věci. Rezervace na vousy se plní.",
@@ -2617,6 +2801,190 @@ export const translations = {
           highPorosity: "HIGH POROSITY",
           dryScalp: "DRY SCALP",
           oilyScalp: "OILY SCALP"
+        }
+      }
+    },
+    story: {
+      sectors: {
+        core: "Codex Constellation",
+        origins: "Origins Constellation",
+        talent: "Masters Constellation",
+        career: "Territory Constellation",
+        ultimate: "Legacy Constellation"
+      },
+      hud: {
+        distance: "DISTANCE:",
+        galaxy: "GALAXY:",
+        period: "Period:",
+        hacking: "DECRYPTING:",
+        startHacking: "START_DECRYPTION",
+        decryptedData: "DECRYPTED_DATA:"
+      },
+      terminal: {
+        input: "ENTER_CODE...",
+        authorized: "ACCESS_AUTHORIZED",
+        denied: "ACCESS_DENIED"
+      },
+      nodes: {
+        origin: {
+          title: "Heart of the Family",
+          year: "TODAY",
+          content: "Everything starts here. In our chair, where time stops. This is where respect is forged, something that cannot be bought. We are MMBarber and this is our territory."
+        },
+        vibe: {
+          title: "Noir Atmosphere",
+          year: "2024",
+          content: "Black and white. No compromises. Our aesthetic reflects our philosophy – purity, contrast, and relentless quality in every detail."
+        },
+        rules: {
+          title: "Code of Silence",
+          year: "CONSTANT",
+          content: "What is said in the barbershop stays in the barbershop. We are confidants, psychologists, and allies to our guests. We respect your privacy as our own."
+        },
+        loyalty: {
+          title: "Bond of Blood",
+          year: "ALWAYS",
+          content: "Our customers are not just clients, they are members of the extended family. Loyalty is the currency we value most."
+        },
+        style: {
+          title: "Aesthetic of Power",
+          year: "2024",
+          content: "Style is not fashion. Fashion fades, style is eternal. We create an identity that radiates strength and confidence in every step."
+        },
+        secret_vibe: {
+          title: "Midnight Deal",
+          year: "CLASSIFIED",
+          content: "Sometimes the most important things are handled while the city sleeps. Our doors occasionally open for those who need more than just a cut.",
+          secret: "At night, the people who move this city meet at MMBarber. We are neutral ground for big deals."
+        },
+        roots_start: {
+          title: "First Scissors",
+          year: "PAST",
+          content: "It all started here in Hradiště. One dream, one pair of scissors, and an endless desire to do things differently – honestly and with respect for the craft."
+        },
+        tradition: {
+          title: "Family Legacy",
+          year: "1984",
+          content: "Respect for the craft is inherited here. We learned from the best to be able to set the rules of the game today."
+        },
+        childhood: {
+          title: "Streets of Hradiště",
+          year: "RETRO",
+          content: "We know every corner of this city. This is where we grew up and where we understood what the words home and territory mean."
+        },
+        hard_times: {
+          title: "Trial by Fire",
+          year: "CRITICAL",
+          content: "It wasn't always easy. Every scar on our path made us stronger. We learned that falling is not the end, but a lesson."
+        },
+        first_shop: {
+          title: "Old Garage",
+          year: "START",
+          content: "The first unofficial chair in the garage. That's where the legend was born. No marketing, only word of mouth about the best cut around."
+        },
+        mentor: {
+          title: "Old Master",
+          year: "WISDOM",
+          content: "Every boss had their mentor. The person who showed him that scissors are just a tool, but the hand is guided by the soul."
+        },
+        secret_roots: {
+          title: "Lost Journal",
+          year: "CLASSIFIED",
+          content: "There are records of the first clients who sought asylum with us. Stories that should never be told out loud.",
+          secret: "The first guest in the garage was a local boss who gave us our first professional razor for keeping silent."
+        },
+        talent_start: {
+          title: "Absolute Precision",
+          year: "MASTERY",
+          content: "Error is not in our vocabulary. Every millimeter matters. Our work is geometry applied to the face of the modern man."
+        },
+        sharp_blade: {
+          title: "Steel and Skin",
+          year: "SKILL",
+          content: "The razor is an extension of our hand. The feeling of the blade on the skin is a ritual that requires absolute trust between the barber and the guest."
+        },
+        steady_hand: {
+          title: "Steady Hand",
+          year: "TRAINING",
+          content: "Thousands of hours of training lead to a single moment of perfection. Our hands do not shake even under the greatest pressure."
+        },
+        alchemy: {
+          title: "Scent of Respect",
+          year: "MAGIC",
+          content: "The choice of scent is like a signature. We will mix an essence for you that will tell your story before you even speak."
+        },
+        philosophy: {
+          title: "Silent Strength",
+          year: "PHILOSOPHY",
+          content: "True talent doesn't need to shout. Our results speak for themselves. We are the silent creators of your public image."
+        },
+        secret_talent: {
+          title: "Forbidden Technique",
+          year: "EXPERIMENTAL",
+          content: "There are procedures that the common eye cannot see. Work with texture that borders on art. Only for the chosen few.",
+          secret: "Our special 'Phantom Fade' technique creates a transition that looks natural even after two weeks."
+        },
+        career_start: {
+          title: "Expansion",
+          year: "GROWTH",
+          content: "Hradiště started to feel small. Our name began to spread further. Building an empire requires strategy and the right people by your side."
+        },
+        team_power: {
+          title: "The Pack",
+          year: "FAMILY",
+          content: "A barber is only as good as their weakest link. We have no weak links. We are a unit with a common goal."
+        },
+        territory: {
+          title: "Market Conquest",
+          year: "DOMINANCE",
+          content: "We are not just another barber. We are the standard by which others are measured. We dominated the space with quality, not advertising."
+        },
+        standards: {
+          title: "Iron Rules",
+          year: "OPERATIONS",
+          content: "Our standards are relentless. Hygiene, service, drink – everything must be at 110%. Otherwise, we are not the MM family."
+        },
+        legacy_building: {
+          title: "Building a Name",
+          year: "BRAND",
+          content: "MMBarber is not just a sign on the door. It's a promise of an experience. We invest in the future so that our name outlives us all."
+        },
+        secret_career: {
+          title: "Shadow Advisor",
+          year: "UNOFFICIAL",
+          content: "Some decisions are not made at the table, but behind closed doors in the back room. That's where the map of our expansion is drawn.",
+          secret: "We are planning to open a secret club for our VIP members, where barbering will be just the beginning of the evening."
+        },
+        ultimate_goal: {
+          title: "Absolute Vision",
+          year: "FUTURE",
+          content: "Our journey does not end. We are aiming for the stars. We want to change the perception of male care in the entire region and beyond."
+        },
+        perfection: {
+          title: "Point Zero",
+          year: "PERFECTION",
+          content: "We are looking for the point where there is nothing left to improve. Constant progress is our engine. Satisfaction is only a temporary stop for us."
+        },
+        immortality: {
+          title: "Immortality",
+          year: "LEGACY",
+          content: "We want to create something that will be here in a hundred years. The MMBarber legacy is etched into the faces of thousands of men who have passed through our chair."
+        },
+        new_era: {
+          title: "New Era",
+          year: "2030+",
+          content: "We are preparing the ground for the next generation. Technology, tradition, and noir style in perfect symbiosis for the next decade."
+        },
+        secret_ultimate: {
+          title: "Original Plan",
+          year: "GENESIS",
+          content: "Everything you see was planned from the very beginning. Every step in this galaxy was written in our first vision.",
+          secret: "The ultimate goal is to create a global network of MMBarber, where loyalty is rewarded with lifetime membership in an elite club."
+        },
+        legacy_myth: {
+          title: "Myth of the Barber",
+          year: "INFINITY",
+          content: "Some stories become legends. It is said that the first MM cut changed the fate of an entire clan. But the truth is much deeper."
         }
       }
     },

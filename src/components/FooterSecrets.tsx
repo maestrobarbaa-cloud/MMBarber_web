@@ -10,10 +10,6 @@ export function FooterSecrets() {
 
   return (
     <div className="w-full flex flex-col items-center gap-8 pb-16">
-      <div className="w-full max-w-4xl opacity-[0.02] blur-[2px] hover:opacity-100 hover:blur-none transition-all duration-1000 mb-8 px-6">
-        <DailyIntelligence />
-      </div>
-      
       <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 max-w-4xl px-6">
         {[
           { href: "/zapisnik", label: "Archiv_01" },

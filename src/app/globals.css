@@ -75,13 +75,18 @@ button, a {
 /* PERFORMANCE BOOST FOR MOBILE BROWSERS */
 .section-optimize {
   content-visibility: auto;
-  contain-intrinsic-size: 1px 500px;
+  contain-intrinsic-size: auto 800px;
 }
 
 .gpu-accelerate {
+  -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+  -webkit-perspective: 1000px;
   perspective: 1000px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
 body {
@@ -90,11 +95,27 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* CROSS-BROWSER BACKDROP BLUR FIXES */
+.backdrop-blur-md, .backdrop-blur-xl, .backdrop-blur-2xl {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.backdrop-blur-md { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.backdrop-blur-xl { -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
+.backdrop-blur-2xl { -webkit-backdrop-filter: blur(40px); backdrop-filter: blur(40px); }
+
 /* SAFARI SPECIFIC FIXES */
 @supports (-webkit-hyphens:none) {
   .safari-blur-fix {
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  
+  /* Safari 3D rendering fix */
+  .barber-card, .menu-card {
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
   }
 }
 
