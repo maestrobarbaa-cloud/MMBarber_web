@@ -318,7 +318,7 @@ export default function RatingPage() {
             animate={{ opacity: 1 }}
             className="text-5xl md:text-7xl font-heading font-black tracking-tighter uppercase text-mafia-gold drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]"
           >
-            {lang === 'cs' ? 'Nastavení' : 'Elite'} <span className="text-white">{lang === 'cs' ? 'Hodností' : 'Ranks'}</span>
+            {t.header.nicknames}
           </motion.h1>
           <p className="text-mafia-gold/60 font-mono tracking-[0.3em] uppercase text-xs md:text-sm max-w-2xl mx-auto leading-relaxed italic">
             {clientNickname ? (

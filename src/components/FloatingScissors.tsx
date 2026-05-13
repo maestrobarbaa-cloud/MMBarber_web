@@ -90,6 +90,7 @@ interface Item {
 
 export function FloatingScissors({ position = "fixed", countOverride }: { position?: "fixed" | "absolute", countOverride?: number }) {
   const [items, setItems] = useState<Item[]>([]);
+  const [isMatrixActive, setIsMatrixActive] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<Item[]>([]);
   const requestRef = useRef<number>(undefined);
@@ -166,21 +167,24 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
             const dx = item.x - mx;
             const dy = item.y - my;
             const aspectForce = width / height;
+            // Use squared distance for performance, but adjust for aspect ratio
             const distSq = (dx * dx) + (dy * dy / (aspectForce * aspectForce));
-            const radius = 12;
+            const radius = 20; // Increased radius for better "scattering"
 
             if (distSq < radius * radius && distSq > 0) {
                 const dist = Math.sqrt(distSq);
-                const force = Math.pow((radius - dist) / radius, 1.2); 
-                item.vx += (dx / dist) * force * 0.22;
-                item.vy += (dy / dist) * force * 0.22;
-                item.vr += force * (Math.random() - 0.5) * 6;
+                // Stronger, more explosive repulsion force
+                const force = Math.pow((radius - dist) / radius, 1.5); 
+                item.vx += (dx / dist) * force * 0.45;
+                item.vy += (dy / dist) * force * 0.45;
+                item.vr += force * (Math.random() - 0.5) * 12;
             }
         }
 
-        item.vx *= 0.985;
-        item.vy *= 0.985;
-        item.vr *= 0.99;
+        // Friction/Damping - slightly adjusted for better "drift" after scattering
+        item.vx *= 0.97;
+        item.vy *= 0.97;
+        item.vr *= 0.98;
 
         const padding = 2; 
         if (item.type === 'snowflake') {
@@ -256,10 +260,16 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
     
     const onResize = () => init();
 
+    const checkMatrix = () => {
+        setIsMatrixActive(document.documentElement.classList.contains("mode-matrix"));
+    };
+
+    checkMatrix();
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener('resize', onResize);
     window.addEventListener('mmbarber-floaters-update', handleUpdate);
     window.addEventListener('mmbarber-mode-update', handleUpdate);
+    window.addEventListener('mmbarber-mode-update', checkMatrix);
     window.addEventListener('mmbarber-glitch-start', handleGlitchStart);
     
     requestRef.current = requestAnimationFrame(update);
@@ -270,14 +280,15 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
         window.removeEventListener('resize', onResize);
         window.removeEventListener('mmbarber-floaters-update', handleUpdate);
         window.removeEventListener('mmbarber-mode-update', handleUpdate);
+        window.removeEventListener('mmbarber-mode-update', checkMatrix);
         window.removeEventListener('mmbarber-glitch-start', handleGlitchStart);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const renderIcon = (item: Item) => {
-    const commonClass = "transition-colors drop-shadow-xl text-mafia-gold/40";
-    const commonStyle = { filter: `drop-shadow(0 0 ${item.size/6}px var(--color-mafia-gold))` };
+    const commonClass = "transition-colors drop-shadow-xl text-white/50";
+    const commonStyle = { filter: `drop-shadow(0 0 ${item.size/8}px rgba(255,255,255,0.4))` };
     const snowflakeStyle = { filter: `drop-shadow(0 0 ${item.size/2}px rgba(255,255,255,0.9))` };
 
     switch (item.type) {
@@ -296,9 +307,9 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
       case 'broom':
         return <div className="hover:rotate-12 transition-transform duration-500"><BroomIcon size={item.size} className="text-[#8b4513]" /></div>;
       case 'star':
-        return <Star size={item.size} className="text-mafia-gold drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.8)]" style={commonStyle} fill="currentColor" />;
+        return <Star size={item.size} className="text-white/80 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" style={commonStyle} fill="currentColor" />;
       case 'medal':
-        return <Medal size={item.size} className="text-mafia-gold/60 drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.4)]" style={commonStyle} />;
+        return <Medal size={item.size} className="text-white/60 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" style={commonStyle} />;
       case 'scissors':
         return <Scissors size={item.size} className={commonClass} style={commonStyle} />;
       case 'clippers':
@@ -310,8 +321,10 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
 
   const isHoliday = items.length > 0 && !['scissors', 'clippers'].includes(items[0].type);
 
+  if (isMatrixActive) return null;
+
   return (
-    <div ref={containerRef} className={`${position} inset-0 z-0 pointer-events-none overflow-hidden mix-blend-screen ${isHoliday ? 'opacity-80' : 'opacity-40'} transition-opacity duration-1000 hidden md:block`}>
+    <div ref={containerRef} className={`${position} inset-0 z-0 pointer-events-none overflow-hidden mix-blend-screen ${isHoliday ? 'opacity-80' : 'opacity-75'} transition-opacity duration-1000 hidden md:block`}>
       {items.map((item) => (
         <div
           key={item.id}

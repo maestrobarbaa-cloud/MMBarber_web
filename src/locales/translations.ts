@@ -22,7 +22,9 @@ export const translations = {
       savingData: "ŠETŘÍ DATA",
       navigate: "NAVIGOVAT",
       searchPlaceholder: "Ptej se právně.",
-      reviews: "Recenze"
+      reviews: "Recenze",
+      ratingAndNicknames: "Hodnocení a přezdívky",
+      nicknames: "Přezdívky"
     },
     story: {
       sectors: {
@@ -1154,8 +1156,10 @@ export const translations = {
       tracking: "TRACKING POSITION",
       savingData: "SAVING DATA",
       navigate: "NAVIGATE",
-      searchPlaceholder: "LOCATE TARGET...",
-      reviews: "Reviews"
+      searchPlaceholder: "Ask legally.",
+      reviews: "Reviews",
+      ratingAndNicknames: "Rating & Nicknames",
+      nicknames: "Nicknames"
     },
     intelligence: [
       "Ideal pressure for the sharpest skin fade today. Air in UH is just right.",

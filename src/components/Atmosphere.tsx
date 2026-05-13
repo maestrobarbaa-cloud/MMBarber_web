@@ -15,6 +15,7 @@ export function Atmosphere() {
   const [isLowTier, setIsLowTier] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [stars, setStars] = useState({ s1: "", s2: "", s3: "" });
+  const [showGalaxy, setShowGalaxy] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -25,17 +26,32 @@ export function Atmosphere() {
       s3: generateStars(100, 2000)
     });
 
-    const checkMobile = () => {
+    const checkAtmosphere = () => {
       const tier = document.documentElement.getAttribute('data-graphics-tier');
+      const hour = new Date().getHours();
+      const override = localStorage.getItem("mmbarber_atmosphere_override");
+      
+      let isGalaxyTime = hour >= 22 || hour < 4;
+      if (override === "galaxy") isGalaxyTime = true;
+      if (override === "classic") isGalaxyTime = false;
+      
+      setShowGalaxy(isGalaxyTime);
       setIsLowTier(tier === 'low' || window.innerWidth < 1024);
     };
     
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    window.addEventListener('mmbarber-graphics-update', checkMobile);
+    checkAtmosphere();
+    window.addEventListener('resize', checkAtmosphere);
+    window.addEventListener('mmbarber-graphics-update', checkAtmosphere);
+    window.addEventListener('mmbarber-atmosphere-update', checkAtmosphere);
+    
+    // Check every minute for time changes
+    const interval = setInterval(checkAtmosphere, 60000);
+
     return () => {
-      window.removeEventListener('resize', checkMobile);
-      window.removeEventListener('mmbarber-graphics-update', checkMobile);
+      window.removeEventListener('resize', checkAtmosphere);
+      window.removeEventListener('mmbarber-graphics-update', checkAtmosphere);
+      window.removeEventListener('mmbarber-atmosphere-update', checkAtmosphere);
+      clearInterval(interval);
     };
   }, []);
 
@@ -43,19 +59,22 @@ export function Atmosphere() {
 
   return (
     <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-black atmosphere-container">
-      {/* Dynamic Star Layers generated via CSS for maximum browser compatibility (Firefox fix) */}
-      <div className="absolute inset-0 z-0">
-        <div className="stars-layer-1" />
-        <div className="stars-layer-2" />
-        <div className="stars-layer-3" />
-      </div>
-      
-      {/* Cinematic Galaxy Glows - Enhanced for depth */}
-      <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-mafia-gold/5 blur-[150px] rounded-full animate-pulse-slow opacity-60"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-mafia-blood/5 blur-[120px] rounded-full animate-pulse-slow-reverse opacity-40"></div>
-        <div className="absolute top-[30%] right-[10%] w-[40%] h-[40%] bg-blue-900/5 blur-[100px] rounded-full animate-pulse-slow opacity-30"></div>
-      </div>
+      {/* Cinematic Galaxy & Stars - Only visible at Night (22:00 - 4:00) or via override */}
+      {showGalaxy && (
+        <>
+          <div className="absolute inset-0 z-0">
+            <div className="stars-layer-1" />
+            <div className="stars-layer-2" />
+            <div className="stars-layer-3" />
+          </div>
+          
+          <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+            <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-mafia-gold/5 blur-[150px] rounded-full animate-pulse-slow opacity-60"></div>
+            <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-mafia-blood/5 blur-[120px] rounded-full animate-pulse-slow-reverse opacity-40"></div>
+            <div className="absolute top-[30%] right-[10%] w-[40%] h-[40%] bg-blue-900/5 blur-[100px] rounded-full animate-pulse-slow opacity-30"></div>
+          </div>
+        </>
+      )}
 
       {/* Layer 3: Vignette & Focus */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,2,2,0.8)_100%)] z-20 pointer-events-none"></div>

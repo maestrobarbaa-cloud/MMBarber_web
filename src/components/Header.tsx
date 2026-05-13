@@ -352,6 +352,7 @@ export function Header() {
     { keywords: ["kontakt", "contact", "adresa", "address", "telefon", "phone", "mapa", "map", "najít", "find"], id: "kontakt" },
     { keywords: ["ceník", "cena", "price", "services", "služby", "střih", "cut", "vous", "beard", "kombo", "combo", "exclusive", "premium", "fade", "basic"], id: "services" },
     { keywords: ["galerie", "gallery", "foto", "photo", "prostředí", "environment", "salon", "interior"], id: "galerie-prostredi" },
+    { keywords: ["hodnocení", "hodnoceni", "přezdívky", "prezdivky", "rating", "nicknames", "elita", "elite"], id: "hodnoceni_page" },
   ];
 
   const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
@@ -410,11 +411,29 @@ export function Header() {
       return;
     }
 
-    if (query === "uživatel" || query === "uzivatel" || query === "nastavení" || query === "nastaveni" || query === "user") {
+    if (query === "galaxy" || query === "noc" || query === "night") {
+      localStorage.setItem("mmbarber_atmosphere_override", "galaxy");
+      window.dispatchEvent(new Event("mmbarber-atmosphere-update"));
       setIsSearchOpen(false);
       setSearchQuery("");
-      router.push("/uzivatel");
-      trackEvent("header_search_user_settings");
+      trackEvent("header_search_atmosphere_galaxy");
+      return;
+    }
+
+    if (query === "classic" || query === "den" || query === "day" || query === "standard") {
+      localStorage.setItem("mmbarber_atmosphere_override", "classic");
+      window.dispatchEvent(new Event("mmbarber-atmosphere-update"));
+      setIsSearchOpen(false);
+      setSearchQuery("");
+      trackEvent("header_search_atmosphere_classic");
+      return;
+    }
+
+    if (query === "auto" || query === "reset") {
+      localStorage.removeItem("mmbarber_atmosphere_override");
+      window.dispatchEvent(new Event("mmbarber-atmosphere-update"));
+      setIsSearchOpen(false);
+      setSearchQuery("");
       return;
     }
 
@@ -610,6 +629,9 @@ export function Header() {
       if (match.id === "services") {
         router.push("/cenik");
         trackEvent("header_search", { query, matched: "cenik_page" });
+      } else if (match.id === "hodnoceni_page") {
+        router.push("/hodnoceni");
+        trackEvent("header_search", { query, matched: "hodnoceni_page" });
       } else {
         const el = document.getElementById(match.id);
         if (el) {
@@ -755,8 +777,12 @@ export function Header() {
       <header
         className={`w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] gpu-accelerate 
           ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-[calc(7rem+env(safe-area-inset-top,0px))]' : `fixed top-0 h-[calc(7rem+env(safe-area-inset-top,0px))] ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black border-b border-white/5' : 'bg-transparent border-b border-transparent'}`} 
-          ${(isIntroActive && pathname === "/") ? 'xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0' : 'opacity-100 translate-y-0'} 
-          ${(!isVisible && !isMenuOpen && !isMobile) ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}
+          ${(isIntroActive && pathname === "/") 
+            ? "xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0" 
+            : (!isVisible && !isMenuOpen && !isMobile) 
+              ? "-translate-y-full opacity-0 pointer-events-none" 
+              : "translate-y-0 opacity-100 pointer-events-auto"
+          }`}
       >
         <div className="flex items-center gap-8">
           <button
@@ -1088,7 +1114,7 @@ export function Header() {
                         }} 
                       />
                       <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                        {lang === 'cs' ? "Hodnocení" : "Rating"}
+                        {t.header.ratingAndNicknames}
                       </span>
                     </button>
 
@@ -1354,7 +1380,7 @@ export function Header() {
                     <Crown size={28} className={shouldFlashRating ? 'text-mafia-gold' : 'text-white/40'} />
                   </div>
                   <div className="flex flex-col items-start text-left">
-                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'HODNOCENÍ' : 'RATING'}</span>
+                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{t.header.ratingAndNicknames}</span>
                     <span className="text-[10px] font-mono text-mafia-gold/40 uppercase">{lang === 'cs' ? 'KOMUNITNÍ HLASOVÁNÍ' : 'COMMUNITY VOTING'}</span>
                   </div>
                 </div>

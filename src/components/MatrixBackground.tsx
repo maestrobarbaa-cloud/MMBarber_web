@@ -50,7 +50,7 @@ export function MatrixBackground() {
       const rootStyle = getComputedStyle(document.documentElement);
       const accentColor = rootStyle.getPropertyValue('--color-mafia-gold').trim() || "#00ff41";
       ctx.fillStyle = accentColor;
-      ctx.font = "15pt monospace";
+      ctx.font = "bold 20pt monospace";
 
       for (let i = 0; i < drops.length; i++) {
         const text = chars[Math.floor(Math.random() * chars.length)];
@@ -89,8 +89,8 @@ export function MatrixBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none opacity-40 mix-blend-screen"
-      style={{ filter: "blur(0.5px)" }}
+      className="fixed inset-0 z-0 pointer-events-none opacity-80 mix-blend-screen"
+      style={{ filter: "drop-shadow(0 0 10px rgba(0,255,65,0.4))" }}
     />
   );
 }

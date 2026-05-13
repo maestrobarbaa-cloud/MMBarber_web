@@ -239,6 +239,23 @@ export function ClientWrapper() {
 
 
 
+  const [isGalaxyVisible, setIsGalaxyVisible] = useState(false);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const checkAtmosphere = () => {
+      const hour = new Date().getHours();
+      const override = localStorage.getItem("mmbarber_atmosphere_override");
+      let isGalaxy = hour >= 22 || hour < 4;
+      if (override === "galaxy") isGalaxy = true;
+      if (override === "classic") isGalaxy = false;
+      setIsGalaxyVisible(isGalaxy);
+    };
+    checkAtmosphere();
+    window.addEventListener('mmbarber-atmosphere-update', checkAtmosphere);
+    return () => window.removeEventListener('mmbarber-atmosphere-update', checkAtmosphere);
+  }, [mounted]);
+
   if (!mounted) return null;
 
   const isRodinaPage = pathname === "/rodina";
@@ -253,7 +270,7 @@ export function ClientWrapper() {
       {/* {showEffects && <BarberChat isOpen={isBarberChatOpen} />} */}
       {showEffects && <Radio />}
       <CookieBanner />
-      {/* {showEffects && <FloatingScissors />} */}
+      {!isActuallyMobile && !isRodinaPage && !isGalaxyVisible && <FloatingScissors />}
       <MobileCompass />
       <VipControlBar />
       {showEffects && <GlobalSound />}
