@@ -43,12 +43,18 @@ export function MatrixBackground() {
     const chars = "MMBARBER0101シハミヒニリサテトボポウエ".split("");
 
     let animationFrameId: number;
+    let accentColor = "#00ff41";
+
+    const updateColor = () => {
+        const rootStyle = getComputedStyle(document.documentElement);
+        accentColor = rootStyle.getPropertyValue('--color-mafia-gold').trim() || "#00ff41";
+    };
+    updateColor();
+
     const draw = () => {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, width, height);
 
-      const rootStyle = getComputedStyle(document.documentElement);
-      const accentColor = rootStyle.getPropertyValue('--color-mafia-gold').trim() || "#00ff41";
       ctx.fillStyle = accentColor;
       ctx.font = "bold 20pt monospace";
 
@@ -90,7 +96,6 @@ export function MatrixBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 z-0 pointer-events-none opacity-80 mix-blend-screen"
-      style={{ filter: "drop-shadow(0 0 10px rgba(0,255,65,0.4))" }}
     />
   );
 }

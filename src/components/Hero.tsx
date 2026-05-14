@@ -461,8 +461,8 @@ export function Hero() {
               .hero-blood-wrapper img,
               img[src*="main-hero-blood"],
               #hero img.hero-blood-img {
-                filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(0.7px) !important;
-                -webkit-filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(0.7px) !important;
+                filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) !important;
+                -webkit-filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) !important;
               }
             `}</style>
             <img
@@ -472,7 +472,7 @@ export function Hero() {
               loading="eager"
               className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${heroImage.includes('blood') ? 'hero-blood-img' : ''}`}
               style={{ 
-                filter: heroImage.includes('blood') ? 'grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(0.7px)' : undefined 
+                filter: heroImage.includes('blood') ? 'grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1)' : undefined 
               }}
             />
             {/* Overlay Gradient - Reduced in Blood Mode for color vibrancy */}
@@ -607,8 +607,15 @@ export function Hero() {
                   wordBreak: "break-word"
                 }}
               >
-                {(graphicsTier === 'low' || graphicsTier === 'medium') ? (
-                  isMounted && displayText
+                {(graphicsTier === 'low' || graphicsTier === 'medium' || (displayText && displayText.length > 50)) ? (
+                  <motion.span
+                    initial={{ opacity: 0, filter: "blur(20px)" }}
+                    animate={{ opacity: 0.8, filter: "none" }}
+                    exit={{ opacity: 0, filter: "blur(20px)" }}
+                    transition={{ duration: 1 }}
+                  >
+                    {isMounted && displayText}
+                  </motion.span>
                 ) : (
                   isMounted && displayText && displayText.split("").map((char, i) => (
                     <motion.span
@@ -616,20 +623,20 @@ export function Hero() {
                       initial={{ opacity: 0, filter: "blur(12px)", scale: 1.1 }}
                       animate={{ 
                         opacity: 0.8, 
-                        filter: "blur(0px)", 
+                        filter: "none", 
                         scale: 1,
                         textShadow: isBloodImage ? "0 0 15px rgba(255,255,255,0.3)" : "0 0 15px rgba(var(--color-mafia-gold-rgb),0.3)"
                       }}
                       exit={{ 
                         opacity: 0, 
-                        filter: "blur(50px) brightness(5)", 
-                        scaleY: 2.5, 
-                        scaleX: 0.8,
-                        transition: { duration: 1.4, delay: i * 0.015, ease: "easeIn" }
+                        filter: "blur(40px) brightness(3)", 
+                        scaleY: 2, 
+                        scaleX: 0.9,
+                        transition: { duration: 1.0, delay: i * 0.01, ease: "easeIn" }
                       }}
                       transition={{ 
-                        duration: 1, 
-                        delay: i * 0.03, 
+                        duration: 0.8, 
+                        delay: i * 0.02, 
                         ease: "easeOut" 
                       }}
                       className="inline-block"
@@ -640,12 +647,14 @@ export function Hero() {
                 )}
               </motion.h1>
 
-              {/* Perfect Mirror Reflection Effect - Disabled for Low/Medium Tiers */}
-              {graphicsTier !== 'low' && graphicsTier !== 'medium' && (
+              {/* Perfect Mirror Reflection Effect - Disabled for Low/Medium Tiers or hidden when not hovered */}
+              {graphicsTier !== 'low' && graphicsTier !== 'medium' && isSloganHovered && (
                 <div className="absolute top-full left-0 w-full pointer-events-none select-none mt-20 flex justify-center">
                   <motion.div
-                    animate={{ opacity: isSloganHovered ? 0.6 : 0 }}
-                    transition={{ duration: 1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.6 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
                     className="w-full flex justify-center overflow-visible"
                     style={{ 
                       transformOrigin: "top center",
@@ -658,7 +667,7 @@ export function Hero() {
                       className={`text-5xl md:text-6xl tracking-normal leading-[1.3] whitespace-nowrap ${isBloodImage ? 'text-white/40' : (isEasterEgg ? 'text-mafia-gold' : 'text-white/60')}`}
                       style={{ fontFamily: "var(--font-great-vibes), cursive" }}
                     >
-                      {isMounted && displayText && (LATIN_SLOGANS[displayText] || displayText).split("").map((char, i) => (
+                      {isMounted && displayText && (displayText.length > 40 ? (LATIN_SLOGANS[displayText] || displayText) : (LATIN_SLOGANS[displayText] || displayText).split("").map((char, i) => (
                         <motion.span
                           key={`reflect-sync-${displayText}-${i}`}
                           initial={{ opacity: 0, filter: "blur(12px)", scale: 1.1 }}
@@ -669,21 +678,19 @@ export function Hero() {
                           }}
                           exit={{ 
                             opacity: 0, 
-                            filter: "blur(50px) brightness(5)", 
-                            scaleY: 2.5,
-                            scaleX: 0.8,
-                            transition: { duration: 1.4, delay: i * 0.015, ease: "easeIn" }
+                            filter: "blur(40px) brightness(3)", 
+                            transition: { duration: 0.8, delay: i * 0.01, ease: "easeIn" }
                           }}
                           transition={{ 
-                            duration: 1, 
-                            delay: i * 0.03, 
+                            duration: 0.8, 
+                            delay: i * 0.02, 
                             ease: "easeOut" 
                           }}
                           className="inline-block"
                         >
                           {char === " " ? "\u00A0" : char}
                         </motion.span>
-                      ))}
+                      )))}
                     </h2>
                   </motion.div>
                 </div>

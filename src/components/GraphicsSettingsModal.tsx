@@ -26,7 +26,7 @@ interface GraphicsConfig {
   chromaticAberration: boolean;
   letterboxEnabled: boolean;
   sharpness: number; // 0 to 1
-  atmosphereOverride: 'auto' | 'classic' | 'galaxy';
+  atmosphereOverride: 'auto' | 'classic' | 'galaxy' | 'pure_dark';
   floatingItems: 'scissors' | 'clippers' | 'off';
   autoDetectEnabled: boolean;
 }
@@ -47,7 +47,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
     chromaticAberration: false,
     letterboxEnabled: false,
     sharpness: 0.2,
-    atmosphereOverride: 'auto',
+    atmosphereOverride: 'pure_dark',
     floatingItems: 'scissors',
     autoDetectEnabled: true
   });
@@ -147,7 +147,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 1.0, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 1.0,
-            atmosphereOverride: 'galaxy', floatingItems: 'scissors',
+            atmosphereOverride: 'pure_dark', floatingItems: 'scissors',
             autoDetectEnabled: false
         };
         break;
@@ -271,7 +271,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                 </div>
                 <div>
                   <h2 className="text-xl font-heading font-black text-white uppercase tracking-[0.3em]">
-                    {lang === 'cs' ? 'Grafické Rozhraní' : 'Graphics Engine'}
+                    {lang === 'cs' ? 'Kvalita Obrazu & Výkon' : 'Image Quality & Performance'}
                   </h2>
                   <p className="text-[9px] font-mono text-mafia-gold/40 uppercase tracking-widest mt-1">Version 2.5.0 // Adaptive Optimization</p>
                 </div>
@@ -301,7 +301,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                                 className={`flex items-center gap-2 px-3 py-1 border text-[9px] font-black uppercase tracking-widest transition-all ${config.autoDetectEnabled ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
                             >
                                 <Scan size={12} className={config.autoDetectEnabled ? 'animate-pulse' : ''} />
-                                {lang === 'cs' ? (config.autoDetectEnabled ? 'Auto-Detekce AKTIVNÍ' : 'Auto-Detekce VYPNUTA') : (config.autoDetectEnabled ? 'Auto-Detect ACTIVE' : 'Auto-Detect OFF')}
+                                {lang === 'cs' ? (config.autoDetectEnabled ? 'Auto-Detekce AKTIVNÍ' : 'Auto-Detect ACTIVE') : (config.autoDetectEnabled ? 'Auto-Detect ACTIVE' : 'Auto-Detect OFF')}
                             </button>
                         </div>
                     </div>
@@ -313,7 +313,10 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                           onClick={() => applyTier(t)}
                           className={`py-4 text-[10px] font-black uppercase tracking-widest transition-all border ${config.tier === t ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'} ${config.autoDetectEnabled ? 'opacity-20 cursor-not-allowed' : ''}`}
                         >
-                          {t}
+                          {t === 'low' ? (lang === 'cs' ? 'STANDARD' : 'STANDARD') : 
+                           t === 'medium' ? (lang === 'cs' ? 'VYSOKÁ KVALITA' : 'HIGH QUALITY') : 
+                           t === 'high' ? (lang === 'cs' ? 'ULTRA FILMOVÁ' : 'ULTRA CINEMATIC') : 
+                           (lang === 'cs' ? 'MAFIA NOIR' : 'MAFIA NOIR')}
                         </button>
                       ))}
                     </div>
@@ -360,36 +363,31 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                         {/* Atmosphere Choice */}
                         <div className="space-y-2">
                             <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Režim Prostředí' : 'Environment Mode'}</span>
-                            <div className="grid grid-cols-3 gap-2">
-                                {(['auto', 'classic', 'galaxy'] as const).map((mode) => (
+                            <div className="grid grid-cols-2 gap-2">
+                                {(['classic', 'pure_dark'] as const).map((mode) => (
                                     <button
                                         key={mode}
                                         onClick={() => saveConfig({...config, atmosphereOverride: mode, autoDetectEnabled: false})}
                                         className={`py-3 text-[9px] font-black uppercase tracking-widest transition-all border ${config.atmosphereOverride === mode ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'}`}
                                     >
-                                        {mode}
+                                        {mode === 'classic' ? (lang === 'cs' ? 'KLASICKÉ' : 'CLASSIC') : (lang === 'cs' ? 'ČISTÁ ČERNÁ' : 'PURE BLACK')}
                                     </button>
                                 ))}
                             </div>
                         </div>
 
+
                         {/* Floating Items Choice */}
-                        <div className={`space-y-2 transition-opacity duration-500 ${config.atmosphereOverride === 'galaxy' ? 'opacity-40 cursor-not-allowed' : 'opacity-100'}`}>
+                        <div className="space-y-2 mt-4">
                             <div className="flex items-center justify-between">
                                 <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Létající Předměty' : 'Floating Items'}</span>
-                                {config.atmosphereOverride === 'galaxy' && (
-                                    <span className="text-[8px] font-mono text-mafia-gold uppercase tracking-tighter animate-pulse">
-                                        {lang === 'cs' ? '[VYPNUTO KVŮLI GALAXII]' : '[DISABLED FOR GALAXY]'}
-                                    </span>
-                                )}
                             </div>
                             <div className="grid grid-cols-3 gap-2">
                                 {(['scissors', 'clippers', 'off'] as const).map((item) => (
                                     <button
                                         key={item}
-                                        disabled={config.atmosphereOverride === 'galaxy'}
                                         onClick={() => saveConfig({...config, floatingItems: item, autoDetectEnabled: false})}
-                                        className={`py-3 text-[9px] font-black uppercase tracking-widest transition-all border ${config.floatingItems === item ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'} ${config.atmosphereOverride === 'galaxy' ? 'pointer-events-none' : ''}`}
+                                        className={`py-3 text-[9px] font-black uppercase tracking-widest transition-all border ${config.floatingItems === item ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'}`}
                                     >
                                         {item === 'scissors' ? (lang === 'cs' ? 'Nůžky' : 'Scissors') : item === 'clippers' ? (lang === 'cs' ? 'Strojky' : 'Clippers') : (lang === 'cs' ? 'Vypnuto' : 'Off')}
                                     </button>

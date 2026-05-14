@@ -1,32 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
 
 interface Star {
-  id: number;
-  top: string;
-  left: string;
+  x: number;
+  y: number;
   size: number;
   opacity: number;
-  duration: number;
-  delay: number;
+  maxOpacity: number;
+  speed: number;
+  layer: number;
+  phase: number;
 }
 
 export function Atmosphere() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [starsLayer1, setStarsLayer1] = useState<Star[]>([]);
-  const [starsLayer2, setStarsLayer2] = useState<Star[]>([]);
-  const [starsLayer3, setStarsLayer3] = useState<Star[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isActive, setIsActive] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const starsRef = useRef<Star[]>([]);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const requestRef = useRef<number>(undefined);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const rotateX = useSpring(useTransform(mouseY, [-300, 300], [5, -5]), { damping: 20 });
   const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-5, 5]), { damping: 20 });
 
-  useEffect(() => {
+    useEffect(() => {
     setIsMounted(true);
     
     const checkAtmosphere = () => {
@@ -37,6 +39,10 @@ export function Atmosphere() {
       let isGalaxy = hour >= 22 || hour < 4;
       if (override === "galaxy") isGalaxy = true;
       else if (override === "classic") isGalaxy = false;
+      else if (override === "pure_dark") {
+          setIsActive(false);
+          return;
+      }
       
       setIsActive(isGalaxy && tier !== 'low');
     };
@@ -45,42 +51,138 @@ export function Atmosphere() {
     window.addEventListener('mmbarber-graphics-update', checkAtmosphere);
     window.addEventListener('mmbarber-atmosphere-update', checkAtmosphere);
 
-    const generateStars = (count: number) => {
-      return [...Array(count)].map(() => ({
-        id: Math.random(),
-        top: Math.random() * 100 + "%",
-        left: Math.random() * 100 + "%",
-        size: Math.random() * 2 + 1,
-        opacity: Math.random() * 0.7 + 0.3,
-        duration: Math.random() * 3 + 2,
-        delay: Math.random() * 5
-      }));
+    const initStars = () => {
+        const stars: Star[] = [];
+        // Layer 1: Near (40)
+        for (let i = 0; i < 40; i++) {
+            stars.push({
+                x: Math.random() * 110 - 5,
+                y: Math.random() * 110 - 5,
+                size: Math.random() * 1.5 + 1,
+                opacity: Math.random(),
+                maxOpacity: Math.random() * 0.4 + 0.4,
+                speed: Math.random() * 0.05 + 0.02,
+                layer: 1,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+        // Layer 2: Middle (60)
+        for (let i = 0; i < 60; i++) {
+            stars.push({
+                x: Math.random() * 110 - 5,
+                y: Math.random() * 110 - 5,
+                size: Math.random() * 1 + 0.5,
+                opacity: Math.random(),
+                maxOpacity: Math.random() * 0.3 + 0.3,
+                speed: Math.random() * 0.03 + 0.01,
+                layer: 2,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+        // Layer 3: Far (100)
+        for (let i = 0; i < 100; i++) {
+            stars.push({
+                x: Math.random() * 110 - 5,
+                y: Math.random() * 110 - 5,
+                size: Math.random() * 0.6 + 0.2,
+                opacity: Math.random(),
+                maxOpacity: Math.random() * 0.2 + 0.2,
+                speed: Math.random() * 0.02 + 0.005,
+                layer: 3,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+        starsRef.current = stars;
     };
 
-    setStarsLayer1(generateStars(80)); // Near
-    setStarsLayer2(generateStars(120)); // Middle
-    setStarsLayer3(generateStars(200)); // Far
+    initStars();
 
     const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth - 0.5) * 60;
       const y = (e.clientY / window.innerHeight - 0.5) * 60;
-      setMousePos({ x, y });
+      mouseRef.current = { x, y };
       mouseX.set((e.clientX - window.innerWidth / 2));
       mouseY.set((e.clientY - window.innerHeight / 2));
     };
 
+    const handleResize = () => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            const ctx = canvas.getContext('2d');
+            if (ctx) ctx.scale(dpr, dpr);
+        }
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("resize", handleResize);
       window.removeEventListener('mmbarber-graphics-update', checkAtmosphere);
       window.removeEventListener('mmbarber-atmosphere-update', checkAtmosphere);
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isActive || !isMounted) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const animate = (time: number) => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+         const stars = starsRef.current;
+         const { x: mx, y: my } = mouseRef.current;
+         const w = canvas.width;
+         const h = canvas.height;
+
+        stars.forEach(star => {
+            // Calculate parallax based on layer
+            let parallaxX = mx * (star.layer === 1 ? 0.8 : star.layer === 2 ? 0.5 : 0.2);
+            let parallaxY = my * (star.layer === 1 ? 0.8 : star.layer === 2 ? 0.5 : 0.2);
+
+            // Twinkle effect
+            const twinkle = Math.sin(time * 0.001 * star.speed * 50 + star.phase);
+            const currentOpacity = star.maxOpacity * (0.5 + 0.5 * twinkle);
+
+            // Position (x, y are in percent 0-100)
+            const posX = (star.x / 100) * (w / (window.devicePixelRatio || 1)) + (parallaxX * (w / 10000));
+            const posY = (star.y / 100) * (h / (window.devicePixelRatio || 1)) + (parallaxY * (h / 10000));
+
+            if (star.layer === 2) {
+                ctx.fillStyle = `rgba(197, 160, 41, ${currentOpacity * 0.8})`; 
+            } else if (star.layer === 1) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity})`;
+            } else {
+                ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity * 0.4})`;
+            }
+
+            // Faster rect drawing instead of circles
+            ctx.fillRect(posX, posY, star.size, star.size);
+        });
+
+        requestRef.current = requestAnimationFrame(animate);
+    };
+
+    requestRef.current = requestAnimationFrame(animate);
+    return () => {
+        if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+  }, [isActive, isMounted]);
 
   if (!isMounted) return null;
 
   return (
-    <div className={`fixed inset-0 z-0 pointer-events-none transition-colors duration-1000 ${isActive ? 'bg-black' : 'bg-transparent'}`}>
+    <div ref={containerRef} className={`fixed inset-0 z-0 pointer-events-none transition-colors duration-1000 ${isActive ? 'bg-black' : 'bg-transparent'}`}>
       <AnimatePresence>
         {isActive && (
           <motion.div 
@@ -90,73 +192,10 @@ export function Atmosphere() {
             style={{ rotateX, rotateY, perspective: 1000 }}
             className="absolute inset-0 overflow-hidden"
           >
-            {/* Layer 3: Far Stars (Smallest, Slowest Parallax) */}
-            <motion.div 
-              style={{ x: mousePos.x * 0.2, y: mousePos.y * 0.2 }}
-              className="absolute inset-[-100px] pointer-events-none opacity-30"
-            >
-              {starsLayer3.map((star) => (
-                <motion.div
-                  key={star.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [star.opacity * 0.5, star.opacity, star.opacity * 0.5] }}
-                  transition={{ duration: star.duration, repeat: Infinity, delay: star.delay }}
-                  className="absolute rounded-full bg-white blur-[0.5px]"
-                  style={{
-                    top: star.top,
-                    left: star.left,
-                    width: star.size * 0.5 + "px",
-                    height: star.size * 0.5 + "px",
-                  }}
-                />
-              ))}
-            </motion.div>
-
-            {/* Layer 2: Middle Stars */}
-            <motion.div 
-              style={{ x: mousePos.x * 0.5, y: mousePos.y * 0.5 }}
-              className="absolute inset-[-100px] pointer-events-none opacity-50"
-            >
-              {starsLayer2.map((star) => (
-                <motion.div
-                  key={star.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [star.opacity * 0.5, star.opacity, star.opacity * 0.5] }}
-                  transition={{ duration: star.duration, repeat: Infinity, delay: star.delay }}
-                  className="absolute rounded-full bg-mafia-gold/40 blur-[1px]"
-                  style={{
-                    top: star.top,
-                    left: star.left,
-                    width: star.size + "px",
-                    height: star.size + "px",
-                    boxShadow: "0 0 10px rgba(var(--color-mafia-gold-rgb), 0.3)"
-                  }}
-                />
-              ))}
-            </motion.div>
-
-            {/* Layer 1: Near Stars (Largest, Strongest Parallax) */}
-            <motion.div 
-              style={{ x: mousePos.x * 0.8, y: mousePos.y * 0.8 }}
-              className="absolute inset-[-100px] pointer-events-none opacity-60"
-            >
-              {starsLayer1.map((star) => (
-                <motion.div
-                  key={star.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [star.opacity * 0.5, star.opacity, star.opacity * 0.5] }}
-                  transition={{ duration: star.duration, repeat: Infinity, delay: star.delay }}
-                  className="absolute rounded-full bg-white blur-[1.5px]"
-                  style={{
-                    top: star.top,
-                    left: star.left,
-                    width: star.size * 1.5 + "px",
-                    height: star.size * 1.5 + "px",
-                    boxShadow: "0 0 15px rgba(255, 255, 255, 0.4)"
-                  }}
-                />
-              ))}
-            </motion.div>
+            <canvas 
+                ref={canvasRef}
+                className="absolute inset-0 w-full h-full"
+            />
 
             {/* Ambient Nebula & Vignette */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--color-mafia-gold-rgb),0.05),transparent_70%)]"></div>
@@ -167,3 +206,4 @@ export function Atmosphere() {
     </div>
   );
 }
+
