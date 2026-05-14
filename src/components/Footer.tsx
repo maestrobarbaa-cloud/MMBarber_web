@@ -392,7 +392,22 @@ export function Footer() {
         )}
       </AnimatePresence>
 
-      {/* Decorative top line */}
+      {/* Decorative top line with Marquee */}
+      <div className="absolute top-0 left-0 w-full overflow-hidden border-y border-mafia-gold/10 bg-white/[0.02] py-2">
+        <motion.div 
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+          className="flex whitespace-nowrap gap-16 items-center"
+        >
+          {[...Array(6)].map((_, i) => (
+            <span key={i} className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.5em] flex items-center gap-4">
+              <Zap size={10} className="text-mafia-gold" />
+              {t?.footer?.mission || "Budujeme lifestyle komunitu propojující barber culture, gaming, content a mladou generaci."}
+            </span>
+          ))}
+        </motion.div>
+      </div>
+
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-mafia-gold to-transparent opacity-30"></div>
 
       <div className="max-w-5xl mx-auto flex flex-col lg:flex-row justify-center lg:justify-between items-center lg:items-start gap-8 lg:gap-16 mb-12">
@@ -578,6 +593,9 @@ export function Footer() {
       <div className="border-t border-mafia-gold/10 pt-10 pb-4 flex flex-col items-center relative">
         <div className="flex flex-col items-center gap-6 w-full max-w-4xl px-4">
           <div className="flex flex-col items-center gap-2">
+            <p className="text-[10px] md:text-sm font-heading font-black text-mafia-gold uppercase tracking-[0.3em] text-center mb-4 px-4 max-w-2xl mx-auto">
+              {t?.footer?.mission || "Budujeme lifestyle komunitu propojující barber culture, gaming, content a mladou generaci."}
+            </p>
             <p className="text-[9px] md:text-[10px] font-mono text-smoke-white/40 uppercase tracking-[0.1em] text-center leading-relaxed">
               {lang === 'cs' 
                 ? "Veškeré texty, fotografie, logo a originální obsah webu jsou chráněny autorským právem." 
