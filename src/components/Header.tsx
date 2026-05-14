@@ -1491,8 +1491,8 @@ export function Header() {
                    <Phone size={32} className="text-mafia-gold" />
                    <span className="text-xs font-sans font-black tracking-widest uppercase text-white">{t.specialProjects?.callUs || 'ZAVOLAT'}</span>
                 </button>
-                <button onClick={() => { window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("MMBARBER Mařatice")}`, '_blank'); handleNavLinkClick(); }} className="bg-white/5 border border-white/10 p-5 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
-                    <Image src="https://www.gstatic.com/images/branding/product/2x/maps_96dp.png" alt="Maps" width={32} height={32} className="w-8 h-8 grayscale brightness-150" />
+                <button onClick={() => { window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass')); handleNavLinkClick(); }} className="bg-white/5 border border-white/10 p-5 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
+                    <Compass size={32} className="text-mafia-gold animate-pulse" />
                     <span className="text-xs font-sans font-black tracking-widest uppercase text-white">{t.header.navigate || 'NAVIGOVAT'}</span>
                 </button>
               </div>

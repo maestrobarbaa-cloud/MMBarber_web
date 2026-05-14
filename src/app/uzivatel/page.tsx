@@ -27,7 +27,9 @@ export default function UserSettings() {
   const defaultConfig = {
     accentColor: "var(--color-mafia-gold)",
     glowIntensity: 50,
-    fontFamily: '"Courier New", Courier, monospace'
+    fontFamily: '"Courier New", Courier, monospace',
+    atmosphereOverride: 'auto',
+    floatingItems: 'scissors'
   };
 
   const [config, setConfig] = useState(defaultConfig);
@@ -48,7 +50,25 @@ export default function UserSettings() {
 
   const handleSave = () => {
     localStorage.setItem("mmbarber_user_config", JSON.stringify(config));
+    
+    // Sync with legacy storage and graphics config
+    localStorage.setItem("mmbarber_atmosphere_override", config.atmosphereOverride);
+    localStorage.setItem("mmbarber_floating_item_override", config.floatingItems);
+    
+    const graphicsSaved = localStorage.getItem("mmbarber_graphics_config");
+    if (graphicsSaved) {
+      try {
+        const parsed = JSON.parse(graphicsSaved);
+        parsed.atmosphereOverride = config.atmosphereOverride;
+        parsed.floatingItems = config.floatingItems;
+        localStorage.setItem("mmbarber_graphics_config", JSON.stringify(parsed));
+      } catch (e) {}
+    }
+
     window.dispatchEvent(new Event("mmbarber-user-settings-update"));
+    window.dispatchEvent(new CustomEvent('mmbarber-atmosphere-update', { detail: config.atmosphereOverride }));
+    window.dispatchEvent(new CustomEvent('mmbarber-floaters-update', { detail: config.floatingItems }));
+
     // Create a special success effect
     for(let i=0; i<10; i++) {
         setTimeout(() => {
@@ -63,11 +83,18 @@ export default function UserSettings() {
     const default_ = {
       accentColor: "var(--color-mafia-gold)",
       glowIntensity: 50,
-      fontFamily: '"Courier New", Courier, monospace'
+      fontFamily: '"Courier New", Courier, monospace',
+      atmosphereOverride: 'auto' as const,
+      floatingItems: 'scissors' as const
     };
     setConfig(default_);
     localStorage.setItem("mmbarber_user_config", JSON.stringify(default_));
+    localStorage.setItem("mmbarber_atmosphere_override", "auto");
+    localStorage.setItem("mmbarber_floating_item_override", "scissors");
+    
     window.dispatchEvent(new Event("mmbarber-user-settings-update"));
+    window.dispatchEvent(new CustomEvent('mmbarber-atmosphere-update', { detail: 'auto' }));
+    window.dispatchEvent(new CustomEvent('mmbarber-floaters-update', { detail: 'scissors' }));
   };
 
   const addClickEffect = useCallback((x: number, y: number, color: string) => {
@@ -302,6 +329,54 @@ export default function UserSettings() {
                       <span className="text-[10px] opacity-40 uppercase tracking-tighter">The future is being cut today</span>
                     </button>
                   ))}
+                </div>
+              </section>
+
+              {/* Atmosphere & Background */}
+              <section className="space-y-6">
+                <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                  <div className="flex items-center gap-3">
+                    <Sparkles size={20} style={{ color: config.accentColor }} />
+                    <h2 className="text-2xl font-heading font-black uppercase tracking-wider">
+                      {lang === 'cs' ? "ATMOSFÉRA & POZADÍ" : "ATMOSPHERE & BG"}
+                    </h2>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Environment Mode */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? "Režim Prostředí" : "Environment Mode"}</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {(['auto', 'classic', 'galaxy'] as const).map((mode) => (
+                        <button
+                          key={mode}
+                          onClick={() => setConfig({...config, atmosphereOverride: mode})}
+                          className={`py-3 text-[10px] font-black uppercase tracking-widest transition-all border ${config.atmosphereOverride === mode ? 'bg-white text-black' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
+                          style={{ backgroundColor: config.atmosphereOverride === mode ? config.accentColor : undefined, borderColor: config.atmosphereOverride === mode ? config.accentColor : undefined }}
+                        >
+                          {mode}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Floating Items */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? "Létající Předměty" : "Floating Items"}</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {(['scissors', 'clippers', 'off'] as const).map((item) => (
+                        <button
+                          key={item}
+                          onClick={() => setConfig({...config, floatingItems: item})}
+                          className={`py-3 text-[10px] font-black uppercase tracking-widest transition-all border ${config.floatingItems === item ? 'bg-white text-black' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
+                          style={{ backgroundColor: config.floatingItems === item ? config.accentColor : undefined, borderColor: config.floatingItems === item ? config.accentColor : undefined }}
+                        >
+                          {item === 'scissors' ? (lang === 'cs' ? 'Nůžky' : 'Scissors') : item === 'clippers' ? (lang === 'cs' ? 'Strojky' : 'Clippers') : (lang === 'cs' ? 'Vypnuto' : 'Off')}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </section>
 

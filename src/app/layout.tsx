@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter, Great_Vibes } from "next/font/google";
 import "./globals.css";
+import { CookieBanner } from "@/components/CookieBanner";
 import { Header } from "@/components/Header";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { Atmosphere } from "@/components/Atmosphere";
@@ -66,7 +67,22 @@ export const metadata: Metadata = {
     "Slavnosti vína UH",
     "modern grooming", 
     "international barbershop experience", 
-    "heritage grooming club"
+    "heritage grooming club",
+    "grooming investment opportunities",
+    "barbershop franchise Czech Republic",
+    "high-yield service business model",
+    "cosmetic industry partnership",
+    "professional hair care distribution",
+    "B2B grooming solutions",
+    "hair care innovation hub",
+    "investment portfolio services",
+    "luxury grooming market growth",
+    "Berkshire Hathaway style asset",
+    "strategic investment grooming",
+    "venture capital hair care",
+    "business expansion barbershop",
+    "vlasoví specialisté spolupráce",
+    "investice do prémiových služeb"
   ],
   authors: [{ name: "Tomáš Mička" }],
   robots: {
@@ -332,6 +348,7 @@ export default function RootLayout({
               </main>
 
               <ClientWrapper />
+              <CookieBanner />
               
               {/* Global Web Frame - PC/Desktop Only (Theme Aware Border & Glow) */}
               <div className="fixed inset-0 pointer-events-none z-[9999] border-[1px] border-mafia-gold/20 noir-mode:border-mafia-silver/20 theme-blood:border-mafia-red/20 shadow-[inset_0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)] noir-mode:shadow-[inset_0_0_15px_rgba(192,192,192,0.05)] theme-blood:shadow-[inset_0_0_15px_rgba(139,0,0,0.05)] hidden md:block">

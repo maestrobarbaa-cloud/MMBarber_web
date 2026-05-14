@@ -1,129 +1,169 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
 
-const generateStars = (n: number, max: number) => {
-  let value = `${Math.floor(Math.random() * max)}px ${Math.floor(Math.random() * max)}px #FFF`;
-  for (let i = 2; i <= n; i++) {
-    value += `, ${Math.floor(Math.random() * max)}px ${Math.floor(Math.random() * max)}px #FFF`;
-  }
-  return value;
-};
+interface Star {
+  id: number;
+  top: string;
+  left: string;
+  size: number;
+  opacity: number;
+  duration: number;
+  delay: number;
+}
 
 export function Atmosphere() {
-  const [isLowTier, setIsLowTier] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [starsLayer1, setStarsLayer1] = useState<Star[]>([]);
+  const [starsLayer2, setStarsLayer2] = useState<Star[]>([]);
+  const [starsLayer3, setStarsLayer3] = useState<Star[]>([]);
+  const [isActive, setIsActive] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [stars, setStars] = useState({ s1: "", s2: "", s3: "" });
-  const [showGalaxy, setShowGalaxy] = useState(false);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [5, -5]), { damping: 20 });
+  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-5, 5]), { damping: 20 });
 
   useEffect(() => {
     setIsMounted(true);
-    // Generate static stars once on mount to avoid hydration mismatch and performance issues
-    setStars({
-      s1: generateStars(700, 2000),
-      s2: generateStars(200, 2000),
-      s3: generateStars(100, 2000)
-    });
-
+    
     const checkAtmosphere = () => {
-      const tier = document.documentElement.getAttribute('data-graphics-tier');
       const hour = new Date().getHours();
       const override = localStorage.getItem("mmbarber_atmosphere_override");
+      const tier = document.documentElement.getAttribute('data-graphics-tier');
       
-      let isGalaxyTime = hour >= 22 || hour < 4;
-      if (override === "galaxy") isGalaxyTime = true;
-      if (override === "classic") isGalaxyTime = false;
+      let isGalaxy = hour >= 22 || hour < 4;
+      if (override === "galaxy") isGalaxy = true;
+      else if (override === "classic") isGalaxy = false;
       
-      setShowGalaxy(isGalaxyTime);
-      setIsLowTier(tier === 'low' || window.innerWidth < 1024);
+      setIsActive(isGalaxy && tier !== 'low');
     };
-    
+
     checkAtmosphere();
-    window.addEventListener('resize', checkAtmosphere);
     window.addEventListener('mmbarber-graphics-update', checkAtmosphere);
     window.addEventListener('mmbarber-atmosphere-update', checkAtmosphere);
-    
-    // Check every minute for time changes
-    const interval = setInterval(checkAtmosphere, 60000);
 
+    const generateStars = (count: number) => {
+      return [...Array(count)].map(() => ({
+        id: Math.random(),
+        top: Math.random() * 100 + "%",
+        left: Math.random() * 100 + "%",
+        size: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.7 + 0.3,
+        duration: Math.random() * 3 + 2,
+        delay: Math.random() * 5
+      }));
+    };
+
+    setStarsLayer1(generateStars(80)); // Near
+    setStarsLayer2(generateStars(120)); // Middle
+    setStarsLayer3(generateStars(200)); // Far
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 60;
+      const y = (e.clientY / window.innerHeight - 0.5) * 60;
+      setMousePos({ x, y });
+      mouseX.set((e.clientX - window.innerWidth / 2));
+      mouseY.set((e.clientY - window.innerHeight / 2));
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
     return () => {
-      window.removeEventListener('resize', checkAtmosphere);
+      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener('mmbarber-graphics-update', checkAtmosphere);
       window.removeEventListener('mmbarber-atmosphere-update', checkAtmosphere);
-      clearInterval(interval);
     };
   }, []);
 
-  if (isLowTier || !isMounted) return null;
+  if (!isMounted) return null;
 
   return (
-    <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-black atmosphere-container">
-      {/* Cinematic Galaxy & Stars - Only visible at Night (22:00 - 4:00) or via override */}
-      {showGalaxy && (
-        <>
-          <div className="absolute inset-0 z-0">
-            <div className="stars-layer-1" />
-            <div className="stars-layer-2" />
-            <div className="stars-layer-3" />
-          </div>
-          
-          <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-            <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-mafia-gold/5 blur-[150px] rounded-full animate-pulse-slow opacity-60"></div>
-            <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-mafia-blood/5 blur-[120px] rounded-full animate-pulse-slow-reverse opacity-40"></div>
-            <div className="absolute top-[30%] right-[10%] w-[40%] h-[40%] bg-blue-900/5 blur-[100px] rounded-full animate-pulse-slow opacity-30"></div>
-          </div>
-        </>
-      )}
+    <div className={`fixed inset-0 z-0 pointer-events-none transition-colors duration-1000 ${isActive ? 'bg-black' : 'bg-transparent'}`}>
+      <AnimatePresence>
+        {isActive && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{ rotateX, rotateY, perspective: 1000 }}
+            className="absolute inset-0 overflow-hidden"
+          >
+            {/* Layer 3: Far Stars (Smallest, Slowest Parallax) */}
+            <motion.div 
+              style={{ x: mousePos.x * 0.2, y: mousePos.y * 0.2 }}
+              className="absolute inset-[-100px] pointer-events-none opacity-30"
+            >
+              {starsLayer3.map((star) => (
+                <motion.div
+                  key={star.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [star.opacity * 0.5, star.opacity, star.opacity * 0.5] }}
+                  transition={{ duration: star.duration, repeat: Infinity, delay: star.delay }}
+                  className="absolute rounded-full bg-white blur-[0.5px]"
+                  style={{
+                    top: star.top,
+                    left: star.left,
+                    width: star.size * 0.5 + "px",
+                    height: star.size * 0.5 + "px",
+                  }}
+                />
+              ))}
+            </motion.div>
 
-      {/* Layer 3: Vignette & Focus */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,2,2,0.8)_100%)] z-20 pointer-events-none"></div>
+            {/* Layer 2: Middle Stars */}
+            <motion.div 
+              style={{ x: mousePos.x * 0.5, y: mousePos.y * 0.5 }}
+              className="absolute inset-[-100px] pointer-events-none opacity-50"
+            >
+              {starsLayer2.map((star) => (
+                <motion.div
+                  key={star.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [star.opacity * 0.5, star.opacity, star.opacity * 0.5] }}
+                  transition={{ duration: star.duration, repeat: Infinity, delay: star.delay }}
+                  className="absolute rounded-full bg-mafia-gold/40 blur-[1px]"
+                  style={{
+                    top: star.top,
+                    left: star.left,
+                    width: star.size + "px",
+                    height: star.size + "px",
+                    boxShadow: "0 0 10px rgba(var(--color-mafia-gold-rgb), 0.3)"
+                  }}
+                />
+              ))}
+            </motion.div>
 
-      <style jsx global>{`
-        .stars-layer-1 {
-          width: 1px;
-          height: 1px;
-          background: transparent;
-          box-shadow: ${stars.s1};
-          animation: animStar 150s linear infinite;
-        }
-        
-        .stars-layer-2 {
-          width: 2px;
-          height: 2px;
-          background: transparent;
-          box-shadow: ${stars.s2};
-          animation: animStar 100s linear infinite;
-        }
-        
-        .stars-layer-3 {
-          width: 3px;
-          height: 3px;
-          background: transparent;
-          box-shadow: ${stars.s3};
-          animation: animStar 50s linear infinite;
-        }
+            {/* Layer 1: Near Stars (Largest, Strongest Parallax) */}
+            <motion.div 
+              style={{ x: mousePos.x * 0.8, y: mousePos.y * 0.8 }}
+              className="absolute inset-[-100px] pointer-events-none opacity-60"
+            >
+              {starsLayer1.map((star) => (
+                <motion.div
+                  key={star.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [star.opacity * 0.5, star.opacity, star.opacity * 0.5] }}
+                  transition={{ duration: star.duration, repeat: Infinity, delay: star.delay }}
+                  className="absolute rounded-full bg-white blur-[1.5px]"
+                  style={{
+                    top: star.top,
+                    left: star.left,
+                    width: star.size * 1.5 + "px",
+                    height: star.size * 1.5 + "px",
+                    boxShadow: "0 0 15px rgba(255, 255, 255, 0.4)"
+                  }}
+                />
+              ))}
+            </motion.div>
 
-        @keyframes animStar {
-          from { transform: translateY(0px); }
-          to { transform: translateY(-2000px); }
-        }
-
-        .animate-pulse-slow {
-          animation: pulse-atmosphere 15s ease-in-out infinite;
-        }
-        .animate-pulse-slow-reverse {
-          animation: pulse-atmosphere-rev 20s ease-in-out infinite;
-        }
-        @keyframes pulse-atmosphere {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 0.7; transform: scale(1.1); }
-        }
-        @keyframes pulse-atmosphere-rev {
-          0%, 100% { opacity: 0.6; transform: scale(1.1); }
-          50% { opacity: 0.3; transform: scale(0.9); }
-        }
-      `}</style>
+            {/* Ambient Nebula & Vignette */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--color-mafia-gold-rgb),0.05),transparent_70%)]"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]"></div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

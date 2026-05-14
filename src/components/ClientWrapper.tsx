@@ -148,6 +148,7 @@ export function ClientWrapper() {
         
         setGraphicsTier(currentTier);
         document.documentElement.setAttribute('data-graphics-tier', currentTier);
+        window.dispatchEvent(new CustomEvent('mmbarber-graphics-update', { detail: { tier: currentTier } }));
       };
 
     const initialEffectsState = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
@@ -248,7 +249,8 @@ export function ClientWrapper() {
       const override = localStorage.getItem("mmbarber_atmosphere_override");
       let isGalaxy = hour >= 22 || hour < 4;
       if (override === "galaxy") isGalaxy = true;
-      if (override === "classic") isGalaxy = false;
+      else if (override === "classic") isGalaxy = false;
+      // If auto, keep the time-based value
       setIsGalaxyVisible(isGalaxy);
     };
     checkAtmosphere();

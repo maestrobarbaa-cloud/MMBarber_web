@@ -320,8 +320,9 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
   };
 
   const isHoliday = items.length > 0 && !['scissors', 'clippers'].includes(items[0].type);
+  const isOff = localStorage.getItem("mmbarber_floating_item_override") === 'off';
 
-  if (isMatrixActive) return null;
+  if (isMatrixActive || isOff) return null;
 
   return (
     <div ref={containerRef} className={`${position} inset-0 z-0 pointer-events-none overflow-hidden mix-blend-screen ${isHoliday ? 'opacity-80' : 'opacity-75'} transition-opacity duration-1000 hidden md:block`}>

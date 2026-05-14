@@ -312,9 +312,24 @@ export function Footer() {
                 <p className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
                   Tomáš Mička
                 </p>
-                <p className="text-mafia-gold font-mono text-lg">
-                  IČO: 10862994
-                </p>
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-mafia-gold font-mono text-lg">
+                    IČO: 10862994
+                  </p>
+                  <a 
+                    href="https://ares.gov.cz/ekonomicke-subjekty-v-be/res/detail/10862994" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="text-[10px] font-mono text-white/30 hover:text-mafia-gold border-b border-white/10 hover:border-mafia-gold transition-all uppercase tracking-widest flex items-center gap-2"
+                  >
+                    Veřejný rejstřík ARES
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                  </a>
+                </div>
               </div>
 
               <button
@@ -470,9 +485,9 @@ export function Footer() {
             </div>
 
             <div className="flex flex-col space-y-3">
-              <FooterLink href="/provozni-rad" isBordered>{t?.footer?.rules || "PRAVIDLA"}</FooterLink>
-              <FooterLink href="/obchodni-podminky" isBordered>{t?.footer?.terms || "PODMÍNKY"}</FooterLink>
-              <FooterLink href="/ochrana-osobnich-udaju" isBordered>{t?.footer?.privacy || "SOUKROMÍ"}</FooterLink>
+              <FooterLink href="/provozni-rad" isBordered>{t?.footer?.rules || "PROVOZNÍ ŘÁD"}</FooterLink>
+              <FooterLink href="/podminky-pouzivani" isBordered>{lang === 'cs' ? "PODMÍNKY POUŽÍVÁNÍ" : "TERMS OF USE"}</FooterLink>
+              <FooterLink href="/ochrana-osobnich-udaju" isBordered>{lang === 'cs' ? "GDPR / OCHRANA OSOBNÍCH ÚDAJŮ" : "GDPR / PRIVACY POLICY"}</FooterLink>
               <FooterLink href="/zasady-cookies" isBordered>{t?.footer?.cookies || "COOKIES"}</FooterLink>
             </div>
           </div>
@@ -561,14 +576,17 @@ export function Footer() {
       </div>
 
       <div className="border-t border-mafia-gold/10 pt-10 pb-4 flex flex-col items-center relative">
-        <div className="flex flex-col items-center gap-4">
-          <div className="font-mono text-smoke-white/50 text-xs md:text-sm tracking-[0.2em] uppercase text-center flex flex-wrap items-center justify-center gap-2">
-            <span>© {t?.footer?.copyright || (lang === 'cs' ? 'Všechna práva vyhrazena' : 'All rights reserved')}</span>
-            <span className="text-mafia-red text-[10px] font-black whitespace-nowrap ml-2 tracking-[0.3em]">V 3.5</span>
-          </div>
-          <div className="sr-only">
-            <h2>{t.seo?.title}</h2>
-            <p>{t.seo?.description}</p>
+        <div className="flex flex-col items-center gap-6 w-full max-w-4xl px-4">
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-[9px] md:text-[10px] font-mono text-smoke-white/40 uppercase tracking-[0.1em] text-center leading-relaxed">
+              {lang === 'cs' 
+                ? "Veškeré texty, fotografie, logo a originální obsah webu jsou chráněny autorským právem." 
+                : "All texts, photographs, logo and original content of the website are protected by copyright."}
+            </p>
+            <div className="flex items-center gap-4 mt-2">
+              <span className="text-smoke-white/20 font-mono text-[9px] uppercase tracking-widest">© 2024–2026 MMBARBER</span>
+              <span className="text-mafia-red text-[9px] font-black tracking-[0.2em] px-2 py-0.5 border border-mafia-red/20">V 3.5</span>
+            </div>
           </div>
         </div>
       </div>

@@ -26,6 +26,8 @@ interface GraphicsConfig {
   chromaticAberration: boolean;
   letterboxEnabled: boolean;
   sharpness: number; // 0 to 1
+  atmosphereOverride: 'auto' | 'classic' | 'galaxy';
+  floatingItems: 'scissors' | 'clippers' | 'off';
   autoDetectEnabled: boolean;
 }
 
@@ -45,6 +47,8 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
     chromaticAberration: false,
     letterboxEnabled: false,
     sharpness: 0.2,
+    atmosphereOverride: 'auto',
+    floatingItems: 'scissors',
     autoDetectEnabled: true
   });
 
@@ -87,11 +91,24 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
   };
 
   const saveConfig = (newConfig: GraphicsConfig) => {
+    // Force floating items off if Galaxy is selected
+    if (newConfig.atmosphereOverride === 'galaxy') {
+      newConfig.floatingItems = 'off';
+    }
+    
     setConfig(newConfig);
     localStorage.setItem("mmbarber_graphics_config", JSON.stringify(newConfig));
+    
+    // Legacy sync for Atmosphere and FloatingItems
+    localStorage.setItem("mmbarber_atmosphere_override", newConfig.atmosphereOverride);
+    localStorage.setItem("mmbarber_floating_item_override", newConfig.floatingItems);
+    
     applyConfigToDOM(newConfig, true);
     
     window.dispatchEvent(new CustomEvent('mmbarber-graphics-update', { detail: newConfig }));
+    window.dispatchEvent(new CustomEvent('mmbarber-atmosphere-update', { detail: newConfig.atmosphereOverride }));
+    window.dispatchEvent(new CustomEvent('mmbarber-floaters-update', { detail: newConfig.floatingItems }));
+    
     playSound("/sounds/click.mp3", 0.3);
   };
 
@@ -103,6 +120,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier, grainEnabled: false, blurEnabled: false, parallaxEnabled: false, 
             animationsEnabled: false, crtEnabled: false, glowIntensity: 0.2, 
             vignetteEnabled: false, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.2,
+            atmosphereOverride: 'classic', floatingItems: 'off',
             autoDetectEnabled: false
         };
         break;
@@ -111,6 +129,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier, grainEnabled: true, blurEnabled: false, parallaxEnabled: false, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.4, 
             vignetteEnabled: true, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.5,
+            atmosphereOverride: 'auto', floatingItems: 'scissors',
             autoDetectEnabled: false
         };
         break;
@@ -119,6 +138,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.8, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 0.7,
+            atmosphereOverride: 'auto', floatingItems: 'scissors',
             autoDetectEnabled: false
         };
         break;
@@ -127,6 +147,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 1.0, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 1.0,
+            atmosphereOverride: 'galaxy', floatingItems: 'scissors',
             autoDetectEnabled: false
         };
         break;
@@ -186,6 +207,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier: recommended, grainEnabled: false, blurEnabled: false, parallaxEnabled: false, 
             animationsEnabled: false, crtEnabled: false, glowIntensity: 0.2, 
             vignetteEnabled: false, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.2,
+            atmosphereOverride: 'classic', floatingItems: 'off',
             autoDetectEnabled: true
         };
         break;
@@ -194,6 +216,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier: recommended, grainEnabled: true, blurEnabled: false, parallaxEnabled: false, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.4, 
             vignetteEnabled: true, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.5,
+            atmosphereOverride: 'auto', floatingItems: 'scissors',
             autoDetectEnabled: true
         };
         break;
@@ -202,6 +225,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier: recommended, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.8, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 0.7,
+            atmosphereOverride: 'auto', floatingItems: 'scissors',
             autoDetectEnabled: true
         };
         break;
@@ -210,6 +234,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier: recommended, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 1.0, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: true, sharpness: 1.0,
+            atmosphereOverride: 'galaxy', floatingItems: 'scissors',
             autoDetectEnabled: true
         };
         break;
@@ -327,8 +352,55 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                 </div>
 
                 {/* Right Column: Toggles */}
-                <div className="space-y-6">
-                    <SectionLabel icon={<Wind size={14}/>} label={lang === 'cs' ? 'Post-Processing Efekty' : 'Post-Processing Effects'} />
+                <div className="space-y-10">
+                    <section className="space-y-6">
+                        <SectionLabel icon={<Sparkles size={14}/>} label={lang === 'cs' ? 'Atmosféra & Pozadí' : 'Atmosphere & Background'} />
+                    
+                    <div className="grid grid-cols-1 gap-4 mt-4">
+                        {/* Atmosphere Choice */}
+                        <div className="space-y-2">
+                            <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Režim Prostředí' : 'Environment Mode'}</span>
+                            <div className="grid grid-cols-3 gap-2">
+                                {(['auto', 'classic', 'galaxy'] as const).map((mode) => (
+                                    <button
+                                        key={mode}
+                                        onClick={() => saveConfig({...config, atmosphereOverride: mode, autoDetectEnabled: false})}
+                                        className={`py-3 text-[9px] font-black uppercase tracking-widest transition-all border ${config.atmosphereOverride === mode ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'}`}
+                                    >
+                                        {mode}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Floating Items Choice */}
+                        <div className={`space-y-2 transition-opacity duration-500 ${config.atmosphereOverride === 'galaxy' ? 'opacity-40 cursor-not-allowed' : 'opacity-100'}`}>
+                            <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Létající Předměty' : 'Floating Items'}</span>
+                                {config.atmosphereOverride === 'galaxy' && (
+                                    <span className="text-[8px] font-mono text-mafia-gold uppercase tracking-tighter animate-pulse">
+                                        {lang === 'cs' ? '[VYPNUTO KVŮLI GALAXII]' : '[DISABLED FOR GALAXY]'}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                                {(['scissors', 'clippers', 'off'] as const).map((item) => (
+                                    <button
+                                        key={item}
+                                        disabled={config.atmosphereOverride === 'galaxy'}
+                                        onClick={() => saveConfig({...config, floatingItems: item, autoDetectEnabled: false})}
+                                        className={`py-3 text-[9px] font-black uppercase tracking-widest transition-all border ${config.floatingItems === item ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'} ${config.atmosphereOverride === 'galaxy' ? 'pointer-events-none' : ''}`}
+                                    >
+                                        {item === 'scissors' ? (lang === 'cs' ? 'Nůžky' : 'Scissors') : item === 'clippers' ? (lang === 'cs' ? 'Strojky' : 'Clippers') : (lang === 'cs' ? 'Vypnuto' : 'Off')}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    </section>
+                    
+                    <section className="space-y-6">
+                        <SectionLabel icon={<Wind size={14}/>} label={lang === 'cs' ? 'Post-Processing Efekty' : 'Post-Processing Effects'} />
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                         <SettingToggle 
@@ -388,6 +460,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                             onClick={() => saveConfig({...config, animationsEnabled: !config.animationsEnabled, autoDetectEnabled: false})}
                         />
                     </div>
+                  </section>
                 </div>
               </div>
             </div>

@@ -21,13 +21,13 @@ export default function OchranaOsobnichUdaju() {
     <div className="min-h-screen pt-32 pb-24 px-4 md:px-12 bg-mafia-black text-smoke-white">
       
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16">
+          <div className="text-center mb-16">
           <ShieldCheck size={48} className="text-mafia-gold mx-auto mb-6 opacity-80" />
           <h1 className="text-4xl md:text-5xl font-heading font-black text-mafia-gold mb-4 tracking-widest uppercase">
-            Omerta & Soukromí
+            Ochrana osobních údajů
           </h1>
-          <div className="w-24 h-1 bg-mafia-red mx-auto mb-6"></div>
-          <p className="font-sans text-smoke-white/60 tracking-widest uppercase text-sm">Zásady ochrany osobních údajů</p>
+          <div className="w-24 h-1 bg-mafia-gold mx-auto mb-6"></div>
+          <p className="font-sans text-smoke-white/60 tracking-widest uppercase text-sm">GDPR & SOUKROMÍ PROTOKOL</p>
         </div>
 
         <div className="bg-mafia-dark/30 border border-mafia-gold/20 p-8 md:p-12 font-sans text-smoke-white/80 leading-relaxed space-y-12">
@@ -39,11 +39,11 @@ export default function OchranaOsobnichUdaju() {
               </h2>
             </div>
             <div className="md:col-span-2 space-y-2 text-sm md:text-base">
-              <p className="font-bold text-smoke-white text-lg">MMBARBER</p>
-              <p>Tomáš Mička</p>
+              <p className="font-bold text-smoke-white text-lg uppercase tracking-widest">Tomáš Mička</p>
               <p>IČO: 10862994</p>
-              <p>Sadová 1383, 686 05 Uherské Hradiště 5</p>
+              <p>Bedřicha Buchlovana 882, 686 01 Uherské Hradiště</p>
               <p className="pt-2 text-mafia-gold font-mono tracking-wider">TEL: +420 577 544 073</p>
+              <p className="text-mafia-gold font-mono tracking-wider">EMAIL: mickatomas@seznam.cz</p>
             </div>
           </section>
 
@@ -153,8 +153,8 @@ export default function OchranaOsobnichUdaju() {
               Tyto zásady mohou být aktualizovány. Aktuální verze je vždy dostupná na našich webových stránkách.
             </p>
             <div className="pt-8 text-right italic text-sm opacity-60">
-              <p>V Uherském Hradišti dne 1.4.2026</p>
-              <p className="font-heading font-bold text-smoke-white text-lg mt-2">MMBARBER</p>
+              <p>V Uherském Hradišti dne 14. 5. 2026</p>
+              <p className="font-heading font-bold text-smoke-white text-lg mt-2 uppercase tracking-widest">Tomáš Mička</p>
             </div>
           </section>
 

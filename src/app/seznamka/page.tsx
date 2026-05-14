@@ -1,6 +1,6 @@
 "use client";
 
-import { Scissors, Users, Target, ShieldCheck, CheckCircle2, ChevronDown, ChevronLeft } from "lucide-react";
+import { Scissors, Users, Target, ShieldCheck, CheckCircle2, ChevronDown, ChevronLeft, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import Link from "next/link";
@@ -329,6 +329,22 @@ export default function SeznamkaPage() {
                           {req}
                         </li>
                       ))}
+                      <li className="flex items-center gap-3 text-smoke-white/80 font-sans text-xs italic mt-4">
+                        <ShieldCheck size={14} className="text-mafia-gold" />
+                        {lang === 'cs' ? "Zákaz falešných profilů a klamavé identity." : "No fake profiles or deceptive identity."}
+                      </li>
+                      <li className="flex items-center gap-3 text-smoke-white/80 font-sans text-xs italic">
+                        <ShieldCheck size={14} className="text-mafia-gold" />
+                        {lang === 'cs' ? "Nulová tolerance obtěžování a nevhodného chování." : "Zero tolerance for harassment and inappropriate behavior."}
+                      </li>
+                      <li className="flex items-center gap-3 text-smoke-white/80 font-sans text-xs italic">
+                        <ShieldCheck size={14} className="text-mafia-gold" />
+                        {lang === 'cs' ? "Provozovatel si vyhrazuje právo na odstranění obsahu nebo účtu při porušení pravidel." : "The operator reserves the right to remove content or accounts for rule violations."}
+                      </li>
+                      <li className="flex items-center gap-3 text-mafia-red font-heading font-black text-xs uppercase tracking-widest mt-6 bg-mafia-red/10 px-3 py-2 border border-mafia-red/20">
+                        <Zap size={14} />
+                        {lang === 'cs' ? "Služba je určena osobám starším 15 let." : "The service is intended for persons over 15 years old."}
+                      </li>
                     </ul>
                   </div>
 
@@ -433,7 +449,7 @@ export default function SeznamkaPage() {
                           </div>
                           <div>
                             <span className="text-mafia-gold/80 block mb-1">2. Duševní vlastnictví</span>
-                            Veškerý obsah publikovaný na webu nebo přidružených profilech a platformách je výhradním duševním vlastnictvím provozovatele. Jakékoliv kopírování či zneužití je zakázáno.
+                            Veškeré texty, fotografie, logo a originální obsah webu jsou chráněny autorským právem.
                           </div>
                           <div>
                             <span className="text-mafia-gold/80 block mb-1">3. Souhlas účastníků</span>
@@ -464,7 +480,7 @@ export default function SeznamkaPage() {
                         © 2025 Tomáš Mička. Všechna práva vyhrazena.
                       </p>
                       <p className="text-[9px] font-sans text-smoke-white/20 max-w-2xl mx-auto leading-relaxed">
-                        Veškerý obsah tohoto webu je chráněn autorským právem. Jakékoliv kopírování či užívání bez výslovného souhlasu autora není dovoleno.
+                        Veškeré texty, fotografie, logo a originální obsah webu jsou chráněny autorským právem.
                       </p>
                     </div>
                   </div>

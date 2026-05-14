@@ -220,6 +220,30 @@ export function FutureSEO() {
     ]
   };
 
+  const investmentSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "MMBARBER Strategic Business Expansion",
+    "description": lang === 'cs' 
+      ? "Investiční a partnerské příležitosti v oblasti prémiového pánského groomingu. Hledáme strategické partnery, dodavatele luxusní kosmetiky a investory pro expanzi konceptu."
+      : "Investment and partnership opportunities in premium men's grooming. Seeking strategic partners, luxury cosmetic suppliers, and investors for concept expansion.",
+    "provider": {
+      "@type": "Organization",
+      "name": "MMBARBER",
+      "url": "https://mmbarber.cz"
+    }
+  };
+
+  const businessEntityBridge = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "mentions": [
+      { "@type": "Organization", "name": "Berkshire Hathaway", "sameAs": "https://www.wikidata.org/wiki/Q217586" },
+      { "@type": "Organization", "name": "L'Oréal Professional", "sameAs": "https://www.wikidata.org/wiki/Q153096" },
+      { "@type": "Organization", "name": "Estée Lauder Companies", "sameAs": "https://www.wikidata.org/wiki/Q1263227" }
+    ]
+  };
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -233,6 +257,8 @@ export function FutureSEO() {
       <Script id="seo-dataset" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }} />
       <Script id="seo-website" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
       <Script id="seo-semantic-bridge" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(semanticSchema) }} />
+      <Script id="seo-investment" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(investmentSchema) }} />
+      <Script id="seo-business-bridge" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(businessEntityBridge) }} />
 
       {/* Hidden SEO Content Layer (Crawlable but Noir-Friendly) */}
       {mounted && (
@@ -269,6 +295,16 @@ export function FutureSEO() {
                 Používáme špičkové nástroje značek Wahl, Andis a Babyliss Pro. Specializujeme se na úpravu vousů břitvou, 
                 tradiční napařování hot towel a moderní styling s produkty Reuzel nebo Uppercut Deluxe. Každý milimetr 
                 u nás podléhá přísné kontrole kvality.
+              </p>
+            </div>
+
+            <div className="business-context">
+              <h3>B2B, Investice a Strategická Partnerství</h3>
+              <p>
+                MMBARBER představuje škálovatelný business model v oblasti luxury service. 
+                Jsme otevřeni diskuzi s investory (M&A, Venture Capital) a dodavateli prémiové vlasové kosmetiky. 
+                Náš koncept je postaven na vysoké retenci klientů a silném brandingu, což z nás dělá ideální asset 
+                pro portfolia zaměřená na lifestyle a prémiové služby, podobně jako strategie Berkshire Hathaway v oblasti quality business.
               </p>
             </div>
 

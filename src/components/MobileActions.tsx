@@ -172,10 +172,11 @@ export function MobileActions() {
                    <Phone size={24} />
                  </button>
                  <button onClick={() => { 
-                   window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("MMBARBER Mařatice")}`, '_blank'); 
+                   window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'));
+                   setIsOpen(false);
                    playBulletHit();
                  }} className="p-4 rounded-full border border-mafia-gold text-mafia-gold active:scale-90 transition-transform">
-                   <MapPin size={24} />
+                   <Compass size={24} className="animate-pulse" />
                  </button>
               </div>
             </div>

@@ -24,9 +24,9 @@ export default function ZasadyCookies() {
         <div className="text-center mb-16">
           <Cookie size={48} className="text-mafia-gold mx-auto mb-6 opacity-80" />
           <h1 className="text-4xl md:text-5xl font-heading font-black text-mafia-gold mb-4 tracking-widest uppercase">
-            Digitální Stopy
+            Cookies Protokol
           </h1>
-          <div className="w-24 h-1 bg-mafia-red mx-auto mb-6"></div>
+          <div className="w-24 h-1 bg-mafia-gold mx-auto mb-6"></div>
           <p className="font-sans text-smoke-white/60 tracking-widest uppercase text-sm">Zásady používání cookies</p>
         </div>
 
@@ -114,10 +114,11 @@ export default function ZasadyCookies() {
               </h2>
             </div>
             <div className="md:col-span-2 space-y-1 text-sm">
-              <p className="font-bold text-smoke-white">MMBARBER – Tomáš Mička</p>
+              <p className="font-bold text-smoke-white uppercase tracking-widest">Tomáš Mička</p>
               <p>IČO: 10862994</p>
-              <p>Sadová 1383, 686 05 Uherské Hradiště 5</p>
+              <p>Bedřicha Buchlovana 882, 686 01 Uherské Hradiště</p>
               <p className="pt-2 text-mafia-gold font-mono">TEL: +420 577 544 073</p>
+              <p className="text-mafia-gold font-mono">EMAIL: mickatomas@seznam.cz</p>
             </div>
           </section>
 
@@ -126,6 +127,10 @@ export default function ZasadyCookies() {
             <p className="text-sm opacity-70 italic">
               Tyto zásady mohou být průběžně aktualizovány. Aktuální verze je vždy dostupná na těchto webových stránkách.
             </p>
+            <div className="pt-8 text-right italic text-sm opacity-60">
+              <p>V Uherském Hradišti dne 14. 5. 2026</p>
+              <p className="font-heading font-bold text-smoke-white text-lg mt-2 uppercase tracking-widest">Tomáš Mička</p>
+            </div>
           </section>
 
         </div>
