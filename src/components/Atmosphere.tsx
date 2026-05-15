@@ -112,7 +112,10 @@ export function Atmosphere() {
             canvas.width = window.innerWidth * dpr;
             canvas.height = window.innerHeight * dpr;
             const ctx = canvas.getContext('2d');
-            if (ctx) ctx.scale(dpr, dpr);
+            if (ctx) {
+                ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset
+                ctx.scale(dpr, dpr);
+            }
         }
     };
 
@@ -140,10 +143,11 @@ export function Atmosphere() {
     const animate = (time: number) => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-         const stars = starsRef.current;
-         const { x: mx, y: my } = mouseRef.current;
-         const w = canvas.width;
-         const h = canvas.height;
+        const stars = starsRef.current;
+        const { x: mx, y: my } = mouseRef.current;
+        const dpr = window.devicePixelRatio || 1;
+        const w = canvas.width / dpr;
+        const h = canvas.height / dpr;
 
         stars.forEach(star => {
             // Calculate parallax based on layer
@@ -155,9 +159,10 @@ export function Atmosphere() {
             const currentOpacity = star.maxOpacity * (0.5 + 0.5 * twinkle);
 
             // Position (x, y are in percent 0-100)
-            const posX = (star.x / 100) * (w / (window.devicePixelRatio || 1)) + (parallaxX * (w / 10000));
-            const posY = (star.y / 100) * (h / (window.devicePixelRatio || 1)) + (parallaxY * (h / 10000));
+            const posX = (star.x / 100) * w + (parallaxX * (w / 10000));
+            const posY = (star.y / 100) * h + (parallaxY * (h / 10000));
 
+            ctx.beginPath();
             if (star.layer === 2) {
                 ctx.fillStyle = `rgba(197, 160, 41, ${currentOpacity * 0.8})`; 
             } else if (star.layer === 1) {
@@ -166,8 +171,9 @@ export function Atmosphere() {
                 ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity * 0.4})`;
             }
 
-            // Faster rect drawing instead of circles
-            ctx.fillRect(posX, posY, star.size, star.size);
+            // High quality circles for stars
+            ctx.arc(posX, posY, star.size, 0, Math.PI * 2);
+            ctx.fill();
         });
 
         requestRef.current = requestAnimationFrame(animate);
