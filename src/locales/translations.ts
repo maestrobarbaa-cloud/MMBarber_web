@@ -849,6 +849,45 @@ export const translations = {
         title: "PÉČE",
         description: "Magazín o péči, kosmetice a zdraví pokožky.",
         cta: "OTEVŘÍT MAGAZÍN"
+      },
+      community: {
+        title: "KOMUNITA",
+        subtitle: "NEJSME JEN DALŠÍ BARBERSHOP. JSME SMEČKA.",
+        description: "Vstupte do našeho světa. Komunita MMBarber je o lidech, kteří sdílejí stejné hodnoty, loajalitu a vášeň pro poctivé řemeslo a životní styl. Tady se nehraje na efekt, tady se tvoří historie.",
+        manifesto: "Naše komunita stojí na třech pilířích: Respekt, Loajalita a Disciplína. Pokud hledáš víc než jen střih, jsi na správném místě.",
+        cta: "PŘIPOJIT SE K RODINĚ",
+        projekty: {
+          title: "PROJEKTY",
+          subtitle: "Co právě tvoříme",
+          desc: "Nahlédněte pod pokličku našich aktuálních misí. Od nových produktů po eventy."
+        },
+        chat: {
+          title: "KOMUNITNÍ CHAT",
+          subtitle: "V reálném čase",
+          desc: "Místo, kde se řeší všechno podstatné. Bez cenzury, s respektem."
+        },
+        hodnoceni: {
+          title: "HODNOCENÍ",
+          subtitle: "Hlas rodiny",
+          desc: "Vaše zpětná vazba je náš motor. Řekněte nám, jak to vidíte."
+        },
+        historky: {
+          title: "ANONYMNÍ HISTORKY",
+          subtitle: "Ze života v křesle",
+          desc: "Sdílejte své zážitky, historky a postřehy z našeho světa. Zcela anonymně.",
+          cta: "SDÍLET HISTORKU",
+          read: "ČÍST HISTORKY",
+          form: {
+            title: "Nová historka",
+            desc: "Napište, co máte na srdci. Nikdo se nedozví, kdo jste.",
+            placeholder: "Bylo to jednou v pátek večer...",
+            submit: "ODESLAT DO SYSTÉMU"
+          },
+          status: {
+            pending: "ČEKÁ NA SCHVÁLENÍ",
+            approved: "ZVEŘEJNĚNO"
+          }
+        }
       }
     },
     intelligenceArchive: {

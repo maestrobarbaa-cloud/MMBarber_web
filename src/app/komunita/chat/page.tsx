@@ -1,0 +1,235 @@
+"use client";
+
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
+import { 
+  ArrowLeft, 
+  Send,
+  Users,
+  Circle,
+  Hash,
+  Terminal,
+  ChevronRight,
+  LogOut
+} from "lucide-react";
+import Link from "next/link";
+import { Footer } from "@/components/Footer";
+
+interface ChatMessage {
+  id: string;
+  user: string;
+  text: string;
+  time: string;
+  isMe?: boolean;
+}
+
+export default function CommunityChatPage() {
+  const { lang } = useTranslation();
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [nickname, setNickname] = useState<string | null>(null);
+  const [tempNickname, setTempNickname] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Load nickname from localStorage if available
+  useEffect(() => {
+    const savedNickname = localStorage.getItem("mmbarber_community_nick");
+    if (savedNickname) setNickname(savedNickname);
+    
+    // Load local messages
+    const savedMessages = localStorage.getItem("mmbarber_community_messages");
+    if (savedMessages) setMessages(JSON.parse(savedMessages));
+  }, []);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, nickname]);
+
+  const handleSetNickname = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tempNickname.trim()) return;
+    setNickname(tempNickname);
+    localStorage.setItem("mmbarber_community_nick", tempNickname);
+  };
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim() || !nickname) return;
+
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      user: nickname,
+      text: inputValue,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      isMe: true
+    };
+
+    const updatedMessages = [...messages, newMessage];
+    setMessages(updatedMessages);
+    localStorage.setItem("mmbarber_community_messages", JSON.stringify(updatedMessages.slice(-50))); // Keep last 50
+    setInputValue("");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("mmbarber_community_nick");
+    setNickname(null);
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-smoke-white overflow-x-hidden relative selection:bg-mafia-gold selection:text-mafia-black">
+      
+      {/* Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+      </div>
+
+      <nav className="relative z-50 p-8 flex justify-between items-center max-w-7xl mx-auto">
+        <Link 
+          href="/komunita" 
+          className="group flex items-center gap-4 text-mafia-gold/40 hover:text-mafia-gold transition-colors font-mono text-xs tracking-[0.4em] uppercase"
+        >
+          <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform" />
+          {lang === 'cs' ? "ZPĚT" : "BACK"}
+        </Link>
+        
+        {nickname && (
+          <div className="flex items-center gap-6">
+             <div className="hidden md:flex items-center gap-3">
+                <Circle size={8} className="fill-mafia-gold text-mafia-gold animate-pulse" />
+                <span className="text-[10px] font-mono text-white/50 tracking-widest uppercase">SYSTÉM AKTIVNÍ</span>
+             </div>
+             <button 
+               onClick={handleLogout}
+               className="flex items-center gap-2 text-white/20 hover:text-mafia-red transition-colors font-mono text-[9px] uppercase tracking-[0.2em]"
+             >
+                <LogOut size={14} />
+                ODPOJIT
+             </button>
+          </div>
+        )}
+      </nav>
+
+      <main className="relative z-10 max-w-4xl mx-auto px-6 pt-10 pb-40">
+        <AnimatePresence mode="wait">
+          {!nickname ? (
+            <motion.div 
+              key="login"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              className="flex flex-col items-center justify-center min-h-[60vh] text-center"
+            >
+               <Terminal className="text-mafia-gold mb-12" size={64} />
+               <h1 className="text-4xl md:text-6xl font-heading font-black uppercase italic tracking-tighter mb-6">IDENTIFIKACE <span className="text-mafia-gold">UŽIVATELE</span></h1>
+               <p className="text-smoke-white/40 font-mono text-[10px] uppercase tracking-[0.5em] mb-12 max-w-sm">Pro vstup do komunitního kanálu zadejte svou přezdívku.</p>
+               
+               <form onSubmit={handleSetNickname} className="w-full max-w-md relative">
+                  <input 
+                    type="text" 
+                    value={tempNickname}
+                    onChange={(e) => setTempNickname(e.target.value)}
+                    placeholder="TVOJE PŘEZDÍVKA..."
+                    maxLength={20}
+                    className="w-full bg-white/5 border border-white/10 px-8 py-6 text-xl font-heading font-black tracking-widest uppercase focus:outline-none focus:border-mafia-gold transition-all text-center placeholder:text-white/5"
+                    autoFocus
+                  />
+                  <button 
+                    type="submit"
+                    className="mt-8 w-full py-5 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.4em] hover:bg-white transition-all shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)] flex items-center justify-center gap-3"
+                  >
+                     VSTOUPIT <ChevronRight size={20} />
+                  </button>
+               </form>
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="chat"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="w-full"
+            >
+              <div className="mb-12 flex items-center justify-between border-b border-white/5 pb-8">
+                 <div className="flex items-center gap-4">
+                    <Hash className="text-mafia-gold" size={32} />
+                    <div>
+                       <h1 className="text-3xl font-heading font-black uppercase italic tracking-tighter">MAIN_CHANNEL</h1>
+                       <p className="text-[10px] font-mono text-white/30 uppercase tracking-[0.3em]">Komunikace MM smečky / Přihlášen jako: <span className="text-mafia-gold">{nickname}</span></p>
+                    </div>
+                 </div>
+                 <Users className="text-white/10 hidden md:block" size={32} />
+              </div>
+
+              {/* Chat Area */}
+              <div className="bg-mafia-black/40 border border-white/5 h-[600px] flex flex-col backdrop-blur-3xl shadow-2xl relative overflow-hidden">
+                 <div 
+                   ref={scrollRef}
+                   className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8 scrollbar-thin scrollbar-thumb-mafia-gold/20"
+                 >
+                    <AnimatePresence initial={false}>
+                       {messages.length === 0 ? (
+                         <div className="h-full flex flex-col items-center justify-center opacity-10">
+                            <Hash size={80} />
+                            <p className="mt-4 font-mono text-xs uppercase tracking-[0.5em]">Kanál je prázdný</p>
+                         </div>
+                       ) : (
+                         messages.map((msg) => (
+                           <motion.div 
+                             key={msg.id}
+                             initial={{ opacity: 0, y: 10 }}
+                             animate={{ opacity: 1, y: 0 }}
+                             className={`flex flex-col ${msg.isMe ? 'items-end' : 'items-start'}`}
+                           >
+                              <div className="flex items-center gap-3 mb-2">
+                                 <span className={`text-[10px] font-black uppercase tracking-widest ${msg.isMe ? 'text-mafia-gold' : 'text-smoke-white/40'}`}>{msg.user}</span>
+                                 <span className="text-[8px] font-mono text-white/20">{msg.time}</span>
+                              </div>
+                              <div className={`px-6 py-4 max-w-md ${msg.isMe ? 'bg-mafia-gold/5 border-r-2 border-mafia-gold/40 text-right' : 'bg-white/5 border-l-2 border-white/10'} text-smoke-white font-sans text-sm md:text-base leading-relaxed break-words`}>
+                                 {msg.text}
+                              </div>
+                           </motion.div>
+                         ))
+                       )}
+                    </AnimatePresence>
+                 </div>
+
+                 {/* Input Area */}
+                 <form 
+                   onSubmit={handleSendMessage}
+                   className="p-6 md:p-8 border-t border-white/5 bg-black/40 flex items-center gap-4 md:gap-6"
+                 >
+                    <input 
+                      type="text" 
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder="ZADEJTE ZPRÁVU..."
+                      className="flex-1 bg-white/5 border border-white/10 px-6 py-4 text-sm font-mono tracking-widest uppercase focus:outline-none focus:border-mafia-gold transition-colors placeholder:text-white/10"
+                    />
+                    <button 
+                      type="submit"
+                      className="w-14 h-14 bg-mafia-gold flex items-center justify-center text-mafia-black hover:bg-white transition-colors shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] flex-shrink-0"
+                    >
+                       <Send size={24} />
+                    </button>
+                 </form>
+              </div>
+
+              <div className="mt-8 flex justify-between items-center px-4">
+                 <span className="text-[9px] font-mono text-white/20 uppercase tracking-[0.5em]">DIRECT_LINK_v2.0</span>
+                 <div className="flex gap-4">
+                    <div className="w-1.5 h-1.5 bg-mafia-gold/50 rounded-full"></div>
+                    <span className="text-[9px] font-mono text-white/40 uppercase">BROADCAST_READY</span>
+                 </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

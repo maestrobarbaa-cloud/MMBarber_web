@@ -153,6 +153,13 @@ export function Services() {
               icon: <Sparkles size={48} className="text-mafia-gold" />,
               description: t?.others?.pece?.description || (lang === 'cs' ? 'MAGAZÍN O PÉČI A KOSMETICE' : 'MAGAZINE ABOUT CARE & COSMETICS'),
               onClick: () => { router.push('/pece'); trackEvent("open_care_magazine"); }
+            },
+            { 
+              id: 'community',
+              title: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : 'COMMUNITY'),
+              icon: <Users size={48} className="text-mafia-gold" />,
+              description: t?.others?.community?.description || (lang === 'cs' ? 'PŘIDEJ SE K NÁM' : 'JOIN US'),
+              onClick: () => { router.push('/komunita'); trackEvent("open_community_page"); }
             }
           ].map((card, idx, arr) => (
             <MenuCard 
@@ -226,6 +233,12 @@ export function Services() {
               title: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : 'CARE'),
               icon: <Sparkles size={32} className="text-mafia-gold" />,
               onClick: () => { router.push('/pece'); trackEvent("open_care_magazine"); }
+            },
+            { 
+              id: 'community',
+              title: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : 'COMMUNITY'),
+              icon: <Users size={32} className="text-mafia-gold" />,
+              onClick: () => { router.push('/komunita'); trackEvent("open_community_page"); }
             }
           ].map((card) => (
              <div key={card.id} className="w-[calc(50%-0.375rem)] md:w-[220px] lg:w-[250px] flex-shrink-0">
