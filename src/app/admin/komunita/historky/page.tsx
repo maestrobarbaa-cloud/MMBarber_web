@@ -135,8 +135,8 @@ export default function AdminStoriesPage() {
               <button onClick={loadStories} className="p-4 bg-white/5 border border-white/10 hover:border-white/20 transition-all">
                  <RefreshCw size={20} />
               </button>
-              <Link href="/komunita" className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 font-mono text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
-                 <ArrowLeft size={16} /> ODCHOD
+              <Link href="/admin" className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 font-mono text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+                 <ArrowLeft size={16} /> ZPĚT NA DASHBOARD
               </Link>
            </div>
         </header>

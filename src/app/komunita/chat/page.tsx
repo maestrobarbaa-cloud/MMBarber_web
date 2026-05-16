@@ -11,17 +11,32 @@ import {
   Hash,
   Terminal,
   ChevronRight,
-  LogOut
+  LogOut,
+  ShieldAlert
 } from "lucide-react";
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
+import { db } from "@/lib/firebase";
+import { 
+  collection, 
+  addDoc, 
+  query, 
+  orderBy, 
+  limit, 
+  onSnapshot, 
+  serverTimestamp,
+  getDocs,
+  where
+} from "firebase/firestore";
+import { getUserIp } from "@/utils/network";
 
 interface ChatMessage {
   id: string;
   user: string;
   text: string;
-  time: string;
+  time: any;
   isMe?: boolean;
+  ip?: string;
 }
 
 export default function CommunityChatPage() {
@@ -30,16 +45,46 @@ export default function CommunityChatPage() {
   const [inputValue, setInputValue] = useState("");
   const [nickname, setNickname] = useState<string | null>(null);
   const [tempNickname, setTempNickname] = useState("");
+  const [isBanned, setIsBanned] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Load nickname from localStorage if available
+  // Load nickname and check ban status
   useEffect(() => {
     const savedNickname = localStorage.getItem("mmbarber_community_nick");
     if (savedNickname) setNickname(savedNickname);
     
-    // Load local messages
-    const savedMessages = localStorage.getItem("mmbarber_community_messages");
-    if (savedMessages) setMessages(JSON.parse(savedMessages));
+    const checkBanStatus = async () => {
+      try {
+        const ip = await getUserIp();
+        const q = query(collection(db, "banned_ips"), where("ip", "==", ip));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          setIsBanned(true);
+        }
+      } catch (err) {
+        console.error("Ban check failed:", err);
+      }
+    };
+    checkBanStatus();
+  }, []);
+
+  // Real-time messages
+  useEffect(() => {
+    const q = query(
+      collection(db, "community_messages"),
+      orderBy("time", "asc"),
+      limit(50)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const msgs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as ChatMessage[];
+      setMessages(msgs);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -55,28 +100,47 @@ export default function CommunityChatPage() {
     localStorage.setItem("mmbarber_community_nick", tempNickname);
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim() || !nickname) return;
+    if (!inputValue.trim() || !nickname || isBanned) return;
 
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      user: nickname,
-      text: inputValue,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isMe: true
-    };
+    try {
+      const ip = await getUserIp();
+      
+      await addDoc(collection(db, "community_messages"), {
+        user: nickname,
+        text: inputValue,
+        time: serverTimestamp(),
+        ip: ip
+      });
 
-    const updatedMessages = [...messages, newMessage];
-    setMessages(updatedMessages);
-    localStorage.setItem("mmbarber_community_messages", JSON.stringify(updatedMessages.slice(-50))); // Keep last 50
-    setInputValue("");
+      setInputValue("");
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("mmbarber_community_nick");
     setNickname(null);
   };
+
+  if (isBanned) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-6 text-center">
+        <div className="max-w-md">
+          <ShieldAlert className="text-mafia-red mx-auto mb-8" size={80} />
+          <h1 className="text-4xl font-heading font-black text-white uppercase mb-4 tracking-tighter">PŘÍSTUP <span className="text-mafia-red">ZAMÍTNUT</span></h1>
+          <p className="text-white/40 font-mono text-xs uppercase tracking-widest leading-relaxed">
+            Tento terminál byl trvale odpojen z důvodu porušení kodexu rodiny. Vaše IP adresa byla zařazena na černou listinu.
+          </p>
+          <Link href="/komunita" className="mt-12 inline-block px-12 py-4 border border-white/10 text-white font-mono text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+            ZPĚT DO BEZPEČÍ
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-smoke-white overflow-x-hidden relative selection:bg-mafia-gold selection:text-mafia-black">
@@ -181,13 +245,15 @@ export default function CommunityChatPage() {
                              key={msg.id}
                              initial={{ opacity: 0, y: 10 }}
                              animate={{ opacity: 1, y: 0 }}
-                             className={`flex flex-col ${msg.isMe ? 'items-end' : 'items-start'}`}
+                             className={`flex flex-col ${msg.user === nickname ? 'items-end' : 'items-start'}`}
                            >
                               <div className="flex items-center gap-3 mb-2">
-                                 <span className={`text-[10px] font-black uppercase tracking-widest ${msg.isMe ? 'text-mafia-gold' : 'text-smoke-white/40'}`}>{msg.user}</span>
-                                 <span className="text-[8px] font-mono text-white/20">{msg.time}</span>
+                                 <span className={`text-[10px] font-black uppercase tracking-widest ${msg.user === nickname ? 'text-mafia-gold' : 'text-smoke-white/40'}`}>{msg.user}</span>
+                                 <span className="text-[8px] font-mono text-white/20">
+                                   {msg.time?.toDate ? msg.time.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '...'}
+                                 </span>
                               </div>
-                              <div className={`px-6 py-4 max-w-md ${msg.isMe ? 'bg-mafia-gold/5 border-r-2 border-mafia-gold/40 text-right' : 'bg-white/5 border-l-2 border-white/10'} text-smoke-white font-sans text-sm md:text-base leading-relaxed break-words`}>
+                              <div className={`px-6 py-4 max-w-md ${msg.user === nickname ? 'bg-mafia-gold/5 border-r-2 border-mafia-gold/40 text-right' : 'bg-white/5 border-l-2 border-white/10'} text-smoke-white font-sans text-sm md:text-base leading-relaxed break-words`}>
                                  {msg.text}
                               </div>
                            </motion.div>
@@ -210,7 +276,8 @@ export default function CommunityChatPage() {
                     />
                     <button 
                       type="submit"
-                      className="w-14 h-14 bg-mafia-gold flex items-center justify-center text-mafia-black hover:bg-white transition-colors shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] flex-shrink-0"
+                      disabled={isBanned}
+                      className="w-14 h-14 bg-mafia-gold flex items-center justify-center text-mafia-black hover:bg-white transition-colors shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] flex-shrink-0 disabled:opacity-50"
                     >
                        <Send size={24} />
                     </button>
@@ -218,10 +285,10 @@ export default function CommunityChatPage() {
               </div>
 
               <div className="mt-8 flex justify-between items-center px-4">
-                 <span className="text-[9px] font-mono text-white/20 uppercase tracking-[0.5em]">DIRECT_LINK_v2.0</span>
+                 <span className="text-[9px] font-mono text-white/20 uppercase tracking-[0.5em]">DIRECT_LINK_v2.1_REALTIME</span>
                  <div className="flex gap-4">
                     <div className="w-1.5 h-1.5 bg-mafia-gold/50 rounded-full"></div>
-                    <span className="text-[9px] font-mono text-white/40 uppercase">BROADCAST_READY</span>
+                    <span className="text-[9px] font-mono text-white/40 uppercase">SYNCED_WITH_CLOUD</span>
                  </div>
               </div>
             </motion.div>

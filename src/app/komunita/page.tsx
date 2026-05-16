@@ -10,7 +10,8 @@ import {
   Zap,
   BookOpen,
   Instagram,
-  Facebook
+  Facebook,
+  Trophy
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -46,6 +47,15 @@ export default function CommunityPage() {
       icon: <BookOpen className="text-mafia-gold" size={48} />,
       link: '/komunita/historky',
       color: 'rgba(255, 255, 255, 0.05)'
+    },
+    {
+      id: 'sin-slavy',
+      title: lang === 'cs' ? 'SÍŇ SLÁVY' : 'HALL OF FAME',
+      subtitle: 'SUPPORTERS_LIST',
+      desc: lang === 'cs' ? 'Zapiš se do historie MMBarber rodiny. Seznam všech, kteří s námi tvoří tuhle komunitu.' : 'Write yourself into MMBarber history. A list of everyone building this community with us.',
+      icon: <Trophy className="text-mafia-gold" size={48} />,
+      link: '/komunita/sin-slavy',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.2)'
     }
   ];
 
@@ -102,7 +112,7 @@ export default function CommunityPage() {
             <div className="w-24 h-px bg-mafia-gold/40 mb-32"></div>
 
             {/* Main Action Hubs */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mb-48">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full mb-48">
                {communitySections.map((section, i) => (
                  <Link href={section.link} key={section.id}>
                     <motion.div 
@@ -131,55 +141,6 @@ export default function CommunityPage() {
                  </Link>
                ))}
             </div>
-
-            {/* Manifesto Section */}
-            <motion.div 
-               initial={{ opacity: 0 }}
-               whileInView={{ opacity: 1 }}
-               viewport={{ once: true }}
-               className="w-full p-12 md:p-24 border border-mafia-gold/20 bg-mafia-black/40 backdrop-blur-3xl relative overflow-hidden mb-40"
-            >
-                <div className="absolute top-0 right-0 w-80 h-80 bg-mafia-gold/5 blur-[120px] rounded-full"></div>
-                
-                <div className="relative z-10">
-                   <Users className="text-mafia-gold/20 mb-12 mx-auto" size={120} />
-                   <h2 className="text-4xl md:text-7xl font-heading font-black text-smoke-white uppercase tracking-tighter mb-10 italic">
-                      MANIFEST RODINY
-                   </h2>
-                   <p className="text-xl md:text-3xl font-sans text-mafia-gold/70 leading-relaxed mb-16 italic max-w-3xl mx-auto">
-                      {t.others.community.manifesto}
-                   </p>
-                   
-                   <div className="flex flex-wrap justify-center gap-12 pt-16 border-t border-mafia-gold/10">
-                      <a href="https://instagram.com/mmbarber" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-smoke-white hover:text-mafia-gold transition-all duration-300 group">
-                         <Instagram size={24} className="group-hover:rotate-12 transition-transform" />
-                         <span className="font-mono text-sm uppercase tracking-[0.3em]">INSTAGRAM</span>
-                      </a>
-                      <a href="https://facebook.com/mmbarber" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-smoke-white hover:text-mafia-gold transition-all duration-300 group">
-                         <Facebook size={24} className="group-hover:rotate-12 transition-transform" />
-                         <span className="font-mono text-sm uppercase tracking-[0.3em]">FACEBOOK</span>
-                      </a>
-                   </div>
-                </div>
-            </motion.div>
-
-            {/* Final CTA */}
-            <motion.div
-               initial={{ opacity: 0, scale: 0.9 }}
-               whileInView={{ opacity: 1, scale: 1 }}
-               viewport={{ once: true }}
-               className="text-center"
-            >
-               <h3 className="text-4xl md:text-6xl font-heading font-black text-white uppercase mb-12 italic tracking-tighter">
-                  {lang === 'cs' ? "JSME V TOM SPOLU." : "WE ARE IN THIS TOGETHER."}
-               </h3>
-               <Link 
-                 href="/"
-                 className="inline-flex px-16 py-6 bg-mafia-gold text-mafia-black font-heading font-black uppercase tracking-[0.5em] hover:bg-white transition-all duration-500 shadow-[0_20px_60px_rgba(var(--color-mafia-gold-rgb),0.3)]"
-               >
-                 {t.others.community.cta}
-               </Link>
-            </motion.div>
 
           </motion.div>
         </div>

@@ -372,12 +372,12 @@ export function Header() {
           window.dispatchEvent(new Event("mmbarber-reveal-barbers"));
           playSound("/sounds/success.mp3", 0.5);
           setTimeout(() => setIsConsoleOpen(false), 3000);
-        } else if (query === "admin_historky" || query === "admin-historky") {
-          setConsoleOutput(prev => [...prev, "ADMIN CLEARANCE DETECTED.", "Redirecting to moderation terminal...", "Stand by."]);
+        } else if (query === "admin") {
+          setConsoleOutput(prev => [...prev, "ADMIN CLEARANCE DETECTED.", "Redirecting to central command...", "Stand by."]);
           playSound("/sounds/success.mp3", 0.5);
           setTimeout(() => {
             setIsConsoleOpen(false);
-            router.push("/admin/komunita/historky");
+            router.push("/admin");
           }, 2000);
         } else {
           setConsoleOutput(prev => [...prev, "ERROR: Command not found or Access Denied."]);
@@ -393,7 +393,7 @@ export function Header() {
     const query = searchQuery.toLowerCase().trim();
     if (!query) return;
 
-    if (query === "odkrýt" || query === "odkryt" || query === "reveal" || query === "admin_historky" || query === "admin-historky") {
+    if (query === "odkrýt" || query === "odkryt" || query === "reveal" || query === "admin") {
       runCommand(query);
       setSearchQuery("");
       setIsSearchOpen(false);
