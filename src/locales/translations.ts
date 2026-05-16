@@ -541,7 +541,7 @@ export const translations = {
     },
     footer: {
       description: "Elegance, tradice a poctivá preciznost. Barbershop v Hradišti, kde se tvoří styl, o kterém se sice nemluví nahlas, ale každý ho chce.",
-      mission: "Budujeme lifestyle komunitu propojující barber culture, gaming, content a mladou generaci.",
+      mission: "Z LIDÍ VZNIKÁ STYL. ZE STYLU VZNIKÁ ZNAČKA.",
       nav: "Navigace",
       family: "Rodina",
       contact: "Spojení",
@@ -1896,7 +1896,7 @@ export const translations = {
     },
     footer: {
       description: "Elegance, tradition and honest precision. A barbershop in Hradiště where style is created - a style people don't talk about loudly, but everyone wants.",
-      mission: "Building a lifestyle community connecting barber culture, gaming, content, and the young generation.",
+      mission: "FROM PEOPLE COMES STYLE. FROM STYLE COMES A BRAND.",
       nav: "Navigation",
       family: "Family",
       contact: "Contact",

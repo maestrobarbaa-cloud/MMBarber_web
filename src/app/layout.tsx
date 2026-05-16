@@ -11,10 +11,9 @@ import { SecurityProvider } from "@/components/SecurityProvider";
 import { ClientWrapper } from "@/components/ClientWrapper";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { FutureSEO } from "@/components/FutureSEO";
-
+import { TableOfContents } from "@/components/TableOfContents";
 import Script from "next/script";
 import { Scissors } from "lucide-react";
-
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -358,6 +357,7 @@ export default function RootLayout({
                 <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-red/30" />
               </div>
 
+              <TableOfContents />
               <ScrollIndicator />
               <CustomCursor />
             </>

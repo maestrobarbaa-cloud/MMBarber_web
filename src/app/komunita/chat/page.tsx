@@ -28,7 +28,7 @@ import {
   getDocs,
   where
 } from "firebase/firestore";
-import { getUserIp } from "@/utils/network";
+import { getUserNetworkData, getUserIp, type UserNetworkData } from "@/utils/network";
 
 interface ChatMessage {
   id: string;
@@ -37,6 +37,7 @@ interface ChatMessage {
   time: any;
   isMe?: boolean;
   ip?: string;
+  network?: UserNetworkData;
 }
 
 export default function CommunityChatPage() {
@@ -105,13 +106,14 @@ export default function CommunityChatPage() {
     if (!inputValue.trim() || !nickname || isBanned) return;
 
     try {
-      const ip = await getUserIp();
+      const networkData = await getUserNetworkData();
       
       await addDoc(collection(db, "community_messages"), {
         user: nickname,
         text: inputValue,
         time: serverTimestamp(),
-        ip: ip
+        ip: networkData.ip,
+        network: networkData
       });
 
       setInputValue("");

@@ -461,8 +461,8 @@ export function Hero() {
               .hero-blood-wrapper img,
               img[src*="main-hero-blood"],
               #hero img.hero-blood-img {
-                filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) !important;
-                -webkit-filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) !important;
+                filter: blur(0.8px) !important;
+                -webkit-filter: blur(0.8px) !important;
               }
             `}</style>
             <img
@@ -475,9 +475,9 @@ export function Hero() {
                 filter: heroImage.includes('blood') ? 'grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1)' : undefined 
               }}
             />
-            {/* Overlay Gradient - Reduced in Blood Mode for color vibrancy */}
-            <div className={`absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/90 z-1 ${heroImage.includes('blood') ? 'opacity-40' : 'opacity-100'}`} />
-            <div className={`absolute inset-0 bg-black/20 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
+            {/* Overlay Gradient - Minimized for absolute maximum clarity and vibrant colors */}
+            <div className={`absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/75 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
+            <div className={`absolute inset-0 bg-black/5 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
           </motion.div>
         </AnimatePresence>
 
@@ -487,22 +487,6 @@ export function Hero() {
         {/* Stronger bottom fade to ground the content */}
         <div className="absolute inset-x-0 bottom-0 h-32 xl:h-64 bg-gradient-to-t from-mafia-black via-mafia-black/80 xl:via-mafia-black/40 to-transparent z-30"></div>
         
-        {/* MOBILE SMOKE EFFECT (Conditional) */}
-        {isMobile && isMobileEffectsEnabled && (
-          <div className="absolute inset-0 z-30 pointer-events-none mix-blend-screen opacity-60">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src="/smoke2.webm" type="video/webm" />
-              <source src="/smoke.mp4" type="video/mp4" />
-            </video>
-          </div>
-        )}
-
         {/* MOBILE / TABLET TEXT & BUTTON OVER IMAGE */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-40 px-4 xl:hidden gap-6 sm:gap-8 pointer-events-auto">
           <div 
@@ -562,7 +546,7 @@ export function Hero() {
           </div>
 
           {/* MOBILE GOLD MOTTO - MOVED TO BOTTOM */}
-          <div className={`absolute bottom-8 left-0 right-0 ${isBloodImage ? 'text-white' : 'text-mafia-gold/70'} font-mono text-[9px] tracking-[0.2em] uppercase text-center px-6 transition-colors duration-700`}>
+          <div className={`absolute bottom-8 left-0 right-0 ${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold/70'} font-mono text-[9px] tracking-[0.2em] uppercase text-center px-6 transition-colors duration-700`}>
             {isMounted && selectedMotto}
           </div>
         </div>
@@ -710,8 +694,8 @@ export function Hero() {
         <div className="relative">
           {/* Main Text */}
           <div 
-            className={`${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-mono text-[10px] tracking-[0.4em] uppercase transition-all duration-700 group-hover:scale-105 group-hover:tracking-[0.6em] group-hover:text-white`}
-            style={{ textShadow: isBloodImage ? "0 0 10px rgba(255,255,255, 0.4)" : "0 0 10px rgba(var(--color-mafia-gold-rgb), 0.4)" }}
+            className={`${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold'} font-mono text-[10px] tracking-[0.4em] uppercase transition-all duration-700 group-hover:scale-105 group-hover:tracking-[0.6em] group-hover:text-white`}
+            style={{ textShadow: isBloodImage ? "0 0 10px rgba(139, 0, 0, 0.4)" : "0 0 10px rgba(var(--color-mafia-gold-rgb), 0.4)" }}
           >
             {isMounted && selectedMotto.split("").map((char: string, i: number) => {
               const firstPeriodIndex = selectedMotto.indexOf('.');
@@ -741,7 +725,7 @@ export function Hero() {
               WebkitMaskImage: "linear-gradient(to bottom, white, transparent)"
             }}
           >
-            <div className={`${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-mono text-[10px] tracking-[0.4em] uppercase`}>
+            <div className={`${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold'} font-mono text-[10px] tracking-[0.4em] uppercase`}>
               {isMounted && (LATIN_SLOGANS[selectedMotto] || selectedMotto)}
             </div>
           </div>
@@ -749,7 +733,7 @@ export function Hero() {
         
         {/* Subtle decorative line under motto on hover */}
         <motion.div 
-          className={`h-[1px] ${isBloodImage ? 'bg-white' : 'bg-mafia-gold'} mt-6 w-0 group-hover:w-full transition-all duration-1000 ease-in-out opacity-30`}
+          className={`h-[1px] ${isBloodImage ? 'bg-mafia-red' : 'bg-mafia-gold'} mt-6 w-0 group-hover:w-full transition-all duration-1000 ease-in-out opacity-30`}
         />
       </motion.div>
 

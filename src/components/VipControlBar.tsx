@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { 
   Sun, 
+  Cloud,
   CloudRain, 
   Snowflake, 
   CloudLightning, 
@@ -28,7 +29,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import { isDaytime } from "../lib/weather";
 
-type WeatherState = 'clear' | 'rain' | 'snow' | 'thunderstorm' | 'live';
+type WeatherState = 'clear' | 'clouds' | 'rain' | 'snow' | 'thunderstorm' | 'live';
 
 export function VipControlBar() {
   const { t } = useTranslation();
@@ -278,10 +279,11 @@ export function VipControlBar() {
             {/* Weather Selection */}
             <div className="space-y-2 pt-2 border-t border-mafia-gold/10">
               <span className="text-[10px] font-bold text-mafia-gold/60 uppercase tracking-widest">{t.devPanel.atmosphere}</span>
-              <div className="grid grid-cols-5 gap-1">
+              <div className="grid grid-cols-6 gap-1">
                 {[
                   { id: 'live', icon: Monitor },
                   { id: 'clear', icon: Sun },
+                  { id: 'clouds', icon: Cloud },
                   { id: 'rain', icon: CloudRain },
                   { id: 'snow', icon: Snowflake },
                   { id: 'thunderstorm', icon: CloudLightning }

@@ -23,38 +23,69 @@ export const MAGAZINE_CS = [
     shortTitle: 'Alter Ego (Test)',
     subtitle: 'Kdo se skrývá pod povrchem?',
     questions: [
-      { q: "Jak vypadá váš ideální pracovní nástroj?", options: [{ text: "Pero, luxusní diář a drahé hodinky.", val: 1 }, { text: "Rychlé auto a neprůstřelný postoj.", val: 2 }, { text: "Vlastní pravidla a batoh na zádech.", val: 3 }, { text: "Knihy, etiketa a dobré mravy.", val: 4 }] },
-      { q: "Kdybyste měl vyřešit problém, jak to uděláte?", options: [{ text: "Deleguji to a pak zkontroluji výsledek.", val: 1 }, { text: "Vyřeším to silou nebo zastrašením.", val: 2 }, { text: "Ignoruji systém a najdu si vlastní cestu.", val: 3 }, { text: "Slušně požádám o řešení a poděkuji.", val: 4 }] },
-      { q: "Kam směřujete, když se nikdo nedívá?", options: [{ text: "Do VIP salónku s nejlepším výhledem.", val: 1 }, { text: "Do stínu, kde se dělají skutečné obchody.", val: 2 }, { text: "Kamkoliv, kde mě nikdo nebude hledat.", val: 3 }, { text: "Do knihovny nebo na charitativní večer.", val: 4 }] }
+      { q: "Jaký je váš primární komunikační kód?", options: [
+        { text: "Přímý, autoritativní, bez zbytečných slov.", val: 1 }, 
+        { text: "Drsný, upřímný, mluvím činy.", val: 2 }, 
+        { text: "Nepředvídatelný, ironický, bořím konvence.", val: 3 }, 
+        { text: "Slušný, diplomatický, s důrazem na etiketu.", val: 4 }
+      ]},
+      { q: "Váš ideální revír pro sobotní večer?", options: [
+        { text: "Střešní bar s výhledem na město a drahým pitím.", val: 1 }, 
+        { text: "Klub, kde hraje bass a cítím tep ulice.", val: 2 }, 
+        { text: "Ateliér, garáž nebo místo, kde můžu tvořit.", val: 3 }, 
+        { text: "Klasický lounge s kvalitním doutníkem.", val: 4 }
+      ]},
+      { q: "Jak reagujete na autority a pravidla?", options: [
+        { text: "Já jsem ta autorita, která pravidla tvoří.", val: 1 }, 
+        { text: "Pravidla respektuji, dokud mi nestojí v cestě.", val: 2 }, 
+        { text: "Pravidla jsou pro ty, co nemají fantazii.", val: 3 }, 
+        { text: "Pravidla jsou základem civilizované společnosti.", val: 4 }
+      ]},
+      { q: "Co definuje váš osobní prostor?", options: [
+        { text: "Minimalismus, luxus a absolutní řád.", val: 1 }, 
+        { text: "Funkčnost, tech a surový industriál.", val: 2 }, 
+        { text: "Chaos, barvy a sbírka unikátních předmětů.", val: 3 }, 
+        { text: "Historie, tradice a kvalitní materiály.", val: 4 }
+      ]},
+      { q: "Váš postoj k technologiím?", options: [
+        { text: "Nástroj k efektivitě a ovládání trhu.", val: 1 }, 
+        { text: "Můj život je online, tech je moje DNA.", val: 2 }, 
+        { text: "Používám jen to, co mi dává svobodu.", val: 3 }, 
+        { text: "Tech je dobrý sluha, ale špatný pán.", val: 4 }
+      ]}
     ],
     results: {
       boss: { 
-        title: "IDENTITA: BOSS", 
-        desc: "Vy neřídíte jen firmu, vy řídíte osudy. Autorita z vás sálá na metry daleko. Jste predátor v obleku.", 
-        advice: "Váš styl: SLICK BACK + perfektně konturované vousy. Vůně: Tabák a kůže.",
-        haircut: "Slick Back (uhlazený dozadu)",
-        beard: "Konturované, středně dlouhé vousy"
+        title: "PROFIL: THE ALPHA ARCHITECT", 
+        desc: "Jste vizionář, který vidí struktury tam, kde jiní vidí chaos. Vaše přítomnost v místnosti mění atmosféru. Nečekáte na příležitosti, vy si je berete.", 
+        advice: "Váš styl vyžaduje absolutní preciznost. Žádné kompromisy.",
+        haircut: "Executive Contour / Razor Fade Slick Back",
+        beard: "Heavy Stubble (precizně konturované)",
+        fragrance: "Oud, Saffron, Black Leather"
       },
       gangster: { 
-        title: "IDENTITA: STREET KING", 
-        desc: "Město je vaše hřiště a ulice vaše pravidla. Respekt se nekupuje, ten se získává činy.", 
-        advice: "Váš styl: HIGH FADE + TEXTURE CROP. Vůně: Černý pepř a oud.",
-        haircut: "High Fade (vysoký přechod) + Texture Crop",
-        beard: "Krátké strniště nebo ostře řezaná brada"
+        title: "PROFIL: URBAN PREDATOR", 
+        desc: "Ulice je váš domov a vy znáte její rytmus. Jste loajální ke svému klanu, ale nemilosrdný k nepřátelům. Vaše síla je v autenticitě.", 
+        advice: "Potřebujete styl, který vydrží tempo města a vypadá drsně i po 12 hodinách.",
+        haircut: "High Skin Fade + Textured Fringe",
+        beard: "Boxed Beard (ostré linie)",
+        fragrance: "Gunpowder, Sea Salt, Dark Woods"
       },
       outsider: { 
-        title: "IDENTITA: REBEL / OUTSIDER", 
-        desc: "Systém je pro vás jen doporučení. Žijete na okraji, ale vidíte to, co ostatní přehlížejí.", 
-        advice: "Váš styl: MESSY LOOK / LONG HAIR + divoké vousy. Vůně: Jehličí a kouř.",
-        haircut: "Messy Look (rozcuch) nebo delší přirozené vlasy",
-        beard: "Přírodní, delší a nezkrocené vousy"
+        title: "PROFIL: CREATIVE ANARCHIST", 
+        desc: "Nezapadáte a ani nechcete. Váš život je experiment a vaše hlava je továrna na nápady. Jste ten, na koho se lidé dívají, i když se nesnažíte.", 
+        advice: "Váš styl je vyjádřením svobody. Nebojte se extrémů a přirozenosti.",
+        haircut: "Long Taper / Messy Mullet / Natural Flow",
+        beard: "Full Natural Beard (jen lehká úprava)",
+        fragrance: "Cannabis, Patchouli, Pine Needle"
       },
       gentleman: { 
-        title: "IDENTITA: MODERNÍ GENTLEMAN", 
-        desc: "Slušnost není slabost, je to nejvyšší forma inteligence. Svět potřebuje víc lidí jako vy.", 
-        advice: "Váš styl: SIDE PART + hladké oholení. Vůně: Levandule a čerstvé prádlo.",
-        haircut: "Side Part (pěšinka) - klasická elegance",
-        beard: "Hladce oholeno nebo velmi krátké, udržované strniště"
+        title: "PROFIL: LEGACY GUARDIAN", 
+        desc: "Střežíte hodnoty, které se ze světa vytrácejí. Čest, etiketa a smysl pro detail jsou vaším brněním. Jste pilířem, o který se ostatní opírají.", 
+        advice: "Elegance není o tom být viděn, ale o tom být zapamatován. Vsaďte na klasiku.",
+        haircut: "Classic Side Part / Scumbag Fade",
+        beard: "Clean Shave / Moustache Only",
+        fragrance: "Lavender, Bergamot, Sandalwood"
       }
     }
   },
@@ -273,6 +304,79 @@ export const MAGAZINE_CS = [
       { t: 'Čerstvé povlečení', d: 'Tip od profesionálů: Po každém velkém holení nebo střihu si vyměňte povlečení na polštáři.' },
       { t: 'Styling doma', d: 'Vždy se zeptejte svého barbera, jaký produkt použil a jak ho správně aplikovat.' }
     ]
+  },
+  {
+    type: 'styling-guide',
+    title: 'Průvodce Stylingem',
+    category: 'STYLING',
+    shortTitle: 'Styling',
+    subtitle: 'Pomády, pasty a slané vody',
+    content: 'Správný stylingový produkt je jako poslední dílek skládačky. Bez něj střih postrádá strukturu a charakter. Každý typ produktu je navržen pro jiný účel a typ vlasů.',
+    products: [
+      { t: 'Pomády (Water-based)', d: 'Klasika pro uhlazené účesy (Slick Back). Vysoký lesk a silná fixace. Snadno se vymývají.' },
+      { t: 'Pasty a Hlíny', d: 'Univerzální nástroje pro texturu a matný vzhled. Ideální pro moderní, rozcuchané účesy.' },
+      { t: 'Slané vody (Salt Spray)', d: 'Základ pro objem. Dodají vlasům texturu jako od moře. Používají se jako prestyling před fénováním.' },
+      { t: 'Pudry na vlasy', d: 'Okamžitý objem u kořínků a extrémně matný efekt. Skvělé pro jemné vlasy.' }
+    ]
+  },
+  {
+    type: 'test-styling',
+    title: 'Stylingový Algoritmus',
+    category: 'STYLING',
+    shortTitle: 'Styling (Test)',
+    subtitle: 'Najděte svůj ideální finiš',
+    questions: [
+      { q: "Jakého výsledného efektu chcete docílit?", options: [{ text: "Uhlazený, lesklý a elegantní vzhled.", val: 1 }, { text: "Přirozený, matný a texturovaný look.", val: 2 }, { text: "Maximální objem bez pocitu produktu ve vlasech.", val: 3 }] },
+      { q: "Jak silnou fixaci (držení) vyžadujete?", options: [{ text: "Extrémní - vlasy se nesmí hnout celý den.", val: 1 }, { text: "Střední - chci mít možnost vlasy v průběhu dne upravit.", val: 2 }, { text: "Lehkou - preferuji přirozený pohyb.", val: 3 }] },
+      { q: "Jaká je délka vašich vlasů?", options: [{ text: "Krátké (do 5 cm).", val: 1 }, { text: "Středně dlouhé (5-12 cm).", val: 2 }, { text: "Dlouhé (nad 12 cm).", val: 3 }] }
+    ],
+    results: {
+      'pomade': { title: "VOLBA: VODNÍ POMÁDA", desc: "Potřebujete kontrolu a lesk. Pomáda udrží váš účes v perfektním tvaru po celý den.", advice: "Aplikujte do mírně vlhkých vlasů pro maximální lesk." },
+      'paste': { title: "VOLBA: MATNÁ PASTA / JÍL", desc: "Hledáte moderní texturu a matný efekt. Pasta dodá vlasům hloubku bez zbytečného zatížení.", advice: "Produkt nejdříve pořádně rozetřete v dlaních, dokud se nezahřeje." },
+      'salt-powder': { title: "VOLBA: SLANÁ VODA / PUDR", desc: "Váš cíl je objem a lehkost. Tyto produkty vlasy nezatíží a dodají jim 'plážový' charakter.", advice: "Slanou vodu stříkejte do vlhkých vlasů před fénováním." }
+    }
+  },
+  {
+    type: 'quality-check',
+    title: 'Jak poznat kvalitu?',
+    category: 'EXPERT',
+    shortTitle: 'Kvalita',
+    subtitle: 'Nenechte se opít marketingem',
+    content: 'Rozdíl mezi prémiovým produktem a chemií z drogerie není jen v ceně, ale v molekulární struktuře a čistotě ingrediencí.',
+    checks: [
+      { t: 'Obsah vody', d: 'Levné produkty mají vodu na prvním místě jen jako plnidlo. Kvalitní věci obsahují hydrosoly nebo aloe šťávu.' },
+      { t: 'Syntetické parfémy', d: 'Silná, chemická vůně často maskuje nekvalitní suroviny. Hledejte esenciální oleje.' },
+      { t: 'Vymývatelnost', d: 'Prémiová pomáda by měla jít vymýt čistou vodou. Pokud potřebujete 3x šampon, je v tom příliš mnoho silikonů.' },
+      { t: 'Původ surovin', d: 'Zajímejte se, kde byla kosmetika vyrobena. Malé šarže (batch production) zaručují čerstvost účinných látek.' }
+    ]
+  },
+  {
+    type: 'beard-styling',
+    title: 'Architektura Vousů',
+    category: 'STYLING',
+    shortTitle: 'Vousy (Styling)',
+    subtitle: 'Oleje, balzámy a vosky',
+    content: 'Vousy nejsou jen delší chlupy na obličeji. Vyžadují specifickou chemii, protože pokožka pod nimi trpí nedostatkem kyslíku a hydratace.',
+    products: [
+      { t: 'Oleje na vousy', d: 'Základ pro každého. Hydratují pokožku (zastavují svědění) a změkčují vousy. Nezbytné pro zdravý růst.' },
+      { t: 'Balzámy (Beard Butter)', d: 'Kombinace péče a stylingu. Obsahují včelí vosk a bambucké máslo. Dodají vousům objem a mírnou fixaci.' },
+      { t: 'Vosky na knír', d: 'Pro ty, kteří chtějí mít knír pod kontrolou. Extrémně silná fixace pro precizní tvarování.' },
+      { t: 'Mýdla na vousy', d: 'Nikdy nepoužívejte běžné mýdlo. Speciální mýdla na vousy nevysušují citlivou pokožku obličeje.' }
+    ]
+  },
+  {
+    type: 'shampoo-guide',
+    title: 'Matrix Šamponů',
+    category: 'EXPERT',
+    shortTitle: 'Šampony',
+    subtitle: 'Jak zvolit zbraně podle problému',
+    content: 'Mytí je chemický proces. Pokud zvolíte špatný nástroj, můžete si pokožku poškodit na týdny dopředu.',
+    matrix: [
+      { p: 'Svědění a suchost', s: 'Šampon bez sulfátů s obsahem Urey nebo Panthenolu.', w: 'Vyhněte se parfémovaným produktům z drogerie.' },
+      { p: 'Mastné vlasy (každý den)', s: 'Produkty s obsahem Kaolinu (jíl) nebo citrusových extraktů.', w: 'Nemyjte vlasy příliš horkou vodou, stimuluje maz.' },
+      { p: 'Žluté lupy (Mastné)', s: 'Šampon s kyselinou salicylovou a protizánětlivými složkami.', w: 'Neškrábejte pokožku, hrozí zanesení infekce.' },
+      { p: 'Slábnoucí vlasy', s: 'Kofeinová a biotinová tonika + stimulační šampony.', w: 'Výsledek uvidíte nejdříve po 3 měsících používání.' }
+    ]
   }
 ];
 
@@ -300,38 +404,69 @@ export const MAGAZINE_EN = [
     shortTitle: 'Alter Ego (Test)',
     subtitle: 'Who hides beneath the surface?',
     questions: [
-      { q: "What does your ideal work tool look like?", options: [{ text: "Pen, luxury diary, and expensive watch.", val: 1 }, { text: "Fast car and bulletproof attitude.", val: 2 }, { text: "Own rules and a backpack on your back.", val: 3 }, { text: "Books, etiquette, and good manners.", val: 4 }] },
-      { q: "If you had to solve a problem, how would you do it?", options: [{ text: "Delegate it and then check the result.", val: 1 }, { text: "Solve it with force or intimidation.", val: 2 }, { text: "Ignore the system and find your own way.", val: 3 }, { text: "Politely ask for a solution and say thank you.", val: 4 }] },
-      { q: "Where do you go when no one is looking?", options: [{ text: "To the VIP lounge with the best view.", val: 1 }, { text: "Into the shadows where real deals are made.", val: 2 }, { text: "Anywhere where no one will look for me.", val: 3 }, { text: "To the library or a charity evening.", val: 4 }] }
+      { q: "What is your primary communication code?", options: [
+        { text: "Direct, authoritative, without wasted words.", val: 1 }, 
+        { text: "Tough, honest, I speak with actions.", val: 2 }, 
+        { text: "Unpredictable, ironic, breaking conventions.", val: 3 }, 
+        { text: "Polite, diplomatic, with emphasis on etiquette.", val: 4 }
+      ]},
+      { q: "Your ideal territory for a Saturday night?", options: [
+        { text: "Rooftop bar with city views and expensive drinks.", val: 1 }, 
+        { text: "A club where the bass hits and I feel the street pulse.", val: 2 }, 
+        { text: "A studio, garage, or a place where I can create.", val: 3 }, 
+        { text: "A classic lounge with a premium cigar.", val: 4 }
+      ]},
+      { q: "How do you react to authorities and rules?", options: [
+        { text: "I am the authority that makes the rules.", val: 1 }, 
+        { text: "I respect rules as long as they don't stand in my way.", val: 2 }, 
+        { text: "Rules are for those who lack imagination.", val: 3 }, 
+        { text: "Rules are the foundation of a civilized society.", val: 4 }
+      ]},
+      { q: "What defines your personal space?", options: [
+        { text: "Minimalism, luxury, and absolute order.", val: 1 }, 
+        { text: "Functionality, tech, and raw industrial.", val: 2 }, 
+        { text: "Chaos, colors, and a collection of unique items.", val: 3 }, 
+        { text: "History, tradition, and quality materials.", val: 4 }
+      ]},
+      { q: "What is your attitude towards technology?", options: [
+        { text: "A tool for efficiency and market control.", val: 1 }, 
+        { text: "My life is online, tech is my DNA.", val: 2 }, 
+        { text: "I only use what gives me freedom.", val: 3 }, 
+        { text: "Tech is a good servant, but a bad master.", val: 4 }
+      ]}
     ],
     results: {
       boss: { 
-        title: "IDENTITY: BOSS", 
-        desc: "You don't just run a company; you run destinies. Authority radiates from you for yards. You are a predator in a suit.", 
-        advice: "Your style: SLICK BACK + perfectly contoured beard. Fragrance: Tobacco and leather.",
-        haircut: "Slick Back (smoothed back)",
-        beard: "Contoured, medium-length beard"
+        title: "PROFILE: THE ALPHA ARCHITECT", 
+        desc: "You are a visionary who sees structures where others see chaos. Your presence in the room changes the atmosphere. You don't wait for opportunities; you take them.", 
+        advice: "Your style requires absolute precision. No compromises.",
+        haircut: "Executive Contour / Razor Fade Slick Back",
+        beard: "Heavy Stubble (precisely contoured)",
+        fragrance: "Oud, Saffron, Black Leather"
       },
       gangster: { 
-        title: "IDENTITY: STREET KING", 
-        desc: "The city is your playground and the streets are your rules. Respect isn't bought; it's earned through actions.", 
-        advice: "Your style: HIGH FADE + TEXTURE CROP. Fragrance: Black pepper and oud.",
-        haircut: "High Fade + Texture Crop",
-        beard: "Short stubble or sharply cut chin beard"
+        title: "PROFILE: URBAN PREDATOR", 
+        desc: "The street is your home and you know its rhythm. You are loyal to your clan but ruthless to enemies. Your strength is in authenticity.", 
+        advice: "You need a style that lasts the city's pace and looks tough even after 12 hours.",
+        haircut: "High Skin Fade + Textured Fringe",
+        beard: "Boxed Beard (sharp lines)",
+        fragrance: "Gunpowder, Sea Salt, Dark Woods"
       },
       outsider: { 
-        title: "IDENTITY: REBEL / OUTSIDER", 
-        desc: "The system is just a suggestion to you. You live on the edge, but you see what others overlook.", 
-        advice: "Your style: MESSY LOOK / LONG HAIR + wild beard. Fragrance: Pine and smoke.",
-        haircut: "Messy Look or longer natural hair",
-        beard: "Natural, longer and untamed beard"
+        title: "PROFILE: CREATIVE ANARCHIST", 
+        desc: "You don't fit in and you don't want to. Your life is an experiment and your head is an idea factory. You are the one people look at, even when you aren't trying.", 
+        advice: "Your style is an expression of freedom. Don't be afraid of extremes and naturalness.",
+        haircut: "Long Taper / Messy Mullet / Natural Flow",
+        beard: "Full Natural Beard (minimal grooming)",
+        fragrance: "Cannabis, Patchouli, Pine Needle"
       },
       gentleman: { 
-        title: "IDENTITY: MODERN GENTLEMAN", 
-        desc: "Politeness is not weakness; it is the highest form of intelligence. The world needs more people like you.", 
-        advice: "Your style: SIDE PART + clean shave. Fragrance: Lavender and fresh linen.",
-        haircut: "Side Part - classic elegance",
-        beard: "Clean-shaven or very short, maintained stubble"
+        title: "PROFILE: LEGACY GUARDIAN", 
+        desc: "You guard values that are disappearing from the world. Honor, etiquette, and attention to detail are your armor. You are a pillar that others lean on.", 
+        advice: "Elegance is not about being seen, but about being remembered. Go for the classic.",
+        haircut: "Classic Side Part / Scumbag Fade",
+        beard: "Clean Shave / Moustache Only",
+        fragrance: "Lavender, Bergamot, Sandalwood"
       }
     }
   },
@@ -549,6 +684,79 @@ export const MAGAZINE_EN = [
       { t: 'After Barber Visit', d: 'For the first 24 hours, try not to touch fresh haircut or shave with dirty hands.' },
       { t: 'Fresh Bedding', d: 'Pro tip: After every major shave or haircut, change the pillowcase.' },
       { t: 'Home Styling', d: 'Always ask your barber which product they used and how to apply it correctly.' }
+    ]
+  },
+  {
+    type: 'styling-guide',
+    title: 'Styling Guide',
+    category: 'STYLING',
+    shortTitle: 'Styling',
+    subtitle: 'Pomades, pastes, and salt sprays',
+    content: 'The right styling product is like the last piece of a puzzle. Without it, the cut lacks structure and character. Each type of product is designed for a different purpose and hair type.',
+    products: [
+      { t: 'Water-based Pomades', d: 'Classic for slicked-back styles. High shine and strong hold. Easy to wash out.' },
+      { t: 'Pastes and Clays', d: 'Versatile tools for texture and a matte look. Ideal for modern, messy hairstyles.' },
+      { t: 'Salt Sprays', d: 'The foundation for volume. Gives hair a beach-like texture. Used as a pre-styling before blow-drying.' },
+      { t: 'Hair Powders', d: 'Instant volume at the roots and an extreme matte effect. Great for fine hair.' }
+    ]
+  },
+  {
+    type: 'test-styling',
+    title: 'Styling Algorithm',
+    category: 'STYLING',
+    shortTitle: 'Styling (Test)',
+    subtitle: 'Find your ideal finish',
+    questions: [
+      { q: "What results are you looking for?", options: [{ text: "Slick, shiny, and elegant look.", val: 1 }, { text: "Natural, matte, and textured look.", val: 2 }, { text: "Maximum volume without feeling product in the hair.", val: 3 }] },
+      { q: "How strong a hold do you require?", options: [{ text: "Extreme - hair must not move all day.", val: 1 }, { text: "Medium - I want to be able to restyle during the day.", val: 2 }, { text: "Light - I prefer natural movement.", val: 3 }] },
+      { q: "What is your hair length?", options: [{ text: "Short (up to 5 cm).", val: 1 }, { text: "Medium (5-12 cm).", val: 2 }, { text: "Long (over 12 cm).", val: 3 }] }
+    ],
+    results: {
+      'pomade': { title: "CHOICE: WATER POMADE", desc: "You need control and shine. Pomade will keep your style in perfect shape all day.", advice: "Apply to slightly damp hair for maximum shine." },
+      'paste': { title: "CHOICE: MATTE PASTE / CLAY", desc: "You're looking for modern texture and a matte effect. Paste adds depth without unnecessary weight.", advice: "Rub the product thoroughly in your palms until it warms up before applying." },
+      'salt-powder': { title: "CHOICE: SALT SPRAY / POWDER", desc: "Your goal is volume and lightness. These products won't weigh hair down and give it a 'beachy' character.", advice: "Spray salt spray into damp hair before blow-drying." }
+    }
+  },
+  {
+    type: 'quality-check',
+    title: 'Identifying Quality',
+    category: 'EXPERT',
+    shortTitle: 'Quality',
+    subtitle: 'Don\'t be fooled by marketing',
+    content: 'The difference between a premium product and drugstore chemistry is not just in the price, but in the molecular structure and purity of ingredients.',
+    checks: [
+      { t: 'Water Content', d: 'Cheap products have water as the first ingredient just as a filler. Quality items contain hydrosols or aloe juice.' },
+      { t: 'Synthetic Fragrances', d: 'Strong, chemical scents often mask low-quality ingredients. Look for essential oils.' },
+      { t: 'Washability', d: 'A premium pomade should be washable with clear water. If you need 3 shampoos, there are too many silicones.' },
+      { t: 'Source Origin', d: 'Care about where the cosmetics were made. Small batch production guarantees fresh active ingredients.' }
+    ]
+  },
+  {
+    type: 'beard-styling',
+    title: 'Beard Architecture',
+    category: 'STYLING',
+    shortTitle: 'Beard (Styling)',
+    subtitle: 'Oils, balms, and waxes',
+    content: 'Beards are not just longer facial hair. They require specific chemistry because the skin underneath suffers from a lack of oxygen and hydration.',
+    products: [
+      { t: 'Beard Oils', d: 'The foundation for everyone. They hydrate the skin (stopping itching) and soften the beard. Essential for healthy growth.' },
+      { t: 'Balms (Beard Butter)', d: 'A combination of care and styling. Contain beeswax and shea butter. Add volume and moderate hold.' },
+      { t: 'Moustache Waxes', d: 'For those who want to keep their moustache under control. Extremely strong hold for precise shaping.' },
+      { t: 'Beard Soaps', d: 'Never use regular soap. Special beard soaps don\'t dry out sensitive facial skin.' }
+    ]
+  },
+  {
+    type: 'shampoo-guide',
+    title: 'Shampoo Matrix',
+    category: 'EXPERT',
+    shortTitle: 'Shampoos',
+    subtitle: 'Choosing your weapons by the problem',
+    content: 'Washing is a chemical process. If you choose the wrong tool, you can damage your skin for weeks ahead.',
+    matrix: [
+      { p: 'Itching and Dryness', s: 'Sulfate-free shampoo with Urea or Panthenol.', w: 'Avoid perfumed drugstore products.' },
+      { p: 'Oily Hair (Daily)', s: 'Products containing Kaolin (clay) or citrus extracts.', w: 'Do not wash hair with hot water; it stimulates sebum.' },
+      { p: 'Yellow Dandruff (Oily)', s: 'Shampoo with salicylic acid and anti-inflammatory ingredients.', w: 'Do not scratch the skin; there is a risk of infection.' },
+      { p: 'Thinning Hair', s: 'Caffeine and biotin tonics + stimulating shampoos.', w: 'Results will be visible after at least 3 months of use.' }
     ]
   }
 ];

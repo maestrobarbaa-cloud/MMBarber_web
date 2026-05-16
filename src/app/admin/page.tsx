@@ -11,7 +11,8 @@ import {
   ChevronRight,
   ShieldAlert,
   LogOut,
-  Trophy
+  Trophy,
+  Zap
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -107,6 +108,15 @@ export default function AdminDashboardPage() {
       icon: <Trophy className="text-mafia-gold" size={40} />,
       link: '/admin/komunita/sin-slavy',
       color: 'rgba(var(--color-mafia-gold-rgb), 0.15)'
+    },
+    {
+      id: 'zlepseni',
+      title: 'VIZE & ZLEPŠENÍ',
+      subtitle: 'FUTURE_MODERATION',
+      desc: 'Schvalování návrhů na zlepšení, nastavování priorit a odpovídání komunitě.',
+      icon: <Zap className="text-mafia-gold" size={40} />,
+      link: '/admin/komunita/zlepseni',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
     }
   ];
 

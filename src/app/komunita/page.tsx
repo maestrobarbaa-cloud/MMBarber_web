@@ -11,7 +11,8 @@ import {
   BookOpen,
   Instagram,
   Facebook,
-  Trophy
+  Trophy,
+  Camera
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -52,10 +53,28 @@ export default function CommunityPage() {
       id: 'sin-slavy',
       title: lang === 'cs' ? 'SÍŇ SLÁVY' : 'HALL OF FAME',
       subtitle: 'SUPPORTERS_LIST',
-      desc: lang === 'cs' ? 'Zapiš se do historie MMBarber rodiny. Seznam všech, kteří s námi tvoří tuhle komunitu.' : 'Write yourself into MMBarber history. A list of everyone building this community with us.',
+      desc: lang === 'cs' ? 'Zapiš se do historie MMBarber rodiny. Seznam všech, kteří s nadmi tvoří tuhle komunitu.' : 'Write yourself into MMBarber history. A list of everyone building this community with us.',
       icon: <Trophy className="text-mafia-gold" size={48} />,
       link: '/komunita/sin-slavy',
       color: 'rgba(var(--color-mafia-gold-rgb), 0.2)'
+    },
+    {
+      id: 'zlepseni',
+      title: lang === 'cs' ? 'VIZE & ZLEPŠENÍ' : 'VISIONS & UPGRADES',
+      subtitle: 'FUTURE_PROTOCOL',
+      desc: lang === 'cs' ? 'Máš nápad jak posunout MMBarber dál? Navrhni zlepšení, prioritizuj a sleduj realizaci.' : 'Have an idea to push MMBarber further? Suggest improvements, prioritize and track implementation.',
+      icon: <Zap className="text-mafia-gold" size={48} />,
+      link: '/komunita/zlepseni',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.3)'
+    },
+    {
+      id: 'grafika',
+      title: lang === 'cs' ? 'GRAFIKA' : 'GRAPHICS',
+      subtitle: 'BRAND_ASSETS',
+      desc: lang === 'cs' ? 'Stáhni si exkluzivní MMBarber grafiku, tapety a brandové materiály pro tvůj setup.' : 'Download exclusive MMBarber graphics, wallpapers and brand assets for your setup.',
+      icon: <Camera className="text-mafia-gold" size={48} />,
+      link: '/grafika',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
     }
   ];
 
@@ -112,7 +131,7 @@ export default function CommunityPage() {
             <div className="w-24 h-px bg-mafia-gold/40 mb-32"></div>
 
             {/* Main Action Hubs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full mb-48">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full mb-48">
                {communitySections.map((section, i) => (
                  <Link href={section.link} key={section.id}>
                     <motion.div 

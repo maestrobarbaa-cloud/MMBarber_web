@@ -43,6 +43,7 @@ export default function HallOfFamePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [userSupporterId, setUserSupporterId] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -80,26 +81,61 @@ export default function HallOfFamePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newName.trim() || isSubmitting) return;
+    const cleanName = newName.trim();
+    if (!cleanName || isSubmitting) return;
+    setNameError(null);
 
     setIsSubmitting(true);
     try {
       const ip = await getUserIp();
       
+      // Check for name uniqueness (case-insensitive)
+      const nameQuery = query(
+        collection(db, "community_supporters"), 
+        where("name", ">=", cleanName.toUpperCase()), 
+        where("name", "<=", cleanName.toUpperCase() + "\uf8ff")
+      );
+      // Note: Since Firestore case-insensitive is tricky, we'll fetch and filter or just do exact match if we store as uppercase.
+      // Let's do a simple check for exact match first (case-insensitive in JS for safety)
+      const allSnapshot = await getDocs(collection(db, "community_supporters"));
+      const nameExists = allSnapshot.docs.some(doc => 
+        doc.data().name.toLowerCase() === cleanName.toLowerCase() && doc.id !== userSupporterId
+      );
+
+      if (nameExists) {
+        setNameError(lang === 'cs' ? "OBSAZENO" : "TAKEN");
+        setIsSubmitting(false);
+        return;
+      }
+
       if (userSupporterId) {
         // Update existing
         await updateDoc(doc(db, "community_supporters", userSupporterId), {
-          name: newName.trim(),
-          time: serverTimestamp() // Refresh position? Or keep old? User said "change", so let's refresh time.
+          name: cleanName,
+          time: serverTimestamp()
         });
       } else {
-        // Add new
-        const docRef = await addDoc(collection(db, "community_supporters"), {
-          name: newName.trim(),
-          time: serverTimestamp(),
-          ip: ip
-        });
-        setUserSupporterId(docRef.id);
+        // Check IP again to be absolutely sure
+        const ipQuery = query(collection(db, "community_supporters"), where("ip", "==", ip));
+        const ipSnapshot = await getDocs(ipQuery);
+        
+        if (!ipSnapshot.empty) {
+          // Already has an entry under this IP, update that one instead of adding new
+          const existingDoc = ipSnapshot.docs[0];
+          await updateDoc(doc(db, "community_supporters", existingDoc.id), {
+            name: cleanName,
+            time: serverTimestamp()
+          });
+          setUserSupporterId(existingDoc.id);
+        } else {
+          // Add new
+          const docRef = await addDoc(collection(db, "community_supporters"), {
+            name: cleanName,
+            time: serverTimestamp(),
+            ip: ip
+          });
+          setUserSupporterId(docRef.id);
+        }
       }
       
       setShowForm(false);
@@ -175,8 +211,18 @@ export default function HallOfFamePage() {
                   className="space-y-12 py-20"
                 >
                    {/* We double the list for seamless looping if needed, or just use enough spacing */}
-                   {[...supporters, ...supporters].map((supporter, idx) => (
+                   {/* Loop the list only if enough items to make it smooth, but avoid blind duplication */}
+                   {supporters.map((supporter, idx) => (
                      <div key={`${supporter.id}-${idx}`} className="flex flex-col items-center">
+                        <span className="text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter hover:text-mafia-gold transition-colors cursor-default">
+                           {supporter.name}
+                        </span>
+                        <div className="h-[1px] w-8 bg-mafia-gold/20 mt-4"></div>
+                     </div>
+                   ))}
+                   {/* Duplicate for seamless scroll ONLY if list is long enough or we need the infinite effect */}
+                   {supporters.length > 5 && supporters.map((supporter, idx) => (
+                     <div key={`${supporter.id}-dup-${idx}`} className="flex flex-col items-center">
                         <span className="text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter hover:text-mafia-gold transition-colors cursor-default">
                            {supporter.name}
                         </span>
@@ -228,11 +274,14 @@ export default function HallOfFamePage() {
                   <input 
                     type="text" 
                     value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                    placeholder="JAK TI ŘÍKAJÍ..."
+                    onChange={(e) => {
+                      setNewName(e.target.value);
+                      setNameError(null);
+                    }}
+                    placeholder={nameError || "JAK TI ŘÍKAJÍ..."}
                     maxLength={30}
                     required
-                    className="w-full bg-black/40 border border-white/10 px-6 py-4 text-center text-white font-mono tracking-widest uppercase focus:outline-none focus:border-mafia-gold transition-all mb-8"
+                    className={`w-full bg-black/40 border px-6 py-4 text-center font-mono tracking-widest uppercase focus:outline-none transition-all mb-8 ${nameError ? 'border-mafia-red text-mafia-red placeholder:text-mafia-red' : 'border-white/10 text-white focus:border-mafia-gold'}`}
                     autoFocus
                   />
                   <div className="flex flex-col gap-4">

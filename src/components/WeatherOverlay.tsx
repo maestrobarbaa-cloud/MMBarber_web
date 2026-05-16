@@ -10,12 +10,24 @@ export function WeatherOverlay() {
   const [rainItems, setRainItems] = useState<{id: number, left: number, duration: number, delay: number, opacity: number}[]>([]);
   const [snowItems, setSnowItems] = useState<{id: number, left: number, duration: number, delay: number, size: number, opacity: number}[]>([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 1280);
     const handleResize = () => setIsMobile(window.innerWidth < 1280);
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+    const checkMobileEffects = () => {
+        const enabled = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
+        setIsMobileEffectsEnabled(enabled);
+    };
+    checkMobileEffects();
+    window.addEventListener('mmbarber-mobile-effects-update', ((e: CustomEvent) => setIsMobileEffectsEnabled(e.detail)) as EventListener);
+
+    return () => {
+        window.removeEventListener("resize", handleResize);
+        window.removeEventListener('mmbarber-mobile-effects-update', ((e: CustomEvent) => setIsMobileEffectsEnabled(e.detail)) as EventListener);
+    };
   }, []);
 
   useEffect(() => {
@@ -62,16 +74,18 @@ export function WeatherOverlay() {
 
   if (weather === 'loading') return null;
 
+  const showClearVideo = weather === 'clear' && (!isMobile || isMobileEffectsEnabled);
+
   return (
     <>
-      {/* Base Smoke Overlay */}
-      {weather === 'clear' && (
+      {/* Base Smoke Overlay - Shown when weather is clear (nice weather) */}
+      {showClearVideo && (
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-15 xl:opacity-35 mix-blend-screen z-10 pointer-events-none hidden xl:block"
+          className="absolute inset-0 w-full h-full object-cover opacity-20 xl:opacity-35 mix-blend-screen z-10 pointer-events-none"
           style={{ filter: "contrast(1.05) brightness(0.8)" }}
         >
           <source src="/smoke2.webm" type="video/webm" />
@@ -151,9 +165,54 @@ export function WeatherOverlay() {
             95% { opacity: 0.8; }
             96%, 100% { opacity: 0; }
           }
+
+          /* Clouds / Fog (Ugly Weather) */
+          .cloud-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+            animation: cloud-pulse 10s ease-in-out infinite;
+          }
+
+          .fog-container {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            display: flex;
+            animation: fog-move 60s linear infinite;
+            opacity: 0.3;
+          }
+
+          .fog-blob {
+            flex: 1;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(100,100,100,0.4), transparent 70%);
+            filter: blur(60px);
+          }
+
+          @keyframes cloud-pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.7; }
+          }
+
+          @keyframes fog-move {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
         `}</style>
         
         <div className="weather-container">
+          {weather === 'clouds' && (
+            <div className="absolute inset-0 z-10 pointer-events-none">
+              <div className="cloud-overlay" />
+              <div className="fog-container">
+                <div className="fog-blob" />
+                <div className="fog-blob" />
+                <div className="fog-blob" />
+              </div>
+            </div>
+          )}
+
           {weather === 'rain' && (
             <div className="rainfall opacity-90">
               {rainItems.map((item) => (

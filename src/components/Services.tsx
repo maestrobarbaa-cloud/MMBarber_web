@@ -112,13 +112,7 @@ export function Services() {
               description: lang === 'cs' ? 'NAHLÉDNĚTE DO SVĚTA MMBARBER' : 'STEP INTO THE WORLD OF MMBARBER',
               onClick: () => { router.push('/galerie'); trackEvent("open_gallery_page"); }
             },
-            { 
-              id: 'support',
-              title: t?.others?.support?.title || (lang === 'cs' ? 'PODPORA' : 'SUPPORT'),
-              icon: <Heart size={48} className="text-mafia-gold" />,
-              description: lang === 'cs' ? 'PODPOŘTE NÁŠ SALON' : 'SUPPORT OUR SALON',
-              onClick: () => { router.push('/grafika'); trackEvent("open_graphics_page"); }
-            },
+
             { 
               id: 'members',
               title: t?.rodina?.title || (lang === 'cs' ? 'RODINA' : 'FAMILY'),
@@ -198,12 +192,7 @@ export function Services() {
               icon: <Camera size={32} className="text-mafia-gold" />,
               onClick: () => { router.push('/galerie'); trackEvent("open_gallery_page"); }
             },
-            { 
-              id: 'support',
-              title: lang === 'cs' ? 'PODPORA' : 'SUPPORT',
-              icon: <Heart size={32} className="text-mafia-gold" />,
-              onClick: () => { setShowSupport(true); trackEvent("open_support"); }
-            },
+
             { 
               id: 'members',
               title: t?.rodina?.list === 'Seznam' ? (lang === 'cs' ? 'RODINA' : 'FAMILY') : (lang === 'cs' ? 'RODINA' : 'FAMILY'),

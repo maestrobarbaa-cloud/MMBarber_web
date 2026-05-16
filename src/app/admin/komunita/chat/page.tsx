@@ -12,7 +12,8 @@ import {
   Hash,
   AlertTriangle,
   Lock,
-  Search
+  Search,
+  Info
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -30,6 +31,7 @@ import {
   getDocs,
   where
 } from "firebase/firestore";
+import { UserNetworkData } from "@/utils/network";
 
 interface ChatMessage {
   id: string;
@@ -38,6 +40,7 @@ interface ChatMessage {
   time: any;
   ip: string;
   userId?: string;
+  network?: UserNetworkData;
 }
 
 export default function AdminChatModerationPage() {
@@ -221,8 +224,19 @@ export default function AdminChatModerationPage() {
                          <td className="p-6 text-right">
                             <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                <button 
+                                 onClick={() => {
+                                   if (msg.network) {
+                                     alert(`IP: ${msg.network.ip}\nLOKALITA: ${msg.network.city || '?'}\nISP: ${msg.network.org || '?'}\nBROWSER: ${msg.network.userAgent}`);
+                                   } else {
+                                     alert(`IP: ${msg.ip}\nMetadata nedostupná.`);
+                                   }
+                                 }}
+                                 className="p-3 bg-white/5 hover:bg-mafia-gold hover:text-black transition-all text-white/30"
+                               >
+                                  <Info size={16} />
+                               </button>
+                               <button 
                                  onClick={() => banUser(msg.ip, msg.user)}
-                                 title="Zablokovat uživatele"
                                  className="p-3 bg-white/5 hover:bg-mafia-red hover:text-white transition-all text-white/30"
                                >
                                   <UserX size={16} />

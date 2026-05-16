@@ -1,14 +1,14 @@
-export type WeatherState = 'clear' | 'rain' | 'snow' | 'thunderstorm';
+export type WeatherState = 'clear' | 'clouds' | 'rain' | 'snow' | 'thunderstorm';
 
 let weatherCache: { data: WeatherState; temperature: number; timestamp: number } | null = null;
 let daytimeCache: { data: boolean; timestamp: number } | null = null;
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 /**
- * Fetches the current weather for Uherské Hradiště (Lat: 49.0697, Lon: 17.4597)
+ * Fetches the current weather for Uherské Hradiště (Lat: 49.0687, Lon: 17.4851)
  * using the open-meteo API and maps it to a unified WeatherState.
  */
-export async function getLiveWeather(lat: number = 49.0697, lon: number = 17.4597): Promise<WeatherState> {
+export async function getLiveWeather(lat: number = 49.0687, lon: number = 17.4851): Promise<WeatherState> {
   const now = Date.now();
   if (weatherCache && (now - weatherCache.timestamp < CACHE_TTL)) {
     return weatherCache.data;
@@ -17,7 +17,7 @@ export async function getLiveWeather(lat: number = 49.0697, lon: number = 17.459
   return weatherCache ? weatherCache.data : 'clear';
 }
 
-export async function getLiveTemperature(lat: number = 49.0697, lon: number = 17.4597): Promise<number> {
+export async function getLiveTemperature(lat: number = 49.0687, lon: number = 17.4851): Promise<number> {
   const now = Date.now();
   if (weatherCache && (now - weatherCache.timestamp < CACHE_TTL)) {
     return weatherCache.temperature;
@@ -50,6 +50,8 @@ function mapWmoToState(wmoCode: number): WeatherState {
     if (wmoCode >= 95 && wmoCode <= 99) return 'thunderstorm';
     if ((wmoCode >= 71 && wmoCode <= 77) || (wmoCode >= 85 && wmoCode <= 86)) return 'snow';
     if ((wmoCode >= 51 && wmoCode <= 67) || (wmoCode >= 80 && wmoCode <= 82)) return 'rain';
+    if (wmoCode === 3 || (wmoCode >= 45 && wmoCode <= 48)) return 'clouds';
+    // 0 = clear, 1-2 = mainly clear/partly cloudy
     return 'clear';
 }
 

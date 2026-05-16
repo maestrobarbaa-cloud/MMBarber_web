@@ -172,39 +172,49 @@ export default function CareMagazinePage() {
       const uniqueWinners = Array.from(new Set(newAnswers));
       const resultKeys: string[] = [];
 
-      uniqueWinners.forEach(winner => {
-        if (pageType === 'test') {
-          if (winner === 1) resultKeys.push('borealis');
-          else if (winner === 2) resultKeys.push('meridionalis');
-          else resultKeys.push('orientalis');
-        } 
-        else if (pageType === 'test-hair') {
-          if (winner === 1) resultKeys.push('low-porosity');
-          else if (winner === 2) resultKeys.push('medium-porosity');
-          else resultKeys.push('high-porosity');
-        }
-        else if (pageType === 'test-scalp') {
-          if (winner === 1) resultKeys.push('dry');
-          else if (winner === 2) resultKeys.push('oily');
-          else resultKeys.push('problematic');
-        }
-        else if (pageType === 'test-trichology') {
-          if (winner === 1) resultKeys.push('stable');
-          else if (winner === 2) resultKeys.push('warning');
-          else resultKeys.push('critical');
-        }
-        else if (pageType === 'alter-ego') {
-          if (winner === 1) resultKeys.push('boss');
-          else if (winner === 2) resultKeys.push('gangster');
-          else if (winner === 3) resultKeys.push('outsider');
-          else resultKeys.push('gentleman');
-        }
-        else if (pageType === 'test-herbs') {
-          if (winner === 1) resultKeys.push('growth');
-          else if (winner === 2) resultKeys.push('pigment');
-          else resultKeys.push('soothing');
-        }
-      });
+      if (pageType === 'alter-ego') {
+        const counts: any = {};
+        newAnswers.forEach(val => { counts[val] = (counts[val] || 0) + 1; });
+        const winner = Number(Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b));
+        
+        if (winner === 1) resultKeys.push('boss');
+        else if (winner === 2) resultKeys.push('gangster');
+        else if (winner === 3) resultKeys.push('outsider');
+        else resultKeys.push('gentleman');
+      } else {
+        uniqueWinners.forEach(winner => {
+          if (pageType === 'test') {
+            if (winner === 1) resultKeys.push('borealis');
+            else if (winner === 2) resultKeys.push('meridionalis');
+            else resultKeys.push('orientalis');
+          } 
+          else if (pageType === 'test-hair') {
+            if (winner === 1) resultKeys.push('low-porosity');
+            else if (winner === 2) resultKeys.push('medium-porosity');
+            else resultKeys.push('high-porosity');
+          }
+          else if (pageType === 'test-scalp') {
+            if (winner === 1) resultKeys.push('dry');
+            else if (winner === 2) resultKeys.push('oily');
+            else resultKeys.push('problematic');
+          }
+          else if (pageType === 'test-trichology') {
+            if (winner === 1) resultKeys.push('stable');
+            else if (winner === 2) resultKeys.push('warning');
+            else resultKeys.push('critical');
+          }
+          else if (pageType === 'test-herbs') {
+            if (winner === 1) resultKeys.push('growth');
+            else if (winner === 2) resultKeys.push('pigment');
+            else resultKeys.push('soothing');
+          }
+          else if (pageType === 'test-styling') {
+            if (winner === 1) resultKeys.push('pomade');
+            else if (winner === 2) resultKeys.push('paste');
+            else resultKeys.push('salt-powder');
+          }
+        });
+      }
       
       setTestResult(resultKeys.join(','));
       setTestAnswers(newAnswers);
@@ -655,6 +665,77 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
            </div>
         </div>
       );
+    case 'styling-guide':
+    case 'beard-styling':
+      return (
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12 text-center md:text-left">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
+           </div>
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
+              {page.content}
+           </p>
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              {page.products.map((item: any, i: number) => (
+                <div key={i} className="p-6 md:p-8 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/20 transition-all group">
+                   <h5 className="text-mafia-gold font-heading font-bold text-lg md:text-xl uppercase tracking-widest mb-4">{item.t}</h5>
+                   <p className="text-smoke-white/50 text-xs md:text-sm leading-relaxed">{item.d}</p>
+                </div>
+              ))}
+           </div>
+        </div>
+      );
+    case 'shampoo-guide':
+      return (
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
+           </div>
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
+              {page.content}
+           </p>
+           <div className="grid grid-cols-1 gap-4 md:gap-6">
+              {page.matrix.map((item: any, i: number) => (
+                <div key={i} className="grid grid-cols-1 md:grid-cols-3 bg-white/[0.02] border border-white/5 hover:border-mafia-gold/30 transition-all group overflow-hidden">
+                   <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-white/5 bg-white/[0.01]">
+                      <span className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-widest block mb-2">{lang === 'cs' ? 'PROBLÉM' : 'PROBLEM'}</span>
+                      <h5 className="text-white font-heading font-bold text-lg uppercase italic">{item.p}</h5>
+                   </div>
+                   <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-white/5">
+                      <span className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-widest block mb-2">{lang === 'cs' ? 'ŘEŠENÍ' : 'SOLUTION'}</span>
+                      <p className="text-smoke-white text-sm leading-relaxed">{item.s}</p>
+                   </div>
+                   <div className="p-6 md:p-8 bg-mafia-red/5">
+                      <span className="text-[10px] font-mono text-mafia-red/60 uppercase tracking-widest block mb-2">{lang === 'cs' ? 'VAROVÁNÍ' : 'WARNING'}</span>
+                      <p className="text-mafia-red/80 text-xs italic">{item.w}</p>
+                   </div>
+                </div>
+              ))}
+           </div>
+        </div>
+      );
+    case 'quality-check':
+      return (
+        <div className="w-full flex flex-col pb-10">
+           <div className="mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter mb-4">{page.title}</h2>
+              <p className="text-mafia-gold font-mono text-[10px] md:text-xs uppercase tracking-widest">{page.subtitle}</p>
+           </div>
+           <p className="text-smoke-white/70 text-base md:text-lg max-w-4xl mb-10 md:mb-12 italic leading-relaxed">
+              {page.content}
+           </p>
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              {page.checks.map((check: any, i: number) => (
+                <div key={i} className="p-6 md:p-8 bg-black border border-white/5 hover:border-mafia-gold/30 transition-all group">
+                   <h5 className="text-mafia-gold font-heading font-bold text-base md:text-lg uppercase tracking-widest mb-4 group-hover:text-white transition-colors">{check.t}</h5>
+                   <p className="text-smoke-white/50 text-xs md:text-sm leading-relaxed">{check.d}</p>
+                </div>
+              ))}
+           </div>
+        </div>
+      );
     case 'alter-ego':
       if (testResult) {
         const res = page.results[testResult];
@@ -676,34 +757,41 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
                   {res.desc}
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                   <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
-                      <div className="text-mafia-gold font-mono text-[10px] uppercase mb-3 tracking-widest font-black">Doporučený střih:</div>
-                      <p className="text-white font-heading font-bold text-xl uppercase italic">{res.haircut}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
+                   <div className="p-4 md:p-6 bg-white/5 border border-white/10 rounded-lg">
+                      <div className="text-mafia-gold font-mono text-[9px] md:text-[10px] uppercase mb-2 tracking-widest font-black opacity-60">Doporučený střih:</div>
+                      <p className="text-white font-heading font-bold text-lg md:text-xl uppercase italic leading-tight">{res.haircut}</p>
                    </div>
-                   <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
-                      <div className="text-mafia-gold font-mono text-[10px] uppercase mb-3 tracking-widest font-black">Úprava vousů:</div>
-                      <p className="text-white font-heading font-bold text-xl uppercase italic">{res.beard}</p>
+                   <div className="p-4 md:p-6 bg-white/5 border border-white/10 rounded-lg">
+                      <div className="text-mafia-gold font-mono text-[9px] md:text-[10px] uppercase mb-2 tracking-widest font-black opacity-60">Úprava vousů:</div>
+                      <p className="text-white font-heading font-bold text-lg md:text-xl uppercase italic leading-tight">{res.beard}</p>
                    </div>
                 </div>
 
-                <div className="bg-mafia-gold/10 p-6 border-l-4 border-mafia-gold mb-12">
-                   <p className="text-mafia-gold font-mono text-[11px] font-bold uppercase mb-2">PRO TIP:</p>
-                   <p className="text-smoke-white/80 italic">{res.advice}</p>
+                <div className="mb-8 p-4 md:p-6 bg-white/5 border border-white/10 rounded-lg">
+                   <div className="text-mafia-gold font-mono text-[9px] md:text-[10px] uppercase mb-2 tracking-widest font-black opacity-60">DNA Vůně:</div>
+                   <p className="text-white font-heading font-bold text-lg md:text-xl uppercase italic leading-tight">{res.fragrance}</p>
+                </div>
+
+                <div className="bg-mafia-gold/10 p-4 md:p-6 border-l-4 border-mafia-gold mb-10">
+                   <p className="text-mafia-gold font-mono text-[10px] md:text-[11px] font-bold uppercase mb-2">PRO TIP:</p>
+                   <p className="text-smoke-white/80 text-sm md:text-base italic leading-relaxed">{res.advice}</p>
                 </div>
 
                 <button 
                   onClick={resetTest} 
-                  className="group relative w-full py-6 bg-mafia-gold text-mafia-black font-heading font-black uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-white"
+                  className="group relative w-full py-5 bg-mafia-gold text-mafia-black font-heading font-black uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-white text-xs md:text-sm"
                 >
-                   <span className="relative z-10">{lang === 'cs' ? 'Zkusit jinou identitu' : 'Try another identity'}</span>
+                   <span className="relative z-10">{lang === 'cs' ? 'Resetovat Profiler' : 'Reset Profiler'}</span>
                 </button>
              </motion.div>
           </div>
         );
       }
 
-      const q = page.questions[testAnswers.length];
+      const q = page.questions[questionIndex];
+      if (!q) return null;
+
       return (
         <div className="h-full flex flex-col items-center justify-center py-6 md:py-10">
            <div className="max-w-4xl w-full">
@@ -724,21 +812,38 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
                          {q.q}
                        </h3>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {q.options.map((opt: any, i: number) => (
-                            <button 
-                              key={i} 
-                              onClick={() => handleTestAnswer(opt.val)} 
-                              className="group relative p-6 md:p-8 border border-white/10 bg-white/[0.02] hover:border-mafia-gold transition-all duration-500 text-left overflow-hidden"
-                            >
-                               <div className="absolute inset-0 bg-mafia-gold/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                               <p className="relative z-10 text-smoke-white/60 group-hover:text-white transition-colors text-base md:text-lg font-sans">
-                                 {opt.text}
-                               </p>
-                               <div className="absolute top-2 right-2 font-mono text-[10px] text-white/10 group-hover:text-mafia-gold/40">0{i+1}</div>
-                            </button>
-                          ))}
-                       </div>
-                    </motion.div>
+                          {q.options.map((opt: any, i: number) => {
+                             const isSelected = currentSelections.includes(opt.val);
+                             return (
+                               <button 
+                                 key={i} 
+                                 onClick={() => handleTestAnswer(opt.val)} 
+                                 className={`group relative p-6 md:p-8 border transition-all duration-500 text-left overflow-hidden ${
+                                   isSelected 
+                                     ? 'border-mafia-gold bg-mafia-gold/10' 
+                                     : 'border-white/10 bg-white/[0.02] hover:border-mafia-gold/50'
+                                 }`}
+                               >
+                                  <div className="absolute inset-0 bg-mafia-gold/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                                  <p className={`relative z-10 transition-colors text-base md:text-lg font-sans ${isSelected ? 'text-white' : 'text-smoke-white/60 group-hover:text-white'}`}>
+                                    {opt.text}
+                                  </p>
+                                  <div className="absolute top-2 right-2 font-mono text-[10px] text-white/10 group-hover:text-mafia-gold/40">0{i+1}</div>
+                               </button>
+                             );
+                           })}
+                        </div>
+                        {currentSelections.length > 0 && (
+                          <motion.button 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            onClick={handleNextQuestion}
+                            className="mt-12 w-full py-6 bg-mafia-gold text-black font-heading font-black text-sm md:text-base uppercase tracking-[0.3em] hover:bg-white transition-all shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)]"
+                          >
+                            {lang === 'cs' ? 'ANALYSOVAT DNA' : 'ANALYZE DNA'}
+                          </motion.button>
+                        )}
+                     </motion.div>
                  </AnimatePresence>
               </div>
            </div>
@@ -749,6 +854,7 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
     case 'test-scalp':
     case 'test-trichology':
     case 'test-herbs':
+    case 'test-styling':
       const questions = page.questions;
       const results = page.results;
 

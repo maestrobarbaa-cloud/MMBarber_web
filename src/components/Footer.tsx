@@ -15,6 +15,38 @@ import { useTranslation } from "../hooks/useTranslation";
 
 import { trackEvent } from "../utils/analytics";
 import { EvasiveButton } from "./EvasiveButton";
+import { type Language } from "../hooks/useTranslation";
+import { ChevronDown } from "lucide-react";
+
+const CzFlag = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" className="w-4 h-3 rounded-[2px] shadow-sm shrink-0">
+    <rect fill="#d7141a" width="900" height="600" />
+    <rect fill="#fff" width="900" height="300" />
+    <polygon fill="#11457e" points="0,0 0,600 450,300" />
+  </svg>
+);
+
+const GbFlag = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-4 h-3 rounded-[2px] shadow-sm shrink-0">
+    <clipPath id="s">
+      <path d="M0,0 v30 h60 v-30 z" />
+    </clipPath>
+    <clipPath id="t">
+      <path d="M30,15 h30 v15 z v-15 h-30 z h-30 v-15 z v15 h30 z" />
+    </clipPath>
+    <g clipPath="url(#s)">
+      <path d="M0,0 v30 h60 v-30 z" fill="#012169" />
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6" />
+      <path d="M0,0 L60,30 M60,0 L0,30" clipPath="url(#t)" stroke="#C8102E" strokeWidth="4" />
+      <path d="M30,0 v30 M0,15 h60" stroke="#fff" strokeWidth="10" />
+      <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" strokeWidth="6" />
+    </g>
+  </svg>
+);
+
+const FLAG_MAP: Record<string, React.FC> = {
+  cs: CzFlag, en: GbFlag,
+};
 
 const BulletHole = () => (
   <motion.div
@@ -250,7 +282,7 @@ const FooterLink = ({ href, children, isExternal, isBordered, isRed, onClick }: 
 };
 
 export function Footer() {
-  const { t, lang } = useTranslation();
+  const { t, lang, switchLanguage } = useTranslation();
   const [showContactOverlay, setShowContactOverlay] = React.useState(false);
   const [showResponsibleModal, setShowResponsibleModal] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
@@ -277,7 +309,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="w-full bg-[#050505] border-t border-mafia-gold/10 pt-24 pb-12 px-6 text-center z-10 relative mt-16 overflow-hidden">
+    <footer className="w-full bg-[#050505] border-t border-mafia-gold/10 pt-24 pb-12 px-6 text-center z-10 relative mt-0 overflow-hidden">
 
       {/* AMBIENT BACKGROUND */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)] pointer-events-none"></div>
@@ -392,25 +424,11 @@ export function Footer() {
         )}
       </AnimatePresence>
 
-      {/* Decorative top line with Marquee */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden border-y border-mafia-gold/10 bg-white/[0.02] py-2">
-        <motion.div 
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="flex whitespace-nowrap gap-16 items-center"
-        >
-          {[...Array(6)].map((_, i) => (
-            <span key={i} className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.5em] flex items-center gap-4">
-              <Zap size={10} className="text-mafia-gold" />
-              {t?.footer?.mission || "Budujeme lifestyle komunitu propojující barber culture, gaming, content a mladou generaci."}
-            </span>
-          ))}
-        </motion.div>
-      </div>
+
 
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-mafia-gold to-transparent opacity-30"></div>
 
-      <div className="max-w-5xl mx-auto flex flex-col lg:flex-row justify-center lg:justify-between items-center lg:items-start gap-8 lg:gap-16 mb-12">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-center items-center lg:items-start gap-12 lg:gap-24 mb-12">
 
         {/* Brand - Modern Premium Look */}
         <div className="flex flex-col items-center lg:items-start max-w-sm shrink-0">
@@ -448,37 +466,12 @@ export function Footer() {
           <div className="mt-10 w-full flex flex-col items-center gap-8">
             <EasterEgg />
 
-            <Link
-              href="/specialni-mise"
-              onClick={() => {
-                trackEvent("cta_footer_special_mission");
-              }}
-              className={`group relative px-6 py-4 border border-mafia-gold/20 transition-all duration-700 bg-mafia-gold/[0.02] overflow-hidden shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)] ${(!isMobile || isMobileEffectsEnabled) ? 'hover:border-mafia-gold hover:shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)]' : ''}`}
-            >
-              {/* Cinematic scanning effect */}
-              {(!isMobile || isMobileEffectsEnabled) && (
-                <motion.div
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 0.8, ease: "easeInOut" }}
-                  className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-mafia-gold/20 to-transparent skew-x-12"
-                />
-              )}
 
-              <div className="relative z-10 flex flex-col items-center gap-1">
-                <p className={`text-mafia-gold font-heading font-black text-sm uppercase tracking-[0.2em] transition-colors ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:text-white' : ''}`}>
-                  {t?.footer?.likeWeb || (lang === 'cs' ? "LÍBÍ SE TI WEB?" : "LIKE THE WEB?")}
-                </p>
-                <p className="text-[8px] font-mono text-white/20 uppercase tracking-[0.3em] group-hover:text-mafia-gold/40 transition-colors">
-                  Status: High Priority
-                </p>
-              </div>
-            </Link>
           </div>
         </div>
 
         {/* Links */}
-        <div className="flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16 text-center md:text-left w-full mt-6 lg:mt-0 justify-center lg:justify-end">
+        <div className="flex flex-col md:flex-row gap-12 lg:gap-16 text-center w-full mt-10 lg:mt-0 justify-center">
 
           {/* Column 1: Navigace + Rodina stacked */}
           <div className="flex flex-col space-y-8">
@@ -554,7 +547,7 @@ export function Footer() {
               {t?.footer?.followUs || (lang === 'cs' ? "SLEDUJ NÁS" : "FOLLOW US")}
             </h3>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4 items-center">
               {[
                 { icon: Instagram, label: "Instagram", sub: t?.footer?.instagramLine || "IG", url: "https://www.instagram.com/mmbarber_uherske_hradiste/" },
                 { icon: Facebook, label: "Facebook", sub: t?.footer?.facebookLine || "FB", url: "https://www.facebook.com/mmbarber.cz" },
@@ -585,6 +578,25 @@ export function Footer() {
                 </a>
               ))}
             </div>
+
+            {/* NEW FOOTER LANGUAGE SELECTOR - INTEGRATED WITH SOCIALS */}
+            <div className="flex items-center gap-4 mt-4 pt-4 border-t border-mafia-gold/10 w-full justify-center">
+              <button 
+                onClick={() => { switchLanguage('cs'); trackEvent("footer_language_change", { lang: 'cs' }); }} 
+                className={`flex items-center gap-2 transition-all duration-300 ${lang === 'cs' ? 'opacity-100' : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'}`}
+              >
+                 <CzFlag />
+                 <span className={`text-[9px] font-mono uppercase tracking-widest ${lang === 'cs' ? 'text-mafia-gold font-bold' : 'text-white'}`}>CS</span>
+              </button>
+              <div className="w-px h-3 bg-mafia-gold/20" />
+              <button 
+                onClick={() => { switchLanguage('en'); trackEvent("footer_language_change", { lang: 'en' }); }} 
+                className={`flex items-center gap-2 transition-all duration-300 ${lang === 'en' ? 'opacity-100' : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'}`}
+              >
+                 <GbFlag />
+                 <span className={`text-[9px] font-mono uppercase tracking-widest ${lang === 'en' ? 'text-mafia-gold font-bold' : 'text-white'}`}>EN</span>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -594,20 +606,24 @@ export function Footer() {
         <div className="flex flex-col items-center gap-6 w-full max-w-4xl px-4">
           <div className="flex flex-col items-center gap-2">
             <p className="text-[10px] md:text-sm font-heading font-black text-mafia-gold uppercase tracking-[0.3em] text-center mb-4 px-4 max-w-2xl mx-auto">
-              {t?.footer?.mission || "Budujeme lifestyle komunitu propojující barber culture, gaming, content a mladou generaci."}
+              {t?.footer?.mission || "Z LIDÍ VZNIKÁ STYL. ZE STYLU VZNIKÁ ZNAČKA."}
             </p>
             <p className="text-[9px] md:text-[10px] font-mono text-smoke-white/40 uppercase tracking-[0.1em] text-center leading-relaxed">
               {lang === 'cs' 
                 ? "Veškeré texty, fotografie, logo a originální obsah webu jsou chráněny autorským právem." 
                 : "All texts, photographs, logo and original content of the website are protected by copyright."}
             </p>
-            <div className="flex items-center gap-4 mt-2">
+            
+
+            <div className="flex items-center gap-4 mt-4">
               <span className="text-smoke-white/20 font-mono text-[9px] uppercase tracking-widest">© 2024–2026 MMBARBER</span>
               <span className="text-mafia-red text-[9px] font-black tracking-[0.2em] px-2 py-0.5 border border-mafia-red/20">V 3.5</span>
             </div>
           </div>
         </div>
       </div>
+
+
 
     </footer>
   );

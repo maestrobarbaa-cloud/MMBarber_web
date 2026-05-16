@@ -63,12 +63,12 @@ export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
     <motion.section 
       onViewportEnter={startShooting}
       viewport={{ once: true, margin: "-100px" }}
-      className="w-full py-10 md:py-32 px-4 bg-[#0a0a0a] border-t-8 border-mafia-dark relative overflow-hidden group/partners"
+      className="w-full pt-10 pb-8 md:pt-32 md:pb-16 px-4 bg-[#050505] relative overflow-hidden group/partners"
     >
       
-      {/* Concrete Wall Texture */}
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/concrete-wall-2.png')] opacity-20 pointer-events-none"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none"></div>
+      {/* Background extended from Footer */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-10 md:mb-24 flex flex-col items-center">

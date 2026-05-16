@@ -21,35 +21,6 @@ import { playSound } from "../utils/audio";
 import { getUserRatingsData } from "@/utils/voting";
 
 
-const CzFlag = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" className="w-4 h-3 md:w-5 md:h-[14px] rounded-[2px] shadow-sm shrink-0">
-    <rect fill="#d7141a" width="900" height="600" />
-    <rect fill="#fff" width="900" height="300" />
-    <polygon fill="#11457e" points="0,0 0,600 450,300" />
-  </svg>
-);
-
-const GbFlag = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-4 h-3 md:w-5 md:h-[14px] rounded-[2px] shadow-sm shrink-0">
-    <clipPath id="s">
-      <path d="M0,0 v30 h60 v-30 z" />
-    </clipPath>
-    <clipPath id="t">
-      <path d="M30,15 h30 v15 z v-15 h-30 z h-30 v-15 z v15 h30 z" />
-    </clipPath>
-    <g clipPath="url(#s)">
-      <path d="M0,0 v30 h60 v-30 z" fill="#012169" />
-      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6" />
-      <path d="M0,0 L60,30 M60,0 L0,30" clipPath="url(#t)" stroke="#C8102E" strokeWidth="4" />
-      <path d="M30,0 v30 M0,15 h60" stroke="#fff" strokeWidth="10" />
-      <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" strokeWidth="6" />
-    </g>
-  </svg>
-);
-
-const FLAG_MAP: Record<string, React.FC> = {
-  cs: CzFlag, en: GbFlag,
-};
 
 export function Header() {
   const [clicks, setClicks] = useState(0);
@@ -111,6 +82,7 @@ export function Header() {
   const [isGraphicsOpen, setIsGraphicsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const settingsContainerRef = useRef<HTMLDivElement>(null);
    const [isSoundEnabled, setIsSoundEnabled] = useState(true);
    const [isRadioPlaying, setIsRadioPlaying] = useState(false);
    const [isGameActive, setIsGameActive] = useState(false);
@@ -297,6 +269,19 @@ export function Header() {
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsStateChange as EventListener);
       window.removeEventListener('mmbarber-theme-update', checkNoirMode);
       window.removeEventListener('storage', checkFlashing);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (settingsContainerRef.current && !settingsContainerRef.current.contains(event.target as Node)) {
+        setIsSettingsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -759,6 +744,18 @@ export function Header() {
     }
   }, [clicks, router]);
 
+  useEffect(() => {
+    if (!isSettingsOpen) return;
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.settings-container')) {
+        setIsSettingsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isSettingsOpen]);
+
   const handleNavLinkClick = () => {
     setIsMenuOpen(false);
     document.body.style.overflow = '';
@@ -780,10 +777,10 @@ export function Header() {
 
   return (
     <>
-      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-[calc(112px+env(safe-area-inset-top,0px))] block'}`} aria-hidden="true" />
+      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-[calc(88px+env(safe-area-inset-top,0px))] block'}`} aria-hidden="true" />
       <header
-        className={`w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] gpu-accelerate 
-          ${isMenuOpen ? 'fixed top-0 bg-mafia-black h-[calc(7rem+env(safe-area-inset-top,0px))]' : `fixed top-0 h-[calc(7rem+env(safe-area-inset-top,0px))] ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black border-b border-white/5' : 'bg-transparent border-b border-transparent'}`} 
+        className={`fixed top-0 w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between xl:justify-center xl:gap-16 transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] h-[calc(5.5rem+env(safe-area-inset-top,0px))] gpu-accelerate 
+          ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black/80 backdrop-blur-xl border-b border-white/5' : `bg-transparent border-b border-transparent ${isMenuOpen ? 'bg-mafia-black' : ''}`} 
           ${(isIntroActive && pathname === "/") 
             ? "xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0" 
             : (!isVisible && !isMenuOpen && !isMobile) 
@@ -791,13 +788,13 @@ export function Header() {
               : "translate-y-0 opacity-100 pointer-events-auto"
           }`}
       >
-        <div className="flex items-center gap-8">
+        <div className="flex items-center">
           <button
             onClick={handleLogoClick}
             className="group flex items-center outline-none"
             aria-label="MMBARBER Logo"
           >
-            <div className="relative w-11 h-9 md:w-16 md:h-12 flex-shrink-0 transition-transform duration-500 ease-in-out group-hover:rotate-[360deg] group-hover:scale-110">
+            <div className="relative w-10 h-8 md:w-12 md:h-10 flex-shrink-0 transition-transform duration-500 ease-in-out group-hover:scale-110">
               <Image
                 src="/logo.png"
                 alt="MM"
@@ -810,12 +807,9 @@ export function Header() {
             <div className="relative ml-2 flex flex-col justify-center">
               <span 
                 ref={logoRef}
-                className="text-lg md:text-2xl font-heading font-black text-mafia-gold noir-mode:text-smoke-white tracking-widest group-hover:text-smoke-white transition-all duration-300 logo-neon leading-none"
+                className="text-lg md:text-xl font-heading font-black text-mafia-gold noir-mode:text-smoke-white tracking-widest group-hover:text-smoke-white transition-all duration-300 logo-neon leading-none"
               >
                 MMBARBER
-              </span>
-              <span className="absolute -bottom-2 md:-bottom-3 left-0 text-[6px] md:text-[8px] text-mafia-gold/0 group-hover:text-mafia-gold/60 transition-all duration-700 font-mono uppercase tracking-[0.3em] whitespace-nowrap blur-sm group-hover:blur-0 translate-y-1 group-hover:translate-y-0 pointer-events-none">
-                Z lidí vzniká styl. Ze stylu vzniká značka.
               </span>
             </div>
           </button>
@@ -861,20 +855,18 @@ export function Header() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden xl:flex items-center gap-8 font-sans text-sm tracking-widest uppercase text-smoke-white/70">
+        <nav className="hidden xl:flex items-center gap-8 font-sans text-[11px] tracking-[0.2em] uppercase text-smoke-white/70">
 
             <Link 
               href="/jak-to-chodi" 
               onClick={(e) => {
                 trackEvent("nav_link_click", { label: "jak-to-chodi" });
               }} 
-              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
+              className="hover:text-mafia-gold transition-colors duration-300"
             >
-              <Compass size={16} style={{ color: 'var(--user-accent-color)' }} />
               {t.header.startMission}
             </Link>
-            <Link href="/pribeh" onClick={() => trackEvent("nav_link_click", { label: "pribeh" })} className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2">
-              <Users size={16} style={{ color: 'var(--user-accent-color)' }} />
+            <Link href="/pribeh" onClick={() => trackEvent("nav_link_click", { label: "pribeh" })} className="hover:text-mafia-gold transition-colors duration-300">
               {t.header.aboutUs}
             </Link>
 
@@ -887,18 +879,16 @@ export function Header() {
                   document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
                 }
               }} 
-              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
+              className="hover:text-mafia-gold transition-colors duration-300"
             >
-              <Briefcase size={16} style={{ color: 'var(--user-accent-color)' }} />
               {t.header.services}
             </Link>
 
             <Link 
               href="/cenik" 
               onClick={() => trackEvent("nav_link_click", { label: "cenik" })} 
-              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
+              className="hover:text-mafia-gold transition-colors duration-300"
             >
-              <CreditCard size={16} style={{ color: 'var(--user-accent-color)' }} />
               {t.header.priceList}
             </Link>
 
@@ -911,9 +901,8 @@ export function Header() {
                   document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth" });
                 }
               }} 
-              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
+              className="hover:text-mafia-gold transition-colors duration-300"
             >
-              <MapPin size={16} style={{ color: 'var(--user-accent-color)' }} />
               {t.header.kudy_k_nam}
             </Link>
             <Link 
@@ -921,9 +910,8 @@ export function Header() {
               onClick={() => {
                 trackEvent("nav_link_click", { label: "designed_by_tm" });
               }} 
-              className="hover:text-mafia-gold noir-mode:hover:text-mafia-silver theme-blood:hover:text-mafia-blood transition-colors duration-300 flex items-center gap-2"
+              className="hover:text-mafia-gold transition-colors duration-300"
             >
-              <LayoutGrid size={16} style={{ color: 'var(--user-accent-color)' }} />
               {t.header.web || "WEB"}
             </Link>
 
@@ -932,7 +920,7 @@ export function Header() {
               <Link 
                 href="/vip-club" 
                 onClick={() => trackEvent("nav_link_click", { label: "vip-club-visiting" })} 
-                className="text-mafia-gold font-black transition-all duration-300 flex items-center gap-2 hover:scale-110 drop-shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.5)] ml-4"
+                className="text-mafia-gold font-black transition-all duration-300 hover:scale-110 drop-shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.5)] ml-4 flex items-center gap-2"
               >
                 <Sparkles size={16} className="animate-pulse" />
                 VIP CLUB
@@ -979,7 +967,7 @@ export function Header() {
               {isSearchOpen && (
                 <button 
                   type="submit" 
-                  className="text-mafia-gold hover:scale-110 transition-transform p-1"
+                  className="text-mafia-gold hover:scale-110 transition-transform p-1 animate-pulse"
                 >
                   <Search size={18} />
                 </button>
@@ -991,46 +979,22 @@ export function Header() {
               className={`p-2 transition-all duration-300 rounded-full hover:bg-white/5 group relative ${isSearchOpen ? 'scale-110' : 'hover:scale-110'}`}
               aria-label={lang === 'cs' ? "Vyhledat" : "Search"}
             >
-              <Search 
-                size={20} 
-                className="relative z-10" 
-                style={{ 
-                  color: 'var(--user-accent-color)', 
-                  filter: `drop-shadow(0 0 8px var(--user-glow-color))`,
-                  opacity: isSearchOpen ? 1 : 0.7 
-                }} 
-              />
-              {isSearchOpen && (
-                <motion.div
-                  key="search-glow"
-                  className="absolute inset-0 rounded-full blur-md"
-                  style={{ backgroundColor: 'var(--user-accent-color)', opacity: 0.2 }}
-                />
-              )}
+              <Search size={20} className="relative z-10 transition-transform duration-300 group-hover:scale-110" style={{ color: 'var(--user-accent-color)', filter: `drop-shadow(0 0 8px var(--user-glow-color))` }} />
             </button>
 
             {clientNickname && (
-              <motion.div
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] border border-mafia-gold/20 rounded-sm ml-2 group hover:border-mafia-gold/50 transition-colors"
-                title={lang === 'cs' ? `Přihlášen jako: ${clientNickname}` : `Logged in as: ${clientNickname}`}
-              >
-                <div className="relative w-2 h-2">
-                  <div className="absolute inset-0 rounded-full bg-mafia-gold animate-ping opacity-20" />
-                  <div className="relative w-2 h-2 rounded-full bg-mafia-gold" />
-                </div>
-                <span className="text-[10px] font-heading font-black text-mafia-gold tracking-widest uppercase truncate max-w-[120px] drop-shadow-[0_0_5px_rgba(var(--color-mafia-gold-rgb),0.3)]">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.03] border border-mafia-gold/25 rounded-sm shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.1)]">
+                <div className="w-1.5 h-1.5 rounded-full bg-mafia-gold animate-pulse" />
+                <span className="text-[10px] font-heading font-black text-mafia-gold tracking-widest uppercase truncate max-w-[100px]">
                   {clientNickname}
                 </span>
-              </motion.div>
+              </div>
             )}
 
             {/* Unified Settings Gear */}
-            <div className="relative">
+            <div ref={settingsContainerRef} className="relative settings-container">
               <button
                 onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                onBlur={() => setTimeout(() => setIsSettingsOpen(false), 200)}
                 className={`p-2 transition-all duration-500 rounded-full hover:bg-white/5 group relative ${isSettingsOpen ? 'scale-110 bg-white/5' : 'hover:scale-110 opacity-70 hover:opacity-100'}`}
                 aria-label={lang === 'cs' ? "Nastavení" : "Settings"}
               >
@@ -1044,90 +1008,84 @@ export function Header() {
                 )}
               </button>
 
-              <AnimatePresence>
-                {isSettingsOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute top-full right-0 mt-2 w-48 bg-mafia-black border border-mafia-gold/20 shadow-[0_20px_50px_rgba(0,0,0,0.9)] p-2 z-[60] flex flex-col gap-1 rounded-sm"
+              {isSettingsOpen && (
+                <div
+                  className="absolute top-full right-0 mt-2 w-48 bg-mafia-black border border-mafia-gold/20 shadow-[0_20px_50px_rgba(0,0,0,0.9)] p-2 z-[60] flex flex-col gap-1 rounded-sm text-smoke-white"
+                >
+                  {/* Appearance */}
+                  <button
+                    onClick={() => {
+                      trackEvent("header_user_settings_open");
+                      router.push("/uzivatel");
+                      setIsSettingsOpen(false);
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left w-full rounded-sm"
                   >
-                    {/* Appearance */}
-                    <button
-                      onClick={() => {
-                        trackEvent("header_user_settings_open");
-                        router.push("/uzivatel");
-                        setIsSettingsOpen(false);
-                      }}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left"
-                    >
-                      <Palette size={18} style={{ color: isCustomLookActive ? 'var(--color-mafia-gold)' : undefined }} className={!isCustomLookActive ? "opacity-30" : ""} />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                        {lang === 'cs' ? "Vzhled" : "Appearance"}
-                      </span>
-                    </button>
+                    <Palette size={18} style={{ color: 'var(--color-mafia-gold)' }} className={!isCustomLookActive ? "opacity-40 group-hover:opacity-100 transition-opacity" : "group-hover:opacity-100 transition-opacity"} />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
+                      {lang === 'cs' ? "Vzhled" : "Appearance"}
+                    </span>
+                  </button>
 
-                    {/* Sound */}
-                    <button
-                      onClick={(e) => { e.stopPropagation(); toggleSound(); }}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left"
-                    >
-                      {isSoundEnabled ? <Volume2 size={18} style={{ color: 'var(--color-mafia-gold)' }} /> : <VolumeX size={18} className="opacity-30" />}
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                        {lang === 'cs' ? "Zvuk" : "Sound"}
-                      </span>
-                    </button>
+                  {/* Sound */}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleSound(); }}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left w-full rounded-sm"
+                  >
+                    {isSoundEnabled ? <Volume2 size={18} style={{ color: 'var(--color-mafia-gold)' }} className="group-hover:scale-110 transition-transform" /> : <VolumeX size={18} className="opacity-45 group-hover:opacity-100 transition-opacity" />}
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
+                      {lang === 'cs' ? "Zvuk" : "Sound"}
+                    </span>
+                  </button>
 
-                    {/* Graphics */}
-                    <button
-                      onClick={() => {
-                        setIsGraphicsOpen(true);
-                        setIsSettingsOpen(false);
-                      }}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left"
-                    >
-                      <Monitor size={18} className="opacity-30 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--color-mafia-gold)' }} />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                        {lang === 'cs' ? "Grafika" : "Graphics"}
-                      </span>
-                    </button>
+                  {/* Graphics */}
+                  <button
+                    onClick={() => {
+                      setIsGraphicsOpen(true);
+                      setIsSettingsOpen(false);
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left w-full rounded-sm"
+                  >
+                    <Monitor size={18} className="opacity-45 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--color-mafia-gold)' }} />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
+                      {lang === 'cs' ? "Grafika" : "Graphics"}
+                    </span>
+                  </button>
 
-                    {/* Radio */}
-                    <button
-                      onClick={(e) => { e.stopPropagation(); toggleRadio(); }}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left"
-                    >
-                      <Radio size={18} className={isRadioPlaying ? 'animate-pulse' : 'opacity-30'} style={{ color: 'var(--color-mafia-gold)' }} />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                        {lang === 'cs' ? "Rádio" : "Radio"}
-                      </span>
-                    </button>
+                  {/* Radio */}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleRadio(); }}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left w-full rounded-sm"
+                  >
+                    <Radio size={18} className={isRadioPlaying ? 'animate-pulse' : 'opacity-45 group-hover:opacity-100 transition-opacity'} style={{ color: 'var(--color-mafia-gold)' }} />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
+                      {lang === 'cs' ? "Rádio" : "Radio"}
+                    </span>
+                  </button>
 
-                    {/* Elite Rating */}
-                    <button
-                      onClick={() => {
-                        router.push("/hodnoceni");
-                        trackEvent("header_rating_click");
-                        setIsSettingsOpen(false);
-                      }}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left border-t border-mafia-gold/10 mt-1"
-                    >
-                      <Crown 
-                        size={18} 
-                        className={shouldFlashRating ? 'animate-pulse' : 'opacity-30 group-hover:opacity-100'} 
-                        style={{ 
-                          color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
-                          filter: shouldFlashRating ? `drop-shadow(0 0 8px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
-                        }} 
-                      />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                        {t.header.ratingAndNicknames}
-                      </span>
-                    </button>
-
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  {/* Elite Rating */}
+                  <button
+                    onClick={() => {
+                      router.push("/hodnoceni");
+                      trackEvent("header_rating_click");
+                      setIsSettingsOpen(false);
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left border-t border-mafia-gold/10 mt-1 w-full rounded-sm"
+                  >
+                    <Crown 
+                      size={18} 
+                      className={shouldFlashRating ? 'animate-pulse' : 'opacity-45 group-hover:opacity-100 transition-opacity'} 
+                      style={{ 
+                        color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
+                        filter: shouldFlashRating ? `drop-shadow(0 0 8px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
+                      }} 
+                    />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
+                      {t.header.ratingAndNicknames}
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
 
             <button
@@ -1147,28 +1105,6 @@ export function Header() {
                   }} 
                 />
             </button>
-
-            </div>
-
-          {/* Language Selector */}
-          <div className="relative group cursor-pointer h-full flex items-center py-2 mx-2">
-            <span className="flex items-center gap-1.5 hover:text-mafia-gold transition-colors duration-300">
-              {FLAG_MAP[lang] ? React.createElement(FLAG_MAP[lang]) : null}
-              {lang.toUpperCase()} <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
-            </span>
-            <div className="absolute top-full right-0 pt-2 w-44 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 flex flex-col">
-              <div className="bg-mafia-black border border-mafia-gold/30 shadow-[0_10px_30px_rgba(0,0,0,0.8)] py-2 flex flex-col max-h-80 overflow-y-auto">
-                {([['cs','Česky'],['en','English']] as [Language, string][]).map(([code, label]) => {
-                  const FlagComp = FLAG_MAP[code];
-                  return (
-                    <button key={code} onClick={() => { switchLanguage(code); trackEvent("nav_language_change", { lang: code }); }} className={`px-4 py-2.5 hover:bg-mafia-dark hover:text-mafia-gold transition-colors text-xs flex items-center gap-2.5 w-full text-left ${lang === code ? 'text-mafia-gold bg-mafia-gold/5' : 'text-smoke-white/70'}`}>
-                      {FlagComp ? <FlagComp /> : <span className="w-5 h-3 text-[8px] font-bold text-mafia-gold/40 border border-mafia-gold/20 flex items-center justify-center">{code.toUpperCase()}</span>}
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
 
           <button 
@@ -1179,7 +1115,7 @@ export function Header() {
                 playSound("/sounds/naboje.mp3", 0.2);
                 router.push("/rodina");
             }}
-            className={`group relative overflow-hidden bg-mafia-dark border px-4 md:px-6 py-2 transition-all duration-300 header-booking-btn flex items-center gap-2 ${isMounted && shouldFlashFamily && (!isMobile || isMobileEffectsEnabled) && !activeMode ? 'animate-[pulse_1.5s_ease-in-out_infinite]' : ''}`}
+            className={`group relative overflow-hidden bg-mafia-dark border px-6 md:px-8 py-3.5 transition-all duration-300 header-booking-btn flex items-center gap-3 ${isMounted && shouldFlashFamily && (!isMobile || isMobileEffectsEnabled) && !activeMode ? 'animate-[pulse_1.5s_ease-in-out_infinite]' : ''}`}
             style={{ 
               borderColor: 'var(--color-mafia-gold)',
               boxShadow: !isMounted ? 'none' : (isMobile && !isMobileEffectsEnabled) ? 'none' : (activeMode || !shouldFlashFamily ? (shouldFlashFamily ? `0 0 10px var(--color-mafia-gold)` : 'none') : '0 0 15px var(--color-mafia-gold), inset 0 0 10px var(--color-mafia-gold)'),
@@ -1187,8 +1123,8 @@ export function Header() {
             }}
           >
             <div className="absolute inset-0 block -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0" style={{ backgroundColor: 'var(--color-mafia-gold)' }}></div>
-            <Users size={18} className="relative z-10 transition-colors group-hover:text-black" style={{ color: 'var(--color-mafia-gold)' }} />
-            <span className="relative z-10 font-sans uppercase tracking-[0.2em] font-black group-hover:!text-black transition-colors whitespace-nowrap header-booking-btn-text" style={{ color: 'var(--color-mafia-gold)' }}>
+            <Users size={20} className="relative z-10 transition-colors group-hover:text-black" style={{ color: 'var(--color-mafia-gold)' }} />
+            <span className="relative z-10 font-sans uppercase tracking-[0.25em] font-black group-hover:!text-black transition-colors whitespace-nowrap header-booking-btn-text text-xs md:text-sm" style={{ color: 'var(--color-mafia-gold)' }}>
               {lang === 'cs' ? "Rodina MMBarberu" : "MMBarber Family"}
             </span>
           </button>
@@ -1505,15 +1441,6 @@ export function Header() {
               </div>
             </div>
 
-            {/* Bottom Language Utilities */}
-            <div className="flex items-center justify-between gap-4">
-               <button onClick={() => { switchLanguage('cs'); handleNavLinkClick(); }} className={`flex-1 py-4 border-2 transition-all ${lang === 'cs' ? 'bg-mafia-gold text-mafia-black border-mafia-gold' : 'bg-transparent border-white/10 text-smoke-white/40'} text-xs font-black tracking-widest uppercase flex items-center justify-center gap-2`}>
-                 <CzFlag /> ČESKY
-               </button>
-               <button onClick={() => { switchLanguage('en'); handleNavLinkClick(); }} className={`flex-1 py-4 border-2 transition-all ${lang === 'en' ? 'bg-mafia-gold text-mafia-black border-mafia-gold' : 'bg-transparent border-white/10 text-smoke-white/40'} text-xs font-black tracking-widest uppercase flex items-center justify-center gap-2`}>
-                 <GbFlag /> ENGLISH
-               </button>
-            </div>
 
           </motion.div>
         )}

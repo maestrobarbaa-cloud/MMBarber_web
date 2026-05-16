@@ -114,7 +114,7 @@ export default function Home() {
                 <div className="section-optimize"><Partners /></div>
               </SectionReveal>
 
-              <div className="pt-24 pb-12">
+              <div className="pt-0">
                 <Footer />
               </div>
             </div>
