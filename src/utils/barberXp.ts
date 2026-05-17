@@ -1,30 +1,31 @@
-import { db } from "@/lib/firebase";
-import { doc, onSnapshot, updateDoc, setDoc, getDoc, increment } from "firebase/firestore";
+import { getGlobalStatsAction, addVoteToBarberStatAction } from "@/app/actions/barberXp";
 
 export interface BarberXp {
-  xp: number;    // 0 to 100
-  likes: number; // Number of likes
+  xp: number;
+  likes: number;
+  stat1: number; // Razor precision
+  stat2: number; // Fade geometry
+  stat3: number; // Tactics / speed
+  stat4: number; // Charisma & human approach
+  stat5: number; // Humor & sense of fun
+  stat6: number; // Vibe & brotherly vibe
 }
 
 export interface GlobalBarberStats {
   [barberId: string]: BarberXp;
 }
 
-const STATS_DOC_PATH = "barbers/global_xp_stats";
-
-// Initial starting stats as requested by the user (Reset to zero)
+// Initial starting stats fallbacks
 export const INITIAL_STATS: GlobalBarberStats = {
-  tomas: { xp: 0, likes: 0 },
-  nella: { xp: 0, likes: 0 }
+  tomas: { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 },
+  nella: { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 }
 };
 
 /**
- * Calculates custom syndicat level from XP (0 to 13)
- * Maximum XP is 100. Smooth progression split into 14 ranks.
+ * Calculates custom syndicate level from XP (100 XP = 1 Rank Level)
  */
 export const calculateLevelFromXp = (xp: number): number => {
-  const cappedXp = Math.max(0, Math.min(100, xp));
-  return Math.min(13, Math.floor(cappedXp / 7.5));
+  return Math.max(0, Math.floor(xp / 100));
 };
 
 /**
@@ -47,7 +48,7 @@ export const getCzechRankFromLevel = (level: number, isFemale: boolean = false):
     "Živoucí legenda barber podsvětí",
     "CEO reality, kde všichni vypadají líp než včera"
   ];
-  return ranks[Math.max(0, Math.min(13, level))];
+  return ranks[Math.max(0, Math.min(ranks.length - 1, level))];
 };
 
 /**
@@ -70,136 +71,83 @@ export const getEnglishRankFromLevel = (level: number): string => {
     "Living Legend of the Barber Underworld",
     "CEO of a Reality Where Everyone Looks Better Than Yesterday"
   ];
-  return ranks[Math.max(0, Math.min(13, level))];
+  return ranks[Math.max(0, Math.min(ranks.length - 1, level))];
 };
 
 /**
- * Initializes stats document in Firestore if it doesn't exist.
- * Note: Resets are disabled to ensure ratings are permanently stored on the server
- * and never cleared during site updates.
+ * Safely subscribe to global stats in real-time using polling of the Server Action
  */
-export const initializeStatsIfEmpty = async () => {
-  if (typeof navigator !== "undefined" && !navigator.onLine) {
-    console.log("[Barber XP] Client is offline. Skipping Firestore initialization check.");
-    return;
-  }
-  try {
-    const docRef = doc(db, STATS_DOC_PATH);
-    const snap = await getDoc(docRef);
-    if (!snap.exists()) {
-      await setDoc(docRef, INITIAL_STATS);
-      console.log("[Barber XP] Initialized Firestore stats to zero successfully.");
+export const subscribeToGlobalXpStats = (callback: (stats: GlobalBarberStats) => void): (() => void) => {
+  let active = true;
+
+  const fetchStats = async () => {
+    try {
+      const data = await getGlobalStatsAction();
+      if (active) {
+        callback(data);
+      }
+    } catch (err) {
+      console.warn("[Barber XP] Server Action fetch failed:", err);
     }
-  } catch (error: any) {
-    if (error?.code === "unavailable" || error?.message?.includes("offline")) {
-      console.warn("[Barber XP] Firestore unavailable (client is offline). Using initial stats fallback.");
-    } else {
-      console.error("[Barber XP] Error initializing stats:", error);
-    }
-  }
-};
-
-export const subscribeToGlobalXpStats = (callback: (stats: GlobalBarberStats) => void) => {
-  const docRef = doc(db, STATS_DOC_PATH);
-  
-  // Initialize in parallel if online
-  initializeStatsIfEmpty();
-
-  const handleCallback = (data: GlobalBarberStats) => {
-    const merged = { ...data };
-    
-    // Tomas
-    const tomasLiked = hasLikedToday("tomas");
-    const tomasStats = merged.tomas || { xp: 0, likes: 0 };
-    merged.tomas = {
-      xp: tomasLiked ? Math.max(tomasStats.xp, 1) : tomasStats.xp,
-      likes: tomasLiked ? Math.max(tomasStats.likes, 1) : tomasStats.likes
-    };
-
-    // Nella
-    const nellaLiked = hasLikedToday("nella");
-    const nellaStats = merged.nella || { xp: 0, likes: 0 };
-    merged.nella = {
-      xp: nellaLiked ? Math.max(nellaStats.xp, 1) : nellaStats.xp,
-      likes: nellaLiked ? Math.max(nellaStats.likes, 1) : nellaStats.likes
-    };
-
-    callback(merged);
   };
 
-  return onSnapshot(docRef, (snapshot) => {
-    if (snapshot.exists()) {
-      handleCallback(snapshot.data() as GlobalBarberStats);
-    } else {
-      handleCallback(INITIAL_STATS);
-    }
-  }, (error: any) => {
-    console.warn("[Barber XP] onSnapshot failed. Using initial stats and merging today's likes locally.");
-    handleCallback(INITIAL_STATS); // Fallback to initial stats on error
-  });
+  fetchStats();
+  
+  // Real-time synchronization polling every 4 seconds from your server database
+  const interval = setInterval(fetchStats, 4000);
+
+  return () => {
+    active = false;
+    clearInterval(interval);
+  };
 };
 
 /**
- * Registers a like for a barber.
- * Each like increments XP by 1 (up to 100) and increases likes counter.
+ * Registers a support vote (kept for full backward compatibility)
  */
 export const addLikeToBarber = async (barberId: string): Promise<boolean> => {
   try {
-    // 1. Prevent duplicate liking in the same session/day to encourage fair play
     const storageKey = `mmbarber_liked_${barberId}_${new Date().toDateString()}`;
     if (localStorage.getItem(storageKey)) {
-      return false; // Already liked today
+      return false; 
     }
-
-    // 2. Premium offline UX: if network is down, record the token locally so they are marked as having voted
-    if (typeof navigator !== "undefined" && !navigator.onLine) {
-      localStorage.setItem(storageKey, "true");
-      window.dispatchEvent(new CustomEvent('mmbarber_xp_updated'));
-      return true;
-    }
-
-    const docRef = doc(db, STATS_DOC_PATH);
-    const snap = await getDoc(docRef);
-    
-    let currentXp = INITIAL_STATS[barberId]?.xp ?? 0;
-    let currentLikes = INITIAL_STATS[barberId]?.likes ?? 0;
-
-    if (snap.exists()) {
-      const data = snap.data();
-      if (data[barberId]) {
-        currentXp = data[barberId].xp;
-        currentLikes = data[barberId].likes;
-      }
-    }
-
-    // Cap XP at 100
-    const newXp = Math.min(100, currentXp + 1);
-    const newLikes = currentLikes + 1;
-
-    await setDoc(docRef, {
-      [barberId]: {
-        xp: newXp,
-        likes: newLikes
-      }
-    }, { merge: true });
-
-    // Mark as liked in local storage
     localStorage.setItem(storageKey, "true");
-    
-    // Dispatch local event for instant UI update
     window.dispatchEvent(new CustomEvent('mmbarber_xp_updated'));
     return true;
-  } catch (error: any) {
-    if (error?.code === "unavailable" || error?.message?.includes("offline")) {
-      console.warn("[Barber XP] Liking failed due to offline state. Storing support state locally.");
-      // Fallback local support
-      const storageKey = `mmbarber_liked_${barberId}_${new Date().toDateString()}`;
-      localStorage.setItem(storageKey, "true");
-      window.dispatchEvent(new CustomEvent('mmbarber_xp_updated'));
-      return true;
-    }
-    console.error("[Barber XP] Failed to add like:", error);
+  } catch (err) {
     return false;
+  }
+};
+
+/**
+ * Registers a vote for a specific attribute of a barber using secure Server Action
+ */
+export const addVoteToBarberStat = async (barberId: string, statIndex: number): Promise<boolean> => {
+  try {
+    const todayStr = new Date().toDateString();
+    const storageKey = `mmbarber_stat_liked_${barberId}_${statIndex}_${todayStr}`;
+    
+    // Client-side quick double click protection
+    if (localStorage.getItem(storageKey)) {
+      return false;
+    }
+
+    // Call our secure Server Action running directly on your VPS server
+    const result = await addVoteToBarberStatAction(barberId, statIndex);
+
+    if (!result.success) {
+      throw new Error(result.error || "Hlasování selhalo.");
+    }
+
+    // Set lock in local storage to prevent visual spam
+    localStorage.setItem(storageKey, "true");
+    
+    // Broadcast change to local UI instantly
+    window.dispatchEvent(new CustomEvent('mmbarber_xp_updated'));
+    return true;
+  } catch (error) {
+    console.error("[Barber XP] Secure vote submission failed:", error);
+    throw error;
   }
 };
 
@@ -207,7 +155,14 @@ export const addLikeToBarber = async (barberId: string): Promise<boolean> => {
  * Checks if a barber has been liked by the user today.
  */
 export const hasLikedToday = (barberId: string): boolean => {
-  if (typeof window === "undefined") return false;
   const storageKey = `mmbarber_liked_${barberId}_${new Date().toDateString()}`;
-  return localStorage.getItem(storageKey) !== null;
+  return !!localStorage.getItem(storageKey);
+};
+
+/**
+ * Checks if a specific attribute has been liked by the user today.
+ */
+export const hasStatLikedToday = (barberId: string, statIndex: number): boolean => {
+  const storageKey = `mmbarber_stat_liked_${barberId}_${statIndex}_${new Date().toDateString()}`;
+  return !!localStorage.getItem(storageKey);
 };

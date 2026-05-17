@@ -13,7 +13,7 @@ import {
 import { 
   Crown, Flame, User, Shield, 
   Target, ArrowRight, Settings, Check, Plus, Minus,
-  ArrowLeft, Home, UserCircle, ChevronDown
+  ArrowLeft, Home, UserCircle, ChevronDown, Sparkles, Edit3
 } from "lucide-react";
 import { MilitaryInsignia } from "@/components/Profiles";
 import Image from "next/image";
@@ -29,8 +29,30 @@ import {
   calculateLevelFromXp,
   getCzechRankFromLevel,
   getEnglishRankFromLevel,
-  GlobalBarberStats
+  GlobalBarberStats,
+  addVoteToBarberStat,
+  hasStatLikedToday
 } from "@/utils/barberXp";
+
+// Attribute rating configurations with static baseline levels
+const BARBER_STATS_METADATA: Record<string, { label: string; base: number; color: string }[]> = {
+  tomas: [
+    { label: "PŘESNOST BŘITVY", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "GEOMETRIE FADU", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "TAKTIKA A KOMUNIKACE", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "CHARISMA A LIDSKÝ PŘÍSTUP", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "POKEC A SMYSL PRO HUMOR", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "OCHOTA A BRATRSKÝ VIBE", base: 0, color: "var(--user-accent-color, #c5a059)" }
+  ],
+  nella: [
+    { label: "KREATIVNÍ TEXTURA", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "TRADIČNÍ STYLING", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "TAKTIKA A RYCHLOST", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "EMPATIE A PŘÁTELSKÁ AURA", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "DOBRÁ NÁLADA A POKEC", base: 0, color: "var(--user-accent-color, #c5a059)" },
+    { label: "TRPĚLIVOST A PÉČE", base: 0, color: "var(--user-accent-color, #c5a059)" }
+  ]
+};
 
 export default function RatingPage() {
   const router = useRouter();
@@ -46,6 +68,15 @@ export default function RatingPage() {
   // Real-time Global XP and Liking States
   const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
+  const [statLikedMap, setStatLikedMap] = useState<Record<string, boolean>>({});
+
+  // Barber customizable names states
+  const [customTomasName, setCustomTomasName] = useState<string>("Tomáš");
+  const [customNellaName, setCustomNellaName] = useState<string>("Nella");
+  const [isEditingTomasName, setIsEditingTomasName] = useState<boolean>(false);
+  const [isEditingNellaName, setIsEditingNellaName] = useState<boolean>(false);
+  const [tomasInputName, setTomasInputName] = useState<string>("Tomáš");
+  const [nellaInputName, setNellaInputName] = useState<string>("Nella");
 
   useEffect(() => {
     setIsClient(true);
@@ -64,6 +95,18 @@ export default function RatingPage() {
     checkTheme();
     window.addEventListener('mmbarber-theme-update', checkTheme);
 
+    // Load custom names from local storage
+    const savedTomas = localStorage.getItem("mmbarber_custom_name_tomas");
+    if (savedTomas) {
+      setCustomTomasName(savedTomas);
+      setTomasInputName(savedTomas);
+    }
+    const savedNella = localStorage.getItem("mmbarber_custom_name_nella");
+    if (savedNella) {
+      setCustomNellaName(savedNella);
+      setNellaInputName(savedNella);
+    }
+
     // Load simple nickname from local storage
     const savedNickname = localStorage.getItem("mmbarber_client_nickname");
     if (savedNickname) {
@@ -76,12 +119,19 @@ export default function RatingPage() {
     const unsubscribeXp = subscribeToGlobalXpStats((stats) => {
       setGlobalStats(stats);
       
-      // Update like tracker map for each barber
+      // Update like and stat-like tracker maps for each barber
       const updatedLikes: Record<string, boolean> = {};
+      const updatedStatLikes: Record<string, boolean> = {};
+      
       barbers.forEach((b) => {
         updatedLikes[b.id] = hasLikedToday(b.id);
+        for (let i = 0; i < 6; i++) {
+          updatedStatLikes[`${b.id}_${i}`] = hasStatLikedToday(b.id, i);
+        }
       });
+      
       setLikedMap(updatedLikes);
+      setStatLikedMap(updatedStatLikes);
     });
 
     const handleOnline = () => setIsOffline(false);
@@ -89,11 +139,27 @@ export default function RatingPage() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
+    // Listen for local XP changes to update UI instantly
+    const handleLocalXpUpdate = () => {
+      const updatedLikes: Record<string, boolean> = {};
+      const updatedStatLikes: Record<string, boolean> = {};
+      barbers.forEach((b) => {
+        updatedLikes[b.id] = hasLikedToday(b.id);
+        for (let i = 0; i < 6; i++) {
+          updatedStatLikes[`${b.id}_${i}`] = hasStatLikedToday(b.id, i);
+        }
+      });
+      setLikedMap(updatedLikes);
+      setStatLikedMap(updatedStatLikes);
+    };
+    window.addEventListener('mmbarber_xp_updated', handleLocalXpUpdate);
+
     return () => {
       unsubscribeXp();
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       window.removeEventListener('mmbarber-theme-update', checkTheme);
+      window.removeEventListener('mmbarber_xp_updated', handleLocalXpUpdate);
     };
   }, []);
 
@@ -103,16 +169,45 @@ export default function RatingPage() {
     playSound("/sounds/reload.mp3", 0.4);
   };
 
+  const handleSaveTomasName = () => {
+    const trimmed = tomasInputName.trim();
+    if (trimmed) {
+      localStorage.setItem("mmbarber_custom_name_tomas", trimmed);
+      setCustomTomasName(trimmed);
+    } else {
+      localStorage.removeItem("mmbarber_custom_name_tomas");
+      setCustomTomasName("Tomáš");
+      setTomasInputName("Tomáš");
+    }
+    setIsEditingTomasName(false);
+    playSound("/sounds/reload.mp3", 0.4);
+  };
+
+  const handleSaveNellaName = () => {
+    const trimmed = nellaInputName.trim();
+    if (trimmed) {
+      localStorage.setItem("mmbarber_custom_name_nella", trimmed);
+      setCustomNellaName(trimmed);
+    } else {
+      localStorage.removeItem("mmbarber_custom_name_nella");
+      setCustomNellaName("Nella");
+      setNellaInputName("Nella");
+    }
+    setIsEditingNellaName(false);
+    playSound("/sounds/reload.mp3", 0.4);
+  };
+
   const handleLike = async (barberId: string) => {
     if (likedMap[barberId]) return;
     
     // Optimistic UI updates
     setLikedMap(prev => ({ ...prev, [barberId]: true }));
     setGlobalStats(prev => {
-      const current = prev[barberId] || { xp: 0, likes: 0 };
+      const current = prev[barberId] || { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 };
       return {
         ...prev,
         [barberId]: {
+          ...current,
           xp: Math.min(100, current.xp + 1),
           likes: current.likes + 1
         }
@@ -129,10 +224,11 @@ export default function RatingPage() {
       // Rollback on error
       setLikedMap(prev => ({ ...prev, [barberId]: false }));
       setGlobalStats(prev => {
-        const current = prev[barberId] || { xp: 1, likes: 1 };
+        const current = prev[barberId] || { xp: 1, likes: 1, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 };
         return {
           ...prev,
           [barberId]: {
+            ...current,
             xp: Math.max(0, current.xp - 1),
             likes: Math.max(0, current.likes - 1)
           }
@@ -141,7 +237,46 @@ export default function RatingPage() {
     }
   };
 
+  const handleStatVote = async (barberId: string, statIndex: number) => {
+    const mapKey = `${barberId}_${statIndex}`;
+    if (statLikedMap[mapKey]) return;
 
+    // Optimistic local update
+    setStatLikedMap(prev => ({ ...prev, [mapKey]: true }));
+    setGlobalStats(prev => {
+      const current = prev[barberId] || { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 };
+      const val1 = statIndex === 0 ? (current.stat1 ?? 0) + 1 : (current.stat1 ?? 0);
+      const val2 = statIndex === 1 ? (current.stat2 ?? 0) + 1 : (current.stat2 ?? 0);
+      const val3 = statIndex === 2 ? (current.stat3 ?? 0) + 1 : (current.stat3 ?? 0);
+      const val4 = statIndex === 3 ? (current.stat4 ?? 0) + 1 : (current.stat4 ?? 0);
+      const val5 = statIndex === 4 ? (current.stat5 ?? 0) + 1 : (current.stat5 ?? 0);
+      const val6 = statIndex === 5 ? (current.stat6 ?? 0) + 1 : (current.stat6 ?? 0);
+      return {
+        ...prev,
+        [barberId]: {
+          xp: current.xp + 1, // +1 XP on stat endorsement
+          likes: current.likes + 1,
+          stat1: val1,
+          stat2: val2,
+          stat3: val3,
+          stat4: val4,
+          stat5: val5,
+          stat6: val6
+        }
+      };
+    });
+
+    playSound("/sounds/cash.mp3", 0.4);
+    trackEvent("barber_stat_vote", { barberId, statIndex });
+
+    try {
+      await addVoteToBarberStat(barberId, statIndex);
+    } catch (err) {
+      console.error("Failed to add stat vote:", err);
+      // Rollback
+      setStatLikedMap(prev => ({ ...prev, [mapKey]: false }));
+    }
+  };
 
   const getVocative = (name: string) => {
     if (!name) return "";
@@ -173,7 +308,7 @@ export default function RatingPage() {
   if (!isClient) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white pt-32 pb-20 px-4 md:px-8 relative overflow-hidden font-sans">
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(197,160,89,0.05),transparent)] opacity-50" />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
@@ -222,7 +357,256 @@ export default function RatingPage() {
           </p>
         </header>
 
-        <div className="space-y-12 mb-20">
+
+
+        {/* TEAM CARDS GRID WITH REAL-TIME STAT RATINGS */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 relative pb-40">
+          {barbers.map((barber, idx) => {
+            const stats = globalStats[barber.id] || { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 };
+            const globalXp = stats.xp;
+            const globalLikes = stats.likes;
+            const globalLevel = calculateLevelFromXp(globalXp);
+            const globalRankTitle = lang === 'cs'
+              ? getCzechRankFromLevel(globalLevel, barber.id === 'nella')
+              : getEnglishRankFromLevel(globalLevel);
+            
+            const alreadyLiked = likedMap[barber.id] || false;
+            const statsMetadata = BARBER_STATS_METADATA[barber.id] || [];
+
+            return (
+              <motion.div
+                key={barber.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="relative group bg-[#050505] border-2 border-white/5 hover:border-mafia-gold/30 transition-all duration-700 overflow-hidden rounded-sm flex flex-col justify-between"
+              >
+                <div className="p-6 md:p-8 flex flex-col gap-6">
+                  {/* Barber profile head */}
+                  <div className="flex items-center gap-6">
+                    <div className="relative w-24 h-24 md:w-32 md:h-32 shrink-0 group/photo">
+                      <div className="absolute inset-0 border border-mafia-gold/30 rounded-lg z-10" />
+                      <Image 
+                        src={barber.image} 
+                        alt={barber.name} 
+                        width={128} 
+                        height={128} 
+                        className={`w-full h-full object-cover rounded-lg grayscale transition-all duration-700 ${isBloodMode ? 'group-hover/photo:grayscale-0 group-hover/photo:sepia-[1] group-hover/photo:hue-rotate-[320deg] group-hover/photo:saturate-[5]' : 'group-hover:grayscale-0'}`}
+                      />
+                    </div>
+                    <div className="flex-grow space-y-1">
+                      <span className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em]">{lang === 'cs' ? 'OPERATIVNÍ ČLEN' : 'OPERATIVE MEMBER'}</span>
+                      <div className="flex items-center gap-2">
+                        {barber.id === 'tomas' ? (
+                          isEditingTomasName ? (
+                            <div className="flex items-center gap-2 mt-1">
+                              <input 
+                                type="text"
+                                value={tomasInputName}
+                                onChange={(e) => setTomasInputName(e.target.value)}
+                                className="bg-black/80 border border-mafia-gold text-white px-2 py-0.5 rounded text-xl font-heading w-40 md:w-56 focus:outline-none uppercase"
+                                autoFocus
+                                onKeyDown={(e) => { if (e.key === 'Enter') handleSaveTomasName(); }}
+                              />
+                              <button 
+                                onClick={handleSaveTomasName}
+                                className="text-[10px] font-mono text-mafia-gold hover:text-white border border-mafia-gold/40 px-2 py-0.5 rounded transition bg-mafia-gold/10"
+                              >
+                                OK
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-baseline gap-2 group/name select-none">
+                              <h3 className="text-3xl md:text-4xl font-heading font-black text-white uppercase tracking-wider italic">
+                                {customTomasName}
+                              </h3>
+                              <button 
+                                onClick={() => setIsEditingTomasName(true)}
+                                className="text-[9px] font-mono text-white/40 hover:text-mafia-gold flex items-center gap-1 transition-all duration-300 opacity-0 group-hover/name:opacity-100 focus:opacity-100 cursor-pointer bg-transparent border-none"
+                                title="Změnit jméno"
+                              >
+                                <Edit3 size={11} />
+                                <span>[ PŘEPSAT ]</span>
+                              </button>
+                            </div>
+                          )
+                        ) : (
+                          isEditingNellaName ? (
+                            <div className="flex items-center gap-2 mt-1">
+                              <input 
+                                type="text"
+                                value={nellaInputName}
+                                onChange={(e) => setNellaInputName(e.target.value)}
+                                className="bg-black/80 border border-mafia-gold text-white px-2 py-0.5 rounded text-xl font-heading w-40 md:w-56 focus:outline-none uppercase"
+                                autoFocus
+                                onKeyDown={(e) => { if (e.key === 'Enter') handleSaveNellaName(); }}
+                              />
+                              <button 
+                                onClick={handleSaveNellaName}
+                                className="text-[10px] font-mono text-mafia-gold hover:text-white border border-mafia-gold/40 px-2 py-0.5 rounded transition bg-mafia-gold/10"
+                              >
+                                OK
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-baseline gap-2 group/name select-none">
+                              <h3 className="text-3xl md:text-4xl font-heading font-black text-white uppercase tracking-wider italic">
+                                {customNellaName}
+                              </h3>
+                              <button 
+                                onClick={() => setIsEditingNellaName(true)}
+                                className="text-[9px] font-mono text-white/40 hover:text-mafia-gold flex items-center gap-1 transition-all duration-300 opacity-0 group-hover/name:opacity-100 focus:opacity-100 cursor-pointer bg-transparent border-none"
+                                title="Změnit jméno"
+                              >
+                                <Edit3 size={11} />
+                                <span>[ PŘEPSAT ]</span>
+                              </button>
+                            </div>
+                          )
+                        )}
+                      </div>
+                      <p className={`text-[11px] font-mono font-bold tracking-[0.3em] uppercase ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
+                        {barber.role}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* GLOBÁLNÍ REPUTACE & EXP SYSTEM (FIRESTORE REALTIME VOTE) */}
+                  <div className={`p-6 border border-mafia-gold/30 rounded-lg relative overflow-hidden backdrop-blur-md ${isBloodMode ? 'bg-mafia-blood/5 border-mafia-blood/30' : isNoirMode ? 'bg-white/5 border-white/20' : 'bg-mafia-gold/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.05)]'}`}>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(var(--color-mafia-gold-rgb),0.08)_0%,transparent_50%)] pointer-events-none" />
+                    
+                    <div className="relative z-10 flex flex-col gap-4">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-1">
+                          <span className="text-[9px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] block">
+                            {lang === 'cs' ? 'CELKOVÁ REPUTACE TÝMU' : 'GLOBAL TEAM REPUTATION'}
+                          </span>
+                          <h4 className="text-sm md:text-base font-heading font-black text-white uppercase tracking-wider italic flex items-center gap-2">
+                            <Flame size={16} className="text-mafia-gold animate-pulse animate-bounce" />
+                            {globalRankTitle}
+                          </h4>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'CELKOVÉ EXP' : 'TOTAL EXP'}</span>
+                          <span className="text-2xl font-heading font-black text-mafia-gold leading-none mt-1">
+                            {globalXp} <span className="text-xs text-white/40 font-mono">XP</span>
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Golden progress bar */}
+                      <div className="relative w-full h-3 bg-black/60 border border-white/5 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${globalXp % 100}%` }}
+                          transition={{ type: "spring", stiffness: 80, damping: 15 }}
+                          className={`h-full rounded-full ${isBloodMode ? 'bg-mafia-blood' : isNoirMode ? 'bg-white' : 'bg-gradient-to-r from-mafia-gold/50 via-mafia-gold to-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.5)]'}`}
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-3 mt-2">
+                        {/* Insignia / Level Indicator */}
+                        <div className="w-10 h-10 border border-white/10 flex items-center justify-center rounded-sm bg-black/40">
+                          <MilitaryInsignia level={globalLevel} color={isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "var(--color-mafia-gold)"} size={38} />
+                        </div>
+                        <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider">
+                          {lang === 'cs' ? `Stupeň šarže: ${globalLevel}` : `Rank Level: ${globalLevel}`}
+                        </span>
+                      </div>
+                      
+                      {/* Next rank notification */}
+                      {globalXp < 10000 && (
+                        <div className="text-[9px] font-mono text-white/20 uppercase tracking-widest text-center mt-1">
+                          {lang === 'cs' 
+                            ? `K postupu do další hodnosti zbývá ${100 - (globalXp % 100)} XP`
+                            : `${100 - (globalXp % 100)} XP needed for the next rank`}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* SPECIÁLNÍ SCHOPNOSTI OPERATIVCE (INDIVIDUAL ATTRIBUTES VOTING PANEL) */}
+                  <div className="bg-black/40 border border-white/5 p-5 rounded-xl space-y-5 relative">
+                    <div className="flex items-center gap-2 border-b border-white/5 pb-2.5 mb-2.5 justify-between">
+                      <span className="text-[9px] font-mono text-glow text-mafia-gold uppercase tracking-[0.25em] flex items-center gap-1.5">
+                        <Target size={12} className="text-mafia-gold" />
+                        {lang === 'cs' ? 'HODNOCENÍ SPECIFICKÝCH SCHOPNOSTÍ' : 'SPECIFIC SKILLS RATINGS'}
+                      </span>
+                      <span className="text-[8px] font-mono text-white/30 uppercase">
+                        ONLINE SYNCHRONIZACE
+                      </span>
+                    </div>
+
+                    <div className="space-y-4">
+                      {statsMetadata.map((stat, sIdx) => {
+                        const serverVotes = 
+                          sIdx === 0 ? (stats.stat1 ?? 0) : 
+                          sIdx === 1 ? (stats.stat2 ?? 0) : 
+                          sIdx === 2 ? (stats.stat3 ?? 0) : 
+                          sIdx === 3 ? (stats.stat4 ?? 0) : 
+                          sIdx === 4 ? (stats.stat5 ?? 0) : 
+                          (stats.stat6 ?? 0);
+                        const currentPercentage = Math.min(100, stat.base + serverVotes);
+                        const hasVotedForStat = statLikedMap[`${barber.id}_${sIdx}`] || false;
+
+                        return (
+                          <div key={sIdx} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-lg hover:border-mafia-gold/20 transition-all duration-300">
+                            
+                            {/* Stat details and loading bar */}
+                            <div className="flex-grow space-y-1.5 w-full">
+                              <div className="flex justify-between items-center text-[9px] font-mono uppercase tracking-widest text-white/60">
+                                <span>{stat.label}</span>
+                                <span className="text-mafia-gold font-bold">
+                                  {currentPercentage}% {serverVotes > 0 && `(+${serverVotes} ${lang === 'cs' ? 'hlasů' : 'votes'})`}
+                                </span>
+                              </div>
+                              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
+                                <motion.div
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${currentPercentage}%` }}
+                                  transition={{ type: "spring", stiffness: 60, damping: 10 }}
+                                  className="h-full rounded-full shadow-[0_0_8px_rgba(197,160,89,0.3)] bg-mafia-gold"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Stat specific upvote trigger */}
+                            <button
+                              onClick={() => handleStatVote(barber.id, sIdx)}
+                              disabled={hasVotedForStat}
+                              className={`w-full sm:w-auto px-4 py-2 border transition-all duration-300 flex items-center justify-center gap-1.5 text-[9px] font-mono uppercase tracking-wider shrink-0 rounded ${
+                                hasVotedForStat
+                                  ? "bg-white/5 border-white/10 text-white/30 cursor-not-allowed"
+                                  : "bg-transparent border-mafia-gold/40 text-mafia-gold hover:bg-mafia-gold hover:text-black hover:border-mafia-gold"
+                              }`}
+                            >
+                              {hasVotedForStat ? (
+                                <>
+                                  <Check size={12} className="text-emerald-500 shrink-0" />
+                                  <span>PODPOŘENO</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Flame size={12} className="text-mafia-gold shrink-0 group-hover:animate-bounce" />
+                                  <span>DÁT EXP +1</span>
+                                </>
+                              )}
+                            </button>
+
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* IDENTITY MANAGEMENT SECTION (MOVED TO BOTTOM AS REQUESTED) */}
+        <div className="space-y-12 mb-12 mt-16">
           <AnimatePresence mode="wait">
             {!isEditingNickname && clientNickname ? (
               <motion.div 
@@ -295,18 +679,18 @@ export default function RatingPage() {
                       </span>
                       <div className="flex flex-col md:flex-row gap-4">
                         <input 
-                          type="text"
-                          placeholder={lang === 'cs' ? "ZADEJTE JMÉNO..." : "ENTER NAME..."}
-                          value={clientNickname}
-                          onChange={(e) => setClientNickname(e.target.value.toUpperCase())}
-                          autoFocus
-                          className="bg-transparent border-b-2 border-white/20 text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter focus:border-mafia-gold outline-none transition-all flex-grow placeholder:opacity-20"
+                           type="text"
+                           placeholder={lang === 'cs' ? "ZADEJTE JMÉNO..." : "ENTER NAME..."}
+                           value={clientNickname}
+                           onChange={(e) => setClientNickname(e.target.value.toUpperCase())}
+                           autoFocus
+                           className="bg-transparent border-b-2 border-white/20 text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter focus:border-mafia-gold outline-none transition-all flex-grow placeholder:opacity-20"
                         />
                         <button 
-                          onClick={handleConfirmNickname}
-                          className="px-8 py-4 bg-mafia-gold text-black font-heading font-black uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]"
+                           onClick={handleConfirmNickname}
+                           className="px-8 py-4 bg-mafia-gold text-black font-heading font-black uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]"
                         >
-                          {lang === 'cs' ? 'POTVRDIT' : 'CONFIRM'}
+                           {lang === 'cs' ? 'POTVRDIT' : 'CONFIRM'}
                         </button>
                       </div>
                     </div>
@@ -317,130 +701,8 @@ export default function RatingPage() {
           </AnimatePresence>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 relative pb-40">
-          {barbers.map((barber, idx) => {
-            const stats = globalStats[barber.id] || { xp: 0, likes: 0 };
-            const globalXp = stats.xp;
-            const globalLikes = stats.likes;
-            const globalLevel = calculateLevelFromXp(globalXp);
-            const globalRankTitle = lang === 'cs'
-              ? getCzechRankFromLevel(globalLevel, barber.id === 'nella')
-              : getEnglishRankFromLevel(globalLevel);
-            const alreadyLiked = likedMap[barber.id] || false;
-
-            return (
-              <motion.div
-                key={barber.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                className={`relative group bg-[#050505] border-2 border-white/5 hover:border-mafia-gold/30 transition-all duration-700 overflow-hidden rounded-sm`}
-              >
-                <div className="p-6 md:p-8 flex flex-col gap-8">
-                  <div className="flex items-center gap-6">
-                    <div className="relative w-24 h-24 md:w-32 md:h-32 shrink-0 group/photo">
-                      <div className={`absolute inset-0 border border-mafia-gold/30 rounded-lg z-10`} />
-                      <Image 
-                        src={barber.image} 
-                        alt={barber.name} 
-                        width={128} 
-                        height={128} 
-                        className={`w-full h-full object-cover rounded-lg grayscale transition-all duration-700 ${isBloodMode ? 'group-hover/photo:grayscale-0 group-hover/photo:sepia-[1] group-hover/photo:hue-rotate-[320deg] group-hover/photo:saturate-[5]' : 'group-hover:grayscale-0'}`}
-                      />
-                    </div>
-                    <div className="flex-grow space-y-1">
-                      <span className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em]">{lang === 'cs' ? 'OPERATIVNÍ ČLEN' : 'OPERATIVE MEMBER'}</span>
-                      <h3 className="text-3xl md:text-4xl font-heading font-black text-white uppercase tracking-wider italic">
-                        {barber.name}
-                      </h3>
-                      <p className={`text-[11px] font-mono font-bold tracking-[0.3em] uppercase ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
-                        {barber.role}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* GLOBÁLNÍ REPUTACE & EXP SYSTEM (FIRESTORE REALTIME VOTE) */}
-                  <div className={`p-6 border border-mafia-gold/30 rounded-lg relative overflow-hidden backdrop-blur-md ${isBloodMode ? 'bg-mafia-blood/5 border-mafia-blood/30' : isNoirMode ? 'bg-white/5 border-white/20' : 'bg-mafia-gold/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.05)]'}`}>
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(var(--color-mafia-gold-rgb),0.08)_0%,transparent_50%)] pointer-events-none" />
-                    
-                    <div className="relative z-10 flex flex-col gap-4">
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-1">
-                          <span className="text-[9px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] block">
-                            {lang === 'cs' ? 'GLOBÁLNÍ REPUTACE & EXP' : 'GLOBAL REPUTATION & EXP'}
-                          </span>
-                          <h4 className="text-lg font-heading font-black text-white uppercase tracking-wider italic flex items-center gap-2">
-                            <Flame size={16} className="text-mafia-gold animate-pulse" />
-                            {globalRankTitle}
-                          </h4>
-                        </div>
-                        <div className="flex flex-col items-end">
-                          <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'CELKOVÉ EXP' : 'TOTAL EXP'}</span>
-                          <span className="text-2xl font-heading font-black text-mafia-gold leading-none mt-1">
-                            {globalXp} <span className="text-xs text-white/40 font-mono">/ 100 XP</span>
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Golden progress bar */}
-                      <div className="relative w-full h-3 bg-black/60 border border-white/5 rounded-full overflow-hidden">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          animate={{ width: `${globalXp}%` }}
-                          transition={{ type: "spring", stiffness: 80, damping: 15 }}
-                          className={`h-full rounded-full ${isBloodMode ? 'bg-mafia-blood' : isNoirMode ? 'bg-white' : 'bg-gradient-to-r from-mafia-gold/50 via-mafia-gold to-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.5)]'}`}
-                        />
-                      </div>
-
-                      <div className="flex justify-between items-center mt-2">
-                        {/* Insignia / Level Indicator */}
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 border border-white/10 flex items-center justify-center rounded-sm bg-black/40">
-                            <MilitaryInsignia level={globalLevel} color={isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "var(--color-mafia-gold)"} size={38} />
-                          </div>
-                          <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider">
-                            {lang === 'cs' ? `Stupeň šarže: ${globalLevel}` : `Rank Level: ${globalLevel}`}
-                          </span>
-                        </div>
-
-                        {/* Interactive Like Button */}
-                        <button
-                          onClick={() => handleLike(barber.id)}
-                          disabled={alreadyLiked}
-                          className={`px-5 py-2.5 font-heading uppercase text-xs tracking-wider transition-all duration-300 flex items-center gap-2 border ${
-                            alreadyLiked 
-                              ? "bg-white/5 border-white/10 text-white/30 cursor-not-allowed" 
-                              : isBloodMode 
-                                ? "bg-mafia-blood border-mafia-blood text-white font-black hover:bg-white hover:text-black shadow-[0_4px_15px_rgba(var(--color-mafia-blood-rgb),0.2)]"
-                                : isNoirMode
-                                  ? "bg-white border-white text-black font-black hover:bg-transparent hover:text-white"
-                                  : "bg-mafia-gold border-mafia-gold text-black font-black hover:bg-white hover:border-white shadow-[0_4px_15px_rgba(var(--color-mafia-gold-rgb),0.2)] hover:shadow-[0_4px_20px_rgba(255,255,255,0.3)]"
-                          }`}
-                        >
-                          <Flame size={14} className={alreadyLiked ? "" : "animate-bounce"} />
-                          {alreadyLiked ? (lang === 'cs' ? "PODPOŘENO" : "SUPPORTED") : (lang === 'cs' ? "DÁT EXP +1" : "GIVE EXP +1")}
-                        </button>
-                      </div>
-                      
-                      {/* Next rank notification */}
-                      {globalXp < 100 && (
-                        <div className="text-[9px] font-mono text-white/20 uppercase tracking-widest text-center mt-1">
-                          {lang === 'cs' 
-                            ? `K postupu do další hodnosti zbývá ${Math.max(1, Math.ceil((globalLevel + 1) * 7.5) - globalXp)} XP`
-                            : `${Math.max(1, Math.ceil((globalLevel + 1) * 7.5) - globalXp)} XP needed for the next rank`}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
+        {/* SECURITY & OFFLINE METADATA */}
         <footer className="mt-20 text-center space-y-6">
-
-          
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -453,7 +715,7 @@ export default function RatingPage() {
               </span>
             </div>
             <p className="text-white/20 text-[8px] font-mono uppercase tracking-widest">
-              {lang === 'cs' ? '* Nastavení se ukládá lokálně do paměti tvého prohlížeče.' : '* Settings are stored locally in your browser\'s memory.'}
+              {lang === 'cs' ? '* Hodnocení a EXP se bezpečně ukládají na lokální server.' : '* Ratings and EXP are securely saved to the local server.'}
             </p>
 
             {isOffline && (

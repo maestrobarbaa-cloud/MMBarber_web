@@ -149,14 +149,28 @@ export function Header() {
       setIsGameActive((e as CustomEvent).detail);
     };
 
+    const handleGraphicsOpen = () => {
+      setIsGraphicsOpen(true);
+    };
+
+    const handleSoundToggleRemote = () => {
+      const savedSound = localStorage.getItem("mmbarber_sound_enabled");
+      setIsSoundEnabled(savedSound === "true");
+    };
+
     readAccentColor();
     window.addEventListener("mmbarber-user-settings-update", readAccentColor);
     window.addEventListener("mmbarber-radio-update", handleRadioUpdate as EventListener);
     window.addEventListener("mmbarber-game-status-update", handleGameUpdate as EventListener);
+    window.addEventListener("mmbarber-graphics-open", handleGraphicsOpen);
+    window.addEventListener("mmbarber-sound-update-remote", handleSoundToggleRemote);
+
     return () => {
       window.removeEventListener("mmbarber-user-settings-update", readAccentColor);
       window.removeEventListener("mmbarber-radio-update", handleRadioUpdate as EventListener);
       window.removeEventListener("mmbarber-game-status-update", handleGameUpdate as EventListener);
+      window.removeEventListener("mmbarber-graphics-open", handleGraphicsOpen);
+      window.removeEventListener("mmbarber-sound-update-remote", handleSoundToggleRemote);
     };
   }, []);
 
@@ -991,119 +1005,6 @@ export function Header() {
               </div>
             )}
 
-            {/* Unified Settings Gear */}
-            <div ref={settingsContainerRef} className="relative settings-container">
-              <button
-                onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                className={`p-2 transition-all duration-500 rounded-full hover:bg-white/5 group relative ${isSettingsOpen ? 'scale-110 bg-white/5' : 'hover:scale-110 opacity-70 hover:opacity-100'}`}
-                aria-label={lang === 'cs' ? "Nastavení" : "Settings"}
-              >
-                <Settings 
-                  size={20} 
-                  className={`relative z-10 ${isSettingsOpen ? 'rotate-90' : ''} transition-transform duration-500`}
-                  style={{ color: 'var(--user-accent-color)', filter: `drop-shadow(0 0 8px var(--user-glow-color))` }} 
-                />
-                {(isRadioPlaying || isGameActive || isCustomLookActive) && !isSettingsOpen && (
-                   <div className="absolute top-0 right-0 w-2 h-2 bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-blood rounded-full shadow-[0_0_8px_var(--user-glow-color)] z-20" />
-                )}
-              </button>
-
-              {isSettingsOpen && (
-                <div
-                  className="absolute top-full right-0 mt-2 w-48 bg-mafia-black border border-mafia-gold/20 shadow-[0_20px_50px_rgba(0,0,0,0.9)] p-2 z-[60] flex flex-col gap-1 rounded-sm text-smoke-white"
-                >
-                  {/* Appearance */}
-                  <button
-                    onClick={() => {
-                      trackEvent("header_user_settings_open");
-                      router.push("/uzivatel");
-                      setIsSettingsOpen(false);
-                    }}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left w-full rounded-sm"
-                  >
-                    <Palette size={18} style={{ color: 'var(--color-mafia-gold)' }} className={!isCustomLookActive ? "opacity-40 group-hover:opacity-100 transition-opacity" : "group-hover:opacity-100 transition-opacity"} />
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                      {lang === 'cs' ? "Vzhled" : "Appearance"}
-                    </span>
-                  </button>
-
-                  {/* Sound */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); toggleSound(); }}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left w-full rounded-sm"
-                  >
-                    {isSoundEnabled ? <Volume2 size={18} style={{ color: 'var(--color-mafia-gold)' }} className="group-hover:scale-110 transition-transform" /> : <VolumeX size={18} className="opacity-45 group-hover:opacity-100 transition-opacity" />}
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                      {lang === 'cs' ? "Zvuk" : "Sound"}
-                    </span>
-                  </button>
-
-                  {/* Graphics */}
-                  <button
-                    onClick={() => {
-                      setIsGraphicsOpen(true);
-                      setIsSettingsOpen(false);
-                    }}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left w-full rounded-sm"
-                  >
-                    <Monitor size={18} className="opacity-45 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--color-mafia-gold)' }} />
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                      {lang === 'cs' ? "Grafika" : "Graphics"}
-                    </span>
-                  </button>
-
-                  {/* Radio */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); toggleRadio(); }}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left w-full rounded-sm"
-                  >
-                    <Radio size={18} className={isRadioPlaying ? 'animate-pulse' : 'opacity-45 group-hover:opacity-100 transition-opacity'} style={{ color: 'var(--color-mafia-gold)' }} />
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                      {lang === 'cs' ? "Rádio" : "Radio"}
-                    </span>
-                  </button>
-
-                </div>
-              )}
-            </div>
-
-            {/* Direct Hodnocení a přezdívky (Crown) Icon next to Game (Target) */}
-            <button
-                onClick={() => {
-                  router.push("/hodnoceni");
-                  trackEvent("header_rating_click");
-                }}
-                className="p-2 transition-all duration-500 rounded-full hover:bg-white/5 group relative hover:scale-125 ml-1"
-                aria-label={lang === 'cs' ? "HODNOCENÍ A PŘEZDÍVKY" : "RATING & NICKNAMES"}
-                title={lang === 'cs' ? "Hodnocení a přezdívky" : "Rating & Nicknames"}
-            >
-                <Crown 
-                  size={24} 
-                  className={`relative z-10 ${shouldFlashRating ? 'animate-pulse' : ''}`} 
-                  style={{ 
-                    color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
-                    filter: shouldFlashRating ? `drop-shadow(0 0 10px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
-                  }} 
-                />
-            </button>
-
-            <button
-                onClick={() => {
-                  markShootingOpened();
-                  window.dispatchEvent(new Event('mmbarber-elita-game-open'));
-                }}
-                className="p-2 transition-all duration-500 rounded-full hover:bg-white/5 group relative hover:scale-125 ml-1"
-                aria-label={lang === 'cs' ? "ELITNÍ STŘELBA" : "ELITE SHOOTING"}
-            >
-                <Target 
-                  size={24} 
-                  className={`relative z-10 ${shouldFlashShooting ? 'animate-pulse' : ''}`} 
-                  style={{ 
-                    color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
-                    filter: shouldFlashShooting ? `drop-shadow(0 0 10px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
-                  }} 
-                />
-            </button>
           </div>
 
           <button 

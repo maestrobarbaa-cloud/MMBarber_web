@@ -18,7 +18,6 @@ interface EditorialPhotoProps {
 
 const EditorialPhoto = ({ imageSrc, title, subtitle, modalTitle, modalContent, showInitially = false }: EditorialPhotoProps) => {
   const { t } = useTranslation();
-  const [showModal, setShowModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   
@@ -65,9 +64,8 @@ const EditorialPhoto = ({ imageSrc, title, subtitle, modalTitle, modalContent, s
               playCameraSound();
             }}
             onHoverEnd={() => setIsHovered(false)}
-            onClick={() => setShowModal(true)}
             whileHover={!isMobile ? { rotateX: -2, rotateY: 2, scale: 1.01 } : { scale: 1 }}
-            className="relative group perspective-2000 cursor-pointer w-full"
+            className="relative group perspective-2000 cursor-default w-full"
           >
             {/* The Gold Frame */}
             <div className={`absolute inset-0 border-2 z-20 pointer-events-none transition-colors duration-700 ${
@@ -144,56 +142,6 @@ const EditorialPhoto = ({ imageSrc, title, subtitle, modalTitle, modalContent, s
               </motion.div>
             </div>
           </motion.div>
-        )}
-
-        {showModal && (
-          <div key="editorial-modal-wrapper" className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div 
-              key="editorial-modal-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowModal(false)}
-              className="absolute inset-0 bg-black/95 backdrop-blur-xl"
-            />
-            
-            <motion.div 
-              key="editorial-modal-content"
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 10 }}
-              className="relative w-full max-w-xl bg-mafia-dark/80 border border-mafia-gold/30 shadow-[0_0_100px_rgba(var(--color-mafia-gold-rgb),0.15)] p-8 md:p-12 overflow-hidden"
-            >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-mafia-gold/50 to-transparent"></div>
-              
-              <div className="relative z-10 flex flex-col items-center text-center">
-                <span className="text-mafia-gold/50 font-mono text-[9px] uppercase tracking-[0.5em] mb-6">{subtitle}</span>
-                
-                <h3 className="text-2xl md:text-3xl font-heading font-black text-mafia-gold uppercase tracking-wider mb-8 leading-tight">
-                  {modalTitle}
-                </h3>
-                
-                <div className="w-12 h-px bg-mafia-gold/30 mb-8"></div>
-                
-                <p className="text-smoke-white/80 text-base md:text-lg font-sans leading-relaxed italic">
-                  {modalContent}
-                </p>
-
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowModal(false)}
-                  className="mt-12 px-10 py-3 border border-mafia-gold/40 text-mafia-gold font-black uppercase tracking-[0.3em] hover:bg-mafia-gold hover:text-mafia-black transition-all duration-300"
-                >
-                  {t.intro.acknowledge}
-                </motion.button>
-              </div>
-
-              {/* Decorative corners */}
-              <div className="absolute top-4 left-4 w-4 h-4 border-t border-l border-mafia-gold/20"></div>
-              <div className="absolute bottom-4 right-4 w-4 h-4 border-b border-r border-mafia-gold/20"></div>
-            </motion.div>
-          </div>
         )}
       </AnimatePresence>
     </div>

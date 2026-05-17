@@ -2,18 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { 
   Target, 
-  CreditCard, 
-  Clock, 
-  Ticket, 
   Sparkles, 
-  Camera, 
   X, 
-  Skull, 
-  BookOpen,
-  Briefcase
+  Skull,
+  Palette,
+  Monitor,
+  Volume2,
+  Radio,
+  Crown
 } from "lucide-react";
 import { playSound } from "@/utils/audio";
 
@@ -24,22 +23,25 @@ interface HUDWeaponItem {
   icon: React.ReactNode;
   link: string;
   color: string;
-  stats: {
-    freshness: number;
-    capacity: number;
-    precision: number;
-    range: number;
-  };
 }
 
 export function TableOfContents() {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [soundState, setSoundState] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     setIsMounted(true);
+
+    const readSound = () => {
+      const isSound = localStorage.getItem("mmbarber_sound_enabled") === "true";
+      setSoundState(isSound);
+    };
+    readSound();
+    window.addEventListener("mmbarber-sound-update-remote", readSound);
 
     // Keyboard shortcuts: TAB key triggers weapon wheel selection HUD!
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -64,6 +66,7 @@ export function TableOfContents() {
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("mmbarber-sound-update-remote", readSound);
     };
   }, [isOpen]);
 
@@ -72,6 +75,30 @@ export function TableOfContents() {
     setIsOpen(false);
 
     if (item.link === "close") {
+      return;
+    }
+
+    if (item.link === "graphics_settings") {
+      window.dispatchEvent(new Event('mmbarber-graphics-open'));
+      return;
+    }
+
+    if (item.link === "sound_toggle") {
+      const current = localStorage.getItem("mmbarber_sound_enabled") === "true";
+      const nextState = !current;
+      localStorage.setItem("mmbarber_sound_enabled", String(nextState));
+      window.dispatchEvent(new CustomEvent('mmbarber-sound-update', { detail: nextState }));
+      window.dispatchEvent(new Event('mmbarber-sound-update-remote'));
+      return;
+    }
+
+    if (item.link === "radio_toggle") {
+      window.dispatchEvent(new Event('mmbarber-radio-toggle'));
+      return;
+    }
+
+    if (item.link === "elite_shooting") {
+      window.dispatchEvent(new Event('mmbarber-elita-game-open'));
       return;
     }
 
@@ -123,95 +150,103 @@ export function TableOfContents() {
 
   const hudItems: HUDWeaponItem[] = [
     {
-      name: "Služby & Ceník",
-      desc: "SLUŽBY & CENÍK",
-      subText: "TACTICAL PRICING",
-      icon: <CreditCard />,
-      link: "/cenik",
-      color: "rgba(197, 160, 89, 0.4)",
-      stats: { freshness: 98, capacity: 95, precision: 99, range: 80 }
+      name: "Vzhled rozhraní",
+      desc: "Aktivuje terminál uživatelského rozhraní, kde si můžete přizpůsobit taktickou barvu, intenzitu záře a styly písma.",
+      subText: "NALEZENÍ VAŠÍ ESTETIKY",
+      icon: <Palette />,
+      link: "/uzivatel",
+      color: "rgba(197, 160, 89, 0.4)"
     },
     {
-      name: "Rezervace",
-      desc: "REZERVACE TERMÍNU",
-      subText: "DEPLOY OPERATIVE",
-      icon: <Clock />,
-      link: "/#operativi",
-      color: "rgba(255, 255, 255, 0.3)",
-      stats: { freshness: 90, capacity: 99, precision: 95, range: 75 }
+      name: "Grafika systému",
+      desc: "Otevře panel nastavení grafiky. Umožňuje přepínat atmosférické částice, stíny, 3D textury a spravovat celkový výkon webu.",
+      subText: "ATMOSFÉRICKÉ CONFIG",
+      icon: <Monitor />,
+      link: "graphics_settings",
+      color: "rgba(255, 255, 255, 0.3)"
     },
     {
-      name: "Dárkové Vouchery",
-      desc: "DÁRKOVÉ VOUCHERY",
-      subText: "AMMUNITION CARDS",
-      icon: <Ticket />,
-      link: "/vouchery",
-      color: "rgba(197, 160, 89, 0.45)",
-      stats: { freshness: 95, capacity: 90, precision: 98, range: 85 }
+      name: "Zvukové efekty",
+      desc: "Přepíná globální stav zvukových efektů. Změna se ihned projeví u všech operativních zvuků, hlasování i animací.",
+      subText: "ZAPNOUT / VYPNOUT ZVUKY",
+      icon: <Volume2 />,
+      link: "sound_toggle",
+      color: "rgba(197, 160, 89, 0.45)"
     },
     {
-      name: "Komunita",
-      desc: "KOMUNITNÍ CENTRÁLA",
-      subText: "SYNDICATE HUB",
-      icon: <BookOpen />,
-      link: "/komunita",
-      color: "rgba(255, 0, 0, 0.3)",
-      stats: { freshness: 88, capacity: 92, precision: 90, range: 95 }
+      name: "MMBarber Rádio",
+      desc: "Spouští a zastavuje živé syndikátní rádio. Hraje výběr exkluzivních skladeb pro dokonalou atmosféru na základně.",
+      subText: "SPUSTIT / ZASTAVIT HUDBU",
+      icon: <Radio />,
+      link: "radio_toggle",
+      color: "rgba(255, 0, 0, 0.3)"
     },
     {
-      name: "Magazín Péče",
-      desc: "MAGAZÍN PÉČE",
-      subText: "SECRET CARE MANUAL",
+      name: "Hodnocení a přezdívky",
+      desc: "Vstoupí do terminálu komunitního hodnocení. Zde můžete hlasovat o břitvě barberů a měnit herní šarže celé posádky.",
+      subText: "TERMINÁL HODNOCENÍ",
+      icon: <Crown />,
+      link: "/hodnoceni",
+      color: "rgba(197, 160, 89, 0.5)"
+    },
+    {
+      name: "Elitní střelba",
+      desc: "Spustí taktický tréninkový simulátor. Zlepšete své reakce a přesnost střelby na terče v reálném čase.",
+      subText: "TRÉNINK PŘESNOSTI",
+      icon: <Target />,
+      link: "elite_shooting",
+      color: "rgba(255, 255, 255, 0.35)"
+    },
+    {
+      name: "Losovat barbera",
+      desc: "Spustí taktický losovací automat. Pokud nevíte, pod koho břitvu se dnes svěřit, automat vám plynule vybere a ukáže jeho statistiky.",
+      subText: "NÁHODNÉ PŘIŘAZENÍ MISE",
       icon: <Sparkles />,
-      link: "/pece",
-      color: "rgba(197, 160, 89, 0.5)",
-      stats: { freshness: 92, capacity: 85, precision: 96, range: 90 }
+      link: "/losovat-barbera",
+      color: "rgba(0, 255, 255, 0.3)"
     },
     {
-      name: "Galerie & Fade",
-      desc: "VIZUÁLNÍ REPORTY",
-      subText: "PORTFOLIO CUTS",
-      icon: <Camera />,
-      link: "/galerie",
-      color: "rgba(255, 255, 255, 0.35)",
-      stats: { freshness: 96, capacity: 88, precision: 98, range: 92 }
-    },
-    {
-      name: "Syndikát Kariéra",
-      desc: "NÁBOR NOVÝCH ČLENŮ",
-      subText: "JOIN THE FAMILY",
-      icon: <Briefcase />,
-      link: "/kariera",
-      color: "rgba(0, 255, 255, 0.3)",
-      stats: { freshness: 94, capacity: 95, precision: 98, range: 90 }
-    },
-    {
-      name: "Zavřít HUD",
-      desc: "ZAVŘÍT TACTICAL HUD",
-      subText: "DISMISS COMPASS",
+      name: "Zavřít navigaci",
+      desc: "Ukončí interaktivní HUD režim a bezpečně vás navrátí k prohlížení hlavní základny MMBarber.",
+      subText: "ZAVŘÍT HUD OBRAZOVKU",
       icon: <X />,
       link: "close",
-      color: "rgba(139, 0, 0, 0.5)",
-      stats: { freshness: 0, capacity: 0, precision: 0, range: 0 }
+      color: "rgba(139, 0, 0, 0.5)"
     }
   ];
 
   const activeHoveredItem = hoveredIndex !== null ? hudItems[hoveredIndex] : null;
 
   if (!isMounted) return null;
+  if (pathname !== "/") return null;
 
   return (
     <>
-      {/* Edge Hover Handle / Trigger */}
+      {/* Edge Hover Handle / Trigger Cue */}
       <div 
-        className={`fixed left-0 top-0 h-screen w-3 bg-black/40 border-r border-mafia-gold/30 cursor-pointer transition-all duration-500 hover:w-6 hover:bg-mafia-gold/10 flex items-center justify-center group z-[40000] hidden xl:flex ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        className={`fixed left-0 top-0 h-screen w-4 bg-black/80 border-r border-mafia-gold/30 cursor-pointer transition-all duration-500 hover:w-10 hover:bg-mafia-gold/5 flex flex-col items-center justify-center group z-[40000] hidden xl:flex ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
         onMouseEnter={() => {
           setIsOpen(true);
           playSound("/sounds/success.mp3", 0.4);
         }}
       >
-        <div className="absolute left-6 opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap pointer-events-none -rotate-90 origin-left translate-y-24">
-          <span className="text-mafia-gold font-heading font-black text-xs uppercase tracking-[0.4em]">WEAPON WHEEL</span>
+        {/* Pulsing top LED indicator */}
+        <div className="absolute top-10 flex flex-col items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="w-1.5 h-1.5 rounded-full bg-mafia-gold animate-pulse shadow-[0_0_8px_rgba(197,160,89,0.8)]" />
+          <span className="text-[6px] font-mono text-mafia-gold uppercase tracking-[0.2em] -rotate-90 origin-center mt-2">SYS_ON</span>
+        </div>
+
+        {/* Center pulsing vertical text hinting the HUD is here */}
+        <div className="flex flex-col items-center gap-4 transition-all duration-500 -rotate-90 origin-center whitespace-nowrap">
+          <span className="text-[8px] font-mono text-mafia-gold/40 group-hover:text-mafia-gold/90 uppercase tracking-[0.4em] transition-colors duration-300 flex items-center gap-2 animate-[pulse_2.5s_infinite_ease-in-out]">
+            <Target size={10} className="animate-[spin_6s_linear_infinite]" />
+            TAKTICKÝ PANEL HUD [ TAB / NAJEĎ ]
+          </span>
+        </div>
+
+        {/* Bottom coordinates coordinate info */}
+        <div className="absolute bottom-10 opacity-30 group-hover:opacity-75 transition-opacity duration-300 text-[6px] font-mono text-mafia-gold -rotate-90 origin-center">
+          LOC_0x7F
         </div>
       </div>
 
@@ -221,7 +256,7 @@ export function TableOfContents() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 w-screen h-screen bg-black/85 backdrop-blur-md z-[45000] flex flex-col items-center justify-center overflow-hidden font-sans select-none"
+            className="fixed inset-0 w-screen h-screen bg-black z-[45000] flex flex-col items-center justify-center overflow-hidden font-sans select-none"
           >
             {/* Global HUD Scanline / CRT overlay */}
             <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] z-10 opacity-30"></div>
@@ -231,8 +266,8 @@ export function TableOfContents() {
               <div className="flex items-center gap-4">
                 <Target className="w-8 h-8 text-mafia-gold animate-[spin_8s_linear_infinite]" />
                 <div className="flex flex-col">
-                  <span className="text-white font-heading font-black text-2xl uppercase tracking-[0.25em] italic">MMB_WEAPON_SELECT</span>
-                  <span className="text-[9px] font-mono text-mafia-gold/60 uppercase tracking-widest">TACTICAL INTERACTIVE INTERFACE v3.5 // HOLD OR PRESS TAB TO SWITCH</span>
+                  <span className="text-white font-heading font-black text-2xl uppercase tracking-[0.25em] italic">MMB_TAKTICKÁ_NAVIGACE</span>
+                  <span className="text-[9px] font-mono text-mafia-gold/60 uppercase tracking-widest">TAKTICKÉ INTERAKTIVNÍ ROZHRANÍ v3.5 // DRŽTE NEBO STISKNĚTE TAB PRO PŘEPNUTÍ</span>
                 </div>
               </div>
               <button 
@@ -246,12 +281,11 @@ export function TableOfContents() {
               </button>
             </div>
 
-            {/* MAIN INTERFACE ROW (SPACED AND ALIGNED FLEXBOX LAYOUT) */}
+            {/* MAIN INTERFACE ROW */}
             <div className="w-full max-w-[1250px] px-8 flex items-center justify-between gap-16 relative z-20">
               
-              {/* LEFT COLUMN: REMOVED CHAT - MOVED WHEEL TO CENTER STAGE */}
+              {/* LEFT COLUMN: SVG Radial Wheel */}
               <div className="w-[480px] h-[480px] relative shrink-0">
-                {/* SVG Radial Wheel */}
                 <svg 
                   width="480" 
                   height="480" 
@@ -285,11 +319,8 @@ export function TableOfContents() {
                   </g>
                 </svg>
 
-                {/* Radial Menu Item Icons (Absolute HTML positioning for crisp icons & badges) */}
+                {/* Radial Menu Item Icons */}
                 {hudItems.map((item, i) => {
-                  // Position calculations:
-                  // Angle: i * 45 degrees, transformed to radians
-                  // Center is 240, radius is 172 (perfect optical centering)
                   const angleRad = (i * 45 * Math.PI) / 180.0;
                   const x = 240 + 172 * Math.sin(angleRad);
                   const y = 240 - 172 * Math.cos(angleRad);
@@ -303,7 +334,7 @@ export function TableOfContents() {
                         setHoveredIndex(i);
                         playSound("/sounds/hover.mp3", 0.1);
                       }}
-                      className={`absolute w-14 h-14 rounded-full border flex items-center justify-center transition-all duration-300 z-20 cursor-pointer`}
+                      className="absolute w-14 h-14 rounded-full border flex items-center justify-center transition-all duration-300 z-20 cursor-pointer"
                       style={{
                         left: `${x}px`,
                         top: `${y}px`,
@@ -354,9 +385,9 @@ export function TableOfContents() {
                         className="flex flex-col items-center justify-center h-full"
                       >
                         <Skull className="w-8 h-8 text-white/20 mb-2 animate-pulse" />
-                        <span className="text-[7px] font-mono text-mafia-gold uppercase tracking-[0.3em] mb-1">TACTICAL_HUD</span>
+                        <span className="text-[7px] font-mono text-mafia-gold uppercase tracking-[0.3em] mb-1">TAKTICKÉ_MENU</span>
                         <span className="text-[10px] font-heading font-black text-white/50 uppercase tracking-widest italic">
-                          SELECT WEAPON
+                          ZVOLIT SEKCI
                         </span>
                       </motion.div>
                     )}
@@ -368,8 +399,8 @@ export function TableOfContents() {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border border-dashed border-mafia-gold/20 pointer-events-none animate-[spin_20s_linear_infinite_reverse]" />
               </div>
 
-              {/* RIGHT COLUMN: GTA 5 STYLE WEAPON STATS PANEL */}
-              <div className="w-[420px] h-[550px] flex flex-col justify-center shrink-0">
+              {/* RIGHT COLUMN: PREMIUM DESCRIPTION ONLY PANEL */}
+              <div className="w-[420px] h-[480px] flex flex-col justify-center shrink-0">
                 <AnimatePresence mode="wait">
                   {activeHoveredItem ? (
                     <motion.div
@@ -378,86 +409,75 @@ export function TableOfContents() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 50 }}
                       transition={{ duration: 0.3 }}
-                      className="bg-mafia-black/80 border border-white/10 p-8 flex flex-col rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.7)] text-left"
+                      className="bg-mafia-black/90 border border-mafia-gold/20 p-8 flex flex-col justify-between rounded-sm h-[320px] shadow-[0_20px_50px_rgba(0,0,0,0.85)] text-left relative overflow-hidden"
+                      style={{
+                        boxShadow: `0 20px 50px rgba(0,0,0,0.9), 0 0 20px ${activeHoveredItem.color}`
+                      }}
                     >
-                      <span className="text-[9px] font-mono text-mafia-gold uppercase tracking-[0.4em] mb-1">WEAPON CLASSIFICATION</span>
-                      <h3 className="text-white font-heading font-black text-3xl uppercase tracking-tighter italic mb-4 leading-none text-glow">
-                        {activeHoveredItem.desc}
-                      </h3>
-                      
-                      <p className="text-xs text-smoke-white/60 leading-relaxed mb-8 uppercase tracking-wide">
-                        {activeHoveredItem.link === "close" 
-                          ? "Opustí taktickou navigaci a navrátí ovládání standardnímu rozhraní." 
-                          : `Spustí sekvenční přesun na modul ${activeHoveredItem.name}. Aktivuje taktické zobrazení.`}
-                      </p>
+                      {/* High-tech laser sweep scanline */}
+                      <motion.div 
+                        initial={{ y: "-100%" }}
+                        animate={{ y: "450%" }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                        className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-mafia-gold/30 to-transparent pointer-events-none z-10"
+                      />
 
-                      {/* STATS BARS */}
-                      <div className="space-y-4">
-                        {[
-                          { label: "POŠKOZENÍ / FRESH CUT", val: activeHoveredItem.stats.freshness },
-                          { label: "KAPACITA / DOSTUPNÉ SLOTY", val: activeHoveredItem.stats.capacity },
-                          { label: "PŘESNOST / HODNOCENÍ", val: activeHoveredItem.stats.precision },
-                          { label: "DOSAH / KOMUNITA", val: activeHoveredItem.stats.range }
-                        ].map((stat, idx) => (
-                          <div key={idx} className="flex flex-col">
-                            <div className="flex justify-between text-[8px] font-mono text-white/40 uppercase tracking-widest mb-1.5">
-                              <span>{stat.label}</span>
-                              <span className="text-mafia-gold font-bold">{stat.val}%</span>
-                            </div>
-                            
-                            {/* Segmented GTA-style slider bar */}
-                            <div className="grid grid-cols-10 gap-1 h-3 w-full bg-white/5 p-[1px]">
-                              {Array.from({ length: 10 }).map((_, segmentIdx) => {
-                                const fillPercent = (stat.val / 100) * 10;
-                                const isFilled = segmentIdx < fillPercent;
-                                
-                                return (
-                                  <div 
-                                    key={segmentIdx}
-                                    className={`h-full transition-all duration-500 ${isFilled ? 'bg-mafia-gold shadow-[0_0_8px_var(--color-mafia-gold-glow)]' : 'bg-transparent'}`}
-                                  />
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ))}
+                      <div className="flex flex-col gap-1 z-20">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-mafia-gold animate-pulse" />
+                          <span className="text-[9px] font-mono text-mafia-gold uppercase tracking-[0.4em]">PODROBNOSTI SEKCE // INFO</span>
+                        </div>
+                        <h3 className="text-white font-heading font-black text-3xl uppercase tracking-tighter italic leading-none text-glow">
+                          {activeHoveredItem.name}
+                        </h3>
+                        <span className="text-[9px] font-mono text-white/30 uppercase tracking-widest mt-1">
+                          [ SYSTÉMOVÝ MODUL: {activeHoveredItem.subText} ]
+                        </span>
+                      </div>
+                      
+                      <div className="my-4 z-20">
+                        <p className="text-[11px] font-mono text-smoke-white/80 uppercase tracking-widest leading-[1.8] border-l-2 border-mafia-gold/40 pl-4">
+                          {activeHoveredItem.link === "sound_toggle"
+                            ? `Přepíná globální stav zvukových efektů rozhraní. Zvukové efekty jsou v tomto okamžiku: ${soundState ? "AKTIVNÍ (ZAPNUTO)" : "DEAKTIVOVANÉ (VYPNUTO)"}.`
+                            : activeHoveredItem.desc}
+                        </p>
                       </div>
 
-                      <div className="flex justify-between items-center mt-10 pt-6 border-t border-white/5">
-                        <span className="text-[8px] font-mono text-white/20 uppercase">TARGETING STATUS: LOCKED</span>
-                        <span className="text-[10px] font-mono text-mafia-gold font-bold uppercase tracking-widest animate-pulse">DEPLOY READY</span>
+                      <div className="flex justify-between items-center border-t border-white/5 pt-4 z-20">
+                        <div className="flex items-center gap-2">
+                          <span className="relative flex h-1.5 w-1.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mafia-gold opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-mafia-gold"></span>
+                          </span>
+                          <span className="text-[8px] font-mono text-white/40 uppercase">STATUS: PŘIPRAVEN K PŘECHODU</span>
+                        </div>
+                        <span className="text-[9px] font-mono text-mafia-gold font-bold uppercase tracking-widest animate-pulse">[ AKTIVUJ SEKTOR ]</span>
                       </div>
                     </motion.div>
                   ) : (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="bg-white/[0.02] border border-white/5 p-8 flex flex-col rounded-sm text-left h-[430px] justify-between relative overflow-hidden"
+                      className="bg-white/[0.02] border border-white/5 p-8 flex flex-col justify-between rounded-sm text-left h-[320px] relative overflow-hidden"
                     >
                       <div className="absolute inset-0 bg-gradient-to-tl from-mafia-gold/5 via-transparent to-transparent opacity-50"></div>
                       
                       <div className="space-y-4 relative z-10">
-                        <span className="text-[9px] font-mono text-mafia-gold uppercase tracking-[0.4em]">SYSTEM DIAGNOSTIC</span>
-                        <h3 className="text-white font-heading font-black text-2xl uppercase tracking-widest italic">
-                          AWAITING SELECTION
+                        <div className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse" />
+                          <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.4em]">DIAGNOSTIKA SYSTÉMU</span>
+                        </div>
+                        <h3 className="text-white/60 font-heading font-black text-2xl uppercase tracking-widest italic">
+                          ČEKÁNÍ NA VÝBĚR
                         </h3>
-                        <p className="text-xs text-smoke-white/40 leading-relaxed uppercase tracking-wider">
-                          Najeďte myší na libovolný sektor taktického kruhu pro zobrazení bojových parametrů, statistik a pro rychlý přechod do dané sekce webu.
+                        <p className="text-[10px] font-mono text-smoke-white/30 leading-[1.8] uppercase tracking-widest">
+                          Najeďte myší na libovolný sektor taktického kruhu na levé straně. Zobrazí se detailní parametry a instrukce pro rychlou aktivaci zvoleného systémového nastavení či hry.
                         </p>
                       </div>
 
-                      <div className="space-y-4 relative z-10 opacity-20">
-                        {["FRESH CUT", "DOSTUPNÉ SLOTY", "PŘESNOST", "DOSAH"].map((label, idx) => (
-                          <div key={idx} className="flex flex-col">
-                            <span className="text-[8px] font-mono text-white/40 uppercase mb-1">{label}</span>
-                            <div className="grid grid-cols-10 gap-1 h-3 w-full bg-white/5" />
-                          </div>
-                        ))}
-                      </div>
-
                       <div className="flex justify-between items-center border-t border-white/5 pt-4 relative z-10">
-                        <span className="text-[8px] font-mono text-white/10 uppercase">SYS_ACTIVE_OPERATIONAL: 1</span>
-                        <span className="text-[8px] font-mono text-white/10 uppercase">WAITING</span>
+                        <span className="text-[8px] font-mono text-white/10 uppercase">SYSTÉM_AKTIVNÍ: 1</span>
+                        <span className="text-[8px] font-mono text-white/10 uppercase">STATUS: ČEKÁNÍ</span>
                       </div>
                     </motion.div>
                   )}
@@ -469,11 +489,11 @@ export function TableOfContents() {
             {/* BOTTOM DIAGNOSTICS STATS */}
             <div className="absolute bottom-10 left-12 right-12 flex justify-between items-center border-t border-white/10 pt-6 z-20 font-mono text-[10px] text-white/30 uppercase">
               <div className="flex gap-8">
-                <span>[ STATUS: SYNCHRONIZED ]</span>
-                <span>[ CLIENT_NICKNAME: ONLINE_OPERATIVE ]</span>
+                <span>[ STAV: SYNCHRONIZOVÁNO ]</span>
+                <span>[ UŽIVATEL: AKTIVNÍ OPERATIVEC ]</span>
               </div>
               <div className="flex gap-8">
-                <span className="text-mafia-gold font-bold">100% SECURE SYSTEM // MMB_V3.5_HUD</span>
+                <span className="text-mafia-gold font-bold">100% BEZPEČNÝ SYSTÉM // MMB_V3.5_HUD</span>
                 <span>{new Date().toLocaleTimeString()}</span>
               </div>
             </div>

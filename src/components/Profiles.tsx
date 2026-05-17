@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "./OptimizedImage";
+import Link from "next/link";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { CalendarDays, Languages, Sparkles, Heart, Clover, TrendingDown, TrendingUp, Shield, Medal, Trophy, Crown, Flame } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
@@ -1332,6 +1333,25 @@ export function Profiles() {
                         <span className="group-hover:text-white transition-colors duration-500">
                             {t.operatives.subtitle.split('.')[0]}.
                         </span>
+                        
+                        <div className="mt-6 flex justify-center">
+                            <Link 
+                                href="/losovat-barbera"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-6 py-3 bg-mafia-gold/5 border border-mafia-gold/30 hover:border-mafia-gold hover:bg-mafia-gold text-mafia-gold hover:text-mafia-black font-heading font-black tracking-[0.2em] uppercase text-xs transition-all duration-300 rounded shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:shadow-[0_0_25px_rgba(197,160,89,0.4)] flex items-center gap-2 group cursor-pointer"
+                                onClick={() => playSound("/sounds/hover.mp3", 0.4)}
+                            >
+                                <span>Nevím za kým půjdu</span>
+                                <motion.span 
+                                  animate={{ x: [0, 4, 0] }}
+                                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                                  className="inline-block font-sans font-bold"
+                                >
+                                  ➔
+                                </motion.span>
+                            </Link>
+                        </div>
                     </div>
                 </div>
                 <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full mx-auto py-4 xl:py-8">

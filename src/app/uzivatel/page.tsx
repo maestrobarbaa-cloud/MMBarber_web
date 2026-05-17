@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Save, RotateCcw, Home, Palette, Type, Zap, Sparkles, MousePointer2 } from "lucide-react";
+import { Save, RotateCcw, Home, Palette, Type, Zap, Sparkles, MousePointer2, X } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { motion, AnimatePresence } from "framer-motion";
+import { playSound } from "@/utils/audio";
 
 const FONTS = [
   { name: "Classic Noir", value: '"Courier New", Courier, monospace' },
@@ -114,6 +115,22 @@ export default function UserSettings() {
       onClick={handlePageClick}
       className="min-h-screen bg-mafia-black text-white pt-32 pb-20 px-6 font-sans relative overflow-hidden selection:bg-mafia-gold selection:text-mafia-black"
     >
+      {/* Floating Close Button */}
+      <button 
+        onClick={(e) => {
+          e.stopPropagation();
+          playSound("/sounds/click.mp3", 0.2);
+          if (window.history.length > 1) {
+            router.back();
+          } else {
+            router.push("/");
+          }
+        }}
+        className="fixed top-28 left-8 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:text-mafia-gold hover:border-mafia-gold transition-all duration-300 z-[100] group"
+        aria-label="Zavřít"
+      >
+        <X size={20} className="transition-transform group-hover:rotate-90 duration-300" />
+      </button>
       {/* Background Decorative Elements */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px]" style={{ backgroundColor: config.accentColor }}></div>
