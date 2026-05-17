@@ -1134,6 +1134,24 @@ export function Profiles() {
   const [revealedBarbers, setRevealedBarbers] = useState<string[]>([]);
   const [graphicsTier, setGraphicsTier] = useState<string>("low");
 
+  const [customNames, setCustomNames] = useState({ tomas: "", nella: "" });
+
+  useEffect(() => {
+    const checkNames = () => {
+      setCustomNames({
+        tomas: localStorage.getItem("mmbarber_custom_name_tomas") || "",
+        nella: localStorage.getItem("mmbarber_custom_name_nella") || ""
+      });
+    };
+    checkNames();
+    window.addEventListener("storage", checkNames);
+    window.addEventListener("mmbarber_names_updated", checkNames);
+    return () => {
+      window.removeEventListener("storage", checkNames);
+      window.removeEventListener("mmbarber_names_updated", checkNames);
+    };
+  }, []);
+
   // Real-time Global XP and Liking States
   const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
@@ -1291,7 +1309,7 @@ export function Profiles() {
     const isMay = new Date().getMonth() === 4;
     
     return barbers.map(b => {
-      const isTomas = b.name === 'Tomáš' || b.name === 'Tomas';
+      const isTomas = b.id === 'tomas';
       const barberKey = isTomas ? 'tomas' : 'nella';
       const barberTranslations = t.operatives?.barbers?.[barberKey as 'tomas' | 'nella'];
       
@@ -1302,9 +1320,11 @@ export function Profiles() {
       const currentDialogue = currentDialogues[dialogueIndex];
       const dialogueText = isTomas ? currentDialogue?.tomas : currentDialogue?.nella;
 
+      const customName = isTomas ? customNames.tomas : customNames.nella;
+
       return {
         ...b,
-        name: barberTranslations?.name || b.name,
+        name: customName || barberTranslations?.name || b.name,
         role: barberTranslations?.role || b.role,
         motto: barberTranslations?.motto || "",
         story: dialogueText || staticDesc,
@@ -1315,7 +1335,7 @@ export function Profiles() {
         isHidden: false
       };
     });
-  }, [dialogueIndex, t]);
+  }, [dialogueIndex, t, customNames]);
 
   return (
     <section 
@@ -1342,7 +1362,7 @@ export function Profiles() {
                                 className="px-6 py-3 bg-mafia-gold/5 border border-mafia-gold/30 hover:border-mafia-gold hover:bg-mafia-gold text-mafia-gold hover:text-mafia-black font-heading font-black tracking-[0.2em] uppercase text-xs transition-all duration-300 rounded shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:shadow-[0_0_25px_rgba(197,160,89,0.4)] flex items-center gap-2 group cursor-pointer"
                                 onClick={() => playSound("/sounds/hover.mp3", 0.4)}
                             >
-                                <span>Nevím za kým půjdu</span>
+                                <span>Životopisy Barberů & Taktika</span>
                                 <motion.span 
                                   animate={{ x: [0, 4, 0] }}
                                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}

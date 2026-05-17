@@ -12,7 +12,8 @@ import {
   Monitor,
   Volume2,
   Radio,
-  Crown
+  Crown,
+  Users
 } from "lucide-react";
 import { playSound } from "@/utils/audio";
 
@@ -198,10 +199,10 @@ export function TableOfContents() {
       color: "rgba(255, 255, 255, 0.35)"
     },
     {
-      name: "Losovat barbera",
-      desc: "Spustí taktický losovací automat. Pokud nevíte, pod koho břitvu se dnes svěřit, automat vám plynule vybere a ukáže jeho statistiky.",
-      subText: "NÁHODNÉ PŘIŘAZENÍ MISE",
-      icon: <Sparkles />,
+      name: "Životopisy barberů",
+      desc: "Zobrazí taktické složky a životopisy našich operativců. Upravte si jejich přezdívky a naplánujte příští misi.",
+      subText: "PERSONÁLNÍ DOSSIER & SLOŽKY",
+      icon: <Users />,
       link: "/losovat-barbera",
       color: "rgba(0, 255, 255, 0.3)"
     },
