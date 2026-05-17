@@ -100,25 +100,29 @@ const EditorialPhoto = ({ imageSrc, title, subtitle, modalTitle, modalContent, s
                 transition={{ duration: 3.5, ease: [0.22, 1, 0.36, 1] }}
                 src={imageSrc} 
                 alt="Editorial session" 
+                decoding="async"
+                loading="lazy"
                 style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
                 className="w-full h-full object-cover block transform-gpu will-change-transform"
               />
               
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90 z-10"></div>
               
-              {/* Intentional Noir Shadow Bars Effect */}
-              <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden opacity-30">
-                <motion.div 
-                  animate={{ x: ['100%', '-150%'] }}
-                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                  className="absolute top-0 bottom-0 w-[40px] bg-black/60 blur-[30px]"
-                />
-                <motion.div 
-                  animate={{ x: ['150%', '-100%'] }}
-                  transition={{ duration: 15, repeat: Infinity, ease: "linear", delay: 4 }}
-                  className="absolute top-0 bottom-0 w-[20px] bg-black/40 blur-[20px]"
-                />
-              </div>
+              {/* Intentional Noir Shadow Bars Effect - Completely disabled on mobile for performance */}
+              {!isMobile && (
+                <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden opacity-30">
+                  <motion.div 
+                    animate={{ x: ['100%', '-150%'] }}
+                    transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                    className="absolute top-0 bottom-0 w-[40px] bg-black/60 blur-[30px]"
+                  />
+                  <motion.div 
+                    animate={{ x: ['150%', '-100%'] }}
+                    transition={{ duration: 15, repeat: Infinity, ease: "linear", delay: 4 }}
+                    className="absolute top-0 bottom-0 w-[20px] bg-black/40 blur-[20px]"
+                  />
+                </div>
+              )}
               
               {/* Bottom-left Editorial Text */}
               <motion.div 
@@ -128,11 +132,11 @@ const EditorialPhoto = ({ imageSrc, title, subtitle, modalTitle, modalContent, s
                   y: (isMobile || isHovered) ? 0 : 15
                 }}
                 transition={{ duration: 0.5 }}
-                className="absolute bottom-12 left-6 md:left-12 z-30 pointer-events-none"
+                className="absolute bottom-12 left-6 md:left-12 z-30 pointer-events-none w-[calc(100%-3rem)]"
               >
                 <div className="flex flex-col gap-0 tracking-tighter items-start text-left">
                   <span className="text-mafia-gold/60 font-mono text-[10px] uppercase tracking-[0.6em] mb-3 drop-shadow-md">{subtitle}</span>
-                  <div className="text-mafia-gold font-heading font-black text-3xl md:text-4xl uppercase leading-[0.95] drop-shadow-[0_10px_30px_rgba(0,0,0,1)] whitespace-nowrap overflow-visible">
+                  <div className="text-mafia-gold font-heading font-black text-2xl sm:text-3xl md:text-4xl uppercase leading-[0.95] drop-shadow-[0_10px_30px_rgba(0,0,0,1)] whitespace-normal md:whitespace-nowrap overflow-visible">
                     {title}
                   </div>
                 </div>

@@ -24,10 +24,10 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Global Stats (if we move aggregation to a dedicated doc later)
-    match /stats/{docId} {
+    // Barbers Community Ranks & XP Stats
+    match /barbers/{docId} {
       allow read: if true;
-      allow write: if false; // Only updated via Cloud Functions (recommended for future)
+      allow write: if true;
     }
 
     // Default: Deny everything else

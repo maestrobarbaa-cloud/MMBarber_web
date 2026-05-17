@@ -1063,30 +1063,29 @@ export function Header() {
                     </span>
                   </button>
 
-                  {/* Elite Rating */}
-                  <button
-                    onClick={() => {
-                      router.push("/hodnoceni");
-                      trackEvent("header_rating_click");
-                      setIsSettingsOpen(false);
-                    }}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors group text-left border-t border-mafia-gold/10 mt-1 w-full rounded-sm"
-                  >
-                    <Crown 
-                      size={18} 
-                      className={shouldFlashRating ? 'animate-pulse' : 'opacity-45 group-hover:opacity-100 transition-opacity'} 
-                      style={{ 
-                        color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
-                        filter: shouldFlashRating ? `drop-shadow(0 0 8px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
-                      }} 
-                    />
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">
-                      {t.header.ratingAndNicknames}
-                    </span>
-                  </button>
                 </div>
               )}
             </div>
+
+            {/* Direct Hodnocení a přezdívky (Crown) Icon next to Game (Target) */}
+            <button
+                onClick={() => {
+                  router.push("/hodnoceni");
+                  trackEvent("header_rating_click");
+                }}
+                className="p-2 transition-all duration-500 rounded-full hover:bg-white/5 group relative hover:scale-125 ml-1"
+                aria-label={lang === 'cs' ? "HODNOCENÍ A PŘEZDÍVKY" : "RATING & NICKNAMES"}
+                title={lang === 'cs' ? "Hodnocení a přezdívky" : "Rating & Nicknames"}
+            >
+                <Crown 
+                  size={24} 
+                  className={`relative z-10 ${shouldFlashRating ? 'animate-pulse' : ''}`} 
+                  style={{ 
+                    color: isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)',
+                    filter: shouldFlashRating ? `drop-shadow(0 0 10px ${isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold-glow)'})` : 'none'
+                  }} 
+                />
+            </button>
 
             <button
                 onClick={() => {

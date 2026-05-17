@@ -22,22 +22,30 @@ import { trackEvent } from "@/utils/analytics";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/hooks/useTranslation";
 import Link from "next/link";
+import { 
+  subscribeToGlobalXpStats, 
+  addLikeToBarber, 
+  hasLikedToday,
+  calculateLevelFromXp,
+  getCzechRankFromLevel,
+  getEnglishRankFromLevel,
+  GlobalBarberStats
+} from "@/utils/barberXp";
 
 export default function RatingPage() {
   const router = useRouter();
   const { t, lang } = useTranslation();
   const [internalId, setInternalId] = useState<string | null>(null);
-  const [draftRatings, setDraftRatings] = useState<Record<string, BarberRating>>({});
-  const [userRatings, setUserRatings] = useState<Record<string, BarberRating>>({});
   const [clientNickname, setClientNickname] = useState("");
   const [isEditingNickname, setIsEditingNickname] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [isBloodMode, setIsBloodMode] = useState(false);
   const [isNoirMode, setIsNoirMode] = useState(false);
+  
+  // Real-time Global XP and Liking States
+  const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
+  const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setIsClient(true);
@@ -56,15 +64,24 @@ export default function RatingPage() {
     checkTheme();
     window.addEventListener('mmbarber-theme-update', checkTheme);
 
-    const unsubscribe = subscribeToUserRatings((ratings) => {
-      const data = getUserRatingsData();
-      if (data) {
-        setUserRatings(data.ratings);
-        setDraftRatings(data.ratings);
-        setClientNickname(data.clientNickname || "");
-      }
-      setLoading(false);
-      setIsOffline(false);
+    // Load simple nickname from local storage
+    const savedNickname = localStorage.getItem("mmbarber_client_nickname");
+    if (savedNickname) {
+      setClientNickname(savedNickname);
+    } else {
+      setIsEditingNickname(true); // Edit identity automatically on first visit
+    }
+
+    // Real-time listener for global XP stats
+    const unsubscribeXp = subscribeToGlobalXpStats((stats) => {
+      setGlobalStats(stats);
+      
+      // Update like tracker map for each barber
+      const updatedLikes: Record<string, boolean> = {};
+      barbers.forEach((b) => {
+        updatedLikes[b.id] = hasLikedToday(b.id);
+      });
+      setLikedMap(updatedLikes);
     });
 
     const handleOnline = () => setIsOffline(false);
@@ -73,186 +90,58 @@ export default function RatingPage() {
     window.addEventListener('offline', handleOffline);
 
     return () => {
-      unsubscribe();
+      unsubscribeXp();
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       window.removeEventListener('mmbarber-theme-update', checkTheme);
     };
   }, []);
 
-  const handleLevelChange = (barberId: string, level: number) => {
-    const newLevel = Math.max(0, Math.min(10, level));
-    setDraftRatings(prev => ({ 
-      ...prev, 
-      [barberId]: { 
-        level: newLevel, 
-        title: prev[barberId]?.title ?? newLevel 
-      } 
-    }));
-    playSound("/sounds/bullet-hit.mp3", 0.2);
+  const handleConfirmNickname = () => {
+    localStorage.setItem("mmbarber_client_nickname", clientNickname);
+    setIsEditingNickname(false);
+    playSound("/sounds/reload.mp3", 0.4);
   };
 
-  const handleTitleChange = (barberId: string, titleIndex: number) => {
-    const newTitle = Math.max(0, Math.min(10, titleIndex));
-    setDraftRatings(prev => ({ 
-      ...prev, 
-      [barberId]: { 
-        ...prev[barberId],
-        level: prev[barberId]?.level ?? newTitle, 
-        title: newTitle,
-        customTitle: prev[barberId]?.customTitle || "" // Clear or keep custom title? Let's keep it but maybe user wants both.
-      } 
-    }));
-    playSound("/sounds/bullet-hit.mp3", 0.1);
-  };
-
-  const handleNicknameChange = (barberId: string, nickname: string) => {
-    setDraftRatings(prev => ({
-      ...prev,
-      [barberId]: {
-        ...prev[barberId],
-        level: prev[barberId]?.level ?? 0,
-        title: prev[barberId]?.title ?? 0,
-        nickname
-      }
-    }));
-  };
-
-  const handleCustomTitleChange = (barberId: string, customTitle: string) => {
-    setDraftRatings(prev => ({
-      ...prev,
-      [barberId]: {
-        ...prev[barberId],
-        level: prev[barberId]?.level ?? 0,
-        title: prev[barberId]?.title ?? 0,
-        customTitle
-      }
-    }));
-  };
-
-  const handlePrefixChange = (barberId: string, prefixId: string) => {
-    setDraftRatings(prev => {
-      const current = prev[barberId] || { level: 0, title: 0 };
-      const prefixObj = TITLE_PREFIXES.find(p => p.id === prefixId);
-      const suffixObj = TITLE_SUFFIXES.find(s => s.id === (current.suffix || 'none'));
-      const prefixLabel = lang === 'cs' ? prefixObj?.cs : prefixObj?.en;
-      const suffixLabel = lang === 'cs' ? suffixObj?.cs : suffixObj?.en;
-      
+  const handleLike = async (barberId: string) => {
+    if (likedMap[barberId]) return;
+    
+    // Optimistic UI updates
+    setLikedMap(prev => ({ ...prev, [barberId]: true }));
+    setGlobalStats(prev => {
+      const current = prev[barberId] || { xp: 0, likes: 0 };
       return {
         ...prev,
         [barberId]: {
-          ...current,
-          prefix: prefixId,
-          customTitle: buildTitle(prefixLabel || "", suffixLabel || "")
+          xp: Math.min(100, current.xp + 1),
+          likes: current.likes + 1
         }
       };
     });
-  };
-
-  const handleSuffixChange = (barberId: string, suffixId: string) => {
-    setDraftRatings(prev => {
-      const current = prev[barberId] || { level: 0, title: 0 };
-      const prefixObj = TITLE_PREFIXES.find(p => p.id === (current.prefix || 'none'));
-      const suffixObj = TITLE_SUFFIXES.find(s => s.id === suffixId);
-      const prefixLabel = lang === 'cs' ? prefixObj?.cs : prefixObj?.en;
-      const suffixLabel = lang === 'cs' ? suffixObj?.cs : suffixObj?.en;
-      
-      return {
-        ...prev,
-        [barberId]: {
-          ...current,
-          suffix: suffixId,
-          customTitle: buildTitle(prefixLabel || "", suffixLabel || "")
-        }
-      };
-    });
-  };
-
-  const handleFinalSubmit = async () => {
-    if (!internalId || Object.keys(draftRatings).length === 0) return;
-
-    setIsSaving(true);
-    setIsSuccess(false);
+    
+    // Play premium sound effect
+    playSound("/sounds/cash.mp3", 0.4);
     
     try {
-      playSound("/sounds/reload.mp3", 0.5);
-      console.log("Submitting protocol for ID:", internalId);
-      
-      await castMultiVote(internalId, draftRatings, clientNickname);
-      
-      setIsSuccess(true);
-      trackEvent("ratings_saved_locally", { count: Object.keys(draftRatings).length });
-      
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
-    } catch (error) {
-      console.error("Submission failed:", error);
-      setIsSuccess(false);
-      alert("Chyba při zápisu protokolu. Zkuste to prosím znovu.");
-    } finally {
-      setIsSaving(false);
+      await addLikeToBarber(barberId);
+    } catch (err) {
+      console.error("Failed to add like:", err);
+      // Rollback on error
+      setLikedMap(prev => ({ ...prev, [barberId]: false }));
+      setGlobalStats(prev => {
+        const current = prev[barberId] || { xp: 1, likes: 1 };
+        return {
+          ...prev,
+          [barberId]: {
+            xp: Math.max(0, current.xp - 1),
+            likes: Math.max(0, current.likes - 1)
+          }
+        };
+      });
     }
   };
 
-  const rankTitles = [
-    t.operatives.ranks.l0,
-    t.operatives.ranks.l1,
-    t.operatives.ranks.l2,
-    t.operatives.ranks.l3,
-    t.operatives.ranks.l4,
-    t.operatives.ranks.l5,
-    t.operatives.ranks.l6,
-    t.operatives.ranks.l7,
-    t.operatives.ranks.l8,
-    t.operatives.ranks.l9,
-    t.operatives.ranks.l10,
-  ];
 
-  const TITLE_PREFIXES = [
-    { id: 'none', cs: 'ŽÁDNÝ', en: 'NONE' },
-    { id: 'ceo', cs: 'CEO', en: 'CEO' },
-    { id: 'manager', cs: 'MANAŽER', en: 'MANAGER' },
-    { id: 'general', cs: 'GENERÁL', en: 'GENERAL' },
-    { id: 'marshal', cs: 'MARŠÁL', en: 'MARSHAL' },
-    { id: 'lieutenant', cs: 'PORUČÍK', en: 'LIEUTENANT' },
-    { id: 'recruit', cs: 'REKRUT', en: 'RECRUIT' },
-    { id: 'commander', cs: 'VELITEL', en: 'COMMANDER' },
-    { id: 'guardian', cs: 'STRÁŽCE', en: 'GUARDIAN' },
-    { id: 'cosmetic', cs: 'KOSMETIK', en: 'COSMETICIAN' },
-    { id: 'boss', cs: 'ŠÉF', en: 'BOSS' },
-    { id: 'cho', cs: 'REFERENT ŠTĚSTÍ', en: 'CHIEF HAPPINESS OFFICER' },
-    { id: 'visionary', cs: 'KREATIVNÍ VIZIONÁŘ', en: 'CREATIVE VISIONARY' },
-    { id: 'vibe', cs: 'ŘEDITEL ATMOSFÉRY', en: 'EXECUTIVE OF VIBES' },
-    { id: 'architect', cs: 'ARCHITEKT RUČNÍKŮ', en: 'TOWEL ARCHITECT' },
-    { id: 'strategy', cs: 'ŠÉF STRATEGIE', en: 'HEAD OF STRATEGY' },
-    { id: 'consultant', cs: 'KONZULTANT ÚČESŮ', en: 'HAIR CONSULTANT' },
-    { id: 'engineer', cs: 'INŽENÝR SMETÁKU', en: 'BROOM ENGINEER' },
-    { id: 'vp', cs: 'VICEPREZIDENT PRO ŠAMPON', en: 'VP OF SHAMPOO' },
-    { id: 'director', cs: 'ŘEDITEL OSTRÝCH PŘEDMĚTŮ', en: 'DIRECTOR OF SHARP OBJECTS' },
-    { id: 'fades', cs: 'HLAVNÍ STŘIHAČ PŘECHODŮ', en: 'HEAD OF FADES' },
-  ];
-
-  const TITLE_SUFFIXES = [
-    { id: 'none', cs: 'ŽÁDNÝ', en: 'NONE' },
-    { id: 'toilet', cs: 'TOALETY', en: 'OF TOILET' },
-    { id: 'cleaning', cs: 'ÚKLIDU', en: 'OF CLEANING' },
-    { id: 'cut', cs: 'STŘIHU', en: 'OF CUTS' },
-    { id: 'flooring', cs: 'PLOVOUCÍCH KRYTIN', en: 'OF FLOORING' },
-    { id: 'broom', cs: 'SMETÁKU', en: 'OF THE BROOM' },
-    { id: 'towels', cs: 'ČISTÝCH RUČNÍKŮ', en: 'OF CLEAN TOWELS' },
-    { id: 'washer', cs: 'MYČ HLAV', en: 'HEAD WASHER' },
-    { id: 'razor', cs: 'BŘITVY', en: 'OF THE RAZOR' },
-    { id: 'chair', cs: 'KŘESLA', en: 'OF THE CHAIR' },
-  ];
-
-  const buildTitle = (prefix: string, suffix: string) => {
-    const noneLabel = lang === 'cs' ? 'ŽÁDNÝ' : 'NONE';
-    if (prefix === noneLabel && suffix === noneLabel) return "";
-    if (prefix === noneLabel) return suffix;
-    if (suffix === noneLabel) return prefix;
-    return `${prefix} ${suffix}`;
-  };
 
   const getVocative = (name: string) => {
     if (!name) return "";
@@ -414,18 +303,13 @@ export default function RatingPage() {
                           className="bg-transparent border-b-2 border-white/20 text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter focus:border-mafia-gold outline-none transition-all flex-grow placeholder:opacity-20"
                         />
                         <button 
-                          onClick={() => setIsEditingNickname(false)}
+                          onClick={handleConfirmNickname}
                           className="px-8 py-4 bg-mafia-gold text-black font-heading font-black uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]"
                         >
                           {lang === 'cs' ? 'POTVRDIT' : 'CONFIRM'}
                         </button>
                       </div>
                     </div>
-                    <p className="text-xs text-smoke-white/40 italic font-light">
-                      {lang === 'cs' 
-                        ? "Tento údaj se ukládá pouze ve vašem prohlížeči a slouží k personalizaci vašeho rozhraní." 
-                        : "This data is stored only in your browser and is used to personalize your interface."}
-                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -435,7 +319,14 @@ export default function RatingPage() {
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 relative pb-40">
           {barbers.map((barber, idx) => {
-            const currentDraft = draftRatings[barber.id] || userRatings[barber.id] || { level: barber.rank?.level ?? 0, title: barber.rank?.level ?? 0 };
+            const stats = globalStats[barber.id] || { xp: 0, likes: 0 };
+            const globalXp = stats.xp;
+            const globalLikes = stats.likes;
+            const globalLevel = calculateLevelFromXp(globalXp);
+            const globalRankTitle = lang === 'cs'
+              ? getCzechRankFromLevel(globalLevel, barber.id === 'nella')
+              : getEnglishRankFromLevel(globalLevel);
+            const alreadyLiked = likedMap[barber.id] || false;
 
             return (
               <motion.div
@@ -443,9 +334,7 @@ export default function RatingPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                className={`relative group bg-[#050505] border-2 transition-all duration-700 overflow-hidden rounded-sm ${
-                  Object.keys(userRatings).length > 0 ? "border-mafia-gold/20" : "border-white/5 hover:border-mafia-gold/30"
-                }`}
+                className={`relative group bg-[#050505] border-2 border-white/5 hover:border-mafia-gold/30 transition-all duration-700 overflow-hidden rounded-sm`}
               >
                 <div className="p-6 md:p-8 flex flex-col gap-8">
                   <div className="flex items-center gap-6">
@@ -459,136 +348,88 @@ export default function RatingPage() {
                         className={`w-full h-full object-cover rounded-lg grayscale transition-all duration-700 ${isBloodMode ? 'group-hover/photo:grayscale-0 group-hover/photo:sepia-[1] group-hover/photo:hue-rotate-[320deg] group-hover/photo:saturate-[5]' : 'group-hover:grayscale-0'}`}
                       />
                     </div>
-                    <div className="flex-grow space-y-2">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">{lang === 'cs' ? 'Původní jméno:' : 'Original name:'} {barber.name}</span>
-                        <input 
-                          type="text"
-                          placeholder={lang === 'cs' ? "Zadej přezdívku..." : "Enter nickname..."}
-                          value={currentDraft.nickname || ""}
-                          onChange={(e) => handleNicknameChange(barber.id, e.target.value)}
-                          className="bg-transparent border-b border-white/10 text-2xl md:text-3xl font-heading font-black text-white uppercase tracking-wider focus:border-mafia-gold outline-none transition-colors w-full"
-                        />
-                      </div>
-                      <p className={`text-[10px] font-mono font-bold tracking-[0.3em] uppercase mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
-                        {lang === 'cs' ? `DLE ${vocativeName || 'VÁS'}:` : `ACCORDING TO ${clientNickname || 'YOU'}:`} {currentDraft.customTitle || rankTitles[currentDraft.title]}
+                    <div className="flex-grow space-y-1">
+                      <span className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em]">{lang === 'cs' ? 'OPERATIVNÍ ČLEN' : 'OPERATIVE MEMBER'}</span>
+                      <h3 className="text-3xl md:text-4xl font-heading font-black text-white uppercase tracking-wider italic">
+                        {barber.name}
+                      </h3>
+                      <p className={`text-[11px] font-mono font-bold tracking-[0.3em] uppercase ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
+                        {barber.role}
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-12 bg-white/[0.02] border border-white/5 p-6 rounded-lg backdrop-blur-sm relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-2 opacity-5 pointer-events-none">
-                       <Target size={120} className="text-mafia-gold" />
-                    </div>
+                  {/* GLOBÁLNÍ REPUTACE & EXP SYSTEM (FIRESTORE REALTIME VOTE) */}
+                  <div className={`p-6 border border-mafia-gold/30 rounded-lg relative overflow-hidden backdrop-blur-md ${isBloodMode ? 'bg-mafia-blood/5 border-mafia-blood/30' : isNoirMode ? 'bg-white/5 border-white/20' : 'bg-mafia-gold/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.05)]'}`}>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(var(--color-mafia-gold-rgb),0.08)_0%,transparent_50%)] pointer-events-none" />
+                    
+                    <div className="relative z-10 flex flex-col gap-4">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-1">
+                          <span className="text-[9px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] block">
+                            {lang === 'cs' ? 'GLOBÁLNÍ REPUTACE & EXP' : 'GLOBAL REPUTATION & EXP'}
+                          </span>
+                          <h4 className="text-lg font-heading font-black text-white uppercase tracking-wider italic flex items-center gap-2">
+                            <Flame size={16} className="text-mafia-gold animate-pulse" />
+                            {globalRankTitle}
+                          </h4>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'CELKOVÉ EXP' : 'TOTAL EXP'}</span>
+                          <span className="text-2xl font-heading font-black text-mafia-gold leading-none mt-1">
+                            {globalXp} <span className="text-xs text-white/40 font-mono">/ 100 XP</span>
+                          </span>
+                        </div>
+                      </div>
 
-                    <div className="space-y-6 relative z-10">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 border flex items-center justify-center rounded-sm shadow-inner ${isBloodMode ? 'bg-mafia-blood/10 border-mafia-blood/20' : isNoirMode ? 'bg-white/10 border-white/20' : 'bg-mafia-gold/10 border-mafia-gold/20'}`}>
-                             <MilitaryInsignia level={currentDraft.level} color={isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "var(--color-mafia-gold)"} size={64} />
+                      {/* Golden progress bar */}
+                      <div className="relative w-full h-3 bg-black/60 border border-white/5 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${globalXp}%` }}
+                          transition={{ type: "spring", stiffness: 80, damping: 15 }}
+                          className={`h-full rounded-full ${isBloodMode ? 'bg-mafia-blood' : isNoirMode ? 'bg-white' : 'bg-gradient-to-r from-mafia-gold/50 via-mafia-gold to-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.5)]'}`}
+                        />
+                      </div>
+
+                      <div className="flex justify-between items-center mt-2">
+                        {/* Insignia / Level Indicator */}
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 border border-white/10 flex items-center justify-center rounded-sm bg-black/40">
+                            <MilitaryInsignia level={globalLevel} color={isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "var(--color-mafia-gold)"} size={38} />
                           </div>
-                          <div className="flex flex-col">
-                            <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">{lang === 'cs' ? 'Úroveň šarže' : 'Rank Level'}</span>
-                            <span className={`text-sm font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>{lang === 'cs' ? 'STUPEŇ' : 'LEVEL'} {currentDraft.level}</span>
-                          </div>
+                          <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider">
+                            {lang === 'cs' ? `Stupeň šarže: ${globalLevel}` : `Rank Level: ${globalLevel}`}
+                          </span>
                         </div>
-                        <div className="flex items-center gap-1">
-                           <button onClick={() => handleLevelChange(barber.id, currentDraft.level - 1)} disabled={currentDraft.level <= 0} className="w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-all disabled:opacity-10"><Minus size={14} /></button>
-                           <button onClick={() => handleLevelChange(barber.id, currentDraft.level + 1)} disabled={currentDraft.level >= 10} className="w-8 h-8 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-all disabled:opacity-10"><Plus size={14} /></button>
-                        </div>
+
+                        {/* Interactive Like Button */}
+                        <button
+                          onClick={() => handleLike(barber.id)}
+                          disabled={alreadyLiked}
+                          className={`px-5 py-2.5 font-heading uppercase text-xs tracking-wider transition-all duration-300 flex items-center gap-2 border ${
+                            alreadyLiked 
+                              ? "bg-white/5 border-white/10 text-white/30 cursor-not-allowed" 
+                              : isBloodMode 
+                                ? "bg-mafia-blood border-mafia-blood text-white font-black hover:bg-white hover:text-black shadow-[0_4px_15px_rgba(var(--color-mafia-blood-rgb),0.2)]"
+                                : isNoirMode
+                                  ? "bg-white border-white text-black font-black hover:bg-transparent hover:text-white"
+                                  : "bg-mafia-gold border-mafia-gold text-black font-black hover:bg-white hover:border-white shadow-[0_4px_15px_rgba(var(--color-mafia-gold-rgb),0.2)] hover:shadow-[0_4px_20px_rgba(255,255,255,0.3)]"
+                          }`}
+                        >
+                          <Flame size={14} className={alreadyLiked ? "" : "animate-bounce"} />
+                          {alreadyLiked ? (lang === 'cs' ? "PODPOŘENO" : "SUPPORTED") : (lang === 'cs' ? "DÁT EXP +1" : "GIVE EXP +1")}
+                        </button>
                       </div>
                       
-                      <div className="relative h-8 flex items-center px-1">
-                        <div className="absolute inset-x-0 h-0.5 bg-white/10 rounded-full" />
-                        <input 
-                          type="range" min="0" max="10" step="1" value={currentDraft.level}
-                          onChange={(e) => handleLevelChange(barber.id, parseInt(e.target.value))}
-                          className="absolute inset-x-0 w-full opacity-0 cursor-pointer h-8 z-20"
-                        />
-                        <div className="absolute inset-x-0 flex justify-between pointer-events-none px-1">
-                          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((lv) => (
-                            <motion.div 
-                              key={lv}
-                              animate={{ 
-                                height: lv === currentDraft.level ? 20 : 6,
-                                opacity: lv <= currentDraft.level ? 1 : 0.1,
-                                backgroundColor: lv === currentDraft.level ? (isBloodMode ? "#ffffff" : isNoirMode ? "#ffffff" : "#C5A059") : "rgba(255,255,255,0.4)"
-                              }}
-                              className="w-1.5 rounded-full"
-                            />
-                          ))}
+                      {/* Next rank notification */}
+                      {globalXp < 100 && (
+                        <div className="text-[9px] font-mono text-white/20 uppercase tracking-widest text-center mt-1">
+                          {lang === 'cs' 
+                            ? `K postupu do další hodnosti zbývá ${Math.max(1, Math.ceil((globalLevel + 1) * 7.5) - globalXp)} XP`
+                            : `${Math.max(1, Math.ceil((globalLevel + 1) * 7.5) - globalXp)} XP needed for the next rank`}
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-6 pt-6 border-t border-white/5 relative z-10">
-                      <div className="flex flex-col gap-4">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 border flex items-center justify-center rounded-sm ${isBloodMode ? 'bg-mafia-blood/10 border-mafia-blood/20' : isNoirMode ? 'bg-white/10 border-white/20' : 'bg-mafia-gold/10 border-mafia-gold/20'}`}>
-                             <UserCircle size={24} className={isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'} />
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">{lang === 'cs' ? 'Sestavit titul' : 'Build Title'}</span>
-                            <span className={`text-base font-heading font-black tracking-widest leading-none mt-1 ${isBloodMode ? 'text-white' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
-                              {currentDraft.customTitle || rankTitles[currentDraft.title]}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Modular Builder */}
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest px-1">{lang === 'cs' ? 'Role / Šarže' : 'Role / Rank'}</span>
-                            <div className="relative group/sel">
-                              <select 
-                                value={currentDraft.prefix || "none"}
-                                onChange={(e) => handlePrefixChange(barber.id, e.target.value)}
-                                className="w-full bg-white/[0.03] border border-white/10 px-3 py-3 rounded-sm text-[11px] font-mono uppercase text-white/90 outline-none focus:border-mafia-gold focus:bg-white/5 transition-all appearance-none cursor-pointer hover:border-white/20"
-                              >
-                                {TITLE_PREFIXES.map(p => (
-                                  <option key={p.id} value={p.id} className="bg-[#0a0a0a] text-white py-2">
-                                    {lang === 'cs' ? p.cs : p.en}
-                                  </option>
-                                ))}
-                              </select>
-                              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover/sel:text-mafia-gold transition-colors">
-                                <ChevronDown size={14} />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest px-1">{lang === 'cs' ? 'Oblast / Kontext' : 'Area / Context'}</span>
-                            <div className="relative group/sel">
-                              <select 
-                                value={currentDraft.suffix || "none"}
-                                onChange={(e) => handleSuffixChange(barber.id, e.target.value)}
-                                className="w-full bg-white/[0.03] border border-white/10 px-3 py-3 rounded-sm text-[11px] font-mono uppercase text-white/90 outline-none focus:border-mafia-gold focus:bg-white/5 transition-all appearance-none cursor-pointer hover:border-white/20"
-                              >
-                                {TITLE_SUFFIXES.map(s => (
-                                  <option key={s.id} value={s.id} className="bg-[#0a0a0a] text-white py-2">
-                                    {lang === 'cs' ? s.cs : s.en}
-                                  </option>
-                                ))}
-                              </select>
-                              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover/sel:text-mafia-gold transition-colors">
-                                <ChevronDown size={14} />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Manual Override */}
-                        <div className="space-y-2">
-                          <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest">{lang === 'cs' ? 'Nebo napiš vlastní' : 'Or write your own'}</span>
-                          <input 
-                            type="text"
-                            placeholder={lang === 'cs' ? "Zadej libovolný titul..." : "Enter any title..."}
-                            value={currentDraft.customTitle || ""}
-                            onChange={(e) => handleCustomTitleChange(barber.id, e.target.value)}
-                            className="bg-white/5 border border-white/10 px-4 py-3 rounded-sm text-[11px] font-mono uppercase tracking-widest text-white focus:border-mafia-gold outline-none transition-all w-full"
-                          />
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -596,59 +437,6 @@ export default function RatingPage() {
             );
           })}
         </div>
-
-        {Object.keys(draftRatings).length > 0 && (
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="sticky bottom-8 z-50 flex justify-center"
-          >
-            <button
-              onClick={handleFinalSubmit}
-              disabled={isSaving || isSuccess}
-              className={`group relative px-12 py-6 overflow-hidden shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.3)] transition-all active:scale-95 ${
-                isSuccess ? "bg-green-600 shadow-[0_0_50px_rgba(22,163,74,0.5)]" : "bg-mafia-gold"
-              }`}
-            >
-              <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 skew-x-12" />
-              <div className="relative flex items-center gap-4">
-                {isSaving ? (
-                  <Settings className="w-6 h-6 text-black animate-spin" />
-                ) : isSuccess ? (
-                  <Check className="w-6 h-6 text-white animate-bounce" />
-                ) : (
-                  <ArrowRight className="w-6 h-6 text-black group-hover:translate-x-2 transition-transform" />
-                )}
-                <span className={`font-heading font-black text-xl tracking-[0.3em] uppercase ${isSuccess ? "text-white" : "text-black"}`}>
-                  {isSaving ? (lang === 'cs' ? "ZAPISUJI..." : "SAVING...") : isSuccess ? (lang === 'cs' ? "ULOŽENO" : "SAVED") : (lang === 'cs' ? "ULOŽIT NASTAVENÍ" : "SAVE SETTINGS")}
-                </span>
-              </div>
-            </button>
-          </motion.div>
-        )}
-
-        {isSuccess && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center gap-6 py-10 border-t border-white/5 mt-10"
-          >
-            <div className={`w-16 h-16 rounded-full border-2 flex items-center justify-center ${isBloodMode ? 'border-mafia-blood text-mafia-blood' : isNoirMode ? 'border-white text-white' : 'border-mafia-gold text-mafia-gold'}`}>
-              <Check size={32} />
-            </div>
-            <div className="text-center">
-              <p className={`font-heading font-black text-2xl tracking-widest uppercase mb-2 ${isBloodMode ? 'text-mafia-blood' : isNoirMode ? 'text-white' : 'text-mafia-gold'}`}>
-                {lang === 'cs' ? 'Nastavení bylo úspěšně uloženo.' : 'Settings successfully saved.'}
-              </p>
-              <p className="text-white/40 text-sm">{lang === 'cs' ? 'Tvoje nová hierarchie je aktivní v tvém prohlížeči.' : 'Your new hierarchy is active in your browser.'}</p>
-            </div>
-            
-            <Link href="/" className={`group flex items-center gap-4 px-10 py-4 border-2 transition-all duration-500 ${isBloodMode ? 'border-mafia-blood text-mafia-blood hover:bg-mafia-blood hover:text-white' : isNoirMode ? 'border-white text-white hover:bg-white hover:text-black' : 'border-mafia-gold text-mafia-gold hover:bg-mafia-gold hover:text-black'}`}>
-              <Home size={20} />
-              <span className="font-heading font-black text-lg tracking-[0.3em] uppercase">{lang === 'cs' ? 'ZPĚT NA ZÁKLADNU' : 'BACK TO HQ'}</span>
-            </Link>
-          </motion.div>
-        )}
 
         <footer className="mt-20 text-center space-y-6">
 

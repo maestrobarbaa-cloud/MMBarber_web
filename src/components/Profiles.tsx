@@ -9,9 +9,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "../utils/audio";
 import { barbers } from "@/data/barbers";
 import { 
-  subscribeToUserRatings,
-  useBarberLocalSettings
+  subscribeToUserRatings
 } from "@/utils/voting";
+import { 
+  subscribeToGlobalXpStats, 
+  addLikeToBarber, 
+  hasLikedToday,
+  calculateLevelFromXp,
+  getCzechRankFromLevel,
+  getEnglishRankFromLevel,
+  GlobalBarberStats
+} from "@/utils/barberXp";
 
 export interface BarberProfile {
   id: string;
@@ -218,7 +226,7 @@ export const MilitaryInsignia = ({ level, color = "currentColor", size = 36 }: {
               </g>
             )}
 
-            {/* Level 10: ELITE MARSHAL (Central focal point) */}
+            {/* Level 10: ELITE MARSHAL / AUDITED BOSS (Central focal point) */}
             {level === 10 && (
               <g>
                 <motion.path
@@ -242,6 +250,97 @@ export const MilitaryInsignia = ({ level, color = "currentColor", size = 36 }: {
                   animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 180, 270, 360] }}
                   transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
                 />
+              </g>
+            )}
+
+            {/* Level 11: OFICIÁLNÍ KRÁL FADEU (Tactical Crown & Crest) */}
+            {level === 11 && (
+              <g>
+                <motion.path
+                  d="M12 2 L20 6 L18 16 L12 22 L6 16 L4 6 Z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="opacity-60"
+                />
+                {/* Crown shape */}
+                <motion.path
+                  d="M7 14 L9 9 L12 12 L15 9 L17 14 Z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  animate={{ y: [0, -1, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                <circle cx="12" cy="7" r="1.5" fill="currentColor" />
+                <circle cx="7" cy="14" r="1" fill="currentColor" />
+                <circle cx="17" cy="14" r="1" fill="currentColor" />
+              </g>
+            )}
+
+            {/* Level 12: ŽIVOUCÍ LEGENDA (Double Overlapping Rotating Seals) */}
+            {level === 12 && (
+              <g>
+                <motion.path
+                  d="M12 2 L22 12 L12 22 L2 12 Z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                  animate={{ rotate: 90 }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                />
+                <motion.path
+                  d="M12 2 L22 12 L12 22 L2 12 Z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  animate={{ rotate: -90 }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                />
+                {/* Cross of Honor */}
+                <motion.path
+                  d="M12 7 L12 17 M7 12 L17 12"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+              </g>
+            )}
+
+            {/* Level 13: CEO REALITY (Ultimate Grand Badge & Stars) */}
+            {level === 13 && (
+              <g>
+                {/* Outer Rotating Tactical Dashed Circle */}
+                <motion.circle 
+                  cx="12" cy="12" r="11" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="1" 
+                  strokeDasharray="4 2"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                />
+                {/* Grand Diamond Shield */}
+                <path
+                  d="M12 3 L21 12 L12 21 L3 12 Z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                />
+                {/* 3 Central Stars */}
+                <g className="scale-75 origin-center translate-x-[3px] translate-y-[3px]">
+                  <motion.path 
+                    d="M12 5 L13 8 L16 8 L13.5 10 L14 13 L12 11 L10 13 L10.5 10 L8 8 L11 8 Z" 
+                    fill="currentColor"
+                    animate={{ scale: [0.9, 1.1, 0.9] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                  <path d="M7 11 L8 13 L10 13 L8.5 14.5 L9 16.5 L7 15 L5 16.5 L5.5 14.5 L4 13 L6 13 Z" fill="currentColor" className="opacity-75" />
+                  <path d="M17 11 L18 13 L20 13 L18.5 14.5 L19 16.5 L17 15 L15 16.5 L15.5 14.5 L14 13 L16 13 Z" fill="currentColor" className="opacity-75" />
+                </g>
               </g>
             )}
           </g>
@@ -276,15 +375,19 @@ const getVocative = (name: string, lang: string) => {
   return n;
 };
 
-const BarberRanking = ({ rank, lang, id, defaultName }: { rank: any, lang: string, id: string, defaultName: string }) => {
-  const { t } = useTranslation();
-  const settings = useBarberLocalSettings(id, defaultName, rank?.level || 0);
-  
+const BarberRanking = ({ 
+  level, 
+  rankTitle, 
+  lang, 
+  id 
+}: { 
+  level: number, 
+  rankTitle: string, 
+  lang: string, 
+  id: string 
+}) => {
   const [isBloodMode, setIsBloodMode] = useState(false);
   const [isNoirMode, setIsNoirMode] = useState(false);
-
-  const isNellaBarber = id === 'nella';
-  const isJune2026 = new Date() >= new Date(2026, 5, 1);
 
   useEffect(() => {
     const checkThemes = () => {
@@ -299,65 +402,6 @@ const BarberRanking = ({ rank, lang, id, defaultName }: { rank: any, lang: strin
       window.removeEventListener('mmbarber-theme-update', checkThemes);
     };
   }, [id]);
-
-  const level = settings.level;
-  const titleIndex = settings.title;
-  const customTitle = settings.customTitle;
-
-  const getRankTitle = (idx: number) => {
-    if (customTitle) return customTitle;
-    
-    if (isNellaBarber) {
-      const femaleKey = `l${idx}F`;
-      return t.operatives.ranks[femaleKey] || t.operatives.ranks[`l${idx}`];
-    }
-    return t.operatives.ranks[`l${idx}`];
-  };
-
-  const currentRankTitle = getRankTitle(titleIndex);
-  
-  let status: 'promoted' | 'demoted' | 'stable' | 'demotedDesertion' = settings.level !== (rank?.level || 0) 
-    ? (settings.level > (rank?.level || 0) ? 'promoted' : 'demoted')
-    : 'stable';
-    
-  if (isNellaBarber && !isJune2026) {
-    status = 'demotedDesertion';
-  }
-
-  const [clientNickname, setClientNickname] = useState<string | null>(null);
-
-  useEffect(() => {
-    const { getUserRatingsData } = require("@/utils/voting");
-    const data = getUserRatingsData();
-    if (data && data.clientNickname) setClientNickname(data.clientNickname);
-  }, []);
-
-  const vocativeName = getVocative(clientNickname || "", lang);
-
-  const getStatusLabel = () => {
-    let label = "";
-    if (!status || status === 'stable') {
-      label = `${lang === 'cs' ? 'DLE' : 'BY'} ${vocativeName || (lang === 'cs' ? 'VÁS' : 'YOU')}`;
-    } else if (status === 'demotedDesertion') {
-      label = t.operatives.ranks.status.demotedDesertion;
-      if (vocativeName) label += ` ${lang === 'cs' ? 'DLE' : 'BY'} ${vocativeName}`;
-    } else {
-      const key = isNellaBarber ? `${status}F` : status;
-      label = t.operatives.ranks.status[key] || (t.operatives.ranks.status as any)[status];
-      if (vocativeName) label += ` ${lang === 'cs' ? 'DLE' : 'BY'} ${vocativeName}`;
-    }
-    return label;
-  };
-
-  const statusLabel = getStatusLabel();
-  const nextAttemptLabel = t.operatives.ranks.status.nextAttempt;
-
-  let statusLabelText = "";
-  if (status !== 'stable') {
-    statusLabelText = statusLabel;
-  }
-  
-  const isWinnerToday = false; 
 
   const statusColor = isBloodMode 
     ? 'text-mafia-blood' 
@@ -379,31 +423,21 @@ const BarberRanking = ({ rank, lang, id, defaultName }: { rank: any, lang: strin
           <div className="flex items-center gap-2 min-h-[18px] min-w-[120px] justify-center">
             <AnimatePresence mode="wait">
               <motion.span 
-                key={currentRankTitle}
+                key={rankTitle}
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
                 className="text-[11px] font-black tracking-[0.05em] uppercase leading-tight text-center"
               >
-                {currentRankTitle}
+                {rankTitle}
               </motion.span>
             </AnimatePresence>
-            {isWinnerToday && (
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
-                <Flame size={14} className="text-mafia-gold animate-pulse" />
-              </motion.div>
-            )}
-            {status === 'promoted' && !isWinnerToday && (
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
-                <Medal size={12} className="text-mafia-gold" />
-              </motion.div>
-            )}
           </div>
-          <div className="flex gap-0.5 mt-2">
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+          <div className="flex gap-0.5 mt-2 max-w-[200px] justify-center flex-wrap">
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((i) => (
               <div 
                 key={i} 
-                className={`h-[3px] w-3.5 rounded-full transition-all duration-700 ${
+                className={`h-[3px] w-2 md:w-2.5 rounded-full transition-all duration-700 ${
                   i <= level ? `${barColor} shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.7)]` : "bg-white/10"
                 }`} 
               />
@@ -411,23 +445,6 @@ const BarberRanking = ({ rank, lang, id, defaultName }: { rank: any, lang: strin
           </div>
         </div>
       </div>
-      
-      {statusLabelText && (
-        <motion.div 
-          initial={{ opacity: 0, x: -5 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          className={`flex items-center gap-2 ${statusColor} text-[8.5px] font-mono tracking-[0.1em] uppercase font-black mt-3`}
-        >
-          {(status === 'demoted' || status === 'demotedDesertion') ? <TrendingDown size={12} strokeWidth={3} /> : <TrendingUp size={12} strokeWidth={3} />}
-          <span className={(status === 'demoted' || status === 'demotedDesertion') ? 'animate-pulse' : ''}>{statusLabelText}</span>
-        </motion.div>
-      )}
-
-      {rank.nextRankIn && !isJune2026 && (
-        <div className="text-[8px] font-mono text-white/20 tracking-[0.05em] uppercase mt-2">
-          {nextAttemptLabel} {rank.nextRankIn}
-        </div>
-      )}
     </div>
   );
 };
@@ -487,7 +504,10 @@ function BarberCard({
   onBook,
   onHoverChange,
   activeSpeaker,
-  graphicsTier
+  graphicsTier,
+  globalStats,
+  likedMap,
+  onLike
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
   isActive: boolean, 
@@ -499,10 +519,20 @@ function BarberCard({
   onBook: () => void,
   onHoverChange?: (hovered: boolean) => void,
   activeSpeaker: string | null,
-  graphicsTier?: string
+  graphicsTier?: string,
+  globalStats: GlobalBarberStats,
+  likedMap: Record<string, boolean>,
+  onLike: (barberId: string) => void
 }) {
   const [isHovered, setIsHovered] = useState(false);
-  const settings = useBarberLocalSettings(barber.id, barber.name, barber.rank?.level || 0);
+
+  const stats = globalStats[barber.id] || { xp: 0, likes: 0 };
+  const globalXp = stats.xp;
+  const globalLevel = calculateLevelFromXp(globalXp);
+  const globalRank = lang === 'cs' 
+    ? getCzechRankFromLevel(globalLevel, barber.id === 'nella') 
+    : getEnglishRankFromLevel(globalLevel);
+  const alreadyLiked = likedMap[barber.id] || false;
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -516,7 +546,7 @@ function BarberCard({
   };
 
   const isHidden = barber.isHidden;
-  const barberDisplayName = settings.name;
+  const barberDisplayName = barber.name;
 
   return (
     <>
@@ -539,15 +569,20 @@ function BarberCard({
           )}
         </div>
         
-        <div className="text-center space-y-1 relative">
+        <div className="text-center space-y-1 relative w-full flex flex-col items-center">
           <h3 className="text-3xl font-heading font-black uppercase text-mafia-gold tracking-widest leading-none relative">
             {barberDisplayName}
           </h3>
           <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
             {barber.role}
           </span>
-          <div className="mt-6 relative flex justify-center">
-            <BarberRanking rank={barber.rank} lang={lang} id={barber.id} defaultName={barber.name} />
+          <div className="mt-4 relative flex justify-center">
+            <BarberRanking 
+              level={globalLevel} 
+              rankTitle={globalRank} 
+              lang={lang} 
+              id={barber.id} 
+            />
           </div>
         </div>
 
@@ -637,8 +672,13 @@ function BarberCard({
                   <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest relative block">
                     {barber.role}
                   </span>
-                  <div className="mt-8 relative flex justify-center">
-                    <BarberRanking rank={barber.rank} lang={lang} id={barber.id} defaultName={barber.name} />
+                  <div className="mt-6 relative flex justify-center">
+                    <BarberRanking 
+                      level={globalLevel} 
+                      rankTitle={globalRank} 
+                      lang={lang} 
+                      id={barber.id} 
+                    />
                     {isHidden && (
                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
                     )}
@@ -863,7 +903,10 @@ function ChairWithCard({
   t, 
   playCardSound, 
   side,
-  graphicsTier
+  graphicsTier,
+  globalStats,
+  likedMap,
+  onLike
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
   activeSpeaker: string | null, 
@@ -873,7 +916,10 @@ function ChairWithCard({
   t: Record<string, any>, 
   playCardSound: () => void,
   side: 'left' | 'right',
-  graphicsTier: string
+  graphicsTier: string,
+  globalStats: GlobalBarberStats,
+  likedMap: Record<string, boolean>,
+  onLike: (barberId: string) => void
 }) {
   const [isCardHovered, setIsCardHovered] = useState(false);
   const [isSitting, setIsSitting] = useState(false);
@@ -1065,6 +1111,9 @@ function ChairWithCard({
           onHoverChange={(h) => setIsCardHovered(h)}
           activeSpeaker={activeSpeaker}
           graphicsTier={graphicsTier}
+          globalStats={globalStats}
+          likedMap={likedMap}
+          onLike={onLike}
         />
       </div>
     </div>
@@ -1084,8 +1133,22 @@ export function Profiles() {
   const [revealedBarbers, setRevealedBarbers] = useState<string[]>([]);
   const [graphicsTier, setGraphicsTier] = useState<string>("low");
 
+  // Real-time Global XP and Liking States
+  const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
+  const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
+
   const playCardSound = () => {
     playSound("/sounds/card.mp3", 0.9);
+  };
+
+  const handleLike = async (barberId: string) => {
+    playSound("/sounds/reload.mp3", 0.5);
+    const success = await addLikeToBarber(barberId);
+    if (success) {
+      playSound("/sounds/leather.mp3", 0.6);
+      trackEvent("barber_liked_xp_home", { barberId });
+      setLikedMap(prev => ({ ...prev, [barberId]: true }));
+    }
   };
 
   useEffect(() => {
@@ -1122,9 +1185,22 @@ export function Profiles() {
     };
 
     window.addEventListener("mmbarber-reveal-barbers", handleReveal);
+
+    // Real-time listener for global XP stats
+    const unsubscribeXp = subscribeToGlobalXpStats((stats) => {
+      setGlobalStats(stats);
+      
+      const updatedLikes: Record<string, boolean> = {};
+      barbers.forEach((b) => {
+        updatedLikes[b.id] = hasLikedToday(b.id);
+      });
+      setLikedMap(updatedLikes);
+    });
+
     return () => {
       window.removeEventListener("mmbarber-reveal-barbers", handleReveal);
       window.removeEventListener('mmbarber-graphics-update', updateTier);
+      unsubscribeXp();
       if (section) observer.unobserve(section);
     };
   }, [revealedBarbers]);
@@ -1270,6 +1346,9 @@ export function Profiles() {
                         playCardSound={playCardSound} 
                         side={index % 2 === 0 ? "left" : "right"} 
                         graphicsTier={graphicsTier}
+                        globalStats={globalStats}
+                        likedMap={likedMap}
+                        onLike={handleLike}
                       />
                     ))}
                 </div>

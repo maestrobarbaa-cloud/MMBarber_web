@@ -137,12 +137,14 @@ export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
                         transition={{ duration: 0.8, ease: "easeOut" }}
                         className="w-full h-full p-1 md:p-12 flex items-center justify-center"
                       >
-                         <a href={partner.url} target="_blank" rel="noreferrer" className="group">
+                          <a href={partner.url} target="_blank" rel="noreferrer" className="group">
                             <Image
                                 src={partner.img}
                                 alt={partner.name}
                                 width={180}
                                 height={90}
+                                sizes="(max-width: 640px) 30vw, (max-width: 1024px) 15vw, 10vw"
+                                loading="lazy"
                                 className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-700 brightness-75 group-hover:brightness-125"
                             />
                           </a>
