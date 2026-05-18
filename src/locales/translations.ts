@@ -356,7 +356,7 @@ export const translations = {
       items: [
         { time: "5 m", name: "RYCHLÁ ÚPRAVA", desc: "Kontury, detaily nebo jen bleskový refresh. Stačí na chvíli naskočit.", price: "100 Kč", priceValue: 100 },
         { time: "10 m", name: "EXPRES SERVIS", desc: "Zaholení krku, úprava bez strojku nebo něco, co už vážně nepočká.", price: "180 Kč", priceValue: 180 },
-        { time: "15 m", name: "QUICK FADE", desc: "Buzzcut, jednoduchý střih strojkem nebo rychlé srovnání stran.", price: "280 Kč", priceValue: 280 },
+        { time: "15 m", name: "QUICK FADE", desc: "Buzzcut, jednoduchý střih strojkem nebo rychlé srovnání stran.", price: "250 Kč", priceValue: 250 },
         { time: "20 m", name: "ZÁKLADNÍ STŘIH", desc: "Dětské střihy nebo jednodušší úpravy. Očista, kolínská, styl.", price: "320 Kč", priceValue: 320 },
         { time: "30 m", name: "KLASIKA", desc: "Precizní střih nůžkami i strojkem. Často stihneme vlasy i lehké vousy.", price: "450 Kč", priceValue: 450 },
         { time: "45 m", name: "KOMPLETNÍ PÉČE", desc: "Mytí, střih, zaholení břitvou. Pokud nevíš, tohle je sázka na jistotu.", price: "650 Kč", priceValue: 650 },
@@ -1341,7 +1341,7 @@ export const translations = {
       items: [
         { time: "5 m", name: "QUICK REFRESH", desc: "Contours, details or just a lightning refresh. Enough to hop on for a bit.", price: "100 Kč", priceValue: 100 },
         { time: "10 m", name: "EXPRESS SERVICE", desc: "Neck shave, trim without clippers or something that really can't wait.", price: "180 Kč", priceValue: 180 },
-        { time: "15 m", name: "QUICK FADE", desc: "Buzzcut, simple clipper cut or quick side alignment.", price: "280 Kč", priceValue: 280 },
+        { time: "15 m", name: "QUICK FADE", desc: "Buzzcut, simple clipper cut or quick side alignment.", price: "250 Kč", priceValue: 250 },
         { time: "20 m", name: "BASIC CUT", desc: "Kids' cuts or simpler trims. Clean, cologne, style.", price: "320 Kč", priceValue: 320 },
         { time: "30 m", name: "CLASSIC", desc: "Precise scissors and clipper cut. Often manage hair and light beard.", price: "450 Kč", priceValue: 450 },
         { time: "45 m", name: "COMPLETE CARE", desc: "Wash, cut, razor shave. If you don't know, this is a safe bet.", price: "650 Kč", priceValue: 650 },

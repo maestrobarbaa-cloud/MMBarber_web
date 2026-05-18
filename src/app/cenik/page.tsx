@@ -7,6 +7,9 @@ import { trackEvent } from "@/utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { playSound } from "@/utils/audio";
+import { Footer } from "@/components/Footer";
+import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
+import { PricingSEOArchive } from "@/components/PricingSEOArchive";
 
 type Currency = "CZK" | "EUR" | "USD" | "PLN" | "UAH";
 
@@ -248,12 +251,13 @@ export default function CenikPage() {
   const closeLabel = lang === "cs" ? "Zpět" : "Back";
 
   return (
-    <div className="min-h-screen w-full bg-mafia-black pt-24 pb-8 px-4 md:px-8 flex flex-col justify-between">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-6xl mx-auto flex-1 bg-mafia-dark/40 border border-mafia-gold/30 shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] overflow-hidden flex flex-col"
-      >
+    <div className="min-h-screen bg-mafia-black text-white relative">
+      <div className="pt-28 pb-16 px-4 md:px-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-6xl mx-auto bg-mafia-dark/40 border border-mafia-gold/30 shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] overflow-hidden flex flex-col"
+        >
         <div className="sticky top-0 z-20 bg-mafia-black/90 backdrop-blur-md border-b border-mafia-gold/10 p-6 flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-2xl font-heading font-bold text-mafia-gold uppercase tracking-widest">{t.services.title}</h1>
           
@@ -746,5 +750,24 @@ export default function CenikPage() {
           </div>
         </motion.div>
       </div>
-    );
+
+      <Footer />
+
+      <BottomTerminalReveal thresholdMultiplier={100}>
+        {(level) => (
+          <>
+            {level >= 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <PricingSEOArchive />
+              </motion.div>
+            )}
+          </>
+        )}
+      </BottomTerminalReveal>
+    </div>
+  );
 }

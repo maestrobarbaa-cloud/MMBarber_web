@@ -530,8 +530,8 @@ export function Footer() {
             <FooterLink href="/pribeh">{lang === 'cs' ? "PŘÍBĚH" : "STORY"}</FooterLink>
           </div>
 
-          {/* Column 4: SEO Landing Pages */}
-          <div className="flex flex-col space-y-3">
+          {/* Column 4: SEO Landing Pages - Hidden from humans but preserved in DOM for SEO crawl weight */}
+          <div className="absolute -z-50 opacity-0 pointer-events-none w-0 h-0 overflow-hidden" aria-hidden="true">
             <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">
               {lang === 'cs' ? "SLUŽBY A REGION" : "SERVICES & REGION"}
             </h3>
@@ -617,7 +617,7 @@ export function Footer() {
 
             <div className="flex items-center gap-4 mt-4">
               <span className="text-smoke-white/20 font-mono text-[9px] uppercase tracking-widest">© 2024–2026 MMBARBER</span>
-              <span className="text-mafia-red text-[9px] font-black tracking-[0.2em] px-2 py-0.5 border border-mafia-red/20">V 3.5</span>
+              <span className="text-mafia-red text-[9px] font-black tracking-[0.2em] px-2 py-0.5 border border-mafia-red/20">V 3.5.1</span>
             </div>
           </div>
         </div>
