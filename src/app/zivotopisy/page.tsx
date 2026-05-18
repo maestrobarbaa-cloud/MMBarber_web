@@ -1,0 +1,319 @@
+"use client";
+
+import React, { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { barbers } from "@/data/barbers";
+import { playSound } from "@/utils/audio";
+import { trackEvent } from "@/utils/analytics";
+import { useTranslation } from "@/hooks/useTranslation";
+import { Footer } from "@/components/Footer";
+import { 
+  subscribeToGlobalXpStats, 
+  calculateLevelFromXp, 
+  getCzechRankFromLevel, 
+  getEnglishRankFromLevel,
+  GlobalBarberStats 
+} from "@/utils/barberXp";
+import { 
+  ArrowLeft, 
+  Sparkles, 
+  Award, 
+  Star, 
+  Calendar, 
+  Layers, 
+  Sliders, 
+  Pocket, 
+  CheckCircle2, 
+  RefreshCw,
+  Compass
+} from "lucide-react";
+
+
+export default function BiographiesPage() {
+  const { lang } = useTranslation();
+  const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
+  const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
+  
+  // Custom names overrides from localStorage
+  const [customTomasName, setCustomTomasName] = useState("Tomáš");
+  const [customNellaName, setCustomNellaName] = useState("Nella");
+
+  const syncLocalStorageData = useCallback(() => {
+    const savedTomas = localStorage.getItem("mmbarber_custom_name_tomas");
+    const savedNella = localStorage.getItem("mmbarber_custom_name_nella");
+    if (savedTomas) setCustomTomasName(savedTomas);
+    if (savedNella) setCustomNellaName(savedNella);
+  }, []);
+
+  useEffect(() => {
+    syncLocalStorageData();
+
+    const handleStorageUpdate = () => {
+      syncLocalStorageData();
+    };
+    window.addEventListener("storage", handleStorageUpdate);
+    window.addEventListener("mmbarber_names_updated", handleStorageUpdate);
+
+    // Subscribe to global stats
+    const unsubscribeXp = subscribeToGlobalXpStats((stats) => {
+      setGlobalStats(stats);
+    });
+
+    return () => {
+      window.removeEventListener("storage", handleStorageUpdate);
+      window.removeEventListener("mmbarber_names_updated", handleStorageUpdate);
+      unsubscribeXp();
+    };
+  }, [syncLocalStorageData]);
+
+  // Calculate dynamic rating based on real community feedback in firebase
+  const getBarberRatingData = (barberId: string) => {
+    const stats = globalStats[barberId] || { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 };
+    const likes = stats.likes || 0;
+    
+    // Sum up the dynamic attribute ratings cast by users
+    const totalStatVotes = (stats.stat1 || 0) + (stats.stat2 || 0) + (stats.stat3 || 0) + (stats.stat4 || 0) + (stats.stat5 || 0) + (stats.stat6 || 0);
+    const overallActions = likes + totalStatVotes;
+
+    // Start with high baseline to look professional (e.g. 4.8), then scale organically up to 4.98 based on user likes
+    const starScore = Math.min(5.0, 4.8 + Math.min(0.2, likes * 0.005));
+    
+    return {
+      stars: starScore.toFixed(2),
+      actionsCount: overallActions,
+      likesCount: likes
+    };
+  };
+
+  const handleSelectBarber = (id: string) => {
+    setSelectedBarberId(id);
+    playSound("/sounds/reload.mp3", 0.4);
+    trackEvent("biography_select", { barberId: id });
+  };
+
+  const handleBackToSelection = () => {
+    setSelectedBarberId(null);
+    playSound("/sounds/click.mp3", 0.2);
+  };
+
+  // Find currently active chosen barber
+  const activeBarber = barbers.find(b => b.id === selectedBarberId);
+  const activeBarberSafe = activeBarber || barbers[0];
+  const activeCustomName = activeBarberSafe.id === "tomas" ? customTomasName : customNellaName;
+
+  const activeStats = globalStats[activeBarberSafe.id] || { xp: 0 };
+  const activeLevel = calculateLevelFromXp(activeStats.xp);
+  const activeRank = lang === 'cs' 
+    ? getCzechRankFromLevel(activeLevel, activeBarberSafe.id === "nella") 
+    : getEnglishRankFromLevel(activeLevel);
+
+  const activeRating = getBarberRatingData(activeBarberSafe.id);
+
+  return (
+    <main className="min-h-screen bg-[#050505] text-smoke-white overflow-x-hidden selection:bg-mafia-gold selection:text-mafia-black relative flex flex-col justify-between">
+      {/* Ambient background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_15%,rgba(var(--color-mafia-gold-rgb),0.03)_0%,transparent_60%)] opacity-80" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02]" />
+      </div>
+
+      {/* Header section */}
+      <header className="w-full py-6 px-8 border-b border-white/5 flex justify-between items-center z-50 backdrop-blur-md bg-mafia-black/80 sticky top-0">
+        <Link 
+          href="/" 
+          className="group inline-flex items-center gap-2.5 text-white/50 hover:text-mafia-gold transition-colors font-mono text-[9px] uppercase tracking-[0.4em]"
+        >
+          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+          <span>{lang === 'cs' ? "Zpět na základnu" : "Back Home"}</span>
+        </Link>
+        <span className="font-heading font-black text-base tracking-[0.3em] text-mafia-gold logo-neon">MMBARBER</span>
+      </header>
+
+      {/* Main Container */}
+      <div className="flex-grow max-w-6xl mx-auto w-full px-6 py-12 md:py-16 z-10 flex flex-col justify-center gap-12">
+        
+        <AnimatePresence mode="wait">
+          {!selectedBarberId ? (
+            /* SELECTION GRID MODE */
+            <motion.div
+              key="selection-grid"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-12"
+            >
+              {/* Title Block */}
+              <div className="text-center space-y-4 max-w-xl mx-auto">
+                <span className="text-mafia-gold text-[10px] font-mono tracking-[0.4em] uppercase block">
+                  {lang === 'cs' ? "DOKUMENTACE OPERATIVCŮ" : "OPERATIVE PERSONNEL REGISTRY"}
+                </span>
+                <h1 className="text-4xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-tight leading-none">
+                  {lang === 'cs' ? "ŽIVOTOPISY BARBERŮ" : "BARBERS' BIOGRAPHIES"}
+                </h1>
+                <p className="text-xs text-white/40 leading-relaxed max-w-sm mx-auto">
+                  {lang === 'cs'
+                    ? "Vyberte si složku jednoho z našich kadeřnických operativců pro detailní taktický životopis, přehled dovedností a hodnocení."
+                    : "Select a profile folder for an in-depth dossier covering tactical backgrounds, community reviews, and combat skills."}
+                </p>
+              </div>
+
+              {/* Cards Grid */}
+              <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                {barbers.map((b) => {
+                  const customName = b.id === "tomas" ? customTomasName : customNellaName;
+                  const stats = globalStats[b.id] || { xp: 0 };
+                  const level = calculateLevelFromXp(stats.xp);
+                  const rating = getBarberRatingData(b.id);
+                  
+                  return (
+                    <motion.div
+                      key={b.id}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleSelectBarber(b.id)}
+                      className="bg-mafia-black/80 border border-white/10 hover:border-mafia-gold transition-all duration-300 p-8 flex flex-col items-center justify-between text-center relative overflow-hidden group cursor-pointer shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] rounded-sm"
+                    >
+                      {/* Accent gold corner */}
+                      <div className="absolute top-0 right-0 w-8 h-8 bg-mafia-gold/5 border-b border-l border-white/10 group-hover:border-mafia-gold/30 transition-colors" />
+
+                      <div className="space-y-6 w-full">
+                        {/* Circle Avatar Frame */}
+                        <div className="w-40 h-40 rounded-full border-2 border-white/10 group-hover:border-mafia-gold overflow-hidden mx-auto transition-colors relative shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                          <Image 
+                            src={b.image} 
+                            alt={customName} 
+                            fill 
+                            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
+                          />
+                        </div>
+
+                        {/* Text data */}
+                        <div className="space-y-2">
+                          <span className="text-[9px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] block">
+                            {lang === 'cs' ? b.role : "SPECIALIST"}
+                          </span>
+                          <h2 className="text-3xl font-heading font-black text-white group-hover:text-mafia-gold transition-colors uppercase tracking-wider italic">
+                            {customName}
+                          </h2>
+                        </div>
+                      </div>
+
+                      {/* Bottom view Dossier trigger */}
+                      <div className="w-full pt-8">
+                        <button className="w-full py-3.5 bg-white/5 border border-white/10 group-hover:bg-mafia-gold group-hover:border-mafia-gold text-white group-hover:text-mafia-black font-heading font-black tracking-[0.2em] uppercase text-[10px] transition-all rounded">
+                          {lang === 'cs' ? "OTEVŘÍT SLOŽKU" : "VIEW DOSSIER"}
+                        </button>
+                      </div>
+
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          ) : (
+            /* DOSSIER DETAIL MODE */
+            <motion.div
+              key="barber-dossier"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              className="bg-mafia-black/95 border border-white/10 p-6 md:p-12 relative overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.9)] rounded-sm"
+            >
+              {/* Gold Scanner line decoration */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-mafia-gold/30 to-transparent pointer-events-none" />
+
+              {/* Back Link inside dossier */}
+              <button 
+                onClick={handleBackToSelection}
+                className="group inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors font-mono text-[9px] uppercase tracking-[0.3em] mb-8"
+              >
+                <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
+                <span>{lang === 'cs' ? "Zpět na výběr" : "Back to Registry"}</span>
+              </button>
+
+              {/* Main Dossier Grid */}
+              <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                
+                {/* LEFT PORTRAIT COLUMN */}
+                <div className="lg:col-span-5">
+                  
+                  {/* Photo Frame */}
+                  <div className="w-full aspect-square relative rounded-sm border border-white/10 overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.6)]">
+                    <Image 
+                      src={activeBarberSafe.image} 
+                      alt={activeCustomName} 
+                      fill 
+                      priority
+                      className="object-cover" 
+                    />
+                  </div>
+
+                </div>
+
+                {/* RIGHT DETAILED BIO COLUMN */}
+                <div className="lg:col-span-7 space-y-8">
+                  
+                  {/* Title & Rank header */}
+                  <div className="space-y-2 text-left">
+                    <span className="text-mafia-gold text-[10px] font-mono tracking-[0.3em] uppercase block">
+                      {lang === 'cs' ? activeBarberSafe.role : "SPECIALIST"}
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-heading font-black text-white uppercase tracking-tight italic">
+                      {activeCustomName}
+                    </h2>
+                  </div>
+
+                  {/* Backstory */}
+                  <div className="space-y-3 text-left">
+                    <h4 className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">
+                      {lang === 'cs' ? "O BARBEROVI & BIOGRAFIE" : "ABOUT & BIOGRAPHY"}
+                    </h4>
+                    <p className="text-base text-smoke-white/90 font-sans leading-relaxed">
+                      {activeBarberSafe.desc}
+                    </p>
+                  </div>
+
+                  {/* Call to action & switch bar */}
+                  <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row gap-4">
+                    
+                    <a
+                      href={activeBarberSafe.bookingLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-grow py-4 bg-mafia-gold text-mafia-black font-heading font-black tracking-[0.25em] uppercase text-xs flex items-center justify-center gap-2 rounded shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.25)] hover:bg-white hover:border-white transition-all cursor-pointer"
+                    >
+                      <Calendar size={14} />
+                      <span>{lang === 'cs' ? "REZERVOVAT KŘESLO" : "BOOK A CHAIR"}</span>
+                    </a>
+
+                    <button
+                      onClick={() => handleSelectBarber(activeBarberSafe.id === "tomas" ? "nella" : "tomas")}
+                      className="py-3.5 px-6 bg-transparent border border-white/10 hover:border-white/30 text-white/60 hover:text-white font-mono text-[10px] uppercase tracking-[0.25em] flex items-center justify-center gap-2 transition-all cursor-pointer rounded"
+                    >
+                      <RefreshCw size={12} />
+                      <span>
+                        {lang === 'cs' 
+                          ? `Přepnout na ${activeBarberSafe.id === "tomas" ? customNellaName : customTomasName}`
+                          : `Switch to ${activeBarberSafe.id === "tomas" ? customNellaName : customTomasName}`}
+                      </span>
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </div>
+
+      <Footer />
+    </main>
+  );
+}

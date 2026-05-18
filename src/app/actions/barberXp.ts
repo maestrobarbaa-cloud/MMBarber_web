@@ -29,7 +29,8 @@ export interface DBStructure {
 
 const DEFAULT_DB: DBStructure = {
   tomas: { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 },
-  nella: { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 }
+  nella: { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 },
+  "roman-jakubcak": { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 }
 };
 
 // Safe helper to read ratings database
@@ -98,8 +99,9 @@ export async function addVoteToBarberStatAction(
       return { success: false, error: "Neplatné parametry" };
     }
 
-    if (barberId !== "tomas" && barberId !== "nella") {
-      return { success: false, error: "Neznámý barber" };
+    const allowedIds = ["tomas", "nella", "roman-jakubcak"];
+    if (!allowedIds.includes(barberId)) {
+      return { success: false, error: "Neznámý partner/barber" };
     }
 
     // Resolve client IP securely on the server to prevent spoofing
@@ -120,7 +122,10 @@ export async function addVoteToBarberStatAction(
 
     // Process vote securely
     const dbData = await getGlobalStatsAction();
-    const barber = dbData[barberId as "tomas" | "nella"];
+    if (!dbData[barberId]) {
+      dbData[barberId] = { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 };
+    }
+    const barber = dbData[barberId];
 
     if (statIndex === 0) barber.stat1 = (barber.stat1 ?? 0) + 1;
     else if (statIndex === 1) barber.stat2 = (barber.stat2 ?? 0) + 1;

@@ -94,7 +94,6 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
 }
 
 const divisions = [
-  { id: "all", name: "Všichni", nameEn: "All", icon: <Users className="w-5 h-5" /> },
   { id: "voda", name: "Vodaři / Vodo-Topo", nameEn: "Plumbers", icon: <Droplets className="w-5 h-5" /> },
   { id: "elektro", name: "Elektrikáři", nameEn: "Electricians", icon: <Zap className="w-5 h-5" /> },
   { id: "stavebnictvi", name: "Stavebnictví & Reality", nameEn: "Construction & Reality", icon: <Building2 className="w-5 h-5" /> },
@@ -225,9 +224,9 @@ const members = [
     year: 2025
   },
   {
-    name: "Adam Horňák",
+    name: "Adam Hronák",
     div: "team",
-    role: "Web designer", roleEn: "Web Developer",
+    role: "Webový vývojář", roleEn: "Web Developer",
     img: "/logo.png",
     link: "tel:+420577544073",
     year: 2025
@@ -254,7 +253,7 @@ const members = [
 export default function FamilyPage() {
   const { t, lang } = useTranslation();
   const [isMounted, setIsMounted] = useState(false);
-  const [activeDivision, setActiveDivision] = useState("all");
+  const [activeDivision, setActiveDivision] = useState("voda");
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [isWallOpen, setIsWallOpen] = useState(false);
   const [contactModal, setContactModal] = useState<{ name: string; phone: string } | null>(null);
@@ -371,8 +370,10 @@ export default function FamilyPage() {
                       <div key={div.id}>
                         <button
                           onClick={() => {
-                            setActiveDivision(activeDivision === div.id ? "" : div.id);
-                            playDoorbell();
+                            if (activeDivision !== div.id) {
+                              setActiveDivision(div.id);
+                              playDoorbell();
+                            }
                           }}
                           className={`w-full group relative overflow-hidden border-2 p-6 text-left transition-all duration-500 cursor-pointer ${activeDivision === div.id ? 'border-mafia-gold bg-mafia-gold/10 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'border-white/5 bg-white/[0.02] hover:border-mafia-gold/40'
                             }`}

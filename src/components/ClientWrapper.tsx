@@ -12,7 +12,6 @@ const BarberGame = dynamic(() => import("@/components/BarberGame").then(mod => m
 const Radio = dynamic(() => import("@/components/Radio").then(mod => mod.Radio), { ssr: false });
 const CookieBanner = dynamic(() => import("@/components/CookieBanner").then(mod => mod.CookieBanner), { ssr: false });
 const FloatingScissors = dynamic(() => import("@/components/FloatingScissors").then(mod => mod.FloatingScissors), { ssr: false });
-const MobileCompass = dynamic(() => import("@/components/MobileCompass").then(mod => mod.MobileCompass), { ssr: false });
 
 const VipControlBar = dynamic(() => import("@/components/VipControlBar").then(mod => mod.VipControlBar), { ssr: false });
 const GlobalSound = dynamic(() => import("@/components/GlobalSound").then(mod => mod.GlobalSound), { ssr: false });
@@ -273,7 +272,6 @@ export function ClientWrapper() {
       {showEffects && <Radio />}
       <CookieBanner />
       {!isActuallyMobile && !isRodinaPage && !isGalaxyVisible && <FloatingScissors />}
-      <MobileCompass />
       <VipControlBar />
       {showEffects && <GlobalSound />}
       {showEffects && <MatrixBackground />}

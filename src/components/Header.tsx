@@ -831,27 +831,6 @@ export function Header() {
         
         {/* Mobile Actions (Top Right) */}
         <div className="xl:hidden flex items-center gap-2 relative z-[30001]">
-          {/* Compass integrated into the bar */}
-          {!isMenuOpen && (
-            isCompassActive ? (
-              <button 
-                onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
-                className="flex items-center justify-center w-12 h-12 bg-mafia-red border-2 border-white group transition-all duration-500 shadow-[0_0_20px_rgba(255,0,0,0.4)]"
-                aria-label="Deactivate Compass"
-              >
-                <X size={24} className="text-white group-hover:scale-110 transition-transform" />
-              </button>
-            ) : (
-              <button 
-                onClick={() => window.dispatchEvent(new Event('mmbarber-toggle-compass'))}
-                className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-red group hover:bg-mafia-gold/20 transition-all duration-500 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.2)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.1)] theme-blood:shadow-[0_0_20px_rgba(139,0,0,0.2)]"
-              >
-                <Compass size={24} className="text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red animate-[spin_8s_linear_infinite] group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] font-heading font-black text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-red tracking-[0.1em] uppercase whitespace-nowrap hidden min-[380px]:inline">{lang === 'cs' ? 'Kompas' : 'Compass'}</span>
-              </button>
-            )
-          )}
-
           <button
             onClick={toggleMenu}
             className={`flex items-center gap-2 px-4 py-2.5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.2)] border-2 transition-all duration-500 ${isMenuOpen ? 'bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-red border-white' : 'bg-mafia-black border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-red group hover:bg-mafia-gold/20'}`}
@@ -1159,35 +1138,6 @@ export function Header() {
                   </div>
                 </Link>
               )}
-
-              {/* COMPASS TOGGLE TILE */}
-              <button 
-                onClick={() => {
-                  window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'));
-                }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isCompassActive ? 'border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-blood bg-mafia-gold/5 noir-mode:bg-mafia-silver/5 theme-blood:bg-mafia-blood/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.1)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.1)] theme-blood:shadow-[0_0_20px_rgba(139,0,0,0.1)]' : 'border-white/10'}`}
-              >
-                <div className="flex items-center gap-5">
-                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${isCompassActive ? 'border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-blood bg-mafia-gold/10 noir-mode:bg-mafia-silver/10 theme-blood:bg-mafia-blood/10' : 'border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-blood/30'}`}>
-                    <Compass size={28} className={`text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-blood ${isCompassActive ? 'animate-[spin_8s_linear_infinite]' : 'opacity-40'}`} />
-                  </div>
-                  <div className="flex flex-col items-start text-left">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{t.header.compass || 'KOMPAS'}</span>
-                      <div className={`px-1.5 py-0.5 text-[8px] font-black rounded ${isCompassActive ? 'bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-blood text-mafia-black' : 'bg-white/10 text-white/40'}`}>
-                        {isCompassActive ? (t.header.on || 'ZAPNUTO') : (t.header.off || 'VYPNUTO')}
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-mono text-mafia-gold/40 noir-mode:text-mafia-silver/40 theme-blood:text-mafia-blood/40 uppercase">{isCompassActive ? (t.header.tracking || 'SLEDUJI POLOHU') : (t.header.savingData || 'ŠETŘÍ DATA')}</span>
-                  </div>
-                </div>
-                <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isCompassActive ? 'bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-blood' : 'bg-white/10'}`}>
-                   <motion.div 
-                     animate={{ x: isCompassActive ? 22 : 4 }}
-                     className="w-3 h-3 rounded-full bg-white shadow-sm"
-                   />
-                </div>
-              </button>
 
                {/* RODINA MMBARBERU TILE (Mobile) */}
               <button 

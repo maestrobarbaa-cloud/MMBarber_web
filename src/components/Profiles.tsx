@@ -1362,7 +1362,7 @@ export function Profiles() {
                                 className="px-6 py-3 bg-mafia-gold/5 border border-mafia-gold/30 hover:border-mafia-gold hover:bg-mafia-gold text-mafia-gold hover:text-mafia-black font-heading font-black tracking-[0.2em] uppercase text-xs transition-all duration-300 rounded shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:shadow-[0_0_25px_rgba(197,160,89,0.4)] flex items-center gap-2 group cursor-pointer"
                                 onClick={() => playSound("/sounds/hover.mp3", 0.4)}
                             >
-                                <span>Životopisy Barberů & Taktika</span>
+                                <span>Losovat barbera</span>
                                 <motion.span 
                                   animate={{ x: [0, 4, 0] }}
                                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}

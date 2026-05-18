@@ -22,6 +22,8 @@ import { trackEvent } from "@/utils/analytics";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/hooks/useTranslation";
 import Link from "next/link";
+import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
+import { ReviewSEO } from "@/components/ReviewSEO";
 import { 
   subscribeToGlobalXpStats, 
   addLikeToBarber, 
@@ -731,6 +733,13 @@ export default function RatingPage() {
             )}
           </motion.div>
         </footer>
+
+        {/* World-Class Reviews & Ranks SEO Layer */}
+        <BottomTerminalReveal thresholdMultiplier={40}>
+          {(level) => (
+            <ReviewSEO />
+          )}
+        </BottomTerminalReveal>
       </div>
     </div>
   );

@@ -119,7 +119,7 @@ export default function Home() {
               </div>
             </div>
             
-            <BottomTerminalReveal thresholdMultiplier={2}>
+            <BottomTerminalReveal thresholdMultiplier={100}>
               {(level) => (
                 <div className="w-full flex flex-col gap-12 pb-32">
                   {level >= 1 && (

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { X, Calendar, MapPin, Phone, Compass, Info, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { X, Calendar, Phone, Info, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
@@ -14,8 +14,6 @@ export function MobileActions() {
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   
-  const [isCompassOpen, setIsCompassOpen] = useState(false);
-  
   const playBulletHit = () => {
     playSound("/sounds/bullet-hit.mp3", 0.6);
   };
@@ -25,18 +23,8 @@ export function MobileActions() {
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    const handleCompassState = (e: Event) => {
-      setIsCompassOpen((e as CustomEvent).detail);
-    };
-    window.addEventListener('mmbarber-compass-state', handleCompassState as EventListener);
-
-    // Initial check for compass
-    const stored = localStorage.getItem("mmbarber_compass_enabled") === "true";
-    setIsCompassOpen(stored);
-
     return () => {
       window.removeEventListener("resize", checkMobile);
-      window.removeEventListener('mmbarber-compass-state', handleCompassState as EventListener);
     };
   }, []);
 
@@ -78,20 +66,13 @@ export function MobileActions() {
       label: 'SYSTÉM A NÁVŠTĚVA', 
       icon: <ShieldCheck size={24} />, 
       href: '/system-a-navsteva' 
-    },
-    { 
-      id: 'compass',
-      label: isCompassOpen ? (t.cityGuide?.compass?.deactivate || 'VYPNOUT KOMPAS') : 'KOMPAS', 
-      icon: isCompassOpen ? <X size={24} className="text-mafia-red" /> : <Compass size={24} className="animate-spin-slow" />, 
-      isAction: () => window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass')),
-      color: isCompassOpen ? 'bg-mafia-red/10 border-mafia-red/30' : undefined
     }
   ];
 
   return (
     <>
       {/* THE MAIN ACTION BUTTON (Windows Mobile Style) */}
-      <div className={`fixed ${isCompassOpen ? 'bottom-28' : 'bottom-8'} left-1/2 -translate-x-1/2 z-[1100] transition-all duration-500 ease-out`}>
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[1100] transition-all duration-500 ease-out">
         <button
           onClick={toggleMenu}
           className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.8)] border-2 ${isOpen ? 'bg-mafia-red border-white scale-90' : 'bg-mafia-black border-mafia-gold scale-100 hover:scale-110 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]'}`}
@@ -129,54 +110,29 @@ export function MobileActions() {
               </div>
 
               {tiles.map((tile) => (
-                tile.href ? (
-                  <Link
-                    key={tile.id}
-                    href={tile.href}
-                    onClick={() => { 
-                      toggleMenu(); 
-                      trackEvent(`mobile_tile_${tile.id}`); 
-                      playBulletHit();
-                    }}
-                    className={`${tile.span || 'col-span-1'} ${tile.color || 'bg-white/5 border border-white/10'} p-4 md:p-6 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform`}
-                  >
-                    <div className={`${tile.textColor || 'text-mafia-gold'} scale-90 md:scale-100`}>{tile.icon}</div>
-                    <span className={`text-[9px] md:text-[10px] font-sans font-black tracking-widest uppercase ${tile.textColor || 'text-white'}`}>
-                      {tile.label}
-                    </span>
-                  </Link>
-                ) : (
-                  <button
-                    key={tile.id}
-                    onClick={() => { 
-                      tile.isAction?.(); 
-                      toggleMenu(); 
-                      trackEvent(`mobile_tile_${tile.id}`); 
-                      playBulletHit();
-                    }}
-                    className={`${tile.span || 'col-span-1'} ${tile.color || 'bg-white/5 border border-white/10'} p-4 md:p-6 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform`}
-                  >
-                    <div className={`${tile.textColor || 'text-mafia-gold'} scale-90 md:scale-100`}>{tile.icon}</div>
-                    <span className={`text-[9px] md:text-[10px] font-sans font-black tracking-widest uppercase ${tile.textColor || 'text-white'}`}>
-                      {tile.label}
-                    </span>
-                  </button>
-                )
+                <Link
+                  key={tile.id}
+                  href={tile.href}
+                  onClick={() => { 
+                    toggleMenu(); 
+                    trackEvent(`mobile_tile_${tile.id}`); 
+                    playBulletHit();
+                  }}
+                  className={`${tile.span || 'col-span-1'} ${tile.color || 'bg-white/5 border border-white/10'} p-4 md:p-6 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform`}
+                >
+                  <div className={`${tile.textColor || 'text-mafia-gold'} scale-90 md:scale-100`}>{tile.icon}</div>
+                  <span className={`text-[9px] md:text-[10px] font-sans font-black tracking-widest uppercase ${tile.textColor || 'text-white'}`}>
+                    {tile.label}
+                  </span>
+                </Link>
               ))}
 
-              <div className="col-span-2 flex justify-center gap-6 mt-6">
+              <div className="col-span-2 flex justify-center mt-6">
                  <button onClick={() => { 
                    window.location.href = "tel:+420577544073"; 
                    playBulletHit();
-                 }} className="p-4 rounded-full border border-mafia-gold text-mafia-gold active:scale-90 transition-transform">
+                 }} className="p-4 rounded-full border border-mafia-gold text-mafia-gold active:scale-90 transition-transform hover:bg-mafia-gold hover:text-mafia-black">
                    <Phone size={24} />
-                 </button>
-                 <button onClick={() => { 
-                   window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'));
-                   setIsOpen(false);
-                   playBulletHit();
-                 }} className="p-4 rounded-full border border-mafia-gold text-mafia-gold active:scale-90 transition-transform">
-                   <Compass size={24} className="animate-pulse" />
                  </button>
               </div>
             </div>

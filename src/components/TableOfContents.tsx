@@ -199,11 +199,11 @@ export function TableOfContents() {
       color: "rgba(255, 255, 255, 0.35)"
     },
     {
-      name: "Životopisy barberů",
-      desc: "Zobrazí taktické složky a životopisy našich operativců. Upravte si jejich přezdívky a naplánujte příští misi.",
+      name: "Životopis barberů",
+      desc: "Zobrazí taktické složky a životopisy našich operativců. Prozkoumejte jejich specializace a hodnocení.",
       subText: "PERSONÁLNÍ DOSSIER & SLOŽKY",
       icon: <Users />,
-      link: "/losovat-barbera",
+      link: "/zivotopisy",
       color: "rgba(0, 255, 255, 0.3)"
     },
     {
@@ -487,17 +487,7 @@ export function TableOfContents() {
 
             </div>
 
-            {/* BOTTOM DIAGNOSTICS STATS */}
-            <div className="absolute bottom-10 left-12 right-12 flex justify-between items-center border-t border-white/10 pt-6 z-20 font-mono text-[10px] text-white/30 uppercase">
-              <div className="flex gap-8">
-                <span>[ STAV: SYNCHRONIZOVÁNO ]</span>
-                <span>[ UŽIVATEL: AKTIVNÍ OPERATIVEC ]</span>
-              </div>
-              <div className="flex gap-8">
-                <span className="text-mafia-gold font-bold">100% BEZPEČNÝ SYSTÉM // MMB_V3.5_HUD</span>
-                <span>{new Date().toLocaleTimeString()}</span>
-              </div>
-            </div>
+
 
             {/* Corner Accents */}
             <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-mafia-gold z-30"></div>

@@ -493,7 +493,7 @@ export default function SeznamkaPage() {
 
       <Footer />
 
-      <BottomTerminalReveal thresholdMultiplier={1.5}>
+      <BottomTerminalReveal thresholdMultiplier={100}>
         {(level) => (
           <>
             {level >= 1 && (
