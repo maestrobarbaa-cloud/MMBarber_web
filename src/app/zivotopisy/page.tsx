@@ -159,57 +159,96 @@ export default function BiographiesPage() {
                 </p>
               </div>
 
-              {/* Cards Grid */}
-              <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                {barbers.map((b) => {
-                  const customName = b.id === "tomas" ? customTomasName : customNellaName;
-                  const stats = globalStats[b.id] || { xp: 0 };
-                  const level = calculateLevelFromXp(stats.xp);
-                  const rating = getBarberRatingData(b.id);
-                  
-                  return (
-                    <motion.div
-                      key={b.id}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleSelectBarber(b.id)}
-                      className="bg-mafia-black/80 border border-white/10 hover:border-mafia-gold transition-all duration-300 p-8 flex flex-col items-center justify-between text-center relative overflow-hidden group cursor-pointer shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] rounded-sm"
-                    >
-                      {/* Accent gold corner */}
-                      <div className="absolute top-0 right-0 w-8 h-8 bg-mafia-gold/5 border-b border-l border-white/10 group-hover:border-mafia-gold/30 transition-colors" />
+              {/* Hierarchy Tree */}
+              <div className="w-full flex flex-col items-center relative py-8 px-4 mx-auto">
+                 {/* LEVEL 1: Boss */}
+                 <div className="w-full flex justify-center relative z-20">
+                    {(() => {
+                       const tomas = barbers.find(b => b.id === "tomas");
+                       if (!tomas) return null;
+                       const customName = customTomasName;
+                       return (
+                         <div 
+                           onClick={() => handleSelectBarber("tomas")}
+                           className="flex flex-col items-center group cursor-pointer"
+                         >
+                           <div className="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-mafia-gold overflow-hidden mx-auto transition-colors relative shadow-[0_0_20px_rgba(197,160,89,0.3)] group-hover:shadow-[0_0_40px_rgba(197,160,89,0.6)]">
+                             <Image src={tomas.image} alt={customName} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                           </div>
+                           <div className="mt-6 text-center">
+                              <span className="text-mafia-gold/60 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLAVA RODINY</span>
+                              <h2 className="text-3xl font-heading font-black text-white group-hover:text-mafia-gold transition-colors uppercase tracking-widest italic">{customName}</h2>
+                           </div>
+                         </div>
+                       );
+                    })()}
+                 </div>
 
-                      <div className="space-y-6 w-full">
-                        {/* Circle Avatar Frame */}
-                        <div className="w-40 h-40 rounded-full border-2 border-white/10 group-hover:border-mafia-gold overflow-hidden mx-auto transition-colors relative shadow-[0_0_20px_rgba(0,0,0,0.5)]">
-                          <Image 
-                            src={b.image} 
-                            alt={customName} 
-                            fill 
-                            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
-                          />
-                        </div>
+                 {/* SVG SPOJNICE */}
+                 <div className="hidden md:block w-full max-w-[800px] h-[80px] relative -my-4 z-10 pointer-events-none">
+                    <svg className="w-full h-full" preserveAspectRatio="none">
+                       <line x1="50%" y1="0" x2="50%" y2="50%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
+                       <line x1="16.66%" y1="50%" x2="83.33%" y2="50%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
+                       <line x1="16.66%" y1="50%" x2="16.66%" y2="100%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
+                       <line x1="50%" y1="50%" x2="50%" y2="100%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
+                       <line x1="83.33%" y1="50%" x2="83.33%" y2="100%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
+                    </svg>
+                 </div>
+                 <div className="md:hidden w-px h-16 bg-gradient-to-b from-mafia-gold/40 to-transparent my-4"></div>
 
-                        {/* Text data */}
-                        <div className="space-y-2">
-                          <span className="text-[9px] font-mono text-mafia-gold/60 uppercase tracking-[0.3em] block">
-                            {lang === 'cs' ? b.role : "SPECIALIST"}
-                          </span>
-                          <h2 className="text-3xl font-heading font-black text-white group-hover:text-mafia-gold transition-colors uppercase tracking-wider italic">
-                            {customName}
-                          </h2>
-                        </div>
-                      </div>
+                 {/* LEVEL 2: Underbosses */}
+                 <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-center items-center md:items-start gap-12 relative z-20">
+                    
+                    {/* Nella */}
+                    <div className="flex-1 flex justify-center">
+                       {(() => {
+                         const nella = barbers.find(b => b.id === "nella");
+                         if (!nella) return null;
+                         const customName = customNellaName;
+                         return (
+                           <div 
+                             onClick={() => handleSelectBarber("nella")}
+                             className="flex flex-col items-center group cursor-pointer"
+                           >
+                             <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-mafia-gold overflow-hidden mx-auto transition-colors relative shadow-[0_0_20px_rgba(197,160,89,0.3)] group-hover:shadow-[0_0_40px_rgba(197,160,89,0.6)]">
+                               <Image src={nella.image} alt={customName} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                             </div>
+                             <div className="mt-6 text-center">
+                                <span className="text-mafia-gold/60 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">MLADÁ KREV</span>
+                                <h2 className="text-2xl font-heading font-black text-white group-hover:text-mafia-gold transition-colors uppercase tracking-widest italic">{customName}</h2>
+                             </div>
+                           </div>
+                         );
+                       })()}
+                    </div>
 
-                      {/* Bottom view Dossier trigger */}
-                      <div className="w-full pt-8">
-                        <button className="w-full py-3.5 bg-white/5 border border-white/10 group-hover:bg-mafia-gold group-hover:border-mafia-gold text-white group-hover:text-mafia-black font-heading font-black tracking-[0.2em] uppercase text-[10px] transition-all rounded">
-                          {lang === 'cs' ? "OTEVŘÍT SLOŽKU" : "VIEW DOSSIER"}
-                        </button>
-                      </div>
+                    {/* Unknown 1 */}
+                    <div className="flex-1 flex justify-center">
+                         <div className="flex flex-col items-center opacity-60">
+                           <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-mafia-gold/30 overflow-hidden mx-auto bg-black flex items-center justify-center relative">
+                              <span className="text-6xl font-heading font-black text-mafia-gold/20 italic animate-pulse">?</span>
+                           </div>
+                           <div className="mt-6 text-center">
+                              <span className="text-mafia-gold/40 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLEDANÝ REKRUT</span>
+                              <h2 className="text-2xl font-heading font-black text-white/50 uppercase tracking-widest italic">???</h2>
+                           </div>
+                         </div>
+                    </div>
 
-                    </motion.div>
-                  );
-                })}
+                    {/* Unknown 2 */}
+                    <div className="flex-1 flex justify-center">
+                         <div className="flex flex-col items-center opacity-60">
+                           <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-mafia-gold/30 overflow-hidden mx-auto bg-black flex items-center justify-center relative">
+                              <span className="text-6xl font-heading font-black text-mafia-gold/20 italic animate-pulse">?</span>
+                           </div>
+                           <div className="mt-6 text-center">
+                              <span className="text-mafia-gold/40 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLEDANÝ REKRUT</span>
+                              <h2 className="text-2xl font-heading font-black text-white/50 uppercase tracking-widest italic">???</h2>
+                           </div>
+                         </div>
+                    </div>
+
+                 </div>
               </div>
             </motion.div>
           ) : (
@@ -231,7 +270,7 @@ export default function BiographiesPage() {
                 className="group inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors font-mono text-[9px] uppercase tracking-[0.3em] mb-8"
               >
                 <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
-                <span>{lang === 'cs' ? "Zpět na výběr" : "Back to Registry"}</span>
+                <span>{lang === 'cs' ? "Zpět na hierarchii" : "Back to Hierarchy"}</span>
               </button>
 
               {/* Main Dossier Grid */}

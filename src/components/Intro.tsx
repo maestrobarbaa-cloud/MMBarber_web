@@ -1,30 +1,42 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "./OptimizedImage";
 import gsap from "gsap";
 import { useTranslation } from "../hooks/useTranslation";
-import { Copy, MapPin } from "lucide-react";
+import { playSound } from "../utils/audio";
 
-export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
+interface MenuItem {
+  id: string;
+  titleCs: string;
+  titleEn: string;
+}
+
+export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) => void }) {
   const { t, lang } = useTranslation();
-  
-  // Mobile check for early return
   const [isActuallyMobile, setIsActuallyMobile] = useState(false);
-
   const [showIntro, setShowIntro] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isFullyOpen, setIsFullyOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [isLowTier, setIsLowTier] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string>("start");
+
   const grainRef = useRef<HTMLDivElement>(null);
   const flickerRef = useRef<HTMLDivElement>(null);
 
+  const menuItems: MenuItem[] = [
+    { id: "start", titleCs: "Start Webu", titleEn: "Start Web" },
+    { id: "rezervace", titleCs: "Rezervace", titleEn: "Reservation" },
+    { id: "galerie", titleCs: "Galerie", titleEn: "Gallery" },
+    { id: "vice", titleCs: "Více o podniku", titleEn: "About Us" },
+    { id: "kontakt", titleCs: "Kontakt", titleEn: "Contact" },
+  ];
+
   useEffect(() => {
-    // Check if on mobile (intros are for desktop immersion)
-    if (window.innerWidth < 1280) {
+    // Check if on mobile (intros are bypassed on mobile/tablet for instant interaction)
+    if (window.innerWidth < 1024) {
       setIsActuallyMobile(true);
       localStorage.setItem("mmbarber_visited", "true");
       window.dispatchEvent(new Event("introDismissed"));
@@ -35,11 +47,11 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
     // Check for low graphics tier
     const tier = document.documentElement.getAttribute('data-graphics-tier');
     if (tier === 'low') {
-        setIsLowTier(true);
-        localStorage.setItem("mmbarber_visited", "true");
-        window.dispatchEvent(new Event("introDismissed"));
-        onDismiss?.();
-        return;
+      setIsLowTier(true);
+      localStorage.setItem("mmbarber_visited", "true");
+      window.dispatchEvent(new Event("introDismissed"));
+      onDismiss?.();
+      return;
     }
     
     // Check if visited before
@@ -47,240 +59,299 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: () => void }) {
     if (!hasVisited) {
       setShowIntro(true);
     }
-    
-    return () => {
-    };
   }, [onDismiss]);
 
   useEffect(() => {
-      if (!showIntro || isDismissed) return;
-      
-      // Start curtain animation after a short delay
-      const curtainTimer = setTimeout(() => {
-        setIsAnimating(true);
-      }, 500);
+    if (!showIntro || isDismissed) return;
+    
+    // Start fade-in and set menu to active state quickly
+    const introTimer = setTimeout(() => {
+      setIsAnimating(true);
+      setIsFullyOpen(true);
+    }, 200);
 
-      const fullyOpenTimer = setTimeout(() => {
-        setIsFullyOpen(true);
-      }, 3500); // Wait for curtains to finish
+    // Film grain animation
+    const grainAnim = grainRef.current ? gsap.to(grainRef.current, {
+      backgroundPosition: "400px 200px",
+      duration: 0.1,
+      repeat: -1,
+      ease: "none",
+    }) : null;
 
-      // Film grain animation
-      const grainAnim = grainRef.current ? gsap.to(grainRef.current, {
-        backgroundPosition: "400px 200px",
-        duration: 0.1,
-        repeat: -1,
-        ease: "none",
-      }) : null;
+    // Random flicker/scratches animation
+    const flickerInterval = setInterval(() => {
+      if (flickerRef.current) {
+        flickerRef.current.style.opacity = (Math.random() * 0.04).toString();
+        flickerRef.current.style.transform = `translateX(${Math.random() * 10 - 5}px)`;
+      }
+    }, 100);
 
-      // Random flicker/scratches animation
-      const flickerInterval = setInterval(() => {
-        if (flickerRef.current) {
-          flickerRef.current.style.opacity = (Math.random() * 0.04).toString();
-          flickerRef.current.style.transform = `translateX(${Math.random() * 10 - 5}px)`;
-        }
-      }, 100);
-
-      return () => {
-        clearInterval(flickerInterval);
-        clearTimeout(curtainTimer);
-        clearTimeout(fullyOpenTimer);
-        grainAnim?.kill();
-      };
+    return () => {
+      clearInterval(flickerInterval);
+      clearTimeout(introTimer);
+      grainAnim?.kill();
+    };
   }, [showIntro, isDismissed]);
 
-  // If already dismissed, don't render anything to avoid pushing content
+  const handleMouseEnter = (itemId: string) => {
+    setHoveredItem(itemId);
+    playSound("/sounds/click.mp3", 0.15);
+  };
+
+  const handleMenuSelect = (itemId: string) => {
+    playSound("/sounds/magnum.mp3", 0.3);
+    
+    // Add a flash/shake effect to the body for screen feedback
+    if (typeof document !== 'undefined') {
+      const flash = document.createElement("div");
+      flash.className = "fixed inset-0 bg-white z-[99999] pointer-events-none transition-opacity duration-300 opacity-40";
+      document.body.appendChild(flash);
+      setTimeout(() => {
+        flash.style.opacity = "0";
+        setTimeout(() => flash.remove(), 300);
+      }, 50);
+    }
+    
+    setIsDismissed(true);
+    localStorage.setItem("mmbarber_visited", "true");
+    window.dispatchEvent(new Event("introDismissed"));
+    
+    // Call dismiss with selected action
+    onDismiss?.(itemId);
+  };
+
+  const renderRightColumnContent = () => {
+    switch (hoveredItem) {
+      case "start":
+        return (
+          <div className="flex flex-col gap-4 text-left">
+            <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
+              {lang === 'cs' ? "MISE // INICIACE" : "MISSION // INITIATION"}
+            </span>
+            <h3 className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
+              {lang === 'cs' ? "VSTOUPIT DO BARBERU" : "ENTER THE SALON"}
+            </h3>
+            <p className="text-sm text-smoke-white/60 leading-relaxed font-sans mt-2">
+              {lang === 'cs' 
+                ? "Místo pro ty, co nepotřebují vykřikovat svůj styl do světa. Kvalita se pozná i bez zbytečných slov. Vstupte do našeho světa a zažijte poctivé řemeslo."
+                : "A place for those who don't need to shout their style to the world. Quality is recognized even without useless words. Enter our world and experience the honest craft."
+              }
+            </p>
+            <div className="border-l-2 border-mafia-gold/30 pl-4 py-1 mt-4 italic text-xs text-mafia-gold/60 font-mono">
+              {lang === 'cs'
+                ? "„Některá jména se zapomínají. Skutečný charakter zůstává.“"
+                : "“Some names are forgotten. Real character remains.”"
+              }
+            </div>
+          </div>
+        );
+      case "rezervace":
+        return (
+          <div className="flex flex-col gap-4 text-left">
+            <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
+              {lang === 'cs' ? "SLUŽBY // OBJEDNÁVKA" : "SERVICES // BOOKING"}
+            </span>
+            <h3 className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
+              {lang === 'cs' ? "REZERVAČNÍ PROTOKOL" : "BOOKING PROTOCOL"}
+            </h3>
+            <p className="text-sm text-smoke-white/60 leading-relaxed font-sans mt-2">
+              {lang === 'cs'
+                ? "Jedeme podle rezervačního systému. Vyberte si svůj čas a styl. Ceny jsou nastavené férově podle času stráveného v křesle."
+                : "We run on a booking system. Select your time and style. Prices are set fairly based on the time spent in the chair."
+              }
+            </p>
+            <div className="flex flex-col gap-2 mt-4 bg-mafia-black/50 border border-mafia-gold/20 p-4 rounded-none">
+              <span className="text-[10px] font-mono text-mafia-gold/70 tracking-widest uppercase">
+                {lang === 'cs' ? "PODPOROVANÉ PLATBY // PAYMENT METHODS" : "SUPPORTED PAYMENTS"}
+              </span>
+              <span className="text-sm font-heading font-bold text-smoke-white">
+                {lang === 'cs' ? "HOTOVOST / QR PLATBA" : "CASH / QR PAYMENTS"}
+              </span>
+              <span className="text-[10px] text-smoke-white/40 font-mono italic">
+                {lang === 'cs' ? "Pokud vidíš volný termín, je tvůj." : "If you see an opening, it is yours."}
+              </span>
+            </div>
+          </div>
+        );
+      case "galerie":
+        return (
+          <div className="flex flex-col gap-4 text-left">
+            <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
+              {lang === 'cs' ? "VIZUÁLY // HISTORIE" : "VISUALS // HISTORY"}
+            </span>
+            <h3 className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
+              {lang === 'cs' ? "FILMOVÝ PÁS A STŘIHY" : "FILM STRIP & CUTS"}
+            </h3>
+            <p className="text-sm text-smoke-white/60 leading-relaxed font-sans mt-2">
+              {lang === 'cs'
+                ? "Archivní i detailní snímky z našeho revíru. Nahlédněte pod pokličku naší práce a přesvědčte se o naší preciznosti na vlastní oči."
+                : "Archive and detailed shots from our territory. Take a look under the hood of our work and see our precision with your own eyes."
+              }
+            </p>
+            <div className="mt-4 flex gap-2">
+              <div className="w-16 h-16 bg-[url('/obr/atmosfera/barber-4.jpg')] bg-cover border border-mafia-gold/20 opacity-60"></div>
+              <div className="w-16 h-16 bg-[url('/obr/atmosfera/barber-5.jpg')] bg-cover border border-mafia-gold/20 opacity-60"></div>
+              <div className="w-16 h-16 bg-[url('/obr/atmosfera/barber-7.jpg')] bg-cover border border-mafia-gold/20 opacity-60"></div>
+            </div>
+          </div>
+        );
+      case "vice":
+        return (
+          <div className="flex flex-col gap-4 text-left">
+            <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
+              {lang === 'cs' ? "INFORMACE // KODEX" : "INFORMATION // THE CODE"}
+            </span>
+            <h3 className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
+              {lang === 'cs' ? "KODEX RODINY MMBARBER" : "THE CODE OF THE FAMILY"}
+            </h3>
+            <p className="text-sm text-smoke-white/60 leading-relaxed font-sans mt-2">
+              {lang === 'cs'
+                ? "To, co se u nás řekne, u nás také zůstane. Jsme bezpečný prostor pro váš odpočinek. Zjistěte více o našem provozu, parkování a chodu."
+                : "What is said here, stays here. We are a safe space for your relaxation. Find out more about our operation, parking, and daily business."
+              }
+            </p>
+            <div className="mt-4 border-l border-mafia-red/50 pl-4 py-1 text-xs text-smoke-white/40 font-mono">
+              {lang === 'cs' ? "Žádné zbytečné oči, jen ty a tvůj styl." : "No unnecessary eyes, just you and your style."}
+            </div>
+          </div>
+        );
+      case "kontakt":
+        return (
+          <div className="flex flex-col gap-4 text-left">
+            <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
+              {lang === 'cs' ? "LOKALITA // SPOJENÍ" : "LOCATION // CONTACT"}
+            </span>
+            <h3 className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
+              {lang === 'cs' ? "KUDY K NÁM DO MAŘATIC" : "HOW TO FIND US"}
+            </h3>
+            <p className="text-sm text-smoke-white/60 leading-relaxed font-sans mt-2">
+              {lang === 'cs'
+                ? "Sadová 1383, 686 05 Uherské Hradiště 5. Parkování je zcela bezplatné přímo u naší provozovny."
+                : "Sadová 1383, 686 05 Uherské Hradiště 5. Parking is completely free right next to our shop."
+              }
+            </p>
+            <div className="mt-4 flex flex-col gap-1 text-[11px] font-mono text-mafia-gold/80">
+              <span>{lang === 'cs' ? "MHD: Zastávka Rudy Kubíčka" : "MHD: Rudy Kubicka stop"}</span>
+              <span>{lang === 'cs' ? "Waze: Pozor, občas naviguje o dům dál." : "Waze: Watch out, sometimes guides a house away."}</span>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  // If already dismissed, don't render anything
   if (!showIntro || isDismissed || isLowTier || isActuallyMobile) return null;
 
   return (
-    <>
-      {/* Curtain Layer - Stays at the very top */}
-      <div className="fixed inset-0 z-[10000] flex pointer-events-none overflow-hidden select-none">
+    <div className={`fixed inset-0 w-full h-screen flex flex-col md:flex-row items-stretch justify-start overflow-hidden z-[9990] transition-all duration-1000 ${isAnimating ? 'opacity-100 bg-[#070707]' : 'opacity-0 bg-[#020202] pointer-events-none'} ${isDismissed ? 'pointer-events-none invisible' : ''}`}>
         
-        {/* Left Curtain */}
-        <motion.div
-          initial={{ x: 0 }}
-          animate={isAnimating ? { x: "-100%" } : { x: 0 }}
-          transition={{ duration: 2.8, ease: [0.77, 0, 0.175, 1], delay: 0.2 }}
-          className="w-1/2 h-full bg-[#3d2b1f] relative overflow-hidden"
-          style={{ 
-            boxShadow: "15px 0 50px rgba(0,0,0,0.8)",
-            background: "linear-gradient(90deg, #1c140e 0%, #3d2b1f 20%, #1c140e 40%, #3d2b1f 60%, #1c140e 80%, #3d2b1f 100%)"
-          }}
-        >
-          {/* Realistic Texture & Folds */}
-          <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/black-linen-2.png')] mix-blend-multiply"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
-          
-          {/* Vertical Shadow Folds */}
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_50px,rgba(0,0,0,0.3)_75px,transparent_100px)] pointer-events-none"></div>
+        {/* Background Smoke Video */}
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-lighten pointer-events-none z-10" 
+          src="/smoke.mp4" 
+        />
 
-          {/* Left half of logo/text */}
-          <div className="absolute inset-y-0 right-0 flex items-center justify-center w-[100vw] translate-x-1/2">
-            <div className="flex flex-col items-center gap-12 text-center">
-              <Image 
-                src="/logo.png" 
-                alt="MMBARBER" 
-                width={256}
-                height={256}
-                unoptimized
-                className="w-48 h-48 md:w-64 md:h-64 object-contain brightness-125 saturate-[0.5] drop-shadow-[0_0_15px_rgba(255,215,0,0.3)]"
-              />
-              <h1 className="text-5xl md:text-8xl font-heading font-black text-mafia-gold uppercase tracking-[0.4em] drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
-                MMBARBER
-              </h1>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Right Curtain */}
-        <motion.div
-          initial={{ x: 0 }}
-          animate={isAnimating ? { x: "100%" } : { x: 0 }}
-          transition={{ duration: 2.8, ease: [0.77, 0, 0.175, 1], delay: 0.2 }}
-          className="w-1/2 h-full bg-[#3d2b1f] relative overflow-hidden"
-          style={{ 
-            boxShadow: "-15px 0 50px rgba(0,0,0,0.8)",
-            background: "linear-gradient(90deg, #3d2b1f 0%, #1c140e 20%, #3d2b1f 40%, #1c140e 60%, #3d2b1f 80%, #1c140e 100%)"
-          }}
-        >
-          <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/black-linen-2.png')] mix-blend-multiply"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_50px,rgba(0,0,0,0.3)_75px,transparent_100px)] pointer-events-none"></div>
-
-          {/* Right half of logo/text */}
-          <div className="absolute inset-y-0 left-0 flex items-center justify-center w-[100vw] -translate-x-1/2">
-            <div className="flex flex-col items-center gap-12 text-center">
-              <Image 
-                src="/logo.png" 
-                alt="MMBARBER" 
-                width={256}
-                height={256}
-                unoptimized
-                className="w-48 h-48 md:w-64 md:h-64 object-contain brightness-125 saturate-[0.5] drop-shadow-[0_0_15px_rgba(255,215,0,0.3)]"
-              />
-              <h1 className="text-5xl md:text-8xl font-heading font-black text-mafia-gold uppercase tracking-[0.4em] drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
-                MMBARBER
-              </h1>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Behind the Curtain Content - Background & Logo Layer */}
-      <div className={`fixed inset-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden z-[9990] transition-all duration-1000 ${isAnimating ? 'opacity-100' : 'opacity-0 bg-[#020202] pointer-events-none'} ${isDismissed ? 'pointer-events-none invisible' : ''}`}>
-        {/* Cinematic Layers */}
+        {/* Cinematic Filters */}
         <div 
           ref={grainRef}
-          className="absolute inset-0 opacity-[0.06] bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] pointer-events-none"
+          className="absolute inset-0 opacity-[0.06] bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] pointer-events-none z-20"
         ></div>
 
         <div 
           ref={flickerRef}
-          className="absolute inset-0 bg-white opacity-0 mix-blend-overlay pointer-events-none transition-opacity duration-75"
+          className="absolute inset-0 bg-white opacity-0 mix-blend-overlay pointer-events-none transition-opacity duration-75 z-20"
         ></div>
 
         {/* Dramatic Vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,1)_100%)] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.95)_100%)] pointer-events-none z-20"></div>
 
-        {/* The revealed content stays visible */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, delay: 0.2, ease: "easeOut" }}
-          className="absolute inset-x-0 bottom-[15%] md:bottom-[20%] flex flex-col items-center gap-16 px-6 text-center"
-        >
-          <div className="flex flex-col items-center gap-6">
-                {/* Primary Info */}
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1, delay: 0.8 }}
-                  className="flex flex-col items-center gap-6"
-                >
-                  {/* Parking Card */}
-                  <div className="bg-mafia-black/60 border border-mafia-gold/20 p-6 md:p-8 max-w-lg relative group">
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-mafia-gold text-mafia-black px-4 py-1 text-[10px] font-black uppercase tracking-widest skew-x-[-12deg]">
-                      {t.intro.parking}
-                    </div>
-                    
-                    <p className="flavor-text text-mafia-gold/80 font-heading font-bold text-xl md:text-2xl uppercase tracking-widest mt-2 mb-4 leading-tight">
-                      {t.intro.parkingHint}
-                    </p>
-                    
-                    <p className="text-smoke-white/60 font-mono text-xs uppercase tracking-[0.2em] mb-6 border-l border-mafia-red/50 pl-4">
-                      Sadová 1383, 686 05 Uherské Hradiště 5
-                    </p>
-
-                    <div className="flex flex-wrap items-center justify-center gap-4">
-                      <button 
-                        onClick={() => {
-                          navigator.clipboard.writeText("Sadová 1383, 686 05 Uherské Hradiště 5");
-                          setCopied(true);
-                          setTimeout(() => setCopied(false), 2000);
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 bg-mafia-gold/10 border border-mafia-gold/30 hover:bg-mafia-gold hover:text-mafia-black transition-all text-[10px] font-black uppercase tracking-widest group/btn"
-                      >
-                        <Copy size={12} className={copied ? "text-green-500" : ""} />
-                        {copied ? (lang === "cs" ? "KOPÍROVÁNO" : "COPIED") : t.intro.copyAddress}
-                      </button>
-                      
-                      <a 
-                        href="https://www.google.com/maps/dir/?api=1&destination=Sadová+1383,+686+05+Uherské+Hradiště+5"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 bg-mafia-red/10 border border-mafia-red/30 hover:bg-mafia-red hover:text-white transition-all text-[10px] font-black uppercase tracking-widest"
-                      >
-                        <MapPin size={12} />
-                        {t.intro.openMaps}
-                      </a>
-                    </div>
-                  </div>
-                  
-                  {/* Decorative separator */}
-                  <div className="w-32 h-1 bg-gradient-to-r from-transparent via-mafia-gold/30 to-transparent my-2"></div>
-                  
-                  <span className="flavor-text font-heading font-black text-3xl md:text-[50px] uppercase tracking-[0.2em] text-mafia-gold drop-shadow-[0_0_25px_rgba(var(--color-mafia-gold-rgb),0.5)] leading-tight">
-                    {t.intro.payment}
-                  </span>
-                </motion.div>
+        {/* Left Side: Game Menu */}
+        <div className="w-full md:w-[450px] h-full flex flex-col justify-center px-8 md:px-16 z-30 relative bg-black/60 backdrop-blur-sm border-r border-mafia-gold/15">
+          {/* Menu Title / Brand Header */}
+          <div className="mb-12 flex flex-col gap-2">
+            <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-[0.4em]">MMBARBER // EST. 2018</span>
+            <h2 className="text-3xl md:text-4xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,215,0,0.25)]">
+              MAIN MENU
+            </h2>
+            <div className="w-20 h-[1.5px] bg-mafia-gold/30 mt-1"></div>
           </div>
 
-          {/* Accept Mission Button */}
+          {/* Menu Options */}
           {isFullyOpen && (
-            <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ duration: 0.8, delay: 0.5 }}
-               className="flex flex-col items-center gap-4"
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1 }}
+              className="flex flex-col gap-5"
             >
-               <button 
-                onClick={() => {
-                  setIsDismissed(true);
-                  localStorage.setItem("mmbarber_visited", "true");
-                  window.dispatchEvent(new Event("introDismissed"));
-                  onDismiss?.();
-                }}
-                className="group relative px-16 py-6 bg-mafia-red text-mafia-black font-heading font-black text-2xl md:text-4xl uppercase tracking-[0.4em] overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_rgba(166,124,82,0.5)] hover:bg-white hover:text-black active:shadow-inner"
-               >
-                 {/* Internal glow animation */}
-                  <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none shadow-[0_0_30px_white]"></div>
-                  <span className="relative z-10">
-                    {t.intro.acknowledge}
-                  </span>
-               </button>
-               
-               {/* Terminal subtext for the button */}
-               <motion.p 
-                 animate={{ opacity: [0.3, 0.6, 0.3] }}
-                 transition={{ repeat: Infinity, duration: 2 }}
-                 className="font-mono text-[10px] text-mafia-red uppercase tracking-[0.5em] font-bold"
-               >
-                  {t.intro.acceptMission}
-               </motion.p>
+              {menuItems.map((item, index) => (
+                <button
+                  key={item.id}
+                  onMouseEnter={() => handleMouseEnter(item.id)}
+                  onClick={() => handleMenuSelect(item.id)}
+                  className="group flex items-center gap-4 py-2 text-left relative focus:outline-none w-fit"
+                >
+                  {/* Bullet / Line Selector */}
+                  <div 
+                    className={`w-4 h-[2px] bg-mafia-gold transition-all duration-300 ${
+                      hoveredItem === item.id ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
+                    }`}
+                  />
+                  
+                  <div className="flex flex-col">
+                    <span className={`text-[9px] font-mono transition-colors duration-300 ${
+                      hoveredItem === item.id ? "text-mafia-gold/80" : "text-smoke-white/20"
+                    }`}>
+                      0{index + 1}
+                    </span>
+                    <span className={`text-xl md:text-2xl font-heading font-black tracking-[0.2em] uppercase transition-all duration-300 ${
+                      hoveredItem === item.id 
+                        ? "text-mafia-gold drop-shadow-[0_0_8px_rgba(255,215,0,0.5)] translate-x-2" 
+                        : "text-smoke-white/50 hover:text-smoke-white/80"
+                    }`}>
+                      {lang === 'cs' ? item.titleCs : item.titleEn}
+                    </span>
+                  </div>
+                </button>
+              ))}
             </motion.div>
           )}
-        </motion.div>
+
+          {/* Footer */}
+          <div className="mt-16 text-[9px] font-mono text-smoke-white/20 tracking-wider">
+            SYSTEM VERSION 3.5.0 // © 2026 MMBARBER
+          </div>
+        </div>
+
+        {/* Right Side: Details / Information */}
+        <div className="flex-1 h-full hidden md:flex flex-col justify-center items-start px-16 md:px-24 z-30 relative bg-gradient-to-l from-black/80 to-transparent">
+          {isFullyOpen && (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={hoveredItem}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="max-w-md w-full flex flex-col gap-4 border border-mafia-gold/10 bg-mafia-black/40 backdrop-blur-md p-8 shadow-2xl relative"
+              >
+                {/* Decorative border corners */}
+                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-mafia-gold/40"></div>
+                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-mafia-gold/40"></div>
+                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-mafia-gold/40"></div>
+                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-mafia-gold/40"></div>
+
+                {renderRightColumnContent()}
+              </motion.div>
+            </AnimatePresence>
+          )}
+        </div>
       </div>
-    </>
   );
 }

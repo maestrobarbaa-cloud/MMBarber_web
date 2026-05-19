@@ -360,26 +360,36 @@ export function Header() {
   const runCommand = (cmd: string) => {
     const query = cmd.toLowerCase().trim();
     setIsConsoleOpen(true);
-    setConsoleOutput(["Initializing..."]);
+    setConsoleOutput(lang === 'cs' ? ["Inicializace..."] : ["Initializing..."]);
     
     setTimeout(() => {
-      setConsoleOutput(prev => [...prev, `Searching database for: ${query}`]);
+      setConsoleOutput(prev => [...prev, lang === 'cs' ? `Vyhledávání v databázi pro: ${query}` : `Searching database for: ${query}`]);
       
       setTimeout(() => {
-        if (query === "odkrýt" || query === "odkryt" || query === "reveal") {
-          setConsoleOutput(prev => [...prev, "ACCESS GRANTED.", "Decrypting operative files...", "Profiles revealed."]);
+        if (query === "intro" || query === "menu" || query === "welcome") {
+          localStorage.removeItem("mmbarber_visited");
+          const csIntroReset = ["RESETOVÁNÍ PŘÍZNAKU NÁVŠTĚVY...", "SPUŠTĚNÍ UVÍTACÍHO MENU...", "ČEKEJTE."];
+          const enIntroReset = ["RESETTING VISIT FLAG...", "LAUNCHING WELCOME MENU...", "STAND BY."];
+          setConsoleOutput(prev => [...prev, ...(lang === 'cs' ? csIntroReset : enIntroReset)]);
+          playSound("/sounds/success.mp3", 0.5);
+          setTimeout(() => {
+            setIsConsoleOpen(false);
+            window.dispatchEvent(new Event("mmbarber-trigger-intro"));
+          }, 1800);
+        } else if (query === "odkrýt" || query === "odkryt" || query === "reveal") {
+          setConsoleOutput(prev => [...prev, lang === 'cs' ? "PŘÍSTUP POVOLEN." : "ACCESS GRANTED.", lang === 'cs' ? "Dešifrování operativních souborů..." : "Decrypting operative files...", lang === 'cs' ? "Profily odhaleny." : "Profiles revealed."]);
           window.dispatchEvent(new Event("mmbarber-reveal-barbers"));
           playSound("/sounds/success.mp3", 0.5);
           setTimeout(() => setIsConsoleOpen(false), 3000);
         } else if (query === "admin") {
-          setConsoleOutput(prev => [...prev, "ADMIN CLEARANCE DETECTED.", "Redirecting to central command...", "Stand by."]);
+          setConsoleOutput(prev => [...prev, lang === 'cs' ? "DETEKOVÁNO ADMINISTRÁTORSKÉ OPRÁVNĚNÍ." : "ADMIN CLEARANCE DETECTED.", lang === 'cs' ? "Přesměrování na centrální velitelství..." : "Redirecting to central command...", lang === 'cs' ? "Čekejte." : "Stand by."]);
           playSound("/sounds/success.mp3", 0.5);
           setTimeout(() => {
             setIsConsoleOpen(false);
             router.push("/admin");
           }, 2000);
         } else {
-          setConsoleOutput(prev => [...prev, "ERROR: Command not found or Access Denied."]);
+          setConsoleOutput(prev => [...prev, lang === 'cs' ? "CHYBA: Příkaz nenalezen nebo přístup odepřen." : "ERROR: Command not found or Access Denied."]);
           playSound("/sounds/vrong.mp3", 0.5);
           setTimeout(() => setIsConsoleOpen(false), 2000);
         }
@@ -392,7 +402,7 @@ export function Header() {
     const query = searchQuery.toLowerCase().trim();
     if (!query) return;
 
-    if (query === "odkrýt" || query === "odkryt" || query === "reveal" || query === "admin") {
+    if (query === "intro" || query === "menu" || query === "welcome" || query === "odkrýt" || query === "odkryt" || query === "reveal" || query === "admin") {
       runCommand(query);
       setSearchQuery("");
       setIsSearchOpen(false);

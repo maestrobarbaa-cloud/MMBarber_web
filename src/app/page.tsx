@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/Hero";
@@ -51,14 +52,24 @@ const SectionReveal = ({ children, delay = 0, isMobile, isMobileEffectsEnabled }
 };
 
 export default function Home() {
+  const router = useRouter();
   const { t } = useTranslation();
   const [showContent, setShowContent] = useState(true);
-  const [isIntroDismissed, setIsIntroDismissed] = useState(true);
+  const [isIntroDismissed, setIsIntroDismissed] = useState(true); // SSR safe default
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("mmbarber_visited", "true");
+    // Only run intro if user hasn't visited yet
+    const visited = localStorage.getItem("mmbarber_visited") === "true";
+    setIsIntroDismissed(visited);
+
+    const triggerIntro = () => {
+      setIsIntroDismissed(false);
+      setShowContent(true);
+    };
+    window.addEventListener("mmbarber-trigger-intro", triggerIntro);
+
     const checkMobile = () => setIsMobile(window.innerWidth < 1280);
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -67,6 +78,7 @@ export default function Home() {
     const handleMobileEffectsUpdate = (e: Event) => setIsMobileEffectsEnabled((e as CustomEvent).detail);
     window.addEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
     return () => {
+      window.removeEventListener("mmbarber-trigger-intro", triggerIntro);
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
     };
@@ -80,9 +92,36 @@ export default function Home() {
       <Atmosphere />
 
       {!isIntroDismissed && (
-        <CinematicIntro onDismiss={() => {
+        <CinematicIntro onDismiss={(action) => {
            setShowContent(true);
            setIsIntroDismissed(true);
+
+           if (action) {
+             window.dispatchEvent(new CustomEvent('mmbarber-menu-action', { detail: action }));
+             console.log(`
+%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  MAFIA II MENU: USER SELECTED [${action.toUpperCase()}]
+  Action: ${action}
+  Source: first-time welcome screen
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, "color: #c5a059; font-weight: bold;");
+
+             setTimeout(() => {
+               if (action === "start") {
+                 window.scrollTo({ top: 0, behavior: "smooth" });
+               } else if (action === "rezervace") {
+                 const el = document.getElementById("operativi");
+                 if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+               } else if (action === "galerie") {
+                 router.push("/galerie");
+               } else if (action === "vice") {
+                 const el = document.getElementById("vice");
+                 if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+               } else if (action === "kontakt") {
+                 const el = document.getElementById("kontakt");
+                 if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+               }
+             }, 350);
+           }
         }} />
       )}
       
@@ -94,8 +133,8 @@ export default function Home() {
             
             <div className="relative bg-transparent w-full">
               {/* Core sections */}
-              <div id="operativi" className="section-optimize"><Profiles /></div>
-              <div id="services" className="section-optimize"><Services /></div>
+              <div id="operativi" className="section-optimize" style={{ scrollMarginTop: '100px' }}><Profiles /></div>
+              <div id="services" className="section-optimize" style={{ scrollMarginTop: '100px' }}><Services /></div>
 
               {/* Sequential reveals */}
               <SectionReveal delay={0.1} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
@@ -103,11 +142,11 @@ export default function Home() {
               </SectionReveal>
 
               <SectionReveal delay={0.2} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                <div className="section-optimize"><StyleDefinition /></div>
+                <div id="vice" className="section-optimize" style={{ scrollMarginTop: '100px' }}><StyleDefinition /></div>
               </SectionReveal>
 
               <SectionReveal delay={0.4} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                <div id="kontakt" className="section-optimize"><Contact /></div>
+                <div id="kontakt" className="section-optimize" style={{ scrollMarginTop: '100px' }}><Contact /></div>
               </SectionReveal>
 
               <SectionReveal delay={0.5} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>

@@ -343,6 +343,7 @@ export const translations = {
       surchargeNewYear: "Novoroční update (+70 %)",
       surchargeChristmas: "Vánoční ráno (+50 %)",
       bookingNote: "Jedeme podle rezervačního systému. Pokud vidíš volno, je tvoje.",
+      paymentMethods: "Platba: Hotově / QR platba",
       switchDate: "Simulovat datum",
       pricingModes: {
         workday: "Všední den",
@@ -1328,6 +1329,7 @@ export const translations = {
       surchargeNewYear: "New Year update (+70%)",
       surchargeChristmas: "Christmas morning (+50%)",
       bookingNote: "We run by reservation system. If you see an opening, it's yours.",
+      paymentMethods: "Payment: Cash / QR code",
       switchDate: "Simulate date",
       pricingModes: {
         workday: "Workday",

@@ -351,6 +351,17 @@ export function VipControlBar() {
               <button onClick={toggleGame} className={`w-full flex items-center gap-2 px-3 py-2 border transition-all ${isGameEnabled ? "bg-mafia-gold text-black border-mafia-gold" : "bg-mafia-dark text-mafia-gold/40 border-mafia-gold/10"}`}>
                 <Scissors size={14} /><span className="text-[9px] font-black uppercase tracking-tighter">{t.devPanel.game}</span>
               </button>
+
+              <button 
+                onClick={() => {
+                  localStorage.removeItem("mmbarber_visited");
+                  window.dispatchEvent(new Event("mmbarber-trigger-intro"));
+                  setIsOpen(false);
+                }} 
+                className="w-full flex items-center gap-2 px-3 py-2 border border-mafia-gold/30 bg-mafia-black/60 text-mafia-gold hover:bg-mafia-gold/10 transition-all"
+              >
+                <Monitor size={14} /><span className="text-[9px] font-black uppercase tracking-tighter">Test Welcome Menu</span>
+              </button>
             </div>
 
           </motion.div>

@@ -9,6 +9,7 @@ import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "../utils/audio";
 import { barbers } from "@/data/barbers";
+import { OperativeModal } from "./OperativeModal";
 import { 
   subscribeToUserRatings
 } from "@/utils/voting";
@@ -47,58 +48,121 @@ export interface BarberProfile {
   };
 }
 
-const JUNE_HISTORY_DIALOGUES = [
-  { tomas: "Tak už mám vlastní uklízeče, zahradníky, elektrikáře a další lidi. Začínám to hezky rozjíždět… ale v pohodě, jsem rád, že si toho zatím moc nevšímají.", nella: "Proč to neděláš jako všichni ostatní? Všude to sdílet, ukazovat, chlubit se…" },
-  { tomas: "Mám rád ten okamžik překvapení, až všichni zjistí, co se celou dobu budovalo potichu.", nella: "Ty jsi fakt divný případ. Většina lidí potřebuje obdiv hned." },
-  { tomas: "A právě proto většina zůstane jen u řečí. Já radši buduju v tichu. Než někdo stihne pochopit plán, já už jsem o tři kroky dál.", nella: "Takže tajný boss mode jo?" },
-  { tomas: "Spíš klid před bouří. Nejlepší pocit je, když tě podcení… a pak jim dojde, že ses celou dobu díval jinam než oni.", nella: "Ty si jedeš svůj film." },
-  { tomas: "Ne film. Vizi. A ta nepotřebuje potlesk každý druhý den.", nella: "Víš… já jsem si vždycky myslela, že kadeřníci jsou jiní." },
-  { tomas: "Nevěř báchorkám. Každá doba má svoje. Já se zabývám jinýma věcma…", nella: "A jakýma?" },
-  { tomas: "Podnikatelskýma.", nella: "Ty mě někdy děsíš tím klidem." },
-  { tomas: "Protože nejvíc hlučí ti, co nic nemají. Ti nejnebezpečnější většinou mluví potichu.", nella: "Ty fakt budeš jiné krve…" },
-  { tomas: "To musíme ještě ověřit.", nella: "A jak se tohle ověřuje?" },
-  { tomas: "Časem. Tlakem. A tím, co člověk udělá, když přijde chaos.", nella: "Ty odpovídáš jak mafián z filmu." },
-  { tomas: "Možná proto, že většina lidí dnes hraje komedii místo vlastního života.", nella: "A ty hraješ co?" },
-  { tomas: "Nic nehraju. Jen vím, kam jdu. To lidi mate nejvíc.", nella: "Víš, co je na tobě nejhorší?" },
-  { tomas: "Povídej.", nella: "Že ti to člověk skoro věří." },
-  { tomas: "„Skoro“ je začátek problémů, Nello.", nella: "A konec čeho?" },
-  { tomas: "Klidného života.", nella: "..." }
-];
+interface DialogueTurn {
+  speaker: 'tomas' | 'nella';
+  text: { cs: string; en: string };
+}
 
-const JUNE_HISTORY_DIALOGUES_EN = [
-  { tomas: "I already have my own cleaners, gardeners, electricians, and others. I'm starting to move things along... but it's fine, I'm glad they haven't noticed much yet.", nella: "Why don't you do it like everyone else? Sharing it everywhere, showing off, bragging..." },
-  { tomas: "I like the element of surprise, when everyone finally realizes what's been building in silence all this time.", nella: "You're a strange case. Most people need admiration immediately." },
-  { tomas: "And that's why most people stay at just talk. I'd rather build in silence. Before anyone can grasp the plan, I'm already three steps ahead.", nella: "So, secret boss mode, huh?" },
-  { tomas: "More like the calm before the storm. The best feeling is when they underestimate you... and then they realize you were looking elsewhere the whole time.", nella: "You're living your own movie." },
-  { tomas: "Not a movie. A vision. And that doesn't need applause every other day.", nella: "You know... I always thought barbers were different." },
-  { tomas: "Don't believe the stories. Every era has its own. I'm dealing with other things...", nella: "Like what?" },
-  { tomas: "Business things.", nella: "You sometimes scare me with that calmness." },
-  { tomas: "Because those with nothing make the most noise. The most dangerous ones usually speak softly.", nella: "You really must be of a different blood..." },
-  { tomas: "We'll have to verify that.", nella: "And how is that verified?" },
-  { tomas: "With time. With pressure. And by what a person does when chaos arrives.", nella: "You answer like a movie mobster." },
-  { tomas: "Maybe because most people today play a comedy instead of their own life.", nella: "And what are you playing?" },
-  { tomas: "I'm not playing anything. I just know where I'm going. That's what confuses people the most.", nella: "You know what's the worst thing about you?" },
-  { tomas: "Tell me.", nella: "That one almost believes you." },
-  { tomas: "“Almost” is the beginning of problems, Nella.", nella: "And the end of what?" },
-  { tomas: "A peaceful life.", nella: "..." }
-];
-
-const MAY_HISTORY_DIALOGUES = [
-  { tomas: "Ten den se nezapsal kvůli byznysu. Ne kvůli střihu. Ani kvůli penězům. Zapsal se kvůli návratu.", nella: "..." },
-  { tomas: "Tak hele… zase zpátky. Dvakrát ven, jednou sama… a pořád stojíš tady.", nella: "Jen jsem chtěla zjistit, jestli to tu ještě žije." },
-  { tomas: "Žije. Jakž takž. Dobří holubi se vracejí.", nella: "Ty si to fakt pamatuješ?" },
-  { tomas: "Pamatuju si lidi, co odejdou.", nella: "Mezitím jsem tě prý trochu roznesla." },
-  { tomas: "Slyšel jsem. V pohodě. Lidi mluví. Čas jim to nevezme.", nella: "A stejně jsem tady." },
-  { tomas: "Jo. To je přesně ten moment, co si pamatuješ.", nella: "Takže… kolik mám proher?" },
-  { tomas: "Nevím přesně. Ale historie si stejně zapisuje jen návraty.", nella: "Fajn." },
-  { tomas: "Tady se nehraje na skóre. Tady se buď vrátíš… nebo zmizíš.", nella: "..." },
-  { tomas: "A tak se to stalo. Bez fanfár. Bez svědků. Jen jedny dveře, které se znovu otevřely.", nella: "..." },
-  { tomas: "A jeden den, který už nikdo nevymaže: 7. 5. 2026 – den, kdy se někdo vrátil zpátky do hry.", nella: "..." }
-];
-
-const isJune2026_Dialogue = new Date() >= new Date(2026, 5, 1);
-const BARBER_DIALOGUES = isJune2026_Dialogue ? JUNE_HISTORY_DIALOGUES : MAY_HISTORY_DIALOGUES;
-const BARBER_DIALOGUES_EN = isJune2026_Dialogue ? JUNE_HISTORY_DIALOGUES_EN : MAY_HISTORY_DIALOGUES;
+const MONTHLY_DIALOGUES: Record<number, DialogueTurn[][]> = {
+  // 1. LEDEN - "brzdím"
+  0: [
+    [
+      { speaker: "tomas", text: { cs: "Ty jsi mi říkala, že žiješ zdravě.", en: "You told me you live healthy." } },
+      { speaker: "nella", text: { cs: "A žiju.", en: "And I do." } },
+      { speaker: "tomas", text: { cs: "A to kafe co křupeš jak kukuřici?", en: "And what about the coffee you crunch like corn?" } },
+      { speaker: "nella", text: { cs: "To bylo dřív. Teď už jen brzdím.", en: "That was before. Now I just slow down." } },
+      { speaker: "tomas", text: { cs: "Brzdíš tím, že to křupeš tišeji?", en: "You slow down by crunching it quieter?" } },
+      { speaker: "nella", text: { cs: "Přesně.", en: "Exactly." } }
+    ]
+  ],
+  // 2. ÚNOR - "kebab incident"
+  1: [
+    [
+      { speaker: "tomas", text: { cs: "A pak jsem tě viděl jíst kebab tak, že jsem musel utírat podlahu.", en: "And then I saw you eating a kebab in a way that I had to mop the floor." } },
+      { speaker: "nella", text: { cs: "To byl cheat day.", en: "That was a cheat day." } },
+      { speaker: "tomas", text: { cs: "To byl státní svátek kalorickýho zločinu.", en: "That was a national holiday of caloric crime." } }
+    ]
+  ],
+  // 3. BŘEZEN - "logistika budoucnosti"
+  2: [
+    [
+      { speaker: "tomas", text: { cs: "To 'malý překvapení' co jsi nechala uprostřed místnosti…", en: "That 'little surprise' you left in the middle of the room..." } },
+      { speaker: "nella", text: { cs: "To nebylo překvapení.", en: "That wasn't a surprise." } },
+      { speaker: "tomas", text: { cs: "Co teda?", en: "What then?" } },
+      { speaker: "nella", text: { cs: "Logistika budoucnosti.", en: "Logistics of the future." } }
+    ]
+  ],
+  // 4. DUBEN - "krtičinci"
+  3: [
+    [
+      { speaker: "tomas", text: { cs: "Ty jsi fakt bouchala krtičince smetákem.", en: "You were really smashing molehills with a broom." } },
+      { speaker: "nella", text: { cs: "Kontrola teritoria.", en: "Territory control." } },
+      { speaker: "tomas", text: { cs: "To byl venkovní MMA zápas s přírodou.", en: "That was an outdoor MMA fight with nature." } }
+    ]
+  ],
+  // 5. KVĚTEN - "zahradníci"
+  4: [
+    [
+      { speaker: "tomas", text: { cs: "Neměl jsem nic po ruce, tak jsem dal svým 'osobním zahradníkům' trhat trávu kombinačkama.", en: "I had nothing on hand, so I had my 'personal gardeners' pull grass with pliers." } },
+      { speaker: "nella", text: { cs: "A fungovalo to?", en: "Did it work?" } },
+      { speaker: "tomas", text: { cs: "Ne.", en: "No." } },
+      { speaker: "nella", text: { cs: "Tak to bylo správně.", en: "Then it was correct." } }
+    ]
+  ],
+  // 6. ČERVEN - "archeologie jídla"
+  5: [
+    [
+      { speaker: "tomas", text: { cs: "Na baru vždycky necháš jídlo a ono tam přežije do dalšího dne.", en: "You always leave food on the bar and it survives there until the next day." } },
+      { speaker: "nella", text: { cs: "Meal prep.", en: "Meal prep." } },
+      { speaker: "tomas", text: { cs: "To už není jídlo, to je archeologický nález.", en: "That's no longer food, that's an archaeological find." } }
+    ]
+  ],
+  // 7. ČERVENEC - "zušlechťování"
+  6: [
+    [
+      { speaker: "tomas", text: { cs: "Ty se vždycky začneš zušlechťovat a foukat, jako bys šla na summit.", en: "You always start grooming and blowing your hair as if you're going to a summit." } },
+      { speaker: "nella", text: { cs: "Musím být připravená.", en: "I have to be ready." } },
+      { speaker: "tomas", text: { cs: "Na co?", en: "For what?" } },
+      { speaker: "nella", text: { cs: "Na život.", en: "For life." } }
+    ]
+  ],
+  // 8. SRPEN - "školní systém"
+  7: [
+    [
+      { speaker: "tomas", text: { cs: "Tvoje paní učitelky tě naučily neuznat porážku, nepřiznat chybu a stát si za svým.", en: "Your teachers taught you to never accept defeat, never admit a mistake, and stand your ground." } },
+      { speaker: "nella", text: { cs: "Ano.", en: "Yes." } },
+      { speaker: "tomas", text: { cs: "To vysvětluje úplně všechno.", en: "That explains absolutely everything." } }
+    ]
+  ],
+  // 9. ZÁŘÍ - "80 000"
+  8: [
+    [
+      { speaker: "nella", text: { cs: "Šéfe, já nevstanu za míň jak 80 000 v čistém.", en: "Boss, I don't get out of bed for less than 80,000 net." } },
+      { speaker: "tomas", text: { cs: "Tady máš 80 korun za celý den.", en: "Here is 80 crowns for the whole day." } },
+      { speaker: "nella", text: { cs: "To je málo.", en: "That's not enough." } },
+      { speaker: "tomas", text: { cs: "Levná pracovní síla se vždycky hodí. Přijď zas.", en: "Cheap labor always comes in handy. Come again." } }
+    ]
+  ],
+  // 10. ŘÍJEN - "neděléééj"
+  9: [
+    [
+      { speaker: "nella", text: { cs: "Neděléééj!", en: "Don't do thaaaat!" } },
+      { speaker: "tomas", text: { cs: "Proč?", en: "Why?" } },
+      { speaker: "nella", text: { cs: "Já jsem beran.", en: "I'm an Aries." } },
+      { speaker: "tomas", text: { cs: "Paráda. To jsem si přál.", en: "Great. Just what I wished for." } }
+    ]
+  ],
+  // 11. LISTOPAD - "realita kontrola"
+  10: [
+    [
+      { speaker: "tomas", text: { cs: "U tebe se nedá poznat, co je plán a co je náhoda.", en: "With you, it's impossible to tell what's a plan and what's an accident." } },
+      { speaker: "nella", text: { cs: "To je záměr.", en: "That's intentional." } },
+      { speaker: "tomas", text: { cs: "A výsledek?", en: "And the result?" } },
+      { speaker: "nella", text: { cs: "Chaos, co funguje.", en: "Chaos that works." } }
+    ]
+  ],
+  // 12. PROSINEC - "shrnutí roku"
+  11: [
+    [
+      { speaker: "tomas", text: { cs: "Tak co tohle všechno bylo?", en: "So what was all this?" } },
+      { speaker: "nella", text: { cs: "Normální rok.", en: "A normal year." } },
+      { speaker: "tomas", text: { cs: "Tohle není normální.", en: "This isn't normal." } },
+      { speaker: "nella", text: { cs: "Pro tebe ne.", en: "Not for you." } },
+      { speaker: "tomas", text: { cs: "A pro tebe?", en: "And for you?" } },
+      { speaker: "nella", text: { cs: "Každodenní standard.", en: "Daily standard." } }
+    ]
+  ]
+};
 
 const TOMAS_QUOTES_EN = [
   "Divide et impera.",
@@ -503,6 +567,7 @@ function BarberCard({
   t, 
   playCardSound,
   onBook,
+  onOpenDossier,
   onHoverChange,
   activeSpeaker,
   graphicsTier,
@@ -512,12 +577,13 @@ function BarberCard({
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
   isActive: boolean, 
-  dialogueIndex: number, 
+  dialogueIndex: string | number, 
   lang: string, 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: any, 
   playCardSound: () => void,
   onBook: () => void,
+  onOpenDossier: () => void,
   onHoverChange?: (hovered: boolean) => void,
   activeSpeaker: string | null,
   graphicsTier?: string,
@@ -577,6 +643,17 @@ function BarberCard({
           <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
             {barber.role}
           </span>
+          {!barber.isHidden && (
+            <button 
+              onClick={() => {
+                trackEvent("cta_barber_booking_mobile", { barber: barber.name });
+                onBook();
+              }}
+              className="w-full py-5 bg-mafia-gold text-mafia-black font-heading font-black tracking-[0.3em] uppercase text-sm border-2 border-mafia-gold hover:bg-white transition-all z-10 shadow-[0_10px_30px_rgba(0,0,0,0.3)] mt-4"
+            >
+              {lang === 'cs' ? "REZERVACE" : "BOOKING"}
+            </button>
+          )}
           <div className="mt-4 relative flex justify-center">
             <BarberRanking 
               level={globalLevel} 
@@ -586,18 +663,6 @@ function BarberCard({
             />
           </div>
         </div>
-
-        {!barber.isHidden && (
-          <button 
-            onClick={() => {
-              trackEvent("cta_barber_booking_mobile", { barber: barber.name });
-              onBook();
-            }}
-            className="w-full py-5 bg-mafia-gold text-mafia-black font-heading font-black tracking-[0.3em] uppercase text-sm border-2 border-mafia-gold hover:bg-white transition-all z-10 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
-          >
-            {lang === 'cs' ? "REZERVACE" : "BOOKING"}
-          </button>
-        )}
 
         <div className="w-full flex flex-wrap justify-center items-center gap-x-3 gap-y-1.5 mt-auto px-2">
           {barber.specializations?.map((spec, i) => (
@@ -747,7 +812,7 @@ function BarberCard({
             onClick={() => {
               if (isHidden) return;
               trackEvent("cta_barber_booking_card_click", { barber: barber.name });
-              onBook();
+              onOpenDossier();
             }}
             className={`absolute inset-0 bg-[#0c0c0c] border-2 p-8 flex flex-col items-center transition-all duration-500 rounded-2xl shadow-[0_45px_90px_-20px_rgba(0,0,0,1)] overflow-hidden cursor-pointer ${
               isHovered ? "border-mafia-gold pointer-events-auto" : "border-mafia-gold/40 pointer-events-none"
@@ -810,7 +875,7 @@ function BarberCard({
                     <div className="w-full max-w-[260px] h-16 relative flex items-center justify-center border-2 border-mafia-gold bg-mafia-black text-mafia-gold font-heading uppercase tracking-[0.6em] font-black text-lg overflow-hidden group">
                         <MissionLoading isHovered={isHovered} graphicsTier={graphicsTier} />
                         <span className="relative z-20 transition-all duration-300 group-hover:tracking-[0.8em]">
-                          {lang === 'cs' ? "REZERVACE" : "BOOKING"}
+                          {t.operatives?.openFile || (lang === 'cs' ? "OTEVŘÍT SLOŽKU" : "OPEN DOSSIER")}
                         </span>
                     </div>
                 </div>
@@ -896,6 +961,36 @@ function SlotReel({
   );
 }
 
+const CHAIR_GREETINGS_CS = [
+  "Trůn barbera",
+  "Sedni. Změň se.",
+  "Respekt začíná tady",
+  "Ticho před proměnou",
+  "Křeslo pro bossy",
+  "Není to střih. Je to upgrade.",
+  "Místo, kde se začíná změna",
+  "Sedni si jako boss",
+  "Klid. Ostří. Výsledek.",
+  "Tady se rodí styl",
+  "Bez řečí. Jen práce.",
+  "Nový level začíná tady"
+];
+
+const CHAIR_GREETINGS_EN = [
+  "Barber's throne",
+  "Sit down. Change.",
+  "Respect starts here",
+  "Silence before transformation",
+  "Chair for bosses",
+  "It's not a cut. It's an upgrade.",
+  "The place where change begins",
+  "Sit down like a boss",
+  "Calm. Edge. Result.",
+  "Style is born here",
+  "No talk. Just work.",
+  "New level starts here"
+];
+
 function ChairWithCard({ 
   barber, 
   activeSpeaker, 
@@ -907,11 +1002,13 @@ function ChairWithCard({
   graphicsTier,
   globalStats,
   likedMap,
-  onLike
+  onLike,
+  onOpenDossier,
+  chairGreetingText
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
   activeSpeaker: string | null, 
-  dialogueIndex: number, 
+  dialogueIndex: string | number, 
   lang: string, 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: Record<string, any>, 
@@ -920,7 +1017,9 @@ function ChairWithCard({
   graphicsTier: string,
   globalStats: GlobalBarberStats,
   likedMap: Record<string, boolean>,
-  onLike: (barberId: string) => void
+  onLike: (barberId: string) => void,
+  onOpenDossier: (barber: any) => void,
+  chairGreetingText: string
 }) {
   const [isCardHovered, setIsCardHovered] = useState(false);
   const [isSitting, setIsSitting] = useState(false);
@@ -955,35 +1054,19 @@ function ChairWithCard({
   const vocativeName = getVocative(clientNickname || "", lang);
 
   const chairGreeting = useMemo(() => {
-    const isTomas = barber.name === 'Tomáš' || barber.name === 'Tomas';
-    const barberKey = isTomas ? 'tomas' : 'nella';
-    const greetings = t.operatives?.barbers?.[barberKey]?.chairGreetings;
+    if (!chairGreetingText) return "";
+    let greeting = chairGreetingText;
     
-    if (greetings && Array.isArray(greetings) && greetings.length > 0) {
-      const randomIndex = Math.floor(Math.random() * greetings.length);
-      let greeting = greetings[randomIndex];
-      
-      // Personalize if possible
-      if (vocativeName) {
-        const personalAdditions = lang === 'cs' 
-          ? [`, ${vocativeName}!`, `... nazdar ${vocativeName}.`, `. Čekáme na tebe, ${vocativeName}.`] 
-          : [`, ${vocativeName}!`, `... greetings, ${vocativeName}.`, `. We've been waiting, ${vocativeName}.`];
-        greeting += personalAdditions[Math.floor(Math.random() * personalAdditions.length)];
-      }
+    // Personalize if possible
+    if (vocativeName) {
+      const personalAdditions = lang === 'cs' 
+        ? [`, ${vocativeName}!`, `... nazdar ${vocativeName}.`, `. Čekáme na tebe, ${vocativeName}.`] 
+        : [`, ${vocativeName}!`, `... greetings, ${vocativeName}.`, `. We've been waiting, ${vocativeName}.`];
+      greeting += personalAdditions[Math.floor(Math.random() * personalAdditions.length)];
+    }
 
-      return greeting;
-    }
-    
-    // Fallbacks
-    if (side === 'right') {
-      return vocativeName 
-        ? (lang === 'cs' ? `Pane ${vocativeName}, Vaše místo...` : `Sir ${vocativeName}, your seat...`)
-        : (lang === 'cs' ? "Pane, Vaše místo..." : "Sir, your seat...");
-    }
-    return vocativeName 
-      ? (lang === 'cs' ? `${vocativeName}, tvoje místo je ready.` : `${vocativeName}, your seat is ready.`)
-      : (lang === 'cs' ? "Tvoje místo je připravené." : "Your seat is ready.");
-  }, [t, barber.name, lang, side, vocativeName]);
+    return greeting;
+  }, [chairGreetingText, lang, vocativeName]);
 
   const targetScale = isSitting ? 1.0 : (isCardHovered ? 1.05 : 1);
   const filterStr = isCardHovered 
@@ -1109,6 +1192,7 @@ function ChairWithCard({
           t={t}
           playCardSound={playCardSound}
           onBook={handleBook}
+          onOpenDossier={() => onOpenDossier(barber)}
           onHoverChange={(h) => setIsCardHovered(h)}
           activeSpeaker={activeSpeaker}
           graphicsTier={graphicsTier}
@@ -1124,8 +1208,8 @@ function ChairWithCard({
 export function Profiles() {
   const { t, lang } = useTranslation();
   const [isRandomizing, setIsRandomizing] = useState(false);
-  const [dialogueIndex, setDialogueIndex] = useState(BARBER_DIALOGUES.length - 1);
   const [activeSpeaker, setActiveSpeaker] = useState<'tomas' | 'nella' | null>(null);
+  const [activeDialogueText, setActiveDialogueText] = useState("");
   const [isDecided, setIsDecided] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -1133,6 +1217,25 @@ export function Profiles() {
   const [isSectionVisible, setIsSectionVisible] = useState(false);
   const [revealedBarbers, setRevealedBarbers] = useState<string[]>([]);
   const [graphicsTier, setGraphicsTier] = useState<string>("low");
+  const [selectedBarberForModal, setSelectedBarberForModal] = useState<any>(null);
+  const [chairGreetingsIndices, setChairGreetingsIndices] = useState<{ [key: string]: number }>({});
+
+  useEffect(() => {
+    const indices: { [key: string]: number } = {};
+    const usedIndices = new Set<number>();
+    
+    const idxTomas = Math.floor(Math.random() * CHAIR_GREETINGS_CS.length);
+    indices['tomas'] = idxTomas;
+    usedIndices.add(idxTomas);
+
+    let idxNella = Math.floor(Math.random() * CHAIR_GREETINGS_CS.length);
+    while (usedIndices.has(idxNella)) {
+      idxNella = Math.floor(Math.random() * CHAIR_GREETINGS_CS.length);
+    }
+    indices['nella'] = idxNella;
+    
+    setChairGreetingsIndices(indices);
+  }, []);
 
   const [customNames, setCustomNames] = useState({ tomas: "", nella: "" });
 
@@ -1257,69 +1360,75 @@ export function Profiles() {
     }, 80);
   };
 
-  // Re-enabled dialogue system - Alternating sequential mode
+  // Re-enabled dialogue system - Alternating monthly sequential mode
   useEffect(() => {
     const isMobile = window.innerWidth < 1280;
-    const isMay = new Date().getMonth() === 4;
-    
-    if (!isSectionVisible || isMobile || !isMay) {
+    if (!isSectionVisible || isMobile) {
       setActiveSpeaker(null);
+      setActiveDialogueText("");
       return;
     }
 
-    let cycleCount = 0;
+    const currentMonth = new Date().getMonth(); // 0 = Leden, 11 = Prosinec
+    const chats = MONTHLY_DIALOGUES[currentMonth] || MONTHLY_DIALOGUES[0];
+    if (chats.length === 0) return;
+
     let t1: NodeJS.Timeout;
     let t2: NodeJS.Timeout;
-    
-    const triggerDialogue = () => {
-      // Tomáš starts, then Nella replies
-      const speaker = cycleCount % 2 === 0 ? 'tomas' : 'nella';
-      
-      if (speaker === 'tomas') {
-        // Only increment dialogue index when Tomáš starts a new exchange
-        setDialogueIndex(prev => (prev + 1) % BARBER_DIALOGUES.length);
-      }
-      
-      setActiveSpeaker(speaker);
-      
-      // Slower pace: Keep talking for 8-10 seconds
-      const talkTime = 8000;
-      t1 = setTimeout(() => {
+
+    const playTurn = (cIdx: number, tIdx: number) => {
+      const currentChat = chats[cIdx % chats.length];
+      if (!currentChat) return;
+
+      const turn = currentChat[tIdx];
+      if (!turn) {
+        // Chat is finished
         setActiveSpeaker(null);
-        cycleCount++;
-        
-        // Pause between speakers (3s) or between exchanges (6s)
-        const pauseTime = cycleCount % 2 === 0 ? 6000 : 3000;
-        t2 = setTimeout(triggerDialogue, pauseTime);
-      }, talkTime);
+        setActiveDialogueText("");
+        // Wait 6 seconds before starting the next chat
+        t1 = setTimeout(() => {
+          playTurn((cIdx + 1) % chats.length, 0);
+        }, 6000);
+        return;
+      }
+
+      // Start current turn
+      setActiveSpeaker(turn.speaker);
+      setActiveDialogueText(turn.text[lang as 'cs' | 'en'] || turn.text.cs);
+
+      // Speak for 7.5 seconds
+      t2 = setTimeout(() => {
+        setActiveSpeaker(null);
+        setActiveDialogueText("");
+        // Silence for 2.5 seconds
+        t1 = setTimeout(() => {
+          playTurn(cIdx, tIdx + 1);
+        }, 2500);
+      }, 7500);
     };
 
-    // Initial delay before first talk
-    const initialDelay = setTimeout(triggerDialogue, 4000);
+    // Start with a 4s initial delay
+    const initialDelay = setTimeout(() => {
+      playTurn(0, 0);
+    }, 4000);
 
     return () => {
       clearTimeout(initialDelay);
       if (t1) clearTimeout(t1);
       if (t2) clearTimeout(t2);
       setActiveSpeaker(null);
+      setActiveDialogueText("");
     };
-  }, [isSectionVisible]);
+  }, [isSectionVisible, lang]);
 
   const translatedBarbers = useMemo(() => {
-    const isMay = new Date().getMonth() === 4;
-    
     return barbers.map(b => {
       const isTomas = b.id === 'tomas';
       const barberKey = isTomas ? 'tomas' : 'nella';
       const barberTranslations = t.operatives?.barbers?.[barberKey as 'tomas' | 'nella'];
       
       const staticDesc = barberTranslations?.story || "";
-
-      // Show dialogue only in May (index 4)
-      const currentDialogues = isMay ? BARBER_DIALOGUES : [];
-      const currentDialogue = currentDialogues[dialogueIndex];
-      const dialogueText = isTomas ? currentDialogue?.tomas : currentDialogue?.nella;
-
+      const dialogueText = activeSpeaker === barberKey ? activeDialogueText : "";
       const customName = isTomas ? customNames.tomas : customNames.nella;
 
       return {
@@ -1335,7 +1444,7 @@ export function Profiles() {
         isHidden: false
       };
     });
-  }, [dialogueIndex, t, customNames]);
+  }, [t, customNames, activeSpeaker, activeDialogueText]);
 
   return (
     <section 
@@ -1375,26 +1484,43 @@ export function Profiles() {
                     </div>
                 </div>
                 <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full mx-auto py-4 xl:py-8">
-                    {translatedBarbers.map((barber, index) => (
-                      <ChairWithCard 
-                        key={barber.name}
-                        barber={barber} 
-                        activeSpeaker={activeSpeaker} 
-                        dialogueIndex={dialogueIndex} 
-                        lang={lang} 
-                        t={t} 
-                        playCardSound={playCardSound} 
-                        side={index % 2 === 0 ? "left" : "right"} 
-                        graphicsTier={graphicsTier}
-                        globalStats={globalStats}
-                        likedMap={likedMap}
-                        onLike={handleLike}
-                      />
-                    ))}
+                    {translatedBarbers.map((barber, index) => {
+                      const isTomas = barber.name === 'Tomáš' || barber.name === 'Tomas';
+                      const barberKey = isTomas ? 'tomas' : 'nella';
+                      const greetingIdx = chairGreetingsIndices[barberKey] ?? (isTomas ? 0 : 1);
+                      const chairGreetingText = lang === 'cs' ? CHAIR_GREETINGS_CS[greetingIdx] : CHAIR_GREETINGS_EN[greetingIdx];
+
+                      return (
+                        <ChairWithCard 
+                          key={barber.name}
+                          barber={barber} 
+                          activeSpeaker={activeSpeaker} 
+                          dialogueIndex={activeDialogueText} 
+                          lang={lang} 
+                          t={t} 
+                          playCardSound={playCardSound} 
+                          side={index % 2 === 0 ? "left" : "right"} 
+                          graphicsTier={graphicsTier}
+                          globalStats={globalStats}
+                          likedMap={likedMap}
+                          onLike={handleLike}
+                          onOpenDossier={setSelectedBarberForModal}
+                          chairGreetingText={chairGreetingText || ""}
+                        />
+                      );
+                    })}
                 </div>
             </div>
         </div>
       </div>
+      
+      <OperativeModal 
+        barber={selectedBarberForModal}
+        isOpen={!!selectedBarberForModal}
+        onClose={() => setSelectedBarberForModal(null)}
+        lang={lang}
+      />
+
       <style jsx global>{`
         @keyframes shake-gentle {
           0%, 100% { transform: translate(0, 0); }

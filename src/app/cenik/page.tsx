@@ -737,14 +737,22 @@ export default function CenikPage() {
                 </button>
               </div>
               
-              {lang === 'en' && (
-                <p className="text-[9px] font-mono text-mafia-gold/40 text-right mt-2 tracking-wider">
-                  WE PROUDLY ACCEPT EUR, USD, AND REVOLUT PAYMENTS.
+              <div className="flex flex-col items-end gap-1 mt-1 text-right">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-mafia-gold animate-pulse"></span>
+                  <p className="text-[10px] font-sans text-mafia-gold uppercase tracking-wider font-black">
+                    {t.services.paymentMethods}
+                  </p>
+                </div>
+                {lang === 'en' && (
+                  <p className="text-[9px] font-mono text-mafia-gold/40 tracking-wider uppercase">
+                    WE PROUDLY ACCEPT EUR, USD, AND REVOLUT PAYMENTS.
+                  </p>
+                )}
+                <p className="text-[10px] font-sans text-smoke-white/60 tracking-wide italic">
+                  {t.services.bookingNote}
                 </p>
-              )}
-              <p className="text-[10px] font-sans text-mafia-gold/60 text-right mt-1 tracking-wide italic">
-                {t.services.bookingNote}
-              </p>
+              </div>
             </div>
             </div>
           </div>
