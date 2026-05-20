@@ -31,11 +31,20 @@ export function TableOfContents() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [soundState, setSoundState] = useState(true);
+  const [isIntroActive, setIsIntroActive] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     setIsMounted(true);
+
+    const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 1280;
+    const hasVisited = typeof window !== 'undefined' && localStorage.getItem("mmbarber_visited") === "true";
+    if (!isMobileDevice && !hasVisited && window.location.pathname === "/") {
+      setIsIntroActive(true);
+    }
+    const handleIntroDismissed = () => setIsIntroActive(false);
+    window.addEventListener("introDismissed", handleIntroDismissed);
 
     const readSound = () => {
       const isSound = localStorage.getItem("mmbarber_sound_enabled") === "true";
@@ -68,6 +77,7 @@ export function TableOfContents() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("mmbarber-sound-update-remote", readSound);
+      window.removeEventListener("introDismissed", handleIntroDismissed);
     };
   }, [isOpen]);
 
@@ -220,6 +230,7 @@ export function TableOfContents() {
 
   if (!isMounted) return null;
   if (pathname !== "/") return null;
+  if (isIntroActive) return null;
 
   return (
     <>

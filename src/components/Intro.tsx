@@ -27,7 +27,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
   const flickerRef = useRef<HTMLDivElement>(null);
 
   const menuItems: MenuItem[] = [
-    { id: "start", titleCs: "Start Webu", titleEn: "Start Web" },
+    { id: "start", titleCs: "Přejít na web", titleEn: "Enter Website" },
     { id: "rezervace", titleCs: "Rezervace", titleEn: "Reservation" },
     { id: "galerie", titleCs: "Galerie", titleEn: "Gallery" },
     { id: "vice", titleCs: "Více o podniku", titleEn: "About Us" },
@@ -62,8 +62,14 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
   }, [onDismiss]);
 
   useEffect(() => {
-    if (!showIntro || isDismissed) return;
+    if (!showIntro || isDismissed) {
+      document.body.style.overflow = '';
+      return;
+    }
     
+    // Hide scrollbar while Intro is active
+    document.body.style.overflow = 'hidden';
+
     // Start fade-in and set menu to active state quickly
     const introTimer = setTimeout(() => {
       setIsAnimating(true);
@@ -90,6 +96,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
       clearInterval(flickerInterval);
       clearTimeout(introTimer);
       grainAnim?.kill();
+      document.body.style.overflow = '';
     };
   }, [showIntro, isDismissed]);
 
@@ -277,7 +284,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
           <div className="mb-12 flex flex-col gap-2">
             <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-[0.4em]">MMBARBER // EST. 2018</span>
             <h2 className="text-3xl md:text-4xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,215,0,0.25)]">
-              MAIN MENU
+              {lang === 'cs' ? "HLAVNÍ MENU" : "MAIN MENU"}
             </h2>
             <div className="w-20 h-[1.5px] bg-mafia-gold/30 mt-1"></div>
           </div>
@@ -323,10 +330,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
             </motion.div>
           )}
 
-          {/* Footer */}
-          <div className="mt-16 text-[9px] font-mono text-smoke-white/20 tracking-wider">
-            SYSTEM VERSION 3.5.0 // © 2026 MMBARBER
-          </div>
+          {/* Footer removed per user request */}
         </div>
 
         {/* Right Side: Details / Information */}

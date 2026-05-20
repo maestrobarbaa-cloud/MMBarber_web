@@ -115,8 +115,17 @@ export function ScrollIndicator() {
 
   const [isVisibleAfterLoad, setIsVisibleAfterLoad] = useState(false);
   const [isPageScrollable, setIsPageScrollable] = useState(false);
+  const [isIntroActive, setIsIntroActive] = useState(false);
 
   useEffect(() => {
+    const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 1280;
+    const hasVisited = typeof window !== 'undefined' && localStorage.getItem("mmbarber_visited") === "true";
+    if (!isMobileDevice && !hasVisited && window.location.pathname === "/") {
+      setIsIntroActive(true);
+    }
+    const handleIntroDismissed = () => setIsIntroActive(false);
+    window.addEventListener("introDismissed", handleIntroDismissed);
+
     setMounted(true);
     
     let frameId: number;
@@ -166,6 +175,7 @@ export function ScrollIndicator() {
       timers.forEach(clearTimeout);
       clearTimeout(visibilityTimer);
       window.removeEventListener('resize', checkScrollable);
+      window.removeEventListener('introDismissed', handleIntroDismissed);
       observer.disconnect();
       cancelAnimationFrame(frameId);
     };
@@ -204,7 +214,7 @@ export function ScrollIndicator() {
     document.addEventListener("pointerup", onPointerUp);
   };
 
-  if (!mounted) return null;
+  if (!mounted || isIntroActive) return null;
 
   return (
     <div 
