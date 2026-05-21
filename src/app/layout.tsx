@@ -12,6 +12,8 @@ import { ClientWrapper } from "@/components/ClientWrapper";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { FutureSEO } from "@/components/FutureSEO";
 import { TableOfContents } from "@/components/TableOfContents";
+import { BarberProvider } from "@/contexts/BarberContext";
+import { MobileCompass } from "@/components/MobileCompass";
 import Script from "next/script";
 import { Scissors } from "lucide-react";
 
@@ -272,45 +274,47 @@ export default function RootLayout({
             })
           }}
         />
+        <script
+          id="mmbarber-early-init"
+          dangerouslySetInnerHTML={{
+            __html: `
+            try {
+              const isMobile = window.innerWidth < 1280;
+              if (isMobile) {
+                document.documentElement.classList.add('is-mobile-device');
+              }
+              
+              const savedConfig = localStorage.getItem("mmbarber_graphics_config");
+              if (savedConfig) {
+                const tier = JSON.parse(savedConfig).tier;
+                document.documentElement.setAttribute('data-graphics-tier', tier);
+              } else {
+                const cores = navigator.hardwareConcurrency || 0;
+                const ram = navigator.deviceMemory || 0;
+                let tier = 'low';
+                if (cores >= 12 && ram >= 16) tier = 'ultra';
+                else if (cores >= 8 && ram >= 8) tier = 'high';
+                else if (cores >= 6 && ram >= 4) tier = 'medium';
+                else tier = 'low';
+                
+                if (cores === 0 || ram === 0) tier = 'low';
+                document.documentElement.setAttribute('data-graphics-tier', tier);
+              }
+
+              const storedNoir = localStorage.getItem('mmbarber_noir_mode');
+              const hour = new Date().getHours();
+              const isNight = hour >= 19 || hour < 6;
+              if (storedNoir === 'true' || (storedNoir === null && isNight)) {
+                document.documentElement.classList.add('noir-mode');
+              }
+            } catch (e) {}
+          `}}
+        />
       </head>
       <body 
         className={`${playfair.variable} ${inter.variable} ${greatVibes.variable} antialiased selection:bg-mafia-gold selection:text-mafia-black min-h-screen relative bg-mafia-black overflow-x-hidden`}
         suppressHydrationWarning
       >
-        <Script id="mmbarber-early-init" strategy="beforeInteractive">
-          {`
-          try {
-            const isMobile = window.innerWidth < 1280;
-            if (isMobile) {
-              document.documentElement.classList.add('is-mobile-device');
-            }
-            
-            const savedConfig = localStorage.getItem("mmbarber_graphics_config");
-            if (savedConfig) {
-              const tier = JSON.parse(savedConfig).tier;
-              document.documentElement.setAttribute('data-graphics-tier', tier);
-            } else {
-              const cores = navigator.hardwareConcurrency || 0;
-              const ram = (navigator as any).deviceMemory || 0;
-              let tier = 'low';
-              if (cores >= 12 && ram >= 16) tier = 'ultra';
-              else if (cores >= 8 && ram >= 8) tier = 'high';
-              else if (cores >= 6 && ram >= 4) tier = 'medium';
-              else tier = 'low';
-              
-              if (cores === 0 || ram === 0) tier = 'low';
-              document.documentElement.setAttribute('data-graphics-tier', tier);
-            }
-
-            const storedNoir = localStorage.getItem('mmbarber_noir_mode');
-            const hour = new Date().getHours();
-            const isNight = hour >= 19 || hour < 6;
-            if (storedNoir === 'true' || (storedNoir === null && isNight)) {
-              document.documentElement.classList.add('noir-mode');
-            }
-          } catch (e) {}
-        `}
-        </Script>
         <ErrorBoundary>
           <SecurityProvider>
             {/* Google Analytics */}
@@ -342,9 +346,11 @@ export default function RootLayout({
               <FutureSEO />
               <Header />
 
-              <main className="relative z-10 flex-col flex flex-1">
-                {children}
-              </main>
+              <BarberProvider>
+                <main className="relative z-10 flex-col flex flex-1">
+                  {children}
+                </main>
+              </BarberProvider>
 
               <ClientWrapper />
               <CookieBanner />
@@ -360,6 +366,7 @@ export default function RootLayout({
               <TableOfContents />
               <ScrollIndicator />
               <CustomCursor />
+              <MobileCompass />
             </>
           </SecurityProvider>
         </ErrorBoundary>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getInternalIdentity } from "@/utils/identity";
-import { barbers } from "@/data/barbers";
+import { useBarbers } from "@/contexts/BarberContext";
 import { 
   castMultiVote, 
   getUserRatingsData, 
@@ -58,7 +58,9 @@ const BARBER_STATS_METADATA: Record<string, { label: string; base: number; color
 
 export default function RatingPage() {
   const router = useRouter();
-  const { t, lang } = useTranslation();
+  const { lang, t } = useTranslation();
+  const { barbers, loading } = useBarbers();
+  const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
   const [internalId, setInternalId] = useState<string | null>(null);
   const [clientNickname, setClientNickname] = useState("");
   const [isEditingNickname, setIsEditingNickname] = useState(false);
@@ -163,7 +165,7 @@ export default function RatingPage() {
       window.removeEventListener('mmbarber-theme-update', checkTheme);
       window.removeEventListener('mmbarber_xp_updated', handleLocalXpUpdate);
     };
-  }, []);
+  }, [barbers]);
 
   const handleConfirmNickname = () => {
     localStorage.setItem("mmbarber_client_nickname", clientNickname);
@@ -199,7 +201,9 @@ export default function RatingPage() {
     playSound("/sounds/reload.mp3", 0.4);
   };
 
-  const handleLike = async (barberId: string) => {
+  if (loading) return null;
+
+  const getBarberRatingData = async (barberId: string) => {
     if (likedMap[barberId]) return;
     
     // Optimistic UI updates

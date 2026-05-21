@@ -14,19 +14,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
-import { db } from "@/lib/firebase";
-import { 
-  collection, 
-  addDoc, 
-  query, 
-  orderBy, 
-  onSnapshot, 
-  serverTimestamp,
-  getDocs,
-  where,
-  updateDoc,
-  doc
-} from "firebase/firestore";
 import { getUserIp } from "@/utils/network";
 
 interface Supporter {
@@ -47,28 +34,32 @@ export default function HallOfFamePage() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const q = query(
-      collection(db, "community_supporters"),
-      orderBy("time", "desc")
-    );
+    const fetchSupporters = async () => {
+      try {
+        const res = await fetch('/api/sin-slavy');
+        if (res.ok) {
+          const data = await res.json();
+          setSupporters(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const list = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Supporter[];
-      setSupporters(list);
-    });
+    fetchSupporters();
+    const interval = setInterval(fetchSupporters, 5000);
 
     const checkExisting = async () => {
       try {
         const ip = await getUserIp();
-        const q = query(collection(db, "community_supporters"), where("ip", "==", ip));
-        const snapshot = await getDocs(q);
-        if (!snapshot.empty) {
-          const doc = snapshot.docs[0];
-          setUserSupporterId(doc.id);
-          setNewName(doc.data().name);
+        const res = await fetch('/api/sin-slavy');
+        if (res.ok) {
+          const data = await res.json();
+          const existing = data.find((s: Supporter) => s.ip === ip);
+          if (existing) {
+            setUserSupporterId(existing.id);
+            setNewName(existing.name);
+          }
         }
       } catch (err) {
         console.error("Check existing failed:", err);
@@ -76,7 +67,7 @@ export default function HallOfFamePage() {
     };
     checkExisting();
 
-    return () => unsubscribe();
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,52 +80,28 @@ export default function HallOfFamePage() {
     try {
       const ip = await getUserIp();
       
-      // Check for name uniqueness (case-insensitive)
-      const nameQuery = query(
-        collection(db, "community_supporters"), 
-        where("name", ">=", cleanName.toUpperCase()), 
-        where("name", "<=", cleanName.toUpperCase() + "\uf8ff")
-      );
-      // Note: Since Firestore case-insensitive is tricky, we'll fetch and filter or just do exact match if we store as uppercase.
-      // Let's do a simple check for exact match first (case-insensitive in JS for safety)
-      const allSnapshot = await getDocs(collection(db, "community_supporters"));
-      const nameExists = allSnapshot.docs.some(doc => 
-        doc.data().name.toLowerCase() === cleanName.toLowerCase() && doc.id !== userSupporterId
-      );
+      const payload = {
+        name: cleanName,
+        ip: ip
+      };
 
-      if (nameExists) {
-        setNameError(lang === 'cs' ? "OBSAZENO" : "TAKEN");
-        setIsSubmitting(false);
-        return;
-      }
+      const res = await fetch('/api/sin-slavy', {
+        method: userSupporterId ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userSupporterId ? { id: userSupporterId, ...payload } : payload)
+      });
 
-      if (userSupporterId) {
-        // Update existing
-        await updateDoc(doc(db, "community_supporters", userSupporterId), {
-          name: cleanName,
-          time: serverTimestamp()
-        });
+      if (!res.ok) {
+        const errorData = await res.json();
+        if (errorData.error === "NAME_TAKEN") {
+          setNameError(lang === 'cs' ? "OBSAZENO" : "TAKEN");
+          setIsSubmitting(false);
+          return;
+        }
       } else {
-        // Check IP again to be absolutely sure
-        const ipQuery = query(collection(db, "community_supporters"), where("ip", "==", ip));
-        const ipSnapshot = await getDocs(ipQuery);
-        
-        if (!ipSnapshot.empty) {
-          // Already has an entry under this IP, update that one instead of adding new
-          const existingDoc = ipSnapshot.docs[0];
-          await updateDoc(doc(db, "community_supporters", existingDoc.id), {
-            name: cleanName,
-            time: serverTimestamp()
-          });
-          setUserSupporterId(existingDoc.id);
-        } else {
-          // Add new
-          const docRef = await addDoc(collection(db, "community_supporters"), {
-            name: cleanName,
-            time: serverTimestamp(),
-            ip: ip
-          });
-          setUserSupporterId(docRef.id);
+        const data = await res.json();
+        if (!userSupporterId && data.id) {
+          setUserSupporterId(data.id);
         }
       }
       

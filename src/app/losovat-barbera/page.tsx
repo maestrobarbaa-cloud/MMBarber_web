@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { barbers } from "@/data/barbers";
+import { useBarbers } from "@/contexts/BarberContext";
 import { playSound } from "@/utils/audio";
 import { trackEvent } from "@/utils/analytics";
 import { 
@@ -32,6 +32,7 @@ import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
 export default function BarberLotteryPage() {
   const { lang } = useTranslation();
   const [isRandomizing, setIsRandomizing] = useState(false);
+  const { barbers, loading } = useBarbers();
   const [isDecided, setIsDecided] = useState(false);
   const [winnerIndex, setWinnerIndex] = useState<number | null>(null);
   const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
@@ -98,7 +99,7 @@ export default function BarberLotteryPage() {
   };
 
   const handleStartDraw = () => {
-    if (isRandomizing) return;
+    if (isRandomizing || loading) return;
 
     setIsRandomizing(true);
     setIsDecided(false);
@@ -122,6 +123,8 @@ export default function BarberLotteryPage() {
       trackEvent("barber_lottery_success", { winner: barbers[chosenIndex].id });
     }, 2500);
   };
+
+  if (loading) return null;
 
   const winnerBarber = winnerIndex !== null ? barbers[winnerIndex] : null;
   const winnerCustomName = winnerBarber 

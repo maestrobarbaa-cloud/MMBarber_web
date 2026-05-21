@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Ticket, Scale, Info, Clock, ArrowLeft, ShieldCheck, Zap } from "lucide-react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Ticket, Scale, Info, Clock, ArrowLeft, ShieldCheck, Zap, Send, QrCode, CreditCard, Gift, ArrowDown } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import Image from "@/components/OptimizedImage";
@@ -12,6 +12,57 @@ import { VoucherSEOArchive } from "@/components/VoucherSEOArchive";
 
 export default function VouchersPage() {
   const { lang } = useTranslation();
+  
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    amount: "1500",
+    delivery: "electronic",
+    message: "",
+    botField: "" // Honeypot
+  });
+
+  const handleOrderClick = () => {
+    setIsFormOpen(true);
+    setTimeout(() => {
+      document.getElementById("order-form")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Honeypot check for bots
+    if (formData.botField) return;
+    
+    // Basic validation
+    if (!formData.name || !formData.email || !formData.phone || !formData.amount) {
+      alert(lang === 'cs' ? "Vyplňte prosím všechna povinná pole." : "Please fill all required fields.");
+      return;
+    }
+
+    const saved = localStorage.getItem("mmbarber_voucher_requests");
+    const requests = saved ? JSON.parse(saved) : [];
+    
+    requests.push({
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      status: "new",
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      amount: formData.amount,
+      delivery: formData.delivery,
+      message: formData.message
+    });
+    
+    localStorage.setItem("mmbarber_voucher_requests", JSON.stringify(requests));
+    window.dispatchEvent(new Event("storage")); // Trigger cross-tab updates
+    
+    setIsSubmitted(true);
+  };
 
   return (
     <main className="min-h-screen bg-black text-white selection:bg-mafia-gold selection:text-black overflow-x-hidden">
@@ -64,7 +115,7 @@ export default function VouchersPage() {
                 : "The voucher works as a personal credit. You can charge it with any amount and gradually use it for any of our services. The perfect gift for those who value quality."}
             </p>
 
-            <ul className="space-y-6 pt-6">
+            <ul className="space-y-6 pt-6 mb-8">
               {[
                 { cs: "Nabití v libovolné hodnotě", en: "Charge any amount" },
                 { cs: "Postupné čerpání kreditu", en: "Gradual credit withdrawal" },
@@ -84,6 +135,17 @@ export default function VouchersPage() {
                 </motion.li>
               ))}
             </ul>
+
+            <motion.button 
+              onClick={handleOrderClick}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="mt-8 flex items-center gap-4 px-10 py-5 bg-mafia-gold text-black font-black uppercase tracking-[0.4em] text-sm hover:bg-white transition-colors duration-500 group shadow-[0_10px_30px_rgba(var(--color-mafia-gold-rgb),0.2)]"
+            >
+              {lang === 'cs' ? "OBJEDNAT VOUCHER" : "ORDER VOUCHER"}
+              <ArrowDown size={18} className="group-hover:translate-y-1 transition-transform" />
+            </motion.button>
           </motion.div>
 
           <motion.div
@@ -181,7 +243,6 @@ export default function VouchersPage() {
                 <p className="text-smoke-white/60 text-lg leading-relaxed font-sans font-light">
                   {box.desc}
                 </p>
-                {/* Decorative index */}
                 <span className="absolute top-6 right-8 font-mono text-[40px] text-white/5 font-black group-hover:text-mafia-gold/10 transition-colors">
                   0{i + 1}
                 </span>
@@ -191,27 +252,215 @@ export default function VouchersPage() {
         </div>
       </section>
 
-      {/* CTA Footer */}
-      <section className="py-24 px-6 text-center relative overflow-hidden">
+      {/* Order Section (Form) */}
+      <section id="order-form" className="py-24 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-mafia-gold/5 blur-[120px] opacity-20"></div>
-        <div className="max-w-3xl mx-auto space-y-12">
-          <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter">
-            {lang === 'cs' ? "DARUJ ZÁŽITEK, NE JEN STŘIH" : "GIVE AN EXPERIENCE, NOT JUST A CUT"}
-          </h2>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-            <Link 
-              href="/"
-              className="px-16 py-6 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.5em] text-lg hover:bg-white transition-all duration-500 shadow-[0_20px_50px_rgba(var(--color-mafia-gold-rgb),0.3)] w-full md:w-auto relative z-10"
-            >
-              {lang === 'cs' ? "ZPĚT DO SALONU" : "BACK TO SALON"}
-            </Link>
-          </div>
+        <div className="max-w-4xl mx-auto relative z-10">
+          
+          {!isFormOpen && !isSubmitted && (
+            <div className="text-center space-y-12">
+              <h2 className="text-4xl md:text-6xl font-heading font-black text-white uppercase italic tracking-tighter">
+                {lang === 'cs' ? "DARUJ ZÁŽITEK, NE JEN STŘIH" : "GIVE AN EXPERIENCE, NOT JUST A CUT"}
+              </h2>
+              <button 
+                onClick={handleOrderClick}
+                className="inline-flex items-center gap-4 px-16 py-6 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.5em] text-lg hover:bg-white transition-all duration-500 shadow-[0_20px_50px_rgba(var(--color-mafia-gold-rgb),0.3)] group"
+              >
+                {lang === 'cs' ? "ZAŽÁDAT O VOUCHER" : "REQUEST A VOUCHER"}
+                <Gift className="group-hover:scale-125 transition-transform" />
+              </button>
+            </div>
+          )}
+
+          <AnimatePresence mode="wait">
+            {isFormOpen && !isSubmitted && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="bg-[#0a0a0a] border border-white/10 p-8 md:p-12 shadow-[0_30px_60px_rgba(0,0,0,0.8)] relative overflow-hidden"
+              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-mafia-gold to-transparent opacity-50"></div>
+                
+                <h2 className="text-3xl font-heading font-black uppercase text-white mb-8 tracking-widest italic flex items-center gap-4">
+                  <Ticket className="text-mafia-gold" />
+                  {lang === 'cs' ? "OBJEDNÁVKA VOUCHERU" : "VOUCHER ORDER"}
+                </h2>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Honeypot */}
+                  <input 
+                    type="text" 
+                    name="botField" 
+                    value={formData.botField} 
+                    onChange={e => setFormData({...formData, botField: e.target.value})} 
+                    className="hidden" 
+                    tabIndex={-1} 
+                    autoComplete="off" 
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em]">{lang === 'cs' ? "Jméno (Na koho vystavit)*" : "Name (For whom)*"}</label>
+                      <input 
+                        required
+                        type="text" 
+                        value={formData.name}
+                        onChange={e => setFormData({...formData, name: e.target.value})}
+                        className="w-full bg-white/5 border border-white/10 p-4 text-white font-mono focus:border-mafia-gold focus:outline-none transition-colors"
+                        placeholder="Jan Novák"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em]">{lang === 'cs' ? "Částka (Kč)*" : "Amount (CZK)*"}</label>
+                      <input 
+                        required
+                        type="number" 
+                        min="500"
+                        step="1"
+                        value={formData.amount}
+                        onChange={e => setFormData({...formData, amount: e.target.value})}
+                        className="w-full bg-white/5 border border-white/10 p-4 text-white font-mono focus:border-mafia-gold focus:outline-none transition-colors"
+                      />
+                      <p className="text-[9px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? "Minimálně 500 Kč. Částku lze využít postupně." : "Minimum 500 CZK. Can be used gradually."}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em]">{lang === 'cs' ? "Váš E-mail*" : "Your Email*"}</label>
+                      <input 
+                        required
+                        type="email" 
+                        value={formData.email}
+                        onChange={e => setFormData({...formData, email: e.target.value})}
+                        className="w-full bg-white/5 border border-white/10 p-4 text-white font-mono focus:border-mafia-gold focus:outline-none transition-colors"
+                        placeholder="email@example.com"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em]">{lang === 'cs' ? "Telefon*" : "Phone*"}</label>
+                      <input 
+                        required
+                        type="tel" 
+                        value={formData.phone}
+                        onChange={e => setFormData({...formData, phone: e.target.value})}
+                        className="w-full bg-white/5 border border-white/10 p-4 text-white font-mono focus:border-mafia-gold focus:outline-none transition-colors"
+                        placeholder="+420 123 456 789"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 pt-4">
+                    <label className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em]">{lang === 'cs' ? "Způsob dodání a platby*" : "Delivery and Payment*"}</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <label className={`border p-6 cursor-pointer flex flex-col items-center justify-center gap-4 transition-all ${formData.delivery === 'electronic' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5 hover:border-white/30'}`}>
+                        <input type="radio" name="delivery" value="electronic" className="hidden" checked={formData.delivery === 'electronic'} onChange={() => setFormData({...formData, delivery: 'electronic'})} />
+                        <CreditCard size={32} className={formData.delivery === 'electronic' ? 'text-mafia-gold' : 'text-white/40'} />
+                        <div className="text-center">
+                          <span className="block font-heading font-bold uppercase tracking-widest text-sm mb-1">{lang === 'cs' ? "Elektronicky" : "Electronic"}</span>
+                          <span className="block font-mono text-[9px] text-white/40 uppercase">{lang === 'cs' ? "Platba předem převodem / QR" : "Payment in advance (QR)"}</span>
+                        </div>
+                      </label>
+                      
+                      <label className={`border p-6 cursor-pointer flex flex-col items-center justify-center gap-4 transition-all ${formData.delivery === 'physical' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5 hover:border-white/30'}`}>
+                        <input type="radio" name="delivery" value="physical" className="hidden" checked={formData.delivery === 'physical'} onChange={() => setFormData({...formData, delivery: 'physical'})} />
+                        <Ticket size={32} className={formData.delivery === 'physical' ? 'text-mafia-gold' : 'text-white/40'} />
+                        <div className="text-center">
+                          <span className="block font-heading font-bold uppercase tracking-widest text-sm mb-1">{lang === 'cs' ? "Vyzvednout na salonu" : "Pickup at salon"}</span>
+                          <span className="block font-mono text-[9px] text-white/40 uppercase">{lang === 'cs' ? "Dárková obálka s pečetí, platba hotově" : "Gift envelope, cash payment"}</span>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 pt-4">
+                    <label className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em]">{lang === 'cs' ? "Zpráva / Instrukce pro nás" : "Message / Instructions"}</label>
+                    <textarea 
+                      rows={3}
+                      value={formData.message}
+                      onChange={e => setFormData({...formData, message: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 p-4 text-white font-mono focus:border-mafia-gold focus:outline-none transition-colors resize-none"
+                      placeholder={lang === 'cs' ? "Cokoliv potřebujete dodat..." : "Anything else..."}
+                    ></textarea>
+                  </div>
+
+                  <div className="pt-8 flex justify-end gap-4 border-t border-white/5">
+                    <button 
+                      type="button"
+                      onClick={() => setIsFormOpen(false)}
+                      className="px-8 py-4 border border-white/10 text-white/60 font-mono text-xs uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all"
+                    >
+                      {lang === 'cs' ? "Zrušit" : "Cancel"}
+                    </button>
+                    <button 
+                      type="submit"
+                      className="px-10 py-4 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.3em] hover:bg-white transition-all flex items-center gap-3"
+                    >
+                      <Send size={16} />
+                      {lang === 'cs' ? "ODESLAT POŽADAVEK" : "SEND REQUEST"}
+                    </button>
+                  </div>
+
+                </form>
+              </motion.div>
+            )}
+
+            {isSubmitted && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-[#0a0a0a] border border-mafia-gold p-8 md:p-12 shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.2)] text-center max-w-2xl mx-auto"
+              >
+                <div className="w-20 h-20 bg-mafia-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <ShieldCheck size={40} className="text-mafia-gold" />
+                </div>
+                
+                <h2 className="text-3xl font-heading font-black uppercase text-white mb-4 tracking-widest italic">
+                  {lang === 'cs' ? "POŽADAVEK PŘIJAT" : "REQUEST RECEIVED"}
+                </h2>
+                <p className="text-smoke-white/60 font-sans mb-10 max-w-lg mx-auto">
+                  {lang === 'cs' 
+                    ? "Vaše objednávka voucheru byla úspěšně odeslána do naší centrály. Budeme vás kontaktovat co nejdříve."
+                    : "Your voucher order has been successfully sent to our headquarters. We will contact you shortly."}
+                </p>
+
+                {formData.delivery === 'electronic' && (
+                  <div className="bg-white/5 border border-white/10 p-8 rounded-sm mb-10">
+                    <h3 className="text-mafia-gold font-mono text-[10px] uppercase tracking-[0.4em] mb-6 flex items-center justify-center gap-2">
+                      <QrCode size={14} /> {lang === 'cs' ? "QR PLATBA PŘEDEM" : "QR PAYMENT"}
+                    </h3>
+                    
+                    <div className="w-64 h-64 md:w-80 md:h-80 bg-white p-4 mx-auto mb-6 rounded-sm shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                      <Image src="/obr/qr.jpg" alt="QR Platba" width={400} height={400} className="w-full h-full object-contain" />
+                    </div>
+                    
+                    <p className="font-mono text-[11px] text-white/50 uppercase tracking-widest leading-relaxed">
+                      {lang === 'cs' 
+                        ? `Částka: ${formData.amount} Kč. Naskenujte kód pro rychlou platbu. Jakmile platba dorazí, voucher vám obratem zašleme e-mailem.`
+                        : `Amount: ${formData.amount} CZK. Scan the code for quick payment. Once received, the voucher will be sent to your email.`}
+                    </p>
+                  </div>
+                )}
+
+                <button 
+                  onClick={() => {
+                    setIsSubmitted(false);
+                    setIsFormOpen(false);
+                  }}
+                  className="inline-block border-b border-mafia-gold text-mafia-gold font-mono text-[10px] uppercase tracking-widest pb-1 hover:text-white hover:border-white transition-colors"
+                >
+                  {lang === 'cs' ? "Zavřít a vrátit se" : "Close and return"}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
       <Footer />
 
-      <BottomTerminalReveal thresholdMultiplier={1.5}>
+      <BottomTerminalReveal thresholdMultiplier={100}>
         {(level) => (
           <>
             {level >= 1 && (

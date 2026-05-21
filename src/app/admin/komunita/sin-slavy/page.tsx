@@ -14,16 +14,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
-import { db } from "@/lib/firebase";
-import { 
-  collection, 
-  query, 
-  orderBy, 
-  onSnapshot, 
-  deleteDoc, 
-  doc, 
-  getDocs
-} from "firebase/firestore";
 
 interface Supporter {
   id: string;
@@ -50,21 +40,22 @@ export default function AdminHallOfFamePage() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    const q = query(
-      collection(db, "community_supporters"), 
-      orderBy("time", "desc")
-    );
+    const fetchSupporters = async () => {
+      try {
+        const res = await fetch('/api/sin-slavy');
+        if (res.ok) {
+          const data = await res.json();
+          setSupporters(data);
+          setLoading(false);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const list = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Supporter[];
-      setSupporters(list);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    fetchSupporters();
+    const interval = setInterval(fetchSupporters, 3000);
+    return () => clearInterval(interval);
   }, [isAuthenticated]);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -81,7 +72,8 @@ export default function AdminHallOfFamePage() {
   const deleteSupporter = async (id: string) => {
     if (!confirm("ODSTRANIT JMÉNO ZE SÍNĚ SLÁVY?")) return;
     try {
-      await deleteDoc(doc(db, "community_supporters", id));
+      await fetch(`/api/sin-slavy?id=${id}`, { method: 'DELETE' });
+      setSupporters(prev => prev.filter(s => s.id !== id));
     } catch (error) {
       console.error("Delete failed:", error);
     }
@@ -162,7 +154,7 @@ export default function AdminHallOfFamePage() {
                         </div>
                         <div>
                            <h3 className="text-xl font-heading font-black text-white uppercase tracking-tighter italic">{s.name}</h3>
-                           <p className="text-[9px] font-mono text-white/20 uppercase">Přidáno: {s.time?.toDate ? s.time.toDate().toLocaleDateString() : 'Dnes'}</p>
+                           <p className="text-[9px] font-mono text-white/20 uppercase">Přidáno: {s.time ? new Date(s.time).toLocaleDateString() : 'Dnes'}</p>
                         </div>
                      </div>
                      <button 

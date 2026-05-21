@@ -12,7 +12,13 @@ import {
   ShieldAlert,
   LogOut,
   Trophy,
-  Zap
+  Zap,
+  Ticket,
+  Activity,
+  Heart,
+  Bell,
+  Eye,
+  Scissors
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -23,20 +29,69 @@ export default function AdminDashboardPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
+  const [newVouchersCount, setNewVouchersCount] = useState(0);
+  const [newSeznamkaCount, setNewSeznamkaCount] = useState(0);
+  const [newNovinkyCount, setNewNovinkyCount] = useState(0);
 
   const ADMIN_PASSWORD = "MAFIA_PROTOCOL_737";
+
+  const checkVouchers = () => {
+    const saved = localStorage.getItem("mmbarber_voucher_requests");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const _new = parsed.filter((r: any) => r.status === "new").length;
+        setNewVouchersCount(_new);
+      } catch (e) {}
+    }
+  };
 
   useEffect(() => {
     if (sessionStorage.getItem("mmbarber_admin_auth") === "true") {
       setIsAuthenticated(true);
+      checkVouchers();
     }
+
+    window.addEventListener("storage", checkVouchers);
+    return () => window.removeEventListener("storage", checkVouchers);
   }, []);
+
+  // Polling for new items
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const fetchCounts = async () => {
+      try {
+        const [seznamkaRes, novinkyRes] = await Promise.all([
+          fetch('/api/seznamka?status=new'),
+          fetch('/api/novinky')
+        ]);
+        
+        if (seznamkaRes.ok) {
+          const seznamkaData = await seznamkaRes.json();
+          setNewSeznamkaCount(seznamkaData.length);
+        }
+        
+        if (novinkyRes.ok) {
+          const novinkyData = await novinkyRes.json();
+          setNewNovinkyCount(novinkyData.filter((n: any) => n.status === "new").length);
+        }
+      } catch (e) {
+        console.error("Failed to fetch counts", e);
+      }
+    };
+
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 5000); // Polling every 5s
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       sessionStorage.setItem("mmbarber_admin_auth", "true");
+      checkVouchers();
     } else {
       alert("ACCESS DENIED: INVALID CLEARANCE");
       setPassword("");
@@ -83,6 +138,25 @@ export default function AdminDashboardPage() {
 
   const adminModules = [
     {
+      id: 'vouchery',
+      title: 'OBJEDNÁVKY VOUCHERŮ',
+      subtitle: 'VOUCHER_REQUESTS',
+      desc: 'Zpracování žádostí o dárkové poukazy a kontrola úhrad.',
+      icon: <Ticket className="text-mafia-gold" size={40} />,
+      link: '/admin/vouchery',
+      color: 'rgba(197, 160, 89, 0.25)',
+      badge: newVouchersCount > 0 ? newVouchersCount : undefined
+    },
+    {
+      id: 'status',
+      title: 'STATUS OPERATIVCŮ',
+      subtitle: 'OPERATIVE_STATUS',
+      desc: 'Ruční a automatický kalendář stavu online/offline na kartách barberů.',
+      icon: <Activity className="text-mafia-gold" size={40} />,
+      link: '/admin/status',
+      color: 'rgba(34, 197, 94, 0.2)'
+    },
+    {
       id: 'chat',
       title: 'MODERACE CHATU',
       subtitle: 'COMMUNITY_WATCH',
@@ -90,6 +164,24 @@ export default function AdminDashboardPage() {
       icon: <Users className="text-mafia-gold" size={40} />,
       link: '/admin/komunita/chat',
       color: 'rgba(var(--color-mafia-gold-rgb), 0.1)'
+    },
+    {
+      id: 'viditelnost',
+      title: 'GLOBÁLNÍ VIDITELNOST',
+      subtitle: 'VISIBILITY_CONTROL',
+      desc: 'Zapínání a vypínání sekcí webu a karet barberů pro veřejnost.',
+      icon: <Eye className="text-mafia-gold" size={40} />,
+      link: '/admin/viditelnost',
+      color: 'rgba(255, 255, 255, 0.1)'
+    },
+    {
+      id: 'barberi',
+      title: 'SPRÁVA BARBERŮ',
+      subtitle: 'BARBER_MANAGEMENT',
+      desc: 'Přidávání nových operativců, nastavení mentora a osobního chatu.',
+      icon: <Scissors className="text-mafia-gold" size={40} />,
+      link: '/admin/barberi',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.3)'
     },
     {
       id: 'historky',
@@ -117,6 +209,26 @@ export default function AdminDashboardPage() {
       icon: <Zap className="text-mafia-gold" size={40} />,
       link: '/admin/komunita/zlepseni',
       color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'seznamka',
+      title: 'ZPRÁVY ZE SEZNAMKY',
+      subtitle: 'MATCHMAKING_INBOX',
+      desc: 'Profily zájemkyň, kontaktní údaje a správa zpráv z matchmakingového protokolu.',
+      icon: <Heart className="text-mafia-gold" size={40} />,
+      link: '/admin/seznamka',
+      color: 'rgba(197, 100, 120, 0.2)',
+      badge: newSeznamkaCount > 0 ? newSeznamkaCount : undefined
+    },
+    {
+      id: 'novinky',
+      title: 'INBOX BARBERA',
+      subtitle: 'DIRECT_CHANNEL',
+      desc: 'Tipy, novinky, pochvaly a dotazy od klientů přímo do tvého soukromého inboxu.',
+      icon: <Bell className="text-mafia-gold" size={40} />,
+      link: '/admin/komunita/novinky',
+      color: 'rgba(197, 160, 89, 0.15)',
+      badge: newNovinkyCount > 0 ? newNovinkyCount : undefined
     }
   ];
 
@@ -157,6 +269,12 @@ export default function AdminDashboardPage() {
                       style={{ background: `radial-gradient(circle at center, ${module.color}, transparent 70%)` }}
                    ></div>
                    
+                   {module.badge && (
+                     <div className="absolute top-8 right-8 w-10 h-10 bg-mafia-red rounded-full flex items-center justify-center text-white font-bold font-mono text-xs animate-pulse shadow-[0_0_30px_rgba(255,0,0,0.6)] border border-mafia-red/50 z-20">
+                       {module.badge}
+                     </div>
+                   )}
+
                    <div className="relative z-10">
                        <div className="mb-10 group-hover:scale-110 transition-transform duration-500">
                            {module.icon}

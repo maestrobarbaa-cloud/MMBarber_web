@@ -6,7 +6,23 @@ export const barbers: BarberProfile[] = [
     id: "tomas",
     role: "The Enforcer",
     image: "/obr/tomasmicka.png",
-    desc: "Mistr komunikace a hrubé síly. Tvůj vous zlomí k naprosté poslušnosti.",
+    desc: `Možná bys čekal jednoduchý příběh. Školu, obor, certifikát, hotovo.
+
+Ale realita je jinde.
+
+Ano — něco jsem vystudoval. Něco, co se dá napsat do řádku a dát do CV. Ale to je jen začátek věci, ne její podstata.
+
+To, kým jsem dnes, vzniklo až potom. V pohybu, v rozhodnutích, v místech, kde se nehraje na jistotu.
+
+A možná tě to překvapí, ale i věci, na které se právě díváš, nejsou náhoda.
+
+Jsou to odrazy mých myšlenek. Každý detail, atmosféra, energie — všechno má svůj původ.
+
+Netvořím jen to, co je vidět.
+
+Tvořím všechno kolem toho.
+
+A možná proto to působí jinak, než bys čekal.`,
     schedule: "Út-Pá 9:00 - 18:00 | So-Ne 9:00 - 12:00",
     bookingLink: "https://mm.inthechair.com/micka",
     specializations: ["Primárně pánské", "ale zvládnu i dámy"],

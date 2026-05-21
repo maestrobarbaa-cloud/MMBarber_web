@@ -19,17 +19,6 @@ import {
   Check
 } from "lucide-react";
 import Link from "next/link";
-import { db } from "@/lib/firebase";
-import { 
-  collection, 
-  query, 
-  orderBy, 
-  onSnapshot, 
-  deleteDoc, 
-  doc, 
-  updateDoc,
-  serverTimestamp
-} from "firebase/firestore";
 
 interface Suggestion {
   id: string;
@@ -42,7 +31,7 @@ interface Suggestion {
   status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'HIDDEN';
   likes: string[];
   adminResponse?: string;
-  createdAt: any;
+  createdAt: number;
 }
 
 export default function AdminSuggestionsPage() {
@@ -69,21 +58,22 @@ export default function AdminSuggestionsPage() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    const q = query(
-      collection(db, "suggestions"), 
-      orderBy("createdAt", "desc")
-    );
+    const fetchSuggestions = async () => {
+      try {
+        const res = await fetch('/api/zlepseni');
+        if (res.ok) {
+          const data = await res.json();
+          setSuggestions(data);
+          setLoading(false);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Suggestion[];
-      setSuggestions(data);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    fetchSuggestions();
+    const interval = setInterval(fetchSuggestions, 3000);
+    return () => clearInterval(interval);
   }, [isAuthenticated]);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -99,10 +89,12 @@ export default function AdminSuggestionsPage() {
 
   const updateStatus = async (id: string, status: 'APPROVED' | 'REJECTED') => {
     try {
-      await updateDoc(doc(db, "suggestions", id), { 
-        status,
-        updatedAt: serverTimestamp() 
+      await fetch('/api/zlepseni', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status })
       });
+      setSuggestions(prev => prev.map(s => s.id === id ? { ...s, status } : s));
     } catch (error) {
       console.error("Update failed:", error);
     }
@@ -110,12 +102,18 @@ export default function AdminSuggestionsPage() {
 
   const handleResponse = async (id: string) => {
     try {
-      await updateDoc(doc(db, "suggestions", id), { 
-        adminResponse,
-        adminPriority: selectedAdminPriority,
-        status: isResponsePublic ? "APPROVED" : "HIDDEN", 
-        updatedAt: serverTimestamp() 
+      const newStatus = isResponsePublic ? "APPROVED" : "HIDDEN";
+      await fetch('/api/zlepseni', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          id, 
+          adminResponse,
+          adminPriority: selectedAdminPriority,
+          status: newStatus
+        })
       });
+      setSuggestions(prev => prev.map(s => s.id === id ? { ...s, adminResponse, adminPriority: selectedAdminPriority, status: newStatus } : s));
       setRespondingTo(null);
       setAdminResponse("");
       setIsResponsePublic(true);
@@ -127,7 +125,8 @@ export default function AdminSuggestionsPage() {
   const deleteSuggestion = async (id: string) => {
     if (!confirm("SMAZAT NÁVRH NAVŽDY?")) return;
     try {
-      await deleteDoc(doc(db, "suggestions", id));
+      await fetch(`/api/zlepseni?id=${id}`, { method: 'DELETE' });
+      setSuggestions(prev => prev.filter(s => s.id !== id));
     } catch (error) {
       console.error("Delete failed:", error);
     }
@@ -213,7 +212,7 @@ export default function AdminSuggestionsPage() {
                                  STATUS: {s.status}
                               </span>
                               <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest flex items-center gap-2">
-                                 <Clock size={12} /> {s.createdAt?.toDate ? s.createdAt.toDate().toLocaleString() : 'N/A'}
+                                 <Clock size={12} /> {s.createdAt ? new Date(s.createdAt).toLocaleString() : 'N/A'}
                               </span>
                               <span className="text-[10px] font-mono text-mafia-gold uppercase tracking-widest font-black">
                                  USER: {s.user} ({s.likes?.length || 0} LIKES)

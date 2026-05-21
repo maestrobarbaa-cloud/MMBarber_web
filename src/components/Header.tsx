@@ -842,6 +842,22 @@ export function Header() {
         {/* Mobile Actions (Top Right) */}
         <div className="xl:hidden flex items-center gap-2 relative z-[30001]">
           <button
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'));
+              playSound("/sounds/bullet-hit.mp3", 0.4);
+            }}
+            className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold/50 hover:bg-mafia-gold/20 active:scale-95 transition-all shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.2)]"
+            aria-label="Open Compass"
+          >
+            <div className="flex flex-col items-start">
+              <span className="text-[9px] font-black tracking-[0.1em] text-mafia-gold uppercase leading-none">
+                {lang === 'cs' ? 'KOMPAS' : 'COMPASS'}
+              </span>
+            </div>
+            <Compass size={22} className="text-mafia-gold animate-pulse" />
+          </button>
+          
+          <button
             onClick={toggleMenu}
             className={`flex items-center gap-2 px-4 py-2.5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] noir-mode:shadow-[0_0_20px_rgba(192,192,192,0.2)] border-2 transition-all duration-500 ${isMenuOpen ? 'bg-mafia-gold noir-mode:bg-mafia-silver theme-blood:bg-mafia-red border-white' : 'bg-mafia-black border-mafia-gold noir-mode:border-mafia-silver theme-blood:border-mafia-red group hover:bg-mafia-gold/20'}`}
             aria-label="Open Hamburger Menu"

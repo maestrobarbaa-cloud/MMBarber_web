@@ -58,8 +58,28 @@ export default function Home() {
   const [isIntroDismissed, setIsIntroDismissed] = useState(true); // SSR safe default
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
+  const [visibility, setVisibility] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
+    // Fetch global visibility settings
+    const fetchVisibility = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const data = await res.json();
+          const parsed: Record<string, boolean> = {};
+          if (data.values) {
+            Object.entries(data.values).forEach(([key, val]) => {
+              parsed[key] = val === 'true';
+            });
+          }
+          setVisibility(parsed);
+        }
+      } catch (e) {
+        console.error("Failed to load visibility settings", e);
+      }
+    };
+    fetchVisibility();
     // Only run intro if user hasn't visited yet
     const visited = localStorage.getItem("mmbarber_visited") === "true";
     setIsIntroDismissed(visited);
@@ -83,6 +103,8 @@ export default function Home() {
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
     };
   }, []);
+
+  const isVisible = (key: string) => visibility[key] ?? true;
 
   return (
     <div className="flex flex-col min-h-screen relative">
@@ -133,8 +155,13 @@ export default function Home() {
             
             <div className="relative bg-transparent w-full">
               {/* Core sections */}
-              <div id="operativi" className="section-optimize" style={{ scrollMarginTop: '100px' }}><Profiles /></div>
-              <div id="services" className="section-optimize" style={{ scrollMarginTop: '100px' }}><Services /></div>
+              <div id="operativi" className="section-optimize" style={{ scrollMarginTop: '100px' }}>
+                <Profiles hiddenBarbers={{ tomas: !isVisible('visibility_barber_tomas'), nella: !isVisible('visibility_barber_nella') }} />
+              </div>
+              
+              {isVisible('visibility_services') && (
+                <div id="services" className="section-optimize" style={{ scrollMarginTop: '100px' }}><Services /></div>
+              )}
 
               {/* Sequential reveals */}
               <SectionReveal delay={0.1} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
@@ -145,13 +172,17 @@ export default function Home() {
                 <div id="vice" className="section-optimize" style={{ scrollMarginTop: '100px' }}><StyleDefinition /></div>
               </SectionReveal>
 
-              <SectionReveal delay={0.4} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                <div id="kontakt" className="section-optimize" style={{ scrollMarginTop: '100px' }}><Contact /></div>
-              </SectionReveal>
+              {isVisible('visibility_contact') && (
+                <SectionReveal delay={0.4} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                  <div id="kontakt" className="section-optimize" style={{ scrollMarginTop: '100px' }}><Contact /></div>
+                </SectionReveal>
+              )}
 
-              <SectionReveal delay={0.5} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                <div className="section-optimize"><Partners /></div>
-              </SectionReveal>
+              {isVisible('visibility_partners') && (
+                <SectionReveal delay={0.5} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                  <div className="section-optimize"><Partners /></div>
+                </SectionReveal>
+              )}
 
               <div className="pt-0">
                 <Footer />
@@ -159,7 +190,7 @@ export default function Home() {
             </div>
             
             <BottomTerminalReveal thresholdMultiplier={100}>
-              {(level) => (
+              {(level) => isVisible('visibility_intelligence') ? (
                 <div className="w-full flex flex-col gap-12 pb-32">
                   {level >= 1 && (
                     <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
@@ -180,7 +211,7 @@ export default function Home() {
                     <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
                       <div className="w-full flex flex-col gap-12">
                         <SEOFAQ />
-                        <GoogleReviewsWall />
+                        {isVisible('visibility_reviews') && <GoogleReviewsWall />}
                       </div>
                     </SectionReveal>
                   )}
@@ -203,7 +234,7 @@ export default function Home() {
                     </SectionReveal>
                   )}
                 </div>
-              )}
+              ) : <div className="pb-32"></div>}
             </BottomTerminalReveal>
           </motion.div>
         )}

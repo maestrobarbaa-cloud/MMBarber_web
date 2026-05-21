@@ -20,20 +20,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Footer } from "@/components/Footer";
-import { db } from "@/lib/firebase";
-import { 
-  collection, 
-  addDoc, 
-  query, 
-  where, 
-  orderBy, 
-  onSnapshot, 
-  serverTimestamp,
-  updateDoc,
-  doc,
-  arrayUnion,
-  arrayRemove
-} from "firebase/firestore";
 
 interface Suggestion {
   id: string;
@@ -73,34 +59,33 @@ export default function SuggestionsPage() {
     if (savedName) setName(savedName);
 
     // Fetch approved suggestions
-    const q = query(
-      collection(db, "suggestions"),
-      where("status", "==", "APPROVED"),
-      orderBy("createdAt", "desc")
-    );
+    const fetchSuggestions = async () => {
+      try {
+        const res = await fetch('/api/zlepseni?status=APPROVED');
+        if (res.ok) {
+          const data = await res.json();
+          // Sort by likes + priority (numerical 1-10)
+          const sorted = data.sort((a: Suggestion, b: Suggestion) => {
+            const aLikes = a.likes?.length || 0;
+            const bLikes = b.likes?.length || 0;
+            if (bLikes !== aLikes) return bLikes - aLikes;
+            
+            const aScore = a.adminPriority !== undefined ? a.adminPriority : a.userPriority;
+            const bScore = b.adminPriority !== undefined ? b.adminPriority : b.userPriority;
+            return bScore - aScore;
+          });
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Suggestion[];
-      
-        // Sort by likes + priority (numerical 1-10)
-        const sorted = data.sort((a, b) => {
-          const aLikes = a.likes?.length || 0;
-          const bLikes = b.likes?.length || 0;
-          if (bLikes !== aLikes) return bLikes - aLikes;
-          
-          const aScore = a.adminPriority !== undefined ? a.adminPriority : a.userPriority;
-          const bScore = b.adminPriority !== undefined ? b.adminPriority : b.userPriority;
-          return bScore - aScore;
-        });
+          setSuggestions(sorted);
+          setLoading(false);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-      setSuggestions(sorted);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    fetchSuggestions();
+    const interval = setInterval(fetchSuggestions, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -121,15 +106,19 @@ export default function SuggestionsPage() {
       .filter(p => p.length > 0);
 
     try {
-      await addDoc(collection(db, "suggestions"), {
+      const payload = {
         user: name,
         userId,
         content,
         points,
         userPriority: priority,
-        status: "PENDING",
-        likes: [],
-        createdAt: serverTimestamp()
+        status: "PENDING"
+      };
+
+      await fetch('/api/zlepseni', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
       
       localStorage.setItem('mmbarber_nickname', name);
@@ -154,12 +143,11 @@ export default function SuggestionsPage() {
   };
 
   const toggleLike = async (suggestion: Suggestion) => {
-    const hasLiked = suggestion.likes?.includes(userId);
-    const suggestionRef = doc(db, "suggestions", suggestion.id);
-
     try {
-      await updateDoc(suggestionRef, {
-        likes: hasLiked ? arrayRemove(userId) : arrayUnion(userId)
+      await fetch('/api/zlepseni', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: suggestion.id, userId, action: 'toggleLike' })
       });
     } catch (error) {
       console.error("Like toggle failed:", error);
@@ -391,7 +379,7 @@ export default function SuggestionsPage() {
                               PRIORITY: {suggestion.adminPriority !== undefined ? suggestion.adminPriority : suggestion.userPriority}/10
                            </span>
                            <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest flex items-center gap-2">
-                              <Calendar size={12} /> {suggestion.createdAt?.toDate ? suggestion.createdAt.toDate().toLocaleDateString() : 'N/A'}
+                              <Calendar size={12} /> {suggestion.createdAt ? new Date(suggestion.createdAt).toLocaleDateString() : 'N/A'}
                            </span>
                            <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest italic">
                               @{suggestion.user}

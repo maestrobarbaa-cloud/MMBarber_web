@@ -8,7 +8,7 @@ import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "../utils/audio";
-import { barbers } from "@/data/barbers";
+import { useBarbers } from "@/contexts/BarberContext";
 import { OperativeModal } from "./OperativeModal";
 import { 
   subscribeToUserRatings
@@ -22,6 +22,37 @@ import {
   getEnglishRankFromLevel,
   GlobalBarberStats
 } from "@/utils/barberXp";
+import { getOperativeStatusData, subscribeToStatusUpdates, evaluateStatus, EvaluatedStatus, formatSchedule } from "@/utils/status";
+import { getDailyRole } from "@/utils/dailyRoles";
+
+const StatusDot = ({ evaluated }: { evaluated: EvaluatedStatus }) => {
+  if (evaluated.state === 'transparent') return null;
+
+  let colorClass = "";
+  let glowClass = "";
+
+  if (evaluated.state === 'online') {
+    colorClass = "bg-green-500";
+    glowClass = "shadow-[0_0_15px_rgba(34,197,94,0.6)]";
+  } else if (evaluated.state === 'offline') {
+    colorClass = "bg-red-600";
+    glowClass = "shadow-[0_0_15px_rgba(220,38,38,0.6)]";
+  } else if (evaluated.state === 'custom') {
+    colorClass = "bg-mafia-gold";
+    glowClass = "shadow-[0_0_15px_rgba(197,160,89,0.6)]";
+  }
+
+  return (
+    <div className="relative group flex items-center shrink-0 ml-3">
+      <div className={`w-3 h-3 rounded-full ${colorClass} ${glowClass} border border-black/50 animate-pulse`}></div>
+      {evaluated.state === 'custom' && evaluated.text && (
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap bg-black/90 border border-mafia-gold/30 px-3 py-1 text-[10px] font-mono text-mafia-gold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
+          {evaluated.text}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export interface BarberProfile {
   id: string;
@@ -444,12 +475,14 @@ const BarberRanking = ({
   level, 
   rankTitle, 
   lang, 
-  id 
+  id,
+  xp
 }: { 
   level: number, 
   rankTitle: string, 
   lang: string, 
-  id: string 
+  id: string,
+  xp?: number
 }) => {
   const [isBloodMode, setIsBloodMode] = useState(false);
   const [isNoirMode, setIsNoirMode] = useState(false);
@@ -498,7 +531,12 @@ const BarberRanking = ({
               </motion.span>
             </AnimatePresence>
           </div>
-          <div className="flex gap-0.5 mt-2 max-w-[200px] justify-center flex-wrap">
+          {xp !== undefined && (
+            <div className="text-[10px] font-mono tracking-widest text-mafia-gold/60 mt-1 mb-1 font-bold">
+              {xp} EXP
+            </div>
+          )}
+          <div className="flex gap-0.5 mt-1 max-w-[200px] justify-center flex-wrap">
             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((i) => (
               <div 
                 key={i} 
@@ -573,7 +611,8 @@ function BarberCard({
   graphicsTier,
   globalStats,
   likedMap,
-  onLike
+  onLike,
+  evaluatedStatus
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
   isActive: boolean, 
@@ -589,7 +628,8 @@ function BarberCard({
   graphicsTier?: string,
   globalStats: GlobalBarberStats,
   likedMap: Record<string, boolean>,
-  onLike: (barberId: string) => void
+  onLike: (barberId: string) => void,
+  evaluatedStatus: EvaluatedStatus
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -597,7 +637,7 @@ function BarberCard({
   const globalXp = stats.xp;
   const globalLevel = calculateLevelFromXp(globalXp);
   const globalRank = lang === 'cs' 
-    ? getCzechRankFromLevel(globalLevel, barber.id === 'nella') 
+    ? getDailyRole(barber.id, lang)
     : getEnglishRankFromLevel(globalLevel);
   const alreadyLiked = likedMap[barber.id] || false;
 
@@ -618,8 +658,8 @@ function BarberCard({
   return (
     <>
       {/* MOBILE VERSION: Simple, Static, No effects */}
-      <div className="xl:hidden w-full max-w-[340px] h-auto min-h-[420px] bg-[#0c0c0c] border-2 border-mafia-gold/20 p-5 rounded-2xl flex flex-col items-center gap-4 shadow-2xl overflow-hidden relative">
-        <div className="w-36 h-36 border-2 border-mafia-gold/20 overflow-hidden bg-black/40 flex-shrink-0 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
+      <div className="xl:hidden w-full max-w-[340px] h-auto min-h-[420px] bg-[#0c0c0c] border-2 border-mafia-gold/20 p-5 rounded-lg flex flex-col items-center gap-4 shadow-2xl overflow-hidden relative">
+        <div className="w-36 h-36 border-2 border-mafia-gold/20 overflow-hidden bg-black/40 flex-shrink-0 rounded-none shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
           {barber.image === "question-mark" ? (
             <div className="text-mafia-gold/30 font-heading text-9xl animate-pulse italic drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.2)]">?</div>
           ) : (
@@ -637,8 +677,9 @@ function BarberCard({
         </div>
         
         <div className="text-center space-y-1 relative w-full flex flex-col items-center">
-          <h3 className="text-3xl font-heading font-black uppercase text-mafia-gold tracking-widest leading-none relative">
+          <h3 className="text-3xl font-heading font-black uppercase text-mafia-gold tracking-widest leading-none relative flex items-center justify-center">
             {barberDisplayName}
+            <StatusDot evaluated={evaluatedStatus} />
           </h3>
           <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
             {barber.role}
@@ -660,6 +701,7 @@ function BarberCard({
               rankTitle={globalRank} 
               lang={lang} 
               id={barber.id} 
+              xp={globalXp}
             />
           </div>
         </div>
@@ -703,7 +745,7 @@ function BarberCard({
               opacity: { duration: 0.1, delay: isHovered ? 0.35 : 0 },
               visibility: { delay: isHovered ? 0.4 : 0 }
             }}
-            className={`absolute inset-0 bg-[#0c0c0c] border-2 p-8 flex flex-col items-center justify-between rounded-2xl shadow-[0_45px_90px_-20px_rgba(0,0,0,1)] ${
+            className={`absolute inset-0 bg-[#0c0c0c] border-2 p-8 flex flex-col items-center justify-between rounded-lg overflow-hidden shadow-[0_45px_90px_-20px_rgba(0,0,0,1)] ${
               graphicsTier === 'low' ? 'transition-none' : 'transition-all duration-300'
             } ${
               isActive ? "border-mafia-gold shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]" : "border-mafia-gold/20"
@@ -729,8 +771,9 @@ function BarberCard({
                   </div>
               </div>
               <div className="flex-1 flex flex-col items-center text-center relative">
-                  <h3 className="text-4xl font-heading font-black uppercase text-mafia-gold tracking-widest relative">
+                  <h3 className="text-4xl font-heading font-black uppercase text-mafia-gold tracking-widest relative flex items-center justify-center">
                     {barberDisplayName}
+                    <StatusDot evaluated={evaluatedStatus} />
                     {isHidden && (
                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black border border-mafia-gold/20 z-20 origin-left" />
                     )}
@@ -744,6 +787,7 @@ function BarberCard({
                       rankTitle={globalRank} 
                       lang={lang} 
                       id={barber.id} 
+                      xp={globalXp}
                     />
                     {isHidden && (
                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
@@ -763,7 +807,7 @@ function BarberCard({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: -10 }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="text-mafia-gold barber-dialogue-text font-heading italic text-xs md:text-[14px] tracking-[0.15em] px-6 py-4 leading-relaxed uppercase bg-mafia-gold/5 border border-mafia-gold/10 rounded-lg backdrop-blur-sm shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+                        className="text-mafia-gold barber-dialogue-text font-heading italic text-xs md:text-[14px] tracking-[0.15em] px-6 py-4 leading-relaxed uppercase bg-mafia-gold/5 border border-mafia-gold/10 rounded-none backdrop-blur-sm shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                       >
                         <span className="opacity-40 block mb-2 text-[8px] font-mono tracking-[0.5em]">
                           {lang === 'cs' ? "— ZÁZNAM KOMUNIKACE —" : "— MESSAGE_LOG —"}
@@ -809,12 +853,7 @@ function BarberCard({
               opacity: { duration: 0.1, delay: isHovered ? 0.35 : 0 },
               visibility: { delay: isHovered ? 0.4 : 0 }
             }}
-            onClick={() => {
-              if (isHidden) return;
-              trackEvent("cta_barber_booking_card_click", { barber: barber.name });
-              onOpenDossier();
-            }}
-            className={`absolute inset-0 bg-[#0c0c0c] border-2 p-8 flex flex-col items-center transition-all duration-500 rounded-2xl shadow-[0_45px_90px_-20px_rgba(0,0,0,1)] overflow-hidden cursor-pointer ${
+            className={`absolute inset-0 bg-[#0c0c0c] border-2 p-8 flex flex-col items-center transition-all duration-500 rounded-lg shadow-[0_45px_90px_-20px_rgba(0,0,0,1)] overflow-hidden ${
               isHovered ? "border-mafia-gold pointer-events-auto" : "border-mafia-gold/40 pointer-events-none"
             }`}
             style={{ 
@@ -872,12 +911,16 @@ function BarberCard({
 
               {!isHidden && (
                 <div className="w-full flex justify-center relative z-[60] mt-auto pb-10">
-                    <div className="w-full max-w-[260px] h-16 relative flex items-center justify-center border-2 border-mafia-gold bg-mafia-black text-mafia-gold font-heading uppercase tracking-[0.6em] font-black text-lg overflow-hidden group">
-                        <MissionLoading isHovered={isHovered} graphicsTier={graphicsTier} />
-                        <span className="relative z-20 transition-all duration-300 group-hover:tracking-[0.8em]">
-                          {t.operatives?.openFile || (lang === 'cs' ? "OTEVŘÍT SLOŽKU" : "OPEN DOSSIER")}
-                        </span>
-                    </div>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        trackEvent("cta_barber_booking_card_desktop", { barber: barber.name });
+                        onBook();
+                      }}
+                      className="w-full max-w-[260px] h-14 relative flex items-center justify-center bg-mafia-gold text-mafia-black font-heading uppercase tracking-[0.3em] font-black text-base hover:bg-white transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] z-[70] cursor-pointer"
+                    >
+                      {lang === 'cs' ? "REZERVOVAT" : "BOOK NOW"}
+                    </button>
                 </div>
               )}
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
@@ -901,6 +944,7 @@ function SlotReel({
   winnerIndex: number;
   revealedBarbers: string[];
 }) {
+  const { barbers } = useBarbers();
   const [reelH, setReelH] = useState(260);
 
   useEffect(() => {
@@ -1004,7 +1048,8 @@ function ChairWithCard({
   likedMap,
   onLike,
   onOpenDossier,
-  chairGreetingText
+  chairGreetingText,
+  evaluatedStatus
 }: { 
   barber: BarberProfile & { isHidden?: boolean }, 
   activeSpeaker: string | null, 
@@ -1019,7 +1064,8 @@ function ChairWithCard({
   likedMap: Record<string, boolean>,
   onLike: (barberId: string) => void,
   onOpenDossier: (barber: any) => void,
-  chairGreetingText: string
+  chairGreetingText: string,
+  evaluatedStatus: EvaluatedStatus
 }) {
   const [isCardHovered, setIsCardHovered] = useState(false);
   const [isSitting, setIsSitting] = useState(false);
@@ -1199,13 +1245,14 @@ function ChairWithCard({
           globalStats={globalStats}
           likedMap={likedMap}
           onLike={onLike}
+          evaluatedStatus={evaluatedStatus}
         />
       </div>
     </div>
   );
 }
 
-export function Profiles() {
+export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boolean, nella?: boolean } }) {
   const { t, lang } = useTranslation();
   const [isRandomizing, setIsRandomizing] = useState(false);
   const [activeSpeaker, setActiveSpeaker] = useState<'tomas' | 'nella' | null>(null);
@@ -1219,6 +1266,14 @@ export function Profiles() {
   const [graphicsTier, setGraphicsTier] = useState<string>("low");
   const [selectedBarberForModal, setSelectedBarberForModal] = useState<any>(null);
   const [chairGreetingsIndices, setChairGreetingsIndices] = useState<{ [key: string]: number }>({});
+
+  const { barbers, loading } = useBarbers();
+
+  const visibleBarbers = barbers.filter(b => {
+    if (b.id === 'tomas' && hiddenBarbers.tomas) return false;
+    if (b.id === 'nella' && hiddenBarbers.nella) return false;
+    return true;
+  });
 
   useEffect(() => {
     const indices: { [key: string]: number } = {};
@@ -1238,6 +1293,20 @@ export function Profiles() {
   }, []);
 
   const [customNames, setCustomNames] = useState({ tomas: "", nella: "" });
+  const [statusData, setStatusData] = useState(getOperativeStatusData());
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    const unsub = subscribeToStatusUpdates(setStatusData);
+    const interval = setInterval(() => {
+      setStatusData(getOperativeStatusData());
+      setTick(t => t + 1);
+    }, 60000);
+    return () => {
+      unsub();
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     const checkNames = () => {
@@ -1422,7 +1491,7 @@ export function Profiles() {
   }, [isSectionVisible, lang]);
 
   const translatedBarbers = useMemo(() => {
-    return barbers.map(b => {
+    return visibleBarbers.map(b => {
       const isTomas = b.id === 'tomas';
       const barberKey = isTomas ? 'tomas' : 'nella';
       const barberTranslations = t.operatives?.barbers?.[barberKey as 'tomas' | 'nella'];
@@ -1437,14 +1506,16 @@ export function Profiles() {
         role: barberTranslations?.role || b.role,
         motto: barberTranslations?.motto || "",
         story: dialogueText || staticDesc,
-        schedule: barberTranslations?.schedule || b.schedule,
+        schedule: formatSchedule(statusData[barberKey as 'tomas' | 'nella'], lang),
         specializations: barberTranslations?.specializations || b.specializations,
         englishSpeaking: (barberTranslations as { englishSpeaking?: string })?.englishSpeaking,
         symbol: b.symbol,
         isHidden: false
       };
     });
-  }, [t, customNames, activeSpeaker, activeDialogueText]);
+  }, [visibleBarbers, t, customNames, activeSpeaker, activeDialogueText, statusData, lang]);
+
+  if (loading || visibleBarbers.length === 0) return null;
 
   return (
     <section 
@@ -1483,30 +1554,34 @@ export function Profiles() {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full mx-auto py-4 xl:py-8">
+                <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full mx-auto py-4 xl:py-8 relative">
                     {translatedBarbers.map((barber, index) => {
                       const isTomas = barber.name === 'Tomáš' || barber.name === 'Tomas';
                       const barberKey = isTomas ? 'tomas' : 'nella';
                       const greetingIdx = chairGreetingsIndices[barberKey] ?? (isTomas ? 0 : 1);
                       const chairGreetingText = lang === 'cs' ? CHAIR_GREETINGS_CS[greetingIdx] : CHAIR_GREETINGS_EN[greetingIdx];
+                      const bKey = barber.id === 'tomas' ? 'tomas' : 'nella';
+                      const evaluated = evaluateStatus(statusData[bKey]);
 
                       return (
-                        <ChairWithCard 
-                          key={barber.name}
-                          barber={barber} 
-                          activeSpeaker={activeSpeaker} 
-                          dialogueIndex={activeDialogueText} 
-                          lang={lang} 
-                          t={t} 
-                          playCardSound={playCardSound} 
-                          side={index % 2 === 0 ? "left" : "right"} 
-                          graphicsTier={graphicsTier}
-                          globalStats={globalStats}
-                          likedMap={likedMap}
-                          onLike={handleLike}
-                          onOpenDossier={setSelectedBarberForModal}
-                          chairGreetingText={chairGreetingText || ""}
-                        />
+                        <div key={barber.name} className="relative flex flex-col items-center w-full">
+                          <ChairWithCard 
+                            barber={barber} 
+                            activeSpeaker={activeSpeaker} 
+                            dialogueIndex={activeDialogueText} 
+                            lang={lang} 
+                            t={t} 
+                            playCardSound={playCardSound} 
+                            side={index % 2 === 0 ? "left" : "right"} 
+                            graphicsTier={graphicsTier}
+                            globalStats={globalStats}
+                            likedMap={likedMap}
+                            onLike={handleLike}
+                            onOpenDossier={setSelectedBarberForModal}
+                            chairGreetingText={chairGreetingText || ""}
+                            evaluatedStatus={evaluated}
+                          />
+                        </div>
                       );
                     })}
                 </div>

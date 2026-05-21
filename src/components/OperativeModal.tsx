@@ -5,6 +5,7 @@ import { X, Award, Medal, Crosshair, Shield, Swords, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "./OptimizedImage";
 import { playSound } from "../utils/audio";
+import { getDailyRole } from "@/utils/dailyRoles";
 
 interface DossierMedal {
   title: string;
@@ -167,7 +168,7 @@ export function OperativeModal({ barber, isOpen, onClose, lang }: OperativeModal
     medals: []
   };
 
-  const codenameText = lang === 'cs' ? extraData.codename.cs : extraData.codename.en;
+  const codenameText = lang === 'cs' ? getDailyRole(barber.id, lang) : extraData.codename.en;
   
   const handleActionClick = () => {
     playSound("/sounds/magnum.mp3", 0.4);

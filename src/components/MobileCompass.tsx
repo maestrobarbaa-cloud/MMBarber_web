@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { Compass, Navigation2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Navigation2, X, MapPin, Target, Radio, User, ChevronRight, FileText, Calendar, Shield, Award, CheckCircle, ArrowLeft } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
-import { playSound } from "../utils/audio";
-import { barbers } from "@/data/barbers";
 
 const TARGET_LAT = 49.0592272;
 const TARGET_LON = 17.4835088;
@@ -13,538 +11,365 @@ const SEARCH_QUERY = "MMBARBER Mařatice";
 
 export function MobileCompass() {
   const { t, lang } = useTranslation();
-  const [isVisible, setIsVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [rotation, setRotation] = useState(0); 
   const [userHeading, setUserHeading] = useState<number | null>(null);
   const [targetBearing, setTargetBearing] = useState<number>(0);
-  const [distance, setDistance] = useState<number | null>(null);
+  const [distanceRaw, setDistanceRaw] = useState<string>("");
   const [isPermissionRequested, setIsPermissionRequested] = useState(false);
-
-  // HUD Navigation States
-  const [hudMode, setHudMode] = useState<'radar' | 'barbers'>('radar');
-  const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
+  const [locationTimeout, setLocationTimeout] = useState(false);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isEnabled && !distanceRaw) {
+      timer = setTimeout(() => {
+        setLocationTimeout(true);
+      }, 8000);
+    } else if (distanceRaw) {
+      setLocationTimeout(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isEnabled, distanceRaw]);
+
+  const requestPermission = useCallback(() => {
+    if (typeof (DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> }).requestPermission === 'function') {
+      (DeviceOrientationEvent as unknown as { requestPermission: () => Promise<string> }).requestPermission()
+        .then((permissionState: string) => {
+          if (permissionState === 'granted') {
+            setIsPermissionRequested(true);
+          }
+        })
+        .catch(console.error);
+    } else {
+        setIsPermissionRequested(true);
+    }
+  }, []);
+
+  const handleToggle = useCallback(() => {
+    const next = !isEnabled;
+    setIsEnabled(next);
+    
+    if (next) {
+      requestPermission();
+    }
+    
+    localStorage.setItem("mmbarber_compass_enabled", next.toString());
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('mmbarber-compass-state', { detail: next }));
+    }, 0);
+  }, [isEnabled, requestPermission]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("mmbarber_compass_enabled") === "true";
+    setIsEnabled(stored);
+    
+    window.addEventListener('mmbarber-toggle-compass', handleToggle);
+
     const checkMobile = () => setIsVisible(window.innerWidth < 1280);
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    const handleToggle = () => {
-      const newState = !isEnabled;
-      setIsEnabled(newState);
-      localStorage.setItem("mmbarber_compass_enabled", String(newState));
-      window.dispatchEvent(new CustomEvent('mmbarber-compass-state', { detail: newState }));
-      
-      if (newState) {
-        playSound("/sounds/scanner-on.mp3", 0.4);
-        if (!isPermissionRequested) requestPermission();
-      } else {
-        playSound("/sounds/scanner-off.mp3", 0.3);
-      }
-    };
+    if ("geolocation" in navigator && isEnabled && isVisible) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat1 = pos.coords.latitude;
+          const lon1 = pos.coords.longitude;
+          
+          const lat1Rad = lat1 * Math.PI / 180;
+          const lat2Rad = TARGET_LAT * Math.PI / 180;
+          const dLonRad = (TARGET_LON - lon1) * Math.PI / 180;
 
-    window.addEventListener('mmbarber-toggle-compass', handleToggle);
+          const y = Math.sin(dLonRad) * Math.cos(lat2Rad);
+          const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) -
+                    Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLonRad);
+          
+          const brng = Math.atan2(y, x) * 180 / Math.PI;
+          setTargetBearing((brng + 360) % 360);
 
-    // Initial load from storage
-    const stored = localStorage.getItem("mmbarber_compass_enabled") === "true";
-    if (stored) setIsEnabled(true);
+          const R = 6371e3;
+          const φ1 = lat1 * Math.PI / 180;
+          const φ2 = TARGET_LAT * Math.PI / 180;
+          const Δφ = (TARGET_LAT - lat1) * Math.PI / 180;
+          const Δλ = (TARGET_LON - lon1) * Math.PI / 180;
+
+          const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                    Math.cos(φ1) * Math.cos(φ2) *
+                    Math.sin(Δλ/2) * Math.sin(Δλ/2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          const d = R * c;
+          
+          let dDisplay = "";
+          dDisplay = d > 1000 ? `${(d / 1000).toFixed(1)} km` : `${Math.round(d)} m`;
+          setDistanceRaw(dDisplay);
+        },
+        null,
+        { enableHighAccuracy: true }
+      );
+    }
 
     return () => {
-      window.removeEventListener("resize", checkMobile);
       window.removeEventListener('mmbarber-toggle-compass', handleToggle);
+      window.removeEventListener("resize", checkMobile);
     };
-  }, [isEnabled]);
+  }, [isEnabled, isVisible, handleToggle, lang]);
 
-  const requestPermission = async () => {
-    setIsPermissionRequested(true);
-    if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-      try {
-        const response = await (DeviceOrientationEvent as any).requestPermission();
-        if (response === 'granted') {
-          startTracking();
-        }
-      } catch (e) {
-        console.error("Permission denied", e);
-      }
-    } else {
-      startTracking();
+  const [calibrationOffset, setCalibrationOffset] = useState(0);
+
+  const handleCalibrate = () => {
+    if (userHeading !== null) {
+      setCalibrationOffset(userHeading);
     }
   };
 
   useEffect(() => {
-    if (!isEnabled || !isPermissionRequested) return;
-
-    const handleOrientation = (e: any) => {
-      let heading = null;
+    const handleOrientation = (e: DeviceOrientationEvent & { webkitCompassHeading?: number }) => {
       if (e.webkitCompassHeading !== undefined) {
-        heading = e.webkitCompassHeading;
-      } else if (e.alpha !== null) {
-        heading = e.absolute ? (360 - e.alpha) : (360 - e.alpha);
-      }
-      
-      if (heading !== null) {
+        setUserHeading(e.webkitCompassHeading);
+      } 
+      else if (e.alpha !== null) {
+        // Standard alpha is counter-clockwise, we need clockwise heading
+        const heading = e.absolute ? (360 - e.alpha) : (360 - e.alpha);
         setUserHeading(heading % 360);
       }
     };
 
     if (typeof window !== 'undefined') {
-      if ('ondeviceorientationabsolute' in window) {
-        (window as any).addEventListener("deviceorientationabsolute", handleOrientation, true);
-      } else {
-        (window as any).addEventListener("deviceorientation", handleOrientation, true);
+      const win = window as any;
+      if ('ondeviceorientationabsolute' in win) {
+        win.addEventListener("deviceorientationabsolute", handleOrientation, true);
+      } else if ('DeviceOrientationEvent' in win) {
+        win.addEventListener("deviceorientation", handleOrientation, true);
       }
     }
-
     return () => {
-      if (typeof window !== 'undefined') {
-        (window as any).removeEventListener("deviceorientationabsolute", handleOrientation);
-        (window as any).removeEventListener("deviceorientation", handleOrientation);
+      const win = window as any;
+      if (typeof win !== 'undefined') {
+        win.removeEventListener("deviceorientationabsolute", handleOrientation);
+        win.removeEventListener("deviceorientation", handleOrientation);
       }
     };
-  }, [isEnabled, isPermissionRequested]);
+  }, [isEnabled, isVisible]);
 
-  const startTracking = () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.watchPosition((pos) => {
-        const { latitude, longitude } = pos.coords;
-        const dist = calculateDistance(latitude, longitude, TARGET_LAT, TARGET_LON);
-        const bearing = calculateBearing(latitude, longitude, TARGET_LAT, TARGET_LON);
-        setDistance(dist);
-        setTargetBearing(bearing);
-      }, (err) => console.error(err), { enableHighAccuracy: true });
+  useEffect(() => {
+    if (userHeading !== null) {
+      const calibratedHeading = (userHeading - calibrationOffset + 360) % 360;
+      setRotation(targetBearing - calibratedHeading);
+    } else {
+      setRotation(targetBearing);
     }
-  };
+  }, [userHeading, targetBearing, calibrationOffset]);
 
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-    const R = 6371e3;
-    const φ1 = lat1 * Math.PI / 180;
-    const φ2 = lat2 * Math.PI / 180;
-    const Δφ = (lat2 - lat1) * Math.PI / 180;
-    const Δλ = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  };
-
-  const calculateBearing = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-    const φ1 = lat1 * Math.PI / 180;
-    const φ2 = lat2 * Math.PI / 180;
-    const λ1 = lon1 * Math.PI / 180;
-    const λ2 = lon2 * Math.PI / 180;
-    const y = Math.sin(λ2 - λ1) * Math.cos(φ2);
-    const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(λ2 - λ1);
-    const θ = Math.atan2(y, x);
-    return (θ * 180 / Math.PI + 360) % 360;
-  };
-
-  const rotation = userHeading !== null ? (targetBearing - userHeading) : 0;
-  const distanceValue = distance !== null ? Math.round(distance) : null;
-  const isArrived = distanceValue !== null && distanceValue < 30;
-
-  if (!isVisible || !isEnabled) return null;
-
-  const currentBarber = barbers.find(b => b.id === selectedBarberId);
+  const isArrived = false;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, scale: 1.1 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="fixed inset-0 z-[10000] bg-black/98 backdrop-blur-3xl flex flex-col xl:hidden overflow-y-auto"
-      >
-        {/* TOP HUD BAR */}
-        <div className="p-6 border-b border-mafia-gold/20 bg-mafia-gold/[0.02] flex items-center justify-between">
-           <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                 <Radio size={14} className="text-mafia-red animate-pulse" />
-                 <span className="text-mafia-gold font-mono text-[10px] font-black uppercase tracking-[0.4em]">
-                   {lang === 'cs' ? 'ŽIVÉ SLEDOVÁNÍ' : 'LIVE TRACKING'}
-                 </span>
-              </div>
-              <h2 className="text-white font-heading font-black text-xl uppercase tracking-widest mt-1">
-                {lang === 'cs' ? 'CENTRÁLA MAŘATICE' : 'MAŘATICE HQ'}
-              </h2>
-           </div>
-           <button 
-             onClick={() => {
-               setIsEnabled(false);
-               localStorage.setItem("mmbarber_compass_enabled", "false");
-               window.dispatchEvent(new CustomEvent('mmbarber-compass-state', { detail: false }));
-               playSound("/sounds/ui-back.mp3", 0.3);
-             }}
-             className="w-12 h-12 rounded-full border border-mafia-red/40 flex items-center justify-center text-mafia-red bg-mafia-red/5 active:scale-90 transition-transform"
-           >
-             <X size={28} />
-           </button>
-        </div>
-
-        {/* HUD NAVIGATION TABS */}
-        <div className="flex border-b border-mafia-gold/10 bg-mafia-black/40">
-          <button 
-            onClick={() => {
-              setHudMode('radar');
-              playSound("/sounds/ui-click.mp3", 0.4);
-            }}
-            className={`flex-1 py-4 text-center font-mono text-[10px] font-black uppercase tracking-[0.3em] border-r border-mafia-gold/10 transition-colors ${hudMode === 'radar' ? 'text-mafia-gold bg-mafia-gold/5 border-b-2 border-b-mafia-gold' : 'text-mafia-gold/40 hover:text-mafia-gold/80'}`}
-          >
-            {lang === 'cs' ? 'RADAR / TRASA' : 'RADAR / GPS'}
-          </button>
-          <button 
-            onClick={() => {
-              setHudMode('barbers');
-              playSound("/sounds/ui-click.mp3", 0.4);
-            }}
-            className={`flex-1 py-4 text-center font-mono text-[10px] font-black uppercase tracking-[0.3em] transition-colors ${hudMode === 'barbers' ? 'text-mafia-gold bg-mafia-gold/5 border-b-2 border-b-mafia-gold' : 'text-mafia-gold/40 hover:text-mafia-gold/80'}`}
-          >
-            {lang === 'cs' ? 'ŽIVOTOPISY' : 'DOSSIERS'}
-          </button>
-        </div>
-
-        {hudMode === 'radar' ? (
-          <>
-            {/* HUD STATS - Focused on Distance */}
-            <div className="flex-none border-b border-mafia-gold/10">
-               <div className="p-8 flex flex-col items-center justify-center">
-                  <span className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-[0.5em] mb-3">
-                    {lang === 'cs' ? 'VZDÁLENOST K CÍLI' : 'DISTANCE TO MISSION'}
-                  </span>
-                  <div className="flex items-baseline gap-3">
-                     <span className="text-mafia-gold font-heading font-black text-7xl drop-shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)]">
-                       {distanceValue !== null ? distanceValue : '---'}
-                     </span>
-                     <span className="text-mafia-gold/60 font-mono text-2xl uppercase font-black">m</span>
-                  </div>
-                  <div className="w-48 h-1 bg-mafia-gold/10 mt-6 relative overflow-hidden">
-                     <motion.div 
-                       animate={{ x: ['-100%', '100%'] }}
-                       transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                       className="absolute inset-0 bg-mafia-gold"
-                     />
-                  </div>
-               </div>
-            </div>
-
-            {/* MAIN COMPASS AREA (FULL SCREEN) */}
-            <div className="flex-grow min-h-[350px] relative flex items-center justify-center">
-               {/* Radar Background Grids */}
-               <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-                  <div className="w-[120vw] h-[120vw] border border-mafia-gold/5 rounded-full absolute"></div>
-                  <div className="w-[100vw] h-[100vw] border border-mafia-gold/10 rounded-full absolute"></div>
-                  <div className="w-[80vw] h-[80vw] border border-mafia-gold/20 rounded-full absolute"></div>
-                  
-                  <motion.div 
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                    className="absolute w-[150vw] h-[150vw] bg-[conic-gradient(from_0deg,transparent_0deg,rgba(var(--color-mafia-gold-rgb),0.05)_90deg,transparent_100deg)] rounded-full"
-                  />
-                  
-                  {/* Scanline HUD Overlay */}
-                  <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.2)_2px,rgba(0,0,0,0.2)_4px)] opacity-50"></div>
-               </div>
-
-              {/* HUGE COMPASS DISK */}
-              <div 
-                className="relative w-[85vw] h-[85vw] max-w-[450px] max-h-[450px] cursor-pointer"
-                onClick={() => !isPermissionRequested && requestPermission()}
-              >
-                 {/* Outer Scale */}
-                 <motion.div 
-                   animate={{ rotate: userHeading !== null ? -userHeading : 0 }}
-                   className="absolute inset-0 transition-transform duration-500"
-                 >
-                    <div className="absolute inset-0 border-4 border-mafia-gold/20 rounded-full shadow-[0_0_50px_rgba(var(--color-mafia-gold-rgb),0.1)]"></div>
-                    
-                    {/* Degrees and Markers */}
-                    {[0, 45, 90, 135, 180, 225, 270, 315].map(deg => (
-                       <div key={deg} className="absolute inset-0 flex flex-col items-center justify-start p-2" style={{ transform: `rotate(${deg}deg)` }}>
-                          <div className={`w-0.5 h-4 bg-mafia-gold ${deg % 90 === 0 ? 'opacity-100' : 'opacity-40'}`}></div>
-                          {deg === 0 && <span className="text-mafia-gold font-black text-xl mt-2">N</span>}
-                          {deg === 90 && <span className="text-mafia-gold/40 font-black text-xs mt-2">{lang === 'cs' ? 'V' : 'E'}</span>}
-                          {deg === 180 && <span className="text-mafia-gold/40 font-black text-xs mt-2">{lang === 'cs' ? 'J' : 'S'}</span>}
-                          {deg === 270 && <span className="text-mafia-gold/40 font-black text-xs mt-2">{lang === 'cs' ? 'Z' : 'W'}</span>}
-                       </div>
-                    ))}
-                 </motion.div>
-
-                 {/* HUGE NEEDLE */}
-                 <motion.div 
-                   animate={{ rotate: rotation }}
-                   transition={{ type: "spring", stiffness: 40, damping: 15 }}
-                   className="absolute inset-0 flex items-center justify-center"
-                 >
-                    <div className="relative w-full h-full flex items-center justify-center">
-                       <svg width="100%" height="100%" viewBox="0 0 100 100" className="drop-shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.6)]">
-                          <defs>
-                             <linearGradient id="hugeNeedleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stopColor="var(--color-mafia-gold)" />
-                                <stop offset="50%" stopColor="#443311" />
-                                <stop offset="100%" stopColor="#ff0000" />
-                             </linearGradient>
-                          </defs>
-                          <path d="M50 8 L58 50 L50 92 L42 50 Z" fill="url(#hugeNeedleGrad)" />
-                          <circle cx="50" cy="50" r="5" fill="white" className="animate-pulse" />
-                          <circle cx="50" cy="50" r="45" fill="none" stroke="var(--color-mafia-gold)" strokeWidth="0.5" strokeDasharray="2 4" className="opacity-30" />
-                       </svg>
-                       
-                       <motion.div 
-                         animate={{ scale: [1, 1.5, 1], opacity: [0.4, 0.8, 0.4] }}
-                         transition={{ duration: 2, repeat: Infinity }}
-                         className="absolute top-0 w-8 h-8 bg-mafia-gold rounded-full blur-[10px]"
-                       />
-                    </div>
-                 </motion.div>
-
-                 {/* SYNC PROMPT */}
-                 {userHeading === null && (
-                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="bg-mafia-black/80 border border-mafia-gold/40 px-6 py-3 backdrop-blur-md">
-                         <span className="text-mafia-gold font-mono text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">
-                            {lang === 'cs' ? 'KLEPNĚTE PRO SYNCHRONIZACI' : 'TAP TO SYNC SENSORS'}
-                         </span>
-                      </div>
-                   </div>
-                 )}
-              </div>
-            </div>
-
-            {/* BOTTOM HUD CONTROLS */}
-            <div className="p-8 bg-mafia-gold/[0.05] border-t border-mafia-gold/20 flex flex-col items-center gap-6">
-               <div className="flex flex-col items-center text-center">
-                  <h3 className="text-white font-heading font-black text-xl uppercase tracking-[0.2em] mb-1">
-                     {isArrived 
-                       ? (lang === 'cs' ? 'CÍL DOSAŽEN' : 'DESTINATION REACHED') 
-                       : (lang === 'cs' ? 'TAKTICKÝ PŘÍSTUP' : 'TACTICAL APPROACH')}
-                  </h3>
-                  <p className="text-mafia-gold/50 font-mono text-[9px] uppercase tracking-[0.5em]">
-                     SADOVÁ 1383, UH MAŘATICE
-                  </p>
-               </div>
-
-               <div className="flex gap-4 w-full">
-                  <button 
-                    onClick={() => {
-                      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SEARCH_QUERY)}`, '_blank');
-                      playSound("/sounds/bullet-hit.mp3", 0.6);
-                    }}
-                    className="flex-1 py-5 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.3em] text-xs flex items-center justify-center gap-2 hover:bg-white transition-all shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)]"
-                  >
-                     <MapPin size={18} /> {lang === 'cs' ? 'OTEVŘÍT MAPY' : 'OPEN MAPS'}
-                  </button>
-                  
-                  <button 
-                    onClick={() => {
-                      if (!isPermissionRequested) requestPermission();
-                      playSound("/sounds/ui-click.mp3", 0.4);
-                    }}
-                    className="px-6 py-5 border border-mafia-gold/30 text-mafia-gold hover:bg-mafia-gold/10 transition-colors flex items-center justify-center"
-                  >
-                     <Target size={20} />
-                  </button>
-               </div>
-            </div>
-          </>
-        ) : (
-          /* DOSSIERS / BIOGRAPHIES VIEW */
-          <div className="flex-grow p-6 flex flex-col bg-mafia-dark/30">
-            <AnimatePresence mode="wait">
-              {selectedBarberId === null ? (
-                /* BARBER SELECTION LIST */
-                <motion.div
-                  key="list"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  className="flex flex-col gap-6"
-                >
-                  <div className="text-center my-4">
-                    <span className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-[0.4em]">
-                      {lang === 'cs' ? 'AKTIVNÍ OPERATIVCI V KŘESLE' : 'ACTIVE CHAIR AGENTS'}
-                    </span>
-                    <h3 className="text-white font-heading font-black text-2xl uppercase tracking-widest mt-1">
-                      {lang === 'cs' ? 'NÁŠ TÝM' : 'THE TEAM'}
-                    </h3>
-                  </div>
-
-                  <div className="flex flex-col gap-4">
-                    {barbers.map((barber) => {
-                      const isTomas = barber.id === 'tomas';
-                      const bKey = isTomas ? 'tomas' : 'nella';
-                      const trans = t.operatives?.barbers?.[bKey];
-                      return (
-                        <div
-                          key={barber.id}
-                          onClick={() => {
-                            setSelectedBarberId(barber.id);
-                            playSound("/sounds/card.mp3", 0.8);
-                          }}
-                          className="group border border-mafia-gold/20 bg-mafia-black/85 p-5 flex items-center justify-between active:border-mafia-gold/80 transition-all rounded-sm relative overflow-hidden"
-                        >
-                          <div className="absolute inset-0 bg-gradient-to-r from-mafia-gold/[0.02] to-transparent pointer-events-none"></div>
-                          
-                          <div className="flex items-center gap-5 relative z-10">
-                            {/* Avatar with CRT scanline and active indicator */}
-                            <div className="relative w-16 h-16 rounded-full border border-mafia-gold/40 overflow-hidden bg-black flex-shrink-0">
-                              <img 
-                                src={barber.image} 
-                                alt={barber.name} 
-                                className="w-full h-full object-cover filter grayscale group-active:grayscale-0 transition-all"
-                              />
-                              <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.3)_2px,rgba(0,0,0,0.3)_4px)] pointer-events-none"></div>
-                            </div>
-                            
-                            <div className="flex flex-col">
-                              <div className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <h4 className="text-white font-heading font-black text-lg uppercase tracking-wider">
-                                  {trans?.name || barber.name}
-                                </h4>
-                              </div>
-                              <span className="text-mafia-gold font-mono text-[9px] uppercase tracking-widest mt-1">
-                                {trans?.role || barber.role}
-                              </span>
-                            </div>
-                          </div>
-
-                          <ChevronRight className="text-mafia-gold opacity-40 group-active:opacity-100 transition-opacity" size={24} />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              ) : (
-                /* SELECTED BARBER DOSSIER / BIOGRAPHY DETAIL */
-                <motion.div
-                  key="dossier"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="flex flex-col gap-6"
-                >
-                  {/* Back button to list */}
-                  <button 
-                    onClick={() => {
-                      setSelectedBarberId(null);
-                      playSound("/sounds/ui-back.mp3", 0.4);
-                    }}
-                    className="self-start flex items-center gap-2 text-mafia-gold/60 active:text-mafia-gold font-mono text-[9px] uppercase tracking-widest border border-mafia-gold/20 px-4 py-2 bg-mafia-black/40"
-                  >
-                    <ArrowLeft size={12} /> {lang === 'cs' ? 'ZPĚT NA SEZNAM' : 'BACK TO LIST'}
-                  </button>
-
-                  {currentBarber && (() => {
-                    const isTomas = currentBarber.id === 'tomas';
-                    const bKey = isTomas ? 'tomas' : 'nella';
-                    const trans = t.operatives?.barbers?.[bKey];
-                    const stories = trans?.story || currentBarber.desc;
-                    const special = trans?.specializations || currentBarber.specializations || [];
-
-                    return (
-                      <div className="border border-mafia-gold/20 bg-mafia-black/90 p-6 flex flex-col gap-6 relative overflow-hidden rounded-sm">
-                        {/* CRT glitches HUD overlays */}
-                        <div className="absolute top-4 right-4 flex items-center gap-2 font-mono text-[9px] text-mafia-gold/40">
-                          <FileText size={10} />
-                          <span>DOSSIER // CODE_{currentBarber.symbol || 'X'}</span>
-                        </div>
-
-                        {/* Top Profile Header */}
-                        <div className="flex gap-5 items-center pb-5 border-b border-mafia-gold/10">
-                          <div className="relative w-24 h-24 rounded-sm border-2 border-mafia-gold/30 overflow-hidden bg-black/60 flex-shrink-0">
-                            <img 
-                              src={currentBarber.image} 
-                              alt={currentBarber.name} 
-                              className="w-full h-full object-cover filter grayscale contrast-110"
-                            />
-                            <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.4)_2px,rgba(0,0,0,0.4)_4px)] pointer-events-none"></div>
-                          </div>
-
-                          <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                              <h3 className="text-white font-heading font-black text-2xl uppercase tracking-wider">
-                                {trans?.name || currentBarber.name}
-                              </h3>
-                            </div>
-                            <span className="text-mafia-gold font-mono text-[10px] uppercase tracking-widest mt-1">
-                              {trans?.role || currentBarber.role}
-                            </span>
-                            {currentBarber.rank && (
-                              <div className="flex items-center gap-2 mt-2 bg-mafia-gold/10 border border-mafia-gold/20 px-2.5 py-1 self-start">
-                                <Award size={10} className="text-mafia-gold" />
-                                <span className="text-mafia-gold font-mono text-[8px] uppercase tracking-widest font-black">
-                                  LEVEL {currentBarber.rank.level} : {currentBarber.rank.title}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Bio / Story Section */}
-                        <div className="flex flex-col gap-2">
-                          <span className="text-mafia-gold/40 font-mono text-[9px] uppercase tracking-[0.2em] font-black">
-                            {lang === 'cs' ? 'NARRATIVE / ŽIVOTOPIS' : 'NARRATIVE / DOSSIER'}
-                          </span>
-                          <p className="text-white/80 font-heading text-sm leading-relaxed text-justify bg-white/[0.01] p-4 border border-white/5 font-medium rounded-sm">
-                            {stories}
-                          </p>
-                        </div>
-
-                        {/* Motto if available */}
-                        {trans?.motto && (
-                          <div className="border-l-2 border-mafia-gold/60 pl-4 py-1 italic text-mafia-gold/90 font-heading text-sm">
-                            “{trans.motto}”
-                          </div>
-                        )}
-
-                        {/* Specializations / Skills */}
-                        <div className="flex flex-col gap-3">
-                          <span className="text-mafia-gold/40 font-mono text-[9px] uppercase tracking-[0.2em] font-black">
-                            {lang === 'cs' ? 'SPECIALIZACE & SCHOPNOSTI' : 'SPECIALIZATIONS & SKILLS'}
-                          </span>
-                          <div className="flex flex-wrap gap-2">
-                            {special.map((spec: string, i: number) => (
-                              <span 
-                                key={i} 
-                                className="px-3 py-1.5 border border-mafia-gold/30 bg-mafia-gold/[0.03] text-mafia-gold font-mono text-[9px] uppercase tracking-wider rounded-sm flex items-center gap-1.5"
-                              >
-                                <CheckCircle size={10} className="text-mafia-gold/60" />
-                                {spec}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Schedule */}
-                        <div className="flex flex-col gap-2 bg-white/[0.02] border border-white/5 p-4 rounded-sm">
-                          <div className="flex items-center gap-2 text-mafia-gold/50 font-mono text-[9px] uppercase tracking-[0.2em] font-black">
-                            <Calendar size={12} />
-                            <span>{lang === 'cs' ? 'DOSTUPNOST / SMĚNY' : 'AVAILABILITY / HOURS'}</span>
-                          </div>
-                          <span className="text-white/90 font-heading text-sm font-semibold mt-1">
-                            {trans?.schedule || currentBarber.schedule}
-                          </span>
-                        </div>
-
-                        {/* Booking Link Action */}
-                        <button 
-                          onClick={() => {
-                            window.open(currentBarber.bookingLink, "_blank");
-                            playSound("/sounds/ui-click.mp3", 0.6);
-                          }}
-                          className="w-full mt-4 py-5 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.3em] text-xs flex items-center justify-center gap-2 hover:bg-white transition-all shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.3)]"
-                        >
-                          <Target size={16} />
-                          {lang === 'cs' ? 'REZERVACE STŘIHU' : 'BOOK SESSION'}
-                        </button>
-                      </div>
-                    );
-                  })()}
-                </motion.div>
-              )}
-            </AnimatePresence>
+    <>
+      <AnimatePresence>
+        {isVisible && isEnabled && (
+        <motion.div
+           initial={{ opacity: 0, scale: 1.1 }}
+           animate={{ opacity: 1, scale: 1 }}
+           exit={{ opacity: 0, scale: 0.95 }}
+           className="fixed inset-0 z-[10000] bg-black/98 backdrop-blur-3xl flex flex-col xl:hidden overflow-y-auto touch-pan-y"
+        >
+          {/* Background Elements */}
+          <div className="fixed inset-0 z-0 pointer-events-none">
+             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-mafia-gold/10 via-transparent to-transparent opacity-40"></div>
+             <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.03)_1px,transparent_1px)] bg-[size:30px_30px]"></div>
           </div>
-        )}
-      </motion.div>
-    </AnimatePresence>
+
+          <div className="relative z-10 min-h-full flex flex-col items-center p-6 pt-20 pb-10">
+            {/* Close Button - More prominent with label */}
+            <button 
+              onClick={() => {
+                setIsEnabled(false);
+                localStorage.setItem("mmbarber_compass_enabled", "false");
+                setTimeout(() => {
+                  window.dispatchEvent(new CustomEvent('mmbarber-compass-state', { detail: false }));
+                }, 0);
+              }}
+              className="fixed top-6 right-6 flex items-center gap-2 text-mafia-gold z-50 p-2 pl-4 bg-mafia-black/80 rounded-full border border-mafia-gold/30 shadow-[0_0_20px_rgba(197,160,89,0.1)] active:scale-95 transition-all"
+            >
+              <span className="text-[10px] font-heading font-black tracking-[0.2em] uppercase">{lang === 'cs' ? 'ZAVŘÍT' : 'CLOSE'}</span>
+              <X size={20} />
+            </button>
+
+            {/* HUD Header */}
+            <div className="flex flex-col items-center gap-2 mb-8">
+               <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-mafia-red animate-pulse"></div>
+                  <h2 className="text-mafia-gold font-heading font-black text-sm uppercase tracking-[0.4em] text-center">
+                     {t.cityGuide?.compass?.label || 'NAVIGACE DO BARBERSHOPU'}
+                  </h2>
+               </div>
+               <div className="h-[1px] w-40 bg-gradient-to-r from-transparent via-mafia-gold/30 to-transparent"></div>
+            </div>
+
+            {/* Main Compass Area */}
+            <div className="relative w-[70vw] h-[70vw] max-w-[260px] max-h-[260px] flex items-center justify-center mb-10" onClick={() => {
+               if (!isPermissionRequested) requestPermission();
+            }}>
+               <div className="absolute inset-[-15px] border border-mafia-gold/10 rounded-full shadow-[0_0_40px_rgba(197,160,89,0.05)]"></div>
+               
+               {/* Target Dot */}
+
+               {/* Rotating Dial (Letters and Target Dot follow Earth) */}
+               <motion.div 
+                 animate={{ rotate: userHeading !== null ? -(userHeading - calibrationOffset) : 0 }}
+                 transition={{ type: "spring", stiffness: 40, damping: 15 }}
+                 className="absolute inset-0 border-2 border-mafia-gold/20 rounded-full bg-black/40 backdrop-blur-sm"
+               >
+                  {[...Array(36)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`absolute inset-0 flex items-start justify-center`}
+                      style={{ transform: `rotate(${i * 10}deg)` }}
+                    >
+                      <div className={`w-[2px] ${i % 9 === 0 ? 'h-5 bg-mafia-gold' : 'h-2 bg-mafia-gold/30'} mt-1`} />
+                    </div>
+                  ))}
+
+                  <div className="absolute inset-0 flex items-start justify-center">
+                    <span className="text-2xl font-black text-mafia-gold -translate-y-10">N</span>
+                  </div>
+                  <div className="absolute inset-0 flex items-end justify-center">
+                    <span className="text-2xl font-black text-mafia-gold/50 translate-y-10">S</span>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-end">
+                    <span className="text-2xl font-black text-mafia-gold/50 translate-x-10">E</span>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-start">
+                    <span className="text-2xl font-black text-mafia-gold/50 -translate-x-10">W</span>
+                  </div>
+
+                  {/* Target Dot - Fixed on the Dial at the Target Bearing */}
+                  <div 
+                    className="absolute inset-[-25px] pointer-events-none"
+                    style={{ transform: `rotate(${targetBearing}deg)` }}
+                  >
+                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
+                        <div className="w-1 h-8 bg-gradient-to-t from-mafia-red to-transparent mb-1" />
+                        <div className="w-5 h-5 bg-mafia-red rounded-full shadow-[0_0_25px_rgba(255,0,0,1)] animate-pulse" />
+                     </div>
+                  </div>
+               </motion.div>
+
+               {/* Rotating Needle */}
+               <motion.div 
+                   animate={isArrived ? { 
+                     rotate: [rotation, rotation + 360, rotation + 1080, rotation + 2160],
+                     scale: [1, 1.1, 0.9, 1.1, 1]
+                   } : { rotate: rotation }}
+                   transition={isArrived ? { 
+                     rotate: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                     scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                   } : { type: "spring", stiffness: 35, damping: 18 }}
+                   className="relative z-20 w-full h-full flex items-center justify-center pointer-events-none"
+               >
+                   <svg width="220" height="220" viewBox="0 0 100 100" className="drop-shadow-[0_0_20px_rgba(255,0,0,0.5)]">
+                      <defs>
+                        <linearGradient id="needleRed" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#ff0000" />
+                          <stop offset="100%" stopColor="#880000" />
+                        </linearGradient>
+                        <linearGradient id="needleGold" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="var(--color-mafia-gold)" />
+                          <stop offset="100%" stopColor="#443311" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M50 85 L64 50 L36 50 Z" fill="url(#needleRed)" className="drop-shadow-[0_0_15px_rgba(255,0,0,1)]" />
+                      <path d="M50 15 L64 50 L36 50 Z" fill="url(#needleGold)" className="opacity-70" />
+                      <circle cx="50" cy="50" r="4.5" fill="white" className="drop-shadow-[0_0_8px_rgba(255,255,255,1)]" />
+                   </svg>
+               </motion.div>
+
+               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-44 h-44 border border-mafia-gold/5 rounded-full animate-ping-slow" />
+               </div>
+            </div>
+
+            {/* Tactical Data Panel */}
+            <div className="w-full max-w-sm flex flex-col gap-4">
+               {/* Calibration Tooltip */}
+               {userHeading !== null && (
+                 <motion.button
+                   initial={{ opacity: 0, y: 10 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   onClick={handleCalibrate}
+                   className="w-full py-2 bg-mafia-black/40 text-mafia-gold/60 border border-mafia-gold/20 text-[9px] font-mono tracking-widest uppercase hover:bg-mafia-gold/10 transition-all"
+                 >
+                   [ KLIKNI ZDE PRO KALIBRACI SEVERU ]
+                 </motion.button>
+               )}
+
+               <div className="bg-mafia-black/90 border-2 border-mafia-gold/20 p-6 backdrop-blur-2xl shadow-[0_0_60px_rgba(0,0,0,0.8)]">
+                  <div className="grid grid-cols-2 gap-8 mb-6">
+                     <div className="flex flex-col gap-1 border-l-2 border-mafia-red pl-4">
+                        <span className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-widest">Vzdálenost</span>
+                        <span className="text-2xl font-black text-white tracking-widest uppercase whitespace-nowrap">
+                          {distanceRaw || (locationTimeout ? '---' : 'SCANNING...')}
+                        </span>
+                     </div>
+                     <div className="flex flex-col gap-1 border-l-2 border-mafia-gold/40 pl-4">
+                        <span className="text-[10px] font-mono text-mafia-gold/40 uppercase tracking-widest">Kurz</span>
+                        <span className="text-2xl font-black text-white tracking-widest uppercase">
+                          {Math.round(targetBearing)}°
+                        </span>
+                     </div>
+                  </div>
+
+                  <div className="pt-5 border-t border-mafia-gold/10 space-y-4">
+                     <div className="flex justify-between items-center text-[10px] font-mono">
+                        <span className="text-mafia-gold/30 uppercase tracking-widest">Geografický Cíl</span>
+                        <span className="text-white/80 tracking-widest">49.0592 N, 17.4835 E</span>
+                     </div>
+                     <div className="flex justify-between items-center text-[10px] font-mono">
+                        <span className="text-mafia-gold/30 uppercase tracking-widest">HQ Lokalita</span>
+                        <span className="text-white/80 tracking-widest">UHERSKÉ HRADIŠTĚ</span>
+                     </div>
+                  </div>
+               </div>
+
+               <button 
+                  onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SEARCH_QUERY)}`, '_blank')}
+                  className="w-full py-5 bg-mafia-gold text-mafia-black font-heading font-black tracking-[0.4em] uppercase text-base border-2 border-mafia-gold active:scale-95 transition-all shadow-[0_20px_50px_rgba(197,160,89,0.3)] mb-2"
+               >
+                  {lang === 'cs' ? 'SPUSTIT NAVIGACI' : 'START NAVIGATION'}
+               </button>
+
+               <button 
+                  onClick={() => {
+                    setIsEnabled(false);
+                    localStorage.setItem("mmbarber_compass_enabled", "false");
+                    setTimeout(() => {
+                      window.dispatchEvent(new CustomEvent('mmbarber-compass-state', { detail: false }));
+                    }, 0);
+                  }}
+                  className="w-full py-3 bg-transparent text-mafia-gold/60 font-heading font-black tracking-[0.2em] uppercase text-[10px] border border-mafia-gold/20 hover:text-mafia-gold transition-all"
+               >
+                  {lang === 'cs' ? 'ZAVŘÍT SYSTÉM' : 'CLOSE SYSTEM'}
+               </button>
+            </div>
+          </div>
+
+          <div className="fixed inset-0 pointer-events-none opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+          <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(197,160,89,0.03)_1px,transparent_1px)] bg-[size:100%_4px] animate-scanline"></div>
+        </motion.div>
+      )}
+      </AnimatePresence>
+
+      <style jsx>{`
+        @keyframes scanline {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100%); }
+        }
+        .animate-scanline {
+          animation: scanline 15s linear infinite;
+        }
+        .animate-ping-slow {
+          animation: ping 6s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+      `}</style>
+    </>
   );
 }

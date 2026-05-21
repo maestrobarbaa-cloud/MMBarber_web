@@ -12,7 +12,8 @@ import {
   Instagram,
   Facebook,
   Trophy,
-  Camera
+  Camera,
+  Bell
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,8 +21,16 @@ import { Footer } from "@/components/Footer";
 
 export default function CommunityPage() {
   const { t, lang } = useTranslation();
+  const [isChatEnabled, setIsChatEnabled] = React.useState(true);
 
-  const communitySections = [
+  React.useEffect(() => {
+    fetch('/api/settings?key=chat_enabled')
+      .then(res => res.json())
+      .then(data => setIsChatEnabled(data.value === null || data.value === 'true'))
+      .catch(console.error);
+  }, []);
+
+  let communitySections = [
     {
       id: 'projekty',
       title: t.others.community.projekty.title,
@@ -75,8 +84,21 @@ export default function CommunityPage() {
       icon: <Camera className="text-mafia-gold" size={48} />,
       link: '/grafika',
       color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'novinky',
+      title: lang === 'cs' ? 'INFORMUJ BARBERA' : 'INFORM BARBER',
+      subtitle: 'DIRECT_CHANNEL',
+      desc: lang === 'cs' ? 'Máš tip, novinku nebo pochvalu? Pošli zprávu přímo do inboxu svého barbera.' : 'Have a tip, news or praise? Send a message directly to your barber.',
+      icon: <Bell className="text-mafia-gold" size={48} />,
+      link: '/komunita/novinky',
+      color: 'rgba(197, 160, 89, 0.15)'
     }
   ];
+
+  if (!isChatEnabled) {
+    communitySections = communitySections.filter(s => s.id !== 'chat');
+  }
 
   return (
     <div className="min-h-screen bg-black text-smoke-white overflow-x-hidden relative selection:bg-mafia-gold selection:text-mafia-black">

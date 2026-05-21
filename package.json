@@ -6,15 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "cf-build": "npx @cloudflare/next-on-pages",
-    "deploy": "npm run build && npm run cf-build && npx wrangler pages deploy .vercel/output"
+    "lint": "eslint"
   },
   "dependencies": {
     "@types/dompurify": "^3.0.5",
+    "better-sqlite3": "^12.10.0",
     "clsx": "^2.1.1",
     "dompurify": "^3.4.2",
-    "firebase": "^11.4.0",
     "framer-motion": "^12.35.0",
     "gsap": "^3.14.2",
     "lucide-react": "^0.577.0",
@@ -26,6 +24,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

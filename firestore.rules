@@ -4,23 +4,12 @@ service cloud.firestore {
     
     // Internal Identity & Voting System Security
     match /level_votes/{voteId} {
-      
-      // Allow reading individual votes if the user knows the ID (for checking if they voted)
       allow get: if true;
-      
-      // Allow listing votes for statistics (only the 'date' field should be filtered in queries)
       allow list: if true;
-
-      // Crucial: Only allow creating or updating a vote if:
-      // 1. The ID of the document matches the provided userId + date
-      // 2. The levels provided are within the valid range (0-7)
-      // 3. The timestamp is recent
       allow create, update: if request.resource.data.userId is string
         && voteId == request.resource.data.userId + "_" + request.resource.data.date
         && request.resource.data.ratings.values().all(val => val >= 0 && val <= 7)
         && request.resource.data.timestamp == request.time;
-
-      // Prevent anyone from deleting votes
       allow delete: if false;
     }
 
@@ -30,9 +19,37 @@ service cloud.firestore {
       allow write: if true;
     }
 
+    // Seznamka – zprávy zájemkyň
+    match /seznamka_requests/{docId} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.email is string
+        && request.resource.data.age is int
+        && request.resource.data.age >= 18
+        && request.resource.data.age <= 80
+        && request.resource.data.idealMan is string
+        && request.resource.data.idealMan.size() > 0
+        && request.resource.data.idealMan.size() <= 500;
+      allow read, update, delete: if true;
+    }
+
+    // Barber Inbox – novinky, tipy, pochvaly od klientů
+    match /barber_novinky/{docId} {
+      allow create: if request.resource.data.nickname is string
+        && request.resource.data.nickname.size() > 0
+        && request.resource.data.nickname.size() <= 60
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 1000
+        && request.resource.data.category is string;
+      allow read, update, delete: if true;
+    }
+
     // Default: Deny everything else
     match /{document=**} {
       allow read, write: if false;
     }
   }
 }
+

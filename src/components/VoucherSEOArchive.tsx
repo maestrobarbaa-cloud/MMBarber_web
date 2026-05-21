@@ -30,7 +30,7 @@ export function VoucherSEOArchive() {
           a: "Ano, naše vouchery jsou přenosné. Pokud ho nemůžete využít sami, můžete ho darovat dál. Důležité je pouze předložení fyzického voucheru nebo unikátního kódu při placení."
         }
       ],
-      keywords: "Dárkový poukaz Uherské Hradiště, luxusní dárek pro muže, voucher na holení, MM BARBER dárkové balení, vánoční dárek Slovácko, barbershop zážitek, pánská kosmetika dárek."
+      keywords: "Nejlepší dárkový poukaz pro muže, luxusní barber voucher, pánské holičství dárkový certifikát, MM BARBER dárkové balení, vánoční dárek pro muže, narozeninový dárek pro přítele, poukaz na holení břitvou, barbershop zážitek, pánská kosmetika dárek, Uherské Hradiště, Zlínský kraj, Staré Město, Kunovice, Napajedla, Otrokovice, Zlín, Uherský Brod, Luhačovice, Kyjov, Veselí nad Moravou, barber shop Slovácko, nejlepší holič na Moravě."
     },
     en: {
       title: "GIFT SYSTEM PROTOCOL",
@@ -53,7 +53,7 @@ export function VoucherSEOArchive() {
           a: "Yes, our vouchers are transferable. If you can't use it yourself, you can give it to someone else. The only thing that matters is presenting the physical voucher or unique code at checkout."
         }
       ],
-      keywords: "Gift voucher Uherské Hradiště, luxury gift for men, shaving voucher, MM BARBER gift packaging, Christmas gift Slovácko, barbershop experience, men's cosmetics gift."
+      keywords: "Best gift voucher for men, luxury barber voucher, men's barbershop gift certificate, MM BARBER gift packaging, Christmas gift for men, birthday gift for boyfriend, straight razor shave voucher, barbershop experience, men's cosmetics gift, Uherské Hradiště, Zlín region, Staré Město, Kunovice, Napajedla, Otrokovice, Zlín, Uherský Brod, Luhačovice, Kyjov, Veselí nad Moravou, barber shop Slovácko, best barber in Moravia."
     }
   };
 

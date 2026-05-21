@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { barbers } from "@/data/barbers";
+import { useBarbers } from "@/contexts/BarberContext";
 import { playSound } from "@/utils/audio";
 import { trackEvent } from "@/utils/analytics";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -16,6 +16,7 @@ import {
   getEnglishRankFromLevel,
   GlobalBarberStats 
 } from "@/utils/barberXp";
+import { getDailyRole } from "@/utils/dailyRoles";
 import { 
   ArrowLeft, 
   Sparkles, 
@@ -35,10 +36,12 @@ export default function BiographiesPage() {
   const { lang } = useTranslation();
   const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
   const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
+  const { barbers, loading } = useBarbers();
   
   // Custom names overrides from localStorage
   const [customTomasName, setCustomTomasName] = useState("Tomáš");
   const [customNellaName, setCustomNellaName] = useState("Nella");
+  const [visibility, setVisibility] = useState<Record<string, boolean>>({});
 
   const syncLocalStorageData = useCallback(() => {
     const savedTomas = localStorage.getItem("mmbarber_custom_name_tomas");
@@ -61,12 +64,32 @@ export default function BiographiesPage() {
       setGlobalStats(stats);
     });
 
+    const fetchVisibility = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const data = await res.json();
+          const parsed: Record<string, boolean> = {};
+          if (data.values) {
+            Object.entries(data.values).forEach(([key, val]) => {
+              parsed[key] = val === 'true';
+            });
+          }
+          setVisibility(parsed);
+        }
+      } catch (e) {}
+    };
+    fetchVisibility();
+
     return () => {
       window.removeEventListener("storage", handleStorageUpdate);
       window.removeEventListener("mmbarber_names_updated", handleStorageUpdate);
       unsubscribeXp();
     };
   }, [syncLocalStorageData]);
+
+  const isTomasVisible = visibility['visibility_barber_tomas'] ?? true;
+  const isNellaVisible = visibility['visibility_barber_nella'] ?? true;
 
   // Calculate dynamic rating based on real community feedback in firebase
   const getBarberRatingData = (barberId: string) => {
@@ -97,6 +120,8 @@ export default function BiographiesPage() {
     setSelectedBarberId(null);
     playSound("/sounds/click.mp3", 0.2);
   };
+
+  if (loading || barbers.length === 0) return null;
 
   // Find currently active chosen barber
   const activeBarber = barbers.find(b => b.id === selectedBarberId);
@@ -162,9 +187,10 @@ export default function BiographiesPage() {
               {/* Hierarchy Tree */}
               <div className="w-full flex flex-col items-center relative py-8 px-4 mx-auto">
                  {/* LEVEL 1: Boss */}
-                 <div className="w-full flex justify-center relative z-20">
-                    {(() => {
-                       const tomas = barbers.find(b => b.id === "tomas");
+                 {isTomasVisible && (
+                   <div className="w-full flex justify-center relative z-20">
+                      {(() => {
+                         const tomas = barbers.find(b => b.id === "tomas");
                        if (!tomas) return null;
                        const customName = customTomasName;
                        return (
@@ -176,13 +202,14 @@ export default function BiographiesPage() {
                              <Image src={tomas.image} alt={customName} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                            </div>
                            <div className="mt-6 text-center">
-                              <span className="text-mafia-gold/60 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLAVA RODINY</span>
+                              <span className="text-mafia-gold/60 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">{getDailyRole("tomas", lang)}</span>
                               <h2 className="text-3xl font-heading font-black text-white group-hover:text-mafia-gold transition-colors uppercase tracking-widest italic">{customName}</h2>
                            </div>
                          </div>
                        );
-                    })()}
-                 </div>
+                      })()}
+                   </div>
+                 )}
 
                  {/* SVG SPOJNICE */}
                  <div className="hidden md:block w-full max-w-[800px] h-[80px] relative -my-4 z-10 pointer-events-none">
@@ -200,9 +227,10 @@ export default function BiographiesPage() {
                  <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-center items-center md:items-start gap-12 relative z-20">
                     
                     {/* Nella */}
-                    <div className="flex-1 flex justify-center">
-                       {(() => {
-                         const nella = barbers.find(b => b.id === "nella");
+                    {isNellaVisible && (
+                      <div className="flex-1 flex justify-center">
+                         {(() => {
+                           const nella = barbers.find(b => b.id === "nella");
                          if (!nella) return null;
                          const customName = customNellaName;
                          return (
@@ -214,13 +242,14 @@ export default function BiographiesPage() {
                                <Image src={nella.image} alt={customName} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                              </div>
                              <div className="mt-6 text-center">
-                                <span className="text-mafia-gold/60 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">MLADÁ KREV</span>
+                                <span className="text-mafia-gold/60 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">{getDailyRole("nella", lang)}</span>
                                 <h2 className="text-2xl font-heading font-black text-white group-hover:text-mafia-gold transition-colors uppercase tracking-widest italic">{customName}</h2>
                              </div>
                            </div>
                          );
                        })()}
-                    </div>
+                      </div>
+                    )}
 
                     {/* Unknown 1 */}
                     <div className="flex-1 flex justify-center">
@@ -298,7 +327,7 @@ export default function BiographiesPage() {
                   {/* Title & Rank header */}
                   <div className="space-y-2 text-left">
                     <span className="text-mafia-gold text-[10px] font-mono tracking-[0.3em] uppercase block">
-                      {lang === 'cs' ? activeBarberSafe.role : "SPECIALIST"}
+                      {lang === 'cs' ? getDailyRole(activeBarberSafe.id, lang) : "SPECIALIST"}
                     </span>
                     <h2 className="text-4xl md:text-5xl font-heading font-black text-white uppercase tracking-tight italic">
                       {activeCustomName}
@@ -328,17 +357,19 @@ export default function BiographiesPage() {
                       <span>{lang === 'cs' ? "REZERVOVAT KŘESLO" : "BOOK A CHAIR"}</span>
                     </a>
 
-                    <button
-                      onClick={() => handleSelectBarber(activeBarberSafe.id === "tomas" ? "nella" : "tomas")}
-                      className="py-3.5 px-6 bg-transparent border border-white/10 hover:border-white/30 text-white/60 hover:text-white font-mono text-[10px] uppercase tracking-[0.25em] flex items-center justify-center gap-2 transition-all cursor-pointer rounded"
-                    >
-                      <RefreshCw size={12} />
-                      <span>
-                        {lang === 'cs' 
-                          ? `Přepnout na ${activeBarberSafe.id === "tomas" ? customNellaName : customTomasName}`
-                          : `Switch to ${activeBarberSafe.id === "tomas" ? customNellaName : customTomasName}`}
-                      </span>
-                    </button>
+                    {((activeBarberSafe.id === "tomas" && isNellaVisible) || (activeBarberSafe.id === "nella" && isTomasVisible)) && (
+                      <button
+                        onClick={() => handleSelectBarber(activeBarberSafe.id === "tomas" ? "nella" : "tomas")}
+                        className="py-3.5 px-6 bg-transparent border border-white/10 hover:border-white/30 text-white/60 hover:text-white font-mono text-[10px] uppercase tracking-[0.25em] flex items-center justify-center gap-2 transition-all cursor-pointer rounded"
+                      >
+                        <RefreshCw size={12} />
+                        <span>
+                          {lang === 'cs' 
+                            ? `Přepnout na ${activeBarberSafe.id === "tomas" ? customNellaName : customTomasName}`
+                            : `Switch to ${activeBarberSafe.id === "tomas" ? customNellaName : customTomasName}`}
+                        </span>
+                      </button>
+                    )}
 
                   </div>
 

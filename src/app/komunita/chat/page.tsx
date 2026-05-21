@@ -16,18 +16,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
-import { db } from "@/lib/firebase";
-import { 
-  collection, 
-  addDoc, 
-  query, 
-  orderBy, 
-  limit, 
-  onSnapshot, 
-  serverTimestamp,
-  getDocs,
-  where
-} from "firebase/firestore";
 import { getUserNetworkData, getUserIp, type UserNetworkData } from "@/utils/network";
 
 interface ChatMessage {
@@ -47,6 +35,7 @@ export default function CommunityChatPage() {
   const [nickname, setNickname] = useState<string | null>(null);
   const [tempNickname, setTempNickname] = useState("");
   const [isBanned, setIsBanned] = useState(false);
+  const [isChatEnabled, setIsChatEnabled] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Load nickname and check ban status
@@ -55,37 +44,36 @@ export default function CommunityChatPage() {
     if (savedNickname) setNickname(savedNickname);
     
     const checkBanStatus = async () => {
-      try {
-        const ip = await getUserIp();
-        const q = query(collection(db, "banned_ips"), where("ip", "==", ip));
-        const snapshot = await getDocs(q);
-        if (!snapshot.empty) {
-          setIsBanned(true);
-        }
-      } catch (err) {
-        console.error("Ban check failed:", err);
-      }
+      // NOTE: Temporarily omitting ban check since we moved away from Firebase
+      // Could implement checking IP against an SQLite 'banned_ips' table later via an API
     };
     checkBanStatus();
+
+    fetch('/api/settings?key=chat_enabled')
+      .then(res => res.json())
+      .then(data => setIsChatEnabled(data.value === null || data.value === 'true'))
+      .catch(console.error);
   }, []);
 
   // Real-time messages
   useEffect(() => {
-    const q = query(
-      collection(db, "community_messages"),
-      orderBy("time", "asc"),
-      limit(50)
-    );
+    const fetchMsgs = async () => {
+      try {
+        const res = await fetch('/api/chat');
+        if (res.ok) {
+          const data = await res.json();
+          // SQLite returns timestamp in descending order (newest first based on limit)
+          // We probably want to reverse it for chat view so newest is at bottom.
+          setMessages(data.reverse());
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as ChatMessage[];
-      setMessages(msgs);
-    });
-
-    return () => unsubscribe();
+    fetchMsgs();
+    const interval = setInterval(fetchMsgs, 2000); // Polling every 2s
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -108,12 +96,19 @@ export default function CommunityChatPage() {
     try {
       const networkData = await getUserNetworkData();
       
-      await addDoc(collection(db, "community_messages"), {
+      const payload = {
         user: nickname,
+        userId: nickname,
         text: inputValue,
-        time: serverTimestamp(),
         ip: networkData.ip,
-        network: networkData
+        network: networkData,
+        verifiedUser: false
+      };
+
+      await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
 
       setInputValue("");
@@ -138,6 +133,23 @@ export default function CommunityChatPage() {
           </p>
           <Link href="/komunita" className="mt-12 inline-block px-12 py-4 border border-white/10 text-white font-mono text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
             ZPĚT DO BEZPEČÍ
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isChatEnabled) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-6 text-center">
+        <div className="max-w-md">
+          <ShieldAlert className="text-mafia-gold mx-auto mb-8" size={80} />
+          <h1 className="text-4xl font-heading font-black text-white uppercase mb-4 tracking-tighter">KANÁL <span className="text-mafia-gold">UZAMČEN</span></h1>
+          <p className="text-white/40 font-mono text-xs uppercase tracking-widest leading-relaxed">
+            Komunitní chat je momentálně administrátorem deaktivován. 
+          </p>
+          <Link href="/komunita" className="mt-12 inline-block px-12 py-4 border border-white/10 text-white font-mono text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+            ZPĚT DO KOMUNITY
           </Link>
         </div>
       </div>
@@ -252,7 +264,7 @@ export default function CommunityChatPage() {
                               <div className="flex items-center gap-3 mb-2">
                                  <span className={`text-[10px] font-black uppercase tracking-widest ${msg.user === nickname ? 'text-mafia-gold' : 'text-smoke-white/40'}`}>{msg.user}</span>
                                  <span className="text-[8px] font-mono text-white/20">
-                                   {msg.time?.toDate ? msg.time.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '...'}
+                                   {msg.time ? new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '...'}
                                  </span>
                               </div>
                               <div className={`px-6 py-4 max-w-md ${msg.user === nickname ? 'bg-mafia-gold/5 border-r-2 border-mafia-gold/40 text-right' : 'bg-white/5 border-l-2 border-white/10'} text-smoke-white font-sans text-sm md:text-base leading-relaxed break-words`}>

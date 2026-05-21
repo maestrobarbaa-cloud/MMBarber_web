@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, Calendar, Phone, Info, ShieldCheck } from "lucide-react";
+import { X, Calendar, Phone, Info, ShieldCheck, Compass } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
@@ -127,12 +127,20 @@ export function MobileActions() {
                 </Link>
               ))}
 
-              <div className="col-span-2 flex justify-center mt-6">
+              <div className="col-span-2 flex justify-center gap-6 mt-6">
                  <button onClick={() => { 
                    window.location.href = "tel:+420577544073"; 
                    playBulletHit();
                  }} className="p-4 rounded-full border border-mafia-gold text-mafia-gold active:scale-90 transition-transform hover:bg-mafia-gold hover:text-mafia-black">
                    <Phone size={24} />
+                 </button>
+
+                 <button onClick={() => { 
+                   window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'));
+                   toggleMenu();
+                   playBulletHit();
+                 }} className="p-4 rounded-full border border-mafia-gold text-mafia-gold active:scale-90 transition-transform hover:bg-mafia-gold hover:text-mafia-black">
+                   <Compass size={24} className="animate-pulse" />
                  </button>
               </div>
             </div>

@@ -13,24 +13,12 @@ import {
   AlertTriangle,
   Lock,
   Search,
-  Info
+  Info,
+  Power,
+  PowerOff
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
-import { db } from "@/lib/firebase";
-import { 
-  collection, 
-  query, 
-  orderBy, 
-  onSnapshot, 
-  deleteDoc, 
-  doc, 
-  addDoc, 
-  limit, 
-  serverTimestamp,
-  getDocs,
-  where
-} from "firebase/firestore";
 import { UserNetworkData } from "@/utils/network";
 
 interface ChatMessage {
@@ -50,6 +38,7 @@ export default function AdminChatModerationPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isChatEnabled, setIsChatEnabled] = useState(true);
 
   const ADMIN_PASSWORD = "MAFIA_PROTOCOL_737";
 
@@ -62,23 +51,36 @@ export default function AdminChatModerationPage() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    // Real-time listener for community messages
-    const q = query(
-      collection(db, "community_messages"), 
-      orderBy("time", "desc"),
-      limit(100)
-    );
+    const fetchMsgs = async () => {
+      try {
+        const res = await fetch('/api/chat');
+        if (res.ok) {
+          const data = await res.json();
+          setMessages(data);
+          setLoading(false);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as ChatMessage[];
-      setMessages(msgs);
-      setLoading(false);
-    });
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/settings?key=chat_enabled');
+        if (res.ok) {
+          const data = await res.json();
+          // Default is true if not set
+          setIsChatEnabled(data.value === null || data.value === 'true');
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-    return () => unsubscribe();
+    fetchSettings();
+    fetchMsgs();
+    const interval = setInterval(fetchMsgs, 3000);
+    return () => clearInterval(interval);
   }, [isAuthenticated]);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -95,7 +97,8 @@ export default function AdminChatModerationPage() {
   const deleteMessage = async (id: string) => {
     if (!confirm("SMAZAT ZPRÁVU?")) return;
     try {
-      await deleteDoc(doc(db, "community_messages", id));
+      await fetch(`/api/chat?id=${id}`, { method: 'DELETE' });
+      setMessages(prev => prev.filter(m => m.id !== id));
     } catch (error) {
       console.error("Delete failed:", error);
     }
@@ -104,13 +107,8 @@ export default function AdminChatModerationPage() {
   const banUser = async (ip: string, user: string) => {
     if (!confirm(`ZABLOKOVAT IP ${ip} (${user})?`)) return;
     try {
-      await addDoc(collection(db, "banned_ips"), {
-        ip,
-        user,
-        reason: "Moderator decision",
-        time: serverTimestamp()
-      });
-      alert(`IP ${ip} byla zablokována.`);
+      // NOTE: Temporarily omitting ban feature until banned_ips API route is added
+      alert(`Banning currently disabled until API route is added for IPs.`);
     } catch (error) {
       console.error("Ban failed:", error);
     }
@@ -119,12 +117,24 @@ export default function AdminChatModerationPage() {
   const clearChat = async () => {
     if (!confirm("VAROVÁNÍ: SMAZAT CELOU HISTORII CHATU?")) return;
     try {
-      const q = query(collection(db, "community_messages"));
-      const snapshot = await getDocs(q);
-      const deletePromises = snapshot.docs.map(d => deleteDoc(doc(db, "community_messages", d.id)));
-      await Promise.all(deletePromises);
+      await fetch('/api/chat?all=true', { method: 'DELETE' });
+      setMessages([]);
     } catch (error) {
       console.error("Clear failed:", error);
+    }
+  };
+
+  const toggleChatEnabled = async () => {
+    const newState = !isChatEnabled;
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'chat_enabled', value: newState ? 'true' : 'false' })
+      });
+      setIsChatEnabled(newState);
+    } catch (error) {
+      console.error("Failed to toggle chat:", error);
     }
   };
 
@@ -175,6 +185,9 @@ export default function AdminChatModerationPage() {
                    className="bg-white/5 border border-white/10 pl-12 pr-6 py-4 font-mono text-[10px] uppercase tracking-widest focus:border-mafia-red transition-all outline-none w-64"
                  />
               </div>
+              <button onClick={toggleChatEnabled} className={`flex items-center gap-3 px-8 py-4 border font-mono text-[10px] uppercase tracking-widest transition-all ${isChatEnabled ? 'bg-mafia-gold/10 border-mafia-gold/20 text-mafia-gold hover:bg-mafia-gold hover:text-black' : 'bg-white/5 border-white/20 text-white/50 hover:bg-white/10'}`}>
+                 {isChatEnabled ? <><Power size={16} /> CHAT ZAPNUTÝ</> : <><PowerOff size={16} /> CHAT SKRYTÝ</>}
+              </button>
               <button onClick={clearChat} className="flex items-center gap-3 px-8 py-4 bg-mafia-red/10 border border-mafia-red/20 text-mafia-red font-mono text-[10px] uppercase tracking-widest hover:bg-mafia-red hover:text-white transition-all">
                  <Trash2 size={16} /> SMAZAT CHAT
               </button>
@@ -210,7 +223,7 @@ export default function AdminChatModerationPage() {
                     {filteredMessages.map((msg) => (
                       <tr key={msg.id} className="hover:bg-white/[0.01] transition-colors group">
                          <td className="p-6 font-mono text-[10px] text-white/30">
-                            {msg.time?.toDate ? msg.time.toDate().toLocaleTimeString() : new Date().toLocaleTimeString()}
+                            {msg.time ? new Date(msg.time).toLocaleTimeString() : new Date().toLocaleTimeString()}
                          </td>
                          <td className="p-6">
                             <span className="font-heading font-black uppercase text-mafia-gold italic tracking-tighter">{msg.user}</span>
