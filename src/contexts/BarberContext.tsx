@@ -24,6 +24,9 @@ export interface BarberProfile {
   parentId?: string;
   customChatText?: string;
   orderIndex?: number;
+  requiresUnlock?: boolean;
+  unlockThreshold?: number;
+  missionFailed?: boolean;
 }
 
 interface BarberContextType {

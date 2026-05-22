@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
+import { GameFragment } from "./GameFragment";
 
 const PICS = [
   "/obr/atmosfera/barber-4.jpg",
@@ -98,6 +99,7 @@ export function Gallery() {
 
   return (
     <section id="gallery" className="relative w-full py-32 px-4 md:px-12 bg-mafia-black border-y-8 border-mafia-dark flex flex-col items-center">
+
       
       <div className="text-center mb-16">
         <h2 className="text-4xl md:text-5xl font-heading font-black text-mafia-gold mb-4 tracking-widest uppercase">

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Scissors, Plus, Trash2, Save, X, User } from "lucide-react";
+import { ArrowLeft, Scissors, Plus, Trash2, Save, X, Lock, Unlock, Skull } from "lucide-react";
 import Link from "next/link";
 import { useBarbers } from "@/contexts/BarberContext";
 
@@ -19,7 +19,10 @@ export default function BarberAdminPage() {
     schedule: "Individuální režim práce.",
     bookingLink: "",
     customChatText: "",
-    parentId: ""
+    parentId: "",
+    requiresUnlock: false,
+    unlockThreshold: 5,
+    missionFailed: false
   });
 
   useEffect(() => {
@@ -41,7 +44,7 @@ export default function BarberAdminPage() {
       if (res.ok) {
         await refreshBarbers();
         setIsAdding(false);
-        setFormData({ name: "", role: "", image: "/obr/novy_barber.png", desc: "", schedule: "Individuální režim práce.", bookingLink: "", customChatText: "", parentId: "" });
+        setFormData({ name: "", role: "", image: "/obr/novy_barber.png", desc: "", schedule: "Individuální režim práce.", bookingLink: "", customChatText: "", parentId: "", requiresUnlock: false, unlockThreshold: 5, missionFailed: false });
       }
     } catch (e) {
       console.error(e);
@@ -52,6 +55,39 @@ export default function BarberAdminPage() {
     if (!confirm("Opravdu smazat tohoto barbera?")) return;
     try {
       const res = await fetch(`/api/barbers?id=${id}`, { method: "DELETE" });
+      if (res.ok) await refreshBarbers();
+    } catch (e) {}
+  };
+
+  const handleToggleLock = async (b: any) => {
+    const isLocked = !b.requiresUnlock;
+    let threshold = b.unlockThreshold || 5;
+    if (isLocked) {
+      const val = prompt("Kolik fragmentů je potřeba pro odemčení?", threshold.toString());
+      if (val === null) return;
+      threshold = parseInt(val) || 5;
+    }
+    
+    try {
+      const res = await fetch("/api/barbers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: b.id, requiresUnlock: isLocked, unlockThreshold: threshold })
+      });
+      if (res.ok) await refreshBarbers();
+    } catch (e) {}
+  };
+
+  const handleToggleKIA = async (b: any) => {
+    const isKIA = !b.missionFailed;
+    if (isKIA && !confirm(`Opravdu označit operativce ${b.name} jako "MISE SELHALA" (KIA)? Zmizí z webu a zbude jen pomník.`)) return;
+    
+    try {
+      const res = await fetch("/api/barbers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: b.id, missionFailed: isKIA })
+      });
       if (res.ok) await refreshBarbers();
     } catch (e) {}
   };
@@ -117,7 +153,14 @@ export default function BarberAdminPage() {
                 <div className="space-y-2 md:col-span-2">
                   <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Stručný popis (zobrazí se v detailu a na kartě)</label>
                   <textarea required rows={3} value={formData.desc} onChange={e => setFormData({...formData, desc: e.target.value})} className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none resize-none" />
+                  <div className="space-y-2">
+                  <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Mise Selhala (Zabít operativce)</label>
+                  <div className="flex items-center gap-4 mt-2">
+                    <input type="checkbox" checked={formData.missionFailed} onChange={e => setFormData({...formData, missionFailed: e.target.checked})} className="w-6 h-6 accent-mafia-red" />
+                    <span className="text-xs text-mafia-red/70 italic">Karta se promění v krvavý náhrobek.</span>
+                  </div>
                 </div>
+              </div>
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Osobní uvítací chat zpráva</label>
@@ -133,6 +176,16 @@ export default function BarberAdminPage() {
                     ))}
                   </select>
                 </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Vyžaduje Odemčení (Gamifikace)</label>
+                  <div className="flex items-center gap-4 mt-2">
+                    <input type="checkbox" checked={formData.requiresUnlock} onChange={e => setFormData({...formData, requiresUnlock: e.target.checked})} className="w-6 h-6 accent-mafia-gold" />
+                    {formData.requiresUnlock && (
+                      <input type="number" min="1" value={formData.unlockThreshold} onChange={e => setFormData({...formData, unlockThreshold: parseInt(e.target.value) || 1})} placeholder="Počet fragmentů" className="bg-black/50 border border-white/20 p-2 text-white focus:border-mafia-gold outline-none w-32" />
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="mt-8 flex justify-end">
@@ -146,19 +199,28 @@ export default function BarberAdminPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {barbers.map((b) => (
-            <div key={b.id} className="bg-white/5 border border-white/10 p-6 relative group flex flex-col justify-between">
+            <div key={b.id} className={`bg-white/5 border p-6 relative group flex flex-col justify-between ${b.missionFailed ? 'border-mafia-red/50 bg-mafia-red/5' : 'border-white/10'}`}>
               <div>
                 <div className="flex justify-between items-start mb-4">
-                  <div className="w-16 h-16 rounded overflow-hidden border border-mafia-gold/30">
-                    <img src={b.image} alt={b.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition" />
+                  <div className={`w-16 h-16 rounded overflow-hidden border ${b.missionFailed ? 'border-mafia-red' : 'border-mafia-gold/30'}`}>
+                    <img src={b.image} alt={b.name} className={`w-full h-full object-cover transition ${b.missionFailed ? 'grayscale sepia-[0.5] hue-rotate-[-50deg] saturate-200' : 'grayscale group-hover:grayscale-0'}`} />
                   </div>
-                  {b.id !== 'tomas' && b.id !== 'nella' && (
-                    <button onClick={() => handleDelete(b.id)} className="text-white/30 hover:text-mafia-red transition">
-                      <Trash2 size={18} />
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => handleToggleKIA(b)} className={`transition p-2 border ${b.missionFailed ? 'text-mafia-red border-mafia-red bg-mafia-red/20' : 'text-white/30 border-white/10 hover:text-mafia-red/50'}`} title={b.missionFailed ? 'Oživit' : 'Zabít (Mise selhala)'}>
+                      <Skull size={16} />
                     </button>
-                  )}
+                    <button onClick={() => handleToggleLock(b)} className={`transition p-2 border ${b.requiresUnlock ? 'text-mafia-gold border-mafia-gold/50 bg-mafia-gold/10' : 'text-white/30 border-white/10 hover:text-white'}`} title={b.requiresUnlock ? `Zamčeno (potřeba ${b.unlockThreshold} fragmentů)` : 'Odemčeno'}>
+                      {b.requiresUnlock ? <Lock size={16} /> : <Unlock size={16} />}
+                    </button>
+                    {b.id !== 'tomas' && b.id !== 'nella' && (
+                      <button onClick={() => handleDelete(b.id)} className="text-white/30 hover:text-mafia-red transition p-2 border border-white/10">
+                        <Trash2 size={16} />
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <h3 className="text-2xl font-heading font-black text-white uppercase tracking-widest">{b.name}</h3>
+                {b.missionFailed && <div className="text-mafia-red font-black tracking-widest text-xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-12 opacity-20 pointer-events-none">MISE SELHALA</div>}
+                <h3 className={`text-2xl font-heading font-black uppercase tracking-widest ${b.missionFailed ? 'text-mafia-red line-through opacity-50' : 'text-white'}`}>{b.name}</h3>
                 <p className="text-[10px] font-mono text-mafia-gold tracking-widest uppercase mb-4">{b.role}</p>
                 
                 {b.parentId && (

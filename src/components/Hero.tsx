@@ -8,6 +8,7 @@ import { playSound } from "../utils/audio";
 import { WeatherOverlay } from "./WeatherOverlay";
 import NextImage from "next/image";
 import Image from "./OptimizedImage";
+import { GameFragment } from "./GameFragment";
 
 const LATIN_SLOGANS: Record<string, string> = {
   // CZECH SLOGANS
@@ -486,6 +487,8 @@ export function Hero() {
 
         {/* Stronger bottom fade to ground the content */}
         <div className="absolute inset-x-0 bottom-0 h-32 xl:h-64 bg-gradient-to-t from-mafia-black via-mafia-black/80 xl:via-mafia-black/40 to-transparent z-30"></div>
+        
+
         
         {/* MOBILE / TABLET TEXT & BUTTON OVER IMAGE */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-40 px-4 xl:hidden gap-6 sm:gap-8 pointer-events-auto">

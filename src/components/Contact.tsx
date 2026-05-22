@@ -6,6 +6,7 @@ import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { playSound } from "../utils/audio";
 import { motion, AnimatePresence } from "framer-motion";
+import { GameFragment } from "./GameFragment";
 
 type InfoCategory = "address" | "connection" | "parking" | "transit";
 
@@ -154,6 +155,8 @@ export function Contact() {
       {/* HUD Background elements */}
       <div className="absolute top-0 left-0 w-64 h-64 border-t border-l border-mafia-gold/5 -translate-x-1/2 -translate-y-1/2 rounded-full"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 border-b border-r border-mafia-gold/5 translate-x-1/2 translate-y-1/2 rounded-full"></div>
+
+      <GameFragment id="contact_frag_1" className="top-32 left-8 md:left-32" size={30} delay={500} />
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16 md:mb-24">

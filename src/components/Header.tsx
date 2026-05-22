@@ -19,8 +19,7 @@ import { type Language } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { playSound } from "../utils/audio";
 import { getUserRatingsData } from "@/utils/voting";
-
-
+import { GameFragment } from "./GameFragment";
 
 export function Header() {
   const [clicks, setClicks] = useState(0);
@@ -801,6 +800,7 @@ export function Header() {
 
   return (
     <>
+
       <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-[calc(88px+env(safe-area-inset-top,0px))] block'}`} aria-hidden="true" />
       <header
         className={`fixed top-0 w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between xl:justify-center xl:gap-16 transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] h-[calc(5.5rem+env(safe-area-inset-top,0px))] gpu-accelerate 

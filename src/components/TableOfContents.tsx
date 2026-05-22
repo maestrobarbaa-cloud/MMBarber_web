@@ -234,30 +234,23 @@ export function TableOfContents() {
 
   return (
     <>
-      {/* Edge Hover Handle / Trigger Cue */}
       <div 
-        className={`fixed left-0 top-0 h-screen w-4 bg-black/80 border-r border-mafia-gold/30 cursor-pointer transition-all duration-500 hover:w-10 hover:bg-mafia-gold/5 flex flex-col items-center justify-center group z-[40000] hidden xl:flex ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        onClick={() => setIsOpen(true)}
         onMouseEnter={() => {
           setIsOpen(true);
           playSound("/sounds/success.mp3", 0.4);
         }}
+        className={`fixed left-0 top-[5.5rem] h-[calc(100vh-5.5rem)] w-8 bg-gradient-to-r from-mafia-black to-black/80 border-r border-mafia-gold/40 cursor-pointer transition-all duration-500 hover:w-12 hover:bg-mafia-gold/10 flex flex-col items-center justify-center group z-[29000] hidden xl:flex shadow-[5px_0_15px_rgba(197,160,89,0.15)] ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
       >
-        {/* Pulsing top LED indicator */}
-        <div className="absolute top-10 flex flex-col items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="w-1.5 h-1.5 rounded-full bg-mafia-gold animate-pulse shadow-[0_0_8px_rgba(197,160,89,0.8)]" />
-          <span className="text-[6px] font-mono text-mafia-gold uppercase tracking-[0.2em] -rotate-90 origin-center mt-2">SYS_ON</span>
-        </div>
-
-        {/* Center pulsing vertical text hinting the HUD is here */}
-        <div className="flex flex-col items-center gap-4 transition-all duration-500 -rotate-90 origin-center whitespace-nowrap">
-          <span className="text-[8px] font-mono text-mafia-gold/40 group-hover:text-mafia-gold/90 uppercase tracking-[0.4em] transition-colors duration-300 flex items-center gap-2 animate-[pulse_2.5s_infinite_ease-in-out]">
-            <Target size={10} className="animate-[spin_6s_linear_infinite]" />
-            TAKTICKÝ PANEL HUD [ TAB / NAJEĎ ]
+        <div className="flex flex-col items-center gap-6 transition-all duration-500 -rotate-90 origin-center whitespace-nowrap opacity-70 group-hover:opacity-100">
+          <span className="text-[10px] font-mono text-mafia-gold/70 group-hover:text-mafia-gold uppercase tracking-[0.4em] transition-colors duration-300 flex items-center gap-3 animate-[pulse_2.5s_infinite_ease-in-out]">
+            <Target size={14} className="animate-[spin_6s_linear_infinite] drop-shadow-[0_0_8px_rgba(197,160,89,0.8)]" />
+            PANEL HUD [ TAB ]
           </span>
         </div>
 
         {/* Bottom coordinates coordinate info */}
-        <div className="absolute bottom-10 opacity-30 group-hover:opacity-75 transition-opacity duration-300 text-[6px] font-mono text-mafia-gold -rotate-90 origin-center">
+        <div className="absolute bottom-10 opacity-50 group-hover:opacity-100 transition-opacity duration-300 text-[8px] font-mono text-mafia-gold -rotate-90 origin-center drop-shadow-[0_0_5px_rgba(197,160,89,0.5)]">
           LOC_0x7F
         </div>
       </div>

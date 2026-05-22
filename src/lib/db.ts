@@ -122,9 +122,32 @@ export function initDB() {
       rankNextIn TEXT,
       parentId TEXT,
       customChatText TEXT,
-      orderIndex INTEGER
+      orderIndex INTEGER,
+      requiresUnlock BOOLEAN DEFAULT 0,
+      unlockThreshold INTEGER DEFAULT 5,
+      missionFailed BOOLEAN DEFAULT 0
     )
   `);
+
+  // User Fragments (Gamification)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS user_fragments (
+      id TEXT PRIMARY KEY,
+      collected_ids TEXT NOT NULL, -- JSON string array
+      updatedAt INTEGER NOT NULL
+    )
+  `);
+
+  // Add new columns to existing table if needed
+  try {
+    db.exec('ALTER TABLE barbers ADD COLUMN requiresUnlock BOOLEAN DEFAULT 0');
+  } catch (e) {}
+  try {
+    db.exec('ALTER TABLE barbers ADD COLUMN unlockThreshold INTEGER DEFAULT 5');
+  } catch (e) {}
+  try {
+    db.exec('ALTER TABLE barbers ADD COLUMN missionFailed BOOLEAN DEFAULT 0');
+  } catch (e) {}
 
   // Seed initial barbers if empty
   const countObj = db.prepare('SELECT COUNT(*) as count FROM barbers').get() as { count: number };

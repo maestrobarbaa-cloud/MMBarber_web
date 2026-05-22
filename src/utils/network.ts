@@ -22,7 +22,6 @@ export const getUserNetworkData = async (): Promise<UserNetworkData> => {
       networkInfo = await response.json();
     }
   } catch (error) {
-    console.error('Failed to get GeoIP data:', error);
     try {
       const resp = await fetch('https://api.ipify.org?format=json');
       const data = await resp.json();

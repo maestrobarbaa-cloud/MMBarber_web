@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBarbers } from "@/contexts/BarberContext";
+import { useGame } from "@/contexts/GameContext";
 import { playSound } from "@/utils/audio";
 import { trackEvent } from "@/utils/analytics";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -37,11 +38,13 @@ export default function BiographiesPage() {
   const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
   const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
   const { barbers, loading } = useBarbers();
+  const { isTomasUnlocked, isNellaUnlocked, totalCollected } = useGame();
   
   // Custom names overrides from localStorage
   const [customTomasName, setCustomTomasName] = useState("Tomáš");
   const [customNellaName, setCustomNellaName] = useState("Nella");
   const [visibility, setVisibility] = useState<Record<string, boolean>>({});
+  const [showUnlockOverlay, setShowUnlockOverlay] = useState(false);
 
   const syncLocalStorageData = useCallback(() => {
     const savedTomas = localStorage.getItem("mmbarber_custom_name_tomas");
@@ -121,6 +124,24 @@ export default function BiographiesPage() {
     playSound("/sounds/click.mp3", 0.2);
   };
 
+  const isTomasFullyUnlocked = isTomasUnlocked;
+  const isNellaFullyUnlocked = isNellaUnlocked;
+  
+  // Need activeBarber safe fallback early if loading is done
+  const activeBarberTemp = barbers.find(b => b.id === selectedBarberId) || barbers[0] || { id: "tomas" };
+  const isFullyUnlockedTemp = activeBarberTemp.id === "tomas" ? isTomasFullyUnlocked : (activeBarberTemp.id === "nella" ? isNellaFullyUnlocked : false);
+
+  useEffect(() => {
+    if (selectedBarberId && isFullyUnlockedTemp) {
+      const shownKey = `mmbarber_unlock_shown_${selectedBarberId}`;
+      if (!sessionStorage.getItem(shownKey)) {
+        setShowUnlockOverlay(true);
+        sessionStorage.setItem(shownKey, 'true');
+        setTimeout(() => setShowUnlockOverlay(false), 2500);
+      }
+    }
+  }, [selectedBarberId, isFullyUnlockedTemp]);
+
   if (loading || barbers.length === 0) return null;
 
   // Find currently active chosen barber
@@ -135,6 +156,25 @@ export default function BiographiesPage() {
     : getEnglishRankFromLevel(activeLevel);
 
   const activeRating = getBarberRatingData(activeBarberSafe.id);
+
+  const isPhotoUnlocked = activeBarberSafe.id === "tomas" ? totalCollected >= 2 : (activeBarberSafe.id === "nella" ? totalCollected >= 4 : false);
+  const isFullyUnlocked = activeBarberSafe.id === "tomas" ? isTomasFullyUnlocked : (activeBarberSafe.id === "nella" ? isNellaFullyUnlocked : false);
+  
+  // Calculate how many text parts to show
+  const textParts = activeBarberSafe.desc.split(/(?<=[.?!])\s+/);
+  let textPartsToShow = 0;
+  
+  if (activeBarberSafe.id === "tomas") {
+    if (totalCollected >= 3) textPartsToShow = Math.ceil(textParts.length / 2);
+    if (totalCollected >= 4) textPartsToShow = textParts.length;
+  } else if (activeBarberSafe.id === "nella") {
+    if (totalCollected >= 6) textPartsToShow = Math.floor(textParts.length / 3);
+    if (totalCollected >= 8) textPartsToShow = Math.floor(textParts.length * (2/3));
+    if (totalCollected >= 10) textPartsToShow = textParts.length;
+  }
+  
+  const visibleText = textParts.slice(0, textPartsToShow).join(' ');
+  const hiddenText = textParts.slice(textPartsToShow).join(' ');
 
   return (
     <main className="min-h-screen bg-[#050505] text-smoke-white overflow-x-hidden selection:bg-mafia-gold selection:text-mafia-black relative flex flex-col justify-between">
@@ -193,6 +233,23 @@ export default function BiographiesPage() {
                          const tomas = barbers.find(b => b.id === "tomas");
                        if (!tomas) return null;
                        const customName = customTomasName;
+                       
+                       const isTomasHierarchyUnlocked = totalCollected >= 1;
+                       
+                       if (!isTomasHierarchyUnlocked) {
+                         return (
+                           <div className="flex flex-col items-center opacity-60">
+                             <div className="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-mafia-gold/30 overflow-hidden mx-auto bg-black flex items-center justify-center relative">
+                               <span className="text-6xl font-heading font-black text-mafia-gold/20 italic animate-pulse">?</span>
+                             </div>
+                             <div className="mt-6 text-center">
+                               <span className="text-mafia-gold/40 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLEDANÝ REKRUT</span>
+                               <h2 className="text-2xl font-heading font-black text-white/50 uppercase tracking-widest italic">???</h2>
+                             </div>
+                           </div>
+                         );
+                       }
+                       
                        return (
                          <div 
                            onClick={() => handleSelectBarber("tomas")}
@@ -233,6 +290,23 @@ export default function BiographiesPage() {
                            const nella = barbers.find(b => b.id === "nella");
                          if (!nella) return null;
                          const customName = customNellaName;
+                         
+                         const isNellaHierarchyUnlocked = totalCollected >= 2;
+
+                         if (!isNellaHierarchyUnlocked) {
+                           return (
+                             <div className="flex flex-col items-center opacity-60">
+                               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-mafia-gold/30 overflow-hidden mx-auto bg-black flex items-center justify-center relative">
+                                 <span className="text-6xl font-heading font-black text-mafia-gold/20 italic animate-pulse">?</span>
+                               </div>
+                               <div className="mt-6 text-center">
+                                 <span className="text-mafia-gold/40 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLEDANÝ REKRUT</span>
+                                 <h2 className="text-2xl font-heading font-black text-white/50 uppercase tracking-widest italic">???</h2>
+                               </div>
+                             </div>
+                           );
+                         }
+
                          return (
                            <div 
                              onClick={() => handleSelectBarber("nella")}
@@ -309,14 +383,26 @@ export default function BiographiesPage() {
                 <div className="lg:col-span-5">
                   
                   {/* Photo Frame */}
-                  <div className="w-full aspect-square relative rounded-sm border border-white/10 overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.6)]">
+                  <div className={`w-full aspect-square relative rounded-sm border overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.6)] transition-all duration-1000 ${isPhotoUnlocked ? 'border-mafia-gold/50' : 'border-white/10'}`}>
                     <Image 
                       src={activeBarberSafe.image} 
                       alt={activeCustomName} 
                       fill 
                       priority
-                      className="object-cover" 
+                      className={`object-cover transition-all duration-1000 ${!isPhotoUnlocked ? 'grayscale blur-xl brightness-50 opacity-40' : 'grayscale-0 blur-0 brightness-100 opacity-100'}`} 
                     />
+                    
+                    {!isPhotoUnlocked && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-80 mix-blend-overlay"></div>
+                    )}
+                    
+                    {!isPhotoUnlocked && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                        <span className="text-mafia-gold/50 font-mono text-xs uppercase tracking-widest animate-pulse border border-mafia-gold/20 bg-mafia-black/80 px-4 py-2 rounded backdrop-blur-sm shadow-[0_0_15px_rgba(197,160,89,0.2)]">
+                          [ FOTOGRAFIE BLOKOVÁNA ]
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                 </div>
@@ -335,13 +421,42 @@ export default function BiographiesPage() {
                   </div>
 
                   {/* Backstory */}
-                  <div className="space-y-3 text-left">
+                  <div className="space-y-3 text-left relative min-h-[200px]">
                     <h4 className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">
                       {lang === 'cs' ? "O BARBEROVI & BIOGRAFIE" : "ABOUT & BIOGRAPHY"}
                     </h4>
-                    <p className="text-base text-smoke-white/90 font-sans leading-relaxed">
-                      {activeBarberSafe.desc}
-                    </p>
+                    
+                    {!isFullyUnlocked && visibleText.length === 0 ? (
+                      <div className="absolute inset-0 pt-6 flex flex-col items-center justify-center bg-mafia-black/80 backdrop-blur-[2px] z-10 border border-mafia-gold/20 rounded">
+                        <span className="text-mafia-gold/50 font-mono text-xs uppercase tracking-widest animate-pulse mb-2">
+                          [ DATA UZAMČENA / FRAGMENTY CHYBÍ ]
+                        </span>
+                        <p className="text-white/30 text-xs font-mono max-w-[80%] text-center">
+                          Najdi všechny otisky/fragmenty na domovské stránce k odemčení kompletního profilu operativce.
+                        </p>
+                      </div>
+                    ) : (
+                      <motion.div 
+                        initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
+                        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                      >
+                        {isFullyUnlocked && (
+                           <div className="mb-4 inline-flex items-center gap-2 border border-mafia-gold/30 bg-mafia-gold/10 px-3 py-1 rounded text-mafia-gold font-mono text-[9px] uppercase tracking-widest shadow-[0_0_10px_rgba(197,160,89,0.2)]">
+                             <CheckCircle2 size={10} />
+                             {lang === 'cs' ? "Úspěšně sestaveno z útržků" : "Successfully assembled from fragments"}
+                           </div>
+                        )}
+                        <div className="text-base text-smoke-white/90 font-sans leading-relaxed relative flex flex-wrap gap-1">
+                          {visibleText && <span className="animate-fade-in-up">{visibleText}</span>}
+                          {!isFullyUnlocked && hiddenText && (
+                            <span className="blur-sm opacity-30 select-none bg-white/5 inline-block text-transparent bg-clip-text" style={{ textShadow: "0 0 8px rgba(255,255,255,0.5)" }}>
+                              {hiddenText.replace(/[a-zA-Z]/g, '█')}
+                            </span>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
                   </div>
 
                   {/* Call to action & switch bar */}
@@ -381,6 +496,34 @@ export default function BiographiesPage() {
           )}
         </AnimatePresence>
 
+        <AnimatePresence>
+          {showUnlockOverlay && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/95 backdrop-blur-md"
+            >
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 1.2, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 100 }}
+                className="text-center"
+              >
+                <div className="mb-6 mx-auto w-24 h-24 border-4 border-mafia-gold rounded-full flex items-center justify-center animate-pulse shadow-[0_0_50px_rgba(197,160,89,0.5)]">
+                  <CheckCircle2 size={48} className="text-mafia-gold" />
+                </div>
+                <h2 className="text-4xl md:text-6xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] mb-4 drop-shadow-[0_0_10px_rgba(197,160,89,0.8)]">
+                  PŘÍSTUP ODEMČEN
+                </h2>
+                <p className="font-mono text-white/50 tracking-widest uppercase">
+                  Data kompletně dešifrována a sestavena
+                </p>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <Footer />

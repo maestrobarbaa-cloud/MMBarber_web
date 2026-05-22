@@ -35,8 +35,8 @@ export async function POST(request: Request) {
     }
 
     const stmt = db.prepare(`
-      INSERT INTO barbers (id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO barbers (id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     stmt.run(
@@ -51,7 +51,10 @@ export async function POST(request: Request) {
       body.symbol || 'X',
       body.parentId || null,
       body.customChatText || null,
-      nextOrder
+      nextOrder,
+      body.requiresUnlock ? 1 : 0,
+      body.unlockThreshold || 5,
+      body.missionFailed ? 1 : 0
     );
 
     return NextResponse.json({ success: true, id }, { status: 201 });
@@ -64,7 +67,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex } = body;
+    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed } = body;
     
     if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
 
@@ -85,7 +88,10 @@ export async function PUT(request: Request) {
         symbol = COALESCE(?, symbol),
         parentId = COALESCE(?, parentId),
         customChatText = COALESCE(?, customChatText),
-        orderIndex = COALESCE(?, orderIndex)
+        orderIndex = COALESCE(?, orderIndex),
+        requiresUnlock = COALESCE(?, requiresUnlock),
+        unlockThreshold = COALESCE(?, unlockThreshold),
+        missionFailed = COALESCE(?, missionFailed)
       WHERE id = ?
     `);
 
@@ -101,6 +107,9 @@ export async function PUT(request: Request) {
       parentId !== undefined ? parentId : current.parentId,
       customChatText !== undefined ? customChatText : current.customChatText,
       orderIndex ?? current.orderIndex,
+      requiresUnlock !== undefined ? (requiresUnlock ? 1 : 0) : current.requiresUnlock,
+      unlockThreshold ?? current.unlockThreshold,
+      missionFailed !== undefined ? (missionFailed ? 1 : 0) : current.missionFailed,
       id
     );
 

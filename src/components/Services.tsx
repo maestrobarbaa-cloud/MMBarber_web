@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "./OptimizedImage";
 import { useRouter } from "next/navigation";
 import { playSound } from "../utils/audio";
+import { GameFragment } from "./GameFragment";
 
 
 type Currency = "CZK" | "EUR" | "USD" | "PLN" | "UAH";
@@ -45,6 +46,8 @@ export function Services() {
 
   return (
     <section id="services" className="relative w-full pt-12 pb-24 xl:py-36 px-4 md:px-12 bg-transparent overflow-hidden">
+      <GameFragment id="services_frag_1" className="top-40 left-8 md:left-24" size={35} delay={1000} />
+      <GameFragment id="services_frag_2" className="bottom-24 right-16 md:right-32" size={30} delay={3000} />
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="xl:hidden flex justify-center mb-16 px-4">
           <button 

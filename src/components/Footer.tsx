@@ -17,6 +17,7 @@ import { trackEvent } from "../utils/analytics";
 import { EvasiveButton } from "./EvasiveButton";
 import { type Language } from "../hooks/useTranslation";
 import { ChevronDown } from "lucide-react";
+import { GameFragment } from "./GameFragment";
 
 const CzFlag = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" className="w-4 h-3 rounded-[2px] shadow-sm shrink-0">
@@ -314,6 +315,8 @@ export function Footer() {
       {/* AMBIENT BACKGROUND */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)] pointer-events-none"></div>
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+
+
 
       {/* Responsible Person Modal */}
       <AnimatePresence>
@@ -623,8 +626,7 @@ export function Footer() {
         </div>
       </div>
 
-
-
+      <GameFragment id="footer_frag_1" className="bottom-20 right-12 md:right-24" size={35} delay={1500} />
     </footer>
   );
 }

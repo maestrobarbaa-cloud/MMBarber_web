@@ -8,8 +8,11 @@ import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "../utils/audio";
+import { GameFragment } from "./GameFragment";
 import { useBarbers } from "@/contexts/BarberContext";
+import { useGame } from "@/contexts/GameContext";
 import { OperativeModal } from "./OperativeModal";
+import { UnlockDiagram } from "./UnlockDiagram";
 import { 
   subscribeToUserRatings
 } from "@/utils/voting";
@@ -597,6 +600,48 @@ const MissionLoading = ({ isHovered, graphicsTier }: { isHovered: boolean, graph
   </AnimatePresence>
 );
 
+const MissionFailedOverlay = ({ name, lang }: { name: string, lang: string }) => {
+  // Rozložíme jméno na písmena a náhodně některá schováme pro efekt "pozůstatku"
+  const chars = name.split('');
+  
+  return (
+    <div className="absolute inset-0 z-50 bg-mafia-black flex flex-col items-center justify-center p-6 overflow-hidden">
+      {/* Background Glitch / Grid */}
+      <div className="absolute inset-0 opacity-10 bg-[linear-gradient(rgba(255,0,0,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(255,0,0,0.2)_1px,transparent_1px)] bg-[size:20px_20px]" />
+      <motion.div 
+        animate={{ opacity: [0, 0.1, 0] }}
+        transition={{ duration: 0.2, repeat: Infinity, repeatDelay: Math.random() * 5 }}
+        className="absolute inset-0 bg-mafia-red mix-blend-overlay"
+      />
+      
+      {/* Remnant of name */}
+      <h3 className="text-3xl xl:text-4xl font-heading font-black uppercase text-white/20 tracking-widest leading-none relative z-10 blur-[1px] mb-12">
+        {chars.map((char, i) => (
+          <span key={i} className={(i % 3 === 0 || i % 5 === 0) ? "opacity-10" : "opacity-40"}>{char}</span>
+        ))}
+      </h3>
+      
+      {/* KIA Stamp */}
+      <motion.div 
+        initial={{ scale: 2, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 200, damping: 10 }}
+        className="border-4 border-mafia-red text-mafia-red text-4xl xl:text-5xl font-heading font-black uppercase tracking-widest p-4 -rotate-12 z-20 drop-shadow-[0_0_20px_rgba(255,0,0,0.6)] bg-mafia-black/50 backdrop-blur-sm text-center"
+      >
+        {lang === 'cs' ? "MISE SELHALA" : "MISSION FAILED"}
+      </motion.div>
+      
+      {/* Scanline */}
+      <motion.div
+        initial={{ y: "-100%" }}
+        animate={{ y: "100%" }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+        className="w-full h-1/4 bg-gradient-to-b from-transparent via-mafia-red/10 to-transparent absolute z-30 pointer-events-none"
+      />
+    </div>
+  );
+};
+
 function BarberCard({ 
   barber, 
   isActive, 
@@ -631,6 +676,7 @@ function BarberCard({
   onLike: (barberId: string) => void,
   evaluatedStatus: EvaluatedStatus
 }) {
+  const { totalCollected } = useGame();
   const [isHovered, setIsHovered] = useState(false);
 
   const stats = globalStats[barber.id] || { xp: 0, likes: 0 };
@@ -659,9 +705,13 @@ function BarberCard({
     <>
       {/* MOBILE VERSION: Simple, Static, No effects */}
       <div className="xl:hidden w-full max-w-[340px] h-auto min-h-[420px] bg-[#0c0c0c] border-2 border-mafia-gold/20 p-5 rounded-lg flex flex-col items-center gap-4 shadow-2xl overflow-hidden relative">
+        {barber.missionFailed ? (
+          <MissionFailedOverlay name={barberDisplayName} lang={lang} />
+        ) : (
+          <>
         <div className="w-36 h-36 border-2 border-mafia-gold/20 overflow-hidden bg-black/40 flex-shrink-0 rounded-none shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
           {barber.image === "question-mark" ? (
-            <div className="text-mafia-gold/30 font-heading text-9xl animate-pulse italic drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.2)]">?</div>
+            <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={140} />
           ) : (
             <Image 
               src={barber.image} 
@@ -690,9 +740,15 @@ function BarberCard({
                 trackEvent("cta_barber_booking_mobile", { barber: barber.name });
                 onBook();
               }}
-              className="w-full py-5 bg-mafia-gold text-mafia-black font-heading font-black tracking-[0.3em] uppercase text-sm border-2 border-mafia-gold hover:bg-white transition-all z-10 shadow-[0_10px_30px_rgba(0,0,0,0.3)] mt-4"
+              className={`w-full py-5 font-heading font-black tracking-[0.3em] uppercase text-sm border-2 transition-all z-10 mt-4 ${
+                barber.image === "question-mark"
+                  ? "bg-mafia-gold/20 text-white/30 border-mafia-gold/20 cursor-not-allowed"
+                  : "bg-mafia-gold text-mafia-black border-mafia-gold hover:bg-white shadow-[0_10px_30px_rgba(0,0,0,0.3)] cursor-pointer"
+              }`}
             >
-              {lang === 'cs' ? "REZERVACE" : "BOOKING"}
+              {barber.image === "question-mark"
+                ? (lang === 'cs' ? "ZAMČENO" : "LOCKED")
+                : (lang === 'cs' ? "REZERVACE" : "BOOKING")}
             </button>
           )}
           <div className="mt-4 relative flex justify-center">
@@ -721,6 +777,8 @@ function BarberCard({
             </div>
           ))}
         </div>
+          </>
+        )}
       </div>
 
       {/* DESKTOP VERSION: The full Noir experience */}
@@ -730,11 +788,17 @@ function BarberCard({
         className="hidden xl:block barber-card relative xl:perspective-2000 w-[340px] flex-shrink-0 h-[640px] z-10"
       >
         <motion.div
-          animate={{ rotateY: isHovered ? 180 : 0 }}
+          animate={{ rotateY: isHovered && !barber.missionFailed ? 180 : 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
           className="w-full h-full relative"
           style={{ transformStyle: "preserve-3d", willChange: "transform" }}
         >
+          {barber.missionFailed ? (
+            <div className="absolute inset-0 bg-[#0c0c0c] border-2 p-8 flex flex-col items-center justify-between rounded-lg overflow-hidden border-mafia-red/50 shadow-[0_0_30px_rgba(255,0,0,0.15)]">
+               <MissionFailedOverlay name={barberDisplayName} lang={lang} />
+            </div>
+          ) : (
+            <>
           {/* Front Side */}
           <motion.div 
             animate={{ 
@@ -866,14 +930,18 @@ function BarberCard({
 
             
             <div className="flex-grow w-full flex flex-col items-center justify-start relative z-10 pt-16">
-                {barber.name === "Nella" ? (
+                {barber.id === "nella" ? (
                   <>
                     <div className={`relative w-56 h-56 rounded-none overflow-hidden transition-all duration-1000 mb-8 flex items-center justify-center ${
                         isHovered ? "shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]" : ""
                     }`}>
-                        <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
-                          <Image src={barber.image} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
-                        </motion.div>
+                        {barber.image === "question-mark" ? (
+                          <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={220} />
+                        ) : (
+                          <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
+                            <Image src={barber.image} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
+                          </motion.div>
+                        )}
                     </div>
                     <div className="text-center px-6 mt-4">
                       <h3 className="text-2xl md:text-3xl font-heading font-black uppercase tracking-[0.1em] text-mafia-gold italic leading-tight drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]">
@@ -887,7 +955,7 @@ function BarberCard({
                         isHovered ? "shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]" : ""
                     }`}>
                         {barber.image === "question-mark" ? (
-                          <div className="text-mafia-gold/30 font-heading text-[12rem] animate-pulse italic drop-shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]">?</div>
+                          <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={220} />
                         ) : (
                           <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
                             <Image src={barber.image} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
@@ -917,14 +985,22 @@ function BarberCard({
                         trackEvent("cta_barber_booking_card_desktop", { barber: barber.name });
                         onBook();
                       }}
-                      className="w-full max-w-[260px] h-14 relative flex items-center justify-center bg-mafia-gold text-mafia-black font-heading uppercase tracking-[0.3em] font-black text-base hover:bg-white transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] z-[70] cursor-pointer"
+                      className={`w-full max-w-[260px] h-14 relative flex items-center justify-center font-heading uppercase tracking-[0.3em] font-black text-base transition-all z-[70] ${
+                        barber.image === "question-mark"
+                          ? "bg-mafia-gold/20 text-white/30 border border-mafia-gold/20 cursor-not-allowed"
+                          : "bg-mafia-gold text-mafia-black hover:bg-white shadow-[0_0_20px_rgba(197,160,89,0.3)] cursor-pointer"
+                      }`}
                     >
-                      {lang === 'cs' ? "REZERVOVAT" : "BOOK NOW"}
+                      {barber.image === "question-mark"
+                        ? (lang === 'cs' ? "ZAMČENO" : "LOCKED")
+                        : (lang === 'cs' ? "REZERVOVAT" : "BOOK NOW")}
                     </button>
                 </div>
               )}
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
           </motion.div>
+            </>
+          )}
         </motion.div>
       </div>
     </>
@@ -1067,6 +1143,7 @@ function ChairWithCard({
   chairGreetingText: string,
   evaluatedStatus: EvaluatedStatus
 }) {
+  const { totalCollected } = useGame();
   const [isCardHovered, setIsCardHovered] = useState(false);
   const [isSitting, setIsSitting] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -1254,6 +1331,7 @@ function ChairWithCard({
 
 export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boolean, nella?: boolean } }) {
   const { t, lang } = useTranslation();
+  const { isTomasUnlocked, isNellaUnlocked, totalCollected } = useGame();
   const [isRandomizing, setIsRandomizing] = useState(false);
   const [activeSpeaker, setActiveSpeaker] = useState<'tomas' | 'nella' | null>(null);
   const [activeDialogueText, setActiveDialogueText] = useState("");
@@ -1269,7 +1347,14 @@ export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boo
 
   const { barbers, loading } = useBarbers();
 
-  const visibleBarbers = barbers.filter(b => {
+  const visibleBarbers = barbers.map(b => {
+    let modifiedB = { ...b };
+    const threshold = b.unlockThreshold || 5;
+    if (b.requiresUnlock && totalCollected < threshold) {
+      modifiedB.image = "question-mark";
+    }
+    return modifiedB;
+  }).filter(b => {
     if (b.id === 'tomas' && hiddenBarbers.tomas) return false;
     if (b.id === 'nella' && hiddenBarbers.nella) return false;
     return true;
@@ -1401,7 +1486,8 @@ export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boo
     localStorage.setItem("mmbarber_profiles_seen", "true");
     trackEvent("cta_randomize_barber");
 
-    const availableBarbers = barbers;
+    const availableBarbers = barbers.filter(b => !b.missionFailed);
+    if (availableBarbers.length === 0) return;
 
     setIsRandomizing(true);
     let ticks = 0;
@@ -1448,6 +1534,22 @@ export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boo
     const playTurn = (cIdx: number, tIdx: number) => {
       const currentChat = chats[cIdx % chats.length];
       if (!currentChat) return;
+
+      const isAnyKia = currentChat.some(turn => {
+        const p = barbers.find(b => {
+          if (turn.speaker === 'tomas') return b.id === 'tomas' || b.name === 'Tomáš' || b.name === 'Tomas';
+          if (turn.speaker === 'nella') return b.id === 'nella' || b.name === 'Nella';
+          return false;
+        });
+        return p?.missionFailed;
+      });
+
+      if (isAnyKia) {
+        t1 = setTimeout(() => {
+          playTurn((cIdx + 1) % chats.length, 0);
+        }, 1000);
+        return;
+      }
 
       const turn = currentChat[tIdx];
       if (!turn) {
@@ -1499,21 +1601,20 @@ export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boo
       const staticDesc = barberTranslations?.story || "";
       const dialogueText = activeSpeaker === barberKey ? activeDialogueText : "";
       const customName = isTomas ? customNames.tomas : customNames.nella;
-
       return {
         ...b,
         name: customName || barberTranslations?.name || b.name,
         role: barberTranslations?.role || b.role,
         motto: barberTranslations?.motto || "",
-        story: dialogueText || staticDesc,
-        schedule: formatSchedule(statusData[barberKey as 'tomas' | 'nella'], lang),
+        story: dialogueText || staticDesc || b.desc,
+        schedule: formatSchedule(statusData[barberKey as 'tomas' | 'nella'], lang) || b.schedule,
         specializations: barberTranslations?.specializations || b.specializations,
         englishSpeaking: (barberTranslations as { englishSpeaking?: string })?.englishSpeaking,
         symbol: b.symbol,
         isHidden: false
       };
     });
-  }, [visibleBarbers, t, customNames, activeSpeaker, activeDialogueText, statusData, lang]);
+  }, [visibleBarbers, t, customNames, activeSpeaker, activeDialogueText, statusData, lang, totalCollected]);
 
   if (loading || visibleBarbers.length === 0) return null;
 
@@ -1523,6 +1624,9 @@ export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boo
       className="relative w-full py-10 md:py-20 px-4 md:px-12 bg-transparent border-t-8 border-mafia-dark flex flex-col items-center scroll-mt-32"
     >
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/black-paper.png')" }}></div>
+      
+      <GameFragment id="hero_frag_1" className="top-48 left-12 md:left-24" size={40} delay={2000} />
+      <GameFragment id="hero_frag_2" className="bottom-40 right-16 md:right-32" size={30} delay={4500} />
       <div className="relative z-10 w-full flex flex-col items-center">
         <div className="max-w-[1600px] mx-auto w-full">
             <div className="w-full">
@@ -1564,7 +1668,7 @@ export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boo
                       const evaluated = evaluateStatus(statusData[bKey]);
 
                       return (
-                        <div key={barber.name} className="relative flex flex-col items-center w-full">
+                        <div key={barber.id} className="relative flex flex-col items-center w-full">
                           <ChairWithCard 
                             barber={barber} 
                             activeSpeaker={activeSpeaker} 
