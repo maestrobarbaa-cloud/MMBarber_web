@@ -9,9 +9,44 @@ export const LANGUAGE_LABELS: Record<string, string> = {
 
 import { useState, useEffect, useMemo } from "react";
 import { translations } from "../locales/translations";
+import { getVocative } from "../utils/nameInflection";
+
+function injectPlaceholders(obj: any, nickname: string, vocative: string): any {
+  if (typeof obj === 'string') {
+    if (!nickname) {
+      return obj
+        .replace(/[,\s]*\{\{vocative\}\}/g, '')
+        .replace(/[,\s]*\{\{nickname\}\}/g, '')
+        .replace(/ ,/g, ',')
+        .replace(/ \./g, '.')
+        .replace(/ !/g, '!')
+        .replace(/ \?/g, '?');
+    }
+    return obj
+      .replace(/\{\{nickname\}\}/g, nickname)
+      .replace(/\{\{vocative\}\}/g, vocative)
+      .replace(/ ,/g, ',')
+      .replace(/ \./g, '.')
+      .replace(/ !/g, '!')
+      .replace(/ \?/g, '?');
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => injectPlaceholders(item, nickname, vocative));
+  }
+  if (typeof obj === 'object' && obj !== null) {
+    const result: any = {};
+    for (const key in obj) {
+      result[key] = injectPlaceholders(obj[key], nickname, vocative);
+    }
+    return result;
+  }
+  return obj;
+}
 
 export function useTranslation() {
   const [lang, setLang] = useState<Language>('cs');
+  const [nickname, setNickname] = useState("");
+  const [vocative, setVocative] = useState("");
 
   useEffect(() => {
     const saved = localStorage.getItem('mmbarber_lang') as Language;
@@ -25,6 +60,16 @@ export function useTranslation() {
       setLang(saved);
     } else if (isEarlyMorning) {
       setLang('boss');
+    } else {
+      // Auto-detect browser language if no language is saved
+      const browserLang = navigator.language || (navigator as any).userLanguage;
+      if (browserLang && browserLang.toLowerCase().startsWith('cs')) {
+        setLang('cs');
+        localStorage.setItem('mmbarber_lang', 'cs');
+      } else if (browserLang && browserLang.toLowerCase().startsWith('en')) {
+        setLang('en');
+        localStorage.setItem('mmbarber_lang', 'en');
+      }
     }
 
     const handleLanguageChange = (e: Event) => {
@@ -32,23 +77,36 @@ export function useTranslation() {
       setLang(customEvent.detail);
     };
 
+    const handleNicknameChange = () => {
+      const name = localStorage.getItem('mmbarber_client_nickname') || "";
+      setNickname(name);
+      setVocative(getVocative(name));
+    };
+
+    handleNicknameChange(); // Load initial
+
     window.addEventListener('language_changed', handleLanguageChange);
-    return () => window.removeEventListener('language_changed', handleLanguageChange);
+    window.addEventListener('mmbarber_ratings_updated', handleNicknameChange);
+    return () => {
+      window.removeEventListener('language_changed', handleLanguageChange);
+      window.removeEventListener('mmbarber_ratings_updated', handleNicknameChange);
+    };
   }, []);
 
   // Merging logic for Boss mode (inherits from CS)
   const t = useMemo(() => {
+    let baseTranslations: any;
+
     if (lang === 'boss') {
-      return { 
+      baseTranslations = { 
         ...translations.cs, 
         header: { ...translations.cs.header, ...(translations.boss as any).header },
         hero: { ...translations.cs.hero, ...(translations.boss as any).hero },
         services: { ...translations.cs.services, ...(translations.boss as any).services },
         operatives: { ...translations.cs.operatives, ...(translations.boss as any).operatives }
       };
-    }
-    if (lang === 'falco') {
-      return { 
+    } else if (lang === 'falco') {
+      baseTranslations = { 
         ...translations.cs, 
         header: { ...translations.cs.header, ...(translations.falco as any).header },
         hero: { ...translations.cs.hero, ...(translations.falco as any).hero },
@@ -57,9 +115,12 @@ export function useTranslation() {
         intro: { ...translations.cs.intro, ...(translations.falco as any).intro },
         theCode: { ...translations.cs.theCode, ...(translations.falco as any).theCode }
       };
+    } else {
+      baseTranslations = (translations as any)[lang] || (translations as any).en;
     }
-    return (translations as any)[lang] || (translations as any).en;
-  }, [lang]);
+
+    return injectPlaceholders(baseTranslations, nickname, vocative);
+  }, [lang, nickname, vocative]);
 
   const switchLanguage = (newLang: Language) => {
     setLang(newLang);

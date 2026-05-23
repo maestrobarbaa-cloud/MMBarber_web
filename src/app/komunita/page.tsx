@@ -97,7 +97,16 @@ export default function CommunityPage() {
   ];
 
   if (!isChatEnabled) {
-    communitySections = communitySections.filter(s => s.id !== 'chat');
+    const chatIndex = communitySections.findIndex(s => s.id === 'chat');
+    if (chatIndex !== -1) {
+      communitySections[chatIndex] = {
+        ...communitySections[chatIndex],
+        title: lang === 'cs' ? 'AKTUALNĚ NEDOSTUPNÉ' : 'CURRENTLY UNAVAILABLE',
+        desc: lang === 'cs' ? 'Komunitní chat je momentálně administrátorem zablokován.' : 'Community chat is currently disabled by administrator.',
+        link: '#',
+        color: 'rgba(100, 100, 100, 0.1)'
+      };
+    }
   }
 
   return (

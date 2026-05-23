@@ -48,7 +48,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
     letterboxEnabled: false,
     sharpness: 0.2,
     atmosphereOverride: 'pure_dark',
-    floatingItems: 'scissors',
+    floatingItems: 'off',
     autoDetectEnabled: true
   });
 
@@ -129,7 +129,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier, grainEnabled: true, blurEnabled: false, parallaxEnabled: false, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.4, 
             vignetteEnabled: true, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.5,
-            atmosphereOverride: 'auto', floatingItems: 'scissors',
+            atmosphereOverride: 'auto', floatingItems: 'off',
             autoDetectEnabled: false
         };
         break;
@@ -138,7 +138,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.8, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 0.7,
-            atmosphereOverride: 'auto', floatingItems: 'scissors',
+            atmosphereOverride: 'auto', floatingItems: 'off',
             autoDetectEnabled: false
         };
         break;
@@ -147,7 +147,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 1.0, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 1.0,
-            atmosphereOverride: 'pure_dark', floatingItems: 'scissors',
+            atmosphereOverride: 'pure_dark', floatingItems: 'off',
             autoDetectEnabled: false
         };
         break;
@@ -200,6 +200,11 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
     // Fallback for missing info
     if (cores === 0 || ram === 0) recommended = 'low';
 
+    let autoFloatingItems: 'off' | 'scissors' | 'clippers' = 'off';
+    const chance = Math.random();
+    if (chance > 0.85) autoFloatingItems = 'scissors'; // 15% chance
+    else if (chance > 0.7) autoFloatingItems = 'clippers'; // 15% chance
+
     let newConfig: GraphicsConfig;
     switch (recommended) {
       case 'low':
@@ -216,7 +221,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier: recommended, grainEnabled: true, blurEnabled: false, parallaxEnabled: false, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.4, 
             vignetteEnabled: true, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.5,
-            atmosphereOverride: 'auto', floatingItems: 'scissors',
+            atmosphereOverride: 'auto', floatingItems: autoFloatingItems,
             autoDetectEnabled: true
         };
         break;
@@ -225,7 +230,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier: recommended, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 0.8, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 0.7,
-            atmosphereOverride: 'auto', floatingItems: 'scissors',
+            atmosphereOverride: 'auto', floatingItems: autoFloatingItems,
             autoDetectEnabled: true
         };
         break;
@@ -234,7 +239,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier: recommended, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 1.0, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: true, sharpness: 1.0,
-            atmosphereOverride: 'galaxy', floatingItems: 'scissors',
+            atmosphereOverride: 'galaxy', floatingItems: autoFloatingItems,
             autoDetectEnabled: true
         };
         break;

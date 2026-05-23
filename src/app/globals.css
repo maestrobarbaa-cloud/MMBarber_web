@@ -468,8 +468,7 @@ html.mode-blood img.hero-blood-img,
 .hero-blood-wrapper img,
 img[src*="main-hero-blood"],
 #hero img.hero-blood-img {
-  filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(1px) !important;
-  -webkit-filter: grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1) blur(1px) !important;
+  /* Only inline blur from Hero.tsx is applied now */
 }
 
 /* Also ensure hero background div with direct inline style is handled */
@@ -1304,9 +1303,9 @@ html.theme-blood {
 }
 
 /* Image Grayscale Overrides */
-html.noir-mode img:not([class*="flag"]),
-html.theme-silver img:not([class*="flag"]),
-html.theme-blood img:not([class*="flag"]),
+html.noir-mode img:not([class*="flag"]):not(.hero-blood-img),
+html.theme-silver img:not([class*="flag"]):not(.hero-blood-img),
+html.theme-blood img:not([class*="flag"]):not(.hero-blood-img),
 html.noir-mode .bg-cover,
 html.theme-blood .bg-cover,
 html.noir-mode [style*="background-image"],
@@ -1314,7 +1313,7 @@ html.theme-blood [style*="background-image"] {
   filter: grayscale(1) brightness(1.1) contrast(1.1) !important;
 }
 
-html.noir-mode.theme-blood img:not([class*="flag"]) {
+html.noir-mode.theme-blood img:not([class*="flag"]):not(.hero-blood-img) {
   filter: grayscale(1) contrast(1.1) brightness(0.9) !important;
 }
 

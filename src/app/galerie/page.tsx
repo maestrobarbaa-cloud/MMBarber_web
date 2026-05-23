@@ -360,6 +360,7 @@ interface RetroProjectorSlideshowProps {
 const RetroProjectorSlideshow = ({ isOpen, onClose, items, lang }: RetroProjectorSlideshowProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isGlobalSoundEnabled, setIsGlobalSoundEnabled] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize and manage projector audio loop
@@ -368,24 +369,36 @@ const RetroProjectorSlideshow = ({ isOpen, onClose, items, lang }: RetroProjecto
       audioRef.current = new Audio("/projector.mp3");
       audioRef.current.loop = true;
       audioRef.current.volume = 0.4;
+      
+      const savedSound = localStorage.getItem("mmbarber_sound_enabled");
+      setIsGlobalSoundEnabled(savedSound === "true");
+
+      const handleSoundUpdate = (e: Event) => {
+        const customEvent = e as CustomEvent;
+        setIsGlobalSoundEnabled(customEvent.detail);
+      };
+      
+      window.addEventListener("mmbarber-sound-update", handleSoundUpdate);
+      
+      return () => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current = null;
+        }
+        window.removeEventListener("mmbarber-sound-update", handleSoundUpdate);
+      };
     }
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
   }, []);
 
-  // Control audio playback based on playing state & modal visibility
+  // Control audio playback based on playing state & modal visibility & global sound
   useEffect(() => {
     if (!audioRef.current) return;
-    if (isOpen && isPlaying) {
+    if (isOpen && isPlaying && isGlobalSoundEnabled) {
       audioRef.current.play().catch(() => {});
     } else {
       audioRef.current.pause();
     }
-  }, [isOpen, isPlaying]);
+  }, [isOpen, isPlaying, isGlobalSoundEnabled]);
 
   // Slideshow advance timer
   useEffect(() => {

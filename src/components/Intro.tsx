@@ -6,6 +6,33 @@ import Image from "./OptimizedImage";
 import gsap from "gsap";
 import { useTranslation } from "../hooks/useTranslation";
 import { playSound } from "../utils/audio";
+import { getVocative } from "../utils/nameInflection";
+
+const CzFlag = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" className="w-4 h-3 rounded-[2px] shadow-sm shrink-0">
+    <rect fill="#d7141a" width="900" height="600" />
+    <rect fill="#fff" width="900" height="300" />
+    <polygon fill="#11457e" points="0,0 0,600 450,300" />
+  </svg>
+);
+
+const GbFlag = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-4 h-3 rounded-[2px] shadow-sm shrink-0">
+    <clipPath id="s">
+      <path d="M0,0 v30 h60 v-30 z" />
+    </clipPath>
+    <clipPath id="t">
+      <path d="M30,15 h30 v15 z v-15 h-30 z h-30 v-15 z v15 h30 z" />
+    </clipPath>
+    <g clipPath="url(#s)">
+      <path d="M0,0 v30 h60 v-30 z" fill="#012169" />
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6" />
+      <path d="M0,0 L60,30 M60,0 L0,30" clipPath="url(#t)" stroke="#C8102E" strokeWidth="4" />
+      <path d="M30,0 v30 M0,15 h60" stroke="#fff" strokeWidth="10" />
+      <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" strokeWidth="6" />
+    </g>
+  </svg>
+);
 
 interface MenuItem {
   id: string;
@@ -14,8 +41,9 @@ interface MenuItem {
 }
 
 export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) => void }) {
-  const { t, lang } = useTranslation();
+  const { t, lang, switchLanguage } = useTranslation();
   const [isActuallyMobile, setIsActuallyMobile] = useState(false);
+  const [nickname, setNickname] = useState("");
   const [showIntro, setShowIntro] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -35,6 +63,9 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
   ];
 
   useEffect(() => {
+    const savedName = localStorage.getItem("mmbarber_client_nickname");
+    if (savedName) setNickname(savedName);
+
     // Check if on mobile (intros are bypassed on mobile/tablet for instant interaction)
     if (window.innerWidth < 1024) {
       setIsActuallyMobile(true);
@@ -136,7 +167,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
               {lang === 'cs' ? "MISE // INICIACE" : "MISSION // INITIATION"}
             </span>
             <h3 className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
-              {lang === 'cs' ? "VSTOUPIT DO BARBERU" : "ENTER THE SALON"}
+              {lang === 'cs' ? (nickname ? `VÍTEJ, ${getVocative(nickname).toUpperCase()}` : "VSTOUPIT DO BARBERU") : (nickname ? `WELCOME, ${nickname.toUpperCase()}` : "ENTER THE SALON")}
             </h3>
             <p className="text-sm text-smoke-white/60 leading-relaxed font-sans mt-2">
               {lang === 'cs' 
@@ -282,7 +313,18 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
         <div className="w-full md:w-[450px] h-full flex flex-col justify-center px-8 md:px-16 z-30 relative bg-black/60 backdrop-blur-sm border-r border-mafia-gold/15">
           {/* Menu Title / Brand Header */}
           <div className="mb-12 flex flex-col gap-2">
-            <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-[0.4em]">MMBARBER // EST. 2018</span>
+            <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-[0.4em]">MMBARBER // EST 2024</span>
+            <input 
+              type="text" 
+              placeholder={lang === 'cs' ? "Vaše přezdívka..." : "Your nickname..."}
+              value={nickname}
+              onChange={(e) => {
+                 setNickname(e.target.value);
+                 localStorage.setItem("mmbarber_client_nickname", e.target.value);
+                 window.dispatchEvent(new Event('mmbarber_ratings_updated'));
+              }}
+              className="mt-2 mb-2 bg-transparent border-b border-mafia-gold/30 text-smoke-white font-mono text-xs focus:outline-none focus:border-mafia-gold/80 transition-colors w-2/3 pb-1"
+            />
             <h2 className="text-3xl md:text-4xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,215,0,0.25)]">
               {lang === 'cs' ? "HLAVNÍ MENU" : "MAIN MENU"}
             </h2>
@@ -330,7 +372,24 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
             </motion.div>
           )}
 
-          {/* Footer removed per user request */}
+          {/* Footer removed per user request, added Language Switcher instead */}
+          <div className="absolute bottom-8 left-8 md:left-16 flex items-center gap-4 border-t border-mafia-gold/10 pt-4 w-64">
+            <button 
+              onClick={() => switchLanguage('cs')} 
+              className={`flex items-center gap-2 transition-all duration-300 ${lang === 'cs' ? 'opacity-100' : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'}`}
+            >
+               <CzFlag />
+               <span className={`text-[9px] font-mono uppercase tracking-widest ${lang === 'cs' ? 'text-mafia-gold font-bold' : 'text-white'}`}>CS</span>
+            </button>
+            <div className="w-px h-3 bg-mafia-gold/20" />
+            <button 
+              onClick={() => switchLanguage('en')} 
+              className={`flex items-center gap-2 transition-all duration-300 ${lang === 'en' ? 'opacity-100' : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'}`}
+            >
+               <GbFlag />
+               <span className={`text-[9px] font-mono uppercase tracking-widest ${lang === 'en' ? 'text-mafia-gold font-bold' : 'text-white'}`}>EN</span>
+            </button>
+          </div>
         </div>
 
         {/* Right Side: Details / Information */}

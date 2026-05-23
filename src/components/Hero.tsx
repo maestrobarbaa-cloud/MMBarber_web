@@ -453,19 +453,7 @@ export function Hero() {
             }}
             className={`absolute inset-0 w-full h-full z-0 overflow-hidden ${isGlitching ? 'animate-glitch' : ''} ${heroImage.includes('blood') ? 'hero-blood-wrapper' : ''}`}
           >
-            <style>{`
-              html.theme-blood .hero-blood-img,
-              html.mode-blood .hero-blood-img,
-              html.theme-blood img.hero-blood-img,
-              html.mode-blood img.hero-blood-img,
-              .hero-blood-wrapper,
-              .hero-blood-wrapper img,
-              img[src*="main-hero-blood"],
-              #hero img.hero-blood-img {
-                filter: blur(0.8px) !important;
-                -webkit-filter: blur(0.8px) !important;
-              }
-            `}</style>
+
             <img
               src={heroImage}
               alt="MMBARBER Background"
@@ -473,7 +461,7 @@ export function Hero() {
               loading="eager"
               className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${heroImage.includes('blood') ? 'hero-blood-img' : ''}`}
               style={{ 
-                filter: heroImage.includes('blood') ? 'grayscale(0) saturate(1.2) brightness(1.1) contrast(1.1)' : undefined 
+                filter: heroImage.includes('blood') ? 'blur(1.1px)' : undefined 
               }}
             />
             {/* Overlay Gradient - Minimized for absolute maximum clarity and vibrant colors */}

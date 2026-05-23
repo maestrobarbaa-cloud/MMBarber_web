@@ -19,6 +19,7 @@ export function Atmosphere() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isActive, setIsActive] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [atmosphereMode, setAtmosphereMode] = useState<'classic' | 'galaxy' | 'pure_dark'>('classic');
   const starsRef = useRef<Star[]>([]);
   const mouseRef = useRef({ x: 0, y: 0 });
   const requestRef = useRef<number>(undefined);
@@ -36,12 +37,22 @@ export function Atmosphere() {
       const override = localStorage.getItem("mmbarber_atmosphere_override");
       const tier = document.documentElement.getAttribute('data-graphics-tier');
       
-      let isGalaxy = hour >= 22 || hour < 4;
-      if (override === "galaxy") isGalaxy = true;
-      else if (override === "classic") isGalaxy = false;
-      else if (override === "pure_dark") {
+      if (override === "pure_dark") {
+          setAtmosphereMode('pure_dark');
           setIsActive(false);
           return;
+      }
+
+      let isGalaxy = hour >= 22 || hour < 4;
+      if (override === "galaxy") {
+          isGalaxy = true;
+          setAtmosphereMode('galaxy');
+      }
+      else if (override === "classic") {
+          isGalaxy = false;
+          setAtmosphereMode('classic');
+      } else {
+          setAtmosphereMode(isGalaxy ? 'galaxy' : 'classic');
       }
       
       setIsActive(isGalaxy && tier !== 'low');
@@ -188,9 +199,9 @@ export function Atmosphere() {
   if (!isMounted) return null;
 
   return (
-    <div ref={containerRef} className={`fixed inset-0 z-0 pointer-events-none transition-colors duration-1000 ${isActive ? 'bg-black' : 'bg-transparent'}`}>
+    <div ref={containerRef} className={`fixed inset-0 z-0 pointer-events-none transition-colors duration-1000 ${atmosphereMode === 'pure_dark' ? 'bg-black' : (isActive ? 'bg-black' : 'bg-transparent')}`}>
       <AnimatePresence>
-        {isActive && (
+        {isActive && atmosphereMode !== 'pure_dark' && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

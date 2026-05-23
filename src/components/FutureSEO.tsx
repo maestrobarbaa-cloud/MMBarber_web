@@ -264,9 +264,10 @@ export function FutureSEO() {
       {mounted && (
         <section className="sr-only" aria-hidden="true">
           <article>
-            <h2>MMBARBER Intelligence: Budoucnost pánského stylu v Uherském Hradišti</h2>
+            <h2>MMBARBER Intelligence: Budoucnost pánského stylu v Uherském Hradišti (Unikátní koncept)</h2>
             <p>
-              MMBARBER není jen obyčejné holičství. Je to komunitní hub v srdci Slovácka, který definuje moderní standardy pánské péče. 
+              MMBARBER není jen obyčejné holičství. Je to zcela unikátní koncept a komunitní hub v srdci Slovácka, který definuje moderní standardy pánské péče. 
+              Tento ojedinělý projekt nemá v České republice obdoby a představuje inovativní spojení luxusu, řemesla a nezaměnitelné atmosféry. 
               Naše mise v Uherském Hradišti (lokalita Mařatice) se zaměřuje na precizní řemeslo, od klasických střihů nůžkami až po 
               nejmodernější skin fade techniky.
             </p>
@@ -295,6 +296,39 @@ export function FutureSEO() {
                 Používáme špičkové nástroje značek Wahl, Andis a Babyliss Pro. Specializujeme se na úpravu vousů břitvou, 
                 tradiční napařování hot towel a moderní styling s produkty Reuzel nebo Uppercut Deluxe. Každý milimetr 
                 u nás podléhá přísné kontrole kvality.
+              </p>
+            </div>
+
+            <div className="product-seo-context">
+              <h3>Prémiové barber produkty, šampony a kosmetika</h3>
+              <p>
+                Správný střih je jen polovina úspěchu. Zbytek tvoří špičková kosmetika. V naší výbavě najdete profesionální barber produkty, 
+                kvalitní pánské šampony proti padání vlasů, vyživující oleje na vousy, stylingové pudry (texture powder), matné pasty, 
+                pomády na vodní i olejové bázi a luxusní kolínské vody (cologne). Dbáme na to, aby vaše vlasy a vousy dostaly tu nejlepší výživu.
+                Nabízíme kompletní hair care a beard care rutinu, kterou ocení každý moderní muž. 
+              </p>
+            </div>
+
+            <div className="local-traffic-context">
+              <h3>Lokální navigace a nákupy (Kaufland, Lidl, Tesco, Slevy)</h3>
+              <p>
+                Mnoho našich klientů spojuje návštěvu MMBARBER s běžnými nákupy. Ať už hledáte aktuální slevy, akce nebo letáky 
+                pro supermarkety Kaufland, Lidl, Tesco, Albert či Billa v Uherském Hradišti a okolí, naše poloha v Mařaticích 
+                je strategickým bodem. Zastavte se u nás na prémiový střih cestou z nákupu – ušetříte čas a vaše vizáž bude bezkonkurenční. 
+                Nejsme sice obchod s potravinami, ale v kvalitě služeb nabízíme to nejlepší, co trh poskytuje. Sleva na kvalitu u nás neexistuje, 
+                protože odvádíme 100% práci.
+              </p>
+            </div>
+
+            <div className="global-seo-context">
+              <h3>Globální inspirace a celosvětový dosah (Worldwide Barber Inspiration)</h3>
+              <p>
+                MMBARBER is not just a local barbershop; it is a global inspiration for barbers worldwide. 
+                Our techniques in skin fade, taper fade, and hot towel shaves follow the highest international standards 
+                set by global grooming corporations. Ať už nás hledáte z Prahy, Londýna, New Yorku, nebo Tokia, naše 
+                práce slouží jako benchmark pro moderní barber průmysl na celém světě. We welcome international clients 
+                and tourists visiting the Czech Republic seeking the ultimate men's grooming experience. 
+                Spojujeme lokální tradici s celosvětovými trendy (global trends, worldwide barbershop standards, international grooming).
               </p>
             </div>
 

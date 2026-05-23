@@ -293,9 +293,10 @@ export default function RootLayout({
                 const cores = navigator.hardwareConcurrency || 0;
                 const ram = navigator.deviceMemory || 0;
                 let tier = 'low';
-                if (cores >= 12 && ram >= 16) tier = 'ultra';
-                else if (cores >= 8 && ram >= 8) tier = 'high';
-                else if (cores >= 6 && ram >= 4) tier = 'medium';
+                // Strict thresholds to favor performance over quality by default
+                if (cores >= 16 && ram >= 32) tier = 'ultra';
+                else if (cores >= 12 && ram >= 16) tier = 'high';
+                else if (cores >= 8 && ram >= 8) tier = 'medium';
                 else tier = 'low';
                 
                 if (cores === 0 || ram === 0) tier = 'low';
