@@ -1,12 +1,12 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb, saveDb } from '@/lib/jsonDb';
 import crypto from 'crypto';
 
 export async function GET(request: Request) {
   try {
-    const stmt = db.prepare('SELECT * FROM barber_novinky ORDER BY createdAt DESC');
-    const rows = stmt.all();
+    const db = getDb();
+    const rows = [...db.barber_novinky].sort((a, b) => b.createdAt - a.createdAt);
     return NextResponse.json(rows);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -19,20 +19,16 @@ export async function POST(request: Request) {
     const id = crypto.randomUUID();
     const now = Date.now();
 
-    const stmt = db.prepare(`
-      INSERT INTO barber_novinky 
-      (id, status, createdAt, nickname, category, message) 
-      VALUES (?, ?, ?, ?, ?, ?)
-    `);
-
-    stmt.run(
+    const db = getDb();
+    db.barber_novinky.push({
       id,
-      body.status || 'new',
-      now,
-      body.nickname,
-      body.category,
-      body.message
-    );
+      status: body.status || 'new',
+      createdAt: now,
+      nickname: body.nickname,
+      category: body.category,
+      message: body.message
+    });
+    saveDb();
 
     return NextResponse.json({ id, success: true });
   } catch (error: any) {
@@ -45,8 +41,12 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { id, status } = body;
 
-    const stmt = db.prepare(`UPDATE barber_novinky SET status = ? WHERE id = ?`);
-    stmt.run(status, id);
+    const db = getDb();
+    const index = db.barber_novinky.findIndex(n => n.id === id);
+    if (index !== -1) {
+      db.barber_novinky[index].status = status;
+      saveDb();
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
@@ -60,14 +60,19 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id');
     const all = searchParams.get('all');
 
+    const db = getDb();
+
     if (all === 'true') {
-      db.prepare(`DELETE FROM barber_novinky`).run();
+      db.barber_novinky = [];
+      saveDb();
       return NextResponse.json({ success: true });
     }
 
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-    db.prepare(`DELETE FROM barber_novinky WHERE id = ?`).run(id);
+    db.barber_novinky = db.barber_novinky.filter(n => n.id !== id);
+    saveDb();
+    
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

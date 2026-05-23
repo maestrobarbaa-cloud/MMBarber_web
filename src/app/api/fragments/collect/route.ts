@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb, saveDb } from '@/lib/jsonDb';
 
 export async function POST(req: Request) {
   try {
@@ -10,23 +10,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing id or fragmentId parameter' }, { status: 400 });
     }
 
-    const selectStmt = db.prepare('SELECT collected_ids FROM user_fragments WHERE id = ?');
-    const row = selectStmt.get(id) as { collected_ids: string } | undefined;
+    const db = getDb();
+    const index = db.user_fragments.findIndex(f => f.id === id);
 
     let collectedIds: string[] = [];
 
-    if (row) {
+    if (index !== -1) {
+      const row = db.user_fragments[index];
       collectedIds = JSON.parse(row.collected_ids);
       if (!collectedIds.includes(fragmentId)) {
         collectedIds.push(fragmentId);
-        
-        const updateStmt = db.prepare('UPDATE user_fragments SET collected_ids = ?, updatedAt = ? WHERE id = ?');
-        updateStmt.run(JSON.stringify(collectedIds), Date.now(), id);
+        db.user_fragments[index].collected_ids = JSON.stringify(collectedIds);
+        db.user_fragments[index].updatedAt = Date.now();
+        saveDb();
       }
     } else {
       collectedIds = [fragmentId];
-      const insertStmt = db.prepare('INSERT INTO user_fragments (id, collected_ids, updatedAt) VALUES (?, ?, ?)');
-      insertStmt.run(id, JSON.stringify(collectedIds), Date.now());
+      db.user_fragments.push({
+        id,
+        collected_ids: JSON.stringify(collectedIds),
+        updatedAt: Date.now()
+      });
+      saveDb();
     }
 
     return NextResponse.json({ collectedIds });

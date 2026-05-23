@@ -22,58 +22,37 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const loadProgress = async () => {
-      try {
-        const id = await getInternalIdentity();
-        const res = await fetch(`/api/fragments/progress?id=${encodeURIComponent(id)}`);
-        if (res.ok) {
-          const data = await res.json();
-          setCollectedIds(data.collectedIds || []);
-        }
-      } catch (error) {
-        console.error("Failed to load fragment progress:", error);
-      } finally {
-        setIsLoaded(true);
+    try {
+      const saved = localStorage.getItem('mmbarber_fragments');
+      if (saved) {
+        setCollectedIds(JSON.parse(saved));
       }
-    };
-    loadProgress();
+    } catch (e) {
+      console.error("Failed to load fragments from local storage:", e);
+    } finally {
+      setIsLoaded(true);
+    }
   }, []);
 
   const collectFragment = async (fragmentId: string) => {
     if (collectedIds.includes(fragmentId)) return;
     
-    // Optimistic update
     const newCollected = [...collectedIds, fragmentId];
     setCollectedIds(newCollected);
-
+    
     try {
-      const id = await getInternalIdentity();
-      const res = await fetch('/api/fragments/collect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, fragmentId })
-      });
-      if (!res.ok) {
-        // Revert on failure
-        setCollectedIds(collectedIds);
-      }
-    } catch (error) {
-      console.error("Failed to collect fragment:", error);
-      setCollectedIds(collectedIds);
+      localStorage.setItem('mmbarber_fragments', JSON.stringify(newCollected));
+    } catch (e) {
+      console.error("Failed to save fragment to local storage:", e);
     }
   };
 
   const resetProgress = async () => {
     setCollectedIds([]);
     try {
-      const id = await getInternalIdentity();
-      await fetch('/api/fragments/reset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      });
-    } catch (error) {
-      console.error("Failed to reset progress:", error);
+      localStorage.removeItem('mmbarber_fragments');
+    } catch (e) {
+      console.error("Failed to reset fragments in local storage:", e);
     }
   };
 

@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/jsonDb';
 
 export async function GET(req: Request) {
   try {
@@ -11,8 +11,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Missing id parameter' }, { status: 400 });
     }
 
-    const stmt = db.prepare('SELECT collected_ids FROM user_fragments WHERE id = ?');
-    const row = stmt.get(id) as { collected_ids: string } | undefined;
+    const db = getDb();
+    const row = db.user_fragments.find(f => f.id === id);
 
     if (row) {
       return NextResponse.json({ collectedIds: JSON.parse(row.collected_ids) });

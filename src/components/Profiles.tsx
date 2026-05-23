@@ -29,32 +29,7 @@ import { getOperativeStatusData, subscribeToStatusUpdates, evaluateStatus, Evalu
 import { getDailyRole } from "@/utils/dailyRoles";
 
 const StatusDot = ({ evaluated }: { evaluated: EvaluatedStatus }) => {
-  if (evaluated.state === 'transparent') return null;
-
-  let colorClass = "";
-  let glowClass = "";
-
-  if (evaluated.state === 'online') {
-    colorClass = "bg-green-500";
-    glowClass = "shadow-[0_0_15px_rgba(34,197,94,0.6)]";
-  } else if (evaluated.state === 'offline') {
-    colorClass = "bg-red-600";
-    glowClass = "shadow-[0_0_15px_rgba(220,38,38,0.6)]";
-  } else if (evaluated.state === 'custom') {
-    colorClass = "bg-mafia-gold";
-    glowClass = "shadow-[0_0_15px_rgba(197,160,89,0.6)]";
-  }
-
-  return (
-    <div className="relative group flex items-center shrink-0 ml-3">
-      <div className={`w-3 h-3 rounded-full ${colorClass} ${glowClass} border border-black/50 animate-pulse`}></div>
-      {evaluated.state === 'custom' && evaluated.text && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap bg-black/90 border border-mafia-gold/30 px-3 py-1 text-[10px] font-mono text-mafia-gold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
-          {evaluated.text}
-        </div>
-      )}
-    </div>
-  );
+  return null;
 };
 
 export interface BarberProfile {
@@ -1331,7 +1306,7 @@ function ChairWithCard({
   );
 }
 
-export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boolean, nella?: boolean } }) {
+export function Profiles() {
   const { t, lang } = useTranslation();
   const { isTomasUnlocked, isNellaUnlocked, totalCollected } = useGame();
   const [isRandomizing, setIsRandomizing] = useState(false);
@@ -1356,10 +1331,6 @@ export function Profiles({ hiddenBarbers = {} }: { hiddenBarbers?: { tomas?: boo
       modifiedB.image = "question-mark";
     }
     return modifiedB;
-  }).filter(b => {
-    if (b.id === 'tomas' && hiddenBarbers.tomas) return false;
-    if (b.id === 'nella' && hiddenBarbers.nella) return false;
-    return true;
   });
 
   useEffect(() => {

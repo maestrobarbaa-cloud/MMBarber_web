@@ -1,0 +1,53 @@
+{
+  "barbers": [
+    {
+      "id": "tomas",
+      "name": "Tomáš",
+      "role": "The Enforcer",
+      "image": "/obr/tomasmicka.png",
+      "desc": "Možná bys čekal jednoduchý příběh. Školu, obor, certifikát, hotovo.\n\nAle realita je jinde.\n\nAno — něco jsem vystudoval. Něco, co se dá napsat do řádku a dát do CV. Ale to je jen začátek věci, ne její podstata.\n\nTo, kým jsem dnes, vzniklo až potom. V pohybu, v rozhodnutích, v místech, kde se nehraje na jistotu.\n\nA možná tě to překvapí, ale i věci, na které se právě díváš, nejsou náhoda.\n\nJsou to odrazy mých myšlenek. Každý detail, atmosféra, energie — všechno má svůj původ.\n\nNetvořím jen to, co je vidět.\n\nTvořím všechno kolem toho.\n\nA možná proto to působí jinak, než bys čekal.",
+      "schedule": "Út-Pá 9:00 - 18:00 | So-Ne 9:00 - 12:00",
+      "bookingLink": "https://mm.inthechair.com/micka",
+      "specializations": "[\"Primárně pánské\",\"ale zvládnu i dámy\"]",
+      "symbol": "A",
+      "rankLevel": 9,
+      "rankTitle": "GENERÁLNÍ ŘEDITEL STŘIHU",
+      "rankStatus": "stable",
+      "rankNextIn": null,
+      "parentId": null,
+      "customChatText": null,
+      "orderIndex": 1,
+      "requiresUnlock": 0,
+      "unlockThreshold": 5,
+      "missionFailed": 0
+    },
+    {
+      "id": "nella",
+      "name": "Nella",
+      "role": "Mladé ucho",
+      "image": "/obr/nellapelikanova.png",
+      "desc": "Ochoč si svoji barberku. Čerstvá krev v našem týmu.",
+      "schedule": "Individuální režim práce.",
+      "bookingLink": "https://mmbarberx.setmore.com",
+      "specializations": "[\"Barvení\",\"Trvalá ondulace\",\"Stříhání pánské\",\"Stříhání dámské\",\"Děti\"]",
+      "symbol": "Q",
+      "rankLevel": 0,
+      "rankTitle": "KOSMETIK PLOVOUCÍCH KRYTIN",
+      "rankStatus": "demoted",
+      "rankNextIn": "ČERVEN 2026",
+      "parentId": null,
+      "customChatText": null,
+      "orderIndex": 2,
+      "requiresUnlock": 0,
+      "unlockThreshold": 5,
+      "missionFailed": 0
+    }
+  ],
+  "chat_messages": [],
+  "seznamka_requests": [],
+  "barber_novinky": [],
+  "suggestions": [],
+  "hall_of_fame": [],
+  "settings": {},
+  "user_fragments": []
+}

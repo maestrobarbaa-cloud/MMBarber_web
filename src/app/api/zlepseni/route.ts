@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb, saveDb } from '@/lib/jsonDb';
 import crypto from 'crypto';
 
 export async function GET(request: Request) {
@@ -8,15 +8,14 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
 
-    let query = 'SELECT * FROM suggestions ORDER BY createdAt DESC';
-    let params: any[] = [];
-
+    const db = getDb();
+    let rows = [...db.suggestions];
+    
     if (status) {
-      query = 'SELECT * FROM suggestions WHERE status = ? ORDER BY createdAt DESC';
-      params.push(status);
+      rows = rows.filter(r => r.status === status);
     }
+    rows.sort((a, b) => b.createdAt - a.createdAt);
 
-    const rows = db.prepare(query).all(...params);
     const data = rows.map((r: any) => ({
       ...r,
       points: r.points ? JSON.parse(r.points) : [],
@@ -35,23 +34,19 @@ export async function POST(request: Request) {
     const id = crypto.randomUUID();
     const now = Date.now();
 
-    const stmt = db.prepare(`
-      INSERT INTO suggestions 
-      (id, user, userId, content, points, userPriority, status, likes, createdAt) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    stmt.run(
+    const db = getDb();
+    db.suggestions.push({
       id,
-      body.user,
-      body.userId,
-      body.content,
-      JSON.stringify(body.points || []),
-      body.userPriority,
-      body.status || 'PENDING',
-      JSON.stringify([]),
-      now
-    );
+      user: body.user,
+      userId: body.userId,
+      content: body.content,
+      points: JSON.stringify(body.points || []),
+      userPriority: body.userPriority,
+      status: body.status || 'PENDING',
+      likes: JSON.stringify([]),
+      createdAt: now
+    });
+    saveDb();
 
     return NextResponse.json({ id, success: true });
   } catch (error: any) {
@@ -66,10 +61,12 @@ export async function PUT(request: Request) {
 
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-    if (action === 'toggleLike' && userId) {
-      const row = db.prepare(`SELECT likes FROM suggestions WHERE id = ?`).get(id) as any;
-      if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    const db = getDb();
+    const index = db.suggestions.findIndex(s => s.id === id);
+    if (index === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
+    if (action === 'toggleLike' && userId) {
+      const row = db.suggestions[index];
       const likes = row.likes ? JSON.parse(row.likes) : [];
       const hasLiked = likes.includes(userId);
 
@@ -77,25 +74,17 @@ export async function PUT(request: Request) {
         ? likes.filter((uid: string) => uid !== userId)
         : [...likes, userId];
 
-      db.prepare(`UPDATE suggestions SET likes = ? WHERE id = ?`).run(JSON.stringify(newLikes), id);
+      db.suggestions[index].likes = JSON.stringify(newLikes);
+      saveDb();
       return NextResponse.json({ success: true, likes: newLikes });
     }
 
-    const updates: string[] = [];
-    const params: any[] = [];
-
-    if (status !== undefined) { updates.push('status = ?'); params.push(status); }
-    if (adminResponse !== undefined) { updates.push('adminResponse = ?'); params.push(adminResponse); }
-    if (adminPriority !== undefined) { updates.push('adminPriority = ?'); params.push(adminPriority); }
+    if (status !== undefined) db.suggestions[index].status = status;
+    if (adminResponse !== undefined) db.suggestions[index].adminResponse = adminResponse;
+    if (adminPriority !== undefined) db.suggestions[index].adminPriority = adminPriority;
     
-    updates.push('updatedAt = ?');
-    params.push(Date.now());
-    
-    params.push(id);
-
-    if (updates.length > 0) {
-      db.prepare(`UPDATE suggestions SET ${updates.join(', ')} WHERE id = ?`).run(...params);
-    }
+    db.suggestions[index].updatedAt = Date.now();
+    saveDb();
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
@@ -110,7 +99,10 @@ export async function DELETE(request: Request) {
 
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-    db.prepare(`DELETE FROM suggestions WHERE id = ?`).run(id);
+    const db = getDb();
+    db.suggestions = db.suggestions.filter(s => s.id !== id);
+    saveDb();
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

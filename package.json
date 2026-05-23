@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@types/dompurify": "^3.0.5",
-    "better-sqlite3": "^12.10.0",
     "clsx": "^2.1.1",
     "dompurify": "^3.4.2",
     "framer-motion": "^12.35.0",

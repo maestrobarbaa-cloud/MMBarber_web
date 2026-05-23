@@ -48,8 +48,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     workerThreads: false,
+    cpus: 1,
+    memoryBasedWorkersCount: true,
   },
-  serverExternalPackages: ['better-sqlite3'],
 };
 
 export default nextConfig;

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { barbers as staticBarbers } from '@/data/barbers';
 
 export interface BarberRank {
   level: number;
@@ -20,7 +21,6 @@ export interface BarberProfile {
   specializations: string[];
   symbol: string;
   rank?: BarberRank;
-  // Extended fields from DB
   parentId?: string;
   customChatText?: string;
   orderIndex?: number;
@@ -36,37 +36,18 @@ interface BarberContextType {
 }
 
 const BarberContext = createContext<BarberContextType>({
-  barbers: [],
-  loading: true,
+  barbers: staticBarbers as BarberProfile[],
+  loading: false,
   refreshBarbers: async () => {},
 });
 
 export const useBarbers = () => useContext(BarberContext);
 
 export const BarberProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [barbers, setBarbers] = useState<BarberProfile[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const refreshBarbers = async () => {
-    try {
-      const res = await fetch('/api/barbers');
-      if (res.ok) {
-        const data = await res.json();
-        setBarbers(data.barbers || []);
-      }
-    } catch (e) {
-      console.error('Failed to fetch barbers', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    refreshBarbers();
-  }, []);
+  const [barbers] = useState<BarberProfile[]>(staticBarbers as BarberProfile[]);
 
   return (
-    <BarberContext.Provider value={{ barbers, loading, refreshBarbers }}>
+    <BarberContext.Provider value={{ barbers, loading: false, refreshBarbers: async () => {} }}>
       {children}
     </BarberContext.Provider>
   );

@@ -21,61 +21,8 @@ import { Footer } from "@/components/Footer";
 
 export default function CommunityPage() {
   const { t, lang } = useTranslation();
-  const [isChatEnabled, setIsChatEnabled] = React.useState(true);
-
-  React.useEffect(() => {
-    fetch('/api/settings?key=chat_enabled')
-      .then(res => res.json())
-      .then(data => setIsChatEnabled(data.value === null || data.value === 'true'))
-      .catch(console.error);
-  }, []);
 
   let communitySections = [
-    {
-      id: 'projekty',
-      title: t.others.community.projekty.title,
-      subtitle: t.others.community.projekty.subtitle,
-      desc: t.others.community.projekty.desc,
-      icon: <Zap className="text-mafia-gold" size={48} />,
-      link: '/komunita/projekty',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.1)'
-    },
-    {
-      id: 'chat',
-      title: t.others.community.chat.title,
-      subtitle: t.others.community.chat.subtitle,
-      desc: t.others.community.chat.desc,
-      icon: <Users className="text-mafia-gold" size={48} />,
-      link: '/komunita/chat',
-      color: 'rgba(139, 0, 0, 0.1)'
-    },
-    {
-      id: 'historky',
-      title: t.others.community.historky.title,
-      subtitle: t.others.community.historky.subtitle,
-      desc: t.others.community.historky.desc,
-      icon: <BookOpen className="text-mafia-gold" size={48} />,
-      link: '/komunita/historky',
-      color: 'rgba(255, 255, 255, 0.05)'
-    },
-    {
-      id: 'sin-slavy',
-      title: lang === 'cs' ? 'SÍŇ SLÁVY' : 'HALL OF FAME',
-      subtitle: 'SUPPORTERS_LIST',
-      desc: lang === 'cs' ? 'Zapiš se do historie MMBarber rodiny. Seznam všech, kteří s nadmi tvoří tuhle komunitu.' : 'Write yourself into MMBarber history. A list of everyone building this community with us.',
-      icon: <Trophy className="text-mafia-gold" size={48} />,
-      link: '/komunita/sin-slavy',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.2)'
-    },
-    {
-      id: 'zlepseni',
-      title: lang === 'cs' ? 'VIZE & ZLEPŠENÍ' : 'VISIONS & UPGRADES',
-      subtitle: 'FUTURE_PROTOCOL',
-      desc: lang === 'cs' ? 'Máš nápad jak posunout MMBarber dál? Navrhni zlepšení, prioritizuj a sleduj realizaci.' : 'Have an idea to push MMBarber further? Suggest improvements, prioritize and track implementation.',
-      icon: <Zap className="text-mafia-gold" size={48} />,
-      link: '/komunita/zlepseni',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.3)'
-    },
     {
       id: 'grafika',
       title: lang === 'cs' ? 'GRAFIKA' : 'GRAPHICS',
@@ -84,30 +31,8 @@ export default function CommunityPage() {
       icon: <Camera className="text-mafia-gold" size={48} />,
       link: '/grafika',
       color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    },
-    {
-      id: 'novinky',
-      title: lang === 'cs' ? 'INFORMUJ BARBERA' : 'INFORM BARBER',
-      subtitle: 'DIRECT_CHANNEL',
-      desc: lang === 'cs' ? 'Máš tip, novinku nebo pochvalu? Pošli zprávu přímo do inboxu svého barbera.' : 'Have a tip, news or praise? Send a message directly to your barber.',
-      icon: <Bell className="text-mafia-gold" size={48} />,
-      link: '/komunita/novinky',
-      color: 'rgba(197, 160, 89, 0.15)'
     }
   ];
-
-  if (!isChatEnabled) {
-    const chatIndex = communitySections.findIndex(s => s.id === 'chat');
-    if (chatIndex !== -1) {
-      communitySections[chatIndex] = {
-        ...communitySections[chatIndex],
-        title: lang === 'cs' ? 'AKTUALNĚ NEDOSTUPNÉ' : 'CURRENTLY UNAVAILABLE',
-        desc: lang === 'cs' ? 'Komunitní chat je momentálně administrátorem zablokován.' : 'Community chat is currently disabled by administrator.',
-        link: '#',
-        color: 'rgba(100, 100, 100, 0.1)'
-      };
-    }
-  }
 
   return (
     <div className="min-h-screen bg-black text-smoke-white overflow-x-hidden relative selection:bg-mafia-gold selection:text-mafia-black">

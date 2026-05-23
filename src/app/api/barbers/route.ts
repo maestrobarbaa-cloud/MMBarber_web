@@ -1,13 +1,17 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb, saveDb } from '@/lib/jsonDb';
 
 export async function GET() {
   try {
-    const barbers = db.prepare('SELECT * FROM barbers ORDER BY orderIndex ASC').all();
-    const formatted = barbers.map((b: any) => ({
+    const db = getDb();
+    const barbers = [...db.barbers].sort((a, b) => a.orderIndex - b.orderIndex);
+    
+    const formattedBarbers = barbers.map(b => ({
       ...b,
-      specializations: JSON.parse(b.specializations),
+      specializations: b.specializations ? JSON.parse(b.specializations) : [],
+      requiresUnlock: Boolean(b.requiresUnlock),
+      missionFailed: Boolean(b.missionFailed),
       rank: b.rankLevel !== null ? {
         level: b.rankLevel,
         title: b.rankTitle,
@@ -15,7 +19,8 @@ export async function GET() {
         nextRankIn: b.rankNextIn
       } : undefined
     }));
-    return NextResponse.json({ barbers: formatted }, { status: 200 });
+    
+    return NextResponse.json({ barbers: formattedBarbers });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to fetch barbers' }, { status: 500 });
@@ -25,38 +30,43 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const id = body.id || body.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    const specializations = body.specializations ? JSON.stringify(body.specializations) : '[]';
+    const { name, role, image, desc, schedule, bookingLink, specializations } = body;
     
-    // Find next orderIndex
-    let nextOrder = 1;
-    const maxOrder = db.prepare('SELECT MAX(orderIndex) as max FROM barbers').get() as { max: number };
-    if (maxOrder && maxOrder.max !== null) {
-      nextOrder = maxOrder.max + 1;
+    if (!name || !role || !image || !desc || !schedule) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const stmt = db.prepare(`
-      INSERT INTO barbers (id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
+    const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const db = getDb();
+    
+    if (db.barbers.find(b => b.id === id)) {
+      return NextResponse.json({ error: 'Barber with this ID already exists' }, { status: 400 });
+    }
 
-    stmt.run(
+    const nextOrder = db.barbers.length > 0 ? Math.max(...db.barbers.map(b => b.orderIndex || 0)) + 1 : 1;
+
+    db.barbers.push({
       id,
-      body.name,
-      body.role,
-      body.image || '/obr/novy_barber.png',
-      body.desc || '',
-      body.schedule || 'Nenastaveno',
-      body.bookingLink || '#',
-      specializations,
-      body.symbol || 'X',
-      body.parentId || null,
-      body.customChatText || null,
-      nextOrder,
-      body.requiresUnlock ? 1 : 0,
-      body.unlockThreshold || 5,
-      body.missionFailed ? 1 : 0
-    );
+      name,
+      role,
+      image,
+      desc,
+      schedule,
+      bookingLink: bookingLink || '',
+      specializations: JSON.stringify(specializations || []),
+      symbol: body.symbol || 'X',
+      parentId: body.parentId || null,
+      customChatText: body.customChatText || null,
+      orderIndex: nextOrder,
+      requiresUnlock: body.requiresUnlock ? 1 : 0,
+      unlockThreshold: body.unlockThreshold || 5,
+      missionFailed: body.missionFailed ? 1 : 0,
+      rankLevel: null,
+      rankTitle: null,
+      rankStatus: null,
+      rankNextIn: null
+    });
+    saveDb();
 
     return NextResponse.json({ success: true, id }, { status: 201 });
   } catch (error) {
@@ -72,49 +82,33 @@ export async function PUT(request: Request) {
     
     if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
 
-    const specsStr = specializations ? JSON.stringify(specializations) : undefined;
+    const db = getDb();
+    const index = db.barbers.findIndex(b => b.id === id);
+    if (index === -1) {
+      return NextResponse.json({ error: 'Barber not found' }, { status: 404 });
+    }
 
-    const current = db.prepare('SELECT * FROM barbers WHERE id = ?').get(id) as any;
-    if (!current) return NextResponse.json({ error: 'Barber not found' }, { status: 404 });
+    const current = db.barbers[index];
+    db.barbers[index] = {
+      ...current,
+      name: name ?? current.name,
+      role: role ?? current.role,
+      image: image ?? current.image,
+      desc: desc ?? current.desc,
+      schedule: schedule ?? current.schedule,
+      bookingLink: bookingLink !== undefined ? bookingLink : current.bookingLink,
+      specializations: specializations ? JSON.stringify(specializations) : current.specializations,
+      symbol: symbol ?? current.symbol,
+      parentId: parentId !== undefined ? parentId : current.parentId,
+      customChatText: customChatText !== undefined ? customChatText : current.customChatText,
+      orderIndex: orderIndex ?? current.orderIndex,
+      requiresUnlock: requiresUnlock !== undefined ? (requiresUnlock ? 1 : 0) : current.requiresUnlock,
+      unlockThreshold: unlockThreshold ?? current.unlockThreshold,
+      missionFailed: missionFailed !== undefined ? (missionFailed ? 1 : 0) : current.missionFailed
+    };
+    saveDb();
 
-    const stmt = db.prepare(`
-      UPDATE barbers SET
-        name = COALESCE(?, name),
-        role = COALESCE(?, role),
-        image = COALESCE(?, image),
-        desc = COALESCE(?, desc),
-        schedule = COALESCE(?, schedule),
-        bookingLink = COALESCE(?, bookingLink),
-        specializations = COALESCE(?, specializations),
-        symbol = COALESCE(?, symbol),
-        parentId = COALESCE(?, parentId),
-        customChatText = COALESCE(?, customChatText),
-        orderIndex = COALESCE(?, orderIndex),
-        requiresUnlock = COALESCE(?, requiresUnlock),
-        unlockThreshold = COALESCE(?, unlockThreshold),
-        missionFailed = COALESCE(?, missionFailed)
-      WHERE id = ?
-    `);
-
-    stmt.run(
-      name ?? current.name,
-      role ?? current.role,
-      image ?? current.image,
-      desc ?? current.desc,
-      schedule ?? current.schedule,
-      bookingLink ?? current.bookingLink,
-      specsStr ?? current.specializations,
-      symbol ?? current.symbol,
-      parentId !== undefined ? parentId : current.parentId,
-      customChatText !== undefined ? customChatText : current.customChatText,
-      orderIndex ?? current.orderIndex,
-      requiresUnlock !== undefined ? (requiresUnlock ? 1 : 0) : current.requiresUnlock,
-      unlockThreshold ?? current.unlockThreshold,
-      missionFailed !== undefined ? (missionFailed ? 1 : 0) : current.missionFailed,
-      id
-    );
-
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to update barber' }, { status: 500 });
@@ -125,10 +119,14 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
+    
     if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
 
-    db.prepare('DELETE FROM barbers WHERE id = ?').run(id);
-    return NextResponse.json({ success: true }, { status: 200 });
+    const db = getDb();
+    db.barbers = db.barbers.filter(b => b.id !== id);
+    saveDb();
+
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to delete barber' }, { status: 500 });

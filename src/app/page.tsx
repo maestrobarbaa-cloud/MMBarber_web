@@ -156,7 +156,7 @@ export default function Home() {
             <div className="relative bg-transparent w-full">
               {/* Core sections */}
               <div id="operativi" className="section-optimize" style={{ scrollMarginTop: '100px' }}>
-                <Profiles hiddenBarbers={{ tomas: !isVisible('visibility_barber_tomas'), nella: !isVisible('visibility_barber_nella') }} />
+                <Profiles />
               </div>
               
               {isVisible('visibility_services') && (

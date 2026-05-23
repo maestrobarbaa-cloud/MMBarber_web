@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb, saveDb } from '@/lib/jsonDb';
 import crypto from 'crypto';
 
 export async function GET(request: Request) {
@@ -8,13 +8,15 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const activeOnly = searchParams.get('active');
 
-    let query = 'SELECT * FROM hall_of_fame ORDER BY dateJoined DESC';
-    if (activeOnly === 'true') {
-      query = 'SELECT * FROM hall_of_fame WHERE active = 1 ORDER BY dateJoined DESC';
-    }
+    const db = getDb();
+    let rows = [...db.hall_of_fame];
 
-    const rows = db.prepare(query).all();
+    if (activeOnly === 'true') {
+      rows = rows.filter(r => Boolean(r.active) === true);
+    }
     
+    rows.sort((a, b) => b.dateJoined - a.dateJoined);
+
     const data = rows.map((r: any) => ({
       ...r,
       active: Boolean(r.active),
@@ -31,21 +33,17 @@ export async function POST(request: Request) {
     const body = await request.json();
     const id = crypto.randomUUID();
 
-    const stmt = db.prepare(`
-      INSERT INTO hall_of_fame 
-      (id, name, tier, message, dateJoined, avatarId, active) 
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    stmt.run(
+    const db = getDb();
+    db.hall_of_fame.push({
       id,
-      body.name,
-      body.tier,
-      body.message || '',
-      body.dateJoined?.seconds ? body.dateJoined.seconds * 1000 : Date.now(),
-      body.avatarId || 1,
-      body.active !== undefined ? (body.active ? 1 : 0) : 1
-    );
+      name: body.name,
+      tier: body.tier,
+      message: body.message || '',
+      dateJoined: body.dateJoined?.seconds ? body.dateJoined.seconds * 1000 : Date.now(),
+      avatarId: body.avatarId || 1,
+      active: body.active !== undefined ? (body.active ? 1 : 0) : 1
+    });
+    saveDb();
 
     return NextResponse.json({ id, success: true });
   } catch (error: any) {
@@ -62,7 +60,12 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Missing id or active state' }, { status: 400 });
     }
 
-    db.prepare(`UPDATE hall_of_fame SET active = ? WHERE id = ?`).run(active ? 1 : 0, id);
+    const db = getDb();
+    const index = db.hall_of_fame.findIndex(h => h.id === id);
+    if (index !== -1) {
+      db.hall_of_fame[index].active = active ? 1 : 0;
+      saveDb();
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
@@ -77,7 +80,10 @@ export async function DELETE(request: Request) {
 
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-    db.prepare(`DELETE FROM hall_of_fame WHERE id = ?`).run(id);
+    const db = getDb();
+    db.hall_of_fame = db.hall_of_fame.filter(h => h.id !== id);
+    saveDb();
+    
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

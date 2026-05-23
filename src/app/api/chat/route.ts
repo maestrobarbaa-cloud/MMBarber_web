@@ -1,12 +1,12 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb, saveDb } from '@/lib/jsonDb';
 import crypto from 'crypto';
 
 export async function GET(request: Request) {
   try {
-    const stmt = db.prepare('SELECT * FROM chat_messages ORDER BY timestamp DESC LIMIT 100');
-    const rows = stmt.all();
+    const db = getDb();
+    const rows = [...db.chat_messages].sort((a, b) => b.timestamp - a.timestamp).slice(0, 100);
     const data = rows.map((r: any) => ({
       ...r,
       likes: r.likes ? JSON.parse(r.likes) : [],
@@ -24,21 +24,17 @@ export async function POST(request: Request) {
     const id = crypto.randomUUID();
     const now = Date.now();
 
-    const stmt = db.prepare(`
-      INSERT INTO chat_messages 
-      (id, text, user, userId, timestamp, likes, verifiedUser) 
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    stmt.run(
+    const db = getDb();
+    db.chat_messages.push({
       id,
-      body.text,
-      body.user,
-      body.userId,
-      now,
-      JSON.stringify([]),
-      body.verifiedUser ? 1 : 0
-    );
+      text: body.text,
+      user: body.user,
+      userId: body.userId,
+      timestamp: now,
+      likes: JSON.stringify([]),
+      verifiedUser: body.verifiedUser ? 1 : 0
+    });
+    saveDb();
 
     return NextResponse.json({ id, success: true });
   } catch (error: any) {
@@ -55,9 +51,11 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
     }
 
-    const row = db.prepare(`SELECT likes FROM chat_messages WHERE id = ?`).get(id) as any;
-    if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    const db = getDb();
+    const index = db.chat_messages.findIndex(m => m.id === id);
+    if (index === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
+    const row = db.chat_messages[index];
     const likes = row.likes ? JSON.parse(row.likes) : [];
     const hasLiked = likes.includes(userId);
 
@@ -65,7 +63,8 @@ export async function PUT(request: Request) {
       ? likes.filter((uid: string) => uid !== userId)
       : [...likes, userId];
 
-    db.prepare(`UPDATE chat_messages SET likes = ? WHERE id = ?`).run(JSON.stringify(newLikes), id);
+    db.chat_messages[index].likes = JSON.stringify(newLikes);
+    saveDb();
 
     return NextResponse.json({ success: true, likes: newLikes });
   } catch (error: any) {
@@ -79,14 +78,19 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id');
     const all = searchParams.get('all');
 
+    const db = getDb();
+
     if (all === 'true') {
-      db.prepare(`DELETE FROM chat_messages`).run();
+      db.chat_messages = [];
+      saveDb();
       return NextResponse.json({ success: true });
     }
 
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-    db.prepare(`DELETE FROM chat_messages WHERE id = ?`).run(id);
+    db.chat_messages = db.chat_messages.filter(m => m.id !== id);
+    saveDb();
+    
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

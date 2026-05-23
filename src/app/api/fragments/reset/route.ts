@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb, saveDb } from '@/lib/jsonDb';
 
 export async function POST(req: Request) {
   try {
@@ -10,8 +10,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing id parameter' }, { status: 400 });
     }
 
-    const deleteStmt = db.prepare('DELETE FROM user_fragments WHERE id = ?');
-    deleteStmt.run(id);
+    const db = getDb();
+    db.user_fragments = db.user_fragments.filter(f => f.id !== id);
+    saveDb();
 
     return NextResponse.json({ success: true, collectedIds: [] });
   } catch (error) {

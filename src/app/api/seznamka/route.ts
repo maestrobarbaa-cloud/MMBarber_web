@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb, saveDb } from '@/lib/jsonDb';
 import crypto from 'crypto';
 
 export async function GET(request: Request) {
@@ -8,16 +8,13 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
 
-    let query = 'SELECT * FROM seznamka_requests ORDER BY createdAt DESC';
-    let params: any[] = [];
-
+    const db = getDb();
+    let rows = [...db.seznamka_requests];
+    
     if (status) {
-      query = 'SELECT * FROM seznamka_requests WHERE status = ? ORDER BY createdAt DESC';
-      params.push(status);
+      rows = rows.filter(r => r.status === status);
     }
-
-    const stmt = db.prepare(query);
-    const rows = stmt.all(...params);
+    rows.sort((a, b) => b.createdAt - a.createdAt);
 
     const data = rows.map((r: any) => ({
       ...r,
@@ -37,26 +34,22 @@ export async function POST(request: Request) {
     const id = crypto.randomUUID();
     const now = Date.now();
 
-    const stmt = db.prepare(`
-      INSERT INTO seznamka_requests 
-      (id, status, createdAt, name, age, email, phone, idealMan, characters, ageMin, ageMax, dealbreaker) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    stmt.run(
+    const db = getDb();
+    db.seznamka_requests.push({
       id,
-      body.status || 'new',
-      now,
-      body.name,
-      body.age,
-      body.email,
-      body.phone || '',
-      body.idealMan,
-      JSON.stringify(body.characters || []),
-      body.ageRange?.[0] || 18,
-      body.ageRange?.[1] || 99,
-      body.dealbreaker || ''
-    );
+      status: body.status || 'new',
+      createdAt: now,
+      name: body.name,
+      age: body.age,
+      email: body.email,
+      phone: body.phone || '',
+      idealMan: body.idealMan,
+      characters: JSON.stringify(body.characters || []),
+      ageMin: body.ageRange?.[0] || 18,
+      ageMax: body.ageRange?.[1] || 99,
+      dealbreaker: body.dealbreaker || ''
+    });
+    saveDb();
 
     return NextResponse.json({ id, success: true });
   } catch (error: any) {
@@ -73,8 +66,12 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Missing id or status' }, { status: 400 });
     }
 
-    const stmt = db.prepare(`UPDATE seznamka_requests SET status = ? WHERE id = ?`);
-    stmt.run(status, id);
+    const db = getDb();
+    const index = db.seznamka_requests.findIndex(r => r.id === id);
+    if (index !== -1) {
+      db.seznamka_requests[index].status = status;
+      saveDb();
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
@@ -88,14 +85,19 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id');
     const all = searchParams.get('all');
 
+    const db = getDb();
+
     if (all === 'true') {
-      db.prepare(`DELETE FROM seznamka_requests`).run();
+      db.seznamka_requests = [];
+      saveDb();
       return NextResponse.json({ success: true });
     }
 
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-    db.prepare(`DELETE FROM seznamka_requests WHERE id = ?`).run(id);
+    db.seznamka_requests = db.seznamka_requests.filter(r => r.id !== id);
+    saveDb();
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
