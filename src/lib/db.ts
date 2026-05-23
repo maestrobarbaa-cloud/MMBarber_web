@@ -152,7 +152,8 @@ function getDb(): DatabaseType.Database {
   if (_dbInstance) return _dbInstance;
 
   // LAZY LOAD: Prevents Next.js build evaluation crash!
-  const Database = require('better-sqlite3');
+  const dbModule = 'better-sqlite3';
+  const Database = require(dbModule);
   const dbPath = path.join(process.cwd(), 'mmbarber.db');
   const instance = new Database(dbPath, { verbose: console.log });
   instance.pragma('journal_mode = WAL');

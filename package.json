@@ -31,8 +31,7 @@
     "eslint": "^9",
     "eslint-config-next": "^16.2.6",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "wrangler": "^4.71.0"
+    "typescript": "^5"
   },
   "overrides": {
     "uuid": "^11.1.0",
