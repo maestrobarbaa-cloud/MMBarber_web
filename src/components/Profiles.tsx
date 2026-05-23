@@ -73,6 +73,8 @@ export interface BarberProfile {
   specializations?: string[];
   favorites?: string;
   isHidden?: boolean;
+  missionFailed?: boolean;
+  unlockThreshold?: number;
   symbol: string;
   rank?: {
     level: number;

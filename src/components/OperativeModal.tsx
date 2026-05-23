@@ -23,6 +23,8 @@ interface BarberProfile {
   bookingLink: string;
   story?: string;
   symbol: string;
+  missionFailed?: boolean;
+  unlockThreshold?: number;
   rank?: {
     level: number;
     title: string;
