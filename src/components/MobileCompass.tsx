@@ -5,9 +5,9 @@ import { Compass, Navigation2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 
-const TARGET_LAT = 49.0580028;
-const TARGET_LON = 17.4814000;
-const SEARCH_QUERY = "MMBARBER Mařatice";
+const TARGET_LAT = 49.0706875;
+const TARGET_LON = 17.4646875;
+const SEARCH_QUERY = "Sadová 1383, 686 05 Uherské Hradiště";
 
 export function MobileCompass() {
   const { t, lang } = useTranslation();
@@ -325,7 +325,7 @@ export function MobileCompass() {
                   <div className="pt-5 border-t border-mafia-gold/10 space-y-4">
                      <div className="flex justify-between items-center text-[10px] font-mono">
                         <span className="text-mafia-gold/30 uppercase tracking-widest">Geografický Cíl</span>
-                        <span className="text-white/80 tracking-widest">49.0580 N, 17.4814 E</span>
+                        <span className="text-white/80 tracking-widest">49.0706 N, 17.4646 E</span>
                      </div>
                      <div className="flex justify-between items-center text-[10px] font-mono">
                         <span className="text-mafia-gold/30 uppercase tracking-widest">HQ Lokalita</span>
