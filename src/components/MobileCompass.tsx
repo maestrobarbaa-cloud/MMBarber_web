@@ -5,8 +5,8 @@ import { Compass, Navigation2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 
-const TARGET_LAT = 49.0592272;
-const TARGET_LON = 17.4835088;
+const TARGET_LAT = 49.0580028;
+const TARGET_LON = 17.4814000;
 const SEARCH_QUERY = "MMBARBER Mařatice";
 
 export function MobileCompass() {
@@ -70,8 +70,9 @@ export function MobileCompass() {
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
+    let watchId: number;
     if ("geolocation" in navigator && isEnabled && isVisible) {
-      navigator.geolocation.getCurrentPosition(
+      watchId = navigator.geolocation.watchPosition(
         (pos) => {
           const lat1 = pos.coords.latitude;
           const lon1 = pos.coords.longitude;
@@ -87,7 +88,7 @@ export function MobileCompass() {
           const brng = Math.atan2(y, x) * 180 / Math.PI;
           setTargetBearing((brng + 360) % 360);
 
-          const R = 6371e3;
+          const R = 6371e3; // metres
           const φ1 = lat1 * Math.PI / 180;
           const φ2 = TARGET_LAT * Math.PI / 180;
           const Δφ = (TARGET_LAT - lat1) * Math.PI / 180;
@@ -104,13 +105,16 @@ export function MobileCompass() {
           setDistanceRaw(dDisplay);
         },
         null,
-        { enableHighAccuracy: true }
+        { enableHighAccuracy: true, maximumAge: 0 }
       );
     }
 
     return () => {
       window.removeEventListener('mmbarber-toggle-compass', handleToggle);
       window.removeEventListener("resize", checkMobile);
+      if (watchId !== undefined) {
+        navigator.geolocation.clearWatch(watchId);
+      }
     };
   }, [isEnabled, isVisible, handleToggle, lang]);
 
@@ -321,7 +325,7 @@ export function MobileCompass() {
                   <div className="pt-5 border-t border-mafia-gold/10 space-y-4">
                      <div className="flex justify-between items-center text-[10px] font-mono">
                         <span className="text-mafia-gold/30 uppercase tracking-widest">Geografický Cíl</span>
-                        <span className="text-white/80 tracking-widest">49.0592 N, 17.4835 E</span>
+                        <span className="text-white/80 tracking-widest">49.0580 N, 17.4814 E</span>
                      </div>
                      <div className="flex justify-between items-center text-[10px] font-mono">
                         <span className="text-mafia-gold/30 uppercase tracking-widest">HQ Lokalita</span>

@@ -76,22 +76,6 @@ export function SEOContentArchive() {
           ))}
         </div>
 
-        {/* Massive Hidden SEO text expansion - Multi-lingual */}
-        <div className="mt-32 opacity-[0.01] select-none pointer-events-none text-[6px] columns-2 md:columns-5 lg:columns-8 gap-8 border-t border-white/5 pt-20">
-           <h3>{currentLang === 'cs' ? 'Rozšířený globální kontext' : 'Extended Global Context'}</h3>
-           <p>
-             {currentLang === 'cs' ? (
-               "Gaming, PC hry, PlayStation 5, PS5, Xbox, eSports, Mafia, GTA, Ekologie, udržitelnost, solární energie, klimatická změna, globální oteplování. " +
-               "Automotive, elektromobily, Tesla, vodík, rychlost, F1. Vesmír, Mars, SpaceX, NASA. Uherské Hradiště, Slovácko, Česko. " +
-               "Investice, akcie, byznys, finance. Hudba, kapely, Argema, Metallica. Film, Noir, Kmotr. Sport, MMA, 1. FC Slovácko."
-             ) : (
-               "Gaming, PC games, PlayStation 5, PS5, Xbox, eSports, Mafia, GTA, Ecology, sustainability, solar energy, climate change, global warming. " +
-               "Automotive, electric vehicles, Tesla, hydrogen, speed, F1. Space, Mars, SpaceX, NASA. Uherske Hradiste, Slovacko, Czechia. " +
-               "Investment, stocks, business, finance. Music, bands, Metallica, AC/DC. Cinema, Noir, Godfather. Sports, MMA, Soccer."
-             )}
-             (Zde pokračuje dalších 5000 slov v obou jazycích pro maximální indexaci...)
-           </p>
-        </div>
       </div>
     </div>
   );

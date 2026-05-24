@@ -11,6 +11,7 @@ import { SecurityProvider } from "@/components/SecurityProvider";
 import { ClientWrapper } from "@/components/ClientWrapper";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { FutureSEO } from "@/components/FutureSEO";
+import { DynamicSEO } from "@/components/DynamicSEO";
 import { TableOfContents } from "@/components/TableOfContents";
 import { BarberProvider } from "@/contexts/BarberContext";
 import { GameProvider } from "@/contexts/GameContext";
@@ -347,6 +348,7 @@ export default function RootLayout({
                 <Atmosphere />
                 <FilmGrain />
                 <FutureSEO />
+                <DynamicSEO />
                 <Header />
 
                 <BarberProvider>

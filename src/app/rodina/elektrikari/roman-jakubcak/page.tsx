@@ -208,6 +208,7 @@ export default function RomanJakubcakPage() {
                   alt="Roman Jakubčák" 
                   width={220} 
                   height={220} 
+                  unoptimized
                   className="w-full h-full object-contain rounded-lg p-6 bg-white/[0.01] border border-white/5 grayscale group-hover:grayscale-0 transition-all duration-700"
                 />
               </div>

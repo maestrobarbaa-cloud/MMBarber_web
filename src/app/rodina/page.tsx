@@ -44,7 +44,7 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
 
   return (
     <div key={m.name} className="group bg-mafia-black/80 border border-mafia-gold/20 p-3 md:p-8 flex flex-col items-center justify-center backdrop-blur-xl hover:border-mafia-gold transition-all relative overflow-hidden">
-      <Image src={m.img} alt={m.name} width={100} height={100} className="w-12 h-12 md:w-24 md:h-24 object-contain mb-3 md:mb-6 grayscale group-hover:grayscale-0 transition-all" priority={m.year === 2025} />
+      <Image src={m.img} alt={m.name} width={100} height={100} unoptimized className="w-12 h-12 md:w-24 md:h-24 object-contain mb-3 md:mb-6 grayscale group-hover:grayscale-0 transition-all" priority={m.year === 2025} />
       <h3 className="text-sm md:text-xl font-heading font-black text-smoke-white uppercase mb-1 md:mb-2 text-center leading-tight">{m.name}</h3>
       <p className="text-mafia-gold font-mono text-[7px] md:text-[9px] tracking-widest uppercase mb-3 md:mb-6 text-center">{role}</p>
       <div className="flex flex-col items-center w-full gap-2 md:gap-4">
@@ -304,7 +304,7 @@ export default function FamilyPage() {
 
   if (!isMounted) return null;
 
-  const filteredMembers = members.filter(m => (activeDivision === 'all' || m.div === activeDivision) && m.div !== 'team');
+  const filteredMembers = members.filter(m => activeDivision === 'all' ? m.div !== 'team' : m.div === activeDivision);
 
   return (
     <section className="min-h-screen bg-mafia-black text-smoke-white pt-32 pb-24 px-6 relative overflow-x-hidden lg:cursor-crosshair touch-pan-y">
