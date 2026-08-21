@@ -16,6 +16,7 @@ import { BarberProvider } from "@/contexts/BarberContext";
 import { GameProvider } from "@/contexts/GameContext";
 import { MobileCompass } from "@/components/MobileCompass";
 import { Providers } from "@/components/Providers";
+import { BugReporter } from "@/components/BugReporter";
 import { AntiTheft } from "@/components/AntiTheft";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import Script from "next/script";
@@ -376,6 +377,7 @@ export default function RootLayout({
                 <ScrollIndicator />
                 <CustomCursor />
                 <MobileCompass />
+                <BugReporter />
               </>
             </GameProvider>
           </SecurityProvider>

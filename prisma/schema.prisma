@@ -82,6 +82,7 @@ model User {
   
   linkRequestsSent LinkRequest[] @relation("LinkRequestsSent")
   linkRequestsReceived LinkRequest[] @relation("LinkRequestsReceived")
+  bugReports       BugReport[]
 }
 
 model VerificationToken {
@@ -432,5 +433,16 @@ model LinkRequest {
   receiver   User     @relation("LinkRequestsReceived", fields: [receiverId], references: [id], onDelete: Cascade)
 
   @@unique([senderId, receiverId])
+}
+
+model BugReport {
+  id          String   @id @default(cuid())
+  userId      String?
+  title       String
+  description String
+  status      String   @default("NEW") // NEW, IN_PROGRESS, RESOLVED, REJECTED
+  createdAt   DateTime @default(now())
+
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
