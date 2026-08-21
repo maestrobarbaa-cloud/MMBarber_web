@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     const body = await req.json();
-    const { title, description } = body;
+    const { title, description, url, userAgent, screenSize } = body;
 
     if (!title || !description) {
       return NextResponse.json({ error: 'Titulek a popis jsou povinné.' }, { status: 400 });
@@ -17,6 +17,9 @@ export async function POST(req: Request) {
       data: {
         title,
         description,
+        url: url || null,
+        userAgent: userAgent || null,
+        screenSize: screenSize || null,
         userId: session?.user?.id || null,
       },
     });

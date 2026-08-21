@@ -16,10 +16,15 @@ export function BugReporter() {
 
     setStatus('loading');
     try {
+      // Sběr telemetrie
+      const url = typeof window !== 'undefined' ? window.location.href : '';
+      const userAgent = typeof window !== 'undefined' ? navigator.userAgent : '';
+      const screenSize = typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}` : '';
+
       const res = await fetch('/api/bug-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description }),
+        body: JSON.stringify({ title, description, url, userAgent, screenSize }),
       });
 
       if (!res.ok) throw new Error('Network response was not ok');

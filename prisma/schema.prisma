@@ -441,6 +441,12 @@ model BugReport {
   title       String
   description String
   status      String   @default("NEW") // NEW, IN_PROGRESS, RESOLVED, REJECTED
+  
+  // Telemetrie
+  url         String?
+  userAgent   String?
+  screenSize  String?
+  
   createdAt   DateTime @default(now())
 
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
