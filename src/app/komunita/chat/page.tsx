@@ -82,11 +82,32 @@ export default function CommunityChatPage() {
     }
   }, [messages, nickname]);
 
-  const handleSetNickname = (e: React.FormEvent) => {
+  const handleSetNickname = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tempNickname.trim()) return;
     setNickname(tempNickname);
     localStorage.setItem("mmbarber_community_nick", tempNickname);
+    
+    // Odeslat systémovou zprávu o připojení
+    try {
+      const networkData = await getUserNetworkData();
+      const payload = {
+        user: "SYSTEM",
+        userId: "system",
+        text: `[SYSTÉM] Uživatel ${tempNickname} právě vstoupil do komunity.`,
+        ip: networkData.ip,
+        network: networkData,
+        verifiedUser: true
+      };
+
+      await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.error("Failed to send system message", err);
+    }
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {

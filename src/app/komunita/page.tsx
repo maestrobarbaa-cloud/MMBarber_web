@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "@/hooks/useTranslation";
 import { 
@@ -13,16 +13,38 @@ import {
   Facebook,
   Trophy,
   Camera,
-  Bell
+  Bell,
+  MessageSquare,
+  Lightbulb
 } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import { Footer } from "@/components/Footer";
 
 export default function CommunityPage() {
   const { t, lang } = useTranslation();
+  const [visibility, setVisibility] = useState<Record<string, boolean>>({});
 
-  let communitySections = [
+  useEffect(() => {
+    const fetchVisibility = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const data = await res.json();
+          const parsed: Record<string, boolean> = {};
+          if (data.values) {
+            Object.entries(data.values).forEach(([key, val]) => {
+              parsed[key] = val === 'true';
+            });
+          }
+          setVisibility(parsed);
+        }
+      } catch (e) {}
+    };
+    fetchVisibility();
+  }, []);
+
+  const communitySectionsBase = [
     {
       id: 'grafika',
       title: lang === 'cs' ? 'GRAFIKA' : 'GRAPHICS',
@@ -31,8 +53,85 @@ export default function CommunityPage() {
       icon: <Camera className="text-mafia-gold" size={48} />,
       link: '/grafika',
       color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'nabor',
+      title: lang === 'cs' ? 'NÁBOR' : 'RECRUITMENT',
+      subtitle: 'KARIÉRA',
+      desc: lang === 'cs' ? 'Nábor ambiciózních mladých lidí. Bude se konat řízení, zájemci ať se dostaví na stříhání.' : 'Recruitment for ambitious young people. Come for a haircut to apply.',
+      icon: <Users className="text-mafia-gold" size={48} />,
+      link: '/komunita/nabor',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'chat',
+      title: lang === 'cs' ? 'CHAT' : 'CHAT',
+      subtitle: 'DISKUSE',
+      desc: lang === 'cs' ? 'Zapoj se do živé diskuse s ostatními členy komunity. Sdílej tipy, zeptej se na radu.' : 'Join live discussions with other community members. Share tips, ask for advice.',
+      icon: <MessageSquare className="text-mafia-gold" size={48} />,
+      link: '/komunita/chat',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'historky',
+      title: lang === 'cs' ? 'HISTORKY Z KŘESLA' : 'BARBER STORIES',
+      subtitle: 'PŘÍBĚHY',
+      desc: lang === 'cs' ? 'Zajímavé příběhy, nečekaná setkání a zákulisí z našeho barbershopu.' : 'Interesting stories, unexpected meetings and behind the scenes from our barbershop.',
+      icon: <BookOpen className="text-mafia-gold" size={48} />,
+      link: '/komunita/historky',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'hodnoceni',
+      title: lang === 'cs' ? 'HODNOCENÍ' : 'REVIEWS',
+      subtitle: 'FEEDBACK',
+      desc: lang === 'cs' ? 'Přečti si, co o nás říkají ostatní, nebo zanech své vlastní hodnocení.' : 'Read what others say about us, or leave your own review.',
+      icon: <ShieldCheck className="text-mafia-gold" size={48} />,
+      link: '/komunita/hodnoceni',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'novinky',
+      title: lang === 'cs' ? 'NOVINKY' : 'NEWS',
+      subtitle: 'AKTUALITY',
+      desc: lang === 'cs' ? 'Zůstaň v obraze. Nejnovější akce, nové služby a důležitá oznámení.' : 'Stay updated. Latest events, new services and important announcements.',
+      icon: <Bell className="text-mafia-gold" size={48} />,
+      link: '/komunita/novinky',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'projekty',
+      title: lang === 'cs' ? 'PROJEKTY' : 'PROJECTS',
+      subtitle: 'SPOLUPRÁCE',
+      desc: lang === 'cs' ? 'Nahlédni pod pokličku našich speciálních projektů a spoluprací.' : 'Take a peek under the hood of our special projects and collaborations.',
+      icon: <Zap className="text-mafia-gold" size={48} />,
+      link: '/komunita/projekty',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'sin-slavy',
+      title: lang === 'cs' ? 'SÍŇ SLÁVY' : 'HALL OF FAME',
+      subtitle: 'LEGENDY',
+      desc: lang === 'cs' ? 'Oslavujeme naše nejvěrnější klienty a legendární účesy.' : 'Celebrating our most loyal clients and legendary haircuts.',
+      icon: <Trophy className="text-mafia-gold" size={48} />,
+      link: '/komunita/sin-slavy',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+    },
+    {
+      id: 'zlepseni',
+      title: lang === 'cs' ? 'ZLEPŠENÍ' : 'IMPROVEMENTS',
+      subtitle: 'NÁPADY',
+      desc: lang === 'cs' ? 'Máš nápad, jak MMBarber vylepšit? Sem s ním.' : 'Have an idea how to improve MMBarber? Share it here.',
+      icon: <Lightbulb className="text-mafia-gold" size={48} />,
+      link: '/komunita/zlepseni',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
     }
   ];
+
+  const communitySections = communitySectionsBase.filter(section => {
+    const key = `visibility_komunita_${section.id.replace('-', '_')}`;
+    return visibility[key] !== false; // if undefined or true, it's visible
+  });
 
   return (
     <div className="min-h-screen bg-black text-smoke-white overflow-x-hidden relative selection:bg-mafia-gold selection:text-mafia-black">

@@ -10,6 +10,8 @@ import { playSound } from "@/utils/audio";
 import { Footer } from "@/components/Footer";
 import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
 import { PricingSEOArchive } from "@/components/PricingSEOArchive";
+import { useBarbers } from "@/contexts/BarberContext";
+import { BookingModal } from "@/components/BookingModal";
 
 type Currency = "CZK" | "EUR" | "USD" | "PLN" | "UAH";
 
@@ -67,7 +69,7 @@ const getPricingDetails = (date: Date) => {
 
   const closing = (dow === 0 || dow === 6) ? 12 : 18;
   if (h >= closing) {
-    multiplier += 0.3;
+    multiplier += 0.2;
     reasons.push("surchargeAfterHours");
   }
   return { multiplier, reasons };
@@ -76,6 +78,7 @@ const getPricingDetails = (date: Date) => {
 export default function CenikPage() {
   const { t, lang } = useTranslation();
   const router = useRouter();
+  const { barbers } = useBarbers();
   const [currency, setCurrency] = useState<Currency>(() => LANG_CURRENCY[lang] ?? "CZK");
   const [simulatedDate, setSimulatedDate] = useState<Date>(() => {
     const d = new Date();
@@ -85,21 +88,7 @@ export default function CenikPage() {
     return d;
   });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const [taximeter, setTaximeter] = useState(0);
-
   const pricing = useMemo(() => getPricingDetails(simulatedDate), [simulatedDate]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (pricing.multiplier > 1) {
-      interval = setInterval(() => {
-        setTaximeter(prev => prev + (Math.random() * 0.1));
-      }, 500);
-    } else {
-      setTaximeter(0);
-    }
-    return () => clearInterval(interval);
-  }, [pricing.multiplier]);
 
   useEffect(() => {
     if (lang === 'cs') {
@@ -108,12 +97,14 @@ export default function CenikPage() {
   }, [lang]);
 
   const [selectedMain, setSelectedMain] = useState<number | null>(null);
-  const [selectedBarber, setSelectedBarber] = useState<string>("TOMÁŠ");
-  const isRecruitMode = selectedBarber === "VOLNÉ";
+  const [selectedBarberId, setSelectedBarberId] = useState<string>("tomas");
+  const isRecruitMode = selectedBarberId === "volne";
+  const selectedBarberObj = barbers.find(b => b.id === selectedBarberId) || barbers[0];
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [selectedIndependents, setSelectedIndependents] = useState<string[]>([]);
   const [selectedSpecials, setSelectedSpecials] = useState<string[]>([]);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const toggleAddon = (id: string) => {
     setSelectedAddons(prev => {
@@ -234,10 +225,7 @@ export default function CenikPage() {
     return `${rounded}`;
   };
 
-  const formatPriceWithMeter = (value: number, curr: Currency) => {
-    const total = value + (taximeter * (curr === "CZK" ? 1 : 1/EXCHANGE_RATES[curr]));
-    return formatPrice(total, curr);
-  };
+
 
   const formatDualPrice = (value: number) => {
     const localCurr = LANG_CURRENCY[lang] ?? "CZK";
@@ -259,7 +247,10 @@ export default function CenikPage() {
           className="w-full max-w-6xl mx-auto bg-mafia-dark/40 border border-mafia-gold/30 shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] overflow-hidden flex flex-col"
         >
         <div className="sticky top-0 z-20 bg-mafia-black/90 backdrop-blur-md border-b border-mafia-gold/10 p-6 flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-2xl font-heading font-bold text-mafia-gold uppercase tracking-widest">{t.services.title}</h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-heading font-bold text-mafia-gold uppercase tracking-widest">{t.services.title}</h1>
+            <span className="bg-mafia-red/20 border border-mafia-red text-mafia-red text-[10px] font-mono font-bold uppercase px-2 py-1 tracking-widest rounded-sm animate-pulse">Ve vývoji</span>
+          </div>
           
           {lang === 'en' && (
             <div className="flex items-center gap-2 bg-mafia-black/40 border border-mafia-gold/20 p-1">
@@ -305,19 +296,40 @@ export default function CenikPage() {
                 { 
                   id: 'workday', 
                   label: t.services.pricingModes.workday, 
-                  date: (() => { const d = new Date(); d.setDate(d.getDate() + (1 - d.getDay() + 7) % 7); d.setHours(10, 0); return d; })(),
+                  date: (() => { 
+                    const d = new Date(); 
+                    d.setHours(10, 0, 0, 0); 
+                    while (d.getDay() === 0 || d.getDay() === 6 || isHoliday(d)) {
+                      d.setDate(d.getDate() + 1);
+                    }
+                    return d; 
+                  })(),
                   icon: <Clock size={14} />
                 },
                 { 
                   id: 'saturday', 
                   label: t.services.pricingModes.saturday, 
-                  date: (() => { const d = new Date(); d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7); d.setHours(10, 0); return d; })(),
+                  date: (() => { 
+                    const d = new Date(); 
+                    d.setHours(10, 0, 0, 0);
+                    while (d.getDay() !== 6 || isHoliday(d)) {
+                      d.setDate(d.getDate() + 1);
+                    }
+                    return d; 
+                  })(),
                   icon: <Clock size={14} />
                 },
                 { 
                   id: 'sunday', 
                   label: t.services.pricingModes.sunday, 
-                  date: (() => { const d = new Date(); d.setDate(d.getDate() + (0 - d.getDay() + 7) % 7); d.setHours(10, 0); return d; })(),
+                  date: (() => { 
+                    const d = new Date(); 
+                    d.setHours(10, 0, 0, 0);
+                    while (d.getDay() !== 0 || isHoliday(d)) {
+                      d.setDate(d.getDate() + 1);
+                    }
+                    return d; 
+                  })(),
                   icon: <Clock size={14} />
                 },
                 { 
@@ -329,7 +341,14 @@ export default function CenikPage() {
                 { 
                   id: 'night', 
                   label: t.services.pricingModes.night, 
-                  date: (() => { const d = new Date(); d.setHours(18, 0); d.setMinutes(1); return d; })(),
+                  date: (() => { 
+                    const d = new Date(); 
+                    d.setHours(18, 1, 0, 0); 
+                    while (d.getDay() === 0 || d.getDay() === 6 || isHoliday(d)) {
+                      d.setDate(d.getDate() + 1);
+                    }
+                    return d; 
+                  })(),
                   icon: <Clock size={14} />
                 }
               ].map((mode) => {
@@ -366,54 +385,21 @@ export default function CenikPage() {
                 );
               })}
             </div>
-            
-            <div className="mt-4 flex items-center justify-center gap-4">
-                <div className="h-px bg-mafia-gold/10 flex-1"></div>
-                <button 
-                  onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-                  className="text-[9px] font-mono text-mafia-gold/40 hover:text-mafia-gold transition-colors uppercase tracking-[0.3em] flex items-center gap-2"
-                >
-                  <Clock size={10} />
-                  {lang === 'cs' ? 'VLASTNÍ ČAS' : 'CUSTOM TIME'}
-                </button>
-                <div className="h-px bg-mafia-gold/10 flex-1"></div>
-            </div>
           </div>
         </div>
-
-        <AnimatePresence>
-          {isDatePickerOpen && (
-            <motion.div 
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="bg-mafia-black/80 border-b border-mafia-gold/10 overflow-hidden"
-            >
-              <div className="p-6 flex flex-wrap gap-4 justify-center">
-                <input 
-                  type="datetime-local" 
-                  className="bg-transparent border border-mafia-gold/30 text-mafia-gold px-4 py-2 text-xs font-mono outline-none focus:border-mafia-gold"
-                  onChange={(e) => {
-                    if (e.target.value) setSimulatedDate(new Date(e.target.value));
-                  }}
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <div className="p-4 md:p-8 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-mafia-gold/20">
           <div className="max-w-xl mb-8 flex items-center gap-4 border-b border-mafia-gold/10 pb-4">
             <div>
                <h4 className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-[0.4em] mb-2">VYBERTE SI SVÉHO MISTRA</h4>
-               <div className="flex gap-2">
-                 {["VOLNÉ", "TOMÁŠ"].map((barber) => (
+                 <div className="flex gap-2 flex-wrap">
+                 {barbers.filter(b => !b.missionFailed).map((barber) => (
                    <button 
-                    key={barber}
-                    onClick={() => setSelectedBarber(barber)}
-                    className={`px-6 py-2 border text-xs font-black tracking-widest transition-all duration-300 ${selectedBarber === barber ? 'bg-mafia-gold text-mafia-black border-mafia-gold' : 'border-mafia-gold/20 text-mafia-gold/60 hover:border-mafia-gold/50'}`}
+                    key={barber.id}
+                    onClick={() => setSelectedBarberId(barber.id)}
+                    className={`px-6 py-2 border text-xs font-black tracking-widest uppercase transition-all duration-300 ${selectedBarberId === barber.id ? 'bg-mafia-gold text-mafia-black border-mafia-gold' : 'border-mafia-gold/20 text-mafia-gold/60 hover:border-mafia-gold/50'}`}
                    >
-                     {barber}
+                     {barber.name}
                    </button>
                  ))}
                </div>
@@ -667,23 +653,14 @@ export default function CenikPage() {
               <div>
                 <span className="text-smoke-white/50 text-[10px] uppercase tracking-widest font-mono mb-1 flex items-center gap-2">
                   {t.services.totalLabel}
-                  {pricing.multiplier > 1 && (
-                    <motion.span 
-                      animate={{ opacity: [1, 0.5, 1] }}
-                      transition={{ duration: 1, repeat: Infinity }}
-                      className="text-mafia-red font-black text-[8px] border border-mafia-red/30 px-1"
-                    >
-                      LIVE METER
-                    </motion.span>
-                  )}
                 </span>
                 <div className="text-3xl md:text-4xl font-heading font-black text-mafia-gold">
                   {pricing.multiplier > 1 ? (
                     <>
-                      {formatPriceWithMeter(totalValue, currency)}
+                      {formatPrice(totalValue, currency)}
                       {lang === 'cs' && currency !== 'CZK' && (
                         <span className="text-xs ml-2 opacity-40 font-sans">
-                          / {formatPriceWithMeter(totalValue, 'CZK')}
+                          / {formatPrice(totalValue, 'CZK')}
                         </span>
                       )}
                     </>
@@ -716,13 +693,17 @@ export default function CenikPage() {
             <div className="flex flex-col items-end gap-2">
               <div className="flex flex-wrap gap-4 items-center">
                 <motion.a
-                  href={isRecruitMode ? "/rodina" : "https://mm.inthechair.com/micka"}
-                  target={isRecruitMode ? "_self" : "_blank"}
-                  onClick={() => {
+                  href={isRecruitMode ? "/rodina" : (selectedBarberObj?.bookingSystemType === 'internal' ? undefined : (selectedBarberObj?.bookingLink || "https://mm.inthechair.com/micka"))}
+                  target={isRecruitMode || selectedBarberObj?.bookingSystemType === 'internal' ? "_self" : "_blank"}
+                  onClick={(e) => {
                     playSound("/sounds/razor.mp3", 0.5);
                     trackEvent(isRecruitMode ? "cenik_recruit_click" : "cenik_booking_click_masters");
+                    if (!isRecruitMode && selectedBarberObj?.bookingSystemType === 'internal') {
+                      e.preventDefault();
+                      setIsBookingModalOpen(true);
+                    }
                   }}
-                  className="group relative overflow-hidden bg-mafia-gold border border-mafia-gold px-8 py-3 transition-all duration-300 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]"
+                  className="group relative overflow-hidden bg-mafia-gold border border-mafia-gold px-8 py-3 cursor-pointer transition-all duration-300 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]"
                 >
                   <div className="absolute inset-0 block bg-white -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
                   <span className="relative z-10 text-mafia-black font-sans uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors">
@@ -776,6 +757,15 @@ export default function CenikPage() {
           </>
         )}
       </BottomTerminalReveal>
+
+      <BookingModal 
+        isOpen={isBookingModalOpen} 
+        onClose={() => setIsBookingModalOpen(false)}
+        barber={selectedBarberObj || null}
+        serviceName={selectedMain !== null ? t.services.items[selectedMain]?.desc || 'Vybraná služba' : 'Vybrané služby'}
+        durationMin={getTotalTimeMinutes()}
+        price={totalValue}
+      />
     </div>
   );
 }

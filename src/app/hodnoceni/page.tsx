@@ -16,7 +16,7 @@ import {
   ArrowLeft, Home, UserCircle, ChevronDown, Sparkles, Edit3
 } from "lucide-react";
 import { MilitaryInsignia } from "@/components/Profiles";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import { playSound } from "@/utils/audio";
 import { trackEvent } from "@/utils/analytics";
 import { useRouter } from "next/navigation";

@@ -17,7 +17,7 @@ import {
   Layers
 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 
 const FloatingParticles = () => {
   const [particles, setParticles] = useState<any[]>([]);

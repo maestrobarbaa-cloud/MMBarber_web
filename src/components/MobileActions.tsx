@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import { playSound } from "../utils/audio";
 
 export function MobileActions() {

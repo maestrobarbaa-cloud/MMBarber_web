@@ -44,6 +44,10 @@ export function ElitaGame() {
   const [unlockedCode, setUnlockedCode] = useState<string | null>(null);
   const [showPopup, setShowPopup] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  
+  const [winnerName, setWinnerName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const gameLoopRef = useRef<number | null>(null);
   const spawnTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -133,6 +137,8 @@ export function ElitaGame() {
     setCombo(0);
     setTargets([]);
     setUnlockedCode(null);
+    setWinnerName("");
+    setHasSubmitted(false);
     setGameState('playing');
     playSound("/sounds/kasa.mp3", 0.4);
   };
@@ -236,6 +242,27 @@ export function ElitaGame() {
     if (parts.length < 2) return code;
     const suffix = parts[1];
     return `${parts[0]}-${suffix.substring(0, 2)}**`;
+  };
+
+  const handleSubmitWinner = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!winnerName.trim()) return;
+    setIsSubmitting(true);
+    try {
+      await fetch('/api/winners', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          game: 'elita',
+          nickname: winnerName.trim(),
+          prizeOrScore: score.toString()
+        })
+      });
+      setHasSubmitted(true);
+    } catch (e) {
+      console.error("Chyba při odesílání", e);
+    }
+    setIsSubmitting(false);
   };
 
   if (!isOpen) return null;
@@ -437,6 +464,39 @@ export function ElitaGame() {
                     <p className="text-[8px] md:text-[10px] text-mafia-gold/40 uppercase font-mono mt-4">
                       {lang === 'cs' ? "UKAŽ KÓD V MMBARBER" : "SHOW CODE AT MMBARBER"}
                     </p>
+
+                    {/* Formulář pro zápis do síně výherců v adminu */}
+                    {!hasSubmitted ? (
+                      <div className="mt-8 pt-6 border-t border-white/10">
+                        <h4 className="text-white font-heading text-lg uppercase tracking-widest mb-4">
+                          {lang === 'cs' ? "ZAPIŠ SE DO EVIDENCE VELITELE" : "ENTER YOUR NAME FOR THE COMMANDER"}
+                        </h4>
+                        <form onSubmit={handleSubmitWinner} className="flex flex-col gap-4 items-center">
+                          <input 
+                            type="text" 
+                            value={winnerName}
+                            onChange={(e) => setWinnerName(e.target.value)}
+                            placeholder={lang === 'cs' ? "Tvoje Přezdívka / Jméno" : "Your Nickname / Name"}
+                            className="bg-mafia-black/80 border border-mafia-gold/30 text-mafia-gold font-mono p-3 w-full max-w-sm focus:outline-none focus:border-mafia-gold text-center"
+                            required
+                            maxLength={30}
+                          />
+                          <button 
+                            type="submit" 
+                            disabled={isSubmitting || !winnerName.trim()}
+                            className="px-6 py-3 bg-mafia-gold text-black font-heading font-black uppercase tracking-widest hover:scale-105 transition-all disabled:opacity-50"
+                          >
+                            {isSubmitting ? (lang === 'cs' ? "Odesílám..." : "Sending...") : (lang === 'cs' ? "ODESLAT DO CENTRÁLY" : "SEND TO HQ")}
+                          </button>
+                        </form>
+                      </div>
+                    ) : (
+                      <div className="mt-8 pt-6 border-t border-white/10">
+                        <h4 className="text-mafia-gold font-heading text-xl uppercase tracking-widest">
+                          {lang === 'cs' ? "ÚSPĚŠNĚ ZAPSÁNO!" : "SUCCESSFULLY RECORDED!"}
+                        </h4>
+                      </div>
+                    )}
                  </div>
                ) : (
                  <div className="space-y-4">

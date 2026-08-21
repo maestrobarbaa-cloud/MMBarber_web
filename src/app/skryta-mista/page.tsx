@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Target, ExternalLink, Users, ChevronLeft } from "lucide-react";
+import { MapPin, Target, ExternalLink, Users, ChevronLeft, Star } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackEvent } from "@/utils/analytics";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import TacticalClickEffects from "@/components/TacticalClickEffects";
 import { Footer } from "@/components/Footer";
 import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
@@ -14,6 +14,25 @@ import { HiddenSEOArchive } from "@/components/HiddenSEOArchive";
 export default function HiddenPlacesPage() {
   const { t, lang } = useTranslation();
 
+  const handleNavigate = (e: React.MouseEvent, destination: string, trackName: string) => {
+    e.preventDefault();
+    trackEvent("hidden_place_navigate", { place: trackName });
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          window.open(`https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${encodeURIComponent(destination)}`, '_blank');
+        },
+        () => {
+          window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`, '_blank');
+        }
+      );
+    } else {
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`, '_blank');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-mafia-black text-smoke-white pt-24 md:pt-32 relative overflow-hidden">
       <TacticalClickEffects />
@@ -21,13 +40,6 @@ export default function HiddenPlacesPage() {
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-screen bg-gradient-to-b from-mafia-gold/5 via-transparent to-transparent opacity-30"></div>
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]"></div>
-        
-        {/* Animated Scanning Line */}
-        <motion.div 
-          animate={{ y: ["0%", "100%", "0%"] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute left-0 w-full h-px bg-mafia-gold/10 z-0"
-        />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-12 relative z-10">
@@ -43,28 +55,28 @@ export default function HiddenPlacesPage() {
             </Link>
             <div className="flex items-center gap-4 mt-8 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-[0.5em] text-mafia-gold/30">
                <div className="w-1 h-1 bg-mafia-gold/30 rounded-full"></div>
-               <span className="text-mafia-gold/40">SYSTÉM: MM_OS_v3.5.0_ZABEZPEČENO</span>
+               <span className="text-mafia-gold/40">VIP PARTNER SÍŤ</span>
             </div>
         </div>
 
         {/* MAIN TITLE SECTION */}
-        <div className="text-center mb-16 relative">
+        <div className="text-center mb-24 relative">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="inline-block relative px-12 py-4 mb-4"
           >
-             <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-mafia-gold/30"></div>
-             <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-mafia-gold/30"></div>
-             <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-mafia-gold/30"></div>
-             <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-mafia-gold/30"></div>
+             <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-mafia-gold/30"></div>
+             <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-mafia-gold/30"></div>
+             <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-mafia-gold/30"></div>
+             <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-mafia-gold/30"></div>
              
              <div className="flex flex-col items-center">
                  <span className="text-mafia-gold/40 font-mono text-[9px] md:text-[10px] uppercase tracking-widest md:tracking-[1em] mb-4 ml-0 md:ml-[1em]">
-                   {lang === 'cs' ? "ZABEZPEČENÝ_PŘÍSTUP_NAVÁZÁN" : "SECURE_ACCESS_ESTABLISHED"}
+                   {lang === 'cs' ? "MM BARBER FAMILY" : "MM BARBER FAMILY"}
                  </span>
-                                 <h1 className="text-4xl md:text-8xl lg:text-9xl font-heading font-black text-white italic tracking-tighter leading-[0.85] mb-2 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                 <h1 className="text-4xl md:text-8xl lg:text-9xl font-heading font-black text-white italic tracking-tighter leading-[0.85] mb-2 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
                     {lang === 'cs' ? (
                       <>SKRYTÁ <span className="text-mafia-gold">MÍSTA</span></>
                     ) : (
@@ -79,98 +91,60 @@ export default function HiddenPlacesPage() {
           </motion.div>
         </div>
 
-        {/* FEATURE CARD: KOMFORT LOUNGE + TACTICAL MAP */}
+        {/* FEATURE CARD: KOMFORT LOUNGE */}
         <section className="relative w-full mb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-mafia-gold/20 bg-mafia-dark/20 backdrop-blur-md shadow-2xl relative overflow-hidden group/all">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-mafia-gold/20 bg-mafia-dark/40 backdrop-blur-md shadow-2xl relative overflow-hidden rounded-xl group/all">
             
             <motion.div 
                initial={{ opacity: 0 }}
                whileInView={{ opacity: 1 }}
                viewport={{ once: true }}
                transition={{ duration: 1 }}
-               className="lg:col-span-12 xl:col-span-7 relative h-[350px] md:h-[450px] overflow-hidden group bg-mafia-dark/40 shadow-2xl"
+               className="lg:col-span-12 xl:col-span-7 relative h-[350px] md:h-[450px] overflow-hidden group bg-black/60 shadow-2xl"
             >
-              <div className="absolute top-0 left-0 w-12 h-[1px] bg-gradient-to-r from-mafia-gold to-transparent z-40"></div>
-              <div className="absolute top-0 left-0 w-[1px] h-12 bg-gradient-to-b from-mafia-gold to-transparent z-40"></div>
-              <div className="absolute bottom-0 right-0 w-12 h-[1px] bg-gradient-to-l from-mafia-gold to-transparent z-40"></div>
-              <div className="absolute bottom-0 right-0 w-[1px] h-12 bg-gradient-to-t from-mafia-gold to-transparent z-40"></div>
-
               <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2613.9225537201914!2d17.4540922753308!3d49.069106785856086!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47131531393617db%3A0xde68010641623016!2sKomfort%20Lounge%20Bar!5e0!3m2!1scs!2scz!4v1776191505364!5m2!1scs!2scz"
                 width="100%" height="100%" 
                 style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) grayscale(0.8) contrast(1.2) brightness(0.8)' }} 
                 allowFullScreen={false} loading="lazy"
               ></iframe>
-
-              <div className="absolute inset-0 pointer-events-none border-[6px] border-black/80 z-20"></div>
-              
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-30">
-                 <div className="relative">
-                    <motion.div 
-                      animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.1, 0.3] }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                      className="absolute -inset-6 border border-mafia-gold/40 rounded-full"
-                    />
-                    <Target size={24} className="text-mafia-gold" />
-                 </div>
-              </div>
-
-               <div className="absolute top-3 left-3 p-1.5 font-mono text-[9px] text-mafia-gold/50 bg-black/80 border border-mafia-gold/10 backdrop-blur-md z-30 tracking-tight">
-                  {lang === 'cs' ? "LOKACE" : "LOCATION"}: KOMFORT_LOUNGE_BAR
-               </div>
             </motion.div>
 
-            <div className="lg:col-span-12 xl:col-span-5 p-6 md:p-8 flex flex-col justify-center relative bg-mafia-black/60 backdrop-blur-xl border-l border-mafia-gold/10 overflow-hidden">
-               <div className="absolute top-0 right-0 w-12 h-[1px] bg-gradient-to-l from-mafia-gold to-transparent"></div>
-               <div className="absolute top-0 right-0 w-[1px] h-12 bg-gradient-to-b from-mafia-gold to-transparent"></div>
-
+            <div className="lg:col-span-12 xl:col-span-5 p-8 md:p-12 flex flex-col justify-center relative bg-mafia-black/80 backdrop-blur-xl border-l border-mafia-gold/10 overflow-hidden">
                <motion.div 
                  initial={{ opacity: 0, x: 15 }}
                  whileInView={{ opacity: 1, x: 0 }}
                  viewport={{ once: true }}
                  className="relative z-10"
                >
-                  <div className="flex items-center gap-3 mb-3 text-mafia-gold/30 font-mono text-[9px] md:text-[8px] uppercase tracking-[0.2em]">
-                     <span>STATUS: {lang === 'cs' ? "AKTIVNÍ" : "ACTIVE"}</span>
+                  <div className="flex items-center gap-3 mb-4 text-mafia-gold/50 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em]">
+                     <Star size={12} className="text-mafia-gold" />
+                     <span>VIP PARTNER</span>
                      <div className="h-px flex-1 bg-mafia-gold/10"></div>
                   </div>
 
-                  <h2 className="text-3xl md:text-5xl font-heading font-black text-white uppercase italic tracking-tighter leading-none mb-3">
+                  <h2 className="text-4xl md:text-5xl font-heading font-black text-white uppercase italic tracking-tighter leading-none mb-3">
                     {t.others.hiddenPlaces.name}
                   </h2>
                   
-                  <div className="flex items-start gap-4 text-smoke-white/40 mb-5 font-mono text-[10px] md:text-[9px] uppercase tracking-[0.2em]">
-                     <MapPin size={12} className="text-mafia-red mt-0.5 shrink-0" />
+                  <div className="flex items-start gap-4 text-smoke-white/60 mb-8 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.1em]">
+                     <MapPin size={14} className="text-mafia-gold mt-0.5 shrink-0" />
                      <span className="border-b border-mafia-gold/20 pb-0.5">
                         {t.others.hiddenPlaces.address}
                      </span>
                   </div>
 
-                  <div className="relative mb-6 bg-white/[0.01] border-l border-mafia-gold/30 p-4 italic text-smoke-white/60 leading-relaxed font-sans text-sm md:text-base">
+                  <div className="relative mb-8 text-smoke-white/70 leading-relaxed font-sans text-sm md:text-base border-l border-mafia-gold/30 pl-4">
                      {t.others.hiddenPlaces.description}
                   </div>
 
-                  <div className="relative mb-6 border border-mafia-gold/10 bg-black/40 backdrop-blur-xl p-4 flex items-center gap-5">
-                    <Target size={18} className="text-mafia-gold/50" />
-                    <div className="flex-1">
-                      <div className="text-[10px] md:text-[8px] font-mono text-mafia-gold/40 uppercase tracking-[0.2em]">
-                        {lang === 'cs' ? "OPERATIVNÍ CÍL" : "OPERATIONAL GOAL"}
-                      </div>
-                      <div className="text-base md:text-lg font-black text-white italic uppercase tracking-tighter">
-                        {lang === 'cs' ? "VODNÍ DÝMKA A NÁPOJE" : "SHISHA & DRINKS"}
-                      </div>
-                    </div>
-                  </div>
-
                   <a 
-                    href="https://www.google.com/maps/dir/?api=1&destination=Komfort+Lounge+Bar,+L.+Jan%C3%A1%C4%8Dka+180,+686+01+Uhersk%C3%A9+Hradi%C5%A1te+1"
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => trackEvent("hidden_place_navigate", { place: "Komfort Lounge" })}
-                    className="relative block group/btn overflow-hidden"
+                    href="#"
+                    onClick={(e) => handleNavigate(e, "Komfort Lounge Bar, L. Janáčka 180, 686 01 Uherské Hradiště", "Komfort Lounge")}
+                    className="relative block w-max group/btn overflow-hidden rounded"
                   >
                     <div className="absolute inset-0 bg-mafia-gold translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500 ease-[0.7,0,0.3,1]"></div>
-                    <div className="relative z-10 py-4 border border-mafia-gold/50 group-hover/btn:border-mafia-gold flex items-center justify-center gap-3 text-mafia-gold group-hover/btn:text-black font-black uppercase tracking-[0.3em] transition-all duration-500 text-xs">
+                    <div className="relative z-10 px-8 py-4 border border-mafia-gold/50 group-hover/btn:border-mafia-gold flex items-center justify-center gap-3 text-mafia-gold group-hover/btn:text-black font-black uppercase tracking-[0.2em] transition-all duration-500 text-xs">
                       {lang === 'cs' ? "NAVIGOVAT K CÍLI" : "NAVIGATE TO TARGET"}
                       <ExternalLink size={14} />
                     </div>
@@ -180,23 +154,90 @@ export default function HiddenPlacesPage() {
           </div>
         </section>
 
-        {/* DEPLOYMENT CHART / SLOTS */}
+        {/* FEATURE CARD: O KOLECKO VIC */}
+        <section className="relative w-full mb-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-mafia-gold/20 bg-mafia-dark/40 backdrop-blur-md shadow-2xl relative overflow-hidden rounded-xl group/all">
+            
+            <div className="lg:col-span-12 xl:col-span-5 p-8 md:p-12 flex flex-col justify-center relative bg-mafia-black/80 backdrop-blur-xl border-r border-mafia-gold/10 overflow-hidden order-2 xl:order-1">
+               <motion.div 
+                 initial={{ opacity: 0, x: -15 }}
+                 whileInView={{ opacity: 1, x: 0 }}
+                 viewport={{ once: true }}
+                 className="relative z-10"
+               >
+                  <div className="flex items-center gap-3 mb-4 text-mafia-gold/50 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em]">
+                     <Star size={12} className="text-mafia-gold" />
+                     <span>VIP PARTNER</span>
+                     <div className="h-px flex-1 bg-mafia-gold/10"></div>
+                  </div>
+
+                  <h2 className="text-4xl md:text-5xl font-heading font-black text-white uppercase italic tracking-tighter leading-none mb-3">
+                    O Kolečko Víc
+                  </h2>
+                  
+                  <div className="flex items-start gap-4 text-smoke-white/60 mb-8 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.1em]">
+                     <MapPin size={14} className="text-mafia-gold mt-0.5 shrink-0" />
+                     <span className="border-b border-mafia-gold/20 pb-0.5">
+                        {lang === 'cs' ? 'Jiřího z Poděbrad, 686 01 Uherské Hradiště' : 'Jiřího z Poděbrad, 686 01 Uherské Hradiště'}
+                     </span>
+                  </div>
+
+                  <div className="relative mb-8 text-smoke-white/70 leading-relaxed font-sans text-sm md:text-base border-l border-mafia-gold/30 pl-4">
+                     {lang === 'cs' 
+                       ? 'Sezóna v plném proudu, servisy jedou na maximum. Pro fanoušky pohybu a cykloservisu je tu místo, kde se starají o vaši výbavu se stejnou vášní, s jakou my v MMBARBER stříháme vlasy.' 
+                       : 'Season in full swing, service running at maximum. For fans of movement and bike service, this is the place where they take care of your equipment with the same passion with which we cut hair.'}
+                  </div>
+
+                  <a 
+                    href="#"
+                    onClick={(e) => handleNavigate(e, "O Kolečko Víc, Jiřího z Poděbrad 123, 686 01 Uherské Hradiště", "O Kolecko Vic")}
+                    className="relative block w-max group/btn overflow-hidden rounded"
+                  >
+                    <div className="absolute inset-0 bg-mafia-gold translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500 ease-[0.7,0,0.3,1]"></div>
+                    <div className="relative z-10 px-8 py-4 border border-mafia-gold/50 group-hover/btn:border-mafia-gold flex items-center justify-center gap-3 text-mafia-gold group-hover/btn:text-black font-black uppercase tracking-[0.2em] transition-all duration-500 text-xs">
+                      {lang === 'cs' ? "NAVIGOVAT K CÍLI" : "NAVIGATE TO TARGET"}
+                      <ExternalLink size={14} />
+                    </div>
+                  </a>
+               </motion.div>
+            </div>
+
+            <motion.div 
+               initial={{ opacity: 0 }}
+               whileInView={{ opacity: 1 }}
+               viewport={{ once: true }}
+               transition={{ duration: 1 }}
+               className="lg:col-span-12 xl:col-span-7 relative h-[350px] md:h-[450px] overflow-hidden group bg-black/60 shadow-2xl order-1 xl:order-2 flex items-center justify-center p-12"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-mafia-gold/5 to-transparent"></div>
+              <Image 
+                src="/loga_partneri/okoleckovic.png" 
+                alt="O Kolečko Víc Logo" 
+                width={500} 
+                height={500} 
+                className="w-auto h-full max-h-[250px] object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105 z-10 filter drop-shadow-[0_0_15px_rgba(197,160,89,0.3)]"
+              />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* FAMILY SLOTS */}
         <section className="max-w-5xl mx-auto">
-           <div className="text-center mb-24">
+           <div className="text-center mb-16">
               <div className="inline-flex flex-col items-center">
-                 <h4 className="text-mafia-gold font-heading font-black text-2xl md:text-5xl uppercase tracking-[0.2em] md:tracking-[0.3em] mb-4 italic">
+                 <h4 className="text-mafia-gold font-heading font-black text-2xl md:text-4xl uppercase tracking-[0.2em] mb-4 italic">
                    {t.others.hiddenPlaces.slotsTitle}
                  </h4>
-                 <div className="w-24 h-1 bg-mafia-gold mb-6 shadow-[0_0_15px_var(--user-glow-color)]"></div>
-                 <p className="text-white/40 text-[9px] md:text-xs uppercase tracking-[0.3em] md:tracking-[0.5em] italic font-sans max-w-2xl leading-relaxed">
+                 <div className="w-16 h-0.5 bg-mafia-gold mb-6"></div>
+                 <p className="text-white/40 text-[9px] md:text-xs uppercase tracking-[0.3em] italic font-sans max-w-2xl leading-relaxed">
                    {lang === 'cs' 
-                     ? "PŘÍSTUP PRO ČLENY RODINY. PRIORITNÍ STATUS." 
-                     : "FAMILY MEMBER ACCESS. PRIORITY STATUS."}
+                     ? "PROSTOR POUZE PRO ČLENY RODINY. PRÉMIOVÝ STATUS." 
+                     : "FAMILY MEMBER ACCESS. PREMIUM STATUS."}
                  </p>
               </div>
            </div>
            
-           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 mb-40">
+           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-40">
               {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                 <motion.div 
                   key={i}
@@ -206,41 +247,26 @@ export default function HiddenPlacesPage() {
                   className="group/slot relative"
                   onClick={() => trackEvent("hidden_place_slot_click", { slot: i })}
                 >
-                  <div className="aspect-square border border-white/5 bg-gradient-to-br from-white/5 to-transparent flex flex-col items-center justify-center gap-6 transition-all duration-700 cursor-pointer overflow-hidden group-hover/slot:border-mafia-gold/50 shadow-2xl relative">
+                  <div className="aspect-square border border-white/10 bg-black/40 flex flex-col items-center justify-center gap-4 transition-all duration-500 cursor-pointer overflow-hidden hover:border-mafia-gold/50 shadow-xl rounded-xl relative">
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[6rem] md:text-[8rem] font-black text-white/[0.02] select-none group-hover/slot:text-mafia-gold/[0.05] transition-all duration-500 pointer-events-none">{i}</div>
                     
-                    <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-mafia-gold/20 group-hover/slot:border-mafia-gold transition-colors duration-500"></div>
-                    <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-mafia-gold/20 group-hover/slot:border-mafia-gold transition-colors duration-500"></div>
-                    <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-mafia-gold/20 group-hover/slot:border-mafia-gold transition-colors duration-500"></div>
-                    <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-mafia-gold/20 group-hover/slot:border-mafia-gold transition-colors duration-500"></div>
-                    
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[8rem] md:text-[12rem] font-black text-white/[0.02] select-none group-hover/slot:text-mafia-gold/[0.04] transition-all duration-700 pointer-events-none">{i}</div>
-                    
-                    <Users size={32} className="md:size-12 text-mafia-gold/30 group-hover/slot:text-mafia-gold group-hover/slot:scale-125 transition-all duration-700 z-10" />
-                    <div className="flex flex-col items-center gap-1 z-10 transition-transform duration-700 group-hover/slot:translate-y-2">
-                       <span className="text-[9px] md:text-[10px] font-mono text-white/20 uppercase tracking-[0.2em] md:tracking-[0.4em] group-hover/slot:text-mafia-gold/60">{lang === 'cs' ? "MÍSTO" : "SLOT"}_{i}</span>
-                       <div className="w-8 h-0.5 bg-mafia-gold/10 group-hover/slot:w-16 group-hover/slot:bg-mafia-gold/40 transition-all duration-700"></div>
+                    <Users size={28} className="text-mafia-gold/30 group-hover/slot:text-mafia-gold transition-all duration-500 z-10" />
+                    <div className="flex flex-col items-center gap-1 z-10 transition-transform duration-500">
+                       <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.2em] group-hover/slot:text-mafia-gold/80">{lang === 'cs' ? "MÍSTO" : "SLOT"} {i}</span>
                     </div>
-                    
-                    <div className="absolute inset-0 bg-mafia-gold opacity-0 group-hover/slot:opacity-[0.05] transition-opacity duration-700"></div>
-                  </div>
-                  
-                  <div className="absolute bottom-0 left-0 right-0 h-12 flex items-center justify-center opacity-0 group-hover/slot:opacity-100 transition-all duration-500 transform translate-y-4 group-hover/slot:translate-y-12 pointer-events-none">
-                     <div className="bg-mafia-gold text-black px-8 py-3 text-[10px] font-black uppercase tracking-[0.4em] shadow-[0_10px_30px_rgba(0,0,0,0.5)] whitespace-nowrap">
-                        {t.others.hiddenPlaces.cta}
-                     </div>
                   </div>
                 </motion.div>
               ))}
            </div>
 
-           <div className="text-center pb-32 border-t border-white/5 pt-32">
+           <div className="text-center pb-32 border-t border-white/10 pt-24">
               <motion.div 
                 whileHover={{ scale: 1.05 }}
                 className="inline-block relative"
               >
-                 <Image src="/logo.png" alt="MMBarber" width={100} height={100} className="mx-auto grayscale opacity-10 hover:opacity-50 transition-all duration-1000 filter invert hover:invert-0" />
-                 <div className="mt-12 text-mafia-gold/20 font-mono text-[9px] uppercase tracking-[0.5em] md:tracking-[1.5em] font-black transition-all duration-500 hover:text-mafia-gold/60 hover:tracking-[1.8em]">
-                    {lang === 'cs' ? "MM_NET_CENTRÁLNÍ_SÍŤ" : "MM_NET_CENTRAL_NETWORK"}
+                 <Image src="/logo.png" alt="MMBarber" width={80} height={80} className="mx-auto grayscale opacity-20 hover:opacity-100 transition-all duration-500" />
+                 <div className="mt-8 text-mafia-gold/30 font-mono text-[9px] uppercase tracking-[0.5em] font-bold transition-all duration-500 hover:text-mafia-gold">
+                    MM_BARBER_SÍŤ
                  </div>
               </motion.div>
            </div>
@@ -264,13 +290,6 @@ export default function HiddenPlacesPage() {
           </>
         )}
       </BottomTerminalReveal>
-
-      <style jsx global>{`
-        @keyframes scanline {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100%); }
-        }
-      `}</style>
     </div>
   );
 }

@@ -495,9 +495,9 @@ export default function StoryPage() {
       content: t.story?.nodes.legacy_myth.content || "...",
       icon: <Award />,
       x: 2, y: 2,
-      constellation: "ultimate",
-      requiredVisits: 5,
-      connections: []
+      constellation: "origins",
+      requiredVisits: 2,
+      connections: ["tradition"]
     }
   ], [t]);
 
@@ -732,30 +732,30 @@ export default function StoryPage() {
   }, [selectedNodeId, unlockedLevels]);
 
   const starLayer1 = React.useMemo(() => {
+    if (graphicsTier === 'low') return null; // We will render flat 2D stars inside the panning layer instead
     const sliceEnd = graphicsTier === 'ultra' ? 200 : (graphicsTier === 'high' ? 150 : (graphicsTier === 'medium' ? 100 : 50));
-    const isLow = graphicsTier === 'low';
 
     return (
       <motion.div 
         style={{ 
-          x: isLow ? 0 : starLayer1X, 
-          y: isLow ? 0 : starLayer1Y, 
-          scale: isLow ? 1 : starLayer1Scale 
+          x: starLayer1X, 
+          y: starLayer1Y, 
+          scale: starLayer1Scale 
         }} 
         className="absolute inset-0 w-[150%] h-[150%]"
       >
         {stars.slice(0, sliceEnd).map(star => (
           <motion.div 
             key={star.id} 
-            animate={isLow ? { opacity: 0.5 } : { opacity: [0.2, 0.8, 0.2] }} 
-            transition={isLow ? {} : { duration: star.duration, repeat: Infinity }} 
+            animate={{ opacity: [0.2, 0.8, 0.2] }} 
+            transition={{ duration: star.duration, repeat: Infinity }} 
             className="absolute rounded-full"
-            style={{ width: star.size, height: star.size, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, boxShadow: isLow ? 'none' : '0 0 5px white' }} 
+            style={{ width: star.size, height: star.size, left: `${star.x}%`, top: `${star.y}%`, backgroundColor: star.color, boxShadow: '0 0 5px white' }} 
           />
         ))}
       </motion.div>
     );
-  }, [stars, graphicsTier]);
+  }, [stars, graphicsTier, starLayer1X, starLayer1Y, starLayer1Scale]);
 
   const starLayer2 = React.useMemo(() => {
     if (graphicsTier === 'low' || graphicsTier === 'medium') return null;
@@ -787,7 +787,7 @@ export default function StoryPage() {
 
   return (
     <div className="fixed inset-0 z-[200] bg-transparent text-smoke-white overflow-hidden flex flex-col lg:flex-row">
-      <div className="fixed inset-0 pointer-events-none z-0">
+      <div className="fixed inset-0 pointer-events-none z-0 atmosphere-container">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-mafia-gold/5 via-transparent to-mafia-black/40" />
       </div>
@@ -842,11 +842,30 @@ export default function StoryPage() {
         <div className="absolute inset-0 pointer-events-none z-0">
           {starLayer1} {starLayer2} {starLayer3}
         </div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] pointer-events-none atmosphere-container" />
 
         <ShootingStar />
 
         <motion.div className="absolute origin-top-left z-10" style={{ x: panX, y: panY, scale: zoomMotion, width: mapSize.width, height: mapSize.height }}>
+          {/* FLAT 2D GALAXY BACKGROUND FOR LITE TIER */}
+          {graphicsTier === 'low' && (
+            <div className="absolute inset-0 pointer-events-none opacity-50">
+              {stars.slice(0, 80).map(star => (
+                <div 
+                  key={`flat-${star.id}`} 
+                  className="absolute rounded-full bg-white"
+                  style={{ 
+                    width: star.size, 
+                    height: star.size, 
+                    left: `${star.x}%`, 
+                    top: `${star.y}%`, 
+                    backgroundColor: star.color 
+                  }} 
+                />
+              ))}
+            </div>
+          )}
+
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
             {STORY_NODES.map(node => node.connections.map(targetId => {
               const target = STORY_NODES.find(n => n.id === targetId);

@@ -44,6 +44,41 @@ export function Contact() {
                 <p>Mařatice, Sadová 1383</p>
                 <p className="text-mafia-gold/60">Uherské Hradiště</p>
             </div>
+            
+            <div className="flex flex-wrap justify-center gap-4 pt-4 w-full">
+                <a 
+                  href="https://maps.google.com/?q=Sadová+1383,+686+05+Uherské+Hradiště"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => playContactSound("papir.mp3")}
+                  className="flex items-center gap-2 px-6 py-3 bg-mafia-gold/10 border border-mafia-gold/30 hover:bg-mafia-gold hover:text-mafia-black transition-all text-xs font-bold uppercase tracking-widest group"
+                >
+                  <MapPin size={14} className="text-mafia-gold group-hover:text-mafia-black transition-colors" />
+                  <span className="text-smoke-white group-hover:text-mafia-black">GOOGLE MAPS</span>
+                </a>
+                
+                <a 
+                  href="https://mapy.cz/zakladni?q=Sadová%201383%2C%20Uherské%20Hradiště"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => playContactSound("papir.mp3")}
+                  className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:border-mafia-gold transition-all text-xs font-bold uppercase tracking-widest group"
+                >
+                  <MapPin size={14} className="text-mafia-gold group-hover:scale-110 transition-transform" />
+                  <span className="text-smoke-white">MAPY.CZ</span>
+                </a>
+
+                <a 
+                  href="https://waze.com/ul?q=Sadová%201383,%20Uherské%20Hradiště"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => playContactSound("papir.mp3")}
+                  className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:border-mafia-gold transition-all text-xs font-bold uppercase tracking-widest group"
+                >
+                  <Car size={14} className="text-mafia-gold group-hover:scale-110 transition-transform" />
+                  <span className="text-smoke-white">WAZE</span>
+                </a>
+            </div>
           </motion.div>
         );
       case "connection":
@@ -57,22 +92,26 @@ export function Contact() {
                 <Phone size={20} />
                 <h4 className="font-heading font-bold uppercase tracking-widest">{t?.contact?.connection || (lang === 'cs' ? 'Spojení' : 'Connection')}</h4>
             </div>
-            <div className="grid gap-4 w-full max-w-sm allow-copy">
+            <div className="grid gap-4 w-full max-w-sm">
                 <a href="tel:+420577544073" 
-                   onClick={() => { trackEvent("cta_contact_tel"); playContactSound("telefon.mp3"); }}
-                   className="group flex items-center gap-4 p-4 bg-white/5 border border-white/10 hover:border-mafia-gold transition-all duration-300">
+                   onClick={() => { 
+                     try { trackEvent("cta_contact_tel"); playContactSound("telefon.mp3"); } catch(e) {}
+                   }}
+                   className="group flex items-center gap-4 p-4 bg-white/5 border border-white/10 hover:border-mafia-gold transition-all duration-300 select-none cursor-pointer">
                     <div className="w-10 h-10 border border-mafia-gold/20 flex items-center justify-center group-hover:bg-mafia-gold transition-colors">
                         <Phone size={18} className="text-mafia-gold group-hover:text-mafia-black" />
                     </div>
-                    <span className="text-lg md:text-xl font-mono text-smoke-white">+420 577 544 073</span>
+                    <span className="text-lg md:text-xl font-mono text-smoke-white pointer-events-none">+420 577 544 073</span>
                 </a>
                 <a href="mailto:mmbarber@mmbarber.cz" 
-                   onClick={() => { trackEvent("cta_contact_mail"); playContactSound("telefon.mp3"); }}
+                   onClick={() => { 
+                     try { trackEvent("cta_contact_mail"); playContactSound("telefon.mp3"); } catch(e) {}
+                   }}
                    className="group flex items-center gap-4 p-4 bg-white/5 border border-white/10 hover:border-mafia-gold transition-all duration-300">
                     <div className="w-10 h-10 border border-mafia-gold/20 flex items-center justify-center group-hover:bg-mafia-gold transition-colors">
                         <Mail size={18} className="text-mafia-gold group-hover:text-mafia-black" />
                     </div>
-                    <span className="text-lg md:text-xl font-mono text-smoke-white break-all">mmbarber@mmbarber.cz</span>
+                    <span className="text-lg md:text-xl font-mono text-smoke-white break-all allow-copy">mmbarber@mmbarber.cz</span>
                 </a>
             </div>
           </motion.div>
@@ -90,7 +129,7 @@ export function Contact() {
                 <h4 className="font-heading font-bold uppercase tracking-widest">{t?.contact?.parking || (lang === 'cs' ? 'Parkování' : 'Parking')}</h4>
             </div>
             
-            <div className="space-y-4 font-sans text-smoke-white/80 leading-relaxed border-mafia-red border-l-4 md:border-l-4 pl-6 py-2">
+            <div className="space-y-4 font-sans text-smoke-white/80 leading-relaxed border-mafia-gold border-l-4 md:border-l-4 pl-6 py-2">
                 <p className="text-xl font-bold text-smoke-white uppercase tracking-wider">{t?.intro?.parking || (lang === 'cs' ? 'PARKOVÁNÍ' : 'PARKING')}</p>
                 <p className="text-lg italic text-mafia-gold/90">{t?.intro?.parkingHint}</p>
             </div>
@@ -167,10 +206,10 @@ export function Contact() {
           <p className="text-smoke-white/40 font-mono tracking-[0.4em] uppercase text-xs md:text-sm">{t?.contact?.subtitle}</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+        <div className="flex flex-col items-center gap-12 w-full max-w-3xl mx-auto">
           
           {/* INTERACTIVE ICON GRID & DETAIL VIEWER */}
-          <div className="flex flex-col gap-8 md:gap-12">
+          <div className="flex flex-col gap-8 md:gap-12 w-full">
             
             {/* Category Icons */}
             <div className="flex flex-wrap justify-center gap-3 md:gap-4">
@@ -211,7 +250,7 @@ export function Contact() {
             </div>
 
             {/* Information Viewer (HUD Style) */}
-            <div className="mt-8 md:mt-4 p-8 md:p-12 bg-mafia-dark/30 border-2 border-mafia-gold/10 relative h-[320px] md:h-[350px] flex items-center overflow-hidden">
+            <div className="mt-8 md:mt-4 p-8 md:p-12 bg-mafia-dark/30 border-2 border-mafia-gold/10 relative min-h-[380px] flex items-center overflow-hidden">
                 {/* HUD Corners */}
                 <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-mafia-gold/20"></div>
                 <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-mafia-gold/20"></div>
@@ -225,61 +264,6 @@ export function Contact() {
                 </div>
             </div>
 
-          </div>
-
-          {/* Map Section */}
-          <div className="w-full h-[400px] lg:h-[500px] bg-mafia-black border-2 border-mafia-gold/20 p-1 relative group overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-            <div className="absolute inset-x-0 top-0 h-1 bg-mafia-gold/30 z-20 group-hover:bg-mafia-gold/60 transition-colors shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0)] group-hover:shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.5)]"></div>
-            <div className="absolute inset-0 bg-mafia-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10"></div>
-            <iframe 
-              src="https://maps.google.com/maps?q=Sadov%C3%A1%201383,%20686%2005%20Uhersk%C3%A9%20Hradi%C5%A1t%C4%9B%205&t=&z=16&ie=UTF8&iwloc=&output=embed" 
-              width="100%" 
-              height="100%" 
-              style={{ border: 0, filter: "grayscale(1) contrast(1.2) brightness(0.8) invert(1) hue-rotate(180deg) brightness(0.6)" }} 
-              allowFullScreen={false} 
-              loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-full relative z-0"
-            ></iframe>
-
-            {/* HAND-DRAWN MARKER OVERLAY */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 flex flex-col items-center">
-                <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="map-target text-mafia-gold drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.8)] filter drop-shadow-[0_0_2px_rgba(0,0,0,1)]">
-                    {/* Wobbly Circle */}
-                    <path 
-                        className="map-target-ring"
-                        d="M50 10c10.4 0 24.3 2.5 32 10 7.7 7.5 10 18.5 10 30s-2.3 22.5-10 30c-7.7 7.5-21.6 10-32 10s-24.3-2.5-32-10c-7.7-7.5-10-18.5-10-30s2.3-22.5 10-30c7.7-7.5-21.6-10-32-10Z" 
-                        stroke="currentColor" 
-                        strokeWidth="3" 
-                        strokeLinecap="round" 
-                        style={{ strokeDasharray: "300", strokeDashoffset: "0", opacity: 0.8 }}
-                    />
-                    {/* Hand-drawn Wobbly Cross */}
-                    <path 
-                        className="map-target-x-1" 
-                        d="M32 36c4 4 12 11 18 14s14 10 18 14" 
-                        stroke="currentColor" 
-                        strokeWidth="5" 
-                        strokeLinecap="round" 
-                        style={{ opacity: 0.9 }}
-                    />
-                    <path 
-                        className="map-target-x-2" 
-                        d="M68 34c-5 5-13 12-18 16s-12 11-16 16" 
-                        stroke="currentColor" 
-                        strokeWidth="5" 
-                        strokeLinecap="round" 
-                        style={{ opacity: 0.9 }}
-                    />
-                </svg>
-                <div className="mt-2 bg-mafia-gold text-mafia-black font-serif italic text-[10px] font-black uppercase px-3 py-0.5 tracking-[0.2em] shadow-lg">CÍLOVÁ OBLAST</div>
-            </div>
-
-            {/* Map HUD Overlay */}
-            <div className="absolute bottom-4 left-4 z-20 bg-mafia-black/80 backdrop-blur-md px-4 py-2 border border-mafia-gold/30 flex items-center gap-3">
-                <Info size={14} className="text-mafia-gold" />
-                <span className="text-[11px] font-serif italic uppercase tracking-[0.3em] text-mafia-gold/90">Označené území</span>
-            </div>
           </div>
 
         </div>

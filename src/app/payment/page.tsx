@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ChevronLeft, QrCode, Lock, ArrowRight } from "lucide-react";

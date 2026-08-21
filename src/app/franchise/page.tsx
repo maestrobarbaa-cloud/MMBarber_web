@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, Building2, TrendingUp, Handshake, Mail, Instagram, CheckCircle2, LayoutGrid, Users } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 
 export default function FranchisePage() {
   const { t } = useTranslation();

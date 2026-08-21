@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBarbers } from "@/contexts/BarberContext";
 import { playSound } from "@/utils/audio";
@@ -32,7 +32,9 @@ import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
 export default function BarberLotteryPage() {
   const { lang } = useTranslation();
   const [isRandomizing, setIsRandomizing] = useState(false);
-  const { barbers, loading } = useBarbers();
+  const { barbers: allBarbers, loading } = useBarbers();
+  // ZATÍM JEN TOMÁŠ: Filtrujeme pouze Tomáše
+  const barbers = allBarbers.filter(b => b.id === 'tomas');
   const [isDecided, setIsDecided] = useState(false);
   const [winnerIndex, setWinnerIndex] = useState<number | null>(null);
   const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
@@ -214,8 +216,8 @@ export default function BarberLotteryPage() {
                   transition={{ repeat: Infinity, duration: 0.35, ease: "linear" }}
                   className="flex flex-col gap-6 items-center py-4"
                 >
-                  {/* Repeatedly render barbers */}
-                  {[...barbers, ...barbers].map((b, idx) => (
+                  {/* Repeatedly render barbers to simulate spinning wheel */}
+                  {Array(8).fill(barbers[0]).map((b, idx) => (
                     <div key={idx} className="w-40 h-40 relative rounded overflow-hidden grayscale opacity-45 border border-white/5 shrink-0">
                       <Image src={b.image} alt={b.name} fill className="object-cover" />
                     </div>

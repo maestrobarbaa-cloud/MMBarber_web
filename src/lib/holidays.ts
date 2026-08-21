@@ -116,10 +116,10 @@ export function getActiveTheme(currentDate: Date = new Date()): ThemeType {
     return 'czech';
   }
 
-  // Children's Day / Modern Future Theme (June 1)
-  if (month === 6 && day === 1) {
-    return 'childrens-day';
-  }
+  // Children's Day / Modern Future Theme (June 1) - disabled per user request
+  // if (month === 6 && day === 1) {
+  //   return 'childrens-day';
+  // }
 
   return 'default';
 }

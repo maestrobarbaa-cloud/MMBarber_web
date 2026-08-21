@@ -12,7 +12,7 @@ interface GraphicsSettingsModalProps {
   onClose: () => void;
 }
 
-export type GraphicsTier = 'low' | 'medium' | 'high' | 'ultra';
+export type GraphicsTier = 'lite' | 'low' | 'medium' | 'high' | 'ultra';
 
 interface GraphicsConfig {
   tier: GraphicsTier;
@@ -27,7 +27,7 @@ interface GraphicsConfig {
   letterboxEnabled: boolean;
   sharpness: number; // 0 to 1
   atmosphereOverride: 'auto' | 'classic' | 'galaxy' | 'pure_dark';
-  floatingItems: 'scissors' | 'clippers' | 'off';
+  floatingItems: 'scissors' | 'clippers' | 'sparks' | 'off';
   autoDetectEnabled: boolean;
 }
 
@@ -115,6 +115,15 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
   const applyTier = (tier: GraphicsTier) => {
     let newConfig: GraphicsConfig;
     switch (tier) {
+      case 'lite':
+        newConfig = { 
+            tier, grainEnabled: false, blurEnabled: false, parallaxEnabled: false, 
+            animationsEnabled: false, crtEnabled: false, glowIntensity: 0.0, 
+            vignetteEnabled: false, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.0,
+            atmosphereOverride: 'pure_dark', floatingItems: 'off',
+            autoDetectEnabled: false
+        };
+        break;
       case 'low':
         newConfig = { 
             tier, grainEnabled: false, blurEnabled: false, parallaxEnabled: false, 
@@ -151,6 +160,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             autoDetectEnabled: false
         };
         break;
+
     }
     saveConfig(newConfig);
   };
@@ -181,8 +191,15 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
     const isHighEndGpu = highEndGpus.some(term => gpu.includes(term));
     const isMobile = window.innerWidth < 1280;
 
-    if (isMobile) {
+    // Network detection
+    const conn = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    const isSlowConnection = conn && (conn.saveData || ['slow-2g', '2g', '3g'].includes(conn.effectiveType));
+
+    if (isSlowConnection) {
+      recommended = 'lite';
+    } else if (isMobile) {
       if (cores >= 8 && ram >= 6) recommended = 'medium';
+      else if (cores <= 2 || ram <= 2) recommended = 'lite';
       else recommended = 'low';
     } else {
       // PC/Desktop Deduction
@@ -192,6 +209,8 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
         recommended = 'high';
       } else if (cores >= 6 && ram >= 4) {
         recommended = 'medium';
+      } else if (cores <= 2 || ram <= 2) {
+        recommended = 'lite';
       } else {
         recommended = 'low';
       }
@@ -207,6 +226,15 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
 
     let newConfig: GraphicsConfig;
     switch (recommended) {
+      case 'lite':
+        newConfig = { 
+            tier: recommended, grainEnabled: false, blurEnabled: false, parallaxEnabled: false, 
+            animationsEnabled: false, crtEnabled: false, glowIntensity: 0.0, 
+            vignetteEnabled: false, chromaticAberration: false, letterboxEnabled: false, sharpness: 0.0,
+            atmosphereOverride: 'pure_dark', floatingItems: 'off',
+            autoDetectEnabled: true
+        };
+        break;
       case 'low':
         newConfig = { 
             tier: recommended, grainEnabled: false, blurEnabled: false, parallaxEnabled: false, 
@@ -266,7 +294,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             initial={{ scale: 0.9, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 30 }}
-            className="relative w-full max-w-4xl bg-[#050505] border border-mafia-gold/30 shadow-[0_0_100px_rgba(var(--color-mafia-gold-rgb),0.15)] overflow-hidden flex flex-col max-h-[90vh]"
+            className="relative w-[95vw] max-w-6xl bg-[#050505] border border-mafia-gold/30 shadow-[0_0_100px_rgba(var(--color-mafia-gold-rgb),0.15)] overflow-hidden flex flex-col max-h-[95vh]"
           >
             {/* Header */}
             <div className="p-6 border-b border-white/5 flex items-center justify-between bg-mafia-gold/5">
@@ -275,10 +303,10 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                     <Settings size={20} className="animate-spin-slow" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-heading font-black text-white uppercase tracking-[0.3em]">
+                  <h2 className="text-2xl md:text-3xl font-heading font-black text-white uppercase tracking-[0.3em]">
                     {lang === 'cs' ? 'Kvalita Obrazu & Výkon' : 'Image Quality & Performance'}
                   </h2>
-                  <p className="text-[9px] font-mono text-mafia-gold/40 uppercase tracking-widest mt-1">Version 2.5.0 // Adaptive Optimization</p>
+                  <p className="text-xs font-mono text-mafia-gold/40 uppercase tracking-widest mt-2">Version 2.5.0 // Adaptive Optimization</p>
                 </div>
               </div>
               <button onClick={onClose} className="text-white/20 hover:text-white transition-colors p-2">
@@ -292,8 +320,8 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                 {/* Left Column: Tiers & Sliders */}
                 <div className="space-y-10">
                   <section>
-                    <div className="flex items-center justify-between mb-4">
-                        <SectionLabel icon={<Layers size={14}/>} label={lang === 'cs' ? 'Systémové Presety' : 'System Presets'} />
+                    <div className="flex items-center justify-between mb-6">
+                        <SectionLabel icon={<Layers size={16}/>} label={lang === 'cs' ? 'Systémové Presety' : 'System Presets'} />
                         <div className="flex items-center gap-2">
                             <button 
                                 onClick={() => {
@@ -303,34 +331,35 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                                         saveConfig({ ...config, autoDetectEnabled: false });
                                     }
                                 }}
-                                className={`flex items-center gap-2 px-3 py-1 border text-[9px] font-black uppercase tracking-widest transition-all ${config.autoDetectEnabled ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
+                                className={`flex items-center gap-2 px-4 py-2 border text-xs font-black uppercase tracking-widest transition-all ${config.autoDetectEnabled ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
                             >
-                                <Scan size={12} className={config.autoDetectEnabled ? 'animate-pulse' : ''} />
+                                <Scan size={14} className={config.autoDetectEnabled ? 'animate-pulse' : ''} />
                                 {lang === 'cs' ? (config.autoDetectEnabled ? 'Auto-Detekce AKTIVNÍ' : 'Auto-Detect ACTIVE') : (config.autoDetectEnabled ? 'Auto-Detect ACTIVE' : 'Auto-Detect OFF')}
                             </button>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      {(['low', 'medium', 'high', 'ultra'] as GraphicsTier[]).map((t) => (
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                      {(['lite', 'low', 'medium', 'high', 'ultra'] as GraphicsTier[]).map((t) => (
                         <button
                           key={t}
                           disabled={config.autoDetectEnabled}
                           onClick={() => applyTier(t)}
-                          className={`py-4 text-[10px] font-black uppercase tracking-widest transition-all border ${config.tier === t ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'} ${config.autoDetectEnabled ? 'opacity-20 cursor-not-allowed' : ''}`}
+                          className={`py-6 text-[10px] font-black uppercase tracking-widest transition-all border ${config.tier === t ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'} ${config.autoDetectEnabled ? 'opacity-20 cursor-not-allowed' : ''}`}
                         >
-                          {t === 'low' ? (lang === 'cs' ? 'STANDARD' : 'STANDARD') : 
-                           t === 'medium' ? (lang === 'cs' ? 'VYSOKÁ KVALITA' : 'HIGH QUALITY') : 
-                           t === 'high' ? (lang === 'cs' ? 'ULTRA FILMOVÁ' : 'ULTRA CINEMATIC') : 
-                           (lang === 'cs' ? 'MAFIA NOIR' : 'MAFIA NOIR')}
+                          {t === 'lite' ? (lang === 'cs' ? 'LITE' : 'LITE') :
+                           t === 'low' ? (lang === 'cs' ? 'STANDARD' : 'STANDARD') : 
+                           t === 'medium' ? (lang === 'cs' ? 'VYSOKÁ KV.' : 'HIGH Q.') : 
+                           t === 'high' ? (lang === 'cs' ? 'ULTRA' : 'ULTRA') : 
+                           (lang === 'cs' ? 'NOIR' : 'NOIR')}
                         </button>
                       ))}
                     </div>
                   </section>
 
                   <section className="space-y-6">
-                    <SectionLabel icon={<Target size={14}/>} label={lang === 'cs' ? 'Ladění Výkonu' : 'Performance Tuning'} />
+                    <SectionLabel icon={<Target size={16}/>} label={lang === 'cs' ? 'Ladění Výkonu' : 'Performance Tuning'} />
                     
-                    <div className="space-y-8 mt-6">
+                    <div className="space-y-10 mt-8">
                         <RangeInput 
                             label={lang === 'cs' ? "Intenzita Záře (Bloom)" : "Glow Intensity (Bloom)"}
                             value={config.glowIntensity}
@@ -344,12 +373,12 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                     </div>
                   </section>
 
-                  <section className="p-5 bg-white/[0.02] border border-white/5 rounded-sm">
+                  <section className="p-6 bg-white/[0.02] border border-white/5 rounded-sm mt-8">
                     <div className="flex items-start gap-4">
-                        <Shield size={20} className="text-mafia-gold/50" />
+                        <Shield size={24} className="text-mafia-gold/50 flex-shrink-0" />
                         <div>
-                            <div className="text-[10px] font-heading font-black text-white uppercase tracking-wider mb-1">{lang === 'cs' ? 'Adaptivní Výkon' : 'Adaptive Performance'}</div>
-                            <p className="text-[10px] text-white/40 leading-relaxed font-mono uppercase tracking-tighter">
+                            <div className="text-sm font-heading font-black text-white uppercase tracking-wider mb-2">{lang === 'cs' ? 'Adaptivní Výkon' : 'Adaptive Performance'}</div>
+                            <p className="text-xs text-white/40 leading-relaxed font-mono uppercase tracking-widest">
                                 {lang === 'cs' 
                                     ? "Systém automaticky optimalizuje grafiku pro váš hardware. Manuální změna vypne auto-detekci."
                                     : "The system automatically optimizes graphics for your hardware. Manual changes will disable auto-detection."}
@@ -362,18 +391,18 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                 {/* Right Column: Toggles */}
                 <div className="space-y-10">
                     <section className="space-y-6">
-                        <SectionLabel icon={<Sparkles size={14}/>} label={lang === 'cs' ? 'Atmosféra & Pozadí' : 'Atmosphere & Background'} />
+                        <SectionLabel icon={<Sparkles size={16}/>} label={lang === 'cs' ? 'Atmosféra & Pozadí' : 'Atmosphere & Background'} />
                     
-                    <div className="grid grid-cols-1 gap-4 mt-4">
+                    <div className="grid grid-cols-1 gap-6 mt-4">
                         {/* Atmosphere Choice */}
-                        <div className="space-y-2">
-                            <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Režim Prostředí' : 'Environment Mode'}</span>
-                            <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-3">
+                            <span className="text-xs font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Režim Prostředí' : 'Environment Mode'}</span>
+                            <div className="grid grid-cols-2 gap-3">
                                 {(['classic', 'pure_dark'] as const).map((mode) => (
                                     <button
                                         key={mode}
                                         onClick={() => saveConfig({...config, atmosphereOverride: mode, autoDetectEnabled: false})}
-                                        className={`py-3 text-[9px] font-black uppercase tracking-widest transition-all border ${config.atmosphereOverride === mode ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'}`}
+                                        className={`py-4 text-xs font-black uppercase tracking-widest transition-all border ${config.atmosphereOverride === mode ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'}`}
                                     >
                                         {mode === 'classic' ? (lang === 'cs' ? 'KLASICKÉ' : 'CLASSIC') : (lang === 'cs' ? 'ČISTÁ ČERNÁ' : 'PURE BLACK')}
                                     </button>
@@ -383,18 +412,18 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
 
 
                         {/* Floating Items Choice */}
-                        <div className="space-y-2 mt-4">
+                        <div className="space-y-3 mt-4">
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Létající Předměty' : 'Floating Items'}</span>
+                                <span className="text-xs font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? 'Létající Předměty' : 'Floating Items'}</span>
                             </div>
-                            <div className="grid grid-cols-3 gap-2">
-                                {(['scissors', 'clippers', 'off'] as const).map((item) => (
+                            <div className="grid grid-cols-4 gap-3">
+                                {(['scissors', 'clippers', 'sparks', 'off'] as const).map((item) => (
                                     <button
                                         key={item}
                                         onClick={() => saveConfig({...config, floatingItems: item, autoDetectEnabled: false})}
-                                        className={`py-3 text-[9px] font-black uppercase tracking-widest transition-all border ${config.floatingItems === item ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'}`}
+                                        className={`py-4 text-[10px] font-black uppercase tracking-widest transition-all border ${config.floatingItems === item ? 'bg-mafia-gold text-mafia-black border-mafia-gold shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/30'}`}
                                     >
-                                        {item === 'scissors' ? (lang === 'cs' ? 'Nůžky' : 'Scissors') : item === 'clippers' ? (lang === 'cs' ? 'Strojky' : 'Clippers') : (lang === 'cs' ? 'Vypnuto' : 'Off')}
+                                        {item === 'scissors' ? (lang === 'cs' ? 'Nůžky' : 'Scissors') : item === 'clippers' ? (lang === 'cs' ? 'Strojky' : 'Clippers') : item === 'sparks' ? (lang === 'cs' ? 'Jiskry' : 'Sparks') : (lang === 'cs' ? 'Vypnuto' : 'Off')}
                                     </button>
                                 ))}
                             </div>
@@ -403,7 +432,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                     </section>
                     
                     <section className="space-y-6">
-                        <SectionLabel icon={<Wind size={14}/>} label={lang === 'cs' ? 'Post-Processing Efekty' : 'Post-Processing Effects'} />
+                        <SectionLabel icon={<Wind size={16}/>} label={lang === 'cs' ? 'Post-Processing Efekty' : 'Post-Processing Effects'} />
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                         <SettingToggle 
@@ -455,7 +484,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
                             icon={<Monitor size={16} />}
                             onClick={() => saveConfig({...config, crtEnabled: !config.crtEnabled, autoDetectEnabled: false})}
                         />
-                         <SettingToggle 
+                        <SettingToggle 
                             label={lang === 'cs' ? "Animace" : "Animations"}
                             desc={lang === 'cs' ? "Logika Přechodů" : "Transition Logic"}
                             active={config.animationsEnabled}
@@ -497,9 +526,9 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
 
 function SectionLabel({ icon, label }: { icon: React.ReactNode, label: string }) {
     return (
-        <div className="flex items-center gap-2 text-mafia-gold/60">
+        <div className="flex items-center gap-3 text-mafia-gold/80">
             {icon}
-            <span className="text-[10px] font-mono uppercase tracking-[0.4em]">{label}</span>
+            <span className="text-sm font-mono uppercase tracking-[0.4em]">{label}</span>
         </div>
     );
 }
@@ -507,10 +536,10 @@ function SectionLabel({ icon, label }: { icon: React.ReactNode, label: string })
 function RangeInput({ label, value, onChange }: { label: string, value: number, onChange: (v: number) => void }) {
     const id = `range-${label.replace(/\s+/g, '-').toLowerCase()}`;
     return (
-        <div className="space-y-3">
+        <div className="space-y-4">
             <div className="flex justify-between items-center">
-                <label htmlFor={id} className="text-[10px] font-heading font-black text-white/70 uppercase tracking-widest cursor-pointer">{label}</label>
-                <span className="text-[10px] font-mono text-mafia-gold">{Math.round(value * 100)}%</span>
+                <label htmlFor={id} className="text-xs font-heading font-black text-white/80 uppercase tracking-widest cursor-pointer">{label}</label>
+                <span className="text-xs font-mono text-mafia-gold">{Math.round(value * 100)}%</span>
             </div>
             <input 
                 id={id}
@@ -520,7 +549,7 @@ function RangeInput({ label, value, onChange }: { label: string, value: number, 
                 step="0.05" 
                 value={value} 
                 onChange={(e) => onChange(parseFloat(e.target.value))}
-                className="w-full appearance-none bg-white/5 h-1 cursor-pointer accent-mafia-gold hover:bg-white/10 transition-colors custom-range-input"
+                className="w-full appearance-none bg-white/10 h-2 rounded-full cursor-pointer accent-mafia-gold hover:bg-white/20 transition-colors custom-range-input"
             />
         </div>
     );
@@ -530,19 +559,19 @@ function SettingToggle({ label, desc, active, icon, onClick }: { label: string, 
     return (
         <button 
             onClick={onClick}
-            className={`p-4 border text-left flex items-center justify-between transition-all group ${active ? 'bg-mafia-gold/10 border-mafia-gold/40 shadow-[inset_0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)]' : 'bg-white/[0.01] border-white/5 hover:border-white/20'}`}
+            className={`p-5 border text-left flex items-center justify-between transition-all group ${active ? 'bg-mafia-gold/10 border-mafia-gold/40 shadow-[inset_0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)]' : 'bg-white/[0.01] border-white/10 hover:border-white/30'}`}
         >
-            <div className="flex items-center gap-3">
-                <div className={`${active ? 'text-mafia-gold' : 'text-white/20 group-hover:text-white/40'} transition-colors`}>
+            <div className="flex items-center gap-4">
+                <div className={`${active ? 'text-mafia-gold' : 'text-white/30 group-hover:text-white/60'} transition-colors`}>
                     {icon}
                 </div>
                 <div>
-                    <div className={`text-[10px] font-heading font-black uppercase tracking-wider ${active ? 'text-white' : 'text-white/40'}`}>{label}</div>
-                    <div className="text-[8px] text-white/20 uppercase font-mono mt-0.5">{desc}</div>
+                    <div className={`text-xs font-heading font-black uppercase tracking-wider ${active ? 'text-white' : 'text-white/60'}`}>{label}</div>
+                    <div className="text-[10px] text-white/40 uppercase font-mono mt-1">{desc}</div>
                 </div>
             </div>
-            <div className={`w-3 h-3 border ${active ? 'bg-mafia-gold border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.5)]' : 'bg-transparent border-white/20'}`}>
-                {active && <div className="w-full h-full flex items-center justify-center text-mafia-black text-[6px] font-black">✓</div>}
+            <div className={`w-4 h-4 border ${active ? 'bg-mafia-gold border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.5)]' : 'bg-transparent border-white/20'}`}>
+                {active && <div className="w-full h-full flex items-center justify-center text-mafia-black text-[10px] font-black">✓</div>}
             </div>
         </button>
     );

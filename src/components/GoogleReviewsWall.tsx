@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Star, Quote, ExternalLink, MessageSquare } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 
 interface Review {
   id: number;

@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import { Building2, ArrowRight } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 
 export function HousingEstate() {
   const { lang } = useTranslation();

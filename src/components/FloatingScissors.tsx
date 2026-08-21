@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Scissors, Heart, Snowflake, Flame, Star, Medal } from "lucide-react";
+import { Scissors, Heart, Snowflake, Flame, Star, Medal, Sparkles } from "lucide-react";
 
 /**
  * Custom Clipper SVG Icon
@@ -84,7 +84,7 @@ interface Item {
   rotation: number;
   vr: number;
   size: number;
-  type: 'scissors' | 'clippers' | 'heart' | 'clover3' | 'clover4' | 'pumpkin' | 'snowflake' | 'flame' | 'broom' | 'star' | 'medal';
+  type: 'scissors' | 'clippers' | 'sparks' | 'heart' | 'clover3' | 'clover4' | 'pumpkin' | 'snowflake' | 'flame' | 'broom' | 'star' | 'medal';
   el?: HTMLDivElement | null; // Direct reference for DOM manipulation
 }
 
@@ -113,6 +113,7 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
         
         if (typeOverride === 'scissors') return 'scissors';
         if (typeOverride === 'clippers') return 'clippers';
+        if (typeOverride === 'sparks') return 'sparks';
         return Math.random() > 0.5 ? 'scissors' : 'clippers';
     };
 
@@ -196,11 +197,11 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
           if (item.x < -5) item.x = 105;
           if (item.x > 105) item.x = -5;
         } else {
-          // Bouncing for others
-          if (item.x < padding) { item.x = padding; item.vx = Math.abs(item.vx) * 0.4; }
-          if (item.x > 100 - padding) { item.x = 100 - padding; item.vx = -Math.abs(item.vx) * 0.4; }
-          if (item.y < padding) { item.y = padding; item.vy = Math.abs(item.vy) * 0.4; }
-          if (item.y > 100 - padding) { item.y = 100 - padding; item.vy = -Math.abs(item.vy) * 0.4; }
+          // Wrapped floating for others to allow flying off-screen
+          if (item.x < -15) item.x = 115;
+          if (item.x > 115) item.x = -15;
+          if (item.y < -15) item.y = 115;
+          if (item.y > 115) item.y = -15;
         }
 
         // DOM Update (Ref only, no React state)
@@ -291,35 +292,44 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
     const commonStyle = { filter: `drop-shadow(0 0 ${item.size/8}px rgba(255,255,255,0.4))` };
     const snowflakeStyle = { filter: `drop-shadow(0 0 ${item.size/2}px rgba(255,255,255,0.9))` };
 
+    let iconElement;
     switch (item.type) {
       case 'heart':
-        return <Heart size={item.size} className={commonClass} style={commonStyle} fill="currentColor" />;
+        iconElement = <Heart size={item.size} className={commonClass} style={commonStyle} fill="currentColor" />; break;
       case 'clover3':
-        return <CloverIcon size={item.size} className="text-[#00ff41]/80" leaves={3} />;
+        iconElement = <CloverIcon size={item.size} className="text-[#00ff41]/80" leaves={3} />; break;
       case 'clover4':
-        return <CloverIcon size={item.size} className="text-[#00ff41]" leaves={4} />;
+        iconElement = <CloverIcon size={item.size} className="text-[#00ff41]" leaves={4} />; break;
       case 'pumpkin':
-        return <PumpkinIcon size={item.size} className={commonClass} />;
+        iconElement = <PumpkinIcon size={item.size} className={commonClass} />; break;
       case 'snowflake':
-        return <Snowflake size={item.size} className="text-white/90" style={snowflakeStyle} fill="white" />;
+        iconElement = <Snowflake size={item.size} className="text-white/90" style={snowflakeStyle} fill="white" />; break;
       case 'flame':
-        return <div className="animate-fire"><Flame size={item.size} className="text-orange-500" style={{ filter: `drop-shadow(0 0 ${item.size/3}px #ff4500)` }} fill="currentColor" /></div>;
+        iconElement = <div className="animate-fire"><Flame size={item.size} className="text-orange-500" style={{ filter: `drop-shadow(0 0 ${item.size/3}px #ff4500)` }} fill="currentColor" /></div>; break;
       case 'broom':
-        return <div className="hover:rotate-12 transition-transform duration-500"><BroomIcon size={item.size} className="text-[#8b4513]" /></div>;
+        iconElement = <div className="hover:rotate-12 transition-transform duration-500"><BroomIcon size={item.size} className="text-[#8b4513]" /></div>; break;
       case 'star':
-        return <Star size={item.size} className="text-white/80 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" style={commonStyle} fill="currentColor" />;
+        iconElement = <Star size={item.size} className="text-white/80 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" style={commonStyle} fill="currentColor" />; break;
       case 'medal':
-        return <Medal size={item.size} className="text-white/60 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" style={commonStyle} />;
+        iconElement = <Medal size={item.size} className="text-white/60 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" style={commonStyle} />; break;
       case 'scissors':
-        return <Scissors size={item.size} className={commonClass} style={commonStyle} />;
+        iconElement = <Scissors size={item.size} className={commonClass} style={commonStyle} />; break;
       case 'clippers':
-        return <ClipperIcon size={item.size} className={commonClass} />;
+        iconElement = <ClipperIcon size={item.size} className={commonClass} />; break;
+      case 'sparks':
+        iconElement = <Sparkles size={item.size} className="text-mafia-gold animate-pulse drop-shadow-[0_0_15px_rgba(207,168,88,0.8)]" fill="currentColor" />; break;
       default:
-        return <Scissors size={item.size} className={commonClass} style={commonStyle} />;
+        iconElement = <Scissors size={item.size} className={commonClass} style={commonStyle} />; break;
     }
+
+    return (
+      <div className="relative">
+        {iconElement}
+      </div>
+    );
   };
 
-  const isHoliday = items.length > 0 && !['scissors', 'clippers'].includes(items[0].type);
+  const isHoliday = items.length > 0 && !['scissors', 'clippers', 'sparks'].includes(items[0].type);
   const isOff = localStorage.getItem("mmbarber_floating_item_override") === 'off';
 
   if (isMatrixActive || isOff) return null;
@@ -349,6 +359,22 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
         }
         .animate-fire {
           animation: fire-flicker 0.6s infinite alternate ease-in-out;
+        }
+        @keyframes spark-fly {
+          0% { transform: translate(0, 0) scale(1); opacity: 1; }
+          100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+        .spark-particle {
+          position: absolute;
+          width: 4px;
+          height: 4px;
+          background-color: var(--color-mafia-gold, #cfa858);
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+          pointer-events: none;
+          box-shadow: 0 0 10px var(--color-mafia-gold, #cfa858);
+          animation: spark-fly var(--dur) infinite ease-out var(--del);
         }
       `}</style>
     </div>

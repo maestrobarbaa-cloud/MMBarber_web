@@ -74,7 +74,9 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
               {/* Internal CV Link */}
               {isInternal && (
                 <Link href={link} className="text-[8px] md:text-[9px] font-mono text-mafia-gold hover:text-white uppercase tracking-[0.2em] border border-mafia-gold/30 px-4 md:px-6 py-1 md:py-2 bg-mafia-gold/10">
-                  {lang === 'cs' ? "ŽIVOTOPIS" : "RESUME"}
+                  {lang === 'cs' 
+                    ? (m.name.includes("Roman") ? "STRÁNKY" : "ŽIVOTOPIS") 
+                    : (m.name.includes("Roman") ? "WEBSITE" : "RESUME")}
                 </Link>
               )}
 
@@ -83,6 +85,13 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
                 <div className="flex flex-col items-center gap-2">
                   <p className="text-white/60 font-mono text-[8px] md:text-[10px] break-all px-2 md:px-4 text-center">{link}</p>
                   <a href={link} target="_blank" rel="noreferrer" className="text-[8px] md:text-[9px] font-mono text-mafia-gold hover:text-white uppercase tracking-[0.2em] border border-mafia-gold/30 px-3 md:px-4 py-1 md:py-2">WEB</a>
+                </div>
+              )}
+
+              {/* ICO */}
+              {m.ico && (
+                <div className="flex flex-col items-center gap-1 mt-1 mb-2">
+                  <p className="text-white/60 font-mono text-[9px] uppercase tracking-widest">{m.ico}</p>
                 </div>
               )}
             </motion.div>
@@ -94,6 +103,7 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
 }
 
 const divisions = [
+  { id: "auto", name: "Auto Detailing", nameEn: "Auto Detailing", icon: <Star className="w-5 h-5" /> },
   { id: "voda", name: "Vodaři / Vodo-Topo", nameEn: "Plumbers", icon: <Droplets className="w-5 h-5" /> },
   { id: "elektro", name: "Elektrikáři", nameEn: "Electricians", icon: <Zap className="w-5 h-5" /> },
   { id: "stavebnictvi", name: "Stavebnictví & Reality", nameEn: "Construction & Reality", icon: <Building2 className="w-5 h-5" /> },
@@ -105,10 +115,21 @@ const divisions = [
   { id: "support", name: "Podpora", nameEn: "Support", icon: <HeartHandshake className="w-5 h-5" /> },
   { id: "ucetni", name: "Účetní", nameEn: "Accounting", icon: <Calculator className="w-5 h-5" /> },
   { id: "kola", name: "Jízdní kola", nameEn: "Bicycles", icon: <Bike className="w-5 h-5" /> },
-  { id: "team", name: "Tým MMBarber", nameEn: "MMBarber Team", icon: <Monitor className="w-5 h-5" /> },
+  { id: "it", name: "IT & Sítě", nameEn: "IT & Networks", icon: <Monitor className="w-5 h-5" /> },
+  { id: "team", name: "Tým MMBarber", nameEn: "MMBarber Team", icon: <Users className="w-5 h-5" /> },
 ];
 
 const members = [
+  {
+    name: "Detailing",
+    div: "auto",
+    role: "Prémiová péče o auta", roleEn: "Premium Car Care",
+    img: "/loga_partneri/detailing.png",
+    link: "https://www.detailing4u.cz/",
+    year: 2026,
+    specialHover: "Protože auto má vypadat stejně dobře, jako ty po návštěvě barbera.",
+    specialHoverEn: "Because a car should look as good as you do after a barber visit."
+  },
   {
     name: "Vodo Topo Jahoda",
     div: "voda",
@@ -232,12 +253,24 @@ const members = [
     year: 2025
   },
   {
+    name: "Petr Svoboda",
+    div: "it",
+    role: "Správa sítí a IT", roleEn: "Networking & IT",
+    img: "/logo.png",
+    link: "tel:+420606724310",
+    phone: "+420 606 724 310",
+    year: 2026,
+    specialHover: "Když potřebuješ internet, co nepadá a síť, co dává smysl. Petr je náš IT mág, na kterého je vždy spoleh.",
+    specialHoverEn: "When you need internet that doesn't drop and a network that makes sense. Petr is our reliable IT wizard."
+  },
+  {
     name: "Romana Mičková",
     div: "ucetni",
     role: "Samostatná účetní", roleEn: "Independent Accountant",
     img: "/logo.png",
     link: "tel:+420774640332",
     phone: "+420 774 640 332",
+    ico: "IČO: 65814266",
     year: 2026
   },
   {

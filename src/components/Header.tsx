@@ -3,9 +3,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import gsap from "gsap";
-import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, LayoutGrid, Menu, Volume2, VolumeX, Palette, Sparkles, Radio, Briefcase, CreditCard, MapPin, Monitor, Settings, Target, Handshake, Trophy, Star, Crown } from "lucide-react";
+import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, LayoutGrid, Menu, Volume2, VolumeX, Palette, Sparkles, Radio, Briefcase, CreditCard, MapPin, Monitor, Settings, Target, Handshake, Trophy, Star, Crown, Dices } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import dynamic from "next/dynamic";
@@ -24,6 +24,7 @@ import { GameFragment } from "./GameFragment";
 export function Header() {
   const [clicks, setClicks] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeFolder, setActiveFolder] = useState<string | null>(null);
   const [activeMode, setActiveMode] = useState<string | null>(null);
 
   useEffect(() => {
@@ -796,7 +797,7 @@ export function Header() {
     setShouldFlashFamily(false);
   };
 
-
+  if (pathname === '/rodina/elektrikari/roman-jakubcak' || pathname === '/rodina/elektrikari/roman-jakubcak/admin') return null;
 
   return (
     <>
@@ -831,7 +832,7 @@ export function Header() {
             <div className="relative ml-2 flex flex-col justify-center">
               <span 
                 ref={logoRef}
-                className="text-lg md:text-xl font-heading font-black text-mafia-gold noir-mode:text-smoke-white tracking-widest group-hover:text-smoke-white transition-all duration-300 logo-neon leading-none"
+                className="text-lg md:text-xl font-heading font-black text-mafia-gold noir-mode:text-smoke-white tracking-widest group-hover:text-smoke-white transition-all duration-300 leading-none"
               >
                 MMBARBER
               </span>
@@ -1072,247 +1073,214 @@ export function Header() {
               </form>
             </div>
 
-            {/* List Menu Layout */}
+            {/* List Menu Layout - Folder Based */}
             <div className="flex flex-col gap-3 mb-8 pb-10">
-              {/* LIST MENU TILES - ALPHABETICAL ORDER */}
-              <Link href="/jak-to-chodi" onClick={handleNavLinkClick} className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left">
-                <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{lang === 'cs' ? 'INSTRUKCE' : 'INSTRUCTIONS'}</span>
-                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.startMission}</span>
-                </div>
-              </Link>
 
-              <Link href="/pribeh" onClick={handleNavLinkClick} className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left">
-                <div className="text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60">
-                   <Users size={28} />
-                </div>
-                <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60 uppercase tracking-widest">{lang === 'cs' ? 'NÁŠ PŘÍBĚH' : 'OUR STORY'}</span>
-                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.aboutUs}</span>
-                </div>
-              </Link>
-
-
-
-              <Link 
-                href="/#services" 
-                onClick={(e) => {
-                  handleNavLinkClick();
-                  if (pathname === "/") {
-                    e.preventDefault();
-                    document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
-                  }
-                }} 
-                className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
-              >
-                <div className="text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60">
-                   <Briefcase size={28} />
-                </div>
-                <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60 uppercase tracking-widest">{lang === 'cs' ? 'NABÍDKA' : 'OFFER'}</span>
-                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.services}</span>
-                </div>
-              </Link>
-
-              <Link 
-                href="/cenik" 
-                onClick={handleNavLinkClick} 
-                className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
-              >
-                <div className="text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60">
-                   <CreditCard size={28} />
-                </div>
-                <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60 uppercase tracking-widest">{lang === 'cs' ? 'TARIF' : 'TARIFF'}</span>
-                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.priceList}</span>
-                </div>
-              </Link>
-
-              <Link 
-                href="/#kontakt" 
-                onClick={(e) => {
-                  handleNavLinkClick();
-                  if (pathname === "/") {
-                    e.preventDefault();
-                    document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth" });
-                  }
-                }} 
-                className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
-              >
-                <div className="text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60">
-                   <MapPin size={28} />
-                </div>
-                <div className="flex flex-col">
-                   <span className="text-[10px] font-mono text-mafia-gold/60 noir-mode:text-mafia-silver/60 theme-blood:text-mafia-blood/60 uppercase tracking-widest">{lang === 'cs' ? 'SPOJENÍ' : 'CONNECTION'}</span>
-                   <span className="text-sm font-sans font-bold text-smoke-white uppercase">{t.header.kudy_k_nam}</span>
-                </div>
-              </Link>
-
-              {/* VIP link removed per user request - access via 'VIP' keyword in search */}
-              {visitCount >= 5 && (
-                <Link 
-                  href="/vip-club" 
-                  onClick={handleNavLinkClick} 
-                  className="bg-mafia-gold/10 noir-mode:bg-mafia-silver/10 theme-blood:bg-mafia-blood/10 border border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-blood/30 px-6 py-5 flex items-center justify-start gap-5 active:scale-95 transition-transform text-left"
-                >
-                  <div className="text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-blood">
-                     <Sparkles size={28} />
-                  </div>
-                  <div className="flex flex-col">
-                     <span className="text-[10px] font-mono text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-blood uppercase tracking-widest">EXKLUZIVNÍ PŘÍSTUP</span>
-                     <span className="text-sm font-sans font-black text-mafia-gold noir-mode:text-mafia-silver theme-blood:text-mafia-blood uppercase">VIP CLUB</span>
-                  </div>
-                </Link>
-              )}
-
-               {/* RODINA MMBARBERU TILE (Mobile) */}
+              {/* 👥 RODINA (Primary CTA) */}
               <button 
                 onClick={() => {
                   markFamilyOpened();
                   handleNavLinkClick();
                   router.push("/rodina");
                 }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${shouldFlashFamily ? 'border-mafia-gold bg-mafia-gold/5 animate-pulse shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.2)]' : 'border-white/10'}`}
+                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${shouldFlashFamily ? 'border-mafia-gold bg-mafia-gold/5 animate-pulse shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.2)]' : 'border-mafia-gold/50'}`}
               >
                 <div className="flex items-center gap-5">
-                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${shouldFlashFamily ? 'border-mafia-gold bg-mafia-gold/20' : 'border-white/20'}`}>
-                    <Users size={28} className={shouldFlashFamily ? 'text-mafia-gold' : 'text-white/40'} />
+                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${shouldFlashFamily ? 'border-mafia-gold bg-mafia-gold/20' : 'border-mafia-gold/20 bg-mafia-gold/10'}`}>
+                    <Users size={28} className={shouldFlashFamily ? 'text-mafia-gold' : 'text-mafia-gold'} />
                   </div>
                   <div className="flex flex-col items-start text-left">
-                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'RODINA' : 'FAMILY'}</span>
-                    <span className="text-[10px] font-mono text-mafia-gold/40 uppercase">{lang === 'cs' ? 'STAŇ SE ČLENEM' : 'BECOME A MEMBER'}</span>
+                    <span className="text-xl font-sans font-black text-mafia-gold uppercase tracking-widest">{lang === 'cs' ? 'RODINA' : 'FAMILY'}</span>
+                    <span className="text-[10px] font-mono text-mafia-gold/60 uppercase">{lang === 'cs' ? 'STAŇ SE ČLENEM' : 'BECOME A MEMBER'}</span>
                   </div>
                 </div>
-                <ChevronRight size={20} className={shouldFlashFamily ? 'text-mafia-gold' : 'text-white/20'} />
+                <ChevronRight size={20} className="text-mafia-gold" />
               </button>
 
-              {/* HODNOCENÍ ELITY TILE (Mobile) */}
-              <button 
-                onClick={() => {
-                  handleNavLinkClick();
-                  router.push("/hodnoceni");
-                }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 hover:bg-white/10 ${shouldFlashRating ? 'border-mafia-gold bg-mafia-gold/5 animate-pulse' : 'border-white/10'}`}
+              {/* 💰 CENÍK */}
+              <Link 
+                href="/cenik" 
+                onClick={handleNavLinkClick} 
+                className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-between active:scale-95 transition-all duration-500 hover:border-mafia-gold/50"
               >
                 <div className="flex items-center gap-5">
-                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${shouldFlashRating ? 'border-mafia-gold bg-mafia-gold/10 shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'border-white/20'}`}>
-                    <Crown size={28} className={shouldFlashRating ? 'text-mafia-gold' : 'text-white/40'} />
+                  <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center">
+                     <CreditCard size={28} className="text-white/60" />
                   </div>
                   <div className="flex flex-col items-start text-left">
-                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{t.header.ratingAndNicknames}</span>
-                    <span className="text-[10px] font-mono text-mafia-gold/40 uppercase">{lang === 'cs' ? 'KOMUNITNÍ HLASOVÁNÍ' : 'COMMUNITY VOTING'}</span>
+                     <span className="text-lg font-sans font-black text-smoke-white uppercase">{t.header.priceList}</span>
+                     <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{lang === 'cs' ? 'TARIF SLUŽEB' : 'SERVICE TARIFF'}</span>
                   </div>
                 </div>
-                <ChevronRight size={20} className={shouldFlashRating ? 'text-mafia-gold' : 'text-white/20'} />
-              </button>
+                <ChevronRight size={20} className="text-white/20" />
+              </Link>
 
-              {/* ELITNÍ STŘELBA TILE (Mobile Only Launcher) */}
-              <button 
-                onClick={() => {
-                  markShootingOpened();
-                  setIsMenuOpen(false);
-                  window.dispatchEvent(new Event('mmbarber-elita-game-open'));
-                }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 hover:bg-white/10 ${shouldFlashShooting ? 'border-mafia-gold bg-mafia-gold/5 animate-pulse' : 'border-white/10'}`}
-              >
-                <div className="flex items-center gap-5">
-                  <div 
-                    className="relative flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-700 bg-black/40 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-                    style={{ borderColor: shouldFlashShooting ? 'var(--color-mafia-gold)' : 'rgba(255,255,255,0.1)' }}
-                  >
-                    <Trophy 
-                      size={20} 
-                      className="transition-all duration-700"
-                      style={{ color: shouldFlashShooting ? (isBloodMode ? 'var(--color-mafia-blood)' : 'var(--color-mafia-gold)') : 'rgba(255,255,255,0.4)' }}
-                    />
-                    {shouldFlashShooting && (
-                      <div className="absolute -top-1 -right-1 flex flex-col gap-0.5">
-                        <div className="w-4 h-[1px] bg-white opacity-20" />
+              {/* FOLDER: 🏠 HLAVNÍ */}
+              <div className={`border transition-all duration-300 ${activeFolder === 'main' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5'}`}>
+                <button 
+                  onClick={() => setActiveFolder(activeFolder === 'main' ? null : 'main')}
+                  className="w-full px-6 py-5 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <LayoutGrid size={24} className={activeFolder === 'main' ? 'text-mafia-gold' : 'text-white/40'} />
+                    <span className={`font-sans font-black uppercase tracking-widest ${activeFolder === 'main' ? 'text-mafia-gold' : 'text-smoke-white'}`}>
+                      {lang === 'cs' ? 'HLAVNÍ MENU' : 'MAIN MENU'}
+                    </span>
+                  </div>
+                  <ChevronDown size={20} className={`transition-transform duration-300 ${activeFolder === 'main' ? 'rotate-180 text-mafia-gold' : 'text-white/20'}`} />
+                </button>
+                <AnimatePresence>
+                  {activeFolder === 'main' && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="flex flex-col px-6 pb-4 gap-2">
+                        <Link href="/jak-to-chodi" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
+                           <Target size={24} className="text-white/40" />
+                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.startMission}</span>
+                        </Link>
+                        <Link href="/pribeh" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
+                           <Users size={24} className="text-white/40" />
+                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.aboutUs}</span>
+                        </Link>
+                        <Link href="/#services" onClick={(e) => { handleNavLinkClick(); if (pathname === "/") { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); } }} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
+                           <Briefcase size={24} className="text-white/40" />
+                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.services}</span>
+                        </Link>
+                        <Link href="/#kontakt" onClick={(e) => { handleNavLinkClick(); if (pathname === "/") { e.preventDefault(); document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth" }); } }} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
+                           <MapPin size={24} className="text-white/40" />
+                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.kudy_k_nam}</span>
+                        </Link>
                       </div>
-                    )}
-                  </div>
-                  <div className="flex flex-col items-start leading-none">
-                    <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'STŘELBA' : 'SHOOTING'}</span>
-                    <span className="text-[10px] font-mono uppercase" style={{ color: shouldFlashShooting ? 'var(--color-mafia-gold)' : 'rgba(255,255,255,0.3)' }}>{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
-                  </div>
-                </div>
-                <ChevronRight size={20} style={{ color: shouldFlashShooting ? 'var(--color-mafia-gold)' : 'rgba(255,255,255,0.2)' }} />
-              </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-              {/* EFFECTS TOGGLE TILE */}
-              <button 
-                onClick={() => {
-                  const newState = !isMobileEffectsEnabled;
-                  localStorage.setItem("mmbarber_mobile_effects_enabled", String(newState));
-                  window.dispatchEvent(new CustomEvent('mmbarber-mobile-effects-update', { detail: newState }));
-                }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isMobileEffectsEnabled ? 'border-mafia-gold bg-mafia-gold/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.1)]' : 'border-white/10'}`}
-              >
-                <div className="flex items-center gap-5">
-                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${isMobileEffectsEnabled ? 'border-mafia-gold bg-mafia-gold/10' : 'border-mafia-gold/30'}`}>
-                    <Sparkles size={28} className={`text-mafia-gold ${isMobileEffectsEnabled ? 'animate-pulse' : 'opacity-40'}`} />
+              {/* FOLDER: 🎮 HRY */}
+              <div className={`border transition-all duration-300 ${activeFolder === 'games' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5'}`}>
+                <button 
+                  onClick={() => setActiveFolder(activeFolder === 'games' ? null : 'games')}
+                  className="w-full px-6 py-5 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <Target size={24} className={activeFolder === 'games' ? 'text-mafia-gold' : 'text-white/40'} />
+                    <span className={`font-sans font-black uppercase tracking-widest ${activeFolder === 'games' ? 'text-mafia-gold' : 'text-smoke-white'}`}>
+                      {lang === 'cs' ? 'HRY & ELITA' : 'GAMES & ELITE'}
+                    </span>
                   </div>
-                  <div className="flex flex-col items-start text-left">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'EFEKTY' : 'EFFECTS'}</span>
-                      <div className={`px-1.5 py-0.5 text-[8px] font-black rounded ${isMobileEffectsEnabled ? 'bg-mafia-gold text-mafia-black' : 'bg-white/10 text-white/40'}`}>
-                        {isMobileEffectsEnabled ? (t.header.on || 'ZAPNUTO') : (t.header.off || 'VYPNUTO')}
+                  <ChevronDown size={20} className={`transition-transform duration-300 ${activeFolder === 'games' ? 'rotate-180 text-mafia-gold' : 'text-white/20'}`} />
+                </button>
+                <AnimatePresence>
+                  {activeFolder === 'games' && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="flex flex-col px-6 pb-4 gap-2">
+                        <button onClick={() => { handleNavLinkClick(); router.push("/hodnoceni"); }} className="py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 border-white/10 hover:border-mafia-gold/30 text-left">
+                           <Crown size={24} className="text-mafia-gold shrink-0" />
+                           <div className="flex flex-col leading-tight">
+                              <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.ratingAndNicknames || 'HODNOCENÍ ELITY'}</span>
+                              <span className="text-[10px] font-mono text-mafia-gold/50 uppercase mt-1">{lang === 'cs' ? 'KOMUNITNÍ HLASOVÁNÍ' : 'COMMUNITY VOTING'}</span>
+                           </div>
+                        </button>
+                        <button onClick={() => { markShootingOpened(); setIsMenuOpen(false); window.dispatchEvent(new Event('mmbarber-elita-game-open')); }} className={`py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 text-left ${shouldFlashShooting ? 'border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.2)]' : 'border-white/10 hover:border-mafia-gold/30'}`}>
+                           <Trophy size={24} className="text-mafia-red shrink-0" />
+                           <div className="flex flex-col leading-tight">
+                              <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'ELITNÍ STŘELBA' : 'ELITE SHOOTING'}</span>
+                              <span className="text-[10px] font-mono text-mafia-red/70 uppercase mt-1">{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
+                           </div>
+                        </button>
+                        <button onClick={() => { setIsMenuOpen(false); window.dispatchEvent(new Event('mmbarber-slot-machine-open')); }} className="py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 border-white/10 hover:border-mafia-gold/30 text-left">
+                           <Dices size={24} className="text-mafia-gold shrink-0" />
+                           <div className="flex flex-col leading-tight">
+                              <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'HAZARDNÍ AUTOMAT' : 'SLOT MACHINE'}</span>
+                              <span className="text-[10px] font-mono text-mafia-gold/50 uppercase mt-1">{lang === 'cs' ? 'KASINO & VÝHRA' : 'CASINO & WIN'}</span>
+                           </div>
+                        </button>
                       </div>
-                    </div>
-                    <span className="text-[10px] font-mono text-mafia-gold/40 uppercase">{isMobileEffectsEnabled ? (lang === 'cs' ? 'PLNÝ ZÁŽITEK' : 'FULL EXPERIENCE') : (lang === 'cs' ? 'ŠETŘÍ BATERII' : 'SAVES BATTERY')}</span>
-                  </div>
-                </div>
-                <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isMobileEffectsEnabled ? 'bg-mafia-gold' : 'bg-white/10'}`}>
-                   <motion.div 
-                     animate={{ x: isMobileEffectsEnabled ? 22 : 4 }}
-                     className="w-3 h-3 rounded-full bg-white shadow-sm"
-                   />
-                </div>
-              </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-
-              {/* SOUNDS TOGGLE TILE */}
-              <button 
-                onClick={() => {
-                  toggleSound();
-                }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${isSoundEnabled ? 'border-mafia-gold bg-mafia-gold/5 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.1)]' : 'border-white/10'}`}
-              >
-                <div className="flex items-center gap-5">
-                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${isSoundEnabled ? 'border-mafia-gold bg-mafia-gold/10' : 'border-mafia-gold/30'}`}>
-                    {isSoundEnabled ? (
-                      <Volume2 size={28} className="text-mafia-gold animate-pulse" />
-                    ) : (
-                      <VolumeX size={28} className="text-mafia-gold opacity-40" />
-                    )}
+              {/* FOLDER: ⚙️ NASTAVENÍ */}
+              <div className={`border transition-all duration-300 ${activeFolder === 'settings' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5'}`}>
+                <button 
+                  onClick={() => setActiveFolder(activeFolder === 'settings' ? null : 'settings')}
+                  className="w-full px-6 py-5 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <Settings size={24} className={activeFolder === 'settings' ? 'text-mafia-gold' : 'text-white/40'} />
+                    <span className={`font-sans font-black uppercase tracking-widest ${activeFolder === 'settings' ? 'text-mafia-gold' : 'text-smoke-white'}`}>
+                      {lang === 'cs' ? 'NASTAVENÍ' : 'SETTINGS'}
+                    </span>
                   </div>
-                  <div className="flex flex-col items-start text-left">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl font-sans font-black text-smoke-white uppercase tracking-widest">{lang === 'cs' ? 'ZVUK' : 'SOUND'}</span>
-                      <div className={`px-1.5 py-0.5 text-[8px] font-black rounded ${isSoundEnabled ? 'bg-mafia-gold text-mafia-black' : 'bg-white/10 text-white/40'}`}>
-                        {isSoundEnabled ? (t.header.on || 'ZAPNUTO') : (t.header.off || 'VYPNUTO')}
+                  <ChevronDown size={20} className={`transition-transform duration-300 ${activeFolder === 'settings' ? 'rotate-180 text-mafia-gold' : 'text-white/20'}`} />
+                </button>
+                <AnimatePresence>
+                  {activeFolder === 'settings' && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="flex flex-col px-6 pb-4 gap-2">
+                        <button onClick={() => { const newState = !isMobileEffectsEnabled; localStorage.setItem("mmbarber_mobile_effects_enabled", String(newState)); window.dispatchEvent(new CustomEvent('mmbarber-mobile-effects-update', { detail: newState })); }} className="py-5 px-6 border border-white/10 flex items-center justify-between active:scale-95 transition-all bg-black/20">
+                          <div className="flex items-center gap-4">
+                            <Sparkles size={24} className={isMobileEffectsEnabled ? 'text-mafia-gold' : 'text-white/40'} />
+                            <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'EFEKTY' : 'EFFECTS'}</span>
+                          </div>
+                          <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isMobileEffectsEnabled ? 'bg-mafia-gold' : 'bg-white/10'}`}>
+                             <motion.div animate={{ x: isMobileEffectsEnabled ? 22 : 3 }} className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" />
+                          </div>
+                        </button>
+                        <button onClick={() => toggleSound()} className="py-5 px-6 border border-white/10 flex items-center justify-between active:scale-95 transition-all bg-black/20">
+                          <div className="flex items-center gap-4">
+                            {isSoundEnabled ? <Volume2 size={24} className="text-mafia-gold" /> : <VolumeX size={24} className="text-white/40" />}
+                            <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'ZVUK' : 'SOUND'}</span>
+                          </div>
+                          <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isSoundEnabled ? 'bg-mafia-gold' : 'bg-white/10'}`}>
+                             <motion.div animate={{ x: isSoundEnabled ? 22 : 3 }} className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" />
+                          </div>
+                        </button>
                       </div>
-                    </div>
-                    <span className="text-[10px] font-mono text-mafia-gold/40 uppercase">{isSoundEnabled ? (lang === 'cs' ? 'AUDIO AKTIVNÍ' : 'AUDIO ACTIVE') : (lang === 'cs' ? 'TICHO' : 'SILENT')}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* VIP CLUB TILE (Conditional) */}
+              {visitCount >= 5 && (
+                <Link 
+                  href="/vip-club" 
+                  onClick={handleNavLinkClick} 
+                  className="bg-mafia-gold/10 noir-mode:bg-mafia-silver/10 theme-blood:bg-mafia-blood/10 border border-mafia-gold/50 px-6 py-5 flex items-center justify-between active:scale-95 transition-transform"
+                >
+                  <div className="flex items-center gap-4">
+                    <Sparkles size={24} className="text-mafia-gold animate-pulse" />
+                    <span className="text-lg font-sans font-black text-mafia-gold uppercase">VIP CLUB</span>
                   </div>
-                </div>
-                <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isSoundEnabled ? 'bg-mafia-gold' : 'bg-white/10'}`}>
-                   <motion.div 
-                     animate={{ x: isSoundEnabled ? 22 : 4 }}
-                     className="w-3 h-3 rounded-full bg-white shadow-sm"
-                   />
-                </div>
-              </button>
+                  <ChevronRight size={20} className="text-mafia-gold" />
+                </Link>
+              )}
 
               {/* QUICK CALL & MAP TILES (Side by side for these two) */}
               <div className="grid grid-cols-2 gap-3 mt-2">
                 <button onClick={() => { window.location.href = "tel:+420577544073"; handleNavLinkClick(); }} className="bg-white/5 border border-white/10 p-5 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
-                   <Phone size={32} className="text-mafia-gold" />
-                   <span className="text-xs font-sans font-black tracking-widest uppercase text-white">{t.specialProjects?.callUs || 'ZAVOLAT'}</span>
+                   <Phone size={24} className="text-mafia-gold" />
+                   <span className="text-[10px] font-sans font-black tracking-widest uppercase text-white">{t.specialProjects?.callUs || 'ZAVOLAT'}</span>
                 </button>
                 <button onClick={() => { window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass')); handleNavLinkClick(); }} className="bg-white/5 border border-white/10 p-5 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
-                    <Compass size={32} className="text-mafia-gold animate-pulse" />
-                    <span className="text-xs font-sans font-black tracking-widest uppercase text-white">{t.header.navigate || 'NAVIGOVAT'}</span>
+                    <Compass size={24} className="text-mafia-gold animate-pulse" />
+                    <span className="text-[10px] font-sans font-black tracking-widest uppercase text-white">{t.header.navigate || 'NAVIGOVAT'}</span>
                 </button>
               </div>
             </div>

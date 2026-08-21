@@ -43,29 +43,7 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Subtle Anti-Screenshot Watermark */
-body::before {
-  content: "MMBARBER AUTHENTIC SELECTION";
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-30deg);
-  font-size: 14vw;
-  font-family: var(--font-mono);
-  color: rgb(var(--color-mafia-gold-rgb), 0.006);
-  pointer-events: none;
-  z-index: 99999;
-  white-space: nowrap;
-  letter-spacing: 0.5em;
-  font-weight: 900;
-  mix-blend-mode: overlay;
-}
 
-/* Hide watermark on high-performance tiers to ensure pristine visual quality */
-html[data-graphics-tier='high'] body::before,
-html[data-graphics-tier='ultra'] body::before {
-  display: none !important;
-}
 
 button, a {
   touch-action: manipulation;
@@ -144,11 +122,15 @@ img {
   pointer-events: none;
 }
 
+html[data-graphics-tier='lite'] body,
 html[data-graphics-tier='low'] body,
 html[data-graphics-tier='medium'] body {
   background: #121212 !important;
 }
 
+html[data-graphics-tier='lite'] *,
+html[data-graphics-tier='lite'] *::before,
+html[data-graphics-tier='lite'] *::after,
 html[data-graphics-tier='low'] *,
 html[data-graphics-tier='low'] *::before,
 html[data-graphics-tier='low'] *::after {
@@ -161,11 +143,13 @@ html[data-graphics-tier='low'] *::after {
   filter: none !important;
 }
 
+html[data-graphics-tier='lite'] [class*='parallax'],
 html[data-graphics-tier='low'] [class*='parallax'] {
   transform: none !important;
   transition: none !important;
 }
 
+html[data-graphics-tier='lite'] .logo-neon,
 html[data-graphics-tier='low'] .logo-neon,
 html[data-graphics-tier='medium'] .logo-neon {
   animation: none !important;
@@ -173,16 +157,21 @@ html[data-graphics-tier='medium'] .logo-neon {
 }
 
 html.disable-grain .film-grain-container,
+html[data-graphics-tier='lite'] .film-grain-container,
 html[data-graphics-tier='low'] .film-grain-container {
   display: none !important;
 }
 
+html[data-graphics-tier='lite'] [class*='parallax'],
 html[data-graphics-tier='low'] [class*='parallax'],
 html[data-graphics-tier='medium'] [class*='parallax'] {
   transform: none !important;
   transition: none !important;
 }
 
+html[data-graphics-tier='lite'] .backdrop-blur-md,
+html[data-graphics-tier='lite'] .backdrop-blur-xl,
+html[data-graphics-tier='lite'] .backdrop-blur-2xl,
 html[data-graphics-tier='low'] .backdrop-blur-md,
 html[data-graphics-tier='low'] .backdrop-blur-xl,
 html[data-graphics-tier='low'] .backdrop-blur-2xl,
@@ -194,6 +183,7 @@ html.disable-blur .backdrop-blur-2xl {
   background-color: rgb(10, 10, 10, 0.9) !important;
 }
 
+html[data-graphics-tier='lite'] [class*='parallax'],
 html[data-graphics-tier='low'] [class*='parallax'],
 html[data-graphics-tier='medium'] [class*='parallax'],
 html.disable-parallax [class*='parallax'] {
@@ -210,12 +200,43 @@ html.reduce-motion *::after {
   scroll-behavior: auto !important;
 }
 
+html[data-graphics-tier='lite'] .atmosphere-container,
+html[data-graphics-tier='lite'] .film-grain-container,
+html[data-graphics-tier='lite'] .custom-cursor,
+html[data-graphics-tier='lite'] .scroll-indicator-mm,
+html[data-graphics-tier='lite'] .global-web-frame,
 html[data-graphics-tier='low'] .atmosphere-container,
 html[data-graphics-tier='low'] .film-grain-container,
 html[data-graphics-tier='low'] .custom-cursor,
 html[data-graphics-tier='low'] .scroll-indicator-mm,
 html[data-graphics-tier='low'] .global-web-frame {
   display: none !important;
+}
+
+/* LITE STRICT PERFORMANCE RULES */
+html[data-graphics-tier='lite'] *,
+html[data-graphics-tier='lite'] *::before,
+html[data-graphics-tier='lite'] *::after {
+  mix-blend-mode: normal !important;
+  background-blend-mode: normal !important;
+  -webkit-box-shadow: none !important;
+}
+
+html[data-graphics-tier='lite'] img,
+html[data-graphics-tier='lite'] video {
+  filter: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+  border-radius: 0 !important;
+}
+
+html[data-graphics-tier='lite'] .barber-card,
+html[data-graphics-tier='lite'] .menu-card {
+  transform-style: flat !important;
+  -webkit-transform-style: flat !important;
+  border: 1px solid #333 !important;
+  background: #111 !important;
 }
 
 /* ADVANCED GRAPHICS EFFECTS */
@@ -351,10 +372,91 @@ html:not(.is-mobile-device) {
   --color-smoke-white: #e5e4e2;
 }
 
+html[data-graphics-tier='lite'],
 html[data-graphics-tier='low'],
 html[data-graphics-tier='medium'] {
   --color-mafia-black: #1a1a1a; /* Lighter gray to prevent 'too dark' feel on low spec */
   background-color: #1a1a1a !important;
+}
+
+html[data-graphics-tier='soft'] {
+  --color-mafia-black: #0a0a0a;
+  background-color: #0a0a0a !important;
+}
+
+/* LEHKÁ / ČISTÁ GRAFIKA (SOFT TIER) OVERRIDES - EXTRÉMNĚ JEDNODUCHÁ */
+html[data-graphics-tier='soft'] *,
+html[data-graphics-tier='soft'] *::before,
+html[data-graphics-tier='soft'] *::after {
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  animation: none !important;
+  transition: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+html[data-graphics-tier='soft'] .atmosphere-container,
+html[data-graphics-tier='low'] .atmosphere-container,
+html[data-graphics-tier='soft'] .film-grain-container,
+html[data-graphics-tier='low'] .film-grain-container,
+html[data-graphics-tier='soft'] .custom-cursor,
+html[data-graphics-tier='low'] .custom-cursor,
+html[data-graphics-tier='soft'] .scroll-indicator-mm,
+html[data-graphics-tier='low'] .scroll-indicator-mm,
+html[data-graphics-tier='soft'] .global-web-frame,
+html[data-graphics-tier='low'] .global-web-frame,
+html[data-graphics-tier='soft'] .hero-blood-img,
+html[data-graphics-tier='low'] .hero-blood-img,
+html[data-graphics-tier='soft'] .hero-blood-wrapper,
+html[data-graphics-tier='low'] .hero-blood-wrapper {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------
+ * PRIMITIVE "LITE" MODE (data-graphics-tier='low')
+ * ------------------------------------------------------------- */
+html[data-graphics-tier='low'] body {
+  background: #020202 !important;
+}
+
+/* Disable expensive effects but keep layout and colors */
+html[data-graphics-tier='low'] * {
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transition: none !important;
+  animation: none !important;
+  filter: none !important;
+  will-change: auto !important;
+}
+
+html[data-graphics-tier='low'] .bg-mafia-dark,
+html[data-graphics-tier='low'] .bg-mafia-black {
+  background-color: #050505 !important;
+}
+
+html[data-graphics-tier='low'] video {
+  display: none !important;
+}
+
+html[data-graphics-tier='low'] img,
+html[data-graphics-tier='low'] iframe {
+  filter: none !important;
+}
+
+html[data-graphics-tier='soft'] [class*='parallax'],
+html[data-graphics-tier='low'] [class*='parallax'] {
+  transform: none !important;
+  transition: none !important;
+}
+
+html[data-graphics-tier='soft'] .border,
+html[data-graphics-tier='soft'] .border-2,
+html[data-graphics-tier='low'] .border,
+html[data-graphics-tier='low'] .border-2 {
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
 :root {
@@ -1325,3 +1427,20 @@ html.noir-mode img[src*="logo.png"] {
   color: #fff !important;
   filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)) !important;
 }
+
+/* Disable hover scale/zoom effects on mobile for faster loading and simpler UI */
+@media (max-width: 768px) {
+  .group:hover .group-hover\:scale-110,
+  .group:hover .group-hover\:scale-105,
+  .hover\:scale-110:hover,
+  .hover\:scale-105:hover,
+  .hover\:scale-150:hover,
+  .hover\:scale-125:hover,
+  .group:hover .group-hover\:scale-125,
+  .group:hover .group-hover\:scale-150 {
+    --tw-scale-x: 1 !important;
+    --tw-scale-y: 1 !important;
+    transition-duration: 0ms !important;
+  }
+}
+

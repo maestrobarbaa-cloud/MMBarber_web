@@ -5,10 +5,10 @@ import path from "path";
 import os from "os";
 import { headers } from "next/headers";
 
-// Safe database persistence inside the OS home directory of your server
-// This guarantees that data is NEVER wiped when you deploy new versions of the website code!
-const DB_FILE_PATH = path.join(os.homedir(), ".mmbarber-ratings-data.json");
-const IP_LOG_FILE_PATH = path.join(os.homedir(), ".mmbarber-ratings-ip-log.json");
+// Zajištění ukládání do stejné složky 'data' jako zbytek webu, aby fungovala stejná oprávnění (aaPanel)
+const DATA_DIR = path.join(process.cwd(), "data");
+const DB_FILE_PATH = path.join(DATA_DIR, "mmbarber-ratings-data.json");
+const IP_LOG_FILE_PATH = path.join(DATA_DIR, "mmbarber-ratings-ip-log.json");
 
 export interface BarberStats {
   xp: number;
@@ -37,7 +37,10 @@ const DEFAULT_DB: DBStructure = {
 export async function getGlobalStatsAction(): Promise<DBStructure> {
   try {
     if (!fs.existsSync(DB_FILE_PATH)) {
-      fs.writeFileSync(DB_FILE_PATH, JSON.stringify(DEFAULT_DB, null, 2), "utf-8");
+      if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true, mode: 0o777 });
+      }
+      fs.writeFileSync(DB_FILE_PATH, JSON.stringify(DEFAULT_DB, null, 2), { encoding: "utf-8", mode: 0o666 });
       return DEFAULT_DB;
     }
     const raw = fs.readFileSync(DB_FILE_PATH, "utf-8");
@@ -51,7 +54,8 @@ export async function getGlobalStatsAction(): Promise<DBStructure> {
 // Safe helper to write ratings database
 async function writeDb(data: DBStructure) {
   try {
-    fs.writeFileSync(DB_FILE_PATH, JSON.stringify(data, null, 2), "utf-8");
+    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true, mode: 0o777 });
+    fs.writeFileSync(DB_FILE_PATH, JSON.stringify(data, null, 2), { encoding: "utf-8", mode: 0o666 });
   } catch (error) {
     console.error("Error writing self-hosted ratings DB file:", error);
   }
@@ -73,7 +77,8 @@ async function readIpLog(): Promise<Record<string, string[]>> {
 // Safe helper to write IP log
 async function writeIpLog(log: Record<string, string[]>) {
   try {
-    fs.writeFileSync(IP_LOG_FILE_PATH, JSON.stringify(log, null, 2), "utf-8");
+    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true, mode: 0o777 });
+    fs.writeFileSync(IP_LOG_FILE_PATH, JSON.stringify(log, null, 2), { encoding: "utf-8", mode: 0o666 });
   } catch (error) {}
 }
 

@@ -52,7 +52,7 @@ export function CookieBanner() {
                   <p className="text-[8px] font-mono text-white/30 uppercase tracking-[0.4em]">Security & Experience layer</p>
                 </div>
                 <button 
-                    onClick={() => setShow(false)}
+                    onClick={handleDecline}
                     className="ml-auto text-white/20 hover:text-mafia-gold transition-colors"
                 >
                     <X size={16} />

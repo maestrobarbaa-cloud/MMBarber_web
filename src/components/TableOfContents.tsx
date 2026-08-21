@@ -13,7 +13,8 @@ import {
   Volume2,
   Radio,
   Crown,
-  Users
+  Users,
+  Dices
 } from "lucide-react";
 import { playSound } from "@/utils/audio";
 
@@ -56,6 +57,10 @@ export function TableOfContents() {
     // Keyboard shortcuts: TAB key triggers weapon wheel selection HUD!
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Tab") {
+        // Allow native Tab navigation if user is focused on an interactive element (input, button, etc.)
+        if (document.activeElement && document.activeElement !== document.body) {
+          return;
+        }
         e.preventDefault();
         setIsOpen(prev => {
           const nextState = !prev;
@@ -113,6 +118,11 @@ export function TableOfContents() {
       return;
     }
 
+    if (item.link === "slot_machine") {
+      window.dispatchEvent(new Event('mmbarber-slot-machine-open'));
+      return;
+    }
+
     if (item.link.startsWith("#")) {
       const id = item.link.substring(1);
       const el = document.getElementById(id);
@@ -162,67 +172,75 @@ export function TableOfContents() {
   const hudItems: HUDWeaponItem[] = [
     {
       name: "Vzhled rozhraní",
-      desc: "Aktivuje terminál uživatelského rozhraní, kde si můžete přizpůsobit taktickou barvu, intenzitu záře a styly písma.",
-      subText: "NALEZENÍ VAŠÍ ESTETIKY",
+      desc: "Přizpůsobte si barevné schéma, intenzitu záře a vizuální styly webu podle sebe.",
+      subText: "NASTAVENÍ VZHLEDU",
       icon: <Palette />,
       link: "/uzivatel",
       color: "rgba(197, 160, 89, 0.4)"
     },
     {
       name: "Grafika systému",
-      desc: "Otevře panel nastavení grafiky. Umožňuje přepínat atmosférické částice, stíny, 3D textury a spravovat celkový výkon webu.",
-      subText: "ATMOSFÉRICKÉ CONFIG",
+      desc: "Otevře panel pro úpravu atmosférických efektů a stínů na webu.",
+      subText: "NASTAVENÍ GRAFIKY",
       icon: <Monitor />,
       link: "graphics_settings",
-      color: "rgba(255, 255, 255, 0.3)"
+      color: "rgba(255, 255, 255, 0.2)"
     },
     {
       name: "Zvukové efekty",
-      desc: "Přepíná globální stav zvukových efektů. Změna se ihned projeví u všech operativních zvuků, hlasování i animací.",
-      subText: "ZAPNOUT / VYPNOUT ZVUKY",
+      desc: "Zapnutí nebo vypnutí zvuků na webu.",
+      subText: "NASTAVENÍ ZVUKŮ",
       icon: <Volume2 />,
       link: "sound_toggle",
-      color: "rgba(197, 160, 89, 0.45)"
+      color: "rgba(197, 160, 89, 0.3)"
     },
     {
       name: "MMBarber Rádio",
-      desc: "Spouští a zastavuje živé syndikátní rádio. Hraje výběr exkluzivních skladeb pro dokonalou atmosféru na základně.",
-      subText: "SPUSTIT / ZASTAVIT HUDBU",
+      desc: "Spustí nebo zastaví rádio s exkluzivním výběrem hudby.",
+      subText: "HUDEBNÍ PŘEHRÁVAČ",
       icon: <Radio />,
       link: "radio_toggle",
-      color: "rgba(255, 0, 0, 0.3)"
+      color: "rgba(255, 255, 255, 0.2)"
     },
     {
       name: "Hodnocení a přezdívky",
-      desc: "Vstoupí do terminálu komunitního hodnocení. Zde můžete hlasovat o břitvě barberů a měnit herní šarže celé posádky.",
-      subText: "TERMINÁL HODNOCENÍ",
+      desc: "Zde můžete hodnotit naše barbery a spravovat své uživatelské jméno.",
+      subText: "KOMUNITA",
       icon: <Crown />,
       link: "/hodnoceni",
-      color: "rgba(197, 160, 89, 0.5)"
+      color: "rgba(197, 160, 89, 0.4)"
     },
     {
       name: "Elitní střelba",
-      desc: "Spustí taktický tréninkový simulátor. Zlepšete své reakce a přesnost střelby na terče v reálném čase.",
-      subText: "TRÉNINK PŘESNOSTI",
+      desc: "Zlepšete své reakce a přesnost ve střelecké minihře.",
+      subText: "MINIHRA",
       icon: <Target />,
       link: "elite_shooting",
-      color: "rgba(255, 255, 255, 0.35)"
+      color: "rgba(255, 255, 255, 0.2)"
     },
     {
-      name: "Životopis barberů",
-      desc: "Zobrazí taktické složky a životopisy našich operativců. Prozkoumejte jejich specializace a hodnocení.",
-      subText: "PERSONÁLNÍ DOSSIER & SLOŽKY",
+      name: "Hazardní Automat",
+      desc: "Zkuste štěstí v našem retro výherním automatu s exkluzivními odměnami.",
+      subText: "MINIHRA",
+      icon: <Dices />,
+      link: "slot_machine",
+      color: "rgba(197, 160, 89, 0.3)"
+    },
+    {
+      name: "Náš Tým",
+      desc: "Prozkoumejte profily, specializace a celková hodnocení našich barberů.",
+      subText: "ZAMĚSTNANCI",
       icon: <Users />,
       link: "/zivotopisy",
-      color: "rgba(0, 255, 255, 0.3)"
+      color: "rgba(255, 255, 255, 0.2)"
     },
     {
-      name: "Zavřít navigaci",
-      desc: "Ukončí interaktivní HUD režim a bezpečně vás navrátí k prohlížení hlavní základny MMBarber.",
-      subText: "ZAVŘÍT HUD OBRAZOVKU",
+      name: "Zavřít menu",
+      desc: "Zavře tento navigační panel a vrátí vás zpět na stránku.",
+      subText: "NAVIGACE",
       icon: <X />,
       link: "close",
-      color: "rgba(139, 0, 0, 0.5)"
+      color: "rgba(197, 160, 89, 0.4)"
     }
   ];
 
@@ -243,14 +261,14 @@ export function TableOfContents() {
         className={`fixed left-0 top-0 h-screen w-8 bg-gradient-to-r from-mafia-black to-black/80 border-r border-mafia-gold/40 cursor-pointer transition-all duration-500 hover:w-12 hover:bg-mafia-gold/10 flex flex-col items-center justify-center group z-[29000] hidden xl:flex shadow-[5px_0_15px_rgba(197,160,89,0.15)] ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
       >
         <div className="flex flex-col items-center gap-6 transition-all duration-500 -rotate-90 origin-center whitespace-nowrap opacity-70 group-hover:opacity-100">
-          <span className="text-[10px] font-mono text-mafia-gold/70 group-hover:text-mafia-gold uppercase tracking-[0.4em] transition-colors duration-300 flex items-center gap-3 animate-[pulse_2.5s_infinite_ease-in-out]">
-            <Target size={14} className="animate-[spin_6s_linear_infinite] drop-shadow-[0_0_8px_rgba(197,160,89,0.8)]" />
-            PANEL HUD [ TAB ]
+          <span className="text-[10px] text-mafia-gold/70 group-hover:text-mafia-gold uppercase tracking-[0.2em] transition-colors duration-300 flex items-center gap-3">
+            <Target size={14} className="animate-[spin_6s_linear_infinite]" />
+            MENU [ TAB ]
           </span>
         </div>
 
         {/* Bottom coordinates coordinate info */}
-        <div className="absolute bottom-10 opacity-50 group-hover:opacity-100 transition-opacity duration-300 text-[8px] font-mono text-mafia-gold -rotate-90 origin-center drop-shadow-[0_0_5px_rgba(197,160,89,0.5)]">
+        <div className="absolute bottom-10 opacity-50 group-hover:opacity-100 transition-opacity duration-300 text-[9px] text-mafia-gold -rotate-90 origin-center">
           LOC_0x7F
         </div>
       </div>
@@ -271,8 +289,8 @@ export function TableOfContents() {
               <div className="flex items-center gap-4">
                 <Target className="w-8 h-8 text-mafia-gold animate-[spin_8s_linear_infinite]" />
                 <div className="flex flex-col">
-                  <span className="text-white font-heading font-black text-2xl uppercase tracking-[0.25em] italic">MMB_TAKTICKÁ_NAVIGACE</span>
-                  <span className="text-[9px] font-mono text-mafia-gold/60 uppercase tracking-widest">TAKTICKÉ INTERAKTIVNÍ ROZHRANÍ v3.5 // DRŽTE NEBO STISKNĚTE TAB PRO PŘEPNUTÍ</span>
+                  <span className="text-white font-heading font-black text-2xl uppercase tracking-widest">MMBARBER NAVIGACE</span>
+                  <span className="text-[10px] text-mafia-gold/60 uppercase tracking-wider">MENU</span>
                 </div>
               </div>
               <button 
@@ -298,8 +316,9 @@ export function TableOfContents() {
                 >
                   <g transform="translate(0, 0)">
                     {hudItems.map((item, i) => {
-                      const startAngle = -22.5 + i * 45;
-                      const endAngle = 22.5 + i * 45;
+                      const angleStep = 360 / hudItems.length;
+                      const startAngle = -(angleStep/2) + i * angleStep;
+                      const endAngle = (angleStep/2) + i * angleStep;
                       const isHovered = hoveredIndex === i;
                       
                       return (
@@ -326,7 +345,8 @@ export function TableOfContents() {
 
                 {/* Radial Menu Item Icons */}
                 {hudItems.map((item, i) => {
-                  const angleRad = (i * 45 * Math.PI) / 180.0;
+                  const angleStep = 360 / hudItems.length;
+                  const angleRad = (i * angleStep * Math.PI) / 180.0;
                   const x = 240 + 172 * Math.sin(angleRad);
                   const y = 240 - 172 * Math.cos(angleRad);
                   const isHovered = hoveredIndex === i;
@@ -373,13 +393,13 @@ export function TableOfContents() {
                         transition={{ duration: 0.2 }}
                         className="flex flex-col items-center justify-center h-full"
                       >
-                        <div className="text-mafia-gold mb-1 filter drop-shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.4)]">
-                          {React.cloneElement(activeHoveredItem.icon as React.ReactElement<{ size?: number }>, { size: 28 })}
+                        <div className="text-mafia-gold mb-2">
+                          {React.cloneElement(activeHoveredItem.icon as React.ReactElement<{ size?: number }>, { size: 32 })}
                         </div>
-                        <span className="text-[8px] font-mono text-white/40 uppercase tracking-[0.2em] leading-none mb-1">
+                        <span className="text-[10px] text-white/50 uppercase tracking-wider font-semibold mb-1">
                           {activeHoveredItem.subText}
                         </span>
-                        <h3 className="text-white font-heading font-black text-sm uppercase tracking-wider italic leading-tight">
+                        <h3 className="text-white font-heading font-bold text-sm uppercase tracking-wider leading-tight">
                           {activeHoveredItem.name}
                         </h3>
                       </motion.div>
@@ -389,10 +409,9 @@ export function TableOfContents() {
                         animate={{ opacity: 1 }}
                         className="flex flex-col items-center justify-center h-full"
                       >
-                        <Skull className="w-8 h-8 text-white/20 mb-2 animate-pulse" />
-                        <span className="text-[7px] font-mono text-mafia-gold uppercase tracking-[0.3em] mb-1">TAKTICKÉ_MENU</span>
-                        <span className="text-[10px] font-heading font-black text-white/50 uppercase tracking-widest italic">
-                          ZVOLIT SEKCI
+                        <Target className="w-8 h-8 text-white/20 mb-3" />
+                        <span className="text-[12px] font-heading font-bold text-white/50 uppercase tracking-widest">
+                          MENU
                         </span>
                       </motion.div>
                     )}
@@ -419,44 +438,31 @@ export function TableOfContents() {
                         boxShadow: `0 20px 50px rgba(0,0,0,0.9), 0 0 20px ${activeHoveredItem.color}`
                       }}
                     >
-                      {/* High-tech laser sweep scanline */}
-                      <motion.div 
-                        initial={{ y: "-100%" }}
-                        animate={{ y: "450%" }}
-                        transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                        className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-mafia-gold/30 to-transparent pointer-events-none z-10"
-                      />
+                      {/* Smooth top accent line */}
+                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-mafia-gold/30" />
 
-                      <div className="flex flex-col gap-1 z-20">
+                      <div className="flex flex-col gap-2 z-20">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-mafia-gold animate-pulse" />
-                          <span className="text-[9px] font-mono text-mafia-gold uppercase tracking-[0.4em]">PODROBNOSTI SEKCE // INFO</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-mafia-gold" />
+                          <span className="text-[11px] text-mafia-gold uppercase tracking-widest font-semibold">{activeHoveredItem.subText}</span>
                         </div>
-                        <h3 className="text-white font-heading font-black text-3xl uppercase tracking-tighter italic leading-none text-glow">
+                        <h3 className="text-white font-heading font-bold text-3xl">
                           {activeHoveredItem.name}
                         </h3>
-                        <span className="text-[9px] font-mono text-white/30 uppercase tracking-widest mt-1">
-                          [ SYSTÉMOVÝ MODUL: {activeHoveredItem.subText} ]
-                        </span>
                       </div>
                       
-                      <div className="my-4 z-20">
-                        <p className="text-[11px] font-mono text-smoke-white/80 uppercase tracking-widest leading-[1.8] border-l-2 border-mafia-gold/40 pl-4">
+                      <div className="my-6 z-20">
+                        <p className="text-[14px] text-smoke-white/80 leading-relaxed">
                           {activeHoveredItem.link === "sound_toggle"
-                            ? `Přepíná globální stav zvukových efektů rozhraní. Zvukové efekty jsou v tomto okamžiku: ${soundState ? "AKTIVNÍ (ZAPNUTO)" : "DEAKTIVOVANÉ (VYPNUTO)"}.`
+                            ? `Zapnutí nebo vypnutí zvuků na webu. Zvukové efekty jsou nyní: ${soundState ? "ZAPNUTÉ" : "VYPNUTÉ"}.`
                             : activeHoveredItem.desc}
                         </p>
                       </div>
 
-                      <div className="flex justify-between items-center border-t border-white/5 pt-4 z-20">
-                        <div className="flex items-center gap-2">
-                          <span className="relative flex h-1.5 w-1.5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mafia-gold opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-mafia-gold"></span>
-                          </span>
-                          <span className="text-[8px] font-mono text-white/40 uppercase">STATUS: PŘIPRAVEN K PŘECHODU</span>
-                        </div>
-                        <span className="text-[9px] font-mono text-mafia-gold font-bold uppercase tracking-widest animate-pulse">[ AKTIVUJ SEKTOR ]</span>
+                      <div className="flex items-center border-t border-white/10 pt-4 z-20 mt-auto">
+                        <span className="text-[11px] text-mafia-gold font-semibold uppercase tracking-widest hover:text-white transition-colors">
+                          KLIKNUTÍM OTEVŘÍT &rarr;
+                        </span>
                       </div>
                     </motion.div>
                   ) : (
@@ -467,22 +473,17 @@ export function TableOfContents() {
                     >
                       <div className="absolute inset-0 bg-gradient-to-tl from-mafia-gold/5 via-transparent to-transparent opacity-50"></div>
                       
-                      <div className="space-y-4 relative z-10">
+                      <div className="space-y-4 relative z-10 mt-4">
                         <div className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse" />
-                          <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.4em]">DIAGNOSTIKA SYSTÉMU</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                          <span className="text-[11px] text-white/40 uppercase tracking-widest font-semibold">INFORMACE</span>
                         </div>
-                        <h3 className="text-white/60 font-heading font-black text-2xl uppercase tracking-widest italic">
-                          ČEKÁNÍ NA VÝBĚR
+                        <h3 className="text-white/60 font-heading font-bold text-2xl uppercase tracking-wider">
+                          VÝBĚR Z MENU
                         </h3>
-                        <p className="text-[10px] font-mono text-smoke-white/30 leading-[1.8] uppercase tracking-widest">
-                          Najeďte myší na libovolný sektor taktického kruhu na levé straně. Zobrazí se detailní parametry a instrukce pro rychlou aktivaci zvoleného systémového nastavení či hry.
+                        <p className="text-[14px] text-smoke-white/50 leading-relaxed mt-4">
+                          Najeďte myší na libovolnou část kruhu vlevo pro zobrazení podrobností a kliknutím položku vyberte.
                         </p>
-                      </div>
-
-                      <div className="flex justify-between items-center border-t border-white/5 pt-4 relative z-10">
-                        <span className="text-[8px] font-mono text-white/10 uppercase">SYSTÉM_AKTIVNÍ: 1</span>
-                        <span className="text-[8px] font-mono text-white/10 uppercase">STATUS: ČEKÁNÍ</span>
                       </div>
                     </motion.div>
                   )}

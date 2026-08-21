@@ -3,7 +3,7 @@
 import { ScrollText } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 
 const DETAIL_PICS = [
   "/obr/prostredi/0793ccfb-06cc-4f51-9a97-91be0c3fc9ae.jfif.jpg",

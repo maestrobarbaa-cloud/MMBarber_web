@@ -1,0 +1,436 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? 
+  access_token      String? 
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? 
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?   
+  role          String    @default("USER") 
+  partnerSalonId String?  
+  ipAddress     String?
+  isShadowBanned Boolean  @default(false)
+  isVerifiedApplicant Boolean @default(false)
+  applicantTrustScore Int @default(100)
+  idVerified    Boolean   @default(false)
+  
+  accounts      Account[]
+  sessions      Session[]
+  
+  profile       Profile?
+  companyProfile CompanyProfile?
+  jobApplications JobApplication[]
+  jobSwipes       JobSwipe[]
+  
+  messagesSent     Message[] @relation("MessagesSent")
+  messagesReceived Message[] @relation("MessagesReceived")
+  
+  matches1         Match[] @relation("User1Matches")
+  matches2         Match[] @relation("User2Matches")
+  
+  swipesGiven      Swipe[] @relation("SwipesGiven")
+  swipesReceived   Swipe[] @relation("SwipesReceived")
+  
+  eventsCreated    Event[] @relation("EventsCreated")
+  eventsAttending  EventAttendee[]
+  eventMessages    EventMessage[]
+  donations        Donation[]
+  
+  friendRequestsSent     FriendRequest[] @relation("FriendRequestsSent")
+  friendRequestsReceived FriendRequest[] @relation("FriendRequestsReceived")
+  
+  friendships1     Friendship[] @relation("User1Friendships")
+  friendships2     Friendship[] @relation("User2Friendships")
+  
+  linkedAccounts1  LinkedAccount[] @relation("User1Links")
+  linkedAccounts2  LinkedAccount[] @relation("User2Links")
+  
+  linkRequestsSent LinkRequest[] @relation("LinkRequestsSent")
+  linkRequestsReceived LinkRequest[] @relation("LinkRequestsReceived")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Profile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name            String
+  lastName        String?
+  nickname        String?
+  age             String
+  gender          String
+  seeking         String   
+  city            String?
+  height          String
+  smoking         String
+  drinking        String
+  interests       String
+  bio             String
+  
+  photos          String   
+  
+  salonVerified        Boolean   @default(false)
+  physicallyVerifiedAt String?   
+  dateCheckins         String?   
+  originSalonId        String?
+  trustScore           Int       @default(100)
+  reportsCount         Int       @default(0)
+  
+  lastOnline           DateTime  @default(now())
+  replyRate            String    @default("medium") 
+  
+  extendedData         String?   
+  showMutualFriends    Boolean   @default(true)
+
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+}
+
+model Swipe {
+  id          String   @id @default(cuid())
+  swiperId    String
+  targetId    String
+  action      String   // 'like', 'pass'
+  isSuperLike Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  swiper      User     @relation("SwipesGiven", fields: [swiperId], references: [id], onDelete: Cascade)
+  target      User     @relation("SwipesReceived", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@unique([swiperId, targetId])
+}
+
+model Match {
+  id        String   @id @default(cuid())
+  user1Id   String
+  user2Id   String
+  createdAt DateTime @default(now())
+  messageRetentionDays Int? @default(1)
+  
+  user1Typing DateTime?
+  user2Typing DateTime?
+  
+  user1     User     @relation("User1Matches", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2     User     @relation("User2Matches", fields: [user2Id], references: [id], onDelete: Cascade)
+
+  @@unique([user1Id, user2Id])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  fromId    String
+  toId      String
+  createdAt DateTime @default(now())
+
+  @@unique([fromId, toId])
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  senderId    String
+  receiverId  String
+  text        String
+  url         String?
+  audioUrl    String?
+  isRead      Boolean  @default(false)
+  reaction    String?
+  isBlurred   Boolean  @default(false)
+  isSafeSpotRequest Boolean @default(false)
+  safeSpotData String? 
+  createdAt   DateTime @default(now())
+  
+  sender      User     @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver    User     @relation("MessagesReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model BannedIp {
+  ip        String   @id
+  reason    String?
+  createdAt DateTime @default(now())
+}
+
+model ThreatLog {
+  id          String   @id @default(cuid())
+  ip          String
+  path        String
+  method      String
+  payload     String?
+  threatLevel Int
+  createdAt   DateTime @default(now())
+}
+
+model AttackerProfile {
+  ip          String   @id
+  score       Int      @default(0)
+  isBanned    Boolean  @default(false)
+  firstSeen   DateTime @default(now())
+  lastSeen    DateTime @default(now())
+}
+
+model SystemSettings {
+  key         String   @id
+  value       String
+  updatedAt   DateTime @updatedAt
+}
+
+model CompanyProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String
+  ico         String?
+  description String?
+  logoUrl     String?
+  website     String?
+  address     String?
+  industry    String?
+  isVerified  Boolean  @default(false)
+  status      String   @default("PENDING") // 'PENDING', 'APPROVED', 'REJECTED'
+  tier        String   @default("FREE")    // 'FREE', 'VIP'
+  
+  jobOffers   JobOffer[]
+  matchVouchers MatchVoucher[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model JobOffer {
+  id             String   @id @default(cuid())
+  companyId      String
+  company        CompanyProfile @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  title          String
+  type           String   // 'FULL_TIME', 'PART_TIME', 'BRIGADA', 'CONTRACT'
+  description    String
+  requirements   String?
+  salaryRange    String?
+  location       String?
+  isActive       Boolean  @default(true)
+  status         String   @default("PENDING") // 'PENDING', 'APPROVED', 'REJECTED'
+  isPremium      Boolean  @default(false)
+  views          Int      @default(0)
+  swipesLeft     Int      @default(0)
+  swipesRight    Int      @default(0)
+  
+  applications   JobApplication[]
+  jobSwipes      JobSwipe[]
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model JobApplication {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  jobOfferId  String
+  jobOffer    JobOffer @relation(fields: [jobOfferId], references: [id], onDelete: Cascade)
+  
+  coverLetter String?
+  resumeUrl   String?
+  status      String   @default("PENDING") // 'PENDING', 'REVIEWED', 'ACCEPTED', 'REJECTED'
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, jobOfferId])
+}
+
+model JobSwipe {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  jobOfferId  String
+  jobOffer    JobOffer @relation(fields: [jobOfferId], references: [id], onDelete: Cascade)
+  
+  action      String   // 'LIKE', 'PASS'
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, jobOfferId])
+}
+
+model CompromisedAccountReport {
+  id                String   @id @default(cuid())
+  email             String
+  status            String   @default("PENDING") // PENDING, VERIFIED, RESOLVED_BY_ADMIN, REJECTED
+  ipAddress         String?
+  verificationToken String   @unique
+  createdAt         DateTime @default(now())
+  resolvedAt        DateTime?
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  creatorId   String
+  creator     User     @relation("EventsCreated", fields: [creatorId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String
+  category    String   // např. "party", "sport", "kultura", "chill"
+  region      String   // Kraj / Oblast
+  city        String?  // Konkrétní město
+  eventDate   DateTime
+  
+  maxCapacity Int?     // Volitelný limit lidí
+  isPrivate   Boolean  @default(false) // Jen pro přátele/matches
+  
+  attendees   EventAttendee[]
+  messages    EventMessage[]
+  
+  createdAt   DateTime @default(now())
+}
+
+model EventAttendee {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  status    String   @default("GOING") // GOING, INTERESTED
+  createdAt DateTime @default(now())
+
+  @@unique([eventId, userId])
+}
+
+model EventMessage {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  text      String
+  createdAt DateTime @default(now())
+}
+
+model Donation {
+  id        String   @id @default(cuid())
+  userId    String?  
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  name      String?  
+  amount    Float    
+  currency  String   @default("CZK")
+  message   String?  
+  region    String?  
+  
+  createdAt DateTime @default(now())
+}
+
+model MatchVoucher {
+  id             String         @id @default(cuid())
+  companyId      String
+  company        CompanyProfile @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  title          String
+  description    String
+  discount       String
+  code           String?
+  totalAvailable Int            @default(0)
+  usedCount      Int            @default(0)
+  isActive       Boolean        @default(true)
+  
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model FriendRequest {
+  id          String   @id @default(cuid())
+  senderId    String
+  receiverId  String
+  status      String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sender      User     @relation("FriendRequestsSent", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver    User     @relation("FriendRequestsReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([senderId, receiverId])
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  user1Id   String
+  user2Id   String
+  createdAt DateTime @default(now())
+
+  user1     User     @relation("User1Friendships", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2     User     @relation("User2Friendships", fields: [user2Id], references: [id], onDelete: Cascade)
+
+  @@unique([user1Id, user2Id])
+}
+
+model LinkedAccount {
+  id        String   @id @default(cuid())
+  userId1   String
+  userId2   String
+  type      String   // 'couple', 'family', 'friend'
+  createdAt DateTime @default(now())
+
+  user1     User     @relation("User1Links", fields: [userId1], references: [id], onDelete: Cascade)
+  user2     User     @relation("User2Links", fields: [userId2], references: [id], onDelete: Cascade)
+
+  @@unique([userId1, userId2])
+}
+
+model LinkRequest {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  type       String   // requested relation type
+  createdAt  DateTime @default(now())
+
+  sender     User     @relation("LinkRequestsSent", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("LinkRequestsReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([senderId, receiverId])
+}
+

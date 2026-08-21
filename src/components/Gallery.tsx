@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { GameFragment } from "./GameFragment";
+import Image from "./OptimizedImage";
 
 const PICS = [
   "/obr/atmosfera/barber-4.jpg",
@@ -130,15 +131,20 @@ export function Gallery() {
         <div className="absolute inset-0 z-10 p-4 md:p-[28px] overflow-hidden bg-black">
           <div className="relative w-full h-full bg-mafia-black group">
             
-            {/* Base Image */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              ref={imageRef}
-              src={PICS[currentIndex]} 
-              alt="Archivní Foto" 
-              className="w-full h-full object-cover" 
+            {/* Base Image Wrapper for GSAP */}
+            <div 
+              ref={imageRef} 
+              className="absolute inset-0 w-full h-full"
               style={{ filter: "brightness(1.1) contrast(1.1) sepia(var(--gallery-sepia)) grayscale(var(--gallery-grayscale))" }}
-            />
+            >
+              <Image 
+                src={PICS[currentIndex]} 
+                alt="Archivní Foto" 
+                fill
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="object-cover" 
+              />
+            </div>
             
             {/* Film Noise Overlay mapped to GSAP */}
             <div 

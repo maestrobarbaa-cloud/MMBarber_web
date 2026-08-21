@@ -39,3 +39,59 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+
+# local databases (dev only)
+*.db
+*.db-shm
+*.db-wal
+
+# tmp & scratch
+/tmp/
+/scratch/
+
+# agent config (local IDE tools)
+.agents/
+.claude/
+.windsurf/
+
+# local helper/migration scripts
+add_photos.js
+find_test_user.js
+fix_all_photos.js
+fix_routes.js
+refactor-profile.js
+refactor-tabs.js
+replace_dialogues.py
+revert_profiles.py
+restrict_langs.js
+seed_donations.js
+update.js
+update_kia.js
+skills-lock.json
+
+# lint reports & build output files
+eslint_report.json
+eslint_report.txt
+eslint_report_after.txt
+full_lint_report.txt
+lint_errors.txt
+lint_full.txt
+lint_output.json
+lint_output.txt
+lint_output_clean.txt
+build_output.txt
+
+# backup files
+old_ProfileSetup.tsx
+tmp/
+CustomCursor_v1.1.txt
+ScrollIndicator_v1.1.txt
+cs_locale_backup.txt
+
+# data files with sensitive/live data
+data/mmbarber-nicknames.json
+data/mmbarber-ratings-data.json
+data/mmbarber-ratings-ip-log.json
+data/mmbarber-status.json

@@ -17,11 +17,11 @@ export function CustomCursor() {
     setMounted(true);
     
     const tier = document.documentElement.getAttribute('data-graphics-tier');
-    setIsLowTier(tier === 'low' || tier === 'medium');
+    setIsLowTier(tier === 'low' || tier === 'medium' || tier === 'lite' || tier === 'soft');
     
     const handleUpdate = () => {
       const newTier = document.documentElement.getAttribute('data-graphics-tier');
-      setIsLowTier(newTier === 'low' || newTier === 'medium');
+      setIsLowTier(newTier === 'low' || newTier === 'medium' || newTier === 'lite' || newTier === 'soft');
     };
     window.addEventListener('mmbarber-graphics-update', handleUpdate);
 
@@ -33,6 +33,18 @@ export function CustomCursor() {
       mouseY.set(e.clientY);
       
       const target = e.target as HTMLElement;
+      
+      // Hiding custom cursor over scrollbars because browsers enforce native cursor there
+      const rect = target.getBoundingClientRect();
+      const isOverScrollbarY = target.scrollHeight > target.clientHeight && e.clientX >= rect.right - 16;
+      const isOverScrollbarX = target.scrollWidth > target.clientWidth && e.clientY >= rect.bottom - 16;
+      
+      if (isOverScrollbarY || isOverScrollbarX) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      
       const computedCursor = window.getComputedStyle(target).cursor;
       
       setIsPointer(
@@ -42,8 +54,6 @@ export function CustomCursor() {
         target.tagName === "A" || 
         target.tagName === "BUTTON"
       );
-      
-      setIsVisible(true);
     };
 
     const handleMouseLeave = () => setIsVisible(false);
@@ -62,7 +72,7 @@ export function CustomCursor() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); 
 
-  if (!mounted || window.innerWidth < 1024 || isLowTier) return null;
+  if (!mounted || window.innerWidth < 1024 || isLowTier || window.location.pathname === '/rodina/elektrikari/roman-jakubcak') return null;
 
   return (
     <div className="custom-cursor">

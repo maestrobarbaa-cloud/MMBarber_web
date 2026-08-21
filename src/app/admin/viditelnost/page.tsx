@@ -25,6 +25,20 @@ const VISIBILITY_KEYS = [
   { key: 'visibility_reviews', label: 'Sekce: Google Recenze', category: 'sections', icon: <MessageSquare size={16} /> },
   { key: 'visibility_contact', label: 'Sekce: Kontakt', category: 'sections', icon: <Layout size={16} /> },
   { key: 'visibility_intelligence', label: 'Sekce: Terminál (Intelligence)', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_komunita_grafika', label: 'Komunita: Grafika', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_komunita_nabor', label: 'Komunita: Nábor', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_komunita_chat', label: 'Komunita: Chat', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_komunita_historky', label: 'Komunita: Historky z křesla', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_komunita_hodnoceni', label: 'Komunita: Hodnocení', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_komunita_novinky', label: 'Komunita: Novinky', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_komunita_projekty', label: 'Komunita: Projekty', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_komunita_sin_slavy', label: 'Komunita: Síň slávy', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_komunita_zlepseni', label: 'Komunita: Zlepšení', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_seznamka', label: 'Sekce: Seznamka', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_akademie', label: 'Sekce: Akademie', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_vip_club', label: 'Sekce: VIP Club', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_vouchery', label: 'Sekce: Vouchery', category: 'community', icon: <Layout size={16} /> },
+  { key: 'visibility_kariera', label: 'Sekce: Kariéra', category: 'community', icon: <Layout size={16} /> },
 ];
 
 export default function AdminVisibilityPage() {
@@ -175,6 +189,35 @@ export default function AdminVisibilityPage() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {VISIBILITY_KEYS.filter(k => k.category === 'sections').map(item => (
+                  <button 
+                    key={item.key}
+                    onClick={() => toggleSetting(item.key)}
+                    className={`p-6 border transition-all flex items-center justify-between text-left ${
+                      settings[item.key] ? 'border-mafia-gold bg-mafia-gold/10' : 'border-white/10 bg-black/40 opacity-50 hover:opacity-100'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`w-3 h-3 rounded-full ${settings[item.key] ? 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.8)]' : 'bg-white/20'}`}></div>
+                      <div>
+                        <div className="font-heading font-black tracking-widest uppercase mb-1">{item.label}</div>
+                        <div className="font-mono text-[9px] uppercase tracking-widest text-white/40">
+                          {settings[item.key] ? 'VIDITELNÉ' : 'SKRYTÉ'}
+                        </div>
+                      </div>
+                    </div>
+                    {settings[item.key] ? <Eye size={20} className="text-mafia-gold" /> : <EyeOff size={20} className="text-white/40" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Komunita Karta */}
+            <div>
+              <h3 className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 flex items-center gap-2 border-t border-white/5 pt-10">
+                <Layout size={14} /> KOMUNITA A OSTATNÍ (KARTY)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {VISIBILITY_KEYS.filter(k => k.category === 'community').map(item => (
                   <button 
                     key={item.key}
                     onClick={() => toggleSetting(item.key)}

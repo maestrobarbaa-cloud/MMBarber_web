@@ -914,6 +914,12 @@ export const translations = {
           keywords: "Seznamka, rande, vztahy, sex, erotika, jak sbalit holku, jak sbalit kluka, dárky pro partnera, romantika, svatba, rozchod, psychologie, seznamka Uherské Hradiště, flirt, noční život UH, kluby.",
           text: "Vztahy a intimita jsou pilíři lidské interakce. Sledujeme, co lidé v UH hledají na seznamkách i jak řeší své partnerské výzvy. Tato data nám pomáhají chápat sociální dynamiku Slovácka."
         },
+        pairTherapy: {
+          title: ["Střih", "Jeho i Ji"],
+          subtitle: "MMBARBER ZÁŽITEK /",
+          modalTitle: "Přijďte spolu.",
+          modalContent: "Není to jen o stříhání. Je to společný prémiový zážitek, při kterém o vás oba bude profesionálně postaráno. Vyladíme váš styl k dokonalosti a vy si užijete luxusní servis v prostředí Mafia."
+        },
         trends: {
           title: "TRENDY & VYHLEDÁVÁNÍ",
           keywords: "Nejprodávanější produkty, recenze 2026, testy elektroniky, iPhone 17, Samsung S26, PlayStation 6, herní novinky, počasí Uherské Hradiště, zprávy dnes, kurzy měn, zlato, krypto, investice, práce UH.",
@@ -945,10 +951,10 @@ export const translations = {
         modalContent: "Společně najdeme střih, který bude ladit s tím, co nosíš – a s tím, kým jsi. Probereme detaily, vyladíme look a ty odejdeš se sebevědomím. Jako král."
       },
       pairTherapy: {
-        title: ["Párová", "Terapie"],
-        subtitle: "MMBARBER SPECIAL /",
-        modalTitle: "Přijďte spolu. Odejděte ještě víc synchronizovaní.",
-        modalContent: "Nejdřív vyladíme jeho styl, večer je řada na ní. Mezitím klid, hovor a atmosféra, která vás vtáhne. Protože styl je lepší, když ho sdílíte."
+        title: ["Střih", "Jeho i Ji"],
+        subtitle: "MMBARBER EXPERIENCE /",
+        modalTitle: "Zažijte to spolu.",
+        modalContent: "Není to jen o střihu. Je to o společném zážitku, kde se o vás postaráme oba. Vyladíme váš styl a vy si užijete luxusní servis v prostředí s nezaměnitelnou atmosférou."
       }
     },
     environmentSlider: {
@@ -2509,7 +2515,7 @@ export const translations = {
     },
     styleDefinition: {
       defineStyle: { title: ["Definuj", "Svůj Styl"], subtitle: "MMBARBER EXCLUSIVE /", modalTitle: "Nevíš?", modalContent: "Probereme to." },
-      pairTherapy: { title: ["Párová", "Terapie"], subtitle: "MMBARBER SPECIAL /", modalTitle: "Přijďte spolu.", modalContent: "Vyladíme to." }
+      pairTherapy: { title: ["Střih", "Jeho i Ji"], subtitle: "MMBARBER ZÁŽITEK /", modalTitle: "Přijďte spolu.", modalContent: "Společný prémiový zážitek." }
     },
     environmentSlider: { title: "GALERIE", detailPhoto: "DETAILNÍ SNÍMEK", closeImage: "ZÁBĚR ZBLÍZKA" },
     cityGuide: { compass: { label: "Kompas k barberu", locating: "ZAMĚŘUJI...", distance: "{{distance}} ZBÝVÁ" } },

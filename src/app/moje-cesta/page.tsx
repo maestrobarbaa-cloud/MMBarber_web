@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Camera, Map, History, Compass } from "lucide-react";
 import gsap from "gsap";

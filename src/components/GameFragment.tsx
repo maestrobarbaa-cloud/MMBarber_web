@@ -18,13 +18,19 @@ export function GameFragment({ id, className = "", size = 32, delay = 0 }: GameF
   const [isHovered, setIsHovered] = useState(false);
   const isCollected = collectedIds.includes(id);
 
+  const [graphicsTier, setGraphicsTier] = useState<string>("high");
+
   useEffect(() => {
-    // Reveal after a slight delay so it doesn't pop immediately
-    const t = setTimeout(() => setIsVisible(true), 2000 + delay);
-    return () => clearTimeout(t);
+    const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
+    setGraphicsTier(tier);
+    
+    if (tier !== 'low' && tier !== 'lite') {
+      const t = setTimeout(() => setIsVisible(true), 2000 + delay);
+      return () => clearTimeout(t);
+    }
   }, [delay]);
 
-  if (isCollected || !isVisible) return null;
+  if (isCollected || graphicsTier === 'low' || graphicsTier === 'lite' || !isVisible) return null;
 
   const handleCollect = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -46,16 +52,16 @@ export function GameFragment({ id, className = "", size = 32, delay = 0 }: GameF
         style={{ width: size, height: size }}
         title="Odemkni fragment"
       >
-        <div className="absolute inset-0 bg-mafia-gold/20 rounded-full blur-md group-hover:bg-mafia-gold/50 transition-all duration-300"></div>
+        <div className="absolute inset-0 bg-mafia-gold/40 rounded-full blur-md group-hover:bg-mafia-gold/80 transition-all duration-300 animate-pulse"></div>
         <Fingerprint 
-          size={size * 0.6} 
-          className="text-mafia-gold relative z-10 opacity-70 group-hover:opacity-100 transition-opacity drop-shadow-[0_0_8px_rgba(197,160,89,0.8)]" 
+          size={size * 0.7} 
+          className="text-mafia-gold relative z-10 opacity-90 group-hover:opacity-100 transition-opacity drop-shadow-[0_0_12px_rgba(197,160,89,1)]" 
         />
         {/* Radar ping effect */}
         <motion.div
-          animate={{ scale: [1, 2], opacity: [0.5, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-          className="absolute inset-0 border border-mafia-gold rounded-full pointer-events-none"
+          animate={{ scale: [1, 2.5], opacity: [0.8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+          className="absolute inset-0 border-2 border-mafia-gold rounded-full pointer-events-none"
         />
       </motion.button>
     </AnimatePresence>

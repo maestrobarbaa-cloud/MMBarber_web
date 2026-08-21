@@ -35,7 +35,7 @@ export function GlobalSound() {
     const handleGlobalClick = (e: MouseEvent) => {
       const soundSetting = localStorage.getItem("mmbarber_sound_enabled");
       const isEnabled = soundSetting === null || soundSetting === "true";
-      if (!isEnabled) return;
+      if (!isEnabled || window.location.pathname === '/rodina/elektrikari/roman-jakubcak') return;
 
       const target = e.target as HTMLElement;
       const isExempt = target.closest('button, a, [role="button"], .barber-card, .menu-card, .editorial-photo, .holiday-card, .radio-container, .game-container, input, select, textarea, img, canvas');

@@ -58,15 +58,6 @@ export function SecurityProvider({ children }: { children: React.ReactNode }) {
       e.preventDefault();
     };
 
-    // Advanced: Debugger trap for DevTools
-    const debuggerInterval = setInterval(() => {
-      // This is a subtle way to slow down casual inspectors
-      // but might be annoying for development, so we only run it in production if possible
-      if (process.env.NODE_ENV === 'production') {
-        (function() { (function a() { try { (function b(i) { if (("" + i / i).length !== 1 || i % 20 === 0) { (function() { }).constructor("debugger")() } else { debugger } b(++i) })(0) } catch (e) { setTimeout(a, 5000) } })() })();
-      }
-    }, 10000);
-
     document.addEventListener('contextmenu', handleContextMenu);
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('dragstart', handleDragStart);
@@ -79,7 +70,6 @@ export function SecurityProvider({ children }: { children: React.ReactNode }) {
       document.removeEventListener('dragstart', handleDragStart);
       document.removeEventListener('copy', handleCopy);
       document.removeEventListener('cut', handleCut);
-      clearInterval(debuggerInterval);
     };
   }, []);
 

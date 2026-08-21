@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 
 export function GlassesReflection({
   clientImageSrc = "https://images.unsplash.com/photo-1542327897-4141b355e20e?q=80&w=800&auto=format&fit=crop"

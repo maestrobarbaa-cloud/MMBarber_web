@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBarbers } from "@/contexts/BarberContext";
@@ -18,6 +18,7 @@ import {
   GlobalBarberStats 
 } from "@/utils/barberXp";
 import { getDailyRole } from "@/utils/dailyRoles";
+import { getNicknamesAction, addNicknameVoteAction, NicknamesDB } from "@/app/actions/nicknames";
 import { 
   ArrowLeft, 
   Sparkles, 
@@ -29,7 +30,8 @@ import {
   Pocket, 
   CheckCircle2, 
   RefreshCw,
-  Compass
+  Compass,
+  Share2
 } from "lucide-react";
 
 
@@ -46,21 +48,82 @@ export default function BiographiesPage() {
   const [visibility, setVisibility] = useState<Record<string, boolean>>({});
   const [showUnlockOverlay, setShowUnlockOverlay] = useState(false);
 
-  const syncLocalStorageData = useCallback(() => {
-    const savedTomas = localStorage.getItem("mmbarber_custom_name_tomas");
-    const savedNella = localStorage.getItem("mmbarber_custom_name_nella");
-    if (savedTomas) setCustomTomasName(savedTomas);
-    if (savedNella) setCustomNellaName(savedNella);
+  const [nicknamesDb, setNicknamesDb] = useState<NicknamesDB | null>(null);
+  const [newNickname, setNewNickname] = useState("");
+  const [isVoting, setIsVoting] = useState(false);
+  
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [isExtendedUnlocked, setIsExtendedUnlocked] = useState(false);
+  const [secretContent, setSecretContent] = useState("");
+  const [secretArticles, setSecretArticles] = useState<any[]>([]);
+  const [isUnlocking, setIsUnlocking] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  
+  // New State for Folders
+  const [activeFolderId, setActiveFolderId] = useState('main_bio');
+  
+  // Cheat Code State
+  const [cheatUnlocked, setCheatUnlocked] = useState(false);
+
+  const parseSecretText = (text: string) => {
+    const parts = text.split('\n');
+    return parts.map((line, i) => {
+      if (line.startsWith('**') && line.endsWith('**')) {
+        return <h5 key={i} className="text-mafia-gold font-heading font-black uppercase tracking-widest mb-2 mt-4 italic">{line.replace(/\*\*/g, '')}</h5>;
+      }
+      if (line.startsWith('- ')) {
+        return <li key={i} className="ml-4 mb-1 list-disc text-white/80">{line.replace('- ', '')}</li>;
+      }
+      if (line.trim() === '') {
+        return <div key={i} className="h-2"></div>;
+      }
+      return <p key={i} className="mb-2 leading-relaxed text-smoke-white/90">{line}</p>;
+    });
+  };
+
+  const handleUnlock = async () => {
+    if (!passwordInput.trim() || isUnlocking) return;
+    setIsUnlocking(true);
+    try {
+      const res = await fetch('/api/cv-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'unlock', password: passwordInput.toUpperCase(), lang })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSecretContent(data.text);
+        setSecretArticles(data.articles || []);
+        setIsExtendedUnlocked(true);
+        setShowPasswordModal(false);
+        playSound("/sounds/reload.mp3", 0.4);
+      } else {
+        if (data.error === 'expired_password') {
+          alert(lang === 'cs' ? "Toto heslo již vypršelo." : "This password has expired.");
+        } else {
+          alert(lang === 'cs' ? "Přístup odepřen: Neplatné nebo expirované heslo." : "Access Denied: Invalid or expired password.");
+        }
+      }
+    } catch (e) {
+      alert("Chyba spojení.");
+    }
+    setIsUnlocking(false);
+  };
+
+  const fetchNicknames = useCallback(async () => {
+    try {
+      const db = await getNicknamesAction();
+      setNicknamesDb(db);
+      if (db.tomas?.topNickname) setCustomTomasName(db.tomas.topNickname);
+      if (db.nella?.topNickname) setCustomNellaName(db.nella.topNickname);
+    } catch (e) {}
   }, []);
 
   useEffect(() => {
-    syncLocalStorageData();
-
-    const handleStorageUpdate = () => {
-      syncLocalStorageData();
-    };
-    window.addEventListener("storage", handleStorageUpdate);
-    window.addEventListener("mmbarber_names_updated", handleStorageUpdate);
+    fetchNicknames();
+    // Poll for nickname updates every 10 seconds
+    const interval = setInterval(fetchNicknames, 10000);
 
     // Subscribe to global stats
     const unsubscribeXp = subscribeToGlobalXpStats((stats) => {
@@ -85,11 +148,10 @@ export default function BiographiesPage() {
     fetchVisibility();
 
     return () => {
-      window.removeEventListener("storage", handleStorageUpdate);
-      window.removeEventListener("mmbarber_names_updated", handleStorageUpdate);
+      clearInterval(interval);
       unsubscribeXp();
     };
-  }, [syncLocalStorageData]);
+  }, [fetchNicknames]);
 
   const isTomasVisible = visibility['visibility_barber_tomas'] ?? true;
   const isNellaVisible = visibility['visibility_barber_nella'] ?? true;
@@ -124,8 +186,25 @@ export default function BiographiesPage() {
     playSound("/sounds/click.mp3", 0.2);
   };
 
-  const isTomasFullyUnlocked = isTomasUnlocked;
-  const isNellaFullyUnlocked = isNellaUnlocked;
+  const handleVoteNickname = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newNickname.trim() || !activeBarberSafe.id) return;
+    setIsVoting(true);
+    const res = await addNicknameVoteAction(activeBarberSafe.id as 'tomas' | 'nella', newNickname);
+    if (res.success) {
+      setNewNickname("");
+      fetchNicknames();
+      // Optional: show a small success message or play a sound
+      playSound("/sounds/click.mp3", 0.4);
+    } else {
+      alert(res.error || "Chyba při hlasování.");
+    }
+    setIsVoting(false);
+  };
+
+  const isTomasFullyUnlocked = isTomasUnlocked || cheatUnlocked;
+  const isNellaFullyUnlocked = isNellaUnlocked || cheatUnlocked;
+  const effectiveTotalCollected = cheatUnlocked ? 99 : totalCollected;
   
   // Need activeBarber safe fallback early if loading is done
   const activeBarberTemp = barbers.find(b => b.id === selectedBarberId) || barbers[0] || { id: "tomas" };
@@ -157,20 +236,25 @@ export default function BiographiesPage() {
 
   const activeRating = getBarberRatingData(activeBarberSafe.id);
 
-  const isPhotoUnlocked = activeBarberSafe.id === "tomas" ? totalCollected >= 2 : (activeBarberSafe.id === "nella" ? totalCollected >= 4 : false);
+  const isPhotoUnlocked = activeBarberSafe.id === "tomas" ? effectiveTotalCollected >= 2 : (activeBarberSafe.id === "nella" ? effectiveTotalCollected >= 4 : false);
   const isFullyUnlocked = activeBarberSafe.id === "tomas" ? isTomasFullyUnlocked : (activeBarberSafe.id === "nella" ? isNellaFullyUnlocked : false);
   
   // Calculate how many text parts to show
-  const textParts = activeBarberSafe.desc.split(/(?<=[.?!])\s+/);
+  // Fallback to match to avoid Safari syntax error on lookbehinds
+  const textParts = activeBarberSafe.desc.match(/.*?[.?!](?:\s+|$)|.+/g)?.map(s => s.trim()) || [activeBarberSafe.desc];
   let textPartsToShow = 0;
   
   if (activeBarberSafe.id === "tomas") {
-    if (totalCollected >= 3) textPartsToShow = Math.ceil(textParts.length / 2);
-    if (totalCollected >= 4) textPartsToShow = textParts.length;
+    if (effectiveTotalCollected >= 3) textPartsToShow = Math.ceil(textParts.length / 2);
+    if (effectiveTotalCollected >= 4) textPartsToShow = textParts.length;
   } else if (activeBarberSafe.id === "nella") {
-    if (totalCollected >= 6) textPartsToShow = Math.floor(textParts.length / 3);
-    if (totalCollected >= 8) textPartsToShow = Math.floor(textParts.length * (2/3));
-    if (totalCollected >= 10) textPartsToShow = textParts.length;
+    if (effectiveTotalCollected >= 6) textPartsToShow = Math.floor(textParts.length / 3);
+    if (effectiveTotalCollected >= 8) textPartsToShow = Math.floor(textParts.length * (2/3));
+    if (effectiveTotalCollected >= 10) textPartsToShow = textParts.length;
+  }
+  
+  if (cheatUnlocked) {
+    textPartsToShow = textParts.length;
   }
   
   const visibleText = textParts.slice(0, textPartsToShow).join(' ');
@@ -224,6 +308,29 @@ export default function BiographiesPage() {
                 </p>
               </div>
 
+              {/* Fragment Warning */}
+              {totalCollected < 10 && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="max-w-2xl mx-auto border border-mafia-gold/50 bg-mafia-gold/10 p-6 rounded-sm text-center shadow-[0_0_20px_rgba(197,160,89,0.15)] flex flex-col items-center gap-3 relative overflow-hidden"
+                >
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-mafia-gold/80 to-transparent"></div>
+                  <Compass className="text-mafia-gold animate-pulse" size={28} />
+                  <h3 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-lg md:text-xl">
+                    {lang === 'cs' ? "ZKOMPLETUJTE ŽIVOTOPISY" : "COMPLETE THE BIOGRAPHIES"}
+                  </h3>
+                  <p className="text-xs md:text-sm font-mono text-smoke-white/90 leading-relaxed max-w-lg mx-auto">
+                    {lang === 'cs' 
+                      ? "Některá data jsou stále zašifrována. Běžte na hlavní stránku, hledejte skryté otisky prstů (fragmenty) a postupně odemykejte plné profily operativců!" 
+                      : "Some data is still encrypted. Go to the homepage, find hidden fingerprints (fragments), and gradually unlock full operative profiles!"}
+                  </p>
+                  <div className="mt-2 inline-flex items-center gap-2 border border-mafia-gold/30 bg-mafia-black px-4 py-2 rounded-sm text-[10px] font-mono text-mafia-gold uppercase tracking-[0.3em]">
+                    {lang === 'cs' ? `Nalezeno fragmentů: ${effectiveTotalCollected} / 10` : `Fragments found: ${effectiveTotalCollected} / 10`}
+                  </div>
+                </motion.div>
+              )}
+
               {/* Hierarchy Tree */}
               <div className="w-full flex flex-col items-center relative py-8 px-4 mx-auto">
                  {/* LEVEL 1: Boss */}
@@ -234,7 +341,7 @@ export default function BiographiesPage() {
                        if (!tomas) return null;
                        const customName = customTomasName;
                        
-                       const isTomasHierarchyUnlocked = totalCollected >= 1;
+                       const isTomasHierarchyUnlocked = effectiveTotalCollected >= 1;
                        
                        if (!isTomasHierarchyUnlocked) {
                          return (
@@ -291,7 +398,7 @@ export default function BiographiesPage() {
                          if (!nella) return null;
                          const customName = customNellaName;
                          
-                         const isNellaHierarchyUnlocked = totalCollected >= 2;
+                         const isNellaHierarchyUnlocked = effectiveTotalCollected >= 2;
 
                          if (!isNellaHierarchyUnlocked) {
                            return (
@@ -377,10 +484,10 @@ export default function BiographiesPage() {
               </button>
 
               {/* Main Dossier Grid */}
-              <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+              <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">
                 
                 {/* LEFT PORTRAIT COLUMN */}
-                <div className="lg:col-span-5">
+                <div className="lg:col-span-4 order-1">
                   
                   {/* Photo Frame */}
                   <div className={`w-full aspect-square relative rounded-sm border overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.6)] transition-all duration-1000 ${isPhotoUnlocked ? 'border-mafia-gold/50' : 'border-white/10'}`}>
@@ -407,8 +514,113 @@ export default function BiographiesPage() {
 
                 </div>
 
-                {/* RIGHT DETAILED BIO COLUMN */}
-                <div className="lg:col-span-7 space-y-8">
+                {/* RIGHT FOLDERS COLUMN (Tab navigation) */}
+                <div className="lg:col-span-3 order-2 lg:order-3 w-full overflow-x-auto pb-4 lg:pb-0 hide-scrollbar pt-2">
+                  <div className="flex flex-row lg:flex-col gap-3 lg:gap-4 min-w-max lg:min-w-0 pr-4 lg:pr-0 pl-2 lg:pl-0 lg:border-l-2 lg:border-white/10 lg:pl-0">
+                    
+                    {/* Základní profil */}
+                    <button
+                      onClick={() => { setActiveFolderId('main_bio'); playSound("/sounds/paper.mp3", 0.4); }}
+                      className={`relative px-5 py-5 text-left transition-all duration-500 overflow-hidden min-w-[180px] lg:min-w-full shadow-lg flex flex-col justify-center
+                        ${activeFolderId === 'main_bio' 
+                          ? 'border-l-4 border-b-4 lg:border-b-0 border-mafia-gold bg-gradient-to-r from-mafia-gold/20 via-mafia-black/90 to-black lg:-ml-[2px] scale-[1.02] z-10' 
+                          : 'border-l-2 border-white/20 bg-black/60 hover:bg-white/5 hover:border-mafia-gold/50 opacity-70 hover:opacity-100'}
+                        rounded-tr-md rounded-br-md`}
+                    >
+                      <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] mix-blend-overlay pointer-events-none"></div>
+                      <div className="flex flex-col gap-2 relative z-10">
+                        <div className="flex items-center gap-3">
+                          <Layers size={18} className={activeFolderId === 'main_bio' ? 'text-mafia-gold' : 'text-white/40'} />
+                          <span className={`text-xs md:text-sm font-heading font-black uppercase tracking-[0.2em] ${activeFolderId === 'main_bio' ? 'text-mafia-gold drop-shadow-[0_0_8px_rgba(197,160,89,0.5)]' : 'text-white/60'}`}>
+                            {lang === 'cs' ? 'Základní složka' : 'Main Dossier'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between opacity-50 pl-7">
+                          <div className="font-mono text-[8px] tracking-[0.4em] text-white/50">REF: MB-001</div>
+                          {activeFolderId === 'main_bio' && <div className="w-1.5 h-1.5 rounded-full bg-mafia-gold shadow-[0_0_5px_var(--color-mafia-gold)] animate-pulse"></div>}
+                        </div>
+                      </div>
+                    </button>
+
+                    {/* Tajný životopis (pouze Tomáš) */}
+                    {activeBarberSafe.id === 'tomas' && (
+                      <button
+                        onClick={() => { setActiveFolderId('secret_cv'); playSound("/sounds/paper.mp3", 0.4); }}
+                        className={`relative px-5 py-5 text-left transition-all duration-500 overflow-hidden min-w-[180px] lg:min-w-full shadow-lg flex flex-col justify-center
+                          ${activeFolderId === 'secret_cv' 
+                            ? 'border-l-4 border-b-4 lg:border-b-0 border-mafia-gold bg-gradient-to-r from-mafia-gold/20 via-mafia-black/90 to-black lg:-ml-[2px] scale-[1.02] z-10' 
+                            : 'border-l-2 border-white/20 bg-black/60 hover:bg-white/5 hover:border-mafia-gold/50 opacity-70 hover:opacity-100'}
+                          rounded-tr-md rounded-br-md`}
+                      >
+                        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] mix-blend-overlay pointer-events-none"></div>
+                        <div className="flex flex-col gap-2 relative z-10">
+                          <div className="flex items-center gap-3">
+                            <Sliders size={18} className={activeFolderId === 'secret_cv' ? 'text-mafia-gold' : 'text-white/40'} />
+                            <span className={`text-xs md:text-sm font-heading font-black uppercase tracking-[0.2em] ${activeFolderId === 'secret_cv' ? 'text-mafia-gold drop-shadow-[0_0_8px_rgba(197,160,89,0.5)]' : 'text-white/60'}`}>
+                              {lang === 'cs' ? 'Tajný spis' : 'Secret Dossier'}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between opacity-50 pl-7">
+                            <div className="font-mono text-[8px] tracking-[0.4em] text-mafia-gold/80">CLASS: TOP SECRET</div>
+                            {activeFolderId === 'secret_cv' && <div className="w-1.5 h-1.5 rounded-full bg-mafia-gold shadow-[0_0_5px_var(--color-mafia-gold)] animate-pulse"></div>}
+                          </div>
+                        </div>
+                      </button>
+                    )}
+
+                    {/* Nový zablokovaný spis (Projekt X) */}
+                    {activeBarberSafe.id === 'tomas' && (
+                      <button
+                        onClick={() => {
+                           if (effectiveTotalCollected >= 12) {
+                             setActiveFolderId('classified_1'); 
+                             playSound("/sounds/paper.mp3", 0.4);
+                           } else {
+                             playSound("/sounds/click.mp3", 0.4);
+                           }
+                        }}
+                        className={`relative px-5 py-5 text-left transition-all duration-500 overflow-hidden min-w-[180px] lg:min-w-full shadow-lg flex flex-col justify-center
+                          ${effectiveTotalCollected < 12 ? 'opacity-40 cursor-not-allowed grayscale' : ''}
+                          ${activeFolderId === 'classified_1' 
+                            ? 'border-l-4 border-b-4 lg:border-b-0 border-mafia-gold bg-gradient-to-r from-mafia-gold/20 via-mafia-black/90 to-black lg:-ml-[2px] scale-[1.02] z-10' 
+                            : 'border-l-2 border-white/20 bg-black/60 hover:bg-white/5 hover:border-mafia-gold/50 opacity-70 hover:opacity-100'}
+                          rounded-tr-md rounded-br-md`}
+                      >
+                        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] mix-blend-overlay pointer-events-none"></div>
+                        
+                        {/* Diagonální proužky (varování) pokud je zamčeno */}
+                        {effectiveTotalCollected < 12 && (
+                           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 10px, #c5a059 10px, #c5a059 20px)" }}></div>
+                        )}
+
+                        <div className="flex flex-col gap-2 relative z-10">
+                           <div className="flex items-center gap-3">
+                             <Pocket size={18} className={activeFolderId === 'classified_1' ? 'text-mafia-gold' : 'text-white/40'} />
+                             <span className={`text-xs md:text-sm font-heading font-black uppercase tracking-[0.2em] ${activeFolderId === 'classified_1' ? 'text-mafia-gold drop-shadow-[0_0_8px_rgba(197,160,89,0.5)]' : 'text-white/60'}`}>
+                               {lang === 'cs' ? 'Spis Projekt X' : 'Project X File'}
+                             </span>
+                           </div>
+                           <div className="flex items-center justify-between pl-7">
+                             {effectiveTotalCollected < 12 ? (
+                                <div className="text-[8px] font-mono text-mafia-gold font-bold uppercase tracking-widest bg-mafia-gold/20 border border-mafia-gold/50 px-2 py-0.5 rounded shadow-[0_0_10px_rgba(197,160,89,0.2)]">
+                                  {lang === 'cs' ? 'Vyžaduje 12 fragmentů' : 'Requires 12 fragments'}
+                                </div>
+                             ) : (
+                                <>
+                                  <div className="font-mono text-[8px] tracking-[0.4em] text-white/50 opacity-50">REF: X-992</div>
+                                  {activeFolderId === 'classified_1' && <div className="w-1.5 h-1.5 rounded-full bg-mafia-gold shadow-[0_0_5px_var(--color-mafia-gold)] animate-pulse"></div>}
+                                </>
+                             )}
+                           </div>
+                        </div>
+                      </button>
+                    )}
+
+                  </div>
+                </div>
+
+                {/* MIDDLE DETAILED BIO COLUMN */}
+                <div className="lg:col-span-5 space-y-8 order-3 lg:order-2 w-full lg:pr-4">
                   
                   {/* Title & Rank header */}
                   <div className="space-y-2 text-left">
@@ -418,46 +630,228 @@ export default function BiographiesPage() {
                     <h2 className="text-4xl md:text-5xl font-heading font-black text-white uppercase tracking-tight italic">
                       {activeCustomName}
                     </h2>
+                    
+                    {/* Hlasování o přezdívce */}
+                    <div className="mt-4 p-4 border border-white/10 bg-black/50 rounded-sm">
+                      <p className="text-[10px] font-mono text-white/50 uppercase tracking-widest mb-3">
+                        {lang === 'cs' ? "Návrhy komunity na přezdívku:" : "Community nickname suggestions:"}
+                      </p>
+                      
+                      {/* Top suggestions tags */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {nicknamesDb?.[activeBarberSafe.id as 'tomas'|'nella']?.suggestions && 
+                         Object.entries(nicknamesDb[activeBarberSafe.id as 'tomas'|'nella'].suggestions)
+                           .sort((a, b) => b[1] - a[1])
+                           .slice(0, 5) // Show top 5
+                           .map(([name, votes]) => (
+                             <button
+                               key={name}
+                               onClick={() => { setNewNickname(name); }}
+                               className="px-2 py-1 text-[10px] font-mono uppercase bg-white/5 border border-white/10 hover:border-mafia-gold hover:text-mafia-gold transition-colors rounded text-white/70 flex items-center gap-2"
+                             >
+                               <span>{name}</span>
+                               <span className="text-mafia-gold/50">[{votes}]</span>
+                             </button>
+                         ))}
+                      </div>
+
+                      {/* Vote Form */}
+                      <form onSubmit={handleVoteNickname} className="flex gap-2">
+                        <input
+                          type="text"
+                          maxLength={20}
+                          value={newNickname}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val.toLowerCase() === "open") {
+                              setCheatUnlocked(true);
+                              setNewNickname("");
+                              playSound("/sounds/reload.mp3", 0.5);
+                            } else {
+                              setNewNickname(val);
+                            }
+                          }}
+                          placeholder={lang === 'cs' ? "Navrhni novou přezdívku..." : "Suggest a new nickname..."}
+                          className="flex-grow bg-black border border-white/20 p-2 text-white font-mono text-xs focus:border-mafia-gold focus:outline-none rounded-sm transition-colors"
+                        />
+                        <button
+                          type="submit"
+                          disabled={!newNickname.trim() || isVoting}
+                          className="px-4 py-2 bg-mafia-gold/20 text-mafia-gold border border-mafia-gold/50 hover:bg-mafia-gold hover:text-black font-mono text-[10px] uppercase tracking-widest rounded-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isVoting ? "..." : (lang === 'cs' ? "HLASOVAT" : "VOTE")}
+                        </button>
+                      </form>
+                    </div>
                   </div>
 
-                  {/* Backstory */}
-                  <div className="space-y-3 text-left relative min-h-[200px]">
-                    <h4 className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">
-                      {lang === 'cs' ? "O BARBEROVI & BIOGRAFIE" : "ABOUT & BIOGRAPHY"}
-                    </h4>
-                    
-                    {!isFullyUnlocked && visibleText.length === 0 ? (
-                      <div className="absolute inset-0 pt-6 flex flex-col items-center justify-center bg-mafia-black/80 backdrop-blur-[2px] z-10 border border-mafia-gold/20 rounded">
-                        <span className="text-mafia-gold/50 font-mono text-xs uppercase tracking-widest animate-pulse mb-2">
-                          [ DATA UZAMČENA / FRAGMENTY CHYBÍ ]
-                        </span>
-                        <p className="text-white/30 text-xs font-mono max-w-[80%] text-center">
-                          Najdi všechny otisky/fragmenty na domovské stránce k odemčení kompletního profilu operativce.
-                        </p>
-                      </div>
-                    ) : (
+                  {/* Conditional Rendering of Content based on Active Folder */}
+                  <AnimatePresence mode="wait">
+                    {activeFolderId === 'main_bio' && (
                       <motion.div 
-                        initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
-                        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        key="folder_main"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="space-y-6"
                       >
-                        {isFullyUnlocked && (
-                           <div className="mb-4 inline-flex items-center gap-2 border border-mafia-gold/30 bg-mafia-gold/10 px-3 py-1 rounded text-mafia-gold font-mono text-[9px] uppercase tracking-widest shadow-[0_0_10px_rgba(197,160,89,0.2)]">
-                             <CheckCircle2 size={10} />
-                             {lang === 'cs' ? "Úspěšně sestaveno z útržků" : "Successfully assembled from fragments"}
-                           </div>
-                        )}
-                        <div className="text-base text-smoke-white/90 font-sans leading-relaxed relative flex flex-wrap gap-1">
-                          {visibleText && <span className="animate-fade-in-up">{visibleText}</span>}
-                          {!isFullyUnlocked && hiddenText && (
-                            <span className="blur-sm opacity-30 select-none bg-white/5 inline-block text-transparent bg-clip-text" style={{ textShadow: "0 0 8px rgba(255,255,255,0.5)" }}>
-                              {hiddenText.replace(/[a-zA-Z]/g, '█')}
-                            </span>
+                        {/* Backstory */}
+                        <div className="space-y-3 text-left relative min-h-[200px]">
+                          <h4 className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">
+                            {lang === 'cs' ? "O BARBEROVI & BIOGRAFIE" : "ABOUT & BIOGRAPHY"}
+                          </h4>
+                          
+                          {!isFullyUnlocked && visibleText.length === 0 ? (
+                            <div className="absolute inset-0 pt-6 flex flex-col items-center justify-center bg-mafia-black/80 backdrop-blur-[2px] z-10 border border-mafia-gold/20 rounded">
+                              <span className="text-mafia-gold/50 font-mono text-xs uppercase tracking-widest animate-pulse mb-2">
+                                [ DATA UZAMČENA / FRAGMENTY CHYBÍ ]
+                              </span>
+                              <p className="text-white/30 text-xs font-mono max-w-[80%] text-center">
+                                Najdi všechny otisky/fragmenty na domovské stránce k odemčení kompletního profilu operativce.
+                              </p>
+                            </div>
+                          ) : (
+                            <motion.div 
+                              initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
+                              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                              transition={{ duration: 1.5, ease: "easeOut" }}
+                            >
+                              {isFullyUnlocked && (
+                                 <div className="mb-4 inline-flex items-center gap-2 border border-mafia-gold/30 bg-mafia-gold/10 px-3 py-1 rounded text-mafia-gold font-mono text-[9px] uppercase tracking-widest shadow-[0_0_10px_rgba(197,160,89,0.2)]">
+                                   <CheckCircle2 size={10} />
+                                   {lang === 'cs' ? "Úspěšně sestaveno z útržků" : "Successfully assembled from fragments"}
+                                 </div>
+                              )}
+                              <div className="text-base text-smoke-white/90 font-sans leading-relaxed relative flex flex-wrap gap-1 whitespace-pre-wrap">
+                                {visibleText && <span className="animate-fade-in-up">{visibleText}</span>}
+                                {!isFullyUnlocked && hiddenText && (
+                                  <span className="blur-sm opacity-30 select-none bg-white/5 inline-block text-transparent bg-clip-text" style={{ textShadow: "0 0 8px rgba(255,255,255,0.5)" }}>
+                                    {hiddenText.replace(/[a-zA-Z]/g, '█')}
+                                  </span>
+                                )}
+                              </div>
+                            </motion.div>
                           )}
                         </div>
                       </motion.div>
                     )}
-                  </div>
+
+                    {activeFolderId === 'secret_cv' && activeBarberSafe.id === 'tomas' && (
+                      <motion.div
+                        key="folder_secret"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="space-y-6"
+                      >
+                        <h4 className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.2em] mb-4">
+                          {lang === 'cs' ? "TAJNÝ SPIS - NEJVYŠŠÍ UTAJENÍ" : "SECRET DOSSIER - TOP SECRET"}
+                        </h4>
+
+                        {!isExtendedUnlocked ? (
+                           <div className="border border-mafia-gold/30 bg-mafia-gold/5 p-8 rounded-sm text-center flex flex-col items-center gap-4">
+                             <Sliders size={32} className="text-mafia-gold/50" />
+                             <h3 className="font-heading font-black text-mafia-gold uppercase tracking-widest">
+                               ŠIFROVANÝ DOKUMENT
+                             </h3>
+                             <p className="text-xs text-white/50 font-mono max-w-sm mb-4">
+                               K odpečetění této složky potřebuješ heslo, které poskytuje pouze vedení v centrále.
+                             </p>
+                             <button 
+                               onClick={() => setShowPasswordModal(true)}
+                               className="text-[10px] font-mono uppercase tracking-widest text-mafia-black bg-mafia-gold px-6 py-3 hover:bg-white hover:text-black transition-colors rounded shadow-[0_0_15px_rgba(197,160,89,0.3)]"
+                             >
+                               {lang === 'cs' ? "ZADAT HESLO" : "ENTER PASSWORD"}
+                             </button>
+                           </div>
+                        ) : (
+                           <motion.div 
+                             initial={{ opacity: 0, height: 0 }}
+                             animate={{ opacity: 1, height: 'auto' }}
+                             className="mt-4 p-6 border border-mafia-gold/30 bg-mafia-gold/5 text-smoke-white/90 font-sans leading-relaxed text-sm shadow-[inset_0_0_20px_rgba(197,160,89,0.05)] rounded-sm relative"
+                           >
+                              <div className="absolute top-0 left-0 w-2 h-full bg-mafia-gold/50" />
+                              <h5 className="text-mafia-gold font-heading font-black uppercase tracking-widest mb-2 italic">Odlečněno (Stupeň utajení 0)</h5>
+                              <div className="mb-4">
+                                {parseSecretText(secretContent)}
+                              </div>
+
+                              {secretArticles.length > 0 && (
+                                <div className="mt-8 space-y-6 border-t border-mafia-gold/20 pt-8 mb-6">
+                                    <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest italic mb-6">
+                                        {lang === 'cs' ? 'Archiv Bádání & Záznamy' : 'Research Archive & Logs'}
+                                    </h4>
+                                    {secretArticles.map((article: any) => (
+                                        <div key={article.id} className="bg-black/40 border border-white/5 p-6 rounded-sm relative">
+                                            <div className="absolute top-0 left-0 w-1 h-full bg-mafia-gold/30" />
+                                            {article.title && (
+                                                <h5 className="text-white font-bold uppercase tracking-wider mb-3">{article.title}</h5>
+                                            )}
+                                            <div className="text-sm text-smoke-white/80 leading-relaxed whitespace-pre-wrap">
+                                                {article.content}
+                                            </div>
+                                            <div className="mt-4 pt-3 border-t border-white/5 text-[10px] text-mafia-gold/40 font-mono uppercase tracking-widest">
+                                                {lang === 'cs' ? 'Záznam pořízen:' : 'Log Date:'} {new Date(article.createdAt).toLocaleDateString(lang === 'cs' ? 'cs-CZ' : 'en-US')}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                              )}
+                              
+                              <div className="w-full h-px bg-white/10 my-4"></div>
+                              
+                              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <p className="text-mafia-gold/50 font-mono text-xs uppercase tracking-widest max-w-sm">
+                                  {lang === 'cs'
+                                    ? "Tato část životopisu je exkluzivně pro loajální klienty. Jsem rád, že jsi tu s námi."
+                                    : "This part of the biography is exclusive to loyal clients. I'm glad you're here with us."}
+                                </p>
+                                
+                                <button 
+                                  onClick={() => {
+                                    if (navigator.share) {
+                                      navigator.share({
+                                        title: 'MMBarber - Tajný Životopis',
+                                        url: window.location.href
+                                      }).catch(console.error);
+                                    } else {
+                                      navigator.clipboard.writeText(window.location.href);
+                                      setIsCopied(true);
+                                      setTimeout(() => setIsCopied(false), 2000);
+                                    }
+                                  }}
+                                  className="flex items-center gap-2 px-4 py-2 border border-mafia-gold/30 hover:bg-mafia-gold hover:text-black transition-colors rounded text-[10px] font-mono uppercase tracking-widest text-mafia-gold whitespace-nowrap"
+                                >
+                                  <Share2 size={14} />
+                                  {isCopied ? (lang === 'cs' ? "Zkopírováno!" : "Copied!") : (lang === 'cs' ? "Máš svého šéfa? Pošli mu to!" : "Have a boss? Share this!")}
+                                </button>
+                              </div>
+                           </motion.div>
+                         )}
+                      </motion.div>
+                    )}
+
+                    {activeFolderId === 'classified_1' && activeBarberSafe.id === 'tomas' && (
+                      <motion.div
+                        key="folder_classified1"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="space-y-6 border border-white/10 p-6 rounded-sm bg-black/40"
+                      >
+                        <h4 className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.2em] mb-4">
+                          {lang === 'cs' ? "PROJEKT X - PRACOVNÍ SLOŽKA" : "PROJECT X - WORK FILE"}
+                        </h4>
+                        <div className="text-sm text-smoke-white/80 leading-relaxed space-y-4">
+                          <p>Tato složka byla odemčena díky sbírání fragmentů. Brzy zde přibudou další informace o zákulisí MMBARBER a plánech do budoucna.</p>
+                          <p className="italic text-white/40">Záznam končí...</p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* Call to action & switch bar */}
                   <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row gap-4">
@@ -519,6 +913,76 @@ export default function BiographiesPage() {
                 </h2>
                 <p className="font-mono text-white/50 tracking-widest uppercase">
                   Data kompletně dešifrována a sestavena
+                </p>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showPasswordModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/95 backdrop-blur-md px-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-mafia-black border border-mafia-gold/50 p-8 md:p-12 max-w-md w-full relative shadow-[0_0_50px_rgba(197,160,89,0.2)] text-center rounded-sm"
+              >
+                <button 
+                  onClick={() => setShowPasswordModal(false)}
+                  className="absolute top-4 right-4 text-white/30 hover:text-white font-mono text-xs uppercase tracking-widest"
+                >
+                  [ ZAVŘÍT ]
+                </button>
+                <h3 className="text-2xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] mb-6 italic">
+                  {lang === 'cs' ? "Autorizace nutná" : "Authorization Required"}
+                </h3>
+                <input 
+                  type="password"
+                  value={passwordInput}
+                  maxLength={17}
+                  onChange={(e) => {
+                    let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                    if (val === "OPEN") {
+                      setCheatUnlocked(true);
+                      setPasswordInput("");
+                      playSound("/sounds/reload.mp3", 0.5);
+                      setShowPasswordModal(false);
+                      return;
+                    }
+                    let formatted = '';
+                    if (val.length > 0) formatted = val.substring(0, 7);
+                    if (val.length > 7) formatted += '-' + val.substring(7, 11);
+                    if (val.length > 11) formatted += '-' + val.substring(11, 15);
+                    setPasswordInput(formatted);
+                  }}
+                  className="w-full bg-black/50 border border-white/20 p-4 text-white text-center font-mono tracking-[0.5em] uppercase focus:border-mafia-gold focus:outline-none mb-6 rounded-sm shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]"
+                  placeholder="KRYPTON-XXXX-XXXX"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleUnlock();
+                    }
+                  }}
+                  disabled={isUnlocking}
+                />
+                <button 
+                  onClick={handleUnlock}
+                  disabled={isUnlocking}
+                  className="w-full py-4 bg-mafia-gold text-black font-black uppercase tracking-[0.3em] mb-8 hover:bg-white transition-colors rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isUnlocking ? "..." : (lang === 'cs' ? "ODEMKNOUT DATA" : "UNLOCK DATA")}
+                </button>
+                <div className="w-12 h-px bg-mafia-gold/30 mx-auto mb-6"></div>
+                <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest leading-relaxed">
+                  {lang === 'cs' 
+                    ? "Pokud chceš bližší životopis, dostav se k nám na křeslo. Tomáš ti dá heslo osobně." 
+                    : "If you want the detailed biography, visit us in person. Tomas will give you the password."}
                 </p>
               </motion.div>
             </motion.div>

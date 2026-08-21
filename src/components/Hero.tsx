@@ -6,7 +6,7 @@ import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "../utils/audio";
 import { WeatherOverlay } from "./WeatherOverlay";
-import NextImage from "next/image";
+import NextImage from "@/components/OptimizedImage";
 import Image from "./OptimizedImage";
 import { GameFragment } from "./GameFragment";
 
@@ -179,7 +179,7 @@ export function Hero() {
         }
         return currentHover;
       });
-    }, (graphicsTier === 'low') ? 30000 : 15000);
+    }, (graphicsTier === 'low' || graphicsTier === 'lite') ? 30000 : 15000);
 
     // Motto is now handled by activeHero effect
 
@@ -323,7 +323,7 @@ export function Hero() {
       
       {/* CINEMATIC GAMING TRANSITION - HIGH-END SHUTTER (Desktop only) */}
       <AnimatePresence mode="wait">
-        {!isMobile && isGlitching && graphicsTier !== 'low' && graphicsTier !== 'medium' && (
+        {!isMobile && isGlitching && graphicsTier !== 'lite' && graphicsTier !== 'low' && graphicsTier !== 'medium' && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -433,13 +433,14 @@ export function Hero() {
 
       <div className="absolute inset-0 w-full h-[100dvh] xl:h-full xl:-z-10 pointer-events-none overflow-hidden flex flex-col justify-center xl:rounded-none">
         {/* Main background image with Clean Transition */}
+        {graphicsTier !== 'lite' && (
         <AnimatePresence mode="wait">
           <motion.div 
             key={activeHero}
             initial={{ opacity: 0, scale: 1 }}
             animate={{ 
               opacity: 1, 
-              scale: (isMobile || graphicsTier === 'low' || graphicsTier === 'medium') ? 1 : 1.08,
+              scale: (isMobile || graphicsTier === 'lite' || graphicsTier === 'low' || graphicsTier === 'medium') ? 1 : 1.03,
               filter: (isBloodMode && activeHero === 1)
                 ? "grayscale(0) brightness(1.1) contrast(1.1)"
                 : (isGlitching ? "brightness(1.1) blur(4px)" : "none") 
@@ -447,21 +448,22 @@ export function Hero() {
             exit={{ opacity: 0 }}
             transition={{ 
               opacity: { duration: 0.8, ease: "easeOut" },
-              scale: (isMobile || graphicsTier === 'low' || graphicsTier === 'medium') 
+              scale: (isMobile || graphicsTier === 'lite' || graphicsTier === 'low' || graphicsTier === 'medium') 
                 ? { duration: 0 } 
-                : { duration: 25, ease: "linear", repeat: Infinity, repeatType: "reverse" }
+                : { duration: 15, ease: "easeOut" }
             }}
-            className={`absolute inset-0 w-full h-full z-0 overflow-hidden ${isGlitching ? 'animate-glitch' : ''} ${heroImage.includes('blood') ? 'hero-blood-wrapper' : ''}`}
+            className={`absolute inset-0 w-full h-full z-0 overflow-hidden will-change-transform will-change-opacity transform-gpu ${isGlitching ? 'animate-glitch' : ''} ${heroImage.includes('blood') ? 'hero-blood-wrapper' : ''}`}
           >
 
-            <img
+            <Image
               src={heroImage}
               alt="MMBARBER Background"
-              fetchPriority="high"
-              loading="eager"
+              priority
+              unoptimized={graphicsTier !== 'lite' && graphicsTier !== 'low' && graphicsTier !== 'medium'}
+              fill
               className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${heroImage.includes('blood') ? 'hero-blood-img' : ''}`}
               style={{ 
-                filter: heroImage.includes('blood') ? 'blur(1.1px)' : undefined 
+                filter: heroImage.includes('blood') ? 'blur(2.5px)' : undefined 
               }}
             />
             {/* Overlay Gradient - Minimized for absolute maximum clarity and vibrant colors */}
@@ -469,9 +471,10 @@ export function Hero() {
             <div className={`absolute inset-0 bg-black/5 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
           </motion.div>
         </AnimatePresence>
+        )}
 
         {/* Global Weather - Fully hidden during shutter operation for a clean mechanical feel */}
-        {!isGlitching && <WeatherOverlay />}
+        {!isGlitching && graphicsTier !== 'lite' && <WeatherOverlay />}
 
         {/* Stronger bottom fade to ground the content */}
         <div className="absolute inset-x-0 bottom-0 h-32 xl:h-64 bg-gradient-to-t from-mafia-black via-mafia-black/80 xl:via-mafia-black/40 to-transparent z-30"></div>
@@ -492,10 +495,10 @@ export function Hero() {
                   className="flex flex-col items-center"
                 >
                   <motion.h1
-                    className={`hero-slogan tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-2xl xs:text-3xl sm:text-5xl md:text-6xl`}
+                    className={`hero-slogan tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 will-change-transform transform-gpu ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-2xl xs:text-3xl sm:text-5xl md:text-6xl`}
                     style={{
                       fontFamily: "var(--font-great-vibes), cursive",
-                      filter: (graphicsTier === 'low') ? "none" : (isEasterEgg 
+                      filter: (isMobile || graphicsTier === 'low' || graphicsTier === 'lite') ? "drop-shadow(0 4px 6px rgba(0,0,0,0.8))" : (isEasterEgg 
                         ? "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px var(--user-glow-radius) var(--user-glow-color))"
                         : "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px 25px rgba(0,0,0,0.8))"),
                       wordBreak: "break-word"
@@ -537,9 +540,11 @@ export function Hero() {
           </div>
 
           {/* MOBILE GOLD MOTTO - MOVED TO BOTTOM */}
+          {graphicsTier !== 'lite' && graphicsTier !== 'low' && (
           <div className={`absolute bottom-8 left-0 right-0 ${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold/70'} font-mono text-[9px] tracking-[0.2em] uppercase text-center px-6 transition-colors duration-700`}>
             {isMounted && selectedMotto}
           </div>
+          )}
         </div>
       </div>
 
@@ -569,24 +574,24 @@ export function Hero() {
               key={displayText}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: (graphicsTier === 'low' || graphicsTier === 'medium') ? 0.5 : 1.5 } }}
+              exit={{ opacity: 0, transition: { duration: (graphicsTier === 'lite' || graphicsTier === 'low' || graphicsTier === 'medium') ? 0.5 : 1.5 } }}
               className="flex flex-col items-center"
             >
               <motion.h1
-                className={`hero-slogan tracking-normal mb-2 leading-[1.3] w-full max-w-none px-4 whitespace-nowrap transition-all duration-700 ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-5xl md:text-6xl`}
+                className={`hero-slogan tracking-normal mb-2 leading-[1.3] w-full max-w-none px-4 whitespace-nowrap transition-all duration-700 will-change-transform transform-gpu ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-5xl md:text-6xl`}
                 style={{
                   fontFamily: "var(--font-great-vibes), cursive",
-                  filter: (graphicsTier === 'low') ? "none" : (isEasterEgg 
+                  filter: (isMobile || graphicsTier === 'lite' || graphicsTier === 'low') ? "drop-shadow(0 4px 6px rgba(0,0,0,0.8))" : (isEasterEgg 
                     ? "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px var(--user-glow-radius) var(--user-glow-color))"
                     : "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px 25px rgba(0,0,0,0.8))"),
                   wordBreak: "break-word"
                 }}
               >
-                {(graphicsTier === 'low' || graphicsTier === 'medium' || (displayText && displayText.length > 50)) ? (
+                {(graphicsTier === 'lite' || graphicsTier === 'low' || graphicsTier === 'medium' || (displayText && displayText.length > 50)) ? (
                   <motion.span
-                    initial={{ opacity: 0, filter: "blur(20px)" }}
+                    initial={{ opacity: 0, filter: "blur(4px)" }}
                     animate={{ opacity: 0.8, filter: "none" }}
-                    exit={{ opacity: 0, filter: "blur(20px)" }}
+                    exit={{ opacity: 0, filter: "blur(4px)" }}
                     transition={{ duration: 1 }}
                   >
                     {isMounted && displayText}
@@ -595,7 +600,7 @@ export function Hero() {
                   isMounted && displayText && displayText.split("").map((char, i) => (
                     <motion.span
                       key={`desk-${displayText}-${i}`}
-                      initial={{ opacity: 0, filter: "blur(12px)", scale: 1.1 }}
+                      initial={{ opacity: 0, filter: "blur(4px)", scale: 1.05 }}
                       animate={{ 
                         opacity: 0.8, 
                         filter: "none", 
@@ -604,9 +609,9 @@ export function Hero() {
                       }}
                       exit={{ 
                         opacity: 0, 
-                        filter: "blur(40px) brightness(3)", 
-                        scaleY: 2, 
-                        scaleX: 0.9,
+                        filter: "blur(8px) brightness(1.5)", 
+                        scaleY: 1.5, 
+                        scaleX: 0.95,
                         transition: { duration: 1.0, delay: i * 0.01, ease: "easeIn" }
                       }}
                       transition={{ 
@@ -623,7 +628,7 @@ export function Hero() {
               </motion.h1>
 
               {/* Perfect Mirror Reflection Effect - Disabled for Low/Medium Tiers or hidden when not hovered */}
-              {graphicsTier !== 'low' && graphicsTier !== 'medium' && isSloganHovered && (
+              {graphicsTier !== 'lite' && graphicsTier !== 'low' && graphicsTier !== 'medium' && isSloganHovered && (
                 <div className="absolute top-full left-0 w-full pointer-events-none select-none mt-20 flex justify-center">
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -645,7 +650,7 @@ export function Hero() {
                       {isMounted && displayText && (displayText.length > 40 ? (LATIN_SLOGANS[displayText] || displayText) : (LATIN_SLOGANS[displayText] || displayText).split("").map((char, i) => (
                         <motion.span
                           key={`reflect-sync-${displayText}-${i}`}
-                          initial={{ opacity: 0, filter: "blur(12px)", scale: 1.1 }}
+                          initial={{ opacity: 0, filter: "blur(4px)", scale: 1.05 }}
                           animate={{ 
                             opacity: 1,
                             filter: "blur(0px)",
@@ -653,7 +658,7 @@ export function Hero() {
                           }}
                           exit={{ 
                             opacity: 0, 
-                            filter: "blur(40px) brightness(3)", 
+                            filter: "blur(8px) brightness(1.5)", 
                             transition: { duration: 0.8, delay: i * 0.01, ease: "easeIn" }
                           }}
                           transition={{ 
@@ -676,6 +681,7 @@ export function Hero() {
       </div>
 
       {/* DESKTOP GOLD MOTTO - Moved to Bottom Right with Mirror Effect */}
+      {graphicsTier !== 'lite' && graphicsTier !== 'low' && (
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -696,7 +702,7 @@ export function Hero() {
               return (
                 <motion.span
                   key={`desk-motto-${i}`}
-                  initial={{ opacity: 0, filter: "blur(12px)", y: 10 }}
+                  initial={{ opacity: 0, filter: "blur(2px)", y: 5 }}
                   animate={{ opacity: 0.9, filter: "blur(0px)", y: 0 }}
                   transition={{ duration: 1.2, delay: 2.0 + pauseDelay + i * 0.06, ease: "easeOut" }}
                   className="inline-block"
@@ -727,6 +733,7 @@ export function Hero() {
           className={`h-[1px] ${isBloodImage ? 'bg-mafia-red' : 'bg-mafia-gold'} mt-6 w-0 group-hover:w-full transition-all duration-1000 ease-in-out opacity-30`}
         />
       </motion.div>
+      )}
 
       <div className="hidden xl:flex relative z-20 mt-10 xl:mt-10 w-full justify-center pb-12 xl:pb-0 min-h-[60px]">
           <AnimatePresence mode="wait">
@@ -750,6 +757,9 @@ export function Hero() {
               </motion.a>
           </AnimatePresence>
       </div>
+
+      {/* GAME FRAGMENT (Fingerprint) */}
+      <GameFragment id="hero_frag_3" className="top-[30%] right-4 md:right-24" size={35} delay={3000} />
 
     </section>
   );

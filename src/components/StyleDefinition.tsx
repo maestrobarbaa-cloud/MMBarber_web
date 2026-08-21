@@ -149,12 +149,7 @@ const EditorialPhoto = ({ imageSrc, title, subtitle, modalTitle, modalContent, s
 };
 
 export function StyleDefinition() {
-  const [activeBox, setActiveBox] = useState<number | null>(null);
   const { t } = useTranslation();
-  
-  const playBulletHit = () => {
-    playSound("/sounds/bullet-hit.mp3", 0.6);
-  };
 
   return (
     <section id="style-definition" className="relative w-full py-10 md:py-16 bg-transparent overflow-hidden flex flex-col items-center">
@@ -172,40 +167,6 @@ export function StyleDefinition() {
               modalContent={t.styleDefinition.defineStyle.modalContent}
               showInitially={true}
             />
-            {/* Box 1 under Image 1 */}
-            <div 
-              onClick={() => {
-                setActiveBox(activeBox === 1 ? null : 1);
-                playBulletHit();
-              }}
-              className="group flex flex-col items-center justify-center gap-4 p-6 md:flex-row md:items-center md:justify-start md:gap-6 border border-mafia-gold/10 bg-mafia-dark/40 hover:bg-mafia-gold/5 transition-all duration-500 cursor-pointer w-full max-w-md h-auto md:h-[100px]"
-            >
-              <div 
-                className={`w-12 h-12 flex-shrink-0 flex items-center justify-center border transition-all duration-500 ${activeBox === 1 ? 'bg-mafia-gold text-mafia-black border-mafia-gold' : 'border-mafia-gold text-mafia-gold group-hover:bg-mafia-gold group-hover:text-mafia-black'}`}
-                style={activeBox === 1 ? { boxShadow: '0 0 var(--user-glow-radius) var(--user-glow-color)' } : {}}
-              >
-                <motion.div
-                  animate={{ rotate: activeBox === 1 ? 45 : 0 }}
-                  transition={{ duration: 0.4, ease: "backOut" }}
-                >
-                  <Plus size={24} />
-                </motion.div>
-              </div>
-              <AnimatePresence mode="wait">
-                {activeBox === 1 && (
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
-                    exit={{ opacity: 0, x: -10, scale: 0.95 }}
-                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                    className="flex flex-col items-center text-center md:items-start md:text-left"
-                  >
-                    <span className="text-[10px] text-mafia-gold/60 font-mono uppercase tracking-[0.2em]">Kariéra /</span>
-                    <p className="text-smoke-white text-sm font-bold tracking-widest uppercase">Hledáme modela pro focení</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
           </div>
 
           {/* COLUMN 2 */}
@@ -218,40 +179,6 @@ export function StyleDefinition() {
               modalContent={t.styleDefinition.pairTherapy.modalContent}
               showInitially={true}
             />
-            {/* Box 2 under Image 2 */}
-            <div 
-              onClick={() => {
-                setActiveBox(activeBox === 2 ? null : 2);
-                playBulletHit();
-              }}
-              className="group flex flex-col items-center justify-center gap-4 p-6 md:flex-row md:items-center md:justify-start md:gap-6 border border-mafia-gold/10 bg-mafia-dark/40 hover:bg-mafia-gold/5 transition-all duration-500 cursor-pointer w-full max-w-md h-auto md:h-[100px]"
-            >
-              <div 
-                className={`w-12 h-12 flex-shrink-0 flex items-center justify-center border transition-all duration-500 ${activeBox === 2 ? 'bg-mafia-gold text-mafia-black border-mafia-gold' : 'border-mafia-gold text-mafia-gold group-hover:bg-mafia-gold group-hover:text-mafia-black'}`}
-                style={activeBox === 2 ? { boxShadow: '0 0 var(--user-glow-radius) var(--user-glow-color)' } : {}}
-              >
-                <motion.div
-                  animate={{ rotate: activeBox === 2 ? 45 : 0 }}
-                  transition={{ duration: 0.4, ease: "backOut" }}
-                >
-                  <Plus size={24} />
-                </motion.div>
-              </div>
-              <AnimatePresence mode="wait">
-                {activeBox === 2 && (
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
-                    exit={{ opacity: 0, x: -10, scale: 0.95 }}
-                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                    className="flex flex-col items-center text-center md:items-start md:text-left"
-                  >
-                    <span className="text-[10px] text-mafia-gold/60 font-mono uppercase tracking-[0.2em]">Prezentace /</span>
-                    <p className="text-smoke-white text-sm font-bold tracking-widest uppercase">Nechte se zvěčnit profesionálem</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
           </div>
 
         </div>

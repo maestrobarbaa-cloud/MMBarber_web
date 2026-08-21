@@ -11,7 +11,7 @@ import {
   Lock
 } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import { Footer } from "@/components/Footer";
 
 export default function ProjectsPage() {

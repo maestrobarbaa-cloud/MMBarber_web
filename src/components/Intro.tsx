@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Plus } from "lucide-react";
 import Image from "./OptimizedImage";
 import gsap from "gsap";
 import { useTranslation } from "../hooks/useTranslation";
@@ -49,31 +50,26 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
   const [isAnimating, setIsAnimating] = useState(false);
   const [isFullyOpen, setIsFullyOpen] = useState(false);
   const [isLowTier, setIsLowTier] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState<string>("start");
+  const [hoveredItem, setHoveredItem] = useState<string>("rezervace");
 
   const grainRef = useRef<HTMLDivElement>(null);
   const flickerRef = useRef<HTMLDivElement>(null);
 
   const menuItems: MenuItem[] = [
-    { id: "start", titleCs: "Přejít na web", titleEn: "Enter Website" },
     { id: "rezervace", titleCs: "Rezervace", titleEn: "Reservation" },
+    { id: "start", titleCs: "Přejít na web", titleEn: "Enter Website" },
     { id: "galerie", titleCs: "Galerie", titleEn: "Gallery" },
     { id: "vice", titleCs: "Více o podniku", titleEn: "About Us" },
+    { id: "komunita", titleCs: "Rodina MM Barber", titleEn: "MM Barber Family" },
     { id: "kontakt", titleCs: "Kontakt", titleEn: "Contact" },
+    { id: "seznamka", titleCs: "Seznamka", titleEn: "Dating" },
   ];
 
   useEffect(() => {
     const savedName = localStorage.getItem("mmbarber_client_nickname");
     if (savedName) setNickname(savedName);
 
-    // Check if on mobile (intros are bypassed on mobile/tablet for instant interaction)
-    if (window.innerWidth < 1024) {
-      setIsActuallyMobile(true);
-      localStorage.setItem("mmbarber_visited", "true");
-      window.dispatchEvent(new Event("introDismissed"));
-      onDismiss?.();
-      return;
-    }
+    // Mobile intro is now enabled, no longer bypassing.
 
     // Check for low graphics tier
     const tier = document.documentElement.getAttribute('data-graphics-tier');
@@ -107,26 +103,8 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
       setIsFullyOpen(true);
     }, 200);
 
-    // Film grain animation
-    const grainAnim = grainRef.current ? gsap.to(grainRef.current, {
-      backgroundPosition: "400px 200px",
-      duration: 0.1,
-      repeat: -1,
-      ease: "none",
-    }) : null;
-
-    // Random flicker/scratches animation
-    const flickerInterval = setInterval(() => {
-      if (flickerRef.current) {
-        flickerRef.current.style.opacity = (Math.random() * 0.04).toString();
-        flickerRef.current.style.transform = `translateX(${Math.random() * 10 - 5}px)`;
-      }
-    }, 100);
-
     return () => {
-      clearInterval(flickerInterval);
       clearTimeout(introTimer);
-      grainAnim?.kill();
       document.body.style.overflow = '';
     };
   }, [showIntro, isDismissed]);
@@ -162,20 +140,20 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
     switch (hoveredItem) {
       case "start":
         return (
-          <div className="flex flex-col gap-4 text-left">
+          <div className="flex flex-col gap-4 text-center items-center">
             <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
-              {lang === 'cs' ? "MISE // INICIACE" : "MISSION // INITIATION"}
+              {lang === 'cs' ? "MM BARBER // VSTUP" : "MM BARBER // ENTER"}
             </span>
-            <h3 className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
-              {lang === 'cs' ? (nickname ? `VÍTEJ, ${getVocative(nickname).toUpperCase()}` : "VSTOUPIT DO BARBERU") : (nickname ? `WELCOME, ${nickname.toUpperCase()}` : "ENTER THE SALON")}
+            <h3 className="text-3xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-wider leading-tight">
+              {lang === 'cs' ? "Nejsme uzavřený klub" : "We are not a closed club"}
             </h3>
-            <p className="text-sm text-smoke-white/60 leading-relaxed font-sans mt-2">
+            <p className="text-base text-smoke-white/70 leading-relaxed font-sans mt-2 max-w-lg">
               {lang === 'cs' 
-                ? "Místo pro ty, co nepotřebují vykřikovat svůj styl do světa. Kvalita se pozná i bez zbytečných slov. Vstupte do našeho světa a zažijte poctivé řemeslo."
-                : "A place for those who don't need to shout their style to the world. Quality is recognized even without useless words. Enter our world and experience the honest craft."
+                ? "Jsme místo, do kterého tě srdečně zveme. Místo pro ty, co nepotřebují vykřikovat svůj styl do světa."
+                : "We are a place to which we warmly invite you. A place for those who don't need to shout their style to the world."
               }
             </p>
-            <div className="border-l-2 border-mafia-gold/30 pl-4 py-1 mt-4 italic text-xs text-mafia-gold/60 font-mono">
+            <div className="border-t border-b border-mafia-gold/30 px-6 py-3 mt-4 italic text-sm text-mafia-gold/80 font-mono">
               {lang === 'cs'
                 ? "„Některá jména se zapomínají. Skutečný charakter zůstává.“"
                 : "“Some names are forgotten. Real character remains.”"
@@ -185,29 +163,39 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
         );
       case "rezervace":
         return (
-          <div className="flex flex-col gap-4 text-left">
-            <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
-              {lang === 'cs' ? "SLUŽBY // OBJEDNÁVKA" : "SERVICES // BOOKING"}
-            </span>
-            <h3 className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
-              {lang === 'cs' ? "REZERVAČNÍ PROTOKOL" : "BOOKING PROTOCOL"}
-            </h3>
-            <p className="text-sm text-smoke-white/60 leading-relaxed font-sans mt-2">
-              {lang === 'cs'
-                ? "Jedeme podle rezervačního systému. Vyberte si svůj čas a styl. Ceny jsou nastavené férově podle času stráveného v křesle."
-                : "We run on a booking system. Select your time and style. Prices are set fairly based on the time spent in the chair."
-              }
-            </p>
-            <div className="flex flex-col gap-2 mt-4 bg-mafia-black/50 border border-mafia-gold/20 p-4 rounded-none">
-              <span className="text-[10px] font-mono text-mafia-gold/70 tracking-widest uppercase">
-                {lang === 'cs' ? "PODPOROVANÉ PLATBY // PAYMENT METHODS" : "SUPPORTED PAYMENTS"}
+          <div className="flex flex-col items-center w-full">
+            <div className="mb-6 md:mb-8 text-center flex flex-col items-center">
+              <span className="text-sm md:text-base font-mono text-mafia-gold uppercase tracking-[0.3em] font-black drop-shadow-[0_0_8px_rgba(197,160,89,0.8)] border-b border-mafia-gold/50 pb-1">
+                {lang === 'cs' ? 'Parkování zdarma' : 'Free parking'}
               </span>
-              <span className="text-sm font-heading font-bold text-smoke-white">
-                {lang === 'cs' ? "HOTOVOST / QR PLATBA" : "CASH / QR PAYMENTS"}
-              </span>
-              <span className="text-[10px] text-smoke-white/40 font-mono italic">
-                {lang === 'cs' ? "Pokud vidíš volný termín, je tvůj." : "If you see an opening, it is yours."}
-              </span>
+              <a href="tel:+420577544073" className="text-2xl md:text-3xl font-heading font-black text-smoke-white mt-1 hover:text-mafia-gold transition-colors drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                +420 577 544 073
+              </a>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-10 md:gap-16 justify-center items-center w-full py-2">
+              <div className="flex flex-col items-center gap-4 w-full md:w-auto">
+                <span className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.3em] font-black">{lang === 'cs' ? "Zakladatel" : "Founder"}</span>
+                <Image src="/obr/tomasmicka.png" alt="Tomáš" width={300} height={300} priority className="w-40 h-40 md:w-56 md:h-56 object-cover rounded-sm border border-mafia-gold/30 shadow-[0_0_20px_rgba(197,160,89,0.15)]" />
+                <div className="text-center">
+                  <h4 className="text-3xl font-heading font-black text-smoke-white uppercase tracking-wider">Tomáš</h4>
+                  <p className="text-xs font-mono text-smoke-white/50 uppercase tracking-widest mt-1">{lang === 'cs' ? "7 let praxe" : "7 years of exp."}</p>
+                </div>
+                <a href="https://mm.inthechair.com/micka" target="_blank" rel="noopener noreferrer" className="bg-mafia-gold text-black w-full max-w-[280px] md:w-auto px-10 py-4 md:px-8 md:py-3 mt-2 font-black uppercase tracking-widest text-lg md:text-sm text-center hover:bg-white transition-colors shadow-lg">
+                  {lang === 'cs' ? "Rezervovat" : "Book"}
+                </a>
+              </div>
+              <div className="flex flex-col items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
+                <span className="text-[10px] font-mono text-transparent uppercase tracking-[0.3em] font-black select-none hidden md:block">{lang === 'cs' ? "Mezera" : "Space"}</span>
+                <Image src="/obr/nellapelikanova.png" alt="Nella" width={300} height={300} priority className="w-40 h-40 md:w-56 md:h-56 object-cover rounded-sm border border-mafia-gold/30 shadow-[0_0_20px_rgba(197,160,89,0.15)]" />
+                <div className="text-center">
+                  <h4 className="text-3xl font-heading font-black text-smoke-white uppercase tracking-wider">Nella</h4>
+                  <p className="text-xs font-mono text-smoke-white/50 uppercase tracking-widest mt-1">{lang === 'cs' ? "3 roky praxe" : "3 years of exp."}</p>
+                </div>
+                <a href="https://mmbarberx.setmore.com" target="_blank" rel="noopener noreferrer" className="bg-mafia-gold text-black w-full max-w-[280px] md:w-auto px-10 py-4 md:px-8 md:py-3 mt-2 font-black uppercase tracking-widest text-lg md:text-sm text-center hover:bg-white transition-colors shadow-lg">
+                  {lang === 'cs' ? "Rezervovat" : "Book"}
+                </a>
+              </div>
             </div>
           </div>
         );
@@ -235,21 +223,41 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
         );
       case "vice":
         return (
-          <div className="flex flex-col gap-4 text-left">
+          <div className="flex flex-col gap-4 text-left w-full">
             <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
-              {lang === 'cs' ? "INFORMACE // KODEX" : "INFORMATION // THE CODE"}
+              {lang === 'cs' ? "PŘÍBĚH // KODEX" : "THE STORY // THE CODE"}
             </span>
-            <h3 className="text-3xl md:text-4xl font-heading font-black text-smoke-white uppercase tracking-wider">
-              {lang === 'cs' ? "KODEX RODINY MMBARBER" : "THE CODE OF THE FAMILY"}
+            <h3 className="text-3xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-wider">
+              {lang === 'cs' ? "KODEX A MOJE CESTA" : "THE CODE AND MY JOURNEY"}
             </h3>
-            <p className="text-sm text-smoke-white/60 leading-relaxed font-sans mt-2">
-              {lang === 'cs'
-                ? "To, co se u nás řekne, u nás také zůstane. Jsme bezpečný prostor pro váš odpočinek. Zjistěte více o našem provozu, parkování a chodu."
-                : "What is said here, stays here. We are a safe space for your relaxation. Find out more about our operation, parking, and daily business."
-              }
-            </p>
-            <div className="mt-4 border-l border-mafia-red/50 pl-4 py-1 text-xs text-smoke-white/40 font-mono">
-              {lang === 'cs' ? "Žádné zbytečné oči, jen ty a tvůj styl." : "No unnecessary eyes, just you and your style."}
+            
+            <div className="flex flex-col gap-4 text-base md:text-lg text-smoke-white/80 leading-relaxed font-sans mt-4 pr-4 overflow-y-auto max-h-[40vh] md:max-h-[50vh] custom-scrollbar">
+              <p>
+                {lang === 'cs'
+                  ? "Starám se o své lidi, kteří ke mně chodí. Je to místo pro podnikatele a všechny, kdo sdílí podobnou mentalitu. Pomáháme si tu společně růst. Ale pokud tě to nezajímá, můžeš se prostě jen dojít ostříhat, odpočinout si a pokecat."
+                  : "I take care of my people who come to me. It's a place for entrepreneurs and all those who share a similar mentality. We help each other grow. But if you're not into that, you can just come for a haircut, relax, and chat."
+                }
+              </p>
+              <p>
+                {lang === 'cs'
+                  ? "Moje cesta začala pár let zpět v Royal Barbershop & Shop. Vystudoval jsem více škol a zaměření, abych své řemeslo ovládl dokonale. Tím to ale neskončilo – na vlastní pěst jsem se ponořil do oborů jako je psychologie a ekonomika, abych pochopil věci v širších souvislostech."
+                  : "My journey started a few years ago at Royal Barbershop & Shop. I studied multiple schools and specializations to master my craft perfectly. But it didn't stop there – I taught myself many other fields, from psychology to economics, to understand the bigger picture."
+                }
+              </p>
+              <p>
+                {lang === 'cs'
+                  ? "A tyhle stránky? Ty stále tvořím sám ve svém volném čase. Vše má svůj čas a kvalitu."
+                  : "And this website? I'm still building it myself in my free time. Everything has its time and quality."
+                }
+              </p>
+            </div>
+
+            <div className="mt-4 border-l border-mafia-gold/50 pl-4 py-2 text-sm text-smoke-white/60 font-mono italic">
+              {lang === 'cs' ? "Žádné zbytečné oči, jen ty, tvůj styl a loajalita." : "No unnecessary eyes, just you, your style, and loyalty."}
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <Image src="/podpis.png" alt="Podpis" width={250} height={120} loading="lazy" className="h-24 md:h-32 w-auto object-contain opacity-100 filter drop-shadow-[0_0_12px_rgba(200,16,46,0.2)]" />
             </div>
           </div>
         );
@@ -274,6 +282,90 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
             </div>
           </div>
         );
+      case "komunita":
+        return (
+          <div className="flex flex-col gap-4 text-center md:text-left w-full h-full items-center md:items-start justify-center md:justify-start">
+            <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
+              {lang === 'cs' ? "MM BARBER // RODINA" : "MM BARBER // FAMILY"}
+            </span>
+            <h3 className="text-3xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-wider">
+              {lang === 'cs' ? "RODINA MM BARBER" : "MM BARBER FAMILY"}
+            </h3>
+            <p className="text-sm md:text-base text-smoke-white/60 leading-relaxed font-sans mt-2 max-w-lg">
+              {lang === 'cs'
+                ? "Není to jen o stříhání. Je to o komunitě, bratrství a stylu, který nás spojuje. Vstup do naší rodiny."
+                : "It's not just about haircuts. It's about community, brotherhood, and style. Join our family."}
+            </p>
+            <div className="mt-8 flex justify-center md:justify-start w-full">
+               <button onClick={(e) => { e.preventDefault(); handleMenuSelect('komunita'); }} className="bg-mafia-gold text-black px-8 py-3 font-black uppercase tracking-widest text-sm hover:bg-white transition-colors shadow-lg">
+                 {lang === 'cs' ? "Vstoupit do rodiny" : "Enter Family"}
+               </button>
+            </div>
+          </div>
+        );
+      case "seznamka":
+        return (
+          <div className="flex flex-col gap-4 text-center w-full h-full items-center">
+            <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
+              {lang === 'cs' ? "KOMUNITA // SEZNAMKA" : "COMMUNITY // DATING"}
+            </span>
+            <h3 className="text-3xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-wider">
+              {lang === 'cs' ? "ŽENY V SEZNAMCE" : "WOMEN IN DATING"}
+            </h3>
+            <p className="text-sm md:text-base text-smoke-white/60 leading-relaxed font-sans mt-2 max-w-lg">
+              {lang === 'cs' 
+                ? "Místo, kde se prolíná styl s osobností. Prohlédněte si naši galerii a seznamte se."
+                : "A place where style meets personality. View our gallery and meet them."}
+            </p>
+            
+            <div className="mt-8 flex flex-row flex-wrap justify-center gap-6 md:gap-10 w-full overflow-y-auto custom-scrollbar md:max-h-[50vh] px-2 pb-4">
+              {/* Magda Profile */}
+              <div className="flex flex-col items-center group w-full max-w-[240px] md:max-w-[320px]">
+                <div className="relative w-full aspect-[3/2] overflow-hidden border border-mafia-gold/20 md:border-mafia-gold/30 md:group-hover:border-mafia-gold/60 transition-colors bg-mafia-dark shadow-xl rounded-sm">
+                   <Image src="/obr/seznamka/magda.jpg" alt="Magda" fill className="object-cover object-top md:filter md:grayscale md:group-hover:grayscale-0 transition-all duration-500" />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                   <div className="absolute bottom-4 left-0 right-0 text-center z-10 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 md:translate-y-4 md:group-hover:translate-y-0 flex justify-center">
+                      <span className="text-[10px] font-mono text-mafia-gold bg-black/80 md:bg-black/60 px-2 py-1 uppercase tracking-widest backdrop-blur-sm">{lang === 'cs' ? "Seznamka" : "Dating"}</span>
+                   </div>
+                </div>
+                <div className="mt-5 text-center w-full">
+                  <h4 className="text-xl md:text-2xl font-heading font-black text-smoke-white tracking-widest uppercase mb-1">Magda</h4>
+                  <span className="text-[10px] font-mono text-mafia-gold/70 uppercase tracking-widest">{lang === 'cs' ? "Nezávislá žena" : "Independent woman"}</span>
+                </div>
+              </div>
+
+              {/* Free Slot */}
+              <div className="flex flex-col items-center group w-full max-w-[240px] md:max-w-[320px] cursor-pointer" onClick={(e) => { e.preventDefault(); handleMenuSelect('seznamka'); }}>
+                <div className="relative w-full aspect-[3/2] overflow-hidden border border-white/5 md:group-hover:border-mafia-gold/40 transition-colors bg-mafia-dark/30 shadow-xl flex items-center justify-center rounded-sm">
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                   
+                   <div className="relative z-10 flex flex-col items-center justify-center p-4 text-center w-full">
+                      <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center mb-4 text-white/20 group-hover:text-mafia-gold group-hover:border-mafia-gold group-hover:scale-110 group-hover:bg-mafia-gold/10 transition-all duration-300">
+                         <Plus size={24} strokeWidth={1.5} />
+                      </div>
+                      <span className="text-[10px] md:text-[11px] font-sans text-mafia-gold/90 italic opacity-0 md:opacity-0 group-hover:opacity-100 md:group-hover:opacity-100 transition-opacity duration-300 leading-relaxed font-bold px-4">
+                         {lang === 'cs' ? "Tento slot čeká na tebe, princezno... 👑" : "This slot is waiting for you, princess... 👑"}
+                      </span>
+                   </div>
+                   
+                   <div className="absolute bottom-4 left-0 right-0 text-center z-10 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 md:translate-y-4 md:group-hover:translate-y-0 pointer-events-none flex justify-center">
+                      <span className="text-[10px] font-mono text-mafia-gold bg-black/80 md:bg-black/60 px-2 py-1 uppercase tracking-widest backdrop-blur-sm">{lang === 'cs' ? "Seznamka" : "Dating"}</span>
+                   </div>
+                </div>
+                <div className="mt-5 text-center w-full">
+                  <h4 className="text-xl md:text-2xl font-heading font-black text-smoke-white/30 tracking-widest uppercase mb-1">{lang === 'cs' ? "Volný slot" : "Free slot"}</h4>
+                  <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">{lang === 'cs' ? "Neznámá" : "Unknown"}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-center w-full">
+               <button onClick={(e) => { e.preventDefault(); handleMenuSelect('seznamka'); }} className="bg-mafia-gold text-black w-full max-w-[280px] md:w-auto px-8 py-3 font-black uppercase tracking-widest text-sm text-center hover:bg-white transition-colors shadow-lg">
+                 {lang === 'cs' ? "Vstoupit do seznamky" : "Enter Dating"}
+               </button>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -283,36 +375,15 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
   if (!showIntro || isDismissed || isLowTier || isActuallyMobile) return null;
 
   return (
-    <div className={`fixed inset-0 w-full h-screen flex flex-col md:flex-row items-stretch justify-start overflow-hidden z-[9990] transition-all duration-1000 ${isAnimating ? 'opacity-100 bg-[#070707]' : 'opacity-0 bg-[#020202] pointer-events-none'} ${isDismissed ? 'pointer-events-none invisible' : ''}`}>
+    <div className={`fixed inset-0 w-full h-[100dvh] flex flex-col md:flex-row items-stretch justify-start overflow-y-auto overflow-x-hidden md:overflow-hidden z-[9990] transition-opacity duration-500 will-change-opacity ${isAnimating ? 'opacity-100 bg-[#070707]' : 'opacity-0 bg-[#020202] pointer-events-none'} ${isDismissed ? 'pointer-events-none invisible' : ''}`}>
         
-        {/* Background Smoke Video */}
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-lighten pointer-events-none z-10" 
-          src="/smoke.mp4" 
-        />
-
-        {/* Cinematic Filters */}
-        <div 
-          ref={grainRef}
-          className="absolute inset-0 opacity-[0.06] bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] pointer-events-none z-20"
-        ></div>
-
-        <div 
-          ref={flickerRef}
-          className="absolute inset-0 bg-white opacity-0 mix-blend-overlay pointer-events-none transition-opacity duration-75 z-20"
-        ></div>
-
-        {/* Dramatic Vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.95)_100%)] pointer-events-none z-20"></div>
+        {/* Simple Background */}
+        <div className="absolute inset-0 bg-[#070707] z-10 pointer-events-none"></div>
 
         {/* Left Side: Game Menu */}
-        <div className="w-full md:w-[450px] h-full flex flex-col justify-center px-8 md:px-16 z-30 relative bg-black/60 backdrop-blur-sm border-r border-mafia-gold/15">
+        <div className="w-full md:w-[450px] flex-none flex flex-col items-center md:items-start justify-center px-4 md:px-16 pt-24 pb-12 md:py-0 z-30 relative bg-black/80 md:bg-black/60 md:backdrop-blur-sm md:border-r border-b md:border-b-0 border-mafia-gold/15">
           {/* Menu Title / Brand Header */}
-          <div className="mb-12 flex flex-col gap-2">
+          <div className="mb-8 md:mb-12 flex flex-col items-center md:items-start gap-2 w-full text-center md:text-left">
             <span className="text-[10px] font-mono text-mafia-gold/50 uppercase tracking-[0.4em]">MMBARBER // EST 2024</span>
             <input 
               type="text" 
@@ -323,7 +394,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
                  localStorage.setItem("mmbarber_client_nickname", e.target.value);
                  window.dispatchEvent(new Event('mmbarber_ratings_updated'));
               }}
-              className="mt-2 mb-2 bg-transparent border-b border-mafia-gold/30 text-smoke-white font-mono text-xs focus:outline-none focus:border-mafia-gold/80 transition-colors w-2/3 pb-1"
+              className="hidden md:block mt-4 mb-4 bg-transparent border-b border-mafia-gold/30 text-smoke-white font-mono text-sm md:text-base focus:outline-none focus:border-mafia-gold/80 transition-colors w-full md:w-4/5 pb-2 placeholder:text-smoke-white/30"
             />
             <h2 className="text-3xl md:text-4xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,215,0,0.25)]">
               {lang === 'cs' ? "HLAVNÍ MENU" : "MAIN MENU"}
@@ -337,31 +408,42 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1 }}
-              className="flex flex-col gap-5"
+              className="flex flex-col items-center md:items-start gap-6 md:gap-10 mt-4 md:mt-8 w-full"
             >
               {menuItems.map((item, index) => (
                 <button
                   key={item.id}
                   onMouseEnter={() => handleMouseEnter(item.id)}
-                  onClick={() => handleMenuSelect(item.id)}
-                  className="group flex items-center gap-4 py-2 text-left relative focus:outline-none w-fit"
+                  onClick={(e) => {
+                    if (item.id === 'start') {
+                      handleMenuSelect(item.id);
+                    } else if (window.innerWidth < 1024) {
+                      setHoveredItem(item.id);
+                      setTimeout(() => {
+                        document.getElementById('intro-right-col')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    } else {
+                      handleMenuSelect(item.id);
+                    }
+                  }}
+                  className="group flex flex-col md:flex-row items-center md:items-center gap-1 md:gap-4 py-2 md:text-left text-center relative focus:outline-none w-full md:w-fit"
                 >
                   {/* Bullet / Line Selector */}
                   <div 
-                    className={`w-4 h-[2px] bg-mafia-gold transition-all duration-300 ${
+                    className={`hidden md:block w-4 h-[2px] bg-mafia-gold transition-all duration-300 ${
                       hoveredItem === item.id ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
                     }`}
                   />
                   
-                  <div className="flex flex-col">
-                    <span className={`text-[9px] font-mono transition-colors duration-300 ${
+                  <div className="flex flex-col w-full items-center md:items-start">
+                    <span className={`text-[10px] font-mono transition-colors duration-300 ${
                       hoveredItem === item.id ? "text-mafia-gold/80" : "text-smoke-white/20"
                     }`}>
                       0{index + 1}
                     </span>
-                    <span className={`text-xl md:text-2xl font-heading font-black tracking-[0.2em] uppercase transition-all duration-300 ${
+                    <span className={`text-2xl md:text-2xl w-full md:w-auto font-heading font-black tracking-[0.2em] uppercase transition-all duration-300 ${
                       hoveredItem === item.id 
-                        ? "text-mafia-gold drop-shadow-[0_0_8px_rgba(255,215,0,0.5)] translate-x-2" 
+                        ? "bg-mafia-gold text-mafia-black px-6 py-2 md:px-4 md:py-1 md:translate-x-2 shadow-[0_0_20px_rgba(197,160,89,0.4)]" 
                         : "text-smoke-white/50 hover:text-smoke-white/80"
                     }`}>
                       {lang === 'cs' ? item.titleCs : item.titleEn}
@@ -372,8 +454,8 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
             </motion.div>
           )}
 
-          {/* Footer removed per user request, added Language Switcher instead */}
-          <div className="absolute bottom-8 left-8 md:left-16 flex items-center gap-4 border-t border-mafia-gold/10 pt-4 w-64">
+          {/* Language Switcher moved to top on mobile */}
+          <div className="absolute top-6 left-6 md:top-auto md:bottom-8 md:left-16 flex items-center gap-4 md:border-t md:border-mafia-gold/10 md:pt-4 w-auto md:w-64 z-50">
             <button 
               onClick={() => switchLanguage('cs')} 
               className={`flex items-center gap-2 transition-all duration-300 ${lang === 'cs' ? 'opacity-100' : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'}`}
@@ -393,16 +475,16 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
         </div>
 
         {/* Right Side: Details / Information */}
-        <div className="flex-1 h-full hidden md:flex flex-col justify-center items-start px-16 md:px-24 z-30 relative bg-gradient-to-l from-black/80 to-transparent">
+        <div id="intro-right-col" className="flex-1 w-full md:w-auto md:h-full flex flex-col justify-start md:justify-center items-center px-4 py-8 md:px-24 md:py-0 z-30 relative bg-gradient-to-t md:bg-gradient-to-l from-black/80 to-transparent">
           {isFullyOpen && (
             <AnimatePresence mode="wait">
               <motion.div
                 key={hoveredItem}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="max-w-md w-full flex flex-col gap-4 border border-mafia-gold/10 bg-mafia-black/40 backdrop-blur-md p-8 shadow-2xl relative"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className={`w-full flex flex-col gap-4 border border-mafia-gold/10 bg-mafia-black/80 md:bg-mafia-black/40 md:backdrop-blur-md p-6 md:p-8 shadow-2xl relative will-change-transform ${hoveredItem === 'rezervace' ? 'max-w-4xl' : 'max-w-md'}`}
               >
                 {/* Decorative border corners */}
                 <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-mafia-gold/40"></div>

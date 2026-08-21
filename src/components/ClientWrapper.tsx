@@ -20,6 +20,7 @@ const EarthProtocol = dynamic(() => import("@/components/EarthProtocol").then(mo
 const BarberChat = dynamic(() => import("@/components/BarberChat").then(mod => mod.BarberChat), { ssr: false });
 const UserSettingsManager = dynamic(() => import("@/components/UserSettingsManager").then(mod => mod.UserSettingsManager), { ssr: false });
 const ElitaGame = dynamic(() => import("@/components/ElitaGame").then(mod => mod.ElitaGame), { ssr: false });
+const SlotMachine = dynamic(() => import("@/components/SlotMachine").then(mod => mod.SlotMachine), { ssr: false });
 
 export function ClientWrapper() {
   const [mounted, setMounted] = useState(false);
@@ -27,7 +28,7 @@ export function ClientWrapper() {
   const [isEarthProtocolOpen, setIsEarthProtocolOpen] = useState(false);
   const [isBarberChatOpen, setIsBarberChatOpen] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
-  const [graphicsTier, setGraphicsTier] = useState<"low" | "medium" | "high" | "ultra">("low");
+  const [graphicsTier, setGraphicsTier] = useState<"lite" | "low" | "medium" | "high" | "ultra" | "soft">("low");
   const [themeRevision, setThemeRevision] = useState(0);
   const { lang } = useTranslation();
   const pathname = usePathname();
@@ -63,19 +64,22 @@ export function ClientWrapper() {
       const isDataSaving = connection?.saveData === true;
       const isSlowConnection = connection?.effectiveType === '2g' || connection?.effectiveType === '3g';
       
-      let tier: "low" | "medium" | "high" | "ultra" = "low";
+      let tier: "lite" | "low" | "medium" | "high" | "ultra" | "soft" = "low";
       
       if (isDataSaving || isSlowConnection) {
-        return "low";
+        return "lite";
       }
 
       if (isMobileDevice) {
-        tier = (cores >= 8 && ram >= 8) ? "medium" : "low";
+        if (cores >= 8 && ram >= 8) tier = "medium";
+        else if (cores <= 2 || ram <= 2) tier = "lite";
+        else tier = "low";
       } else {
         // Desktop tiers - MORE RESTRICTIVE
         if (cores >= 12 && ram >= 16) tier = "ultra";
         else if (cores >= 8 && ram >= 12) tier = "high";
         else if (cores >= 6 && ram >= 8) tier = "medium";
+        else if (cores <= 2 || ram <= 2) tier = "lite";
         else tier = "low";
       }
       return tier;
@@ -141,7 +145,7 @@ export function ClientWrapper() {
         }
       }
       
-        if (currentTier === 'low') {
+        if (currentTier === 'low' || currentTier === 'lite') {
           localStorage.setItem("mmbarber_visited", "true");
         }
         
@@ -247,7 +251,8 @@ export function ClientWrapper() {
       const hour = new Date().getHours();
       const override = localStorage.getItem("mmbarber_atmosphere_override");
       let isGalaxy = hour >= 22 || hour < 4;
-      if (override === "galaxy") isGalaxy = true;
+      if (pathname === '/') isGalaxy = false;
+      if (override === "galaxy") isGalaxy = pathname === '/' ? false : true;
       else if (override === "classic") isGalaxy = false;
       // If auto, keep the time-based value
       setIsGalaxyVisible(isGalaxy);
@@ -264,20 +269,21 @@ export function ClientWrapper() {
   const showEffects = !isActuallyMobile && !isRodinaPage && (graphicsTier === "high" || graphicsTier === "ultra");
 
   return (
-    <MotionConfig reducedMotion={isActuallyMobile || graphicsTier === "low" || graphicsTier === "medium" ? "always" : "user"}>
+    <MotionConfig reducedMotion={isActuallyMobile || graphicsTier === "low" || graphicsTier === "medium" || graphicsTier === "lite" ? "always" : "user"}>
       {/* Games are currently disabled by request */}
       {/* {showEffects && <BarberGame />} */}
       {/* BarberChat is disabled per user request */}
       {/* {showEffects && <BarberChat isOpen={isBarberChatOpen} />} */}
       {showEffects && <Radio />}
       <CookieBanner />
-      {!isActuallyMobile && !isRodinaPage && !isGalaxyVisible && <FloatingScissors />}
+      {!isActuallyMobile && !isRodinaPage && !isGalaxyVisible && graphicsTier !== 'lite' && graphicsTier !== 'low' && <FloatingScissors />}
       <VipControlBar />
       {showEffects && <GlobalSound />}
       {showEffects && <MatrixBackground />}
       <UserSettingsManager />
-      <EarthProtocol isOpen={isEarthProtocolOpen} onClose={() => setIsEarthProtocolOpen(false)} lang={lang} />
-      <ElitaGame />
+      {graphicsTier !== 'lite' && <EarthProtocol isOpen={isEarthProtocolOpen} onClose={() => setIsEarthProtocolOpen(false)} lang={lang} />}
+      {graphicsTier !== 'lite' && <ElitaGame />}
+      {graphicsTier !== 'lite' && <SlotMachine />}
     </MotionConfig>
   );
 }

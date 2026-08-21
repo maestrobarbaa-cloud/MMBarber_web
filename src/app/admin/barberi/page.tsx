@@ -22,7 +22,17 @@ export default function BarberAdminPage() {
     parentId: "",
     requiresUnlock: false,
     unlockThreshold: 5,
-    missionFailed: false
+    missionFailed: false,
+    bookingSystemType: "external",
+    structuredSchedule: {
+      "Po": { work: true, start: "09:00", end: "18:00" },
+      "Út": { work: true, start: "09:00", end: "18:00" },
+      "St": { work: true, start: "09:00", end: "18:00" },
+      "Čt": { work: true, start: "09:00", end: "18:00" },
+      "Pá": { work: true, start: "09:00", end: "18:00" },
+      "So": { work: false, start: "09:00", end: "12:00" },
+      "Ne": { work: false, start: "09:00", end: "12:00" }
+    }
   });
 
   useEffect(() => {
@@ -44,7 +54,20 @@ export default function BarberAdminPage() {
       if (res.ok) {
         await refreshBarbers();
         setIsAdding(false);
-        setFormData({ name: "", role: "", image: "/obr/novy_barber.png", desc: "", schedule: "Individuální režim práce.", bookingLink: "", customChatText: "", parentId: "", requiresUnlock: false, unlockThreshold: 5, missionFailed: false });
+        setFormData({ 
+          name: "", role: "", image: "/obr/novy_barber.png", desc: "", schedule: "Individuální režim práce.", 
+          bookingLink: "", customChatText: "", parentId: "", requiresUnlock: false, unlockThreshold: 5, missionFailed: false,
+          bookingSystemType: "external",
+          structuredSchedule: {
+            "Po": { work: true, start: "09:00", end: "18:00" },
+            "Út": { work: true, start: "09:00", end: "18:00" },
+            "St": { work: true, start: "09:00", end: "18:00" },
+            "Čt": { work: true, start: "09:00", end: "18:00" },
+            "Pá": { work: true, start: "09:00", end: "18:00" },
+            "So": { work: false, start: "09:00", end: "12:00" },
+            "Ne": { work: false, start: "09:00", end: "12:00" }
+          }
+        });
       }
     } catch (e) {
       console.error(e);
@@ -146,8 +169,16 @@ export default function BarberAdminPage() {
                   <input required type="text" value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})} className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Odkaz na rezervaci (URL)</label>
-                  <input type="text" value={formData.bookingLink} onChange={e => setFormData({...formData, bookingLink: e.target.value})} className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none" />
+                  <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Typ Rezervačního Systému</label>
+                  <select value={formData.bookingSystemType} onChange={e => setFormData({...formData, bookingSystemType: e.target.value as any})} className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none">
+                    <option value="external">Externí odkaz (původní)</option>
+                    <option value="internal">Vlastní interní systém (přes web)</option>
+                  </select>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Odkaz na rezervaci (URL) [Pouze pro externí]</label>
+                  <input type="text" value={formData.bookingLink} onChange={e => setFormData({...formData, bookingLink: e.target.value})} className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none" disabled={formData.bookingSystemType === 'internal'} />
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
@@ -186,6 +217,61 @@ export default function BarberAdminPage() {
                     )}
                   </div>
                 </div>
+
+                {formData.bookingSystemType === 'internal' && (
+                  <div className="space-y-4 md:col-span-2 border-t border-white/10 pt-4 mt-2">
+                    <h3 className="text-sm font-heading font-bold text-mafia-gold uppercase tracking-widest">Pracovní doba (0-24h)</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {Object.keys(formData.structuredSchedule).map((day) => {
+                        const s = (formData.structuredSchedule as any)[day];
+                        return (
+                          <div key={day} className="flex items-center gap-2 bg-black/50 p-2 border border-white/10">
+                            <input 
+                              type="checkbox" 
+                              checked={s.work} 
+                              onChange={(e) => setFormData(prev => ({
+                                ...prev, 
+                                structuredSchedule: {
+                                  ...prev.structuredSchedule, 
+                                  [day]: { ...s, work: e.target.checked }
+                                }
+                              }))} 
+                              className="accent-mafia-gold"
+                            />
+                            <span className="w-8 font-mono text-white">{day}</span>
+                            <input 
+                              type="time" 
+                              value={s.start} 
+                              disabled={!s.work}
+                              onChange={(e) => setFormData(prev => ({
+                                ...prev, 
+                                structuredSchedule: {
+                                  ...prev.structuredSchedule, 
+                                  [day]: { ...s, start: e.target.value }
+                                }
+                              }))}
+                              className="bg-black border border-white/20 text-white px-1 text-xs outline-none" 
+                            />
+                            <span className="text-white/50">-</span>
+                            <input 
+                              type="time" 
+                              value={s.end} 
+                              disabled={!s.work}
+                              onChange={(e) => setFormData(prev => ({
+                                ...prev, 
+                                structuredSchedule: {
+                                  ...prev.structuredSchedule, 
+                                  [day]: { ...s, end: e.target.value }
+                                }
+                              }))}
+                              className="bg-black border border-white/20 text-white px-1 text-xs outline-none" 
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="mt-8 flex justify-end">

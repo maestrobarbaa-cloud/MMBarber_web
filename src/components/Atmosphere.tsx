@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 interface Star {
   x: number;
@@ -23,6 +24,7 @@ export function Atmosphere() {
   const starsRef = useRef<Star[]>([]);
   const mouseRef = useRef({ x: 0, y: 0 });
   const requestRef = useRef<number>(undefined);
+  const pathname = usePathname();
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -44,8 +46,10 @@ export function Atmosphere() {
       }
 
       let isGalaxy = hour >= 22 || hour < 4;
+      if (pathname === '/') isGalaxy = false; // Disable galaxy on front page
+
       if (override === "galaxy") {
-          isGalaxy = true;
+          isGalaxy = pathname === '/' ? false : true;
           setAtmosphereMode('galaxy');
       }
       else if (override === "classic") {
@@ -55,7 +59,7 @@ export function Atmosphere() {
           setAtmosphereMode(isGalaxy ? 'galaxy' : 'classic');
       }
       
-      setIsActive(isGalaxy && tier !== 'low');
+      setIsActive(isGalaxy && tier !== 'low' && tier !== 'lite');
     };
 
     checkAtmosphere();

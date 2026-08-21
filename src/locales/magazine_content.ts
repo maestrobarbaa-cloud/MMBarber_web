@@ -232,6 +232,37 @@ export const MAGAZINE_CS = [
     }
   },
   {
+    type: 'expert',
+    title: 'Průvodce výběrem',
+    category: 'ÚČESY',
+    shortTitle: 'Výběr účesu',
+    subtitle: 'Jak zvolit účes podle obličeje',
+    content: 'Správný účes dokáže vyvážit proporce obličeje a zdůraznit vaše nejlepší rysy. Nejde o to slepě následovat trendy, ale najít styl, který vám anatomicky sedí. Klíčem je kontrast – pokud máte kulatý obličej, potřebujete ostré linie. Pokud máte hranatý obličej, můžete si dovolit více textury.',
+    sections: [
+      { t: 'Oválný obličej', d: 'Můžete nosit téměř cokoliv. Ideální je udržet vlasy z čela (např. Pompadour), aby obličej nevypadal kulatější.' },
+      { t: 'Čtvercový obličej', d: 'Ostrá čelist potřebuje buď zdůraznit (krátký Buzz cut), nebo zjemnit (texturovaný French Crop). Vyhněte se pěšince uprostřed.' },
+      { t: 'Kulatý obličej', d: 'Cílem je obličej opticky prodloužit. Potřebujete výšku nahoře a krátké boky (Fade s vyčesanou ofinou). Nic plochého.' },
+      { t: 'Typ a hustota vlasů', d: 'Jemné vlasy potřebují produkty pro objem a texturu. Husté vlasy snesou těžší pomády a uhlazené styly.' }
+    ]
+  },
+  {
+    type: 'test-haircut',
+    title: 'Kalkulačka střihu',
+    category: 'ÚČESY',
+    shortTitle: 'Test účesu',
+    subtitle: 'Najděte svůj signature look',
+    questions: [
+      { q: "Jaký je přibližně tvar vašeho obličeje?", options: [{ text: "Spíše kulatý nebo oválný.", val: 1 }, { text: "Výrazná a ostrá čelist (čtverec/obdélník).", val: 2 }, { text: "Úzký s ostrou bradou (srdce/trojúhelník).", val: 3 }] },
+      { q: "Kolik času jste ochotni ráno věnovat stylingu?", options: [{ text: "0 minut. Chci vstát a jít.", val: 1 }, { text: "Do 5 minut. Rychlý produkt a hotovo.", val: 2 }, { text: "10+ minut. Mám rád rituál s fénem a pomádou.", val: 3 }] },
+      { q: "Jaká je přirozená struktura vašich vlasů?", options: [{ text: "Úplně rovné a spíše tvrdé.", val: 1 }, { text: "Normální s mírnou vlnou.", val: 2 }, { text: "Velmi husté, vlnité nebo kudrnaté.", val: 3 }] }
+    ],
+    results: {
+      'buzz-crop': { title: "DOPORUČENÍ: BUZZ CUT / FRENCH CROP", desc: "Potřebujete maximální efektivitu. Tyto střihy nevyžadují téměř žádnou údržbu a zdůrazní rysy vašeho obličeje.", advice: "Pro French Crop použijte matný stylingový pudr pro vytvoření textury bez zatížení.", focus: "Matný pudr" },
+      'textured-flow': { title: "DOPORUČENÍ: TEXTURED FRINGE / MODERN MULLET", desc: "Hledáte moderní a přirozený vzhled. Texturované střihy pracují s přirozenou dynamikou vašich vlasů.", advice: "Klíčem je mořská sůl ve spreji aplikovaná do vlhkých vlasů před sušením.", focus: "Sea Salt Spray" },
+      'classic-pompadour': { title: "DOPORUČENÍ: EXECUTIVE CONTOUR / POMPADOUR", desc: "Klasika, která nikdy neumírá. Tyto účesy vyžadují čas a preciznost, ale výsledek je ultimátní symbol elegance.", advice: "Pro dokonalý tvar použijte kulatý kartáč během fénování a kvalitní pomádu.", focus: "Pomáda na vodní bázi" }
+    }
+  },
+  {
     type: 'test-scalp',
     title: 'Kožní anomálie',
     category: 'PLEŤ',
@@ -610,6 +641,37 @@ export const MAGAZINE_EN = [
       'low-porosity': { title: "LOW POROSITY", desc: "Your hair cuticle is tightly closed. Hair is resilient but hard to hydrate.", advice: "Use heat when applying masks. Avoid heavy oils.", focus: "Humectants (Glycerin, Aloe)." },
       'medium-porosity': { title: "MEDIUM POROSITY", desc: "Ideal state. Cuticle is slightly open, hair takes and holds moisture well.", advice: "Continue with regular maintenance. Occasional protein treatment keeps structure firm.", focus: "Balance (Hydration + Proteins)." },
       'high-porosity': { title: "HIGH POROSITY", desc: "Hair is damaged or genetically very 'open'. It soaks up water fast but loses it even faster.", advice: "Use acid rinses to close the cuticle. Oils and butters are a must.", focus: "Proteins and lipids (Keratin, Ceramides)." }
+    }
+  },
+  {
+    type: 'expert',
+    title: 'Haircut Guide',
+    category: 'HAIRCUTS',
+    shortTitle: 'Haircut Guide',
+    subtitle: 'How to choose based on face shape',
+    content: 'The right haircut can balance facial proportions and highlight your best features. It\'s not about blindly following trends, but finding a style that fits you anatomically. The key is contrast – if you have a round face, you need sharp lines. If you have a square face, you can afford more texture.',
+    sections: [
+      { t: 'Oval Face', d: 'You can wear almost anything. Ideal to keep hair off the forehead (e.g., Pompadour) so the face doesn\'t look rounder.' },
+      { t: 'Square Face', d: 'A sharp jawline needs to be either emphasized (short Buzz cut) or softened (textured French Crop). Avoid middle parts.' },
+      { t: 'Round Face', d: 'The goal is to visually elongate the face. You need height on top and short sides (Fade with brushed up fringe). Nothing flat.' },
+      { t: 'Hair Type & Density', d: 'Fine hair needs volume and texture products. Thick hair can handle heavier pomades and slick styles.' }
+    ]
+  },
+  {
+    type: 'test-haircut',
+    title: 'Style Calculator',
+    category: 'HAIRCUTS',
+    shortTitle: 'Haircut (Test)',
+    subtitle: 'Find your signature look',
+    questions: [
+      { q: "What is the approximate shape of your face?", options: [{ text: "Rather round or oval.", val: 1 }, { text: "Prominent and sharp jawline (square/rectangle).", val: 2 }, { text: "Narrow with a sharp chin (heart/triangle).", val: 3 }] },
+      { q: "How much time are you willing to spend on styling in the morning?", options: [{ text: "0 minutes. I want to wake up and go.", val: 1 }, { text: "Up to 5 minutes. Quick product and done.", val: 2 }, { text: "10+ minutes. I like the ritual with hair dryer and pomade.", val: 3 }] },
+      { q: "What is the natural structure of your hair?", options: [{ text: "Completely straight and rather coarse.", val: 1 }, { text: "Normal with a slight wave.", val: 2 }, { text: "Very thick, wavy, or curly.", val: 3 }] }
+    ],
+    results: {
+      'buzz-crop': { title: "RECOMMENDATION: BUZZ CUT / FRENCH CROP", desc: "You need maximum efficiency. These haircuts require almost no maintenance and highlight your facial features.", advice: "For a French Crop, use a matte styling powder to create texture without weighing hair down.", focus: "Matte Powder" },
+      'textured-flow': { title: "RECOMMENDATION: TEXTURED FRINGE / MODERN MULLET", desc: "You're looking for a modern and natural look. Textured cuts work with the natural dynamics of your hair.", advice: "The key is sea salt spray applied to damp hair before drying.", focus: "Sea Salt Spray" },
+      'classic-pompadour': { title: "RECOMMENDATION: EXECUTIVE CONTOUR / POMPADOUR", desc: "A classic that never dies. These hairstyles require time and precision, but the result is the ultimate symbol of elegance.", advice: "For the perfect shape, use a round brush during blow-drying and a high-quality pomade.", focus: "Water-based Pomade" }
     }
   },
   {

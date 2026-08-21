@@ -1,25 +1,12 @@
-export type OperativeState = 'online' | 'offline' | 'transparent' | 'custom';
+import { getStatusAction, setStatusAction } from "@/app/actions/status";
+import { 
+  OperativeState, 
+  CalendarEntry, 
+  OperativeStatusConfig, 
+  OperativeStatusData 
+} from "./statusTypes";
 
-export interface CalendarEntry {
-  dayOfWeek: number; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  start: string; // "09:00"
-  end: string;   // "18:00"
-  breakStart?: string;
-  breakEnd?: string;
-}
-
-export interface OperativeStatusConfig {
-  mode: 'manual' | 'calendar';
-  manualState: OperativeState;
-  manualCustomText: string;
-  isIndividualSchedule?: boolean;
-  calendar: CalendarEntry[];
-}
-
-export interface OperativeStatusData {
-  tomas: OperativeStatusConfig;
-  nella: OperativeStatusConfig;
-}
+export type { OperativeState, CalendarEntry, OperativeStatusConfig, OperativeStatusData };
 
 const DEFAULT_DATA: OperativeStatusData = {
   tomas: {
@@ -50,25 +37,31 @@ const DEFAULT_DATA: OperativeStatusData = {
   }
 };
 
+let cachedData: OperativeStatusData | null = null;
+
 export const getOperativeStatusData = (): OperativeStatusData => {
-  if (typeof window === 'undefined') return DEFAULT_DATA;
-  const saved = localStorage.getItem("mmbarber_operative_status");
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch (e) {
-      return DEFAULT_DATA;
-    }
-  }
-  return DEFAULT_DATA;
+  return cachedData || DEFAULT_DATA;
 };
 
-export const setOperativeStatusData = (data: OperativeStatusData) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem("mmbarber_operative_status", JSON.stringify(data));
-    window.dispatchEvent(new Event("storage")); // trigger cross-tab update
-    window.dispatchEvent(new Event("mmbarber_status_update")); // local update
+export const fetchOperativeStatusData = async (): Promise<OperativeStatusData> => {
+  try {
+    const data = await getStatusAction();
+    cachedData = data;
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event("mmbarber_status_update"));
+    }
+    return data;
+  } catch (err) {
+    return cachedData || DEFAULT_DATA;
   }
+};
+
+export const setOperativeStatusData = async (data: OperativeStatusData) => {
+  cachedData = data;
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event("mmbarber_status_update")); // local optimistic update
+  }
+  await setStatusAction(data);
 };
 
 export interface EvaluatedStatus {
@@ -110,17 +103,27 @@ export const evaluateStatus = (config: OperativeStatusConfig): EvaluatedStatus =
 export const subscribeToStatusUpdates = (callback: (data: OperativeStatusData) => void) => {
   if (typeof window === 'undefined') return () => {};
   
+  let active = true;
+
   const handleUpdate = () => {
-    callback(getOperativeStatusData());
+    if (active) callback(getOperativeStatusData());
   };
   
-  window.addEventListener("storage", handleUpdate);
   window.addEventListener("mmbarber_status_update", handleUpdate);
   
-  // Return unsubsribe function
+  // Initial fetch and polling every 5 seconds for real-time sync across clients
+  fetchOperativeStatusData().then(data => {
+    if (active) callback(data);
+  });
+  
+  const interval = setInterval(() => {
+    if (active) fetchOperativeStatusData();
+  }, 5000);
+  
   return () => {
-    window.removeEventListener("storage", handleUpdate);
+    active = false;
     window.removeEventListener("mmbarber_status_update", handleUpdate);
+    clearInterval(interval);
   };
 };
 

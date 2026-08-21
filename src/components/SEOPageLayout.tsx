@@ -62,6 +62,23 @@ export function SEOPageLayout({ title, subtitle, content, keywords, url }: SEOPa
             </div>
           </div>
 
+          <div className="mb-24 bg-mafia-dark/30 border border-white/5 p-8">
+            <h2 className="text-3xl font-heading font-black uppercase text-mafia-gold mb-8 border-b border-mafia-gold/20 pb-4">Časté Dotazy (FAQ)</h2>
+            <div className="space-y-6">
+              {[
+                { q: "Kolik stojí skin fade?", a: "Cena za precizní skin fade začíná na 600 Kč. Přesný rozpis všech služeb najdete v našem ceníku." },
+                { q: "Jak dlouho trvá střih?", a: "Na každý střih si vyhrazujeme 45–60 minut. Věříme v kvalitu, ne v kvantitu. Dostanete maximální péči." },
+                { q: "Musím se objednat?", a: "Ano, pro zaručení termínu doporučujeme využít náš online rezervační systém. Kapacity bývají plné." },
+                { q: "Kde zaparkuji?", a: "Přímo u našeho barbershopu (Uherské Hradiště - Mařatice) máme pro klienty vyhrazeno bezplatné a diskrétní parkování." }
+              ].map((faq, idx) => (
+                <div key={idx} className="border-l-2 border-mafia-gold/30 pl-4">
+                  <h3 className="text-lg font-bold uppercase mb-2 text-smoke-white">{faq.q}</h3>
+                  <p className="text-smoke-white/60 leading-relaxed text-sm">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="bg-mafia-gold/5 p-12 border-y border-mafia-gold/20 text-center mb-24">
             <h2 className="text-2xl font-heading font-black uppercase mb-8">Strategické Propojení</h2>
             <div className="flex flex-wrap justify-center gap-6">

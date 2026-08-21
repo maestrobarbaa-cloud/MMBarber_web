@@ -1,0 +1,1530 @@
+"use client";
+
+import { useState, useCallback, useRef, useEffect } from "react";
+import { 
+  User, Calendar, Camera, MapPin, 
+  Heart, Ruler, X, ImagePlus, 
+  Cigarette, Wine, Sparkles, Target, Coffee, Check,
+  Skull, Flag, MessageCircleHeart, Flame, GraduationCap, Zap, Bookmark, Instagram, Link, PawPrint, Search
+} from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
+import { motion, AnimatePresence } from "framer-motion";
+import Cropper from 'react-easy-crop';
+import { ProfileCard, ProfileData, Pet } from "./ProfileCard";
+import { ANIMAL_TYPES, PET_BREEDS } from "@/lib/PetAtlas";
+import { CATEGORIES } from "./DiscoveryHub";
+import { CustomSelect } from "./CustomSelect";
+import { PersonalityQuiz } from "./PersonalityQuiz";
+
+// Helper to create HTML image
+const createImage = (url: string): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener('load', () => resolve(image));
+    image.addEventListener('error', (error) => reject(error));
+    image.src = url;
+  });
+
+// Helper to crop image
+async function getCroppedImg(
+  imageSrc: string,
+  pixelCrop: { width: number; height: number; x: number; y: number }
+): Promise<string | null> {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error('Canvas is empty'));
+        return;
+      }
+      resolve(URL.createObjectURL(blob));
+    }, 'image/jpeg', 0.95);
+  });
+}
+
+
+
+interface ProfileSetupProps {
+  initialData?: ProfileData | null;
+  onFinish?: (data: ProfileData) => void;
+}
+
+export function ProfileSetup({ initialData, onFinish }: ProfileSetupProps) {
+  const { lang } = useTranslation();
+  
+  const [formData, setFormData] = useState<ProfileData>(initialData || {
+    photos: [] as string[],
+    name: "",
+    age: "",
+    gender: "",
+    seeking: "",
+    city: "",
+    height: "",
+    smoking: "",
+    drinking: "",
+    interests: "",
+    bio: "",
+    education: "",
+    energy: "",
+    matchStrategy: "",
+    firstDate: "",
+    // Advanced/Fun section
+    isComplicated: false,
+    weekend: "",
+    lifeGoal: "",
+    kids: "",
+    redFlag: "",
+    loveLanguage: "",
+    negatives: "",
+    categories: [],
+    activeCategories: [],
+    petDetails: "",
+    pets: [],
+    // Psychology
+    mbti: "",
+    temperament: "",
+    mindset: "",
+    intelligence: "",
+    socialBattery: ""
+  });
+
+  const [error, setError] = useState("");
+  
+  // Cropper state
+  const [activePhoto, setActivePhoto] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+
+  // Preview modal state
+  const [showPreview, setShowPreview] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [editingSeekingCategory, setEditingSeekingCategory] = useState<string | null>(null);
+  const [editingMyCategory, setEditingMyCategory] = useState<string | null>(null);
+  
+  // Pet setup state
+  const [showPetModal, setShowPetModal] = useState(false);
+  const [editingPetId, setEditingPetId] = useState<string | null>(null);
+  const [petDraft, setPetDraft] = useState<{type: string, breed: string, name: string, purpose: 'play' | 'breed' | 'none'}>({ type: 'dog', breed: '', name: '', purpose: 'none' });
+  const [breedSearch, setBreedSearch] = useState("");
+
+  
+  // Animation state for the complicated section
+  const [isComplicatedAnimating, setIsComplicatedAnimating] = useState(false);
+  
+  // Validation state
+  const [missingFields, setMissingFields] = useState<string[]>([]);
+  
+  // Ref for auto-resizing textarea
+  const bioRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize bio textarea when its content changes
+  useEffect(() => {
+    if (bioRef.current) {
+      bioRef.current.style.height = 'auto';
+      bioRef.current.style.height = `${bioRef.current.scrollHeight}px`;
+    }
+  }, [formData.bio]);
+
+  const validateForm = () => {
+    const missing: string[] = [];
+    const missingNames: string[] = [];
+    let customError = "";
+
+    if (formData.photos.length === 0) {
+      missing.push('photos');
+      missingNames.push(lang === 'cs' ? 'Fotka' : 'Photo');
+    }
+    if (!formData.name.trim()) {
+      missing.push('name');
+      missingNames.push(lang === 'cs' ? 'Jméno' : 'Name');
+    }
+    if (!formData.age) {
+      missing.push('age');
+      missingNames.push(lang === 'cs' ? 'Věk' : 'Age');
+    } else if (parseInt(formData.age) < 18) {
+      missing.push('age');
+      customError = lang === 'cs' ? 'Tady je to jen pro dospělý, kámo. Musí ti být aspoň 18.' : 'Adults only, my friend. Must be 18+.';
+    }
+
+    if (missing.length > 0) {
+      setMissingFields(missing);
+      
+      if (customError && missingNames.length === 0) {
+        setError(customError);
+      } else if (customError) {
+        setError(
+          lang === 'cs' 
+            ? `Chybí: ${missingNames.join(', ')}. A pamatuj: ${customError}` 
+            : `Missing: ${missingNames.join(', ')}. And remember: ${customError}`
+        );
+      } else {
+        setError(
+          lang === 'cs' 
+            ? `Chybí povinné údaje: ${missingNames.join(', ')}` 
+            : `Missing required fields: ${missingNames.join(', ')}`
+        );
+      }
+      
+      // Scroll to the first missing field
+      setTimeout(() => {
+        const firstMissing = document.querySelector(`[data-field="${missing[0]}"]`);
+        if (firstMissing) {
+          firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+      
+      return false;
+    }
+
+    setError("");
+    return true;
+  };
+
+  const handleFinish = () => {
+    if (validateForm()) {
+      if (onFinish) {
+        onFinish(formData);
+      }
+    }
+  };
+
+  const handleSavePet = () => {
+    if (!petDraft.breed) return;
+
+    if (editingPetId) {
+      setFormData(prev => ({
+        ...prev,
+        pets: prev.pets?.map(p => p.id === editingPetId ? { ...petDraft, id: editingPetId } : p)
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        pets: [...(prev.pets || []), { ...petDraft, id: Math.random().toString(36).substr(2, 9) }]
+      }));
+    }
+    
+    setShowPetModal(false);
+  };
+
+  const handleEditPet = (petId: string) => {
+    const petToEdit = formData.pets?.find(p => p.id === petId);
+    if (petToEdit) {
+      setPetDraft({ type: petToEdit.type, breed: petToEdit.breed, name: petToEdit.name || '', purpose: petToEdit.purpose || 'none' });
+      setEditingPetId(petId);
+      setBreedSearch('');
+      setShowPetModal(true);
+    }
+  };
+
+  const handleDeletePet = (petId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      pets: prev.pets?.filter(p => p.id !== petId)
+    }));
+  };
+
+  const openNewPetModal = () => {
+    setPetDraft({ type: 'dog', breed: '', name: '', purpose: 'none' });
+    setEditingPetId(null);
+    setBreedSearch('');
+    setShowPetModal(true);
+  };
+
+
+  const handlePreview = () => {
+    if (!validateForm()) return;
+    setShowPreview(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    
+    console.log("Profile data to submit:", formData);
+    if (onFinish) {
+      onFinish(formData);
+    }
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const url = URL.createObjectURL(files[0]);
+      setActivePhoto(url);
+      e.target.value = ''; 
+    }
+  };
+
+  const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const handleCropConfirm = async () => {
+    if (!activePhoto || !croppedAreaPixels) return;
+    try {
+      const croppedImage = await getCroppedImg(activePhoto, croppedAreaPixels);
+      if (croppedImage) {
+        setFormData(prev => ({
+          ...prev,
+          photos: [...prev.photos, croppedImage].slice(0, 6)
+        }));
+        
+        if (missingFields.includes('photos')) {
+          setMissingFields(prev => prev.filter(f => f !== 'photos'));
+          setError(""); // Clear global error message when user fixes a field
+        }
+      }
+      setActivePhoto(null);
+    } catch (e) {
+      console.error(e);
+      setActivePhoto(null);
+    }
+  };
+
+  const removePhoto = (indexToRemove: number) => {
+    setFormData(prev => ({
+      ...prev,
+      photos: prev.photos.filter((_, index) => index !== indexToRemove)
+    }));
+  };
+
+  return (
+    <>
+      <motion.form 
+        noValidate
+        initial={{ opacity: 0, y: 10 }} 
+        animate={{ opacity: 1, y: 0 }}
+        onSubmit={handleSubmit}
+        className="space-y-8 max-w-2xl mx-auto text-left bg-black/20 p-6 md:p-8 border border-white/5 shadow-2xl relative z-10"
+      >
+        <div className="text-center mb-8 border-b border-white/5 pb-6">
+          <h3 className="text-2xl font-heading font-black text-smoke-white uppercase tracking-[0.1em] mb-2">
+            {lang === 'cs' ? "Tvůj Profil" : "Your Profile"}
+          </h3>
+          <p className="text-smoke-white/50 text-sm">
+            {lang === 'cs' 
+              ? "Vyplň detaily, ať víme, s kým máme tu čest."
+              : "Fill in the details so we know who we're dealing with."}
+          </p>
+        </div>
+
+        {error && (
+          <div className="bg-red-900/20 border border-red-500/50 text-red-400 text-sm p-3 text-center mb-6">
+            {error}
+          </div>
+        )}
+
+        {/* Photos Section */}
+        <div id="field-photos" className={`space-y-4 p-4 -mx-4 rounded-sm transition-colors duration-500 ${missingFields.includes('photos') ? 'bg-red-900/20 border border-red-500/50' : 'border border-transparent'}`}>
+          <label className={`block text-xs font-mono uppercase tracking-widest flex items-center justify-between ${missingFields.includes('photos') ? 'text-red-400' : 'text-mafia-gold'}`}>
+            <span>{lang === 'cs' ? 'Fotografie *' : 'Photos *'}</span>
+            <span className="text-white/30 text-[10px]">{formData.photos.length} / 6</span>
+          </label>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <AnimatePresence>
+              {formData.photos.map((photoUrl, idx) => (
+                <motion.div 
+                  key={photoUrl + idx}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="relative aspect-square border border-mafia-gold/30 bg-black/40 group overflow-hidden"
+                >
+                  <img src={photoUrl} alt={`Upload ${idx}`} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                  <button
+                    type="button"
+                    onClick={() => removePhoto(idx)}
+                    className="absolute top-2 right-2 bg-black/60 text-white p-1 hover:text-red-500 hover:bg-black transition-colors z-20"
+                  >
+                    <X size={14} />
+                  </button>
+                  {idx === 0 && (
+                     <div className="absolute bottom-0 left-0 w-full bg-mafia-gold/80 text-black text-[10px] font-mono text-center py-1 font-bold uppercase z-10">
+                       {lang === 'cs' ? 'Hlavní' : 'Main'}
+                     </div>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            {formData.photos.length < 6 && (
+              <div className="relative aspect-square border border-dashed border-white/20 hover:border-mafia-gold/50 bg-black/20 group cursor-pointer transition-colors flex flex-col items-center justify-center">
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  onChange={handlePhotoUpload}
+                />
+                <ImagePlus size={24} className="text-white/30 group-hover:text-mafia-gold/70 mb-2 transition-colors" />
+                <span className="text-[10px] font-mono uppercase tracking-widest text-white/30 group-hover:text-mafia-gold/70">
+                  {lang === 'cs' ? 'Přidat' : 'Add'}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Name */}
+          <div id="field-name" className={`p-4 -mx-4 rounded-sm transition-colors duration-500 ${missingFields.includes('name') ? 'bg-red-900/20 border border-red-500/50' : 'border border-transparent'}`}>
+            <label className={`block text-xs font-mono uppercase tracking-widest mb-2 ${missingFields.includes('name') ? 'text-red-400' : 'text-white/40'}`}>
+              {lang === 'cs' ? 'Jméno / Přezdívka *' : 'Name / Nickname *'}
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/20"><User size={16} /></div>
+              <input
+                type="text" value={formData.name}
+                onChange={(e) => {
+                  setFormData({ ...formData, name: e.target.value });
+                  if (missingFields.includes('name')) {
+                    setMissingFields(prev => prev.filter(f => f !== 'name'));
+                    setError("");
+                  }
+                }}
+                className={`w-full bg-black/40 border py-3 pl-12 pr-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black transition-colors font-sans text-sm ${missingFields.includes('name') ? 'border-red-500 focus:border-red-400' : 'border-white/10 focus:border-mafia-gold'}`}
+                placeholder={lang === 'cs' ? 'Tvé jméno' : 'Your name'}
+              />
+            </div>
+          </div>
+
+          {/* Age */}
+          <div id="field-age" className={`p-4 -mx-4 rounded-sm transition-colors duration-500 ${missingFields.includes('age') ? 'bg-red-900/20 border border-red-500/50' : 'border border-transparent'}`}>
+            <label className={`block text-xs font-mono uppercase tracking-widest mb-2 ${missingFields.includes('age') ? 'text-red-400' : 'text-white/40'}`}>
+              {lang === 'cs' ? 'Věk (roky) *' : 'Age (years) *'}
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/20"><Calendar size={16} /></div>
+              <input
+                type="number" min="18" max="100" value={formData.age}
+                onChange={(e) => {
+                  setFormData({ ...formData, age: e.target.value });
+                  if (missingFields.includes('age')) {
+                    setMissingFields(prev => prev.filter(f => f !== 'age'));
+                    setError("");
+                  }
+                }}
+                className={`w-full bg-black/40 border py-3 pl-12 pr-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black transition-colors font-sans text-sm ${missingFields.includes('age') ? 'border-red-500 focus:border-red-400' : 'border-white/10 focus:border-mafia-gold'}`}
+                placeholder="Např. 25"
+              />
+            </div>
+          </div>
+
+          {/* Gender */}
+          <div>
+            <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">
+              {lang === 'cs' ? 'Jsem' : 'I am'}
+            </label>
+            <CustomSelect
+              value={formData.gender}
+              onChange={(val) => setFormData({ ...formData, gender: val })}
+              placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+              options={[
+                { value: "male", label: lang === 'cs' ? 'Muž' : 'Man' },
+                { value: "female", label: lang === 'cs' ? 'Žena' : 'Woman' },
+                { value: "other", label: lang === 'cs' ? 'Jiné (Agent v utajení)' : 'Other (Undercover Agent)' }
+              ]}
+            />
+          </div>
+
+        </div>
+
+        {/* --- MATCHING STRATEGY & ICE BREAKER --- */}
+        <div className="p-6 bg-mafia-gold/5 border border-mafia-gold/20 rounded-sm space-y-6">
+          <h4 className="text-mafia-gold font-heading font-black text-sm uppercase tracking-widest mb-4">
+            {lang === 'cs' ? 'Strategie v Rybníku' : 'Pond Strategy'}
+          </h4>
+          
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* Seeking Gender */}
+              <div>
+                <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <Heart size={14} className="text-mafia-gold" />
+                  {lang === 'cs' ? 'Hledám pohlaví' : 'Looking for gender'}
+                </label>
+                <CustomSelect
+                  value={formData.seeking}
+                  onChange={(val) => setFormData({ ...formData, seeking: val })}
+                  placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+                  options={[
+                    { value: "female", label: lang === 'cs' ? 'Ženu' : 'Woman' },
+                    { value: "male", label: lang === 'cs' ? 'Muže' : 'Man' },
+                    { value: "both", label: lang === 'cs' ? 'Nezáleží' : 'Does not matter' }
+                  ]}
+                />
+              </div>
+            </div>
+
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <Target size={14} className="text-mafia-gold" />
+              {lang === 'cs' ? 'Koho ti máme algoritmem vybírat?' : 'Who should our algorithm pick for you?'}
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[
+                { id: 'closest_match', label: 'Nejbližší shoda', desc: 'Max. společných štítků s tebou' },
+                { id: 'similar', label: 'Zrcadlo', desc: 'Podobné zájmy a povaha' },
+                { id: 'opposite', label: 'Magnet', desc: 'Protiklady se přitahují' },
+                { id: 'balanced', label: 'Zlatý střed', desc: 'Od každého trochu' }
+              ].map(option => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, matchStrategy: option.id })}
+                  className={`p-3 text-left border transition-all duration-300 ${
+                    formData.matchStrategy === option.id 
+                      ? 'border-mafia-gold bg-mafia-gold/10' 
+                      : 'border-white/10 hover:border-white/30 bg-black/40'
+                  }`}
+                >
+                  <div className={`text-sm font-bold uppercase tracking-wider mb-1 ${
+                    formData.matchStrategy === option.id ? 'text-mafia-gold' : 'text-smoke-white'
+                  }`}>
+                    {option.label}
+                  </div>
+                  <div className="text-[10px] font-mono text-white/40">{option.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <Zap size={14} className="text-mafia-gold" />
+              {lang === 'cs' ? 'Jaký je tvůj vibe / energie?' : 'What is your Vibe / Energy?'}
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {[
+                { id: 'zen', label: 'Pohodář', desc: 'Klidná síla, nevyhledávám drama' },
+                { id: 'balance', label: 'Balanc', desc: 'Společenský, ale umím i vypnout' },
+                { id: 'tornado', label: 'Tornádo', desc: '100% akce, nezastavím se' }
+              ].map(option => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, energy: option.id })}
+                  className={`p-3 text-left border transition-all duration-300 ${
+                    formData.energy === option.id 
+                      ? 'border-mafia-gold bg-mafia-gold/10' 
+                      : 'border-white/10 hover:border-white/30 bg-black/40'
+                  }`}
+                >
+                  <div className={`text-sm font-bold uppercase tracking-wider mb-1 ${
+                    formData.energy === option.id ? 'text-mafia-gold' : 'text-smoke-white'
+                  }`}>
+                    {option.label}
+                  </div>
+                  <div className="text-[10px] font-mono text-white/40">{option.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <Coffee size={14} className="text-mafia-gold" />
+              {lang === 'cs' ? 'Ideální první rande?' : 'Ideal first date?'}
+            </label>
+            <CustomSelect
+              value={formData.firstDate || ""}
+              onChange={(val) => setFormData({ ...formData, firstDate: val })}
+              placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+              options={[
+                { value: "coffee", label: lang === 'cs' ? 'Káva nebo drink v klidném baru' : 'Coffee or a drink in a quiet bar' },
+                { value: "food", label: lang === 'cs' ? 'Dobrá večeře a víno' : 'Good dinner and wine' },
+                { value: "action", label: lang === 'cs' ? 'Něco akčního (sport, únikovka...)' : 'Something active (sports, escape room...)' },
+                { value: "walk", label: lang === 'cs' ? 'Procházka přírodou nebo městem' : 'Walk in nature or city' },
+                { value: "culture", label: lang === 'cs' ? 'Kultura (kino, galerie, koncert)' : 'Culture (cinema, gallery, concert)' },
+                { value: "breakfast", label: lang === 'cs' ? 'Společná snídaně nebo brunch' : 'Breakfast or brunch together' },
+                { value: "netflix", label: lang === 'cs' ? 'Netflix & Chill doma na gauči' : 'Netflix & Chill on the couch' },
+                { value: "crazy", label: lang === 'cs' ? 'Něco šíleného (spontánní roadtrip...)' : 'Something crazy (spontaneous roadtrip...)' }
+              ]}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
+          {/* City */}
+          <div>
+            <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">
+              {lang === 'cs' ? 'Město' : 'City'}
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/20"><MapPin size={16} /></div>
+              <input
+                type="text" value={formData.city}
+                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                className="w-full bg-black/40 border border-white/10 py-3 pl-12 pr-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black focus:border-mafia-gold transition-colors font-sans text-sm"
+                placeholder={lang === 'cs' ? 'Odkud jsi?' : 'Where are you from?'}
+              />
+            </div>
+          </div>
+
+          {/* Height */}
+          <div>
+            <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">
+              {lang === 'cs' ? 'Výška (cm)' : 'Height (cm)'}
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/20"><Ruler size={16} /></div>
+              <input
+                type="number" min="100" max="250" value={formData.height}
+                onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+                className="w-full bg-black/40 border border-white/10 py-3 pl-12 pr-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black focus:border-mafia-gold transition-colors font-sans text-sm"
+                placeholder="180"
+              />
+            </div>
+          </div>
+
+          {/* Education */}
+          <div>
+            <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <GraduationCap size={12} />
+              {lang === 'cs' ? 'Vzdělání' : 'Education'}
+            </label>
+            <CustomSelect
+              value={formData.education || ""}
+              onChange={(val) => setFormData({ ...formData, education: val })}
+              placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+              options={[
+                { value: "basic", label: lang === 'cs' ? 'Základní' : 'Primary' },
+                { value: "high", label: lang === 'cs' ? 'Středoškolské' : 'High School' },
+                { value: "uni", label: lang === 'cs' ? 'Vysokoškolské' : 'University' }
+              ]}
+            />
+          </div>
+          
+          {/* Smoking */}
+          <div>
+            <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <Cigarette size={12} />
+              {lang === 'cs' ? 'Kouření' : 'Smoking'}
+            </label>
+            <CustomSelect
+              value={formData.smoking}
+              onChange={(val) => setFormData({ ...formData, smoking: val })}
+              placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+              options={[
+                { value: "no", label: lang === 'cs' ? 'Nekuřák' : 'Non-smoker' },
+                { value: "yes", label: lang === 'cs' ? 'Kuřák' : 'Smoker' },
+                { value: "sometimes", label: lang === 'cs' ? 'Příležitostně' : 'Occasionally' }
+              ]}
+            />
+          </div>
+
+          {/* Drinking */}
+          <div>
+            <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <Wine size={12} />
+              {lang === 'cs' ? 'Alkohol' : 'Drinking'}
+            </label>
+            <CustomSelect
+              value={formData.drinking}
+              onChange={(val) => setFormData({ ...formData, drinking: val })}
+              placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+              options={[
+                { value: "no", label: lang === 'cs' ? 'Abstinent' : 'Non-drinker' },
+                { value: "sometimes", label: lang === 'cs' ? 'Příležitostně' : 'Occasionally' },
+                { value: "yes", label: lang === 'cs' ? 'Často' : 'Often' }
+              ]}
+            />
+          </div>
+        </div>
+
+        {/* Pets Section */}
+        <div>
+          <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center gap-2">
+            <PawPrint size={12} />
+            {lang === 'cs' ? 'Moji mazlíčci' : 'My Pets'}
+          </label>
+          
+          <div className="flex flex-col gap-3 mb-4">
+            {formData.pets?.map(pet => {
+              const typeIcon = ANIMAL_TYPES.find(t => t.id === pet.type)?.icon || '🐾';
+              return (
+                <div key={pet.id} className="flex items-center justify-between p-3 border border-mafia-gold/30 bg-mafia-gold/5">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{typeIcon}</span>
+                    <div>
+                      <div className="font-heading font-black text-white">{pet.breed}</div>
+                      {pet.name && <div className="text-xs font-mono text-mafia-gold">{pet.name}</div>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button 
+                      type="button"
+                      onClick={() => handleEditPet(pet.id)}
+                      className="p-1.5 text-white/50 hover:text-white transition-colors border border-transparent hover:border-white/20"
+                    >
+                      Upravit
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => handleDeletePet(pet.id)}
+                      className="p-1.5 text-red-500/50 hover:text-red-500 transition-colors border border-transparent hover:border-red-500/20"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={openNewPetModal}
+            className="w-full py-3 border border-dashed border-white/20 text-white/50 font-mono text-sm hover:border-mafia-gold hover:text-mafia-gold transition-colors flex items-center justify-center gap-2"
+          >
+            <PawPrint size={16} />
+            {lang === 'cs' ? '+ Přidat mazlíčka' : '+ Add pet'}
+          </button>
+        </div>
+
+        {/* Categories / Tags */}
+        <div>
+            <div className="flex justify-between items-end mb-2">
+              <label className="block text-xs font-mono text-white/40 uppercase tracking-widest flex items-center gap-2">
+                <Bookmark size={12} />
+                {lang === 'cs' ? 'Můj Vibe / Štítky' : 'My Vibe / Tags'}
+              </label>
+              <span className="text-[10px] font-mono text-white/30 tracking-widest">
+                {(formData.categories || []).length}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {CATEGORIES.map(cat => {
+                const selectedCount = cat.subOptions.filter(opt => (formData.categories || []).includes(opt.tag)).length;
+                return (
+                  <button
+                    key={`mycat-btn-${cat.id}`}
+                    type="button"
+                    onClick={() => setEditingMyCategory(cat.id)}
+                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-all group relative overflow-hidden ${
+                      selectedCount > 0 ? 'bg-black/60 border-white/30 shadow-[0_0_15px_rgba(255,255,255,0.05)]' : 'bg-black/40 border-white/10 hover:border-mafia-gold/50'
+                    }`}
+                  >
+                    {selectedCount > 0 && (
+                      <div className={`absolute inset-0 opacity-10 pointer-events-none bg-gradient-to-br ${cat.color.split(' ')[2].replace('/10', '')} to-transparent`} />
+                    )}
+                    <cat.icon size={24} className={`mb-2 transition-colors relative z-10 ${selectedCount > 0 ? cat.color.split(' ')[1] : 'text-white/40 group-hover:text-mafia-gold'}`} />
+                    <span className={`text-[10px] font-bold uppercase tracking-wider text-center relative z-10 ${selectedCount > 0 ? 'text-white' : 'text-white/60'}`}>
+                      {cat.title[lang as 'cs' | 'en']}
+                    </span>
+                    {selectedCount > 0 && (
+                      <span className={`text-[10px] mt-1 font-mono px-2 py-0.5 rounded-full relative z-10 ${cat.color.split(' ')[2]} ${cat.color.split(' ')[1]}`}>
+                        {selectedCount} {lang === 'cs' ? 'vybráno' : 'selected'}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-white/30 font-mono mt-4 mb-4">
+              {lang === 'cs' ? 'Vyber vše, co tě nejlépe vystihuje. Vstoupíš tím do příslušných kategorií v rybníku.' : 'Select all that describe you best to enter these categories in the pond.'}
+            </p>
+
+          {/* Conditional Pet Details */}
+          {(formData.categories || []).some(cat => cat.toLowerCase().includes('pejskař') || cat.toLowerCase().includes('kočičí') || cat.toLowerCase().includes('exotika')) && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mt-4"
+            >
+              <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Sparkles size={12} className="text-mafia-gold" />
+                {lang === 'cs' ? 'Zvířecí parťák' : 'Furry friend'}
+              </label>
+              <input
+                type="text" value={formData.petDetails || ""}
+                onChange={(e) => setFormData({ ...formData, petDetails: e.target.value })}
+                className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black focus:border-mafia-gold transition-colors font-sans text-sm"
+                placeholder={lang === 'cs' ? 'Jakého máš mazlíčka? (Druh, rasa, jméno...)' : 'Tell us about your pet (species, breed...)'}
+              />
+            </motion.div>
+          )}
+        </div>
+
+        {/* Interests */}
+        <div>
+          <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center gap-2">
+            <Sparkles size={12} />
+            {lang === 'cs' ? 'Zájmy' : 'Interests'}
+          </label>
+          <input
+            type="text" value={formData.interests}
+            onChange={(e) => setFormData({ ...formData, interests: e.target.value })}
+            className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black focus:border-mafia-gold transition-colors font-sans text-sm"
+            placeholder={lang === 'cs' ? 'Sport, hudba, cestování... (oddělte čárkou)' : 'Sports, music, travel... (comma separated)'}
+          />
+        </div>
+
+        {/* Bio */}
+        <div>
+          <div className="flex justify-between items-end mb-2">
+            <label className="block text-xs font-mono text-white/40 uppercase tracking-widest">
+              {lang === 'cs' ? 'O mně' : 'About me'}
+            </label>
+            <span className={`text-[10px] font-mono tracking-widest ${formData.bio.length >= 1000 ? 'text-red-500 font-bold' : 'text-white/30'}`}>
+              {formData.bio.length} / 1000
+            </span>
+          </div>
+          <textarea
+            ref={bioRef}
+            value={formData.bio}
+            maxLength={1000}
+            onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+            rows={3}
+            className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black focus:border-mafia-gold transition-colors font-sans text-sm resize-none overflow-hidden"
+            placeholder={lang === 'cs' ? 'Napiš něco krátkého o sobě...' : 'Write something short about yourself...'}
+          />
+        </div>
+
+        {/* Social Media */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <Instagram size={12} className="text-pink-500" /> Instagram
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 font-mono text-sm">@</span>
+              <input
+                type="text" value={formData.instagram || ""}
+                onChange={(e) => setFormData({ ...formData, instagram: e.target.value.replace('@', '') })}
+                className="w-full bg-black/40 border border-white/10 py-3 pl-8 pr-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus:border-mafia-gold transition-colors font-sans text-sm"
+                placeholder={lang === 'cs' ? 'tvoje_jmeno' : 'username'}
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <Link size={12} /> TikTok
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 font-mono text-sm">@</span>
+              <input
+                type="text" value={formData.tiktok || ""}
+                onChange={(e) => setFormData({ ...formData, tiktok: e.target.value.replace('@', '') })}
+                className="w-full bg-black/40 border border-white/10 py-3 pl-8 pr-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus:border-mafia-gold transition-colors font-sans text-sm"
+                placeholder={lang === 'cs' ? 'tvoje_jmeno' : 'username'}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Negatives / Red Flags */}
+        <div>
+          <div className="flex justify-between items-end mb-2">
+            <label className="block text-xs font-mono text-red-500 uppercase tracking-widest flex items-center gap-2">
+              <Flag size={12} /> {lang === 'cs' ? 'Moje stinné stránky / Red flags' : 'My Red Flags / Negatives'}
+            </label>
+            <span className={`text-[10px] font-mono tracking-widest ${(formData.negatives?.length || 0) >= 300 ? 'text-red-500 font-bold' : 'text-white/30'}`}>
+              {formData.negatives?.length || 0} / 300
+            </span>
+          </div>
+          <textarea
+            value={formData.negatives || ""}
+            maxLength={300}
+            onChange={(e) => setFormData({ ...formData, negatives: e.target.value })}
+            rows={2}
+            className="w-full bg-red-950/20 border border-red-900/50 py-3 px-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black focus:border-red-500 transition-colors font-sans text-sm resize-none"
+            placeholder={lang === 'cs' ? 'Přiznej barvu! (např. Chrápu, v neděli nevstávám z postele...)' : 'Be honest! (e.g. I snore, I never leave bed on Sundays...)'}
+          />
+        </div>
+
+        {/* --- TOGGLE FOR COMPLICATED / FUN SECTION --- */}
+        <div className="pt-6 border-t border-white/5">
+          <label className="flex items-center gap-4 cursor-pointer group">
+            <div className="relative">
+              <input 
+                type="checkbox" 
+                className="sr-only"
+                checked={formData.isComplicated}
+                onChange={(e) => setFormData({ ...formData, isComplicated: e.target.checked })}
+              />
+              <div className={`w-12 h-6 rounded-full transition-colors duration-300 ${formData.isComplicated ? 'bg-mafia-gold' : 'bg-white/10'}`}></div>
+              <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${formData.isComplicated ? 'transform translate-x-6' : ''}`}></div>
+            </div>
+            <div>
+              <span className={`block font-heading font-black uppercase tracking-widest text-sm transition-colors ${formData.isComplicated ? 'text-mafia-gold' : 'text-smoke-white'}`}>
+                {lang === 'cs' ? 'Pojďme do hloubky' : 'Let\'s go deep'}
+              </span>
+              <span className="block text-[10px] font-mono text-white/40 uppercase tracking-wider">
+                {lang === 'cs' ? 'Odemknout deep-dive otázky' : 'Unlock deep-dive questions'}
+              </span>
+            </div>
+          </label>
+        </div>
+
+        {/* --- ADVANCED / FUN SECTION (COLLAPSIBLE) --- */}
+        <AnimatePresence>
+          {formData.isComplicated && (
+            <motion.div
+              initial={{ height: 0, opacity: 0, marginTop: 0 }}
+              animate={{ height: "auto", opacity: 1, marginTop: 24 }}
+              exit={{ height: 0, opacity: 0, marginTop: 0 }}
+              onAnimationStart={() => setIsComplicatedAnimating(true)}
+              onAnimationComplete={() => setIsComplicatedAnimating(false)}
+              style={{ overflow: isComplicatedAnimating ? "hidden" : "visible" }}
+            >
+              
+              {/* Psychology Section */}
+              <div className="p-6 bg-mafia-gold/10 border border-mafia-gold/30 rounded-sm space-y-6 mb-6">
+                <div className="flex items-center justify-between mb-2 border-b border-mafia-gold/20 pb-4">
+                  <div>
+                    <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm flex items-center gap-2">
+                      <Zap size={16} /> Psychologie & Povaha
+                    </h4>
+                    <p className="text-xs font-mono text-white/50 mt-1">Nastav si osobnost, nebo si udělej náš rychlý test.</p>
+                  </div>
+                  <button 
+                    type="button"
+                    onClick={() => setShowQuiz(true)}
+                    className="px-4 py-2 bg-mafia-gold text-black font-heading font-black text-xs uppercase tracking-widest rounded-full hover:bg-white transition-colors flex items-center gap-2"
+                  >
+                    Nevíš? Zkus test!
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* MBTI */}
+                  <div>
+                    <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      MBTI Typ osobnosti
+                    </label>
+                    <CustomSelect
+                      value={formData.mbti || ""}
+                      onChange={(val) => setFormData({ ...formData, mbti: val })}
+                      placeholder="Např. INTJ..."
+                      options={[
+                        { value: "INTJ", label: "INTJ (Architekt)" },
+                        { value: "INTP", label: "INTP (Logik)" },
+                        { value: "ENTJ", label: "ENTJ (Velitel)" },
+                        { value: "ENTP", label: "ENTP (Diskutér)" },
+                        { value: "INFJ", label: "INFJ (Advokát)" },
+                        { value: "INFP", label: "INFP (Zprostředkovatel)" },
+                        { value: "ENFJ", label: "ENFJ (Protagonista)" },
+                        { value: "ENFP", label: "ENFP (Bojovník)" },
+                        { value: "ISTJ", label: "ISTJ (Správce)" },
+                        { value: "ISFJ", label: "ISFJ (Ochránce)" },
+                        { value: "ESTJ", label: "ESTJ (Vedoucí)" },
+                        { value: "ESFJ", label: "ESFJ (Pečovatel)" },
+                        { value: "ISTP", label: "ISTP (Kutil)" },
+                        { value: "ISFP", label: "ISFP (Dobrodruh)" },
+                        { value: "ESTP", label: "ESTP (Podnikatel)" },
+                        { value: "ESFP", label: "ESFP bavič" }
+                      ]}
+                    />
+                  </div>
+
+                  {/* Temperament */}
+                  <div>
+                    <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      Temperament
+                    </label>
+                    <CustomSelect
+                      value={formData.temperament || ""}
+                      onChange={(val) => setFormData({ ...formData, temperament: val })}
+                      placeholder="Vyber..."
+                      options={[
+                        { value: "Sangvinik", label: "Sangvinik (Společenský, optimistický)" },
+                        { value: "Cholerik", label: "Cholerik (Vůdčí, energický)" },
+                        { value: "Flegmatik", label: "Flegmatik (Klidný, vyrovnaný)" },
+                        { value: "Melancholik", label: "Melancholik (Analytický, citlivý)" }
+                      ]}
+                    />
+                  </div>
+
+                  {/* Mindset */}
+                  <div>
+                    <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      Základní nastavení
+                    </label>
+                    <CustomSelect
+                      value={formData.mindset || ""}
+                      onChange={(val) => setFormData({ ...formData, mindset: val })}
+                      placeholder="Vyber..."
+                      options={[
+                        { value: "Optimista", label: "Optimista" },
+                        { value: "Pesimista", label: "Pesimista" },
+                        { value: "Realista", label: "Realista" }
+                      ]}
+                    />
+                  </div>
+
+                  {/* Intelligence */}
+                  <div>
+                    <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      Typ inteligence (podle Gardnera)
+                    </label>
+                    <CustomSelect
+                      value={formData.intelligence || ""}
+                      onChange={(val) => setFormData({ ...formData, intelligence: val })}
+                      placeholder="Vyber..."
+                      options={[
+                        { value: "Logicko-matematická", label: "Logicko-matematická" },
+                        { value: "Jazyková", label: "Jazyková (Lingvistická)" },
+                        { value: "Prostorová", label: "Prostorová (Vizuální)" },
+                        { value: "Hudební", label: "Hudební" },
+                        { value: "Tělesně-kinestetická", label: "Tělesně-kinestetická (Pohybová)" },
+                        { value: "Interpersonální", label: "Interpersonální (Emoční/Společenská)" },
+                        { value: "Intrapersonální", label: "Intrapersonální (Sebepoznání)" },
+                        { value: "Přírodovědná", label: "Přírodovědná" },
+                        { value: "Existenciální", label: "Existenciální (Duchovní)" }
+                      ]}
+                    />
+                  </div>
+
+                  {/* Social Battery */}
+                  <div>
+                    <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      Sociální baterie
+                    </label>
+                    <CustomSelect
+                      value={formData.socialBattery || ""}
+                      onChange={(val) => setFormData({ ...formData, socialBattery: val })}
+                      placeholder="Vyber..."
+                      options={[
+                        { value: "Extrovert", label: "Extrovert (Čerpá energii z lidí)" },
+                        { value: "Introvert", label: "Introvert (Čerpá energii o samotě)" },
+                        { value: "Ambivert", label: "Ambivert (Něco mezi)" }
+                      ]}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 bg-mafia-gold/5 border border-mafia-gold/20 rounded-sm space-y-6">
+                
+                {/* Weekend */}
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <Coffee size={14} className="text-mafia-gold" />
+                    {lang === 'cs' ? 'Můj typický víkend' : 'My typical weekend'}
+                  </label>
+                  <CustomSelect
+                    value={formData.weekend || ""}
+                    onChange={(val) => setFormData({ ...formData, weekend: val })}
+                    placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+                    options={[
+                      { value: "party", label: lang === 'cs' ? 'V pátek padla a já jdu žít (Párty)' : 'Friday night = Party time' },
+                      { value: "nature", label: lang === 'cs' ? 'Víkend trávím v horách / přírodě' : 'In the mountains / nature' },
+                      { value: "sleep", label: lang === 'cs' ? 'Vyspávám do oběda a chilluju' : 'Sleeping in and chilling' },
+                      { value: "hustle", label: lang === 'cs' ? 'Doháním resty a pracuju na svých snech' : 'Catching up on work / side hustle' }
+                    ]}
+                  />
+                </div>
+
+                {/* Life Goal */}
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <Target size={14} className="text-mafia-gold" />
+                    {lang === 'cs' ? 'Životní cíl' : 'Life Goal'}
+                  </label>
+                  <CustomSelect
+                    value={formData.lifeGoal || ""}
+                    onChange={(val) => setFormData({ ...formData, lifeGoal: val })}
+                    placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+                    options={[
+                      { value: "career", label: lang === 'cs' ? 'Kariéra a úspěch' : 'Career & Success' },
+                      { value: "family", label: lang === 'cs' ? 'Založit rodinu a najít klid' : 'Start a family & find peace' },
+                      { value: "travel", label: lang === 'cs' ? 'Procestovat svět' : 'Travel the world' },
+                      { value: "present", label: lang === 'cs' ? 'Žít naplno přítomností' : 'Live fully in the present' }
+                    ]}
+                  />
+                </div>
+
+                {/* Kids */}
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <User size={14} className="text-mafia-gold" />
+                    {lang === 'cs' ? 'Názor na děti' : 'Thoughts on kids'}
+                  </label>
+                  <CustomSelect
+                    value={formData.kids || ""}
+                    onChange={(val) => setFormData({ ...formData, kids: val })}
+                    placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+                    options={[
+                      { value: "yes", label: lang === 'cs' ? 'Určitě chci' : 'Definitely want them' },
+                      { value: "maybe", label: lang === 'cs' ? 'Možná jednou' : 'Maybe one day' },
+                      { value: "no", label: lang === 'cs' ? 'Nechci' : 'Don\'t want them' },
+                      { value: "have", label: lang === 'cs' ? 'Už mám' : 'Already have them' }
+                    ]}
+                  />
+                </div>
+
+                {/* Red Flag */}
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <Flag size={14} className="text-red-400" />
+                    {lang === 'cs' ? 'Moje mouchy (Red Flag)' : 'My biggest "Red Flag"'}
+                  </label>
+                  <CustomSelect
+                    value={formData.redFlag || ""}
+                    onChange={(val) => setFormData({ ...formData, redFlag: val })}
+                    placeholder={lang === 'cs' ? 'Přiznej barvu...' : 'Confess...'}
+                    error={true}
+                    options={[
+                      { value: "slow", label: lang === 'cs' ? 'Odepisuju hrozně pomalu' : 'I text back really slowly' },
+                      { value: "snore", label: lang === 'cs' ? 'Hrozně chrápu' : 'I snore terribly' },
+                      { value: "phone", label: lang === 'cs' ? 'Jsem závislý/á na telefonu' : 'Always on my phone' },
+                      { value: "cook", label: lang === 'cs' ? 'Neumím uvařit ani čaj' : 'I can\'t even cook tea' }
+                    ]}
+                  />
+                </div>
+
+                {/* Love Language */}
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <MessageCircleHeart size={14} className="text-mafia-gold" />
+                    {lang === 'cs' ? 'Jazyk lásky (Jak vyjadřuji náklonnost)' : 'Love Language'}
+                  </label>
+                  <CustomSelect
+                    value={formData.loveLanguage || ""}
+                    onChange={(val) => setFormData({ ...formData, loveLanguage: val })}
+                    placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+                    options={[
+                      { value: "touch", label: lang === 'cs' ? 'Fyzický kontakt (obejmutí, dotyky)' : 'Physical touch' },
+                      { value: "gifts", label: lang === 'cs' ? 'Pozornosti a dárky' : 'Receiving gifts' },
+                      { value: "time", label: lang === 'cs' ? 'Kvalitně strávený společný čas' : 'Quality time' },
+                      { value: "words", label: lang === 'cs' ? 'Slova ujištění a podpora' : 'Words of affirmation' }
+                    ]}
+                  />
+                </div>
+
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Social Networks Section */}
+        <div className="mt-8 pb-8">
+          <div className="flex items-center gap-2 border-b border-mafia-gold/30 pb-2 mb-6">
+            <Link size={16} className="text-mafia-gold" />
+            <h3 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm">
+              {lang === 'cs' ? 'Sociální sítě' : 'Social Networks'}
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">Instagram (Uživatelské jméno)</label>
+              <input
+                type="text" value={formData.instagram || ""}
+                onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                className="w-full bg-black/40 border border-white/10 p-3 text-white focus:border-mafia-gold" placeholder="@username"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">TikTok (Uživatelské jméno)</label>
+              <input
+                type="text" value={formData.tiktok || ""}
+                onChange={(e) => setFormData({ ...formData, tiktok: e.target.value })}
+                className="w-full bg-black/40 border border-white/10 p-3 text-white focus:border-mafia-gold" placeholder="@username"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">Facebook (Odkaz)</label>
+              <input
+                type="text" value={formData.facebook || ""}
+                onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
+                className="w-full bg-black/40 border border-white/10 p-3 text-white focus:border-mafia-gold" placeholder="https://facebook.com/..."
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">LinkedIn (Odkaz)</label>
+              <input
+                type="text" value={formData.linkedin || ""}
+                onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
+                className="w-full bg-black/40 border border-white/10 p-3 text-white focus:border-mafia-gold" placeholder="https://linkedin.com/in/..."
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">X / Twitter (Uživatelské jméno)</label>
+              <input
+                type="text" value={formData.twitter || ""}
+                onChange={(e) => setFormData({ ...formData, twitter: e.target.value })}
+                className="w-full bg-black/40 border border-white/10 p-3 text-white focus:border-mafia-gold" placeholder="@username"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">Spotify (Odkaz na profil/playlist)</label>
+              <input
+                type="text" value={formData.spotify || ""}
+                onChange={(e) => setFormData({ ...formData, spotify: e.target.value })}
+                className="w-full bg-black/40 border border-white/10 p-3 text-white focus:border-mafia-gold" placeholder="https://open.spotify.com/..."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Submit & Preview */}
+        <div className="pt-6 border-t border-white/5 flex flex-col md:flex-row gap-4">
+          <button
+            type="button"
+            onClick={handlePreview}
+            className="flex-1 py-4 bg-black border border-mafia-gold/50 text-mafia-gold font-mono uppercase tracking-widest hover:bg-mafia-gold/10 transition-colors"
+          >
+            {lang === 'cs' ? 'Náhled profilu' : 'Preview Profile'}
+          </button>
+          
+          <button
+            type="submit"
+            className="flex-1 py-4 bg-mafia-gold text-black font-heading font-black uppercase tracking-[0.2em] hover:bg-white hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            {formData.isComplicated ? <Flame size={18} /> : null}
+            {lang === 'cs' ? 'Uložit profil a skočit do rybníka' : 'Save Profile & Dive In'}
+          </button>
+        </div>
+      </motion.form>
+
+      {/* Personality Quiz Modal */}
+      <AnimatePresence>
+        {showQuiz && (
+          <PersonalityQuiz 
+            lang={lang}
+            onClose={() => setShowQuiz(false)}
+            onComplete={(results) => {
+              setFormData({ ...formData, ...results });
+              setShowQuiz(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Cropper Modal */}
+      <AnimatePresence>
+        {activePhoto && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+          >
+            <div className="bg-mafia-dark border border-mafia-gold/30 w-full max-w-lg overflow-hidden flex flex-col h-[70vh] md:h-[600px] shadow-[0_0_40px_rgba(197,160,89,0.15)] relative">
+              <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/40">
+                <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-sm">
+                  {lang === 'cs' ? 'Upravit fotku' : 'Crop Photo'}
+                </h4>
+                <button onClick={() => setActivePhoto(null)} className="text-white/50 hover:text-white transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="flex-1 relative bg-black">
+                <Cropper
+                  image={activePhoto}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={1}
+                  onCropChange={setCrop}
+                  onCropComplete={onCropComplete}
+                  onZoomChange={setZoom}
+                  classes={{ containerClassName: 'h-full w-full' }}
+                />
+              </div>
+              
+              <div className="p-6 bg-black/60 border-t border-white/5 space-y-4">
+                <div>
+                  <label className="text-xs font-mono text-white/50 uppercase tracking-widest block mb-2">
+                    {lang === 'cs' ? 'Přiblížení' : 'Zoom'}
+                  </label>
+                  <input
+                    type="range"
+                    value={zoom}
+                    min={1}
+                    max={3}
+                    step={0.1}
+                    aria-labelledby="Zoom"
+                    onChange={(e) => setZoom(Number(e.target.value))}
+                    className="w-full accent-mafia-gold"
+                  />
+                </div>
+                
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setActivePhoto(null)}
+                    className="flex-1 py-3 border border-white/10 text-white/60 hover:text-white hover:border-white/30 font-mono text-xs uppercase tracking-widest transition-colors"
+                  >
+                    {lang === 'cs' ? 'Zrušit' : 'Cancel'}
+                  </button>
+                  <button
+                    onClick={handleCropConfirm}
+                    className="flex-1 py-3 bg-mafia-gold text-black font-mono font-bold text-xs uppercase tracking-widest hover:bg-white transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Check size={16} />
+                    {lang === 'cs' ? 'Potvrdit' : 'Confirm'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Pet Setup Modal */}
+      <AnimatePresence>
+        {showPetModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[300] flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="w-full max-w-md bg-black border border-mafia-gold/30 p-6 shadow-[0_0_50px_rgba(197,160,89,0.1)] relative max-h-[90vh] flex flex-col"
+            >
+              <button
+                onClick={() => setShowPetModal(false)}
+                className="absolute top-4 right-4 text-white/50 hover:text-white"
+              >
+                <X size={20} />
+              </button>
+              
+              <h3 className="text-xl font-heading font-black text-mafia-gold uppercase mb-6 flex items-center gap-2">
+                <PawPrint size={20} />
+                {editingPetId ? (lang === 'cs' ? 'Upravit mazlíčka' : 'Edit Pet') : (lang === 'cs' ? 'Přidat mazlíčka' : 'Add Pet')}
+              </h3>
+
+              <div className="space-y-6 flex-1 overflow-y-auto pr-2">
+                <div>
+                  <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-3">
+                    {lang === 'cs' ? 'Druh zvířete' : 'Animal Type'}
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {ANIMAL_TYPES.map(type => (
+                      <button
+                        key={type.id}
+                        type="button"
+                        onClick={() => {
+                          setPetDraft({ ...petDraft, type: type.id, breed: '' });
+                          setBreedSearch('');
+                        }}
+                        className={`p-3 border flex flex-col items-center justify-center gap-2 transition-all ${
+                          petDraft.type === type.id 
+                            ? 'border-mafia-gold bg-mafia-gold/20 text-mafia-gold' 
+                            : 'border-white/10 text-white/50 hover:border-white/30 hover:bg-white/5 hover:text-white'
+                        }`}
+                      >
+                        <span className="text-2xl">{type.icon}</span>
+                        <span className="text-xs font-mono text-center leading-tight">
+                          {type.label[lang as 'cs' | 'en']}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">
+                    {lang === 'cs' ? 'Plemeno / Specifikace (Povinné)' : 'Breed / Specification (Required)'}
+                  </label>
+                  <input
+                    type="text"
+                    value={breedSearch}
+                    onChange={(e) => {
+                      setBreedSearch(e.target.value);
+                      setPetDraft({ ...petDraft, breed: e.target.value });
+                    }}
+                    placeholder={lang === 'cs' ? 'Hledat nebo napsat vlastní...' : 'Search or type your own...'}
+                    className="w-full bg-black border border-white/20 p-3 text-white focus:border-mafia-gold focus:outline-none mb-2"
+                  />
+                  <div className="max-h-40 overflow-y-auto border border-white/10 bg-white/5 rounded-sm p-1">
+                    {PET_BREEDS[petDraft.type]
+                      .filter(b => b.toLowerCase().includes(breedSearch.toLowerCase()))
+                      .map(breed => (
+                        <button
+                          key={breed}
+                          type="button"
+                          onClick={() => {
+                            setPetDraft({ ...petDraft, breed });
+                            setBreedSearch(breed);
+                          }}
+                          className={`w-full text-left px-3 py-2 text-sm transition-colors ${
+                            petDraft.breed === breed 
+                              ? 'bg-mafia-gold text-black font-bold' 
+                              : 'text-white/60 hover:bg-white/10 hover:text-white'
+                          }`}
+                        >
+                          {breed}
+                        </button>
+                      ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">
+                    {lang === 'cs' ? 'Jméno (Volitelné)' : 'Name (Optional)'}
+                  </label>
+                  <input
+                    type="text"
+                    value={petDraft.name}
+                    onChange={(e) => setPetDraft({ ...petDraft, name: e.target.value })}
+                    placeholder={lang === 'cs' ? 'Např. Max' : 'e.g. Max'}
+                    className="w-full bg-black border border-white/20 p-3 text-white focus:border-mafia-gold focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2">
+                    {lang === 'cs' ? 'Co pro mazlíčka hledáte?' : 'What are you looking for?'}
+                  </label>
+                  <CustomSelect
+                    value={petDraft.purpose}
+                    onChange={(val) => setPetDraft({ ...petDraft, purpose: val as 'play' | 'breed' | 'none' })}
+                    placeholder={lang === 'cs' ? 'Vyber...' : 'Select...'}
+                    options={[
+                      { value: "none", label: lang === 'cs' ? 'Jen se chlubím (Nehledám nic)' : 'Just showing off (Looking for nothing)' },
+                      { value: "play", label: lang === 'cs' ? '🎾 Parťáka na společné venčení' : '🎾 Playdate / Walking buddy' },
+                      { value: "breed", label: lang === 'cs' ? '❤️ Partnera na krytí / páření' : '❤️ Breeding partner' }
+                    ]}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/10">
+                <button
+                  type="button"
+                  disabled={!petDraft.breed}
+                  onClick={handleSavePet}
+                  className="w-full py-4 bg-mafia-gold text-black font-heading font-black uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white transition-all"
+                >
+                  {lang === 'cs' ? 'Uložit mazlíčka' : 'Save pet'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* MODAL FOR MY CATEGORY TAGS */}
+      <AnimatePresence>
+        {editingMyCategory && (() => {
+          const cat = CATEGORIES.find(c => c.id === editingMyCategory);
+          if (!cat) return null;
+          return (
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+            >
+              <motion.div 
+                initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+                className="w-full max-w-lg bg-black border border-white/10 p-6 rounded-xl flex flex-col max-h-[90vh]"
+              >
+                <div className="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+                  <div className={`p-3 rounded-full ${cat.color.split(' ')[2]}`}>
+                    <cat.icon size={24} className={cat.color.split(' ')[1]} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-white font-heading font-black uppercase tracking-widest text-lg">
+                      {cat.title[lang as 'cs' | 'en']}
+                    </h3>
+                    <p className="text-white/40 text-xs font-mono">{lang === 'cs' ? 'Moje štítky' : 'My tags'}</p>
+                  </div>
+                  <button onClick={() => setEditingMyCategory(null)} className="p-2 text-white/40 hover:text-white">
+                    <X size={20} />
+                  </button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-wrap gap-2 mb-6 content-start">
+                  {cat.subOptions.map(opt => {
+                    const catTag = opt.tag;
+                    const isSelected = (formData.categories || []).includes(catTag);
+                    const colorClasses = cat.color.split(' ');
+                    const borderColor = colorClasses.find(c => c.startsWith('border-'));
+                    const textColor = colorClasses.find(c => c.startsWith('text-'));
+                    const bgColor = colorClasses.find(c => c.startsWith('bg-'));
+
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => {
+                          const current = formData.categories || [];
+                          const updated = isSelected 
+                            ? current.filter(t => t !== catTag) 
+                            : [...current, catTag];
+                          setFormData({ ...formData, categories: updated });
+                        }}
+                        className={`px-4 py-2 text-sm font-sans rounded-full transition-all duration-300 border ${
+                          isSelected 
+                            ? `${borderColor} ${bgColor} ${textColor} font-bold shadow-[0_0_15px_rgba(255,255,255,0.1)] scale-105` 
+                            : 'border-white/10 text-white/60 hover:border-white/30 hover:text-white bg-black/40'
+                        }`}
+                      >
+                        {opt.tag}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                <button
+                  onClick={() => setEditingMyCategory(null)}
+                  className="w-full py-4 bg-mafia-gold text-black font-heading font-black uppercase tracking-widest rounded-lg hover:bg-white transition-colors"
+                >
+                  {lang === 'cs' ? 'Uložit a zavřít' : 'Save and Close'}
+                </button>
+              </motion.div>
+            </motion.div>
+          );
+        })()}
+      </AnimatePresence>
+
+      {/* Preview Modal */}
+      <AnimatePresence>
+        {showPreview && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[250] flex flex-col items-center justify-center bg-black/90 backdrop-blur-md p-4"
+          >
+            <div className="absolute top-4 right-4 z-50">
+              <button 
+                onClick={() => setShowPreview(false)}
+                className="w-12 h-12 rounded-full bg-mafia-gold/20 border border-mafia-gold text-mafia-gold flex items-center justify-center hover:bg-mafia-gold hover:text-black transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="w-full max-w-sm mb-4 text-center">
+              <h3 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">
+                {lang === 'cs' ? 'Takhle tě uvidí ostatní' : 'How others see you'}
+              </h3>
+              <p className="text-white/50 text-xs font-mono mt-1">
+                {lang === 'cs' ? 'Klikni na info nebo potáhni fotku pro detaily.' : 'Tap info or swipe for details.'}
+              </p>
+            </div>
+
+            <ProfileCard profile={formData} />
+            
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

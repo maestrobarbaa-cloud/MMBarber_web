@@ -184,6 +184,15 @@ export default function AdminDashboardPage() {
       color: 'rgba(var(--color-mafia-gold-rgb), 0.3)'
     },
     {
+      id: 'rezervace',
+      title: 'SPRÁVA REZERVACÍ',
+      subtitle: 'INTERNAL_BOOKING',
+      desc: 'Přehled a správa rezervací v interním systému. Kalendář a notifikace.',
+      icon: <BookOpen className="text-mafia-gold" size={40} />,
+      link: '/admin/rezervace',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.2)'
+    },
+    {
       id: 'historky',
       title: 'SPRÁVA HISTOREK',
       subtitle: 'CONTENT_MODERATION',
@@ -229,6 +238,24 @@ export default function AdminDashboardPage() {
       link: '/admin/komunita/novinky',
       color: 'rgba(197, 160, 89, 0.15)',
       badge: newNovinkyCount > 0 ? newNovinkyCount : undefined
+    },
+    {
+      id: 'vyherci',
+      title: 'VÝHERCI MINIHER',
+      subtitle: 'GAME_WINNERS',
+      desc: 'Záznamy úspěšných operativců z Elitní střelby a hazardního automatu.',
+      icon: <Trophy className="text-mafia-gold" size={40} />,
+      link: '/admin/vyherci',
+      color: 'rgba(255, 215, 0, 0.2)'
+    },
+    {
+      id: 'zivotopis',
+      title: 'TAJNÝ ŽIVOTOPIS',
+      subtitle: 'ENIGMA_PROTOCOL',
+      desc: 'Generování dočasných 24h přístupových hesel pro odemčení životopisu.',
+      icon: <ShieldAlert className="text-mafia-gold" size={40} />,
+      link: '/admin/zivotopis',
+      color: 'rgba(255, 0, 0, 0.15)'
     }
   ];
 

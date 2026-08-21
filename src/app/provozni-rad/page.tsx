@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import NextLink from "next/link";
 import { motion } from "framer-motion";
 import { FileText, ChevronLeft, ShieldCheck, AlertTriangle, Scale, Clock } from "lucide-react";

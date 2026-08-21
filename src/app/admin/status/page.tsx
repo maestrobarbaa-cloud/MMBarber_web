@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Activity, CalendarDays, Power, EyeOff, Save, ShieldAlert, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getOperativeStatusData, setOperativeStatusData, OperativeStatusData, OperativeState, OperativeStatusConfig } from "@/utils/status";
+import { getOperativeStatusData, setOperativeStatusData, fetchOperativeStatusData, OperativeStatusData, OperativeState, OperativeStatusConfig } from "@/utils/status";
 
 const DAYS = [
   { id: 1, label: 'Pondělí' },
@@ -29,13 +29,15 @@ export default function AdminStatusPage() {
       router.push("/admin");
     } else {
       setIsAuthenticated(true);
-      setData(getOperativeStatusData());
+      fetchOperativeStatusData().then(fetchedData => {
+        setData(fetchedData);
+      });
     }
   }, [router]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (data) {
-      setOperativeStatusData(data);
+      await setOperativeStatusData(data);
       setSavedMessage(true);
       setTimeout(() => setSavedMessage(false), 3000);
     }

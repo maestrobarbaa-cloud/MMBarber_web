@@ -160,13 +160,17 @@ export default function Home() {
               )}
 
               {/* Sequential reveals */}
-              <SectionReveal delay={0.1} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                <div className="section-optimize"><HolidayCountdown /></div>
-              </SectionReveal>
+              {!isMobile && (
+                <SectionReveal delay={0.1} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                  <div id="holidays" className="section-optimize"><HolidayCountdown /></div>
+                </SectionReveal>
+              )}
 
-              <SectionReveal delay={0.2} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                <div id="vice" className="section-optimize" style={{ scrollMarginTop: '100px' }}><StyleDefinition /></div>
-              </SectionReveal>
+              {!isMobile && (
+                <SectionReveal delay={0.2} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                  <div id="style-definition" className="section-optimize" style={{ scrollMarginTop: '100px' }}><StyleDefinition /></div>
+                </SectionReveal>
+              )}
 
               {isVisible('visibility_contact') && (
                 <SectionReveal delay={0.4} isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
@@ -179,59 +183,61 @@ export default function Home() {
                   <div className="section-optimize"><Partners /></div>
                 </SectionReveal>
               )}
-
+              
               <div className="pt-0">
                 <Footer />
               </div>
             </div>
             
-            <BottomTerminalReveal thresholdMultiplier={100}>
-              {(level) => isVisible('visibility_intelligence') ? (
-                <div className="w-full flex flex-col gap-12 pb-32">
-                  {level >= 1 && (
-                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                      <div className="max-w-4xl mx-auto px-6"><DailyIntelligence /></div>
-                    </SectionReveal>
-                  )}
+            {!isMobile && (
+              <BottomTerminalReveal thresholdMultiplier={100}>
+                {(level) => isVisible('visibility_intelligence') ? (
+                  <div className="w-full flex flex-col gap-12 pb-32">
+                    {level >= 1 && (
+                      <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                        <div className="max-w-4xl mx-auto px-6"><DailyIntelligence /></div>
+                      </SectionReveal>
+                    )}
 
-                  {level >= 2 && (
-                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                      <div className="w-full flex flex-col gap-12">
-                        <FooterSecrets />
-                        <RegionalSEOCloud />
-                      </div>
-                    </SectionReveal>
-                  )}
+                    {level >= 2 && (
+                      <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                        <div className="w-full flex flex-col gap-12">
+                          <FooterSecrets />
+                          <RegionalSEOCloud />
+                        </div>
+                      </SectionReveal>
+                    )}
 
-                  {level >= 3 && (
-                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                      <div className="w-full flex flex-col gap-12">
-                        <SEOFAQ />
-                        {isVisible('visibility_reviews') && <GoogleReviewsWall />}
-                      </div>
-                    </SectionReveal>
-                  )}
+                    {level >= 3 && (
+                      <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                        <div className="w-full flex flex-col gap-12">
+                          <SEOFAQ />
+                          {isVisible('visibility_reviews') && <GoogleReviewsWall />}
+                        </div>
+                      </SectionReveal>
+                    )}
 
-                  {level >= 4 && (
-                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                      <div className="w-full flex flex-col gap-12">
-                        <GlobalIntelligenceArchive />
-                        <OperationalJournal />
-                      </div>
-                    </SectionReveal>
-                  )}
+                    {level >= 4 && (
+                      <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                        <div className="w-full flex flex-col gap-12">
+                          <GlobalIntelligenceArchive />
+                          <OperationalJournal />
+                        </div>
+                      </SectionReveal>
+                    )}
 
-                  {level >= 5 && (
-                    <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
-                      <div className="w-full flex flex-col gap-12">
-                        <GroomingGuideArchive />
-                        <PersonalVision />
-                      </div>
-                    </SectionReveal>
-                  )}
-                </div>
-              ) : <div className="pb-32"></div>}
-            </BottomTerminalReveal>
+                    {level >= 5 && (
+                      <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
+                        <div className="w-full flex flex-col gap-12">
+                          <GroomingGuideArchive />
+                          <PersonalVision />
+                        </div>
+                      </SectionReveal>
+                    )}
+                  </div>
+                ) : <div className="pb-32"></div>}
+              </BottomTerminalReveal>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

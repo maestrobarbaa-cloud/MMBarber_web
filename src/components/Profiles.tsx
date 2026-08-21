@@ -3,7 +3,7 @@
 import Image from "./OptimizedImage";
 import Link from "next/link";
 import { useState, useEffect, useRef, useMemo } from "react";
-import { CalendarDays, Languages, Sparkles, Heart, Clover, TrendingDown, TrendingUp, Shield, Medal, Trophy, Crown, Flame } from "lucide-react";
+import { CalendarDays, Languages, Sparkles, Heart, Clover, TrendingDown, TrendingUp, Shield, Medal, Trophy, Crown, Flame, ArrowRight } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,7 +29,56 @@ import { getOperativeStatusData, subscribeToStatusUpdates, evaluateStatus, Evalu
 import { getDailyRole } from "@/utils/dailyRoles";
 
 const StatusDot = ({ evaluated }: { evaluated: EvaluatedStatus }) => {
-  return null;
+  if (evaluated.state === 'transparent' || !evaluated.state) return null;
+
+  let colorClass = 'bg-white/20';
+  let glowClass = '';
+  
+  if (evaluated.state === 'online') {
+    colorClass = 'bg-green-500';
+    glowClass = 'shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse';
+  } else if (evaluated.state === 'offline') {
+    colorClass = 'bg-red-600';
+    glowClass = 'shadow-[0_0_10px_rgba(220,38,38,0.6)]';
+  } else if (evaluated.state === 'custom') {
+    colorClass = 'bg-mafia-gold';
+    glowClass = 'shadow-[0_0_10px_rgba(197,160,89,0.6)] animate-pulse';
+  }
+
+  return (
+    <div className="absolute -top-1 -right-4 flex items-center group/dot">
+      <div className={`w-3 h-3 rounded-full ${colorClass} ${glowClass}`} />
+      {evaluated.state === 'custom' && evaluated.text && (
+        <span className="absolute left-4 opacity-0 group-hover/dot:opacity-100 transition-opacity bg-black/80 text-mafia-gold text-[8px] px-2 py-1 border border-mafia-gold/20 whitespace-nowrap rounded pointer-events-none">
+          {evaluated.text}
+        </span>
+      )}
+    </div>
+  );
+};
+
+const StatusText = ({ evaluated, lang }: { evaluated: EvaluatedStatus, lang: string }) => {
+  if (evaluated.state === 'transparent' || !evaluated.state) return null;
+
+  let colorClass = 'text-white/40';
+  let text = '';
+  
+  if (evaluated.state === 'online') {
+    colorClass = 'text-mafia-gold drop-shadow-[0_0_5px_rgba(197,160,89,0.8)]';
+    text = lang === 'cs' ? 'PRÁVĚ PRACUJE' : 'CURRENTLY WORKING';
+  } else if (evaluated.state === 'offline') {
+    colorClass = 'text-red-500';
+    text = lang === 'cs' ? 'MIMO SLUŽBU' : 'OFF DUTY';
+  } else if (evaluated.state === 'custom') {
+    colorClass = 'text-mafia-gold drop-shadow-[0_0_5px_rgba(197,160,89,0.8)]';
+    text = evaluated.text || (lang === 'cs' ? 'MIMO SLUŽBU' : 'OFF DUTY');
+  }
+
+  return (
+    <div className={`text-[10px] md:text-[11px] font-mono font-bold tracking-widest uppercase ${colorClass}`}>
+      {text}
+    </div>
+  );
 };
 
 export interface BarberProfile {
@@ -39,7 +88,8 @@ export interface BarberProfile {
   image: string;
   desc: string;
   schedule: string;
-  bookingLink: string;
+  bookingSystemType?: string;
+  bookingLink?: string;
   staticDesc?: string;
   stats?: string[];
   story?: string;
@@ -619,6 +669,49 @@ const MissionFailedOverlay = ({ name, lang }: { name: string, lang: string }) =>
   );
 };
 
+const getYearsOfExperience = (barberId: string, lang: string) => {
+  const startDate = barberId === 'nella' 
+    ? new Date(2023, 8, 1) // 1. září 2023
+    : (barberId === 'tomas' ? new Date(2019, 8, 1) : null); // 1. září 2019
+
+  if (!startDate) return null;
+
+  const now = new Date();
+  
+  let years = now.getFullYear() - startDate.getFullYear();
+  let months = now.getMonth() - startDate.getMonth();
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+  
+  if (years <= 0 && months <= 0) return null;
+  
+  if (lang === 'cs') {
+    let yearStr = '';
+    if (years === 1) yearStr = '1 rok';
+    else if (years >= 2 && years <= 4) yearStr = `${years} roky`;
+    else if (years > 4) yearStr = `${years} let`;
+
+    let monthStr = '';
+    if (months === 1) monthStr = '1 měsíc';
+    else if (months >= 2 && months <= 4) monthStr = `${months} měsíce`;
+    else if (months > 4) monthStr = `${months} měsíců`;
+
+    if (years === 0) return `${monthStr} praxe`;
+    if (months === 0) return `${yearStr} praxe`;
+    return `${yearStr} a ${monthStr} praxe`;
+  } else {
+    const yearStr = years === 1 ? '1 year' : `${years} years`;
+    const monthStr = months === 1 ? '1 month' : `${months} months`;
+
+    if (years === 0) return `${monthStr} of experience`;
+    if (months === 0) return `${yearStr} of experience`;
+    return `${yearStr} and ${monthStr} of experience`;
+  }
+};
+
 function BarberCard({ 
   barber, 
   isActive, 
@@ -675,8 +768,27 @@ function BarberCard({
     if (onHoverChange) onHoverChange(false);
   };
 
+  const [nicknames, setNicknames] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    // Fetch nicknames dynamically
+    const loadNicknames = async () => {
+      try {
+        const { getNicknamesAction } = await import('@/app/actions/nicknames');
+        const db = await getNicknamesAction();
+        setNicknames({
+          tomas: db.tomas?.topNickname || barber.name,
+          nella: db.nella?.topNickname || barber.name
+        });
+      } catch (e) {}
+    };
+    loadNicknames();
+    const interval = setInterval(loadNicknames, 10000);
+    return () => clearInterval(interval);
+  }, [barber.name]);
+
   const isHidden = barber.isHidden;
-  const barberDisplayName = barber.name;
+  const barberDisplayName = nicknames[barber.id] || barber.name;
 
   return (
     <>
@@ -686,31 +798,40 @@ function BarberCard({
           <MissionFailedOverlay name={barberDisplayName} lang={lang} />
         ) : (
           <>
-        <div className="w-36 h-36 border-2 border-mafia-gold/20 overflow-hidden bg-black/40 flex-shrink-0 rounded-none shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
-          {barber.image === "question-mark" ? (
-            <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={140} />
-          ) : (
-            <Image 
-              src={barber.image} 
-              alt={barber.name} 
-              width={192} 
-              height={192} 
-              priority 
-              quality={100}
-              loading="eager"
-              className="w-full h-full object-cover" 
-            />
-          )}
-        </div>
+        {graphicsTier !== 'lite' && (
+          <div className="w-36 h-36 border-2 border-mafia-gold/20 overflow-hidden bg-black/40 flex-shrink-0 rounded-none shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
+            {barber.image === "question-mark" ? (
+              <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={140} />
+            ) : (
+              <Image 
+                src={barber.image} 
+                alt={barber.name} 
+                width={192} 
+                height={192} 
+                priority 
+                quality={100}
+                loading="eager"
+                className="w-full h-full object-cover" 
+              />
+            )}
+          </div>
+        )}
         
         <div className="text-center space-y-1 relative w-full flex flex-col items-center">
           <h3 className="text-3xl font-heading font-black uppercase text-mafia-gold tracking-widest leading-none relative flex items-center justify-center">
             {barberDisplayName}
-            <StatusDot evaluated={evaluatedStatus} />
+            {graphicsTier !== 'lite' && <StatusDot evaluated={evaluatedStatus} />}
           </h3>
-          <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
-            {barber.role}
-          </span>
+          {graphicsTier !== 'lite' && (
+            <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
+              {barber.role}
+            </span>
+          )}
+          {graphicsTier !== 'lite' && (
+            <div className="flex justify-center mt-2 mb-2">
+              <StatusText evaluated={evaluatedStatus} lang={lang} />
+            </div>
+          )}
           {!barber.isHidden && (
             <button 
               onClick={() => {
@@ -728,32 +849,41 @@ function BarberCard({
                 : (lang === 'cs' ? "REZERVACE" : "BOOKING")}
             </button>
           )}
-          <div className="mt-4 relative flex justify-center">
-            <BarberRanking 
-              level={globalLevel} 
-              rankTitle={globalRank} 
-              lang={lang} 
-              id={barber.id} 
-              xp={globalXp}
-            />
-          </div>
+          {graphicsTier !== 'lite' && (
+            <div className="mt-4 relative flex justify-center">
+              <BarberRanking 
+                level={globalLevel} 
+                rankTitle={globalRank} 
+                lang={lang} 
+                id={barber.id} 
+                xp={globalXp}
+              />
+            </div>
+          )}
+          {graphicsTier === 'lite' && (
+            <div className="mt-4 text-[10px] text-white/40 uppercase tracking-widest font-mono">
+              Hradební 1, Uherské Hradiště
+            </div>
+          )}
         </div>
 
-        <div className="w-full flex flex-wrap justify-center items-center gap-x-3 gap-y-1.5 mt-auto px-2">
-          {barber.specializations?.map((spec, i) => (
-            <div key={i} className="flex items-center gap-3 relative">
-              <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em] whitespace-nowrap font-bold">
-                {spec}
-              </span>
-              {isHidden && (
-                <div className="absolute inset-0 bg-mafia-black border border-mafia-gold/10 z-10" />
-              )}
-              {i < (barber.specializations?.length || 0) - 1 && (
-                <div className="w-1 h-1 rounded-full bg-mafia-gold/20" />
-              )}
-            </div>
-          ))}
-        </div>
+        {graphicsTier !== 'lite' && (
+          <div className="w-full flex flex-wrap justify-center items-center gap-x-3 gap-y-1.5 mt-auto px-2">
+            {barber.specializations?.map((spec, i) => (
+              <div key={i} className="flex items-center gap-3 relative">
+                <span className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em] whitespace-nowrap font-bold">
+                  {spec}
+                </span>
+                {isHidden && (
+                  <div className="absolute inset-0 bg-mafia-black border border-mafia-gold/10 z-10" />
+                )}
+                {i < (barber.specializations?.length || 0) - 1 && (
+                  <div className="w-1 h-1 rounded-full bg-mafia-gold/20" />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
           </>
         )}
       </div>
@@ -765,7 +895,7 @@ function BarberCard({
         className="hidden xl:block barber-card relative xl:perspective-2000 w-[340px] flex-shrink-0 h-[640px] z-10"
       >
         <motion.div
-          animate={{ rotateY: isHovered && !barber.missionFailed ? 180 : 0 }}
+          animate={{ rotateY: isHovered && !barber.missionFailed && graphicsTier !== 'lite' && graphicsTier !== 'low' ? 180 : 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
           className="w-full h-full relative"
           style={{ transformStyle: "preserve-3d", willChange: "transform" }}
@@ -779,8 +909,8 @@ function BarberCard({
           {/* Front Side */}
           <motion.div 
             animate={{ 
-              opacity: isHovered ? 0 : 1,
-              visibility: isHovered ? "hidden" : "visible"
+              opacity: isHovered && graphicsTier !== 'low' && graphicsTier !== 'lite' ? 0 : 1,
+              visibility: isHovered && graphicsTier !== 'low' && graphicsTier !== 'lite' ? "hidden" : "visible"
             }}
             transition={{ 
               opacity: { duration: 0.1, delay: isHovered ? 0.35 : 0 },
@@ -876,11 +1006,30 @@ function BarberCard({
                   <CalendarDays size={14} className="text-mafia-gold/60" />
                   <span className="text-[9px] font-mono uppercase tracking-[0.2em]">{lang === 'cs' ? "OPERATIVNÍ DOBA" : "OPERATIONAL HOURS"}</span>
               </div>
-              <p className="text-[11px] font-mono text-white/60 text-center tracking-widest uppercase">{barber.schedule}</p>
+              <p className="text-[11px] font-mono text-white/60 text-center tracking-widest uppercase mb-2">{barber.schedule}</p>
+              <div className="flex justify-center mt-1">
+                <StatusText evaluated={evaluatedStatus} lang={lang} />
+              </div>
               {isHidden && (
                 <div className="absolute inset-0 bg-mafia-black border-t border-mafia-gold/20 z-10 flex items-center justify-center text-[8px] tracking-[0.3em] text-mafia-gold/40"></div>
               )}
             </div>
+
+            {(graphicsTier === 'low' || graphicsTier === 'lite') && !isHidden && !barber.missionFailed && (
+              <div className="w-full flex justify-center mt-4 pb-2 z-50 relative pointer-events-auto">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    trackEvent("cta_barber_booking_card_desktop_lite", { barber: barber.name });
+                    onBook();
+                  }}
+                  className="w-full max-w-[200px] py-3 bg-mafia-gold text-mafia-black font-black uppercase tracking-widest text-sm hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]"
+                >
+                  {lang === 'cs' ? "REZERVOVAT" : "BOOK NOW"}
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+            )}
 
           </motion.div>
 
@@ -920,6 +1069,19 @@ function BarberCard({
                           </motion.div>
                         )}
                     </div>
+                    {getYearsOfExperience(barber.id, lang) && (
+                      <div className="text-center mt-[-1.5rem] mb-6 relative z-20 flex justify-center w-full px-4">
+                        <div className="flex items-center justify-center gap-4 border-[3px] border-mafia-gold px-6 py-3 bg-black relative w-full max-w-[300px]">
+                           {/* Vnitřní olympijská linka */}
+                           <div className="absolute inset-1 border border-mafia-gold/40 pointer-events-none" />
+                           <Medal size={24} className="text-mafia-gold flex-shrink-0" />
+                           <span className="text-sm md:text-base font-heading font-black text-mafia-gold tracking-[0.2em] uppercase">
+                             {getYearsOfExperience(barber.id, lang)}
+                           </span>
+                           <Medal size={24} className="text-mafia-gold flex-shrink-0" />
+                        </div>
+                      </div>
+                    )}
                     <div className="text-center px-6 mt-4">
                       <h3 className="text-2xl md:text-3xl font-heading font-black uppercase tracking-[0.1em] text-mafia-gold italic leading-tight drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]">
                         {barber.motto}
@@ -940,13 +1102,53 @@ function BarberCard({
                         )}
                     </div>
 
-                    <div className="flex flex-col items-center gap-1 mb-6 text-center relative">
+                    {getYearsOfExperience(barber.id, lang) && (
+                      <div className="text-center mt-[-1.5rem] mb-6 relative z-20 flex justify-center w-full px-4">
+                        <div className="flex items-center justify-center gap-4 border-[3px] border-mafia-gold px-6 py-3 bg-black relative w-full max-w-[300px]">
+                           {/* Vnitřní olympijská linka */}
+                           <div className="absolute inset-1 border border-mafia-gold/40 pointer-events-none" />
+                           <Medal size={24} className="text-mafia-gold flex-shrink-0" />
+                           <span className="text-sm md:text-base font-heading font-black text-mafia-gold tracking-[0.2em] uppercase">
+                             {getYearsOfExperience(barber.id, lang)}
+                           </span>
+                           <Medal size={24} className="text-mafia-gold flex-shrink-0" />
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex flex-col items-center gap-1 mb-6 text-center relative w-full px-4">
                         {barber.motto && (
-                          <div className="mt-8 text-2xl font-heading text-mafia-gold/90 tracking-[0.1em] uppercase font-black italic relative">
+                          <div className="mt-4 text-2xl font-heading text-mafia-gold/90 tracking-[0.1em] uppercase font-black italic relative">
                             {barber.motto}
                             {isHidden && (
                               <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 bg-mafia-black/80 border border-mafia-gold/10 z-20 origin-left scale-y-75" />
                             )}
+                          </div>
+                        )}
+
+                        {/* Tracker Fragmentů */}
+                        {barber.id === 'tomas' && (
+                          <div className="mt-6 w-full max-w-[260px] border border-mafia-gold/30 bg-black/50 p-4 rounded-sm flex flex-col items-center gap-2 shadow-[inset_0_0_20px_rgba(197,160,89,0.05)]">
+                             <div className="text-[9px] font-mono text-white/50 uppercase tracking-[0.2em] text-center">
+                               {lang === 'cs' ? 'Nalezené fragmenty (Projekt X)' : 'Fragments Found (Project X)'}
+                             </div>
+                             <div className="flex items-center gap-2">
+                                <span className="text-2xl font-heading font-black text-mafia-gold">{totalCollected}</span>
+                                <span className="text-white/30 text-xl">/</span>
+                                <span className="text-2xl font-heading font-black text-white/50">12</span>
+                             </div>
+                             <div className="w-full bg-white/10 h-1.5 mt-1 relative overflow-hidden rounded-full">
+                               <div className="absolute top-0 left-0 h-full bg-mafia-gold shadow-[0_0_10px_var(--color-mafia-gold)]" style={{ width: `${(totalCollected / 12) * 100}%` }}></div>
+                             </div>
+                             {totalCollected < 12 ? (
+                                <div className="text-[8px] font-mono text-mafia-gold/60 uppercase tracking-widest mt-1">
+                                  {lang === 'cs' ? `Chybí odhalit: ${12 - totalCollected}` : `Missing: ${12 - totalCollected}`}
+                                </div>
+                             ) : (
+                                <div className="text-[9px] font-mono text-mafia-gold uppercase tracking-widest mt-1 animate-pulse font-bold bg-mafia-gold/20 px-2 py-0.5 rounded">
+                                  {lang === 'cs' ? 'DATA ZKOMPLETOVÁNA' : 'DATA COMPLETED'}
+                                </div>
+                             )}
                           </div>
                         )}
                     </div>
@@ -1058,6 +1260,36 @@ function SlotReel({
   );
 }
 
+const TOMAS_CHAIR_GREETINGS_CS = [
+  "Tak dámíčky, kterou dneska ostříháme?",
+  "Další princezna na řadě, prosím.",
+  "Posaď se, zlato. Uděláme tě k světu.",
+  "Tak co, kočko, jen konečky?",
+  "Neboj, fešáku, budeš krásnej.",
+  "Ježiši, kdo ti to udělal? Ukaž, zachráníme to.",
+  "Tak povídej, brečel jsi, když tě stříhali naposledy?",
+  "Klid, nic necítíš. To je normální.",
+  "Tohle nebude střih. Tohle je záchranná operace.",
+  "Přišel ses ostříhat, nebo se jen pochlubit tím neštěstím na hlavě?",
+  "Tak ukaž ten skalp, než si to rozmyslím.",
+  "Vypadáš dobře. To mě trochu sere, budu se muset snažit.",
+  "Kolik ti zaplatili, aby ses takhle ukázal mezi lidma?",
+  "Tak co dneska? Jako člověk, nebo zase experiment?",
+  "Neboj, maminka tě pozná.",
+  "Ty vole, tohle ani policie nechtěla vyšetřovat.",
+  "Posaď se. Horší už to být nemůže.",
+  "Kdo je poslední? Ať si sundá tu mrtvou veverku z hlavy.",
+  "Tak šampónek připravený? Jdeme na to, princezno.",
+  "Kdyby vlasy mohly mluvit, ty tvoje by volaly o pomoc.",
+  "Podívejme, kdo ještě neskončil v base.",
+  "Nazdar, krasavče. Zase tě pustili mezi lidi?",
+  "Ty žiješ? Já už tě odepsal.",
+  "Přišel ses ostříhat, nebo jen zkontrolovat, jestli ještě dýchám?",
+  "Tak co, šéfe, dneska střih nebo svědecká ochrana?",
+  "Vidím, že ses celou cestu vyhýbal zrcadlům. Správně.",
+  "No sláva. Už jsem myslel, že tě ostříhá konkurence."
+];
+
 const CHAIR_GREETINGS_CS = [
   "Trůn barbera",
   "Sedni. Změň se.",
@@ -1168,15 +1400,16 @@ function ChairWithCard({
     return greeting;
   }, [chairGreetingText, lang, vocativeName]);
 
-  const targetScale = isSitting ? 1.0 : (isCardHovered ? 1.05 : 1);
-  const filterStr = isCardHovered 
+  const isLite = graphicsTier === 'lite';
+  const targetScale = isLite ? 1 : (isSitting ? 1.0 : (isCardHovered ? 1.05 : 1));
+  const filterStr = isLite ? "none" : (isCardHovered 
     ? "brightness(1.2) contrast(1.15) drop-shadow(0 25px 25px rgba(0,0,0,0.9))" 
-    : "brightness(0.88) drop-shadow(0 0px 0px rgba(0,0,0,0))";
+    : "brightness(0.88) drop-shadow(0 0px 0px rgba(0,0,0,0))");
   
   const ySink = isSitting ? 25 : 0;
-  const actualY = isSitting ? ySink : (isCardHovered ? mousePos.y * -20 : 0);
-  const actualX = isCardHovered ? mousePos.x * -20 : 0;
-  const parallaxBgX = isCardHovered ? mousePos.x * 10 : 0;
+  const actualY = isLite ? 0 : (isSitting ? ySink : (isCardHovered ? mousePos.y * -20 : 0));
+  const actualX = isLite ? 0 : (isCardHovered ? mousePos.x * -20 : 0);
+  const parallaxBgX = isLite ? 0 : (isCardHovered ? mousePos.x * 10 : 0);
 
   return (
     <div 
@@ -1184,11 +1417,11 @@ function ChairWithCard({
       className={`flex flex-col xl:flex-row items-center justify-center gap-4 xl:gap-8 ${side === 'right' ? 'xl:flex-row-reverse' : ''}`}
     >
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={isLite ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
         animate={{ 
           y: actualY,
           x: actualX,
-          opacity: isSitting || isCardHovered ? 1 : 0.7,
+          opacity: isLite ? 1 : (isSitting || isCardHovered ? 1 : 0.7),
           scale: targetScale,
           filter: filterStr,
         }}
@@ -1262,23 +1495,27 @@ function ChairWithCard({
             />
           
             {/* Search lights */}
-            <motion.div
-              animate={{ x: [-100, 250, 50, -100], y: [-50, 200, 350, -50] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-0 left-0 w-[300px] h-[300px] rounded-full blur-[60px] bg-gradient-to-tr from-mafia-gold/40 via-white/20 to-transparent mix-blend-overlay z-10"
-            />
-            <motion.div
-              animate={{ x: [-50, 280, 100, -50], y: [0, 250, 300, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-0 left-0 w-[150px] h-[150px] rounded-full blur-[40px] bg-white/30 mix-blend-color-dodge z-10"
-            />
+            {graphicsTier !== 'lite' && (
+              <>
+                <motion.div
+                  animate={{ x: [-100, 250, 50, -100], y: [-50, 200, 350, -50] }}
+                  transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute top-0 left-0 w-[300px] h-[300px] rounded-full blur-[60px] bg-gradient-to-tr from-mafia-gold/40 via-white/20 to-transparent mix-blend-overlay z-10"
+                />
+                <motion.div
+                  animate={{ x: [-50, 280, 100, -50], y: [0, 250, 300, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute top-0 left-0 w-[150px] h-[150px] rounded-full blur-[40px] bg-white/30 mix-blend-color-dodge z-10"
+                />
 
-            {/* Fog / Smoke */}
-            <motion.div 
-              animate={{ x: [-20, 20, -20], opacity: [0.1, 0.2, 0.1] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-[-10%] left-[-20%] w-[140%] h-[200px] bg-white blur-[50px] rounded-full mix-blend-overlay z-0"
-            />
+                {/* Fog / Smoke */}
+                <motion.div 
+                  animate={{ x: [-20, 20, -20], opacity: [0.1, 0.2, 0.1] }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute bottom-[-10%] left-[-20%] w-[140%] h-[200px] bg-white blur-[50px] rounded-full mix-blend-overlay z-0"
+                />
+              </>
+            )}
           </div>
         </motion.div>
       </motion.div>
@@ -1324,7 +1561,9 @@ export function Profiles() {
 
   const { barbers, loading } = useBarbers();
 
-  const visibleBarbers = barbers.map(b => {
+  const visibleBarbers = barbers
+    .filter(b => b.id !== 'nella' && b.name !== 'Nella') // Hide Nella
+    .map(b => {
     let modifiedB = { ...b };
     const threshold = b.unlockThreshold || 5;
     if (b.requiresUnlock && totalCollected < threshold) {
@@ -1335,16 +1574,11 @@ export function Profiles() {
 
   useEffect(() => {
     const indices: { [key: string]: number } = {};
-    const usedIndices = new Set<number>();
     
-    const idxTomas = Math.floor(Math.random() * CHAIR_GREETINGS_CS.length);
+    const idxTomas = Math.floor(Math.random() * TOMAS_CHAIR_GREETINGS_CS.length);
     indices['tomas'] = idxTomas;
-    usedIndices.add(idxTomas);
 
-    let idxNella = Math.floor(Math.random() * CHAIR_GREETINGS_CS.length);
-    while (usedIndices.has(idxNella)) {
-      idxNella = Math.floor(Math.random() * CHAIR_GREETINGS_CS.length);
-    }
+    const idxNella = Math.floor(Math.random() * CHAIR_GREETINGS_CS.length);
     indices['nella'] = idxNella;
     
     setChairGreetingsIndices(indices);
@@ -1482,7 +1716,7 @@ export function Profiles() {
         setIsRandomizing(false);
         setIsDecided(true);
         setTimeout(() => {
-          window.location.href = availableBarbers[winner].bookingLink;
+          window.location.href = availableBarbers[winner].bookingLink || "#";
         }, 1500);
       }
     }, 80);
@@ -1490,6 +1724,11 @@ export function Profiles() {
 
   // Re-enabled dialogue system - Alternating monthly sequential mode
   useEffect(() => {
+    // DISABLED per user request to hide Tomáš & Nella chat
+    setActiveSpeaker(null);
+    setActiveDialogueText("");
+    return;
+
     const isMobile = window.innerWidth < 1280;
     if (!isSectionVisible || isMobile) {
       setActiveSpeaker(null);
@@ -1594,15 +1833,16 @@ export function Profiles() {
   return (
     <section 
       id="operativi" 
-      className="relative w-full py-10 md:py-20 px-4 md:px-12 bg-transparent border-t-8 border-mafia-dark flex flex-col items-center scroll-mt-32"
+      className={`relative w-full pt-10 md:pt-20 pb-4 md:pb-8 px-4 md:px-12 bg-transparent flex flex-col items-center scroll-mt-32 ${graphicsTier !== 'lite' ? 'border-t-8 border-mafia-dark' : ''}`}
     >
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/black-paper.png')" }}></div>
+      {graphicsTier !== 'lite' && <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/black-paper.png')" }}></div>}
       
-      <GameFragment id="hero_frag_1" className="top-48 left-12 md:left-24" size={40} delay={2000} />
-      <GameFragment id="hero_frag_2" className="bottom-40 right-16 md:right-32" size={30} delay={4500} />
+      {graphicsTier !== 'lite' && <GameFragment id="hero_frag_1" className="top-48 left-12 md:left-24" size={40} delay={2000} />}
+      {graphicsTier !== 'lite' && <GameFragment id="hero_frag_2" className="bottom-40 right-16 md:right-32" size={30} delay={4500} />}
       <div className="relative z-10 w-full flex flex-col items-center">
         <div className="max-w-[1600px] mx-auto w-full">
             <div className="w-full">
+                {graphicsTier !== 'lite' && (
                 <div className="text-center mb-16 md:mb-24">
                     <h2 className="text-3xl md:text-5xl font-heading font-black text-smoke-white mb-3 md:mb-4 tracking-[0.3em] uppercase">{t.operatives.title}</h2>
                     <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-4 md:mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
@@ -1631,17 +1871,23 @@ export function Profiles() {
                         </div>
                     </div>
                 </div>
+                )}
                 <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full mx-auto py-4 xl:py-8 relative">
                     {translatedBarbers.map((barber, index) => {
                       const isTomas = barber.name === 'Tomáš' || barber.name === 'Tomas';
                       const barberKey = isTomas ? 'tomas' : 'nella';
-                      const greetingIdx = chairGreetingsIndices[barberKey] ?? (isTomas ? 0 : 1);
-                      const chairGreetingText = lang === 'cs' ? CHAIR_GREETINGS_CS[greetingIdx] : CHAIR_GREETINGS_EN[greetingIdx];
+                      const greetingIdx = chairGreetingsIndices[barberKey] ?? 0;
+                      let chairGreetingText = '';
+                      if (isTomas) {
+                        chairGreetingText = lang === 'cs' ? TOMAS_CHAIR_GREETINGS_CS[greetingIdx % TOMAS_CHAIR_GREETINGS_CS.length] : TOMAS_QUOTES_EN[greetingIdx % TOMAS_QUOTES_EN.length];
+                      } else {
+                        chairGreetingText = lang === 'cs' ? CHAIR_GREETINGS_CS[greetingIdx % CHAIR_GREETINGS_CS.length] : CHAIR_GREETINGS_EN[greetingIdx % CHAIR_GREETINGS_EN.length];
+                      }
                       const bKey = barber.id === 'tomas' ? 'tomas' : 'nella';
                       const evaluated = evaluateStatus(statusData[bKey]);
 
                       return (
-                        <div key={barber.id} className="relative flex flex-col items-center w-full">
+                        <div key={barber.id} className={`relative flex flex-col items-center w-full ${barber.id === 'nella' ? 'order-first xl:order-none' : 'order-last xl:order-none'}`}>
                           <ChairWithCard 
                             barber={barber} 
                             activeSpeaker={activeSpeaker} 

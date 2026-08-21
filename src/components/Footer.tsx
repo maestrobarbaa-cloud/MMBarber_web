@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Instagram,
@@ -619,8 +619,8 @@ export function Footer() {
             
 
             <div className="flex items-center gap-4 mt-4">
-              <span className="text-smoke-white/20 font-mono text-[9px] uppercase tracking-widest">© 2024–2026 MMBARBER</span>
-              <span className="text-mafia-red text-[9px] font-black tracking-[0.2em] px-2 py-0.5 border border-mafia-red/20">V 3.5.1</span>
+              <span className="text-smoke-white/20 font-mono text-[9px] uppercase tracking-widest">© 2024–{new Date().getFullYear()} MMBARBER</span>
+              <span className="text-mafia-red text-[9px] font-black tracking-[0.2em] px-2 py-0.5 border border-mafia-red/20">V 3.5.2</span>
             </div>
           </div>
         </div>

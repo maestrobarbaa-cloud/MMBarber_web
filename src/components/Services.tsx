@@ -39,6 +39,13 @@ export function Services() {
   const [showSupport, setShowSupport] = useState(false);
   const [showVouchers, setShowVouchers] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [graphicsTier, setGraphicsTier] = useState<string>("high");
+
+  useEffect(() => {
+    const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
+    setGraphicsTier(tier);
+  }, []);
+
   const playCardSound = () => {
     playSound("/sounds/card.mp3", 0.9);
   };
@@ -69,7 +76,52 @@ export function Services() {
           <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-4 md:mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
         </div>
 
-        <div className="grid grid-cols-2 lg:flex lg:flex-row items-center justify-center gap-3 lg:gap-16 max-w-4xl mx-auto mb-12">
+        {/* DESKTOP FANNED VIEW FOR MAIN CARDS */}
+        <div className={`hidden ${graphicsTier !== 'low' && graphicsTier !== 'lite' ? 'xl:flex' : ''} relative h-[550px] max-w-full mx-auto items-end justify-center overflow-visible pb-8`}>
+          {[
+            {
+              id: 'services',
+              title: t?.services?.title || (lang === 'cs' ? 'SLUŽBY' : 'SERVICES'),
+              icon: <Target className="text-mafia-gold" size={48} />,
+              description: lang === 'cs' ? 'CENÍK A REZERVACE' : 'PRICING & BOOKING',
+              onClick: () => { router.push('/cenik'); trackEvent("open_pricing_menu"); }
+            },
+            {
+              id: 'dating',
+              title: t?.header?.seznamka || (lang === 'cs' ? 'SEZNAMKA' : 'DATING'),
+              icon: <Heart size={48} className="text-mafia-gold" />,
+              description: lang === 'cs' ? 'NAŠI OPERATIVCI' : 'OUR OPERATIVES',
+              onClick: () => { router.push('/seznamka'); trackEvent("nav_seznamka_click"); }
+            }
+          ].map((card, idx, arr) => (
+            <MenuCard 
+              key={card.id}
+              variant="fanned"
+              title={card.title}
+              icon={card.icon}
+              description={card.description}
+              onClick={card.onClick}
+              index={idx}
+              total={arr.length}
+              onHover={() => {
+                if (window.innerWidth >= 1024) {
+                   setHoveredIndex(idx);
+                   playCardSound();
+                }
+              }}
+              onHoverEnd={() => {
+                if (window.innerWidth >= 1024) {
+                   setHoveredIndex(null);
+                }
+              }}
+              active={hoveredIndex === idx}
+              isAnyHovered={hoveredIndex !== null}
+            />
+          ))}
+        </div>
+
+        {/* MOBILE & LITE VIEW: Grid Layout FOR MAIN CARDS */}
+        <div className={`${graphicsTier !== 'low' && graphicsTier !== 'lite' ? 'xl:hidden' : ''} grid grid-cols-2 lg:flex lg:flex-row items-center justify-center gap-3 lg:gap-16 max-w-4xl mx-auto mb-12`}>
           <MenuCard 
             variant="simple"
             title={t?.services?.title || (lang === 'cs' ? 'SLUŽBY' : 'SERVICES')}
@@ -80,7 +132,7 @@ export function Services() {
             }}
             onHover={playCardSound}
           />
-            <MenuCard 
+          <MenuCard 
             variant="simple"
             title={t?.header?.seznamka || (lang === 'cs' ? 'SEZNAMKA' : 'DATING')}
             icon={<Heart size={32} className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" />}
@@ -99,7 +151,8 @@ export function Services() {
           <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-4 md:mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
         </div>
 
-        <div className="hidden xl:flex relative h-[550px] max-w-full mx-auto items-end justify-center overflow-visible pb-8">
+        {/* DESKTOP FANNED VIEW */}
+        <div className={`hidden ${graphicsTier !== 'low' && graphicsTier !== 'lite' ? 'xl:flex' : ''} relative h-[550px] max-w-full mx-auto items-end justify-center overflow-visible pb-8`}>
           {[
             { 
               id: 'vouchers',
@@ -161,6 +214,7 @@ export function Services() {
           ].map((card, idx, arr) => (
             <MenuCard 
               key={card.id}
+              variant="fanned"
               title={card.title}
               icon={card.icon}
               description={card.description}
@@ -169,19 +223,20 @@ export function Services() {
               total={arr.length}
               onHover={() => {
                 if (window.innerWidth >= 1024) {
-                   setHoveredIndex(idx);
+                   setHoveredIndex(idx + 2); // offset index for hovered state so it doesn't conflict with main cards
+
                    playCardSound();
                 }
               }}
               onHoverEnd={() => setHoveredIndex(null)}
-              active={hoveredIndex === idx}
+              active={hoveredIndex === (idx + 2)}
               isAnyHovered={hoveredIndex !== null}
             />
           ))}
         </div>
 
-        {/* MOBILE GRID VIEW - Now using the same size and design as Services cards */}
-        <div className="flex xl:hidden flex-wrap justify-center gap-3 md:gap-4 lg:gap-6 mb-10 w-full px-2">
+        {/* MOBILE OR LOW TIER GRID VIEW - Now using the same size and design as Services cards */}
+        <div className={`flex ${graphicsTier !== 'low' && graphicsTier !== 'lite' ? 'xl:hidden' : ''} flex-wrap justify-center gap-3 md:gap-4 lg:gap-6 mb-10 w-full max-w-6xl mx-auto px-2`}>
           {[
             { 
               id: 'vouchers',
@@ -650,6 +705,7 @@ const MenuCard = React.memo(function MenuCard({
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
   const [accentColor, setAccentColor] = useState("var(--color-mafia-gold)");
+  const [graphicsTier, setGraphicsTier] = useState('high');
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1280);
@@ -662,6 +718,12 @@ const MenuCard = React.memo(function MenuCard({
     };
     updateColor();
     window.addEventListener('mmbarber-accent-update', updateColor);
+
+    const updateTier = () => {
+      setGraphicsTier(document.documentElement.getAttribute('data-graphics-tier') || 'high');
+    };
+    updateTier();
+    window.addEventListener('mmbarber-graphics-update', updateTier);
 
     const initialEffectsState = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
     setIsMobileEffectsEnabled(initialEffectsState);
@@ -676,11 +738,13 @@ const MenuCard = React.memo(function MenuCard({
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
       window.removeEventListener('mmbarber-accent-update', updateColor);
+      window.removeEventListener('mmbarber-graphics-update', updateTier);
     };
   }, []);
 
   const [isScanning, setIsScanning] = useState(false);
-  const isFlipped = (!isMobile || isMobileEffectsEnabled) && (localHover || active);
+  const isLowTier = graphicsTier === 'low' || graphicsTier === 'lite';
+  const isFlipped = !isLowTier && (!isMobile || isMobileEffectsEnabled) && (localHover || active);
 
   const handleCardClick = () => {
     if (isMobile && isMobileEffectsEnabled) {
@@ -724,8 +788,8 @@ const MenuCard = React.memo(function MenuCard({
       <motion.div 
         animate={{ 
           y: variant === 'fanned' ? (active ? -180 : (localHover ? -20 : (isAnyHovered ? 20 : 0))) : 0, 
-          rotateY: isFlipped ? 180 : 0,
-          scale: isScanning ? 1.02 : (active ? 1.2 : (localHover ? 1.05 : 1)),
+          rotateY: isFlipped && !isLowTier ? 180 : 0,
+          scale: isLowTier ? 1 : (isScanning ? 1.02 : (active ? 1.2 : (localHover ? 1.05 : 1))),
           boxShadow: isScanning ? `0 0 40px ${accentColor}` : '0 0 0px rgba(0,0,0,0)'
         }}
         transition={{ 
@@ -738,6 +802,7 @@ const MenuCard = React.memo(function MenuCard({
         style={{ transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d" }}
       >
         {/* FRONT SIDE */}
+        {!isLowTier && (
         <div 
           className={`absolute inset-0 bg-[#0c0c0c] border border-mafia-gold/30 rounded-lg flex flex-col items-center justify-center p-4 md:p-8 text-center overflow-hidden transition-all duration-500 ${isFlipped ? 'pointer-events-none' : 'pointer-events-auto'} ${isMobile && isMobileEffectsEnabled ? 'shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] border-mafia-gold/50' : 'shadow-2xl'}`}
           style={{ 
@@ -764,6 +829,19 @@ const MenuCard = React.memo(function MenuCard({
           <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-mafia-gold/10"></div>
           <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-mafia-gold/10"></div>
 
+          {/* LITE TIER CTA BUTTON (since it doesn't flip) */}
+          {isLowTier && onClick && (
+            <div className="absolute bottom-6 w-full px-6 z-50 pointer-events-auto">
+              <button 
+                onClick={(e) => { e.stopPropagation(); onClick(); }}
+                className="w-full py-2 bg-mafia-gold/20 border border-mafia-gold/50 text-mafia-gold font-bold uppercase tracking-widest text-xs hover:bg-mafia-gold hover:text-black transition-colors"
+                style={{ borderColor: accentColor, color: accentColor }}
+              >
+                Více / Detail
+              </button>
+            </div>
+          )}
+
           {/* Graphical Scan Effect on Click */}
           <AnimatePresence>
             {isScanning && (
@@ -785,10 +863,62 @@ const MenuCard = React.memo(function MenuCard({
             )}
           </AnimatePresence>
         </div>
+        )}
 
-        {/* BACK SIDE */}
-        <div 
-          className={`absolute inset-0 bg-[#0c0c0c] border shadow-2xl rounded-lg flex flex-col items-center justify-between p-6 text-center ${variant === 'fanned' ? 'border-mafia-gold/30' : 'border-mafia-gold'} ${isFlipped ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        {/* LITE TIER: BACK SIDE ONLY (No flip) */}
+        {isLowTier && (
+          <div 
+            className={`absolute inset-0 bg-[#0c0c0c] border border-mafia-gold rounded-lg flex flex-col items-center justify-between p-6 text-center pointer-events-auto shadow-2xl`}
+          >
+            <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-mafia-gold/60 transition-colors z-30" style={{ borderColor: 'var(--user-accent-color)' }}></div>
+            <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-mafia-gold/60 transition-colors z-30" style={{ borderColor: 'var(--user-accent-color)' }}></div>
+            <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-mafia-gold/60 transition-colors z-30" style={{ borderColor: 'var(--user-accent-color)' }}></div>
+            <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-mafia-gold/60 transition-colors z-30" style={{ borderColor: 'var(--user-accent-color)' }}></div>
+
+            <div className="relative z-20 flex flex-col items-center justify-between h-full w-full transform-gpu pt-4">
+              <div className="flex flex-col items-center gap-4 flex-1 justify-center w-full px-2">
+                <div className="p-4 border border-mafia-gold/30 bg-mafia-black/60 shadow-xl rounded-sm" style={{ borderColor: 'var(--user-accent-color)' }}>
+                   <div className="scale-100 origin-center text-mafia-gold" style={{ color: 'var(--user-accent-color)' }}>
+                     {icon}
+                   </div>
+                </div>
+                
+                <div className="space-y-1">
+                  <h3 className="text-xl sm:text-2xl font-heading font-black text-mafia-gold uppercase tracking-widest leading-tight" style={{ color: 'var(--user-accent-color)' }}>
+                    {title}
+                  </h3>
+                  {price && (
+                    <div className="inline-block mt-1 px-3 py-1 bg-mafia-gold/10 border border-mafia-gold/20 text-mafia-gold font-mono text-[9px] uppercase font-bold tracking-widest">
+                      {price}
+                    </div>
+                  )}
+                </div>
+
+                {description && (
+                  <p className="text-[10px] text-smoke-white font-mono font-bold uppercase tracking-widest mt-2 px-2 leading-relaxed opacity-80">
+                    {description}
+                  </p>
+                )}
+              </div>
+
+              <div className="w-full flex flex-col items-center mt-auto pb-2 relative z-50">
+                <div className="h-px bg-mafia-gold/30 mb-4 w-full" style={{ backgroundColor: 'var(--user-accent-color)' }}></div>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); if (onClick) onClick(); }}
+                  className="w-full py-3 bg-mafia-gold text-mafia-black font-black uppercase tracking-widest text-sm hover:bg-white transition-colors"
+                  style={{ backgroundColor: accentColor }}
+                >
+                  {lang === 'cs' ? (title === 'SEZNAMKA' ? "OTEVŘÍT" : "VÍCE / DETAIL") : "OPEN / MORE"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STANDARD TIER: BACK SIDE (Flipped) */}
+        {!isLowTier && (
+          <div 
+            className={`absolute inset-0 bg-[#0c0c0c] border shadow-2xl rounded-lg flex flex-col items-center justify-between p-6 text-center ${variant === 'fanned' ? 'border-mafia-gold/30' : 'border-mafia-gold'} ${isFlipped ? 'pointer-events-auto' : 'pointer-events-none'}`}
           style={{ 
             backfaceVisibility: "hidden", 
             WebkitBackfaceVisibility: "hidden",
@@ -858,6 +988,7 @@ const MenuCard = React.memo(function MenuCard({
 
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black to-transparent opacity-100"></div>
         </div>
+        )}
       </motion.div>
     </div>
   );

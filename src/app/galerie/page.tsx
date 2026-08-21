@@ -4,7 +4,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "@/components/OptimizedImage";
-import NextImage from "next/image";
+import NextImage from "@/components/OptimizedImage";
 import Link from "next/link";
 import { ArrowLeft, X, Maximize2, Camera, ChevronLeft, ChevronRight, Eye, LayoutGrid, Play, Pause } from "lucide-react";
 import { Footer } from "@/components/Footer";

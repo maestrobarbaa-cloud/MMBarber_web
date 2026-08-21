@@ -6,24 +6,21 @@ export const barbers: BarberProfile[] = [
     id: "tomas",
     role: "The Enforcer",
     image: "/obr/tomasmicka.png",
-    desc: `Možná bys čekal jednoduchý příběh. Školu, obor, certifikát, hotovo.
+    desc: `Vzdělání:
+- SSPŠHŽ – elektrotechnika.
+- Kadeřník.
+- Sociální pedagogika.
 
-Ale realita je jinde.
+O mně:
+Možná čekáš, že si sem napíšu CEO, Founder nebo jiný korporátní status. Já si z podobných nálepek spíš dělám legraci. Tituly, funkce a zkratky před jménem jsou hezké, ale samy o sobě nic nedokazují.
 
-Ano — něco jsem vystudoval. Něco, co se dá napsat do řádku a dát do CV. Ale to je jen začátek věci, ne její podstata.
+Už mnohokrát jsem slyšel větu: „Rozhodují činy, ne slova.“ Zajímavé je, že o některých lidech, kteří to říkali nejhlasitěji, jsem později už neslyšel. Zato jsem často viděl profily plné titulů, funkcí a statusů. Výrazné výsledky už méně.
 
-To, kým jsem dnes, vzniklo až potom. V pohybu, v rozhodnutích, v místech, kde se nehraje na jistotu.
+Proto si raději na nic nehraju. Kdo jsem a co vytvářím, ať si každý posoudí sám.
 
-A možná tě to překvapí, ale i věci, na které se právě díváš, nejsou náhoda.
-
-Jsou to odrazy mých myšlenek. Každý detail, atmosféra, energie — všechno má svůj původ.
-
-Netvořím jen to, co je vidět.
-
-Tvořím všechno kolem toho.
-
-A možná proto to působí jinak, než bys čekal.`,
+A pokud tě zajímá víc, stav se na střih. Heslo ti dám osobně. Zbytek si pak můžeš přečíst doma.`,
     schedule: "Út-Pá 9:00 - 18:00 | So-Ne 9:00 - 12:00",
+    bookingSystemType: "internal",
     bookingLink: "https://mm.inthechair.com/micka",
     specializations: ["Primárně pánské", "ale zvládnu i dámy"],
     symbol: "A",
@@ -40,6 +37,7 @@ A možná proto to působí jinak, než bys čekal.`,
     image: "/obr/nellapelikanova.png",
     desc: "Ochoč si svoji barberku. Čerstvá krev v našem týmu.",
     schedule: "Individuální režim práce.",
+    bookingSystemType: "internal",
     bookingLink: "https://mmbarberx.setmore.com",
     specializations: ["Barvení", "Trvalá ondulace", "Stříhání pánské", "Stříhání dámské", "Děti"],
     symbol: "Q",

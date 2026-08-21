@@ -17,7 +17,7 @@ export interface BarberProfile {
   image: string;
   desc: string;
   schedule: string;
-  bookingLink: string;
+  bookingLink?: string;
   specializations: string[];
   symbol: string;
   rank?: BarberRank;
@@ -27,6 +27,8 @@ export interface BarberProfile {
   requiresUnlock?: boolean;
   unlockThreshold?: number;
   missionFailed?: boolean;
+  bookingSystemType?: 'external' | 'internal';
+  structuredSchedule?: Record<string, { work: boolean, start: string, end: string }>;
 }
 
 interface BarberContextType {
@@ -44,10 +46,29 @@ const BarberContext = createContext<BarberContextType>({
 export const useBarbers = () => useContext(BarberContext);
 
 export const BarberProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [barbers] = useState<BarberProfile[]>(staticBarbers as BarberProfile[]);
+  const [barbers, setBarbers] = useState<BarberProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchBarbers = async () => {
+    try {
+      const res = await fetch('/api/barbers');
+      if (res.ok) {
+        const data = await res.json();
+        setBarbers(data.barbers || []);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBarbers();
+  }, []);
 
   return (
-    <BarberContext.Provider value={{ barbers, loading: false, refreshBarbers: async () => {} }}>
+    <BarberContext.Provider value={{ barbers, loading, refreshBarbers: fetchBarbers }}>
       {children}
     </BarberContext.Provider>
   );

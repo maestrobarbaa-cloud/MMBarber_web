@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Star, Quote, ExternalLink, MessageSquare, TrendingUp } from "lucide-react";
 import { Footer } from "../../components/Footer";
 import { useTranslation } from "../../hooks/useTranslation";
-import Image from "next/image";
+import Image from "@/components/OptimizedImage";
 
 interface Review {
   id: number;

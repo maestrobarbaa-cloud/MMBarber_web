@@ -31,7 +31,7 @@ export function WeatherOverlay() {
   }, []);
 
   useEffect(() => {
-    setRainItems(Array.from({ length: 150 }).map((_, i) => ({
+    setRainItems(Array.from({ length: 50 }).map((_, i) => ({
       id: i,
       left: (Math.random() * 100),
       duration: (Math.random() * 0.4 + 0.3),
@@ -39,7 +39,7 @@ export function WeatherOverlay() {
       opacity: (Math.random() * 0.4 + 0.6)
     })));
 
-    setSnowItems(Array.from({ length: 100 }).map((_, i) => ({
+    setSnowItems(Array.from({ length: 30 }).map((_, i) => ({
       id: i,
       left: (Math.random() * 130 - 15),
       duration: (Math.random() * 7 + 5),
@@ -250,9 +250,9 @@ export function WeatherOverlay() {
           )}
 
           {weather === 'thunderstorm' && (
-             <>
+              <>
                 <div className="rainfall opacity-100">
-                  {rainItems.slice(0, 130).map((item) => (
+                  {rainItems.slice(0, 45).map((item) => (
                     <div 
                        key={item.id} 
                        className="drop" 

@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter, Great_Vibes } from "next/font/google";
 import "./globals.css";
-import { CookieBanner } from "@/components/CookieBanner";
 import { Header } from "@/components/Header";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { Atmosphere } from "@/components/Atmosphere";
@@ -16,6 +15,9 @@ import { TableOfContents } from "@/components/TableOfContents";
 import { BarberProvider } from "@/contexts/BarberContext";
 import { GameProvider } from "@/contexts/GameContext";
 import { MobileCompass } from "@/components/MobileCompass";
+import { Providers } from "@/components/Providers";
+import { AntiTheft } from "@/components/AntiTheft";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import Script from "next/script";
 import { Scissors } from "lucide-react";
 
@@ -144,6 +146,7 @@ export const metadata: Metadata = {
   },
   other: {
     "seznam-wmt": "seznam-verification-placeholder",
+    "robots": "noai, noimageai, noindex, nofollow",
   }
 };
 export const viewport: Viewport = {
@@ -276,16 +279,18 @@ export default function RootLayout({
             })
           }}
         />
-        <script
-          id="mmbarber-early-init"
-          dangerouslySetInnerHTML={{
-            __html: `
+      </head>
+      <body 
+        className={`${playfair.variable} ${inter.variable} ${greatVibes.variable} antialiased selection:bg-mafia-gold selection:text-mafia-black min-h-screen relative bg-mafia-black overflow-x-hidden`}
+        suppressHydrationWarning
+      >
+        <Script id="mmbarber-early-init" strategy="afterInteractive">
+          {`
             try {
               const isMobile = window.innerWidth < 1280;
               if (isMobile) {
                 document.documentElement.classList.add('is-mobile-device');
               }
-              
               const savedConfig = localStorage.getItem("mmbarber_graphics_config");
               if (savedConfig) {
                 const tier = JSON.parse(savedConfig).tier;
@@ -294,16 +299,17 @@ export default function RootLayout({
                 const cores = navigator.hardwareConcurrency || 0;
                 const ram = navigator.deviceMemory || 0;
                 let tier = 'low';
-                // Strict thresholds to favor performance over quality by default
                 if (cores >= 16 && ram >= 32) tier = 'ultra';
                 else if (cores >= 12 && ram >= 16) tier = 'high';
                 else if (cores >= 8 && ram >= 8) tier = 'medium';
                 else tier = 'low';
-                
                 if (cores === 0 || ram === 0) tier = 'low';
+                const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                if (conn && (conn.saveData || ['slow-2g', '2g', '3g'].includes(conn.effectiveType))) {
+                  tier = 'lite';
+                }
                 document.documentElement.setAttribute('data-graphics-tier', tier);
               }
-
               const storedNoir = localStorage.getItem('mmbarber_noir_mode');
               const hour = new Date().getHours();
               const isNight = hour >= 19 || hour < 6;
@@ -311,14 +317,11 @@ export default function RootLayout({
                 document.documentElement.classList.add('noir-mode');
               }
             } catch (e) {}
-          `}}
-        />
-      </head>
-      <body 
-        className={`${playfair.variable} ${inter.variable} ${greatVibes.variable} antialiased selection:bg-mafia-gold selection:text-mafia-black min-h-screen relative bg-mafia-black overflow-x-hidden`}
-        suppressHydrationWarning
-      >
+          `}
+        </Script>
+
         <ErrorBoundary>
+        <Providers>
           <SecurityProvider>
             <GameProvider>
               {/* Google Analytics */}
@@ -345,10 +348,12 @@ export default function RootLayout({
               </Script>
 
               <>
+                <AntiTheft />
                 <Atmosphere />
                 <FilmGrain />
                 <FutureSEO />
                 <DynamicSEO />
+                <InstallPrompt />
                 <Header />
 
                 <BarberProvider>
@@ -358,7 +363,6 @@ export default function RootLayout({
                 </BarberProvider>
 
                 <ClientWrapper />
-                <CookieBanner />
                 
                 {/* Global Web Frame - PC/Desktop Only (Theme Aware Border & Glow) */}
                 <div className="fixed inset-0 pointer-events-none z-[9999] border-[1px] border-mafia-gold/20 noir-mode:border-mafia-silver/20 theme-blood:border-mafia-red/20 shadow-[inset_0_0_15px_rgba(var(--color-mafia-gold-rgb),0.05)] noir-mode:shadow-[inset_0_0_15px_rgba(192,192,192,0.05)] theme-blood:shadow-[inset_0_0_15px_rgba(139,0,0,0.05)] hidden md:block">
@@ -375,6 +379,7 @@ export default function RootLayout({
               </>
             </GameProvider>
           </SecurityProvider>
+        </Providers>
         </ErrorBoundary>
       </body>
     </html>

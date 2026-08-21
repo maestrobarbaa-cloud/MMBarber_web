@@ -213,6 +213,11 @@ export default function CareMagazinePage() {
             else if (winner === 2) resultKeys.push('paste');
             else resultKeys.push('salt-powder');
           }
+          else if (pageType === 'test-haircut') {
+            if (winner === 1) resultKeys.push('buzz-crop');
+            else if (winner === 2) resultKeys.push('textured-flow');
+            else resultKeys.push('classic-pompadour');
+          }
         });
       }
       
@@ -855,6 +860,7 @@ function renderPageContent(page: any, season: string, testProps: any, t_mag: any
     case 'test-trichology':
     case 'test-herbs':
     case 'test-styling':
+    case 'test-haircut':
       const questions = page.questions;
       const results = page.results;
 

@@ -17,7 +17,9 @@ export async function GET() {
         title: b.rankTitle,
         status: b.rankStatus,
         nextRankIn: b.rankNextIn
-      } : undefined
+      } : undefined,
+      bookingSystemType: b.bookingSystemType || 'internal',
+      structuredSchedule: b.structuredSchedule ? JSON.parse(b.structuredSchedule) : null
     }));
     
     return NextResponse.json({ barbers: formattedBarbers });
@@ -30,7 +32,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, role, image, desc, schedule, bookingLink, specializations } = body;
+    const { name, role, image, desc, schedule, bookingLink, specializations, bookingSystemType, structuredSchedule } = body;
     
     if (!name || !role || !image || !desc || !schedule) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -64,7 +66,9 @@ export async function POST(request: Request) {
       rankLevel: null,
       rankTitle: null,
       rankStatus: null,
-      rankNextIn: null
+      rankNextIn: null,
+      bookingSystemType: bookingSystemType || 'external',
+      structuredSchedule: structuredSchedule ? JSON.stringify(structuredSchedule) : null
     });
     saveDb();
 
@@ -78,7 +82,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed } = body;
+    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed, bookingSystemType, structuredSchedule } = body;
     
     if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
 
@@ -104,7 +108,9 @@ export async function PUT(request: Request) {
       orderIndex: orderIndex ?? current.orderIndex,
       requiresUnlock: requiresUnlock !== undefined ? (requiresUnlock ? 1 : 0) : current.requiresUnlock,
       unlockThreshold: unlockThreshold ?? current.unlockThreshold,
-      missionFailed: missionFailed !== undefined ? (missionFailed ? 1 : 0) : current.missionFailed
+      missionFailed: missionFailed !== undefined ? (missionFailed ? 1 : 0) : current.missionFailed,
+      bookingSystemType: bookingSystemType !== undefined ? bookingSystemType : current.bookingSystemType,
+      structuredSchedule: structuredSchedule ? JSON.stringify(structuredSchedule) : current.structuredSchedule
     };
     saveDb();
 
