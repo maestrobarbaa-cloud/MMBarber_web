@@ -3,12 +3,19 @@
 import React, { useState } from 'react';
 import { Bug, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 
 export function BugReporter() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  // Zobrazit pouze v sekci seznamka
+  if (!pathname?.startsWith('/seznamka')) {
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
