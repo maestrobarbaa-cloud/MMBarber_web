@@ -886,6 +886,13 @@ export function Header() {
             >
               {t.header.startMission}
             </Link>
+            <Link 
+              href="/kariera" 
+              onClick={() => trackEvent("nav_link_click", { label: "kariera" })} 
+              className="hover:text-mafia-gold transition-colors duration-300"
+            >
+              {lang === 'cs' ? 'Pracovní pozice' : 'Jobs'}
+            </Link>
             <Link href="/pribeh" onClick={() => trackEvent("nav_link_click", { label: "pribeh" })} className="hover:text-mafia-gold transition-colors duration-300">
               {t.header.aboutUs}
             </Link>
@@ -1141,6 +1148,10 @@ export function Header() {
                         <Link href="/jak-to-chodi" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                            <Target size={24} className="text-white/40" />
                            <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.startMission}</span>
+                        </Link>
+                        <Link href="/kariera" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
+                           <Briefcase size={24} className="text-white/40" />
+                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'Pracovní pozice' : 'Jobs'}</span>
                         </Link>
                         <Link href="/pribeh" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                            <Users size={24} className="text-white/40" />

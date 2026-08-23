@@ -440,30 +440,21 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
   };
 
 
-  const getStrategyForProfile = (p: ProfileData, index: number = 0) => {
+  const getStrategyForProfile = (p: ProfileData) => {
     const seekingArray = Array.isArray(p.seeking) ? p.seeking : (p.seeking ? [p.seeking] : []);
     if (seekingArray.includes('business')) return 'business';
     if (seekingArray.includes('bydleni')) return 'bydleni';
     if (seekingArray.includes('kamarad') || seekingArray.includes('spoluzak')) return 'kamarad';
     if (seekingArray.includes('kratkodoby')) return 'kratkodoby';
     if (seekingArray.includes('vazny_vztah')) return 'vazny_vztah';
-    
-    const baseStrategy = matchStrategy || 'closest';
-    
-    // Freemium Preview Logic: 
-    // Pokud má uživatel jen základní (random) algoritmus, dostane prvních 5 lidí přes prémiový (closest)
-    if (baseStrategy === 'random' && index < 5) {
-      return 'closest'; 
-    }
-    
-    return baseStrategy;
+    return matchStrategy || 'closest';
   };
 
   const matchScoresMap = React.useMemo(() => {
     const map = new Map();
     if (!currentUser) return map;
-    profiles.forEach((p, index) => {
-      map.set(p.name, calculateCompatibility(currentUser, p, getStrategyForProfile(p, index)));
+    profiles.forEach(p => {
+      map.set(p.name, calculateCompatibility(currentUser, p, getStrategyForProfile(p)));
     });
     return map;
   }, [currentUser, profiles, matchStrategy]);
@@ -471,8 +462,8 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
   const matchReportsMap = React.useMemo(() => {
     const map = new Map();
     if (!currentUser) return map;
-    profiles.forEach((p, index) => {
-      map.set(p.name, generateMatchReport(currentUser, p, lang, getStrategyForProfile(p, index)));
+    profiles.forEach(p => {
+      map.set(p.name, generateMatchReport(currentUser, p, lang, matchStrategy));
     });
     return map;
   }, [currentUser, profiles, lang, matchStrategy]);
@@ -774,10 +765,9 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                                 onNope={isTop ? () => handleSwipe("left") : undefined}
                                 matchScores={matchScore}
                                 matchReport={matchReport}
-                                currentStrategy={getStrategyForProfile(profile, index)}
+                                currentStrategy={matchStrategy}
                                 onStrategyChange={handleStrategyChange}
                                 currentUserProfile={currentUser}
-                                freemiumPreviewIndex={(!matchStrategy || matchStrategy === 'random') && index < 5 ? index : undefined}
                                 suggestedVouchers={getRecommendedVouchers(currentUser, profile, vouchers.length > 0 ? vouchers : [
                                   {
                                     id: "demo-coffee",

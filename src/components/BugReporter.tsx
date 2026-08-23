@@ -3,13 +3,19 @@
 import React, { useState } from 'react';
 import { Bug, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 
 export function BugReporter() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  // Zobrazit pouze v sekci seznamka
+  if (!pathname?.startsWith('/seznamka')) {
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,19 +131,6 @@ export function BugReporter() {
                         className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white transition-shadow resize-none"
                       />
                     </div>
-
-                    <label className="flex items-start gap-3 mt-4 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={consent}
-                        onChange={(e) => setConsent(e.target.checked)}
-                        required
-                        className="mt-1 w-4 h-4 text-red-600 rounded focus:ring-red-500 border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700"
-                      />
-                      <span className="text-sm text-neutral-600 dark:text-neutral-400 leading-tight">
-                        Souhlasím s odesláním technických údajů (verze prohlížeče, rozlišení a URL adresa). Pomůže nám to chybu lépe odhalit.
-                      </span>
-                    </label>
 
                     {status === 'error' && (
                       <div className="text-red-500 text-sm mt-2">

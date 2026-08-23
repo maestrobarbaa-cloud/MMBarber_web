@@ -1253,13 +1253,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.mbti || ""}
-                        onChange={(val) => setFormData({ ...formData, mbti:val}
-                        placeholder={lang === 'cs' ? 'Vyber typ...' : 'Select type...'}
-                        options={['INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(MBTI_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, mbti: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber typ...' : 'Select type...'}</option>
+                        {['INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(MBTI_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1278,13 +1283,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.loveLanguages?.[0] || ""}
-                        onChange={(val) => setFormData({ ...formData, loveLanguages: [val]}
-                        placeholder={lang === 'cs' ? 'Vyber jazyk...' : 'Select language...'}
-                        options={['Slova ujištění', 'Pozornost', 'Dárky', 'Skutky', 'Fyzický kontakt'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(LOVE_LANGUAGE_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, loveLanguages: [e.target.value] })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber jazyk...' : 'Select language...'}</option>
+                        {['Slova ujištění', 'Pozornost', 'Dárky', 'Skutky', 'Fyzický kontakt'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(LOVE_LANGUAGE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1303,13 +1313,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.attachmentStyle || ""}
-                        onChange={(val) => setFormData({ ...formData, attachmentStyle:val}
-                        placeholder={lang === 'cs' ? 'Vyber styl...' : 'Select style...'}
-                        options={['Bezpečná', 'Úzkostná', 'Vyhýbavá', 'Desorganizovaná'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(ATTACHMENT_STYLE_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, attachmentStyle: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber styl...' : 'Select style...'}</option>
+                        {['Bezpečná', 'Úzkostná', 'Vyhýbavá', 'Desorganizovaná'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(ATTACHMENT_STYLE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1328,13 +1343,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.chronotype || ""}
-                        onChange={(val) => setFormData({ ...formData, chronotype:val}
-                        placeholder={lang === 'cs' ? 'Vyber typ...' : 'Select type...'}
-                        options={['Ranní skřivan', 'Noční sova', 'Medvěd', 'Delfín'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(CHRONOTYPE_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, chronotype: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber typ...' : 'Select type...'}</option>
+                        {['Ranní skřivan', 'Noční sova', 'Medvěd', 'Delfín'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(CHRONOTYPE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1353,13 +1373,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.temperament || ""}
-                        onChange={(val) => setFormData({ ...formData, temperament:val}
-                        placeholder={lang === 'cs' ? 'Vyber typ...' : 'Select type...'}
-                        options={['Sangvinik', 'Cholerik', 'Flegmatik', 'Melancholik'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(TEMPERAMENT_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, temperament: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber typ...' : 'Select type...'}</option>
+                        {['Sangvinik', 'Cholerik', 'Flegmatik', 'Melancholik'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(TEMPERAMENT_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1378,13 +1403,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.enneagram || ""}
-                        onChange={(val) => setFormData({ ...formData, enneagram:val}
-                        placeholder={lang === 'cs' ? 'Vyber typ...' : 'Select type...'}
-                        options={['Typ 1 (Perfekcionista)', 'Typ 2 (Dárce)', 'Typ 3 (Dosahovač)', 'Typ 4 (Individualista)', 'Typ 5 (Pozorovatel)', 'Typ 6 (Loajalista)', 'Typ 7 (Epikurejec)', 'Typ 8 (Bojovník)', 'Typ 9 (Mírotvůrce)'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(ENNEAGRAM_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, enneagram: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber typ...' : 'Select type...'}</option>
+                        {['Typ 1 (Perfekcionista)', 'Typ 2 (Dárce)', 'Typ 3 (Dosahovač)', 'Typ 4 (Individualista)', 'Typ 5 (Pozorovatel)', 'Typ 6 (Loajalista)', 'Typ 7 (Epikurejec)', 'Typ 8 (Bojovník)', 'Typ 9 (Mírotvůrce)'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(ENNEAGRAM_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1402,13 +1432,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.conflictStyle || ""}
-                        onChange={(val) => setFormData({ ...formData, conflictStyle:val}
-                        placeholder={lang === 'cs' ? 'Vyber styl...' : 'Select style...'}
-                        options={['Vyhýbavý (Avoidant)', 'Soutěživý (Competitive)', 'Přizpůsobivý (Accommodating)', 'Kompromisní (Compromising)', 'Spolupracující (Collaborative)'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(CONFLICT_STYLE_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, conflictStyle: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber styl...' : 'Select style...'}</option>
+                        {['Vyhýbavý (Avoidant)', 'Soutěživý (Competitive)', 'Přizpůsobivý (Accommodating)', 'Kompromisní (Compromising)', 'Spolupracující (Collaborative)'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(CONFLICT_STYLE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1427,13 +1462,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.apologyLanguage || ""}
-                        onChange={(val) => setFormData({ ...formData, apologyLanguage:val}
-                        placeholder={lang === 'cs' ? 'Vyber jazyk...' : 'Select language...'}
-                        options={['Vyjádření lítosti', 'Přijetí zodpovědnosti', 'Nabídka nápravy', 'Upřímné pokání', 'Žádost o odpuštění'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(APOLOGY_LANGUAGE_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, apologyLanguage: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber jazyk...' : 'Select language...'}</option>
+                        {['Vyjádření lítosti', 'Přijetí zodpovědnosti', 'Nabídka nápravy', 'Upřímné pokání', 'Žádost o odpuštění'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(APOLOGY_LANGUAGE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1452,13 +1492,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.brainHemisphere || ""}
-                        onChange={(val) => setFormData({ ...formData, brainHemisphere:val}
-                        placeholder={lang === 'cs' ? 'Vyber typ...' : 'Select type...'}
-                        options={['Levá hemisféra (Logika)', 'Pravá hemisféra (Kreativita)'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(BRAIN_HEMISPHERE_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, brainHemisphere: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber typ...' : 'Select type...'}</option>
+                        {['Levá hemisféra (Logika)', 'Pravá hemisféra (Kreativita)'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(BRAIN_HEMISPHERE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1477,13 +1522,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.intimacyDynamic || ""}
-                        onChange={(val) => setFormData({ ...formData, intimacyDynamic:val}
-                        placeholder={lang === 'cs' ? 'Vyber typ...' : 'Select type...'}
-                        options={['Dominantní', 'Submisivní', 'Přepínač (Switch)', 'Pečující (Giver)', 'Průzkumník'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(INTIMACY_DYNAMIC_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, intimacyDynamic: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber typ...' : 'Select type...'}</option>
+                        {['Dominantní', 'Submisivní', 'Přepínač (Switch)', 'Pečující (Giver)', 'Průzkumník'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(INTIMACY_DYNAMIC_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1502,13 +1552,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.loveStyle || ""}
-                        onChange={(val) => setFormData({ ...formData, loveStyle:val}
-                        placeholder={lang === 'cs' ? 'Vyber styl...' : 'Select style...'}
-                        options={['Eros (Romantická)', 'Storge (Přátelská)', 'Ludus (Hravá)', 'Pragma (Logická)', 'Agape (Obětavá)'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(LOVE_STYLE_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, loveStyle: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber styl...' : 'Select style...'}</option>
+                        {['Eros (Romantická)', 'Storge (Přátelská)', 'Ludus (Hravá)', 'Pragma (Logická)', 'Agape (Obětavá)'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(LOVE_STYLE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1527,13 +1582,18 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CustomSelect
+                      <select 
                         value={formData.darkTriad || ""}
-                        onChange={(val) => setFormData({ ...formData, darkTriad:val}
-                        placeholder={lang === 'cs' ? 'Vyber profil...' : 'Select profile...'}
-                        options={['Nezávislý rebel', 'Charismatický stratég', 'Středobod vesmíru', 'Běžný smrtelník'].map(t => ({ value: t, label: t }))}
-                      />
-                      <button type="button" onClick={() => setActiveQuiz(DARK_TRIAD_QUIZ)}
+                        onChange={(e) => setFormData({ ...formData, darkTriad: e.target.value })}
+                        className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
+                      >
+                        <option value="">{lang === 'cs' ? 'Vyber profil...' : 'Select profile...'}</option>
+                        {['Nezávislý rebel', 'Charismatický stratég', 'Středobod vesmíru', 'Běžný smrtelník'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        onClick={() => setActiveQuiz(DARK_TRIAD_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1609,7 +1669,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                     <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Spontánnost vs. Plánování' : 'Spontaneity vs. Planning'}</div>
                     <div className="text-[10px] font-mono text-white/50">{formData.spontaneityLevel ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.spontaneityLevel}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                   </div>
-                  <button type="button" onClick={() => setActiveQuiz(SPONTANEITY_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                  <button onClick={() => setActiveQuiz(SPONTANEITY_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                     {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                   </button>
                 </div>
@@ -1630,7 +1690,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Styl Řešení konfliktů' : 'Conflict Style'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.conflictStyle ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.conflictStyle}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button type="button" onClick={() => setActiveQuiz(CONFLICT_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button onClick={() => setActiveQuiz(CONFLICT_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1639,7 +1699,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Jazyk Omluvy' : 'Apology Language'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.apologyLanguage ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.apologyLanguage}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button type="button" onClick={() => setActiveQuiz(APOLOGY_LANGUAGE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button onClick={() => setActiveQuiz(APOLOGY_LANGUAGE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1658,7 +1718,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Typ citové vazby' : 'Attachment Style'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.attachmentStyle ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.attachmentStyle}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button type="button" onClick={() => setActiveQuiz(ATTACHMENT_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button onClick={() => setActiveQuiz(ATTACHMENT_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1667,7 +1727,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Dynamika Intimity' : 'Intimacy Dynamic'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.intimacyDynamic ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.intimacyDynamic}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button type="button" onClick={() => setActiveQuiz(INTIMACY_DYNAMIC_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button onClick={() => setActiveQuiz(INTIMACY_DYNAMIC_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1676,7 +1736,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Milostný Styl' : 'Love Style'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.loveStyle ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.loveStyle}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button type="button" onClick={() => setActiveQuiz(LOVE_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button onClick={() => setActiveQuiz(LOVE_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1695,7 +1755,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Mozková hemisféra' : 'Brain Hemisphere'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.brainHemisphere ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.brainHemisphere}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button type="button" onClick={() => setActiveQuiz(BRAIN_HEMISPHERE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button onClick={() => setActiveQuiz(BRAIN_HEMISPHERE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1728,7 +1788,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Kde máš hranici nevěry?' : 'Infidelity Boundaries'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.infidelityDefinition ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.infidelityDefinition}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button type="button" onClick={() => setActiveQuiz(INFIDELITY_BOUNDARY_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button onClick={() => setActiveQuiz(INFIDELITY_BOUNDARY_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>

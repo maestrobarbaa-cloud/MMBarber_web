@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin, Ruler, Cigarette, Wine, Sparkles, Info, X, Skull, Flag, MessageCircleHeart, Coffee, Target, GraduationCap, Zap, Bookmark, ChevronDown, ChevronLeft, ChevronRight, Camera, Heart, Instagram, Link, PawPrint, Facebook, Linkedin, Twitter, Music, PlaySquare, MessageSquare, EyeOff, Users, Home, Leaf, Calendar, Briefcase, Gamepad2, ShieldCheck, BadgeCheck, Lock, LockOpen
+  MapPin, Ruler, Cigarette, Wine, Sparkles, Info, X, Skull, Flag, MessageCircleHeart, Coffee, Target, GraduationCap, Zap, Bookmark, ChevronDown, ChevronLeft, ChevronRight, Camera, Heart, Instagram, Link, PawPrint, Facebook, Linkedin, Twitter, Music, PlaySquare, MessageSquare, EyeOff, Users, Home, Leaf, Calendar, Briefcase, Gamepad2, ShieldCheck, BadgeCheck, Lock
 } from "lucide-react";
 import { ANIMAL_TYPES } from "@/lib/PetAtlas";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -46,10 +46,9 @@ interface ProfileCardProps {
   onStrategyChange?: (strategy: string) => void;
   suggestedVouchers?: VoucherData[];
   currentUserProfile?: ProfileData;
-  freemiumPreviewIndex?: number; // 0-4 for free previews
 }
 
-export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, onBookmark, matchScores, matchReport, onLike, onNope, currentStrategy, onStrategyChange, suggestedVouchers, currentUserProfile, freemiumPreviewIndex }: ProfileCardProps) {
+export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, onBookmark, matchScores, matchReport, onLike, onNope, currentStrategy, onStrategyChange, suggestedVouchers, currentUserProfile }: ProfileCardProps) {
   const { lang } = useTranslation();
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
@@ -139,17 +138,6 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
             </div>
           ) : (
             <>
-              {/* FREEMIUM PREVIEW BANNER */}
-              {freemiumPreviewIndex !== undefined && freemiumPreviewIndex < 5 && (
-                <div className="bg-gradient-to-r from-blue-900/40 to-fuchsia-900/40 border border-blue-500/50 rounded-lg p-3 mb-6 flex items-center justify-between">
-                  <div>
-                    <span className="block text-xs font-black text-white uppercase tracking-widest mb-1">✨ Prémiová ukázka zdarma</span>
-                    <span className="block text-[10px] font-mono text-white/70">Zobrazuješ {freemiumPreviewIndex + 1}. z 5 bezplatných ukázek.</span>
-                  </div>
-                  <LockOpen size={24} className="text-blue-400 opacity-80" />
-                </div>
-              )}
-
               {/* MATCH SCORE */}
               {matchScores && (
                 <div className="bg-mafia-gold/10 border border-mafia-gold/30 rounded-lg p-4 mb-6">
@@ -1053,7 +1041,6 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
           >
             <Bookmark size={18} className={`${bookmarked ? "fill-mafia-gold" : ""} transition-colors duration-500 pointer-events-none`} />
           </button>
-
           <button
             onClick={(e) => { e.stopPropagation(); setShowDetails(true); }}
             title={lang === 'cs' ? 'Více informací' : 'More info'}

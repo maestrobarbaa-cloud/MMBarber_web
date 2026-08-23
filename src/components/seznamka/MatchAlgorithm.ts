@@ -70,7 +70,7 @@ function compareArrays(arr1: string[] | undefined, arr2: string[] | undefined, s
   return pct; // mirror / closest / default
 }
 
-export function calculateCompatibility(user: ProfileData, partner: ProfileData, forcedStrategy?: string, distanceKm?: number): MatchScores {
+export function calculateCompatibility(user: ProfileData, partner: ProfileData, forcedStrategy?: string): MatchScores {
   const strategy = forcedStrategy || user.matchStrategy || 'closest';
 
   // --- 1. RANDOM STRATEGY ---
@@ -112,35 +112,14 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
 
   let penalty = 0;
 
-  // --- DEALBREAKERS & PROGRESSIVE PENALTIES ---
+  // --- DEALBREAKERS (Apply to all normal strategies) ---
   if (user.prefAgeMin || user.prefAgeMax) {
      const partnerAge = parseInt(partner.age);
      if (!isNaN(partnerAge)) {
        const min = user.prefAgeMin ? parseInt(user.prefAgeMin) : 18;
        const max = user.prefAgeMax ? parseInt(user.prefAgeMax) : 99;
-       
-       if (partnerAge < min || partnerAge > max) {
-         // Progressive penalty instead of hard -100
-         const diff = Math.min(
-           Math.abs(partnerAge - min),
-           Math.abs(partnerAge - max)
-         );
-         
-         if (diff <= 4) {
-           penalty += 10; // Slight mismatch
-         } else if (diff <= 10) {
-           penalty += 30; // Medium mismatch
-         } else {
-           penalty += 100; // Hard dealbreaker
-         }
-       }
+       if (partnerAge < min || partnerAge > max) penalty += 100;
      }
-  }
-  
-  // Dating style mismatch (Exclusive vs Polyamory etc.)
-  if (user.datingStyle && partner.datingStyle) {
-    if (user.datingStyle === 'exclusive' && partner.datingStyle === 'polyamory') penalty += 50;
-    if (user.datingStyle === 'polyamory' && partner.datingStyle === 'exclusive') penalty += 50;
   }
   
   // --- CHARACTER & PSYCHOLOGY ---
@@ -222,14 +201,8 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
     futCount++;
   }
   if (user.futurePrefs?.lookingFor && partner.futurePrefs?.lookingFor) {
-    const overlap = user.futurePrefs.lookingFor.filter(val => partner.futurePrefs?.lookingFor?.includes(val));
-    futScore += overlap.length > 0 ? 1.0 : 0.0;
+    futScore += (user.futurePrefs.lookingFor === partner.futurePrefs.lookingFor ? 1.0 : 0.0);
     futCount++;
-  }
-  
-  if (user.seriousIntent && partner.seriousIntent) {
-    futScore += 2.0; // Huge boost for mutual serious intent
-    futCount += 2;
   }
   
   let finalFutPct = futCount > 0 ? (futScore / futCount) * 100 : 80;
@@ -253,6 +226,7 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
 
   let finalPracPct = pracCount > 0 ? (pracScore / pracCount) * 100 : 70;
 
+  
   // --- COMMUNICATION ---
   let commScore = 0; let commCount = 0;
   const commFields = ['conflictStyle', 'apologyLanguage'];
@@ -302,50 +276,10 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
       intelCount++;
     }
   }
-
-  // Evaluate grades match
-  if (user.grades && partner.grades) {
-    const levels = ['elementary', 'highSchool', 'university'];
-    for (const lvl of levels) {
-      const uVal = (user.grades as any)[lvl];
-      const pVal = (partner.grades as any)[lvl];
-      if (uVal && pVal && uVal !== 'none' && pVal !== 'none') {
-        const uNum = parseInt(uVal);
-        const pNum = parseInt(pVal);
-        if (!isNaN(uNum) && !isNaN(pNum)) {
-          const diff = Math.abs(uNum - pNum);
-          if (diff === 0) intelScore += strategy === 'magnet' ? 0.3 : 1.0;
-          else if (diff === 1) intelScore += 0.5;
-          else intelScore += strategy === 'magnet' ? 1.0 : 0.0;
-          intelCount++;
-        }
-      }
-    }
-  }
-
   let finalIntelPct = intelCount > 0 ? (intelScore / intelCount) * 100 : 80;
 
-  // --- EGO PENALTY ("Humbling" the user) ---
-  if (user.egoScore && user.egoScore > 80) {
-    penalty += Math.floor(Math.random() * 15) + 5; 
-  }
-
-  // Calculate Base Overall
+  // Calculate Overall
   let finalPct = Math.round(Math.max(0, Math.min(100, (finalCharPct + finalLifePct + finalFutPct + finalPracPct + finalCommPct + finalIntPct + finalIntelPct) / 7 - penalty)));
-
-  // --- DISTANCE PENALTY (Gravity Score) ---
-  if (distanceKm !== undefined && distanceKm > 0) {
-     let distancePenalty = distanceKm / 10; // Base: -1% for every 10km
-
-     // If the match is incredibly good, we lessen the distance penalty (Gravity Score magic)
-     if (finalPct >= 90) {
-       distancePenalty = distancePenalty * 0.2; // 80% reduction in penalty for perfect matches
-     } else if (finalPct >= 80) {
-       distancePenalty = distancePenalty * 0.5; // 50% reduction
-     }
-
-     finalPct = Math.round(Math.max(0, finalPct - distancePenalty));
-  }
 
   return {
     overall: finalPct,
@@ -357,27 +291,8 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
     intimacy: Math.round(Math.max(0, Math.min(100, finalIntPct))),
     intellect: Math.round(Math.max(0, Math.min(100, finalIntelPct)))
   };
-}
 
-function calculatePsychologyScore(user: ProfileData, partner: ProfileData, strategy: string): number {
-  let charScore = 0;
-  let charCount = 0;
-  const psychFields = ['mbti', 'enneagram', 'chronotype', 'temperament', 'darkTriad', 'spontaneity'];
-  for (const field of psychFields) {
-    const uVal = (user as any)[field];
-    const pVal = (partner as any)[field];
-    if (uVal && pVal) {
-      if (uVal === pVal) {
-        charScore += strategy === 'magnet' ? 0.2 : 1.0;
-      } else {
-        charScore += strategy === 'magnet' ? 1.0 : 0.2; // Opposites attract in psychology for magnet
-      }
-      charCount++;
-    }
-  }
-  return charCount > 0 ? charScore / charCount : 0.7;
 }
-
 
 export function generateMatchReport(user: ProfileData, partner: ProfileData, lang: 'cs' | 'en' = 'cs', forcedStrategy?: string): string[] {
   const report: string[] = [];
@@ -412,48 +327,9 @@ export function generateMatchReport(user: ProfileData, partner: ProfileData, lan
     report.push(lang === 'cs' ? `✅ Máte společné zájmy: ${commonCategories.slice(0, 3).join(', ')}` : `✅ You share interests: ${commonCategories.slice(0, 3).join(', ')}`);
   }
 
-  const commonDetailedHobbies = (user.hobbiesDetailed || []).filter(c => (partner.hobbiesDetailed || []).includes(c));
-  if (commonDetailedHobbies.length > 0) {
-    report.push(lang === 'cs' ? `✅ Shodujete se v koníčcích: ${commonDetailedHobbies.join(', ')}` : `✅ You share hobbies: ${commonDetailedHobbies.join(', ')}`);
-  }
-  
-  if (user.prefBodyShape && partner.bodyShape && user.prefBodyShape.includes(partner.bodyShape)) {
-    report.push(lang === 'cs' ? '🔥 Tvůj protějšek má přesně ten tvar postavy, který tě přitahuje!' : '🔥 Your match has exactly the body shape you are attracted to!');
-  }
-
   if (report.length === 0) {
     report.push(lang === 'cs' ? 'Doporučeno algoritmem pro základní shodu profilů.' : 'Recommended by algorithm based on basic profile match.');
   }
 
   return report;
-}
-
-export function generateVoucherRecommendation(user: ProfileData, partner: ProfileData, lang: 'cs' | 'en' = 'cs'): string | null {
-  // Projdeme preference partnera a navrhneme voucher
-  const pFood = partner.favoriteFood || [];
-  const pDrink = partner.favoriteDrink || [];
-  const pFlowers = partner.favoriteFlowers || [];
-
-  let suggestion = '';
-
-  if (pFood.includes('italian') && pDrink.includes('wine')) {
-    suggestion = 'Tvá shoda miluje italskou kuchyni a víno. Využij 15% slevu na rande v partnerské Pizzerii Ristorante!';
-  } else if (pFood.includes('asian')) {
-    suggestion = 'Skvělý cíl pro rande: Asijská kuchyně! Tady máš 1+1 zdarma na Sushi v SushiBar MM.';
-  } else if (pDrink.includes('cocktails')) {
-    suggestion = 'Drink na uvolněnou? Tvůj Match má rád(a) koktejly. Získejte uvítací drink zdarma v Cocktail Baru Město.';
-  } else if (pFood.includes('burgers')) {
-    suggestion = 'Burgery a pohoda. Využij voucher na 20 % slevu do oblíbeného Burger House pro vaše první rande.';
-  } else if (pDrink.includes('coffee')) {
-    suggestion = 'Ideální první rande? Káva! Máme pro tebe voucher na kávu a dezert v lokální Kavárně U Nás.';
-  }
-
-  // Přidání tipu na květiny
-  if (pFlowers.includes('roses')) {
-    suggestion += ' (Tip: Potěší ji růže!)';
-  } else if (pFlowers.includes('sunflowers')) {
-    suggestion += ' (Tip: Přines slunečnice, bude nadšená!)';
-  }
-
-  return suggestion !== '' ? suggestion : null;
 }

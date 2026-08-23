@@ -125,8 +125,6 @@ model Profile {
   
   extendedData         String?   
   showMutualFriends    Boolean   @default(true)
-  visibilityMode       String    @default("public")
-  egoScore             Int       @default(50)
 
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
