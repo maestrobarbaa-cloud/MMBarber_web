@@ -1204,6 +1204,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
               {/* Nové: Psychologické testy (Accordion) */}
               <div className="mt-12 border-t border-white/10 pt-8">
                 <button 
+                  type="button"
                   onClick={() => setIsPsychologyExpanded(!isPsychologyExpanded)}
                   className="w-full flex items-center justify-between p-4 bg-mafia-dark border border-mafia-gold/30 rounded-xl hover:bg-mafia-gold/10 transition-colors"
                 >
@@ -1263,8 +1264,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(MBTI_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(MBTI_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1293,8 +1293,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(LOVE_LANGUAGE_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(LOVE_LANGUAGE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1323,8 +1322,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(ATTACHMENT_STYLE_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(ATTACHMENT_STYLE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1353,8 +1351,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(CHRONOTYPE_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(CHRONOTYPE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1383,8 +1380,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(TEMPERAMENT_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(TEMPERAMENT_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1413,8 +1409,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(ENNEAGRAM_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(ENNEAGRAM_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1442,8 +1437,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(CONFLICT_STYLE_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(CONFLICT_STYLE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1472,8 +1466,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(APOLOGY_LANGUAGE_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(APOLOGY_LANGUAGE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1502,8 +1495,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(BRAIN_HEMISPHERE_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(BRAIN_HEMISPHERE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1532,8 +1524,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(INTIMACY_DYNAMIC_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(INTIMACY_DYNAMIC_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1562,8 +1553,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(LOVE_STYLE_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(LOVE_STYLE_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1592,8 +1582,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <button 
-                        onClick={() => setActiveQuiz(DARK_TRIAD_QUIZ)}
+                      <button type="button" onClick={() => setActiveQuiz(DARK_TRIAD_QUIZ)}
                         className="px-4 py-2 bg-white/5 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-white hover:text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap"
                       >
                         {lang === 'cs' ? 'Spustit Test' : 'Take Test'}
@@ -1669,7 +1658,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                     <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Spontánnost vs. Plánování' : 'Spontaneity vs. Planning'}</div>
                     <div className="text-[10px] font-mono text-white/50">{formData.spontaneityLevel ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.spontaneityLevel}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                   </div>
-                  <button onClick={() => setActiveQuiz(SPONTANEITY_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                  <button type="button" onClick={() => setActiveQuiz(SPONTANEITY_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                     {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                   </button>
                 </div>
@@ -1690,7 +1679,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Styl Řešení konfliktů' : 'Conflict Style'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.conflictStyle ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.conflictStyle}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button onClick={() => setActiveQuiz(CONFLICT_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button type="button" onClick={() => setActiveQuiz(CONFLICT_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1699,7 +1688,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Jazyk Omluvy' : 'Apology Language'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.apologyLanguage ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.apologyLanguage}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button onClick={() => setActiveQuiz(APOLOGY_LANGUAGE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button type="button" onClick={() => setActiveQuiz(APOLOGY_LANGUAGE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1718,7 +1707,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Typ citové vazby' : 'Attachment Style'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.attachmentStyle ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.attachmentStyle}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button onClick={() => setActiveQuiz(ATTACHMENT_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button type="button" onClick={() => setActiveQuiz(ATTACHMENT_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1727,7 +1716,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Dynamika Intimity' : 'Intimacy Dynamic'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.intimacyDynamic ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.intimacyDynamic}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button onClick={() => setActiveQuiz(INTIMACY_DYNAMIC_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button type="button" onClick={() => setActiveQuiz(INTIMACY_DYNAMIC_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1736,7 +1725,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Milostný Styl' : 'Love Style'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.loveStyle ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.loveStyle}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button onClick={() => setActiveQuiz(LOVE_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button type="button" onClick={() => setActiveQuiz(LOVE_STYLE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1755,7 +1744,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Mozková hemisféra' : 'Brain Hemisphere'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.brainHemisphere ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.brainHemisphere}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button onClick={() => setActiveQuiz(BRAIN_HEMISPHERE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button type="button" onClick={() => setActiveQuiz(BRAIN_HEMISPHERE_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
@@ -1788,7 +1777,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                       <div className="font-heading font-black uppercase tracking-widest text-white text-sm mb-1">{lang === 'cs' ? 'Kde máš hranici nevěry?' : 'Infidelity Boundaries'}</div>
                       <div className="text-[10px] font-mono text-white/50">{formData.infidelityDefinition ? `${lang === 'cs' ? 'Vybráno:' : 'Selected:'} ${formData.infidelityDefinition}` : (lang === 'cs' ? 'Nevyplněno' : 'Not filled')}</div>
                     </div>
-                    <button onClick={() => setActiveQuiz(INFIDELITY_BOUNDARY_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
+                    <button type="button" onClick={() => setActiveQuiz(INFIDELITY_BOUNDARY_QUIZ)} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold/50 text-mafia-gold rounded-lg text-xs font-mono uppercase tracking-widest transition-colors whitespace-nowrap">
                       {lang === 'cs' ? 'Nevíš? Spusť si Kvíz' : 'Take the Quiz'}
                     </button>
                   </div>
