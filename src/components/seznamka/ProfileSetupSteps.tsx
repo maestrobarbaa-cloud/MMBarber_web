@@ -26,8 +26,30 @@ export const Step2Physical = ({ formData, setFormData, lang }: StepProps) => (
          <input type="text" value={formData.height} onChange={(e) => setFormData({...formData, height: e.target.value})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold" />
       </div>
       <div>
-         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Tvoje postava</label>
-         <CustomSelect value={formData.myBodyType || ""} onChange={(v) => setFormData({...formData, myBodyType: v})} options={[{value:'slender', label:'Štíhlá'}, {value:'athletic', label:'Sportovní'}, {value:'average', label:'Normální'}, {value:'curvy', label:'Plnější/Robustnější'}]} placeholder="Vyber..." />
+         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+           Tvar postavy (Silueta)
+           <InfoTooltip text="Jak bys popsal(a) svůj typ postavy? Hruška, Jablko, V-shape..." />
+         </label>
+         <CustomSelect 
+            value={formData.bodyShape || ""} 
+            onChange={(v) => setFormData({...formData, bodyShape: v as string})} 
+            options={[
+              {value:'fit', label:'Fit / Vysportovaná'},
+              {value:'slim', label:'Štíhlá (Slim)'},
+              {value:'chubby', label:'Baculka / Silnější'},
+              {value:'hourglass', label:'Ž: Přesýpací hodiny (Hourglass)'}, 
+              {value:'pear', label:'Ž: Hruška (Pear)'}, 
+              {value:'apple', label:'Ž: Jablko (Apple)'}, 
+              {value:'petite', label:'Ž: Drobná (Petite)'},
+              {value:'vshape', label:'M: Široká ramena (V-shape / Dorito)'},
+              {value:'dadbod', label:'M: Taťkovská (Dad Bod)'},
+              {value:'lean', label:'M: Hubený/Vyšvihaný (Lean)'},
+              {value:'muscle', label:'M: Svalnatý (Muscle)'},
+              {value:'bear', label:'M: Medvěd (Bear)'},
+              {value:'average', label:'Normální / Běžná'}
+            ]} 
+            placeholder="Vyber tvar..." 
+          />
       </div>
     </div>
 
@@ -49,8 +71,32 @@ export const Step2Physical = ({ formData, setFormData, lang }: StepProps) => (
         </div>
         
         <div>
-           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Preferovaná postava partnera</label>
-           <CustomSelect isMulti={true} value={formData.physicalAttraction?.prefBodyType || []} onChange={(v) => setFormData({...formData, physicalAttraction: {...formData.physicalAttraction, prefBodyType: v}})} options={[{value:'slender', label:'Štíhlá'}, {value:'athletic', label:'Sportovní'}, {value:'average', label:'Normální'}, {value:'curvy', label:'Plnější/Robustnější'}, {value:'any', label:'Nezáleží'}]} placeholder="Vyber..." />
+           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+             Preferovaný tvar postavy (Silueta)
+             <InfoTooltip text="Algoritmus se bude snažit najít ty, kteří se blíží tvému ideálu." />
+           </label>
+           <CustomSelect 
+             isMulti={true} 
+             value={formData.prefBodyShape || []} 
+             onChange={(v) => setFormData({...formData, prefBodyShape: v})} 
+             options={[
+              {value:'fit', label:'Fit / Vysportovaná'},
+              {value:'slim', label:'Štíhlá (Slim)'},
+              {value:'chubby', label:'Baculka / Silnější'},
+              {value:'hourglass', label:'Ž: Přesýpací hodiny (Hourglass)'}, 
+              {value:'pear', label:'Ž: Hruška (Pear)'}, 
+              {value:'apple', label:'Ž: Jablko (Apple)'}, 
+              {value:'petite', label:'Ž: Drobná (Petite)'},
+              {value:'vshape', label:'M: Široká ramena (V-shape / Dorito)'},
+              {value:'dadbod', label:'M: Taťkovská (Dad Bod)'},
+              {value:'lean', label:'M: Hubený/Vyšvihaný (Lean)'},
+              {value:'muscle', label:'M: Svalnatý (Muscle)'},
+              {value:'bear', label:'M: Medvěd (Bear)'},
+              {value:'average', label:'Normální / Běžná'},
+              {value:'any', label:'Nezáleží'}
+             ]} 
+             placeholder="Vyber..." 
+           />
         </div>
         <div className="grid grid-cols-2 gap-4">
            <div>
@@ -81,7 +127,10 @@ export const Step3Character = ({ formData, setFormData, lang }: StepProps) => (
     <div className="p-6 bg-gradient-to-br from-mafia-gold/10 to-transparent border border-mafia-gold/30 hover:border-mafia-gold/50 shadow-[0_0_20px_rgba(197,160,89,0.05)] rounded-xl mb-8 transition-all">
       <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Moje povaha (Jaký/á jsem)</h4>
       <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Vyber, co tě nejlépe vystihuje</label>
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+          Vyber, co tě nejlépe vystihuje
+          <InfoTooltip text="Flegmatik: Nenechá se snadno rozhodit. Empatický: Dokáže se vcítit do druhých. Ambiciózní: Jde tvrdě za svými cíli. Romantik: Má rád gesta, překvapení a city." />
+        </label>
         <CustomSelect isMulti={true} value={formData.myTraits || []} onChange={(val) => setFormData({ ...formData, myTraits: val })} placeholder="Vyber vlastnosti..." options={[
           { value: "honest", label: "Upřímný/á" },
           { value: "loyal", label: "Věrný/á" },
@@ -98,10 +147,97 @@ export const Step3Character = ({ formData, setFormData, lang }: StepProps) => (
           { value: "adventurous", label: "Dobrodružný/á" }
         ]} />
       </div>
+
+      <div className="mt-6">
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+          Povaha, kterou hledám u partnera
+          <InfoTooltip text="Jaké povahové rysy ti u partnera nejvíce imponují? Algoritmus tě přednostně spojí s lidmi, kteří se takto popsali." />
+        </label>
+        <CustomSelect isMulti={true} value={formData.partnerTraits || []} onChange={(val) => setFormData({ ...formData, partnerTraits: val })} placeholder="Hledám partnera, který je..." options={[
+          { value: "honest", label: "Upřímný/á" },
+          { value: "loyal", label: "Věrný/á" },
+          { value: "funny", label: "Vtipný/á (Smysl pro humor)" },
+          { value: "reliable", label: "Spolehlivý/á" },
+          { value: "empathetic", label: "Empatický/á" },
+          { value: "ambitious", label: "Ambiciózní" },
+          { value: "calm", label: "Klidný/á (Flegmatik)" },
+          { value: "social", label: "Společenský/á" },
+          { value: "romantic", label: "Romantický/á" },
+          { value: "independent", label: "Samostatný/á" },
+          { value: "tolerant", label: "Tolerantní" },
+          { value: "family", label: "Rodinně založený/á" },
+          { value: "adventurous", label: "Dobrodružný/á" }
+        ]} />
+      </div>
+      
+      <div className="mt-6">
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+          Životní Motto
+          <InfoTooltip text="Krátká věta, která tě vystihuje. Ukáže se hned pod tvojí fotkou." />
+        </label>
+        <input 
+          type="text" 
+          value={formData.motto || ''} 
+          onChange={(e) => setFormData({...formData, motto: e.target.value})} 
+          className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold" 
+          placeholder="Např. Žij a nechej žít..." 
+          maxLength={60}
+        />
+      </div>
+
+      <div className="mt-6">
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+          Zásadovost (Přístup k životu)
+          <InfoTooltip text="Jsi člověk pevných zásad, nebo bereš život s absolutním nadhledem?" />
+        </label>
+        <CustomSelect 
+          value={formData.principles || ""} 
+          onChange={(v) => setFormData({...formData, principles: v as string})} 
+          options={[
+            {value:'strict', label:'Jsem silně zásadový člověk (Pravidla jsou důležitá)'}, 
+            {value:'balanced', label:'Mám své hodnoty, ale jsem flexibilní'}, 
+            {value:'free', label:'Beru život jak jde (Nic mi nevadí, jsem free)'}
+          ]} 
+          placeholder="Vyber..." 
+        />
+      </div>
+      <div className="mt-6">
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+          Národnost / Etnikum (Volitelné)
+          <InfoTooltip text="Můžeš uvést svou národnost (např. Češka, Slovák, 50% Čech / 50% Ital), pokud je to pro tebe důležité." />
+        </label>
+        <input 
+          type="text" 
+          value={formData.nationality || ''} 
+          onChange={(e) => setFormData({...formData, nationality: e.target.value})} 
+          className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold" 
+          placeholder="Např. 100% Čech, napůl Slovenka..." 
+        />
+      </div>
     </div>
 
     <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/10 hover:border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.02)] rounded-xl transition-all">
       <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Preference u partnera</h4>
+      
+      <div className="mb-6">
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+          Celkový Vibe (Koho vlastně hledám?)
+          <InfoTooltip text="Někdo chce hodného kluka/holku, někdo bad boye/girl. Neboj se být upřímný/á." />
+        </label>
+        <CustomSelect 
+          value={formData.partnerVibe || ""} 
+          onChange={(v) => setFormData({...formData, partnerVibe: v as string})} 
+          options={[
+            {value:'nice', label:'Hodný, slušný a spolehlivý člověk ("Nice Guy/Girl")'}, 
+            {value:'bad', label:'Zlý kluk / holka ("Bad Boy / Bad Girl") - chci jiskru'}, 
+            {value:'boss', label:'Nezávislý boss / frajer(ka), co ví co chce'},
+            {value:'weirdo', label:'Někdo trochu divný a svůj ("Weirdo / Nerd")'},
+            {value:'any', label:'Hlavně ať přeskočí jiskra (Nezáleží na typu)'}
+          ]} 
+          placeholder="Vyber vibe..." 
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <TraitSelector label="Upřímnost" tooltipText="Základ dobrého vztahu pro většinu, ale každý to má jinak." value={formData.characterTraits?.honesty} onChange={(val) => setFormData({ ...formData, characterTraits: { ...formData.characterTraits, honesty: val as any } })} />
         <TraitSelector label="Věrnost" tooltipText="Někdo preferuje otevřené vztahy, algoritmus to zohlední." value={formData.characterTraits?.loyalty} onChange={(val) => setFormData({ ...formData, characterTraits: { ...formData.characterTraits, loyalty: val as any } })} />
@@ -112,7 +248,7 @@ export const Step3Character = ({ formData, setFormData, lang }: StepProps) => (
       </div>
     </div>
     
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-white/5">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-white/5">
       <div>
         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Sociální baterie</label>
         <CustomSelect value={formData.socialBattery || ""} onChange={(val) => setFormData({ ...formData, socialBattery: val })} placeholder="Vyber..." options={[{ value: "Extrovert", label: "Extrovert" }, { value: "Introvert", label: "Introvert" }, { value: "Ambivert", label: "Ambivert" }]} />
@@ -120,6 +256,22 @@ export const Step3Character = ({ formData, setFormData, lang }: StepProps) => (
       <div>
         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Osobnostní dynamika</label>
         <CustomSelect value={formData.personalityDynamics || ""} onChange={(val) => setFormData({ ...formData, personalityDynamics: val })} placeholder="Vyber..." options={[{ value: "Dominantní", label: "Dominantní" }, { value: "Submisivní", label: "Submisivní" }, { value: "Switch", label: "Přepínač (Switch)" }, { value: "Egalitarian", label: "Rovnocenný" }]} />
+      </div>
+      <div>
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+          Sebevědomí
+          <InfoTooltip text="Jak vnímáš svou pozici na seznamovacím trhu? Pomáhá nám to lépe nastavit algoritmus." />
+        </label>
+        <CustomSelect 
+          value={formData.egoScore !== undefined ? formData.egoScore.toString() : "50"} 
+          onChange={(val) => setFormData({ ...formData, egoScore: parseInt(val) })} 
+          placeholder="Jak to vnímáš?" 
+          options={[
+            { value: "85", label: "Můžu si vybírat" }, 
+            { value: "50", label: "Průměrný úspěch" }, 
+            { value: "20", label: "Je to těžký boj" }
+          ]} 
+        />
       </div>
     </div>
 
@@ -269,6 +421,60 @@ export const Step4Lifestyle = ({ formData, setFormData, lang }: StepProps) => (
       </div>
     </div>
 
+    {/* GRADES / EDUCATION */}
+    <div className="p-6 bg-gradient-to-br from-blue-900/20 to-transparent border border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.05)] rounded-xl mt-8 space-y-6 transition-all">
+      <h4 className="font-heading font-black text-blue-400 uppercase tracking-widest text-sm mb-4">Školní léta a Prospěch (Ambice)</h4>
+      <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">
+        Tohle o lidech prozradí víc, než se zdá. Jaký jsi byl student? Nejde o titul, ale o tvůj přístup k povinnostem.
+      </p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Základní škola</label>
+          <CustomSelect 
+            value={formData.grades?.elementary || ""} 
+            onChange={(v) => setFormData({...formData, grades: {...(formData.grades || {}), elementary: v as string}})} 
+            options={[
+              {value:'1', label:'Samé jedničky (Bifloš / Premiant)'}, 
+              {value:'2', label:'Dvojkař (Dobrý průměr)'}, 
+              {value:'3', label:'Trojkař a horší (Škola mě nebavila)'},
+              {value:'4', label:'Propadal(a) jsem / Odřené uši'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Střední škola</label>
+          <CustomSelect 
+            value={formData.grades?.highSchool || ""} 
+            onChange={(v) => setFormData({...formData, grades: {...(formData.grades || {}), highSchool: v as string}})} 
+            options={[
+              {value:'1', label:'Samé jedničky (Bifloš / Premiant)'}, 
+              {value:'2', label:'Dvojkař (Dobrý průměr)'}, 
+              {value:'3', label:'Trojkař a horší (Škola mě nebavila)'},
+              {value:'4', label:'Propadal(a) jsem / Odřené uši'},
+              {value:'none', label:'Nechodil(a) / Nedokončeno'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Vysoká škola</label>
+          <CustomSelect 
+            value={formData.grades?.university || ""} 
+            onChange={(v) => setFormData({...formData, grades: {...(formData.grades || {}), university: v as string}})} 
+            options={[
+              {value:'1', label:'Červený diplom / Excelentní'}, 
+              {value:'2', label:'Zlatý střed (Dvojkař)'}, 
+              {value:'3', label:'Prolézal(a) jsem / Ztráta času'},
+              {value:'none', label:'Nestudoval(a) jsem VŠ'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+      </div>
+    </div>
+
     <div className="p-6 bg-gradient-to-br from-mafia-gold/5 to-transparent border border-mafia-gold/20 rounded-xl mt-8">
       <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Moje Rituály (Zvyky)</h4>
       <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Vyber věci, které děláš pravidelně</label>
@@ -289,6 +495,123 @@ export const Step4Lifestyle = ({ formData, setFormData, lang }: StepProps) => (
         ]} 
         placeholder="Vyber své rituály..." 
       />
+    </div>
+
+    {/* Zájmy pro Vouchery a Matchování */}
+    <div className="p-6 bg-gradient-to-br from-green-900/20 to-transparent border border-green-500/20 shadow-[0_0_20px_rgba(34,197,94,0.05)] rounded-xl mt-8 space-y-6 transition-all">
+      <h4 className="font-heading font-black text-green-400 uppercase tracking-widest text-sm mb-4">Oblíbené věci (Tipy na rande)</h4>
+      <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">
+        Vyplň své preference. Algoritmus pak tobě a tvému Matchi dokáže vygenerovat slevové vouchery do partnerských podniků přesně podle vašeho vkusu!
+      </p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Oblíbené Jídlo</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.favoriteFood || []} 
+            onChange={(v) => setFormData({...formData, favoriteFood: v})} 
+            options={[
+              {value:'italian', label:'🍕 Italská kuchyně'}, 
+              {value:'asian', label:'🥢 Asijská / Sushi'}, 
+              {value:'burgers', label:'🍔 Burgery / Fastfood'},
+              {value:'czech', label:'🍺 Klasická česká'},
+              {value:'vegan', label:'🥗 Veganská / Zdravá'},
+              {value:'steak', label:'🥩 Steaky a maso'}
+            ]} 
+            placeholder="Vyber (můžeš více)..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Oblíbené Pití</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.favoriteDrink || []} 
+            onChange={(v) => setFormData({...formData, favoriteDrink: v})} 
+            options={[
+              {value:'wine', label:'🍷 Víno'}, 
+              {value:'beer', label:'🍺 Pivo'}, 
+              {value:'cocktails', label:'🍹 Míchané drinky'},
+              {value:'coffee', label:'☕ Káva'},
+              {value:'tea', label:'🍵 Čaj'},
+              {value:'water', label:'💧 Jen voda / Nealko'}
+            ]} 
+            placeholder="Vyber (můžeš více)..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Sporty a Aktivity</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.sports || []} 
+            onChange={(v) => setFormData({...formData, sports: v})} 
+            options={[
+              {value:'gym', label:'💪 Fitko / Posilování'}, 
+              {value:'cycling', label:'🚴 Cyklistika'}, 
+              {value:'skate', label:'🛹 Skateboarding / BMX'},
+              {value:'running', label:'🏃 Běh'},
+              {value:'yoga', label:'🧘 Jóga / Pilates'},
+              {value:'team', label:'⚽ Týmové sporty (Fotbal, Hokej)'}
+            ]} 
+            placeholder="Vyber (můžeš více)..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Hudební vkus</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.musicGenres || []} 
+            onChange={(v) => setFormData({...formData, musicGenres: v})} 
+            options={[
+              {value:'rock', label:'🎸 Rock'}, 
+              {value:'punk', label:'🛹 Punk / Emo'}, 
+              {value:'pop', label:'🎤 Pop'},
+              {value:'rap', label:'🧢 Rap / HipHop'},
+              {value:'edm', label:'🎧 Elektronika / EDM'},
+              {value:'metal', label:'🤘 Metal'},
+              {value:'classical', label:'🎻 Klasika / Jazz'}
+            ]} 
+            placeholder="Vyber (můžeš více)..." 
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Koníčky a Zájmy (Detail)</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.hobbiesDetailed || []} 
+            onChange={(v) => setFormData({...formData, hobbiesDetailed: v})} 
+            options={[
+              {value:'traveling', label:'✈️ Cestování a Výlety'}, 
+              {value:'cooking', label:'🍳 Vaření a Gastronomie'}, 
+              {value:'cars', label:'🏎️ Auta / Tuning / Rally'},
+              {value:'car_repair', label:'🔧 Oprava aut / Mechanika'},
+              {value:'barbering', label:'✂️ Stříhání / Barbering / Beauty'},
+              {value:'modeling_craft', label:'🚁 Modelářství'},
+              {value:'pets', label:'🐕 Zvířata / Pejskařství'},
+              {value:'photography', label:'📸 Focení'},
+              {value:'diy', label:'🔨 Kutilství / DIY'}
+            ]} 
+            placeholder="Vyber hlavní koníčky (můžeš více)..." 
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Květiny / Drobnosti (Ideální pro překvapení)</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.favoriteFlowers || []} 
+            onChange={(v) => setFormData({...formData, favoriteFlowers: v})} 
+            options={[
+              {value:'roses', label:'🌹 Růže'}, 
+              {value:'sunflowers', label:'🌻 Slunečnice'}, 
+              {value:'lilies', label:'🌸 Lilie / Orchideje'},
+              {value:'tulips', label:'🌷 Tulipány'},
+              {value:'chocolate', label:'🍫 Raději čokoládu'},
+              {value:'none', label:'🚫 Květiny nevyžaduji'}
+            ]} 
+            placeholder="Vyber (můžeš více)..." 
+          />
+        </div>
+      </div>
     </div>
 
     <div className="p-6 bg-gradient-to-br from-indigo-900/20 to-transparent border border-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.05)] rounded-xl mt-8 space-y-6 transition-all">
@@ -450,11 +773,35 @@ export const Step5CommLove = ({ formData, setFormData, lang }: StepProps) => (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Já většinou:</label>
-          <CustomSelect value={formData.conflicts?.myReaction || ""} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, myReaction: v}})} options={[{value:'immediate', label:'Chci problém okamžitě řešit'}, {value:'space', label:'Potřebuji čas a klid'}, {value:'compromise', label:'Hledám kompromis'}, {value:'emotional', label:'Jsem hodně emotivní'}]} placeholder="Vyber..." />
+          <CustomSelect 
+            value={formData.conflicts?.myReaction || ""} 
+            onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, myReaction: v}})} 
+            options={[
+              {value:'talk_it_out', label:'Vyříkejme si to narovinu a hned'}, 
+              {value:'leave', label:'Odejdu a nebudu to řešit (vyhýbám se)'},
+              {value:'space', label:'Potřebuji čas a klid na rozmyšlenou'}, 
+              {value:'compromise', label:'Vždy hledám kompromis a dohodu'}, 
+              {value:'emotional', label:'Jsem hodně emotivní (vybuchnu)'},
+              {value:'silent', label:'Tichá domácnost (přestanu mluvit)'}
+            ]} 
+            placeholder="Vyber..." 
+          />
         </div>
         <div>
           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Od partnera potřebuji:</label>
-          <CustomSelect isMulti={true} value={formData.conflicts?.iNeedFromPartner || []} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, iNeedFromPartner: v}})} options={[{value:'space', label:'Prostor'}, {value:'communication', label:'Komunikaci'}, {value:'apology', label:'Omluvu a uznání chyby'}, {value:'hugs', label:'Fyzickou blízkost'}]} placeholder="Vyber..." />
+          <CustomSelect 
+            isMulti={true} 
+            value={formData.conflicts?.iNeedFromPartner || []} 
+            onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, iNeedFromPartner: v}})} 
+            options={[
+              {value:'space', label:'Prostor'}, 
+              {value:'communication', label:'Otevřenou komunikaci'}, 
+              {value:'apology', label:'Omluvu a uznání chyby'}, 
+              {value:'hugs', label:'Fyzickou blízkost a pohlazení'},
+              {value:'solution', label:'Racionální řešení problému'}
+            ]} 
+            placeholder="Vyber..." 
+          />
         </div>
       </div>
     </div>
@@ -498,51 +845,172 @@ export const Step5CommLove = ({ formData, setFormData, lang }: StepProps) => (
             placeholder="Vyber své red flags..." 
           />
         </div>
+        
+        <div className="pt-4 border-t border-white/10">
+          <label className="flex items-start gap-4 cursor-pointer">
+            <div className="pt-1">
+              <input 
+                type="checkbox" 
+                checked={formData.careAboutPartnerPast || false} 
+                onChange={(e) => setFormData({...formData, careAboutPartnerPast: e.target.checked})} 
+                className="w-5 h-5 accent-fuchsia-500" 
+              />
+            </div>
+            <div>
+              <span className="block text-sm font-bold text-fuchsia-400 uppercase tracking-widest mb-1">
+                Zajímá mě reputace a minulost partnera
+              </span>
+              <span className="block text-xs font-mono text-white/60">
+                Zaškrtni, pokud je pro tebe důležité vědět, jakou má partner pověst nebo jakou má za sebou minulost (počet partnerů, drby atd.).
+              </span>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    {/* VZKAZ A VÁŽNÝ ZÁMĚR */}
+    <div className="p-6 bg-gradient-to-br from-mafia-gold/10 to-transparent border border-mafia-gold/30 hover:border-mafia-gold/50 shadow-[0_0_20px_rgba(197,160,89,0.05)] rounded-xl mt-8 space-y-6 transition-all">
+      <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Vzkaz pro protějšek a Záměr</h4>
+      
+      <div>
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+          Co bych chtěl/a vzkázat svému protějšku?
+          <InfoTooltip text="Napiš sem pár slov, co od něj/ní očekáváš nebo co by měl/a vědět hned na začátek." />
+        </label>
+        <textarea 
+          value={formData.messageToMatch || ''} 
+          onChange={(e) => setFormData({...formData, messageToMatch: e.target.value})} 
+          className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold resize-none h-24" 
+          placeholder="Např. Hledám někoho, s kým můžu procestovat svět, ale i mlčet doma u Netflixu..." 
+        />
+      </div>
+
+      <div className="pt-4 border-t border-white/10">
+        <label className="flex items-start gap-4 cursor-pointer">
+          <div className="pt-1">
+            <input 
+              type="checkbox" 
+              checked={formData.seriousIntent || false} 
+              onChange={(e) => setFormData({...formData, seriousIntent: e.target.checked})} 
+              className="w-5 h-5 accent-mafia-gold" 
+            />
+          </div>
+          <div>
+            <span className="block text-sm font-bold text-mafia-gold uppercase tracking-widest mb-1">
+              Myslím to vážně (Vážný vztah / Svatba)
+            </span>
+            <span className="block text-xs font-mono text-white/60">
+              Pokud zaškrtneš, algoritmus tě upřednostní pro lidi, kteří také hledají vážný závazek a dlouhodobý vztah.
+            </span>
+          </div>
+        </label>
       </div>
     </div>
   </motion.div>
 );
 
-export const Step6FutureKids = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+
+export const Step6FutureKids = ({ formData, setFormData, lang }: StepProps) => {
+  const [showKinkGuide, setShowKinkGuide] = React.useState(false);
+  const hasKinks = formData.nsfwCategories && formData.nsfwCategories.length > 0;
+
+  return (
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 relative">
     <div className="text-center mb-6">
-      <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Budoucnost a Děti</h4>
+      <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Budoucnost, Rodina a Vztahy</h4>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Můj rodinný stav</label>
-        <CustomSelect value={formData.familyStatus || ""} onChange={(v) => setFormData({...formData, familyStatus: v as any})} options={[{value:'single', label:'Svobodný/á'}, {value:'taken', label:'Zadaný/á (Ve vztahu)'}, {value:'married', label:'V manželství'}, {value:'divorced', label:'Rozvedený/á'}, {value:'widowed', label:'Vdovec / Vdova'}, {value:'complicated', label:'Je to složité'}]} placeholder="Vyber..." />
-      </div>
-    </div>
-
-    <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.02)] rounded-xl mt-8 space-y-6">
-      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Moje děti a partnerství</h4>
-      
+    <div className="p-6 bg-gradient-to-br from-mafia-gold/10 to-transparent border border-mafia-gold/30 shadow-[0_0_20px_rgba(197,160,89,0.05)] rounded-xl space-y-6">
+      <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Postoj k rodině</h4>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Mám děti?</label>
-          <CustomSelect value={formData.hasKids || ""} onChange={(v) => setFormData({...formData, hasKids: v as any})} options={[{value:'no', label:'Nemám děti'}, {value:'yes', label:'Mám děti'}]} placeholder="Vyber..." />
+           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Máš děti?</label>
+           <CustomSelect value={formData.hasKids || "no"} onChange={(v) => setFormData({...formData, hasKids: v as any})} options={[{value:'no', label:'Ne'}, {value:'yes', label:'Ano'}]} placeholder="Vyber..." />
         </div>
-        
-        {formData.hasKids === 'yes' && (
-          <div>
-            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Kolik mám dětí?</label>
-            <input type="number" min="1" max="10" value={formData.kidsCount || ''} onChange={(e) => setFormData({...formData, kidsCount: parseInt(e.target.value) || 0})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold rounded-md" placeholder="Zadej počet..." />
-          </div>
-        )}
+        <div>
+           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Postoj k dětem (Ty)</label>
+           <CustomSelect value={formData.prefKids?.value || ""} onChange={(v) => setFormData({...formData, prefKids: {...(formData.prefKids || {importance: 'medium'}), value: v}})} options={[{value:'want', label:'Chci děti'}, {value:'dont_want', label:'Nechci děti'}, {value:'have_and_want_more', label:'Mám a chci další'}, {value:'have_and_dont_want_more', label:'Mám, další nechci'}, {value:'not_sure', label:'Zatím nevím'}]} placeholder="Vyber..." />
+        </div>
+        <div className="md:col-span-2">
+           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Postoj k dětem (U partnera)</label>
+           <CustomSelect value={formData.kidsDetailed?.partnerWithKids || "any"} onChange={(v) => setFormData({...formData, kidsDetailed: {...(formData.kidsDetailed || {}), partnerWithKids: v}})} options={[{value:'no_kids', label:'Nechci, aby partner měl děti z dřívějška'}, {value:'dont_mind', label:'Nevadí mi, pokud má děti'}, {value:'any', label:'Nezáleží mi na tom'}]} placeholder="Vyber..." />
+        </div>
       </div>
-
-      <PreferenceSelector tooltipText="Tohle je kritické. Pokud se neshodnete na dětech, dříve či později narazíte." label="Chceš děti (nebo další) do budoucna?" value={formData.prefKids as any} onChange={(v) => setFormData({...formData, prefKids: v as any})} options={[{value:'yes', label:'Rozhodně ano'}, {value:'maybe', label:'Možná / Zatím nevím'}, {value:'no', label:'Nechci (další) děti'}]} />
     </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Vadí ti partner s dětmi?</label>
-        <CustomSelect value={formData.kidsDetailed?.partnerWithKids || ""} onChange={(v) => setFormData({...formData, kidsDetailed: {...formData.kidsDetailed, partnerWithKids: v}})} options={[{value:'no', label:'Nevadí'}, {value:'yes', label:'Ano, chci bezdětného'}]} placeholder="Vyber..." />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Očekávaný vztah</label>
-        <CustomSelect value={formData.futurePrefs?.lookingFor || ""} onChange={(v) => setFormData({...formData, futurePrefs: {...formData.futurePrefs, lookingFor: v}})} options={[{value:'marriage', label:'Vážný vztah a svatba'}, {value:'serious', label:'Vážný vztah'}, {value:'fun', label:'Nezávazně'}]} placeholder="Vyber..." />
+
+    <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/10 hover:border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.02)] rounded-xl mt-8 space-y-6 transition-all">
+      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Cíle ve vztahu</h4>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest">Očekávaný vztah</label>
+          </div>
+          
+          <div className="flex flex-wrap gap-2 mb-4">
+             <button 
+               type="button"
+               onClick={() => setFormData({...formData, lookingFor: ['marriage', 'serious']})}
+               className="px-3 py-1.5 bg-black/40 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-[10px] font-mono text-white hover:text-mafia-gold rounded-md uppercase tracking-widest transition-colors"
+             >
+               💍 Jen vážně
+             </button>
+             <button 
+               type="button"
+               onClick={() => setFormData({...formData, lookingFor: ['fun', 'fwb', 'ons', 'clubbing']})}
+               className="px-3 py-1.5 bg-black/40 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-[10px] font-mono text-white hover:text-mafia-gold rounded-md uppercase tracking-widest transition-colors"
+             >
+               🥂 Jdu se bavit
+             </button>
+             <button 
+               type="button"
+               onClick={() => setFormData({...formData, lookingFor: ['marriage', 'serious', 'fun', 'fwb', 'ons', 'plus_one', 'clubbing']})}
+               className="px-3 py-1.5 bg-black/40 hover:bg-mafia-gold/20 border border-white/10 hover:border-mafia-gold/50 text-[10px] font-mono text-white hover:text-mafia-gold rounded-md uppercase tracking-widest transition-colors"
+             >
+               ✨ Otevřen(a) všemu
+             </button>
+             <button 
+               type="button"
+               onClick={() => setFormData({...formData, lookingFor: ['idk']})}
+               className="px-3 py-1.5 bg-black/40 hover:bg-slate-500/20 border border-white/10 hover:border-slate-500/50 text-[10px] font-mono text-white hover:text-slate-400 rounded-md uppercase tracking-widest transition-colors"
+             >
+               🤷 Nevím, co chci
+             </button>
+          </div>
+
+          <CustomSelect 
+            isMulti={true}
+            value={formData.lookingFor || []} 
+            onChange={(v) => setFormData({...formData, lookingFor: v})} 
+            options={[
+              {value:'marriage', label:'Vážný vztah a svatba'}, 
+              {value:'serious', label:'Vážný vztah'}, 
+              {value:'fun', label:'Nezávazně (Flirt)'},
+              {value:'fwb', label:'Kamarádi s výhodami (FWB)'},
+              {value:'ons', label:'Na jednu noc (ONS)'},
+              {value:'plus_one', label:'Doprovod na akci / +1'},
+              {value:'clubbing', label:'Parťák do klubu / na párty'},
+              {value:'idk', label:'Nevím, co chci (Zatím objevuji)'}
+            ]} 
+            placeholder="Vyber (můžeš zakliknout více)..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+            Přístup k randění (Exkluzivita)
+            <InfoTooltip text="Jak aktuálně randíš? Jsi věrný jedné osobě hned od začátku, nebo poznáváš více lidí naráz?" />
+          </label>
+          <CustomSelect 
+            value={formData.datingStyle || "exclusive"} 
+            onChange={(v) => setFormData({...formData, datingStyle: v as any})} 
+            options={[
+              {value:'exclusive', label:'Exkluzivně (Zajímá mě jen jedna osoba)'}, 
+              {value:'multiple', label:'Randím s více lidmi zároveň'},
+              {value:'polyamory', label:'Polyamorie (Hledám/mám více partnerů)'}
+            ]} 
+            placeholder="Vyber svůj přístup..." 
+          />
+        </div>
       </div>
     </div>
 
@@ -570,7 +1038,17 @@ export const Step6FutureKids = ({ formData, setFormData, lang }: StepProps) => (
       <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">Pokud hledáš něco specifičtějšího, zaškrtni to zde. Algoritmus tě pak propojí primárně s lidmi, kteří hledají to samé, a tvůj profil se nebude zobrazovat uživatelům hledajícím běžný vztah.</p>
       
       <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Speciální kategorie (Volitelné)</label>
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center justify-between">
+          <span>Speciální kategorie (Volitelné)</span>
+          {hasKinks && (
+            <button 
+              onClick={() => setShowKinkGuide(true)} 
+              className="text-[10px] bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full border border-purple-500/30 hover:bg-purple-500/40 transition-colors uppercase tracking-widest font-black"
+            >
+              Průvodce
+            </button>
+          )}
+        </label>
         <CustomSelect 
           isMulti={true} 
           value={formData.nsfwCategories || []} 
@@ -582,14 +1060,76 @@ export const Step6FutureKids = ({ formData, setFormData, lang }: StepProps) => (
             {value:'bdsm', label:'BDSM'},
             {value:'fetish', label:'Specifický fetiš'},
             {value:'fwb', label:'Friends with Benefits (FWB)'},
-            {value:'sugar', label:'Hledám sponzoring / Sugar dating'}
+            {value:'sugar', label:'Hledám sponzoring / Sugar dating'},
+            {value:'lgbtq', label:'LGBTQ+ Komunita'},
+            {value:'companion', label:'Společnice / Společník'},
+            {value:'stripper', label:'Striptér / Striptérka'},
+            {value:'crossdressing', label:'Crossdressing / Sissy'},
+            {value:'onlyfans', label:'OnlyFans / Tvůrce obsahu'}
           ]} 
           placeholder="Vyber (pokud něco z toho hledáš)..." 
         />
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-purple-500/20">
+        <div className="md:col-span-2">
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">
+            Intimní styl (Jak si užíváš sex)
+          </label>
+          <CustomSelect 
+            value={formData.intimacyStyle || ""} 
+            onChange={(v) => setFormData({...formData, intimacyStyle: v as string})} 
+            options={[
+              {value:'gentle', label:'Něžný, pomalý a romantický'}, 
+              {value:'passionate', label:'Vášnivý a tvrdý'}, 
+              {value:'dominant', label:'Rád(a) dominuji'},
+              {value:'submissive', label:'Jsem submisivní'},
+              {value:'experimental', label:'Rád(a) experimentuji'},
+              {value:'vanilla', label:'Klasika (Vanilla)'}
+            ]} 
+            placeholder="Diskrétní volba..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+            Fyzická vybavenost (Moje)
+            <InfoTooltip text="Absolutně diskrétní parametr. Slouží jen k propojení s partnerem/partnerkou, pro koho je to důležité." />
+          </label>
+          <CustomSelect 
+            value={formData.physicalSize || ""} 
+            onChange={(v) => setFormData({...formData, physicalSize: v as string})} 
+            options={[
+              {value:'smaller', label:'Kratší / Menší proporce'}, 
+              {value:'average', label:'Průměr / Zlatý střed'}, 
+              {value:'above_average', label:'Nadprůměr'},
+              {value:'large', label:'Velký / Velké proporce'},
+              {value:'hidden', label:'Nechci uvádět'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+            Fyzická preference (U partnera)
+          </label>
+          <CustomSelect 
+            value={formData.physicalPreference || ""} 
+            onChange={(v) => setFormData({...formData, physicalPreference: v as string})} 
+            options={[
+              {value:'smaller', label:'Kratší / Menší proporce'}, 
+              {value:'average', label:'Průměr / Zlatý střed'}, 
+              {value:'above_average', label:'Nadprůměr'},
+              {value:'large', label:'Velký / Velké proporce'},
+              {value:'any', label:'Nezáleží na tom'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+      </div>
     </div>
   </motion.div>
-);
+  );
+};
 
 export const Step7ValuesMoney = ({ formData, setFormData, lang }: StepProps) => (
   <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
@@ -601,6 +1141,55 @@ export const Step7ValuesMoney = ({ formData, setFormData, lang }: StepProps) => 
       <div>
         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Náboženství a Víra</label>
         <CustomSelect value={formData.values?.religion || ""} onChange={(v) => setFormData({...formData, values: {...formData.values, religion: v}})} options={[{value:'atheist', label:'Ateista'}, {value:'spiritual', label:'Spiritualista'}, {value:'christian', label:'Křesťan'}, {value:'other', label:'Jiné'}]} placeholder="Vyber..." />
+      </div>
+    </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-mafia-gold/20">
+      <div>
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+          Příjem / Zázemí
+          <InfoTooltip text="Pro někoho peníze neznamenají nic, jiný hledá stabilitu." />
+        </label>
+        <CustomSelect 
+          value={formData.incomeLevel || ""} 
+          onChange={(v) => setFormData({...formData, incomeLevel: v as string})} 
+          options={[
+            {value:'student', label:'🎓 Jsem student'}, 
+            {value:'low', label:'🌱 Skromný (Vyžiju)'}, 
+            {value:'average', label:'⚖️ Zlatý střed (Normál)'}, 
+            {value:'high', label:'💼 Zajištěný / Nadprůměr'},
+            {value:'rich', label:'👑 Finančně nezávislý'}
+          ]} 
+          placeholder="Vyber (Volitelné)..." 
+        />
+      </div>
+      <div>
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">
+          Moje Kariéra / Firma
+        </label>
+        <input 
+          type="text" 
+          value={formData.company || ''} 
+          onChange={(e) => setFormData({...formData, company: e.target.value})} 
+          className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold" 
+          placeholder="Např. Kadeřník, OSVČ, Lékař..." 
+        />
+      </div>
+      <div>
+        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">
+          Vztah k mé práci
+        </label>
+        <CustomSelect 
+          value={formData.jobSatisfaction || ""} 
+          onChange={(v) => setFormData({...formData, jobSatisfaction: v as string})} 
+          options={[
+            {value:'love_it', label:'Miluju to (Moje práce je mým koníčkem)'}, 
+            {value:'good', label:'Baví mě to, ale je to jen práce'}, 
+            {value:'just_money', label:'Chodím tam jen vydělat peníze'},
+            {value:'change', label:'Hledám změnu / Nebaví mě to'}
+          ]} 
+          placeholder="Vyber..." 
+        />
       </div>
       <div>
         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Hodnoty</label>
@@ -622,15 +1211,25 @@ export const Step7ValuesMoney = ({ formData, setFormData, lang }: StepProps) => 
     </div>
 
     <div className="p-6 bg-gradient-to-br from-mafia-gold/10 to-transparent border border-mafia-gold/30 hover:border-mafia-gold/50 shadow-[0_0_20px_rgba(197,160,89,0.05)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Peníze</h4>
+      <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Peníze a Rozdělení rolí</h4>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Můj přístup k penězům</label>
           <CustomSelect value={formData.moneyDetailed?.myAttitude || ""} onChange={(v) => setFormData({...formData, moneyDetailed: {...formData.moneyDetailed, myAttitude: v}})} options={[{value:'saver', label:'Spořivý'}, {value:'balanced', label:'Vyvážený'}, {value:'experiences', label:'Utrácím za zážitky'}, {value:'luxury', label:'Rád si dopřávám luxus'}]} placeholder="Vyber..." />
         </div>
         <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Finance ve vztahu</label>
-          <CustomSelect value={formData.moneyDetailed?.sharedAccount || ""} onChange={(v) => setFormData({...formData, moneyDetailed: {...formData.moneyDetailed, sharedAccount: v}})} options={[{value:'shared', label:'Vše společné'}, {value:'split', label:'Společný účet + vlastní'}, {value:'separate', label:'Každý sám za sebe'}]} placeholder="Vyber..." />
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Představa financování (i při rodině)</label>
+          <CustomSelect 
+            value={formData.moneyDetailed?.sharedAccount || ""} 
+            onChange={(v) => setFormData({...formData, moneyDetailed: {...formData.moneyDetailed, sharedAccount: v}})} 
+            options={[
+              {value:'50_50', label:'Vše striktně 50/50'}, 
+              {value:'traditional', label:'Tradiční (Muž víc živí, žena pečuje / je na mateřské)'}, 
+              {value:'flexible', label:'Záleží kdo vydělá víc (klidně muž na rodičovské)'},
+              {value:'separate', label:'Každý sám za sebe'}
+            ]} 
+            placeholder="Vyber..." 
+          />
         </div>
       </div>
     </div>

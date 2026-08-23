@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { MessageCircleHeart, X, Send, Heart, Star, ThumbsDown, Sparkles, MapPin, Camera, Clock } from "lucide-react";
+import { MessageCircleHeart, X, Send, Heart, Star, ThumbsDown, Sparkles, MapPin, Camera, Clock, Flag } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ProfileData } from "./ProfileCard";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +20,9 @@ export function Matches({ matches = [] }: MatchesProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [activeReactionMessageId, setActiveReactionMessageId] = useState<string | null>(null);
   const [ratedMatches, setRatedMatches] = useState<string[]>([]);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+  const [blockUser, setBlockUser] = useState(true);
   const [autoBlurImages, setAutoBlurImages] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('seznamka_safe_chat');
@@ -268,22 +271,32 @@ export function Matches({ matches = [] }: MatchesProps) {
     setShowRatingModal(false);
   };
 
-  const handlePanic = async () => {
+  const handlePanic = () => {
     if (!activeChat) return;
-    const confirmPanic = window.confirm(lang === 'cs' ? 'Opravdu chcete tohoto uživatele nahlásit, zablokovat a smazat konverzaci?' : 'Are you sure you want to report, block, and delete this conversation?');
-    if (!confirmPanic) return;
+    setShowReportModal(true);
+  };
+
+  const submitReport = async () => {
+    if (!activeChat) return;
+    if (!reportReason) {
+      alert(lang === 'cs' ? 'Zadejte důvod nahlášení.' : 'Enter a reason for reporting.');
+      return;
+    }
 
     setIsPanicking(true);
     try {
       const res = await fetch('/api/messages/panic', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ targetUserId: activeChat.userId })
+        body: JSON.stringify({ targetUserId: activeChat.userId, reason: reportReason, block: blockUser })
       });
       if (res.ok) {
-        alert(lang === 'cs' ? 'Uživatel zablokován a nahlášen.' : 'User blocked and reported.');
-        setActiveChat(null); // Zavřít chat
-        // V produkci by se měl smazat i z listu matches (refreshnutí parent listu)
+        alert(lang === 'cs' ? (blockUser ? 'Uživatel zablokován a nahlášen.' : 'Uživatel nahlášen.') : (blockUser ? 'User blocked and reported.' : 'User reported.'));
+        if (blockUser) {
+          setActiveChat(null); // Zavřít chat pokud je zablokován
+        }
+        setShowReportModal(false);
+        setReportReason("");
       } else {
         const data = await res.json();
         alert(data.error || 'Nastala chyba');
@@ -430,6 +443,7 @@ export function Matches({ matches = [] }: MatchesProps) {
                     <span className="text-[10px] font-mono uppercase tracking-widest">{lang === 'cs' ? 'Ohodnoceno' : 'Rated'}</span>
                   </div>
                 )}
+
                 
                 {/* Ghost Mode Dropdown */}
                 <div className="relative ml-2 flex items-center">
@@ -782,6 +796,60 @@ export function Matches({ matches = [] }: MatchesProps) {
                     ? '*Pomáháte budovat bezpečnější komunitu.' 
                     : '*You are helping build a safer community.'}
                 </p>
+              </motion.div>
+            </div>
+          )}
+
+          {showReportModal && activeChat && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="bg-mafia-dark border border-red-500/50 rounded-xl p-6 max-w-sm w-full text-left relative"
+              >
+                <button 
+                  onClick={() => setShowReportModal(false)}
+                  className="absolute top-4 right-4 text-white/50 hover:text-white"
+                >
+                  <X size={20} />
+                </button>
+                
+                <h3 className="text-xl font-heading font-black text-red-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <TriangleAlert size={20} />
+                  {lang === 'cs' ? 'Nahlásit Uživatele' : 'Report User'}
+                </h3>
+                <p className="text-sm font-mono text-white/50 mb-4">
+                  {lang === 'cs' ? `Z jakého důvodu nahlašujete uživatele ${activeChat.name}?` : `What is the reason for reporting ${activeChat.name}?`}
+                </p>
+
+                <textarea
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  placeholder={lang === 'cs' ? 'Např. spam, nevhodné chování, falešný profil...' : 'E.g. spam, inappropriate behavior, fake profile...'}
+                  className="w-full bg-black/50 border border-white/20 rounded-lg p-3 text-white font-mono text-sm mb-4 focus:border-red-500 outline-none"
+                  rows={3}
+                />
+
+                <label className="flex items-center gap-3 mb-6 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={blockUser}
+                    onChange={(e) => setBlockUser(e.target.checked)}
+                    className="accent-red-500 w-4 h-4 cursor-pointer"
+                  />
+                  <span className="font-mono text-sm text-white/80">
+                    {lang === 'cs' ? 'Zároveň tohoto uživatele zablokovat' : 'Also block this user'}
+                  </span>
+                </label>
+                
+                <button 
+                  onClick={submitReport}
+                  disabled={isPanicking}
+                  className="w-full py-3 rounded-lg bg-red-900/30 border border-red-500/50 text-red-500 font-heading font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)] disabled:opacity-50 flex items-center justify-center"
+                >
+                  {isPanicking ? (lang === 'cs' ? 'Odesílám...' : 'Sending...') : (lang === 'cs' ? 'Odeslat Nahlášení' : 'Submit Report')}
+                </button>
               </motion.div>
             </div>
           )}

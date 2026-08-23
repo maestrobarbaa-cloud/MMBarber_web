@@ -171,7 +171,7 @@ export interface FinancePrefs {
 }
 
 export interface FuturePrefs {
-  lookingFor?: string;
+  lookingFor?: string | string[];
   kidsDesire?: string;
   movingIn?: string;
   wedding?: string;
@@ -210,6 +210,8 @@ export interface ProfileData {
   messageRetentionDays?: number | null;
   schemaVersion?: number;
   protocolAgreed?: boolean;
+  visibilityMode?: 'public' | 'discrete';
+  egoScore?: number;
   accountType?: AccountType;
   mmCoins?: number;
   subscription?: 'monthly' | 'quarterly' | 'halfyearly' | 'yearly' | 'none';
@@ -245,10 +247,42 @@ export interface ProfileData {
   hasKids?: 'yes' | 'no';
   kidsCount?: number;
   kids?: string; // original kids preference/status
-  prefKids?: { value: string, importance: string }; // user preference for kids
-  kidsDetailed?: {
-    partnerWithKids?: string;
+  prefKids?: { value: string; importance: string };
+  kidsDetailed?: { partnerWithKids?: string };
+  futurePrefs?: {
+    lookingFor?: string[];
   };
+  datingStyle?: 'exclusive' | 'multiple' | 'polyamory';
+  // Vouchers and Hobbies
+  favoriteFood?: string[];
+  favoriteDrink?: string[];
+  favoriteFlowers?: string[];
+  sports?: string[];
+  musicGenres?: string[];
+  hobbiesDetailed?: string[]; // Cars, Barbering, Cooking etc
+
+  // Character & Principles
+  motto?: string;
+  principles?: string;
+  familyRoleModel?: string;
+  familyLifeVision?: string;
+  partnerVibe?: string;
+  nationality?: string;
+  knowsWhatTheyWant?: string;
+  careAboutPartnerPast?: boolean;
+
+  // Intimacy Details
+  intimacyStyle?: string;
+  physicalSize?: string;
+  physicalPreference?: string;
+  bodyShape?: string; // Apple, Pear, Dorito, Bear
+  prefBodyShape?: string[]; // Multiple shapes allowed
+  
+  // Finance & Career
+  incomeLevel?: string;
+  company?: string;
+  jobSatisfaction?: string;
+  
   pastPartnersCount?: number;
   pastPartnersReveal?: 'mutual' | 'hidden';
   redFlag?: string;
@@ -258,6 +292,8 @@ export interface ProfileData {
   negatives?: string;
   dateLikes?: number;
   icebreaker?: string;
+  messageToMatch?: string; // Vzkaz protějšku
+  seriousIntent?: boolean; // Myslím to vážně
   replyRate?: 'high' | 'medium' | 'low';
   isBookmarked?: boolean;
   locations?: { city: string, radiusKm: number }[];
@@ -275,6 +311,11 @@ export interface ProfileData {
   temperament?: string;
   mindset?: string;
   intelligence?: string;
+  grades?: {
+    elementary?: string;
+    highSchool?: string;
+    university?: string;
+  };
   socialBattery?: string;
   attachmentStyle?: string;
   loveLanguages?: string[];
@@ -365,6 +406,8 @@ export interface ProfileData {
   prefDistance?: string; 
   
   characterTraits?: CharacterTraits;
+  myTraits?: string[];
+  partnerTraits?: string[]; // Vlastnosti, které hledám u partnera
   lifestylePrefs?: LifestylePrefs;
   financePrefs?: FinancePrefs;
   futurePrefs?: FuturePrefs;
