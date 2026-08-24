@@ -210,6 +210,9 @@ export interface ProfileData {
   messageRetentionDays?: number | null;
   schemaVersion?: number;
   protocolAgreed?: boolean;
+  trustedRater?: boolean;
+  trustedRatingsReceived?: number;
+  distanceFromUser?: number;
   accountType?: AccountType;
   mmCoins?: number;
   subscription?: 'monthly' | 'quarterly' | 'halfyearly' | 'yearly' | 'none';
@@ -332,6 +335,7 @@ export interface ProfileData {
   unreadMatches?: number;
   trustScore?: number;
   trustEndorsements?: { count: number; salonId: string; salonName: string }[];
+  criticalWarnings?: string[];
   originSalonId?: string;
   voicePrompt?: { question: string; url: string };
   

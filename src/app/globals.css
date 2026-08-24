@@ -248,6 +248,8 @@ html:not(.is-mobile-device) {
 html.is-mobile-device {
   --user-sharpness: 0;
   image-rendering: auto;
+  /* Extra luxusní kontrast a saturace pro mobilní zařízení */
+  filter: contrast(1.15) saturate(1.15);
 }
 
 html[style*='--user-sharpness: 1'] {

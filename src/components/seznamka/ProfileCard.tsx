@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin, Ruler, Cigarette, Wine, Sparkles, Info, X, Skull, Flag, MessageCircleHeart, Coffee, Target, GraduationCap, Zap, Bookmark, ChevronDown, ChevronLeft, ChevronRight, Camera, Heart, Instagram, Link, PawPrint, Facebook, Linkedin, Twitter, Music, PlaySquare, MessageSquare, EyeOff, Users, Home, Leaf, Calendar, Briefcase, Gamepad2, ShieldCheck, BadgeCheck, Lock
+  MapPin, Ruler, Cigarette, Wine, Sparkles, Info, X, Skull, Flag, MessageCircleHeart, Coffee, Target, GraduationCap, Zap, Bookmark, ChevronDown, ChevronLeft, ChevronRight, Camera, Heart, Instagram, Link, PawPrint, Facebook, Linkedin, Twitter, Music, PlaySquare, MessageSquare, EyeOff, Users, Home, Leaf, Calendar, Briefcase, Gamepad2, ShieldCheck, BadgeCheck, Lock, ShieldAlert, AlertTriangle
 } from "lucide-react";
 import { ANIMAL_TYPES } from "@/lib/PetAtlas";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -11,11 +11,14 @@ import { ProfileData } from "./ProfileTypes";
 export * from "./ProfileTypes";
 import { MatchVoucherCard, VoucherData } from "./MatchVoucherCard";
 import { AccordionSection } from "./AccordionSection";
+import { DsaReportModal } from "./DsaReportModal";
 
 const formatRelativeTime = (timeStr: string, lang: 'cs' | 'en') => {
   if (!timeStr || !timeStr.includes('T')) return timeStr;
 
   const date = new Date(timeStr);
+
+
   if (isNaN(date.getTime())) return timeStr;
 
   const now = new Date();
@@ -65,6 +68,7 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
   const [endorsements, setEndorsements] = useState(profile.trustEndorsements ? profile.trustEndorsements.reduce((acc, curr) => acc + curr.count, 0) : 0);
   const [hasEndorsed, setHasEndorsed] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [isDsaModalOpen, setIsDsaModalOpen] = useState(false);
   const [graphicsTier, setGraphicsTier] = useState('high');
 
   const isDating = currentUserProfile?.activeCategories?.includes('relationships') || currentUserProfile?.activeCategories?.includes('dating') || false;
@@ -123,7 +127,66 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
 
 
       <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8 pb-24 relative">
-        <AccordionSection title={lang === 'cs' ? 'Proč se k sobě hodíte' : 'Match Analysis'} icon={<Target size={16} />} defaultOpen={true}>
+        {/* CRITICAL WARNING BANNER */}
+        {profile.criticalWarnings && profile.criticalWarnings.length > 0 && (
+          <div className="bg-red-900/40 border border-red-500/50 rounded-xl p-6 relative overflow-hidden shadow-[0_0_30px_rgba(220,38,38,0.3)] mb-8">
+            <div className="absolute -right-4 -top-4 opacity-10">
+              <ShieldAlert size={120} className="text-red-500" />
+            </div>
+            <div className="relative z-10 flex flex-col gap-3">
+              <div className="flex items-center gap-3 text-red-500">
+                <ShieldAlert size={28} className="animate-pulse" />
+                <h3 className="font-heading font-black uppercase tracking-widest text-lg">
+                  {lang === 'cs' ? 'Varování komunity' : 'Community Warning'}
+                </h3>
+              </div>
+              <p className="text-white/80 font-mono text-sm leading-relaxed border-l-2 border-red-500/50 pl-4 py-1">
+                {lang === 'cs' 
+                  ? 'U tohoto profilu shledáváme míru závažnějšího špatného hodnocení od ostatních uživatelů (např. nevhodné chování, nátlak, agresivita).' 
+                  : 'We have detected a significant level of severe negative feedback from other users for this profile (e.g. inappropriate behavior, harassment, aggression).'}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Group / Community Members */}
+        {['group', 'couple', 'family', 'property'].includes(profile.accountType || '') && (
+          <div className="bg-black/40 border border-white/5 rounded-xl p-4 mb-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-heading font-black text-white tracking-widest uppercase">{lang === 'cs' ? 'Členové' : 'Members'}</h3>
+              {profile.accountType !== 'couple' && (
+                <button className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-mono text-[10px] uppercase tracking-widest rounded-md transition-colors shadow-[0_0_10px_rgba(37,99,235,0.4)]">
+                  {lang === 'cs' ? 'Požádat o přidání' : 'Request to join'}
+                </button>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2">
+              {profile.members && profile.members.length > 0 ? (
+                profile.members.map((member, idx) => (
+                  <div key={idx} className="relative group cursor-pointer aspect-square rounded-md overflow-hidden border border-white/10 hover:border-mafia-gold transition-colors">
+                    <img src={'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200'} alt={member.name} className="object-cover w-full h-full" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1">
+                      <span className="text-[8px] font-mono text-white truncate w-full text-center">{member.name}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                /* Mock Members for visualization */
+                [...Array(6)].map((_, idx) => (
+                  <div key={idx} className="relative group cursor-pointer aspect-square rounded-md overflow-hidden border border-white/10 hover:border-mafia-gold transition-colors">
+                    <img src={`https://i.pravatar.cc/100?img=${idx + 10}`} alt="Member" className="object-cover w-full h-full" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1">
+                      <span className="text-[8px] font-mono text-white truncate w-full text-center">Member {idx + 1}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        <AccordionSection title={profile.accountType === 'couple' ? (lang === 'cs' ? 'Naše společné zájmy & Shoda' : 'Shared Interests & Match') : (lang === 'cs' ? 'Proč se k sobě hodíte' : 'Match Analysis')} icon={<Target size={16} />} defaultOpen={false}>
           {!isPremiumUnlocked ? (
             <div className="flex flex-col items-center justify-center p-8 bg-black/60 rounded-xl border border-mafia-gold/30 text-center relative overflow-hidden mb-4">
               <Lock size={48} className="text-mafia-gold mb-4 relative z-10" />
@@ -207,7 +270,7 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
         </AccordionSection>
 
 
-        <AccordionSection title={lang === 'cs' ? 'O mně & Vibe' : 'About & Vibe'} icon={<MessageCircleHeart size={16} />} defaultOpen={true}>
+                <AccordionSection title={['couple', 'group', 'family'].includes(profile.accountType || '') ? (lang === 'cs' ? 'O nás & Vibe' : 'About Us & Vibe') : (lang === 'cs' ? 'O mně & Vibe' : 'About Me & Vibe')} icon={<MessageCircleHeart size={16} />} defaultOpen={false}>
           {/* Voice Prompt */}
           {profile.voicePrompt && (
             <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4 mb-6">
@@ -230,7 +293,7 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
           {/* Bio & Negatives */}
           {profile.bio && (
             <div>
-              <h4 className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.2em] mb-2">O mně</h4>
+              <h4 className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.2em] mb-2">{['couple', 'group', 'family'].includes(profile.accountType || '') ? 'O nás' : 'O mně'}</h4>
               <p className="text-white/80 font-sans text-sm leading-relaxed">{profile.bio}</p>
             </div>
           )}
@@ -402,6 +465,18 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
 
 
         <AccordionSection title={lang === 'cs' ? 'Zájmy & Životní styl' : 'Interests & Lifestyle'} icon={<Sparkles size={16} />} defaultOpen={false}>
+          {currentStrategy === 'random' ? (
+            <div className="flex flex-col items-center justify-center p-8 bg-black/40 rounded-xl border border-white/5 text-center mt-2">
+              <Lock size={32} className="text-white/30 mb-3" />
+              <p className="text-white/50 text-xs font-mono uppercase tracking-widest leading-relaxed">
+                {lang === 'cs' 
+                  ? 'Základní algoritmus nezobrazuje hlubší zájmy. Pro více informací vyberte jiný algoritmus (např. Nejbližší, Rozdílné).' 
+                  : 'Random algorithm hides deeper interests. Choose another algorithm to reveal.'}
+              </p>
+            </div>
+          ) : (
+            <>
+              
           {displayMode === 'business' && (
             <div className="space-y-4 mb-6">
               <div className="flex items-center gap-2 border-b border-mafia-gold/30 pb-2">
@@ -653,9 +728,24 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
           </div>
 
 
-        </AccordionSection>
+        
+            </>
+          )}
+</AccordionSection>
 
         <AccordionSection title={lang === 'cs' ? 'Psychologie & Deep Talk' : 'Psychology & Deep Talk'} icon={<Skull size={16} />} defaultOpen={false}>
+          {currentStrategy === 'random' ? (
+            <div className="flex flex-col items-center justify-center p-8 bg-black/40 rounded-xl border border-white/5 text-center mt-2">
+              <Lock size={32} className="text-white/30 mb-3" />
+              <p className="text-white/50 text-xs font-mono uppercase tracking-widest leading-relaxed">
+                {lang === 'cs' 
+                  ? 'Psychologický profil je v náhodném algoritmu skrytý.' 
+                  : 'Psychological profile is hidden in the random algorithm.'}
+              </p>
+            </div>
+          ) : (
+            <>
+              
           {/* Psychology Section */}
           {(profile.mbti || profile.temperament || profile.mindset || profile.intelligence || profile.socialBattery) && (
             <div className="space-y-4 pt-4 border-t border-mafia-gold/20">
@@ -806,9 +896,24 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
           )}
 
 
-        </AccordionSection>
+        
+            </>
+          )}
+</AccordionSection>
 
         <AccordionSection title={lang === 'cs' ? 'Sociální sítě' : 'Social Networks'} icon={<Link size={16} />} defaultOpen={false}>
+          {currentStrategy === 'random' ? (
+            <div className="flex flex-col items-center justify-center p-8 bg-black/40 rounded-xl border border-white/5 text-center mt-2">
+              <Lock size={32} className="text-white/30 mb-3" />
+              <p className="text-white/50 text-xs font-mono uppercase tracking-widest leading-relaxed">
+                {lang === 'cs' 
+                  ? 'Sociální sítě nejsou v náhodném algoritmu dostupné.' 
+                  : 'Social networks are not available in random algorithm.'}
+              </p>
+            </div>
+          ) : (
+            <>
+              
           {/* Social Networks Section */}
           {(profile.instagram || profile.facebook || profile.linkedin || profile.twitter) && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-white/10">
@@ -834,7 +939,10 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
               )}
             </div>
           )}
-        </AccordionSection>
+        
+            </>
+          )}
+</AccordionSection>
 
         {/* Suggested Date / Voucher */}
         {suggestedVouchers && suggestedVouchers.length > 0 && (
@@ -1141,6 +1249,12 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
 
 
               <div className="flex flex-wrap items-center gap-3 mt-2">
+                {profile.distanceFromUser !== undefined && (
+                  <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md border border-mafia-gold/30 shadow-[0_0_10px_rgba(197,160,89,0.2)]" title={lang === 'cs' ? 'Zrcadlová vzdálenost (stejně jako vy vidíte tento profil, tak vidí i on vás)' : 'Mirrored distance (both parties see this)'}>
+                    <MapPin size={12} className="text-mafia-gold" />
+                    <span className="text-mafia-gold text-[10px] font-mono font-bold tracking-widest">{profile.distanceFromUser} km {lang === 'cs' ? 'od tebe' : 'away'}</span>
+                  </div>
+                )}
                 {profile.locations && profile.locations.length > 0 ? (
                   <div className="flex items-center gap-2 flex-wrap">
                     {profile.locations.map((loc, idx) => (

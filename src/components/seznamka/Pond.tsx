@@ -10,9 +10,11 @@ import { DiscoveryHub, SearchFilters, CATEGORIES } from "./DiscoveryHub";
 import { BarberAdCard } from "./BarberAdCard";
 import { useTranslation } from "@/hooks/useTranslation";
 import { calculateCompatibility, generateMatchReport } from "./MatchAlgorithm";
-import { Heart, X, Skull, User, Users, Flag, MessageCircleHeart, Bookmark, ShieldCheck, Crosshair, Crown, Fish, Layers, DollarSign, Dumbbell, Wine, Filter, Search, Sparkles, Calendar, TrendingUp, MapPin } from "lucide-react";
+import { Heart, X, Skull, User, Users, Flag, MessageCircleHeart, Bookmark, ShieldCheck, Crosshair, Crown, Fish, Layers, DollarSign, Dumbbell, Wine, Filter, Search, Sparkles, Calendar, TrendingUp, MapPin, ChevronDown } from "lucide-react";
 import { OnboardingGuide } from "./OnboardingGuide";
 import { MatchVoucherCard, VoucherData } from "./MatchVoucherCard";
+import { DsaTransparencyInfo } from "./DsaTransparencyInfo";
+import { LegalHubModal } from "./LegalHubModal";
 
 interface PondProps {
   currentUser: ProfileData;
@@ -48,8 +50,11 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
             if (p.id === currentUser?.id || p.name === currentUser?.name) return false;
 
             // Exclude linked accounts (check by both ID and Name to support mock profiles)
-            if (currentUser?.linkedUserIds?.includes(p.id!) || currentUser?.linkedUserIds?.includes(p.name)) return false;
-            if (p.linkedUserIds?.includes(currentUser?.id!) || p.linkedUserIds?.includes(currentUser?.name)) return false;
+            if (p.id && currentUser?.linkedUserIds?.includes(p.id)) return false;
+            if (p.name && currentUser?.linkedUserIds?.includes(p.name)) return false;
+            
+            if (currentUser?.id && p.linkedUserIds?.includes(currentUser.id)) return false;
+            if (currentUser?.name && p.linkedUserIds?.includes(currentUser.name)) return false;
 
             // If user hasn't set preferences, just show opposite gender as a fallback
             const myGender = currentUser?.gender || 'male';
@@ -68,7 +73,7 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
           // INJECT MOCK PROFILES FOR TESTING UI
           const uiMocks = [
             {
-              id: 'mock-b1', name: 'Adam', age: '34', city: 'Praha', gender: 'male', seeking: ['business'],
+              id: 'mock-b1', name: 'Adam', trustedRater: true, trustedRatingsReceived: 45, distanceFromUser: 5, age: '34', city: 'Praha', gender: 'male', seeking: ['business'],
               workLifeBalance: 'Hustle kultura (Kariéra na 1. místě)', moneyDetailed: { myAttitude: 'Utrácím za luxus' },
               intelligence: 'Analytická', mindset: 'Realista', bio: 'Hledám spolehlivého partnera pro nový startup.',
               photos: [
@@ -78,39 +83,39 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
               ]
             },
             {
-              id: 'mock-b2', name: 'Klára', age: '29', city: 'Brno', gender: 'female', seeking: ['business'],
+              id: 'mock-b2', name: 'Klára', trustedRater: true, trustedRatingsReceived: 12, distanceFromUser: 120, age: '29', city: 'Brno', gender: 'female', seeking: ['business'],
               workLifeBalance: 'Vyvážený', moneyDetailed: { myAttitude: 'Investuji do zážitků' },
               intelligence: 'Praktická', mindset: 'Vizionář', bio: 'Marketingová specialistka, hledám co-foundera.',
               photos: ['https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=600']
             },
             {
-              id: 'mock-r1', name: 'Tomáš', age: '22', city: 'Olomouc', gender: 'male', seeking: ['bydleni'],
+              id: 'mock-r1', name: 'Tomáš', trustedRater: false, trustedRatingsReceived: 2, distanceFromUser: 2, age: '22', city: 'Olomouc', gender: 'male', seeking: ['bydleni'],
               smoking: 'no', pets: [{ id: '1', type: 'Pes', breed: 'Mops', name: 'Alík', purpose: 'walk' }],
               temperament: 'Sova', bio: 'Hledám klidného spolubydlu. Jsem noční sova, přes den spím.',
               photos: ['https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=600']
             },
             {
-              id: 'mock-r2', name: 'Petra', age: '25', city: 'Praha', gender: 'female', seeking: ['bydleni'],
+              id: 'mock-r2', name: 'Petra', trustedRater: true, trustedRatingsReceived: 89, distanceFromUser: 45, age: '25', city: 'Praha', gender: 'female', seeking: ['bydleni'],
               smoking: 'yes', pets: [], temperament: 'Ranní ptáče', bio: 'Čistotná, hledám nekuřácký byt s výhledem.',
               photos: ['https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=600']
             },
             {
-              id: 'mock-f1', name: 'Martin', age: '27', city: 'Plzeň', gender: 'male', seeking: ['kamarad'],
+              id: 'mock-f1', name: 'Martin', age: '27', city: 'Plzeň', gender: 'male', distanceFromUser: 85, seeking: ['kamarad'],
               myTags: ['Fotbal', 'Hospoda', 'Deskovky'], socialBattery: 'Extrovert', spontaneityLevel: 'Plánovač',
               bio: 'Zahrajeme FIFU nebo zajdem na pivo?', photos: ['https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=600']
             },
             {
-              id: 'mock-f2', name: 'Lucie', age: '24', city: 'Brno', gender: 'female', seeking: ['kamarad'],
+              id: 'mock-f2', name: 'Lucie', age: '24', city: 'Brno', gender: 'female', distanceFromUser: 210, seeking: ['kamarad'],
               myTags: ['Knihy', 'Kavárny', 'Kočky'], socialBattery: 'Introvert', spontaneityLevel: 'Něco mezi',
               bio: 'Nechci vztah, jen někoho na kafe a pokec o knížkách.', photos: ['https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600']
             },
             {
-              id: 'mock-s1', name: 'Lukáš', age: '26', city: 'Ostrava', gender: 'male', seeking: ['kratkodoby'],
+              id: 'mock-s1', name: 'Lukáš', age: '26', city: 'Ostrava', gender: 'male', distanceFromUser: 300, seeking: ['kratkodoby'],
               spontaneityLevel: 'Spontánní', nsfwCategories: ['fwb', 'open_relationship'], bio: 'Život je krátký, pojďme si ho užít.',
               photos: ['https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=600']
             },
             {
-              id: 'mock-s2', name: 'Nikola', age: '23', city: 'Praha', gender: 'female', seeking: ['kratkodoby'], accountType: 'individual',
+              id: 'mock-s2', name: 'Nikola', age: '23', city: 'Praha', gender: 'female', distanceFromUser: 12, seeking: ['kratkodoby'], accountType: 'individual',
               spontaneityLevel: 'Spontánní', nsfwCategories: ['fwb'], bio: 'Hledám parťáka na víkendové párty.',
               photos: ['https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=600']
             },
@@ -153,6 +158,51 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
               id: 'mock-job1', name: 'Hledám Instalatéra', city: 'Praha', accountType: 'job',
               bio: 'Potřebuji opravit kapající kohoutek v koupelně, spěchá.',
               photos: ['https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&q=80&w=600']
+            },
+            {
+              id: 'mock-b3', name: 'David', age: '41', city: 'Ostrava', gender: 'male', seeking: ['business'],
+              workLifeBalance: 'Hustle kultura', bio: 'Hledám investora pro lokální pivovar.',
+              photos: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600']
+            },
+            {
+              id: 'mock-couple2', name: 'Veronika a Michal', age: '28', city: 'Zlín', accountType: 'couple', seeking: ['kamarad'],
+              bio: 'Rádi chodíme po horách, hledáme parťáky na víkendové výlety.',
+              photos: ['https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&q=80&w=600']
+            },
+            {
+              id: 'mock-s3', name: 'Sabina', age: '21', city: 'Liberec', gender: 'female', seeking: ['kratkodoby'],
+              bio: 'Jen tak na drink a uvidíme co dál. Spontánní nápady vítány.',
+              photos: ['https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600'],
+              salonVerified: true,
+              trustEndorsements: [
+                { count: 1, salonId: 'barber-liberec', salonName: 'Liberec Barber & Coffee' }
+              ],
+              criticalWarnings: ['Harassment']
+            },
+            {
+              id: 'mock-activity2', name: 'Filmový maraton', city: 'Hradec Králové', accountType: 'activity',
+              bio: 'Pátek večer u mě, Pán Prstenů prodloužená verze. Přineste popcorn!',
+              photos: ['https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=600']
+            },
+            {
+              id: 'mock-group2', name: 'Klub deskových her', city: 'Pardubice', accountType: 'group', seeking: ['kamarad'],
+              bio: 'Hrajeme D&D a složitější eurohry, rádi uvítáme nováčky.',
+              photos: ['https://images.unsplash.com/photo-1611891487122-207579d67d98?auto=format&fit=crop&q=80&w=600']
+            },
+            {
+              id: 'mock-pet2', name: 'Micka', age: '1', city: 'Praha', accountType: 'pet',
+              bio: 'Hledám hlídání na víkend. Jsem čistotná, ale ráda škrábu gauč.',
+              photos: ['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=600']
+            },
+            {
+              id: 'mock-r3', name: 'Ondřej', age: '35', city: 'Karlovy Vary', gender: 'male', seeking: ['bydleni'],
+              bio: 'Nabízím volný pokoj v centru, hledám pracujícího spolubydlícího.',
+              photos: ['https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=600']
+            },
+            {
+              id: 'mock-property2', name: 'Garáž k pronájmu', city: 'Ústí nad Labem', accountType: 'property',
+              bio: 'Čistá garáž, elektřina, dobrý přístup. Ideální pro motorku.',
+              photos: ['https://images.unsplash.com/photo-1605335123985-115f5c8dbcae?auto=format&fit=crop&q=80&w=600']
             }
           ] as unknown as ProfileData[];
 
@@ -199,6 +249,9 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
   const [accountFilter, setAccountFilter] = useState<string>('all');
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [maxDistance, setMaxDistance] = useState<number>(50); // Default 50 km
+  const [distanceMode, setDistanceMode] = useState<"max" | "min">("max");
+  const [showConnectionsModal, setShowConnectionsModal] = useState(false);
+  const [showAlgorithmMenu, setShowAlgorithmMenu] = useState(false);
 
   // Custom match modal state
   const [matchedProfile, setMatchedProfile] = useState<ProfileData | null>(null);
@@ -328,6 +381,11 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
 
   const handleStartAlgorithm = () => {
     if (!currentUser) return;
+
+    if (profiles.length === 0) {
+      alert(lang === 'cs' ? 'Nejsou tu žádné profily. Algoritmus nemá na kom běžet.' : 'No profiles here. The algorithm has no one to run on.');
+      return;
+    }
 
     // Deduct coin for paid algorithms
     if (matchStrategy !== 'random' && !hasSubscription) {
@@ -504,7 +562,7 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
 
   return (
     <div className="w-full flex flex-col items-center py-4 px-4 h-full">
-      <div className="w-full max-w-sm md:max-w-7xl flex flex-col xl:flex-row justify-center items-center mb-6 gap-4 xl:gap-0">
+      <div className="relative z-50 w-full max-w-sm md:max-w-7xl flex flex-col xl:flex-row justify-center items-center mb-6 gap-4 xl:gap-0">
 
         <div className="flex flex-col md:flex-row items-center gap-3">
           {/* Main View Modes Toggle */}
@@ -585,37 +643,70 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
 
           {/* Match Strategies Pill */}
           <div className="flex items-center bg-black/60 rounded-full border border-white/10 p-1.5 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)]">
-            {[
-              { id: 'random', icon: '🎲', label: 'Random', free: true },
-              { id: 'magnet', icon: '🧲', label: lang === 'cs' ? 'Rozdílné' : 'Opposites', free: false },
-              { id: 'mirror', icon: '🪞', label: lang === 'cs' ? 'Stejné' : 'Mirrors', free: false },
-              ...((currentUser?.seeking?.includes('partner') || currentUser?.seeking?.includes('all')) ? [{ id: 'zodiac', icon: '♈', label: lang === 'cs' ? 'Znamení' : 'Zodiac', free: false }] : []),
-              { id: 'closest', icon: '✨', label: lang === 'cs' ? 'Nejbližší' : 'Closest', free: false }
-            ].map(strat => {
-              const isLocked = !strat.free && localMmCoins <= 0 && !hasSubscription;
-              return (
-                <button
-                  key={strat.id}
-                  onClick={() => {
-                    if (isLocked) {
-                      setShowCoinModal(true);
-                    } else {
-                      setMatchStrategy(strat.id);
-                    }
-                  }}
-                  className={`p-2 px-3 lg:px-4 rounded-full transition-all duration-300 font-heading tracking-widest text-[10px] uppercase flex items-center gap-1.5 ${matchStrategy === strat.id
-                      ? 'bg-mafia-gold text-black shadow-[0_0_15px_rgba(197,160,89,0.4)] scale-105'
-                      : isLocked ? 'text-white/30 hover:bg-white/5 cursor-pointer' : 'text-white/50 hover:text-white hover:bg-white/5'
-                    }`}
-                  title={isLocked ? 'Zamčeno - Vyžaduje MMCOIN' : strat.label}
-                >
-                  <span className="text-base flex items-center gap-1">{strat.icon} {isLocked && <span className="text-[8px] opacity-70">🔒</span>}</span>
-                  <span className="hidden xl:inline">{strat.label}</span>
-                </button>
-              );
-            })}
+            <div className="relative">
+              {(() => {
+                const strategies = [
+                  { id: 'random', icon: '🎲', label: lang === 'cs' ? 'Náhodně' : 'Random', free: true },
+                  { id: 'magnet', icon: '🧲', label: lang === 'cs' ? 'Rozdílné' : 'Opposites', free: false },
+                  { id: 'mirror', icon: '🪞', label: lang === 'cs' ? 'Stejné' : 'Mirrors', free: false },
+                  ...((currentUser?.seeking?.includes('partner') || currentUser?.seeking?.includes('all')) ? [{ id: 'zodiac', icon: '♈', label: lang === 'cs' ? 'Znamení' : 'Zodiac', free: false }] : []),
+                  { id: 'closest', icon: '✨', label: lang === 'cs' ? 'Nejbližší' : 'Closest', free: false }
+                ];
+                
+                const activeStrat = strategies.find(s => s.id === matchStrategy) || strategies[0];
 
-            <div className="w-px h-6 bg-white/10 mx-1" />
+                return (
+                  <>
+                    <button
+                      onClick={() => setShowAlgorithmMenu(!showAlgorithmMenu)}
+                      className="p-2 px-4 rounded-full transition-all duration-300 font-heading tracking-widest text-xs uppercase flex items-center gap-2 bg-mafia-gold/10 text-mafia-gold hover:bg-mafia-gold/20 hover:text-white"
+                      title={lang === 'cs' ? 'Změnit algoritmus' : 'Change algorithm'}
+                    >
+                      <span className="text-base">{activeStrat.icon}</span>
+                      <span className="hidden xl:inline">{activeStrat.label}</span>
+                      <ChevronDown size={14} className="opacity-50" />
+                    </button>
+
+                    <AnimatePresence>
+                      {showAlgorithmMenu && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="absolute top-full left-0 mt-2 w-48 bg-black/95 border border-white/20 rounded-xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 backdrop-blur-md"
+                        >
+                          {strategies.map(strat => {
+                            const isLocked = !strat.free && localMmCoins <= 0 && !hasSubscription;
+                            return (
+                              <button
+                                key={strat.id}
+                                onClick={() => {
+                                  if (isLocked) {
+                                    setShowCoinModal(true);
+                                  } else {
+                                    setMatchStrategy(strat.id);
+                                    setShowAlgorithmMenu(false);
+                                  }
+                                }}
+                                className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors text-xs font-mono uppercase tracking-widest ${matchStrategy === strat.id
+                                    ? 'bg-mafia-gold/20 text-mafia-gold'
+                                    : isLocked ? 'text-white/30 hover:bg-white/5 cursor-not-allowed' : 'text-white/60 hover:bg-white/10 hover:text-white'
+                                  }`}
+                              >
+                                <span className="text-base flex items-center gap-1">{strat.icon} {isLocked && <span className="text-[10px] opacity-70">🔒</span>}</span>
+                                {strat.label}
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </>
+                );
+              })()}
+            </div>
+
+            <div className="w-px h-6 bg-white/10 mx-2" />
 
             <button
               onClick={() => setDistanceModalVisible(true)}
@@ -724,9 +815,42 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                       Načítání profilů...
                     </div>
                   ) : profiles.length === 0 ? (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-white/50 font-mono text-sm uppercase tracking-widest text-center px-4 z-0">
-                      <Fish size={48} className="text-mafia-gold/20 mb-4" />
-                      <p className="mb-2">Rybníček je prázdný.</p>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 border border-mafia-gold/20 rounded-3xl p-6 text-center z-0 backdrop-blur-md">
+                      <div className="w-20 h-20 bg-mafia-gold/10 rounded-full flex items-center justify-center mb-6 border border-mafia-gold/30 shadow-[0_0_30px_rgba(197,160,89,0.2)]">
+                        <Users size={40} className="text-mafia-gold" />
+                      </div>
+                      <h3 className="text-2xl font-heading font-black text-white uppercase tracking-widest mb-2">
+                        {lang === 'cs' ? 'Žádné další nabídky' : 'No more offers'}
+                      </h3>
+                      <p className="text-white/60 font-mono text-xs uppercase mb-8 max-w-sm leading-relaxed">
+                        {lang === 'cs' ? 'Ale nemusíš smutnit. Tady jsou tvoje dávná spojení a tajní ctitelé, kteří na tebe čekají.' : 'But do not be sad. Here are your past connections and secret admirers waiting for you.'}
+                      </p>
+                      
+                      <div className="flex gap-4 w-full max-w-md">
+                        <button className="flex-1 bg-black/60 border border-mafia-gold/50 p-4 rounded-xl hover:bg-mafia-gold/10 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all flex flex-col items-center justify-center gap-2 group">
+                          <Crown size={24} className="text-mafia-gold group-hover:scale-110 transition-transform" />
+                          <span className="font-heading font-black text-white text-xs uppercase tracking-widest">{lang === 'cs' ? 'Ctitelé (3)' : 'Admirers (3)'}</span>
+                          <span className="text-[10px] text-mafia-gold/70 font-mono uppercase">VIP Sekce</span>
+                        </button>
+                        <button 
+                          onClick={() => setShowConnectionsModal(true)}
+                          className="flex-1 bg-black/60 border border-white/20 p-4 rounded-xl hover:bg-white/10 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all flex flex-col items-center justify-center gap-2 group"
+                        >
+                          <MessageCircleHeart size={24} className="text-white/70 group-hover:scale-110 transition-transform" />
+                          <span className="font-heading font-black text-white text-xs uppercase tracking-widest">{lang === 'cs' ? 'Spojení (12)' : 'Matches (12)'}</span>
+                          <span className="text-[10px] text-white/40 font-mono uppercase">Zprávy</span>
+                        </button>
+                      </div>
+                      
+                      <button 
+                        onClick={() => {
+                          setProfiles(allProfiles);
+                          setResetKey(prev => prev + 1);
+                        }}
+                        className="mt-10 px-6 py-2 border border-white/10 rounded-full text-[10px] text-white/40 hover:text-white hover:bg-white/5 font-mono uppercase transition-all"
+                      >
+                        {lang === 'cs' ? 'Nebo hledat znovu od začátku' : 'Or search again from the start'}
+                      </button>
                     </div>
                   ) : (
                     <AnimatePresence>
@@ -1178,13 +1302,31 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                   <h3 className="text-xl font-heading font-black text-white uppercase tracking-widest mb-2">
                     {lang === 'cs' ? 'Vzdálenost' : 'Distance'}
                   </h3>
+
+                  <div className="flex bg-black/50 p-1 rounded-lg border border-white/10 mb-4 w-full">
+                    <button
+                      onClick={() => setDistanceMode("max")}
+                      className={`flex-1 py-2 text-[10px] md:text-xs font-heading font-black uppercase tracking-widest rounded-md transition-all ${distanceMode === "max" ? "bg-mafia-gold text-black" : "text-white/50 hover:text-white"}`}
+                    >
+                      {lang === 'cs' ? 'V okolí (Do X km)' : 'Nearby'}
+                    </button>
+                    <button
+                      onClick={() => setDistanceMode("min")}
+                      className={`flex-1 py-2 text-[10px] md:text-xs font-heading font-black uppercase tracking-widest rounded-md transition-all ${distanceMode === "min" ? "bg-mafia-gold text-black" : "text-white/50 hover:text-white"}`}
+                    >
+                      {lang === 'cs' ? 'Mimo (Od X km)' : 'Outside'}
+                    </button>
+                  </div>
+
                   <p className="text-xs text-white/50 font-mono mb-8">
-                    {lang === 'cs' ? 'Zvolte maximální vzdálenost, ve které chcete hledat protějšky.' : 'Choose the maximum distance for searching.'}
+                    {distanceMode === "max" 
+                      ? (lang === 'cs' ? 'Zvolte maximální vzdálenost, ve které chcete hledat protějšky.' : 'Choose the maximum distance for searching.')
+                      : (lang === 'cs' ? 'Zvolte minimální vzdálenost. Lidé ve vašem okolí se nebudou zobrazovat (skrytí před známými).' : 'Choose minimum distance. People nearby will be hidden.')}
                   </p>
                   <div className="w-full space-y-4 mb-8">
                     <div className="flex justify-between text-xs font-mono text-mafia-gold">
                       <span>1 km</span>
-                      <span className="font-bold text-lg">{maxDistance} km</span>
+                      <span className="font-bold text-lg">{distanceMode === "min" ? "Nad " : "Do "}{maxDistance} km</span>
                       <span>100+ km</span>
                     </div>
                     <input
@@ -1207,6 +1349,62 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Past Connections Modal */}
+          <AnimatePresence>
+            {showConnectionsModal && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+                onClick={() => setShowConnectionsModal(false)}
+              >
+                <motion.div
+                  initial={{ scale: 0.9, y: 20 }}
+                  animate={{ scale: 1, y: 0 }}
+                  exit={{ scale: 0.9, y: 20 }}
+                  onClick={e => e.stopPropagation()}
+                  className="w-full max-w-2xl bg-black border border-white/10 p-6 rounded-2xl flex flex-col h-[80vh] overflow-hidden"
+                >
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-2xl font-heading font-black text-white uppercase tracking-widest flex items-center gap-3">
+                      <MessageCircleHeart size={28} className="text-mafia-gold" />
+                      {lang === 'cs' ? 'Dávná spojení' : 'Past Connections'}
+                    </h3>
+                    <button onClick={() => setShowConnectionsModal(false)} className="text-white/50 hover:text-white">
+                      <X size={24} />
+                    </button>
+                  </div>
+                  
+                  <div className="flex-1 overflow-y-auto pr-2 space-y-4">
+                    {/* Mock Connections List */}
+                    {[
+                      { name: 'Lucie', city: 'Praha', time: lang === 'cs' ? 'Dnes' : 'Today', photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' },
+                      { name: 'Adam', trustedRater: true, trustedRatingsReceived: 45, distanceFromUser: 5, city: 'Brno', time: lang === 'cs' ? 'Včera' : 'Yesterday', photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200' },
+                      { name: 'Klára', trustedRater: true, trustedRatingsReceived: 12, distanceFromUser: 120, city: 'Ostrava', time: lang === 'cs' ? 'Před 3 dny' : '3 days ago', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200' },
+                      { name: 'Martin', city: 'Plzeň', time: lang === 'cs' ? 'Minulý týden' : 'Last week', photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200' },
+                      { name: 'Veronika', city: 'Zlín', time: lang === 'cs' ? 'Před 2 týdny' : '2 weeks ago', photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200' }
+                    ].map((profile, i) => (
+                      <div key={i} className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 hover:border-mafia-gold/30 transition-all cursor-pointer group">
+                        <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-transparent group-hover:border-mafia-gold transition-colors">
+                          <Image src={profile.photo} alt={profile.name} fill className="object-cover" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-heading font-black text-white text-lg uppercase tracking-wider group-hover:text-mafia-gold transition-colors">{profile.name}</h4>
+                          <p className="text-xs text-white/50 font-mono">{profile.city} • Spojení: {profile.time}</p>
+                        </div>
+                        <button className="p-3 bg-mafia-gold text-black rounded-full hover:bg-white hover:scale-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)]">
+                          <MessageCircleHeart size={18} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
 
         </>
       )}

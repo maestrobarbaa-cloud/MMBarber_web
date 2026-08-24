@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { MessageCircleHeart, X, Send, Heart, Star, ThumbsDown, Sparkles, MapPin, Camera, Clock } from "lucide-react";
+import { MessageCircleHeart, X, Send, Heart, Star, ThumbsDown, Sparkles, MapPin, Camera, Clock, Check, CheckCheck, Eye } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ProfileData } from "./ProfileCard";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,7 +14,8 @@ export function Matches({ matches = [] }: MatchesProps) {
   const { lang } = useTranslation();
   const [activeChat, setActiveChat] = useState<ProfileData | null>(null);
   const [message, setMessage] = useState("");
-  const [chatHistory, setChatHistory] = useState<{sender: 'me' | 'them', senderName?: string, senderPhoto?: string, type?: 'text'|'image'|'audio', text?: string, url?: string, audioUrl?: string, isBlurred?: boolean, id?: string, isRead?: boolean, reaction?: string}[]>([]);
+  const [chatHistory, setChatHistory] = useState<{sender: 'me' | 'them', senderName?: string, senderPhoto?: string, type?: 'text'|'image'|'audio', text?: string, url?: string, audioUrl?: string, isBlurred?: boolean, id?: string, isRead?: boolean, reaction?: string, status?: 'sent' | 'delivered' | 'read', timestamp?: string}[]>([]);
+  const [chatActivity, setChatActivity] = useState<'offline' | 'online' | 'viewing' | 'typing'>('online');
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -212,16 +213,38 @@ export function Matches({ matches = [] }: MatchesProps) {
     const textToSend = message;
     setMessage(""); // Optimistic UI clear
     
+    const messageId = 'temp-' + Date.now();
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
     // Optimistic insert
-    setChatHistory(prev => [...prev, { sender: 'me', text: textToSend, id: 'temp-' + Date.now() }]);
+    setChatHistory(prev => [...prev, { sender: 'me', text: textToSend, id: messageId, status: 'sent', timestamp }]);
 
     if (activeChat.matchId?.startsWith('mock-')) {
-      // Simulate an artificial response delay
-      setIsTyping(true);
+      // Simulate read receipts and typing sequence
+      
+      // 1. Delivered
+      setTimeout(() => {
+        setChatHistory(prev => prev.map(m => m.id === messageId ? { ...m, status: 'delivered' } : m));
+      }, 800);
+      
+      // 2. Read and Viewing
+      setTimeout(() => {
+        setChatHistory(prev => prev.map(m => m.id === messageId ? { ...m, status: 'read' } : m));
+        setChatActivity('viewing');
+      }, 2000);
+      
+      // 3. Typing
+      setTimeout(() => {
+        setChatActivity('typing');
+        setIsTyping(true);
+      }, 3500);
+
+      // 4. Reply
       setTimeout(() => {
         setIsTyping(false);
-        setChatHistory(prev => [...prev, { sender: 'them', text: 'Haha, to je super! Rozumím.', id: 'temp-reply-' + Date.now() }]);
-      }, 2500);
+        setChatActivity('online');
+        setChatHistory(prev => [...prev, { sender: 'them', text: 'Haha, to je super! Rozumím.', id: 'temp-reply-' + Date.now(), timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
+      }, 6000);
       return;
     }
 
@@ -593,14 +616,21 @@ export function Matches({ matches = [] }: MatchesProps) {
                       </div>
                     )}
 
-                    {/* Přečteno / Odesláno (Read Receipts) */}
-                    {msg.sender === 'me' && (
-                      <div className="absolute bottom-1 right-2 text-[8px] flex items-center">
-                        <span className={msg.isRead ? "text-blue-400" : "text-white/40"}>
-                          {msg.isRead ? '✓✓' : '✓'}
+                    {/* Timestamp & Read Receipts */}
+                    <div className={`flex items-center gap-1 mt-1 ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
+                      {msg.timestamp && (
+                        <span className="text-[9px] font-mono text-white/40">{msg.timestamp}</span>
+                      )}
+                      {msg.sender === 'me' && (
+                        <span className={`flex items-center ${msg.status === 'read' ? 'text-mafia-gold' : 'text-white/40'}`}>
+                          {msg.status === 'sent' && <Check size={12} />}
+                          {msg.status === 'delivered' && <CheckCheck size={12} />}
+                          {msg.status === 'read' && <CheckCheck size={12} />}
+                          {/* Fallback */}
+                          {!msg.status && (msg.isRead ? <CheckCheck size={12} className="text-mafia-gold" /> : <Check size={12} />)}
                         </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </motion.div>
                 ))}
                 

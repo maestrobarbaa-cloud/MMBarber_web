@@ -362,7 +362,15 @@ export const CATEGORIES: DiscoveryCategory[] = [
     description: { cs: 'Hráči, sportovci a milovníci umění.', en: 'Gamers, athletes and art lovers.' },
     color: 'border-purple-500 text-purple-500 bg-purple-500/10',
     subOptions: [
-      { id: 'gamer', label: { cs: '🎮 Gamer', en: '🎮 Gamer' }, tag: '🎮 Gamer' },
+            { id: 'gamer', label: { cs: '🎮 Gamer', en: '🎮 Gamer' }, tag: '🎮 Gamer' },
+      { id: 'homechill', label: { cs: '☕ Domácí pohoda', en: '☕ Home chill' }, tag: '☕ Domácí pohoda' },
+      { id: 'reader', label: { cs: '📚 Čtenář / Knihomol', en: '📚 Reader / Bookworm' }, tag: '📚 Čtenář' },
+      { id: 'dance', label: { cs: '💃 Tanec', en: '💃 Dance' }, tag: '💃 Tanec' },
+      { id: 'animals', label: { cs: '🐾 Milovník zvířat', en: '🐾 Animal lover' }, tag: '🐾 Zvířata' },
+      { id: 'nature', label: { cs: '🌲 Příroda & Turistika', en: '🌲 Nature & Hiking' }, tag: '🌲 Příroda' },
+      { id: 'diy', label: { cs: '🛠️ Kutil / DIY', en: '🛠️ DIY' }, tag: '🛠️ Kutil' },
+      { id: 'plants', label: { cs: '🪴 Pěstitel / Rostliny', en: '🪴 Plant lover' }, tag: '🪴 Rostliny' },
+      { id: 'photography', label: { cs: '📸 Focení', en: '📸 Photography' }, tag: '📸 Focení' },
       { id: 'fitness', label: { cs: '💪 Fitness závislák', en: '💪 Fitness addict' }, tag: '💪 Fitness závislák' },
       { id: 'cars', label: { cs: '🚗 Autíčkář', en: '🚗 Car lover' }, tag: '🚗 Autíčkář' },
       { id: 'art', label: { cs: '🎨 Umělec', en: '🎨 Artist' }, tag: '🎨 Umělec' },
@@ -424,7 +432,9 @@ export const CATEGORIES: DiscoveryCategory[] = [
       { id: 'agnostic', label: { cs: '❓ Agnostik', en: '❓ Agnostic' }, tag: '❓ Agnostik' },
       { id: 'spiritual', label: { cs: '🔮 Spiritualita / Esoterika', en: '🔮 Spirituality' }, tag: '🔮 Spiritualita' },
       { id: 'jewish', label: { cs: '✡️ Judaismus', en: '✡️ Judaism' }, tag: '✡️ Judaismus' },
-      { id: 'hindu', label: { cs: '🕉️ Hinduismus', en: '🕉️ Hinduism' }, tag: '🕉️ Hinduismus' }
+      { id: 'hindu', label: { cs: '🕉️ Hinduismus', en: '🕉️ Hinduism' }, tag: '🕉️ Hinduismus' },
+        { id: 'higher_power', label: { cs: '✨ Vyšší moc', en: '✨ Higher Power' }, tag: '✨ Vyšší moc' },
+        { id: 'aliens', label: { cs: '👽 Mimozemšťané', en: '👽 Aliens' }, tag: '👽 Mimozemšťané' }
     ]
   },
   {
