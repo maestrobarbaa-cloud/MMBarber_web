@@ -83,6 +83,9 @@ model User {
   linkRequestsSent LinkRequest[] @relation("LinkRequestsSent")
   linkRequestsReceived LinkRequest[] @relation("LinkRequestsReceived")
   bugReports       BugReport[]
+  ratingsGiven     ProfileRating[] @relation("RatingsGiven")
+  ratingsReceived  ProfileRating[] @relation("RatingsReceived")
+
 }
 
 model VerificationToken {
@@ -452,3 +455,19 @@ model BugReport {
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
+
+model ProfileRating {
+  id          String   @id @default(cuid())
+  raterId     String
+  targetId    String
+  rating      Int
+  isCritical  Boolean  @default(false)
+  traits      String?  // JSON string of traits
+  weight      Float    @default(1.0) // Algorithmic weight
+  createdAt   DateTime @default(now())
+
+  rater       User     @relation("RatingsGiven", fields: [raterId], references: [id], onDelete: Cascade)
+  target      User     @relation("RatingsReceived", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@unique([raterId, targetId])
+}

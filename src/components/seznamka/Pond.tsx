@@ -74,7 +74,7 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
           const uiMocks = [
             {
               id: 'mock-b1', name: 'Adam', trustedRater: true, trustedRatingsReceived: 45, distanceFromUser: 5, age: '34', city: 'Praha', gender: 'male', seeking: ['business'],
-              workLifeBalance: 'Hustle kultura (Kariéra na 1. místě)', moneyDetailed: { myAttitude: 'Utrácím za luxus' },
+              workLifeBalance: 'Hustle kultura (Kariéra na 1. místě)', moneyDetailed: { myAttitude: 'Utrácím za luxus' }, healthConditions: { visionHearing: ['glasses'], neurodivergent: ['adhd'] },
               intelligence: 'Analytická', mindset: 'Realista', bio: 'Hledám spolehlivého partnera pro nový startup.',
               photos: [
                 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=600',

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Eye, HeartPulse, Brain, Activity, Coffee } from "lucide-react";
 import { ProfileData } from "./ProfileTypes";
 import { CustomSelect } from "./CustomSelect";
+import { AccordionSection } from "./AccordionSection";
 import { PreferenceSelector, TraitSelector, InfoTooltip } from "./SetupHelpers";
 
 interface StepProps {
@@ -253,6 +254,155 @@ export const Step3Character = ({ formData, setFormData, lang }: StepProps) => (
   </motion.div>
 );
 
+export const StepAssets = ({ formData, setFormData, lang }: StepProps) => (
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+    <div className="text-center mb-6">
+      <h4 className="text-blue-400 font-heading font-black uppercase tracking-widest text-lg">Majetek a Bydlení</h4>
+      <p className="text-white/50 text-xs font-mono">
+        {lang === 'cs' ? 'Ukaž, jaké máš zázemí a jaké jsou tvé hmotné hodnoty.' : 'Show your background and material assets.'}
+      </p>
+    </div>
+
+    <div className="p-6 bg-gradient-to-br from-blue-900/10 to-transparent border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.05)] rounded-xl mt-8">
+      <h4 className="font-heading font-black text-blue-400 uppercase tracking-widest text-sm mb-4">Životní situace (Bydlení)</h4>
+      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Jak aktuálně bydlíš?</label>
+      <CustomSelect 
+        value={formData.housingStatus || ""} 
+        onChange={(v) => setFormData({...formData, housingStatus: v as any})} 
+        options={[
+          {value:'own_paid', label:'Ve vlastním (splaceno)'}, 
+          {value:'own_mortgage', label:'Ve vlastním (s hypotékou)'}, 
+          {value:'rent_alone', label:'V nájmu (sám/sama)'}, 
+          {value:'rent_roommates', label:'V nájmu (se spolubydlícími)'},
+          {value:'parents', label:'U rodičů'},
+          {value:'nomad', label:'Digitální nomád / Cestuji'},
+          {value:'other', label:'Jiná situace'}
+        ]} 
+        placeholder="Vyber svou životní situaci..." 
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Mobilita (Auto)</label>
+          <CustomSelect 
+            value={formData.car || ""} 
+            onChange={(v) => setFormData({...formData, car: v as string})} 
+            options={[
+              {value:'own', label:'Mám vlastní auto'},
+              {value:'company', label:'Služební auto'},
+              {value:'shared', label:'Sdílené / Půjčuji si'},
+              {value:'public', label:'MHD / Vlaky'},
+              {value:'none', label:'Auto nepotřebuji'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Vlastnictví a Aktiva (Volitelné)</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.assets || []} 
+            onChange={(v) => setFormData({...formData, assets: v})} 
+            options={[
+              {value:'business', label:'Vlastní firma / Podnik'},
+              {value:'real_estate', label:'Nemovitosti na pronájem'},
+              {value:'crypto', label:'Krypto portfolia'},
+              {value:'digital_products', label:'Digitální produkty / SaaS'},
+              {value:'stocks', label:'Akcie / Investice'},
+              {value:'art', label:'Umění / Sběratelství'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+      </div>
+    </div>
+  </motion.div>
+);
+
+export const StepTimeline = ({ formData, setFormData, lang }: StepProps) => (
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+    <div className="text-center mb-6">
+      <h4 className="text-purple-400 font-heading font-black uppercase tracking-widest text-lg">Časová osa (Minulost, Přítomnost, Budoucnost)</h4>
+      <p className="text-white/50 text-xs font-mono">
+        {lang === 'cs' ? 'Vyber štítky, které nejlépe vystihují tvůj životní posun.' : 'Select tags that best describe your life journey.'}
+      </p>
+    </div>
+
+    <div className="p-6 bg-gradient-to-br from-purple-900/10 to-transparent border border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.05)] rounded-xl mt-8">
+      <div className="space-y-6">
+        <div>
+          <h4 className="font-heading font-black text-purple-400 uppercase tracking-widest text-sm mb-4">Minulost</h4>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Zkušenosti a vztahy z minulosti</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.timeline?.past || []} 
+            onChange={(v) => setFormData({...formData, timeline: {...formData.timeline, past: v}})} 
+            options={[
+              {value: 'learned', label: 'Poučil/a jsem se z chyb'},
+              {value: 'knows_what_wants', label: 'Už přesně vím, koho NECHCI'},
+              {value: 'regrets', label: 'Mám věci, kterých lituji'},
+              {value: 'wants_back', label: 'Někdy bych se nejradši vrátil/a v čase'},
+              {value: 'let_go', label: 'Minulost jsem uzavřel/a a jdu dál'},
+              {value: 'nostalgic', label: 'Rád/a vzpomínám na to dobré'},
+              {value: 'healing', label: 'Stále se léčím z minulých zranění'},
+              {value: 'proud', label: 'Jsem hrdý/á na to, co jsem zvládl/a'},
+              {value: 'wild_past', label: 'Mám za sebou divoké období'},
+              {value: 'long_relationship', label: 'Jsem po dlouhém vztahu'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        
+        <div className="border-t border-white/10 pt-6">
+          <h4 className="font-heading font-black text-purple-400 uppercase tracking-widest text-sm mb-4">Přítomnost</h4>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Jak aktuálně žiješ a kam ses posunul/a</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.timeline?.present || []} 
+            onChange={(v) => setFormData({...formData, timeline: {...formData.timeline, present: v}})} 
+            options={[
+              {value: 'moved_forward', label: 'Hodně jsem se osobnostně posunul/a'},
+              {value: 'living_best', label: 'Žiju svůj nejlepší život'},
+              {value: 'finding_path', label: 'Stále trochu hledám svůj směr'},
+              {value: 'working_hard', label: 'Tvrdě na sobě pracuji'},
+              {value: 'enjoying_moment', label: 'Užívám si přítomný okamžik'},
+              {value: 'stable', label: 'Mám konečně klid a stabilitu'},
+              {value: 'career_focus', label: 'Soustředím se teď hlavně na práci'},
+              {value: 'self_love', label: 'Učím se mít rád/a sám/sama sebe'},
+              {value: 'ready_for_love', label: 'Jsem plně připraven/a na nový vztah'},
+              {value: 'taking_it_easy', label: 'Nikam nespěchám, nechávám věci plynout'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        
+        <div className="border-t border-white/10 pt-6">
+          <h4 className="font-heading font-black text-purple-400 uppercase tracking-widest text-sm mb-4">Budoucnost</h4>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Jaké máš plány do budoucna</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.timeline?.future || []} 
+            onChange={(v) => setFormData({...formData, timeline: {...formData.timeline, future: v}})} 
+            options={[
+              {value: 'going_up', label: 'Mířím vysoko a chci růst'},
+              {value: 'family', label: 'Chci založit rodinu a usadit se'},
+              {value: 'surviving', label: 'Zatím spíš tak proplouvám'},
+              {value: 'adventure', label: 'Chci cestovat a objevovat'},
+              {value: 'career', label: 'Soustředím se na kariéru/podnikání'},
+              {value: 'peace', label: 'Hlavně klidný a spokojený život'},
+              {value: 'financial_freedom', label: 'Chci dosáhnout finanční nezávislosti'},
+              {value: 'moving_abroad', label: 'Plánuji se odstěhovat do zahraničí'},
+              {value: 'building_home', label: 'Chci si vybudovat vlastní bydlení'},
+              {value: 'no_plans', label: 'Žiju ze dne na den, neplánuji'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+      </div>
+    </div>
+  </motion.div>
+);
+
 export const Step4Lifestyle = ({ formData, setFormData, lang }: StepProps) => (
   <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
     <div className="text-center mb-6">
@@ -268,6 +418,8 @@ export const Step4Lifestyle = ({ formData, setFormData, lang }: StepProps) => (
         <CustomSelect isMulti={true} value={formData.sharedLife?.idealHoliday || []} onChange={(v) => setFormData({...formData, sharedLife: {...formData.sharedLife, idealHoliday: v}})} options={[{value:'beach', label:'Pláž a odpočinek'}, {value:'explore', label:'Poznávání měst'}, {value:'mountains', label:'Hory a sport'}, {value:'roadtrip', label:'Roadtrip / Dobrodružství'}]} placeholder="Vyber..." />
       </div>
     </div>
+
+
 
     <div className="p-6 bg-gradient-to-br from-mafia-gold/5 to-transparent border border-mafia-gold/20 rounded-xl mt-8">
       <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Moje Rituály (Zvyky)</h4>
@@ -416,6 +568,78 @@ export const Step4Lifestyle = ({ formData, setFormData, lang }: StepProps) => (
               {value:'judging_drivers', label:'Soudím lidi podle toho, jak řídí'}
             ]} 
             placeholder="Vyber (jen pro zasmání)..." 
+          />
+        </div>
+      </div>
+    </div>
+  </motion.div>
+);
+
+export const StepParenting = ({ formData, setFormData, lang }: StepProps) => (
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+    <div className="text-center mb-6">
+      <h4 className="text-pink-400 font-heading font-black uppercase tracking-widest text-lg">Děti a Výchova</h4>
+      <p className="text-white/50 text-xs font-mono">
+        {lang === 'cs' ? 'Jaký máš pohled na rodičovství a výchovu dětí.' : 'Your views on parenting and raising children.'}
+      </p>
+    </div>
+
+    <div className="p-6 bg-gradient-to-br from-pink-900/10 to-transparent border border-pink-500/20 shadow-[0_0_20px_rgba(244,114,182,0.05)] rounded-xl mt-8">
+      <div className="space-y-6">
+        <div>
+          <h4 className="font-heading font-black text-pink-400 uppercase tracking-widest text-sm mb-4">Představa o dětech</h4>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Kolik dětí, kdy a jak?</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.parenting?.vision || []} 
+            onChange={(v) => setFormData({...formData, parenting: {...formData.parenting, vision: v}})} 
+            options={[
+              {value: 'want_kids', label: 'Určitě chci děti'},
+              {value: 'dont_want_kids', label: 'Děti nechci'},
+              {value: 'already_have', label: 'Už děti mám (a chci/nechci další)'},
+              {value: 'adoption', label: 'Jsem otevřený/á adopci'},
+              {value: 'large_family', label: 'Chci velkou rodinu (3+ dětí)'},
+              {value: 'not_sure', label: 'Zatím si nejsem jistý/á'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        
+        <div className="border-t border-white/10 pt-6">
+          <h4 className="font-heading font-black text-pink-400 uppercase tracking-widest text-sm mb-4">Výchova (Upbringing)</h4>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Jaký styl výchovy je ti nejbližší?</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.parenting?.upbringing || []} 
+            onChange={(v) => setFormData({...formData, parenting: {...formData.parenting, upbringing: v}})} 
+            options={[
+              {value: 'respectful', label: 'Respektující výchova (dohody, ne tresty)'},
+              {value: 'authoritative', label: 'Laskavá ale pevná (jasná pravidla)'},
+              {value: 'traditional', label: 'Tradiční výchova (disciplína a řád)'},
+              {value: 'montessori', label: 'Montessori / Waldorf přístup'},
+              {value: 'free', label: 'Volná výchova (děti objevují samy)'},
+              {value: 'active', label: 'Velmi aktivní (kroužky, sport, neustálý rozvoj)'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        
+        <div className="border-t border-white/10 pt-6">
+          <h4 className="font-heading font-black text-pink-400 uppercase tracking-widest text-sm mb-4">Vztah po dětech</h4>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3">Jak by měl vypadat vztah partnerů s dětmi?</label>
+          <CustomSelect 
+            isMulti={true}
+            value={formData.parenting?.relationshipPostKids || []} 
+            onChange={(v) => setFormData({...formData, parenting: {...formData.parenting, relationshipPostKids: v}})} 
+            options={[
+              {value: 'couple_first', label: 'Partnerský vztah je stále na 1. místě (neopustit se)'},
+              {value: 'kids_first', label: 'Děti jsou absolutní středobod vesmíru'},
+              {value: 'teamwork', label: 'Jsme tým (rovnoměrné dělení povinností)'},
+              {value: 'traditional_roles', label: 'Tradiční dělení rolí (matka pečuje, otec zajišťuje)'},
+              {value: 'date_nights', label: 'Pravidelné Date Nights (hlídání dětí nutností)'},
+              {value: 'village', label: 'Výchova "vesnicí" (častá pomoc prarodičů/chův)'}
+            ]} 
+            placeholder="Vyber..." 
           />
         </div>
       </div>
@@ -827,6 +1051,197 @@ export const StepSchools = ({ formData, setFormData, lang }: StepProps) => {
       <button type="button" onClick={addSchool} className="w-full py-4 border border-dashed border-mafia-gold/30 rounded-xl text-mafia-gold hover:bg-mafia-gold/10 hover:border-mafia-gold/50 shadow-[0_0_15px_rgba(197,160,89,0.0)] hover:shadow-[0_0_20px_rgba(197,160,89,0.1)] transition-all flex items-center justify-center gap-2 font-mono uppercase tracking-widest text-xs">
         <Plus size={16} /> Přidat další školu
       </button>
+    </motion.div>
+  );
+};
+
+
+export const StepHealth = ({ formData, setFormData, lang }: { formData: any, setFormData: any, lang: string }) => {
+  const t = lang === 'cs' ? {
+    title: 'Zdraví a Omezení',
+    desc: 'Sdílej tolik, kolik je ti příjemné. Být upřímný ohledně zdravotních specifik pomáhá najít někoho, kdo má pochopení.',
+    visionHearing: 'Zrak & Sluch',
+    mobility: 'Fyzická mobilita',
+    chronic: 'Chronická onemocnění a Zdraví',
+    neurodivergent: 'Neurodiverzita',
+    dietary: 'Životní styl a Omezení',
+    options: {
+      glasses: 'Brýle / Kontaktní čočky',
+      blind: 'Zrakový handicap',
+      hearing_aid: 'Naslouchátko',
+      deaf: 'Sluchový handicap',
+      wheelchair: 'Vozíčkář',
+      crutches: 'Berle / Hůl',
+      amputee: 'Amputace',
+      hidden_mobility: 'Skrytý fyzický handicap',
+      fully_mobile: 'Plně mobilní',
+      asthma: 'Astma',
+      diabetes: 'Diabetes',
+      allergies: 'Silné alergie',
+      migraines: 'Migrény',
+      autoimmune: 'Autoimunitní onemocnění',
+      epilepsy: 'Epilepsie',
+      adhd: 'ADHD',
+      autism: 'Autismus / Asperger',
+      dyslexia: 'Dyslexie / Dysgrafie',
+      ocd: 'OCD',
+      celiac: 'Celiakie / Bezlepková dieta',
+      health_vegan: 'Vegan ze zdravotních důvodů',
+      frequent_rest: 'Potřebuji častý odpočinek',
+      medication: 'Pravidelná medikace'
+    }
+  } : {
+    title: 'Health & Conditions',
+    desc: 'Share as much as you feel comfortable with. Being upfront helps find an understanding partner.',
+    visionHearing: 'Vision & Hearing',
+    mobility: 'Physical Mobility',
+    chronic: 'Chronic Conditions & Health',
+    neurodivergent: 'Neurodivergence',
+    dietary: 'Lifestyle & Constraints',
+    options: {
+      glasses: 'Glasses / Contacts',
+      blind: 'Visual Impairment',
+      hearing_aid: 'Hearing Aid',
+      deaf: 'Hearing Impairment',
+      wheelchair: 'Wheelchair user',
+      crutches: 'Crutches / Cane',
+      amputee: 'Amputee',
+      hidden_mobility: 'Hidden physical disability',
+      fully_mobile: 'Fully mobile',
+      asthma: 'Asthma',
+      diabetes: 'Diabetes',
+      allergies: 'Severe Allergies',
+      migraines: 'Migraines',
+      autoimmune: 'Autoimmune Disease',
+      epilepsy: 'Epilepsy',
+      adhd: 'ADHD',
+      autism: 'Autism / Aspergers',
+      dyslexia: 'Dyslexia',
+      ocd: 'OCD',
+      celiac: 'Celiac / Gluten-free',
+      health_vegan: 'Vegan for health reasons',
+      frequent_rest: 'Need frequent rest',
+      medication: 'Regular medication'
+    }
+  };
+
+  const updateField = (field: string, values: string[]) => {
+    setFormData({
+      ...formData,
+      healthConditions: {
+        ...(formData.healthConditions || {}),
+        [field]: values
+      }
+    });
+  };
+
+  const getValues = (field: string) => {
+    return formData.healthConditions?.[field] || [];
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+      <div className="text-center mb-6">
+        <h3 className="font-heading font-black text-2xl text-white uppercase tracking-wider mb-2">{t.title}</h3>
+        <p className="text-white/50 text-sm max-w-md mx-auto">{t.desc}</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <AccordionSection title={t.visionHearing} icon={<Eye size={16} />} defaultOpen={true}>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {['glasses', 'blind', 'hearing_aid', 'deaf'].map(opt => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  const current = getValues('visionHearing');
+                  const next = current.includes(opt) ? current.filter((c: string) => c !== opt) : [...current, opt];
+                  updateField('visionHearing', next);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-mono transition-colors ${getValues('visionHearing').includes(opt) ? 'bg-mafia-gold text-black font-bold' : 'bg-black/50 text-white/70 hover:bg-white/10'}`}
+              >
+                {t.options[opt as keyof typeof t.options]}
+              </button>
+            ))}
+          </div>
+        </AccordionSection>
+
+        <AccordionSection title={t.mobility} icon={<Activity size={16} />} defaultOpen={false}>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {['fully_mobile', 'hidden_mobility', 'wheelchair', 'crutches', 'amputee'].map(opt => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  const current = getValues('mobility');
+                  const next = current.includes(opt) ? current.filter((c: string) => c !== opt) : [...current, opt];
+                  updateField('mobility', next);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-mono transition-colors ${getValues('mobility').includes(opt) ? 'bg-mafia-gold text-black font-bold' : 'bg-black/50 text-white/70 hover:bg-white/10'}`}
+              >
+                {t.options[opt as keyof typeof t.options]}
+              </button>
+            ))}
+          </div>
+        </AccordionSection>
+
+        <AccordionSection title={t.chronic} icon={<HeartPulse size={16} />} defaultOpen={false}>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {['asthma', 'diabetes', 'allergies', 'migraines', 'autoimmune', 'epilepsy'].map(opt => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  const current = getValues('chronic');
+                  const next = current.includes(opt) ? current.filter((c: string) => c !== opt) : [...current, opt];
+                  updateField('chronic', next);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-mono transition-colors ${getValues('chronic').includes(opt) ? 'bg-mafia-gold text-black font-bold' : 'bg-black/50 text-white/70 hover:bg-white/10'}`}
+              >
+                {t.options[opt as keyof typeof t.options]}
+              </button>
+            ))}
+          </div>
+        </AccordionSection>
+
+        <AccordionSection title={t.neurodivergent} icon={<Brain size={16} />} defaultOpen={false}>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {['adhd', 'autism', 'dyslexia', 'ocd'].map(opt => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  const current = getValues('neurodivergent');
+                  const next = current.includes(opt) ? current.filter((c: string) => c !== opt) : [...current, opt];
+                  updateField('neurodivergent', next);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-mono transition-colors ${getValues('neurodivergent').includes(opt) ? 'bg-mafia-gold text-black font-bold' : 'bg-black/50 text-white/70 hover:bg-white/10'}`}
+              >
+                {t.options[opt as keyof typeof t.options]}
+              </button>
+            ))}
+          </div>
+        </AccordionSection>
+
+        <AccordionSection title={t.dietary} icon={<Coffee size={16} />} defaultOpen={false}>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {['celiac', 'health_vegan', 'frequent_rest', 'medication'].map(opt => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  const current = getValues('dietaryOrLifestyleConstraints');
+                  const next = current.includes(opt) ? current.filter((c: string) => c !== opt) : [...current, opt];
+                  updateField('dietaryOrLifestyleConstraints', next);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-mono transition-colors ${getValues('dietaryOrLifestyleConstraints').includes(opt) ? 'bg-mafia-gold text-black font-bold' : 'bg-black/50 text-white/70 hover:bg-white/10'}`}
+              >
+                {t.options[opt as keyof typeof t.options]}
+              </button>
+            ))}
+          </div>
+        </AccordionSection>
+      </div>
     </motion.div>
   );
 };

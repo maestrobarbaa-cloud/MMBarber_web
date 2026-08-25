@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin, Ruler, Cigarette, Wine, Sparkles, Info, X, Skull, Flag, MessageCircleHeart, Coffee, Target, GraduationCap, Zap, Bookmark, ChevronDown, ChevronLeft, ChevronRight, Camera, Heart, Instagram, Link, PawPrint, Facebook, Linkedin, Twitter, Music, PlaySquare, MessageSquare, EyeOff, Users, Home, Leaf, Calendar, Briefcase, Gamepad2, ShieldCheck, BadgeCheck, Lock, ShieldAlert, AlertTriangle
+  MapPin, Ruler, Cigarette, Wine, Sparkles, Info, X, Skull, Flag, MessageCircleHeart, Coffee, Target, GraduationCap, Zap, Bookmark, ChevronDown, ChevronLeft, ChevronRight, Camera, Heart, Instagram, Link, PawPrint, Facebook, Linkedin, Twitter, Music, PlaySquare, MessageSquare, EyeOff, Users, Home, Leaf, Calendar, Briefcase, Gamepad2, ShieldCheck, BadgeCheck, Lock, ShieldAlert, AlertTriangle, Star, Activity, Baby, User, Flame, Eye, HeartPulse, Brain
 } from "lucide-react";
 import { ANIMAL_TYPES } from "@/lib/PetAtlas";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -45,14 +45,33 @@ interface ProfileCardProps {
   matchReport?: string[];
   onLike?: () => void;
   onNope?: () => void;
+  onSuperLike?: () => void;
+  onRatePastUser?: () => void;
+  lang?: 'cs' | 'en';
   currentStrategy?: string;
   onStrategyChange?: (strategy: string) => void;
   suggestedVouchers?: VoucherData[];
   currentUserProfile?: ProfileData;
 }
 
-export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, onBookmark, matchScores, matchReport, onLike, onNope, currentStrategy, onStrategyChange, suggestedVouchers, currentUserProfile }: ProfileCardProps) {
-  const { lang } = useTranslation();
+export const ProfileCard = React.memo(function ProfileCard({ 
+  profile, 
+  onReport, 
+  onBookmark, 
+  matchScores, 
+  matchReport, 
+  onLike, 
+  onNope, 
+  onSuperLike,
+  onRatePastUser,
+  lang: propLang,
+  currentStrategy, 
+  onStrategyChange, 
+  suggestedVouchers, 
+  currentUserProfile 
+}: ProfileCardProps) {
+  const { lang: hookLang } = useTranslation();
+  const lang = propLang || hookLang;
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
   const [showDetails, setShowDetails] = useState(false);
@@ -69,6 +88,7 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
   const [hasEndorsed, setHasEndorsed] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isDsaModalOpen, setIsDsaModalOpen] = useState(false);
+  const [showHideMenu, setShowHideMenu] = useState(false);
   const [graphicsTier, setGraphicsTier] = useState('high');
 
   const isDating = currentUserProfile?.activeCategories?.includes('relationships') || currentUserProfile?.activeCategories?.includes('dating') || false;
@@ -324,6 +344,26 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
             </div>
           )}
 
+          {/* Critical Warnings Section */}
+          {profile.criticalWarnings && profile.criticalWarnings.length > 0 && (
+            <div className="mb-6 p-4 bg-red-950/20 border border-red-900/50 rounded-xl space-y-3 shadow-[0_0_20px_rgba(239,68,68,0.05)]">
+              <div className="flex items-center gap-2 border-b border-red-900/50 pb-2 mb-3">
+                <AlertTriangle size={16} className="text-red-500" />
+                <h4 className="font-heading font-black text-red-500 uppercase tracking-widest text-sm">
+                  {lang === 'cs' ? 'Důležité varování' : 'Important Warning'}
+                </h4>
+              </div>
+              <ul className="space-y-2">
+                {profile.criticalWarnings.map((warn, idx) => (
+                  <li key={idx} className="text-white/80 font-mono text-xs flex items-start gap-2">
+                    <span className="text-red-500 mt-0.5 font-bold">!</span>
+                    {warn}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {/* Match Report Section */}
           {matchReport && matchReport.length > 0 && (
             <div className="mb-8 p-4 bg-mafia-gold/5 border border-mafia-gold/20 rounded-xl space-y-3">
@@ -460,7 +500,161 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
             </div>
           )}
 
+          {(profile.housingStatus || profile.car || (profile.assets && profile.assets.length > 0)) && (
+            <div className="mt-8 border-t border-white/5 pt-6">
+              <h4 className="font-heading font-black text-blue-400 uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+                <Home size={16} /> {lang === 'cs' ? 'Majetek a Bydlení' : 'Assets & Housing'}
+              </h4>
+              <div className="space-y-4">
+                {profile.housingStatus && (
+                  <div>
+                    <span className="text-[9px] font-mono text-white/50 uppercase block mb-1">{lang === 'cs' ? 'Bydlení:' : 'Housing:'}</span>
+                    <span className="text-white text-sm">
+                      {
+                        {
+                          'own_paid': 'Ve vlastním (splaceno)',
+                          'own_mortgage': 'Ve vlastním (s hypotékou)',
+                          'rent_alone': 'V nájmu (sám/sama)',
+                          'rent_roommates': 'V nájmu (se spolubydlícími)',
+                          'parents': 'U rodičů',
+                          'nomad': 'Digitální nomád / Cestuji',
+                          'other': 'Jiná situace'
+                        }[profile.housingStatus] || profile.housingStatus
+                      }
+                    </span>
+                  </div>
+                )}
 
+                {profile.car && (
+                  <div>
+                    <span className="text-[9px] font-mono text-white/50 uppercase block mb-1">{lang === 'cs' ? 'Mobilita (Auto):' : 'Mobility (Car):'}</span>
+                    <span className="text-white text-sm">
+                      {
+                        {
+                          'own': 'Mám vlastní auto',
+                          'company': 'Služební auto',
+                          'shared': 'Sdílené / Půjčuji si',
+                          'public': 'MHD / Vlaky',
+                          'none': 'Auto nepotřebuji'
+                        }[profile.car] || profile.car
+                      }
+                    </span>
+                  </div>
+                )}
+
+                {profile.assets && profile.assets.length > 0 && (
+                  <div>
+                    <span className="text-[9px] font-mono text-white/50 uppercase block mb-2">{lang === 'cs' ? 'Vlastnictví a Aktiva:' : 'Assets & Ownership:'}</span>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.assets.map((asset, i) => {
+                        const labels: Record<string, string> = {
+                          'business': 'Vlastní firma / Podnik',
+                          'real_estate': 'Nemovitosti',
+                          'crypto': 'Krypto',
+                          'digital_products': 'Digitální produkty',
+                          'stocks': 'Akcie / Investice',
+                          'art': 'Umění'
+                        };
+                        return (
+                          <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                            {labels[asset] || asset}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {profile.timeline && (profile.timeline.past?.length || profile.timeline.present?.length || profile.timeline.future?.length) && (
+            <div className="mt-8 border-t border-white/5 pt-6">
+              <h4 className="font-heading font-black text-purple-400 uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+                <Calendar size={16} /> {lang === 'cs' ? 'Časová osa (Timeline)' : 'Timeline'}
+              </h4>
+              <div className="space-y-6">
+                {profile.timeline.past && profile.timeline.past.length > 0 && (
+                  <div>
+                    <h5 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-xs mb-2">Minulost</h5>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.timeline.past.map((tag, i) => {
+                        const labels: Record<string, string> = {
+                          'learned': 'Poučil/a jsem se z chyb',
+                          'knows_what_wants': 'Už přesně vím, koho NECHCI',
+                          'regrets': 'Mám věci, kterých lituji',
+                          'wants_back': 'Někdy bych se nejradši vrátil/a v čase',
+                          'let_go': 'Minulost jsem uzavřel/a a jdu dál',
+                          'nostalgic': 'Rád/a vzpomínám na to dobré',
+                          'healing': 'Stále se léčím z minulých zranění',
+                          'proud': 'Jsem hrdý/á na to, co jsem zvládl/a',
+                          'wild_past': 'Mám za sebou divoké období',
+                          'long_relationship': 'Jsem po dlouhém vztahu'
+                        };
+                        return (
+                          <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                            {labels[tag] || tag}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                {profile.timeline.present && profile.timeline.present.length > 0 && (
+                  <div className="border-t border-white/5 pt-4">
+                    <h5 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-xs mb-2">Přítomnost</h5>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.timeline.present.map((tag, i) => {
+                        const labels: Record<string, string> = {
+                          'moved_forward': 'Hodně jsem se osobnostně posunul/a',
+                          'living_best': 'Žiju svůj nejlepší život',
+                          'finding_path': 'Stále trochu hledám svůj směr',
+                          'working_hard': 'Tvrdě na sobě pracuji',
+                          'enjoying_moment': 'Užívám si přítomný okamžik',
+                          'stable': 'Mám konečně klid a stabilitu',
+                          'career_focus': 'Soustředím se teď hlavně na práci',
+                          'self_love': 'Učím se mít rád/a sám/sama sebe',
+                          'ready_for_love': 'Jsem plně připraven/a na nový vztah',
+                          'taking_it_easy': 'Nikam nespěchám, nechávám věci plynout'
+                        };
+                        return (
+                          <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                            {labels[tag] || tag}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                {profile.timeline.future && profile.timeline.future.length > 0 && (
+                  <div className="border-t border-white/5 pt-4">
+                    <h5 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-xs mb-2">Budoucnost</h5>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.timeline.future.map((tag, i) => {
+                        const labels: Record<string, string> = {
+                          'going_up': 'Mířím vysoko a chci růst',
+                          'family': 'Chci založit rodinu a usadit se',
+                          'surviving': 'Zatím spíš tak proplouvám',
+                          'adventure': 'Chci cestovat a objevovat',
+                          'career': 'Soustředím se na kariéru/podnikání',
+                          'peace': 'Hlavně klidný a spokojený život',
+                          'financial_freedom': 'Chci dosáhnout finanční nezávislosti',
+                          'moving_abroad': 'Plánuji se odstěhovat do zahraničí',
+                          'building_home': 'Chci si vybudovat vlastní bydlení',
+                          'no_plans': 'Žiju ze dne na den, neplánuji'
+                        };
+                        return (
+                          <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                            {labels[tag] || tag}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </AccordionSection>
 
 
@@ -622,6 +816,8 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
               </div>
             )}
 
+
+
             {profile.gamingPrefs && (profile.gamingPrefs.games?.length || profile.gamingPrefs.nickname) && (
               <div>
                 <h4 className="text-[10px] font-mono text-indigo-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
@@ -733,7 +929,208 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
           )}
 </AccordionSection>
 
-        <AccordionSection title={lang === 'cs' ? 'Psychologie & Deep Talk' : 'Psychology & Deep Talk'} icon={<Skull size={16} />} defaultOpen={false}>
+        {profile.parenting && (profile.parenting.vision?.length || profile.parenting.upbringing?.length || profile.parenting.relationshipPostKids?.length) && (
+          <AccordionSection title={lang === 'cs' ? 'Děti a Výchova' : 'Kids & Parenting'} icon={<Baby size={16} />} defaultOpen={false}>
+            <div className="space-y-6">
+              {profile.parenting.vision && profile.parenting.vision.length > 0 && (
+                <div>
+                  <h5 className="font-heading font-black text-pink-400 uppercase tracking-widest text-xs mb-2">Představa o dětech</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.parenting.vision.map((tag, i) => {
+                      const labels: Record<string, string> = {
+                        'want_kids': 'Určitě chci děti',
+                        'dont_want_kids': 'Děti nechci',
+                        'already_have': 'Už děti mám (a chci/nechci další)',
+                        'adoption': 'Jsem otevřený/á adopci',
+                        'large_family': 'Chci velkou rodinu (3+ dětí)',
+                        'not_sure': 'Zatím si nejsem jistý/á'
+                      };
+                      return (
+                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                          {labels[tag] || tag}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {profile.parenting.upbringing && profile.parenting.upbringing.length > 0 && (
+                <div className="border-t border-white/5 pt-4">
+                  <h5 className="font-heading font-black text-pink-400 uppercase tracking-widest text-xs mb-2">Výchova (Upbringing)</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.parenting.upbringing.map((tag, i) => {
+                      const labels: Record<string, string> = {
+                        'respectful': 'Respektující výchova (dohody, ne tresty)',
+                        'authoritative': 'Laskavá ale pevná (jasná pravidla)',
+                        'traditional': 'Tradiční výchova (disciplína a řád)',
+                        'montessori': 'Montessori / Waldorf přístup',
+                        'free': 'Volná výchova (děti objevují samy)',
+                        'active': 'Velmi aktivní (kroužky, sport, neustálý rozvoj)'
+                      };
+                      return (
+                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                          {labels[tag] || tag}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {profile.parenting.relationshipPostKids && profile.parenting.relationshipPostKids.length > 0 && (
+                <div className="border-t border-white/5 pt-4">
+                  <h5 className="font-heading font-black text-pink-400 uppercase tracking-widest text-xs mb-2">Vztah po dětech</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.parenting.relationshipPostKids.map((tag, i) => {
+                      const labels: Record<string, string> = {
+                        'couple_first': 'Partnerský vztah je stále na 1. místě (neopustit se)',
+                        'kids_first': 'Děti jsou absolutní středobod vesmíru',
+                        'teamwork': 'Jsme tým (rovnoměrné dělení povinností)',
+                        'traditional_roles': 'Tradiční dělení rolí (matka pečuje, otec zajišťuje)',
+                        'date_nights': 'Pravidelné Date Nights (hlídání dětí nutností)',
+                        'village': 'Výchova "vesnicí" (častá pomoc prarodičů/chův)'
+                      };
+                      return (
+                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                          {labels[tag] || tag}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </AccordionSection>
+        )}
+
+        
+        {profile.healthConditions && (
+          <AccordionSection title={lang === 'cs' ? 'Zdraví a Omezení' : 'Health & Constraints'} icon={<Activity size={16} />} defaultOpen={false}>
+            <div className="space-y-6">
+              
+              {profile.healthConditions.visionHearing && profile.healthConditions.visionHearing.length > 0 && (
+                <div className="bg-blue-900/10 border border-blue-500/20 p-4 rounded-xl mt-4">
+                  <h4 className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-4">
+                    <Eye size={12} /> {lang === 'cs' ? 'Zrak & Sluch' : 'Vision & Hearing'}
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.healthConditions.visionHearing.map((tag: string, i: number) => {
+                      const labels: Record<string, string> = {
+                        'glasses': 'Brýle / Kontaktní čočky',
+                        'blind': 'Zrakový handicap',
+                        'hearing_aid': 'Naslouchátko',
+                        'deaf': 'Sluchový handicap',
+                      };
+                      return (
+                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                          {labels[tag] || tag}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {profile.healthConditions.mobility && profile.healthConditions.mobility.length > 0 && (
+                <div className="bg-blue-900/10 border border-blue-500/20 p-4 rounded-xl mt-4">
+                  <h4 className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-4">
+                    <Activity size={12} /> {lang === 'cs' ? 'Fyzická mobilita' : 'Physical Mobility'}
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.healthConditions.mobility.map((tag: string, i: number) => {
+                      const labels: Record<string, string> = {
+                        'wheelchair': 'Vozíčkář',
+                        'crutches': 'Berle / Hůl',
+                        'amputee': 'Amputace',
+                        'hidden_mobility': 'Skrytý fyzický handicap',
+                        'fully_mobile': 'Plně mobilní',
+                      };
+                      return (
+                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                          {labels[tag] || tag}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {profile.healthConditions.chronic && profile.healthConditions.chronic.length > 0 && (
+                <div className="bg-blue-900/10 border border-blue-500/20 p-4 rounded-xl mt-4">
+                  <h4 className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-4">
+                    <HeartPulse size={12} /> {lang === 'cs' ? 'Chronická onemocnění' : 'Chronic Conditions'}
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.healthConditions.chronic.map((tag: string, i: number) => {
+                      const labels: Record<string, string> = {
+                        'asthma': 'Astma',
+                        'diabetes': 'Diabetes',
+                        'allergies': 'Silné alergie',
+                        'migraines': 'Migrény',
+                        'autoimmune': 'Autoimunitní onemocnění',
+                        'epilepsy': 'Epilepsie',
+                      };
+                      return (
+                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                          {labels[tag] || tag}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {profile.healthConditions.neurodivergent && profile.healthConditions.neurodivergent.length > 0 && (
+                <div className="bg-blue-900/10 border border-blue-500/20 p-4 rounded-xl mt-4">
+                  <h4 className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-4">
+                    <Brain size={12} /> {lang === 'cs' ? 'Neurodiverzita' : 'Neurodivergence'}
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.healthConditions.neurodivergent.map((tag: string, i: number) => {
+                      const labels: Record<string, string> = {
+                        'adhd': 'ADHD',
+                        'autism': 'Autismus / Asperger',
+                        'dyslexia': 'Dyslexie / Dysgrafie',
+                        'ocd': 'OCD',
+                      };
+                      return (
+                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                          {labels[tag] || tag}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {profile.healthConditions.dietaryOrLifestyleConstraints && profile.healthConditions.dietaryOrLifestyleConstraints.length > 0 && (
+                <div className="bg-blue-900/10 border border-blue-500/20 p-4 rounded-xl mt-4">
+                  <h4 className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-4">
+                    <Coffee size={12} /> {lang === 'cs' ? 'Životní styl a Omezení' : 'Lifestyle & Constraints'}
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.healthConditions.dietaryOrLifestyleConstraints.map((tag: string, i: number) => {
+                      const labels: Record<string, string> = {
+                        'celiac': 'Celiakie / Bezlepková dieta',
+                        'health_vegan': 'Vegan ze zdravotních důvodů',
+                        'frequent_rest': 'Potřebuji častý odpočinek',
+                        'medication': 'Pravidelná medikace',
+                      };
+                      return (
+                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 text-white/80 text-xs font-sans rounded-full">
+                          {labels[tag] || tag}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </AccordionSection>
+        )}
+
+
+        <AccordionSection title={lang === 'cs' ? 'Osobnost a Vzhled' : 'Personality & Looks'} icon={<User size={16} />} defaultOpen={false}>
           {currentStrategy === 'random' ? (
             <div className="flex flex-col items-center justify-center p-8 bg-black/40 rounded-xl border border-white/5 text-center mt-2">
               <Lock size={32} className="text-white/30 mb-3" />
@@ -989,15 +1386,67 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
 
 
 
-        {/* Report Button (Proximity Hover) */}
-        {onReport && !showDetails && (
-          <div className="absolute top-0 right-0 z-50 p-6 group cursor-pointer" onClick={(e) => { e.stopPropagation(); onReport(profile); }} onPointerDown={(e) => e.stopPropagation()}>
+        {/* Report Button & Hide Button (Proximity Hover) */}
+        {!showDetails && (
+          <div className="absolute top-0 right-0 z-50 p-6 flex flex-col gap-2 group cursor-pointer pointer-events-auto" onClick={(e) => { e.stopPropagation(); }} onPointerDown={(e) => e.stopPropagation()}>
             <button
+              onClick={(e) => { e.stopPropagation(); setIsDsaModalOpen(true); setShowHideMenu(false); }}
               className="w-10 h-10 bg-black/40 group-hover:bg-red-900/40 hover:!bg-red-900/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white/50 group-hover:text-red-400 hover:!text-white transition-all duration-500 border border-white/10 group-hover:border-red-500/40 hover:!border-red-500/80 pointer-events-auto"
               title={lang === 'cs' ? 'Nahlásit profil' : 'Report profile'}
             >
               <Flag size={18} className="transition-colors duration-500 pointer-events-none" />
             </button>
+            <div className="relative">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowHideMenu(!showHideMenu);
+                }}
+                className="w-10 h-10 bg-black/40 group-hover:bg-orange-900/40 hover:!bg-orange-900/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white/50 group-hover:text-orange-400 hover:!text-white transition-all duration-500 border border-white/10 group-hover:border-orange-500/40 hover:!border-orange-500/80 pointer-events-auto"
+                title={lang === 'cs' ? 'Možnosti skrytí / hodnocení' : 'Hide / Rate options'}
+              >
+                <EyeOff size={18} className="transition-colors duration-500 pointer-events-none" />
+              </button>
+
+              <AnimatePresence>
+                {showHideMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-12 right-0 w-64 bg-black/95 backdrop-blur-md border border-mafia-gold/30 rounded-xl shadow-2xl overflow-hidden z-[60] pointer-events-auto"
+                  >
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowHideMenu(false);
+                        if (onNope) onNope(); 
+                      }}
+                      className="w-full text-left px-4 py-3 text-xs font-mono text-white/80 hover:text-white hover:bg-white/10 border-b border-white/10 transition-colors flex items-center gap-3"
+                    >
+                      <EyeOff size={14} className="text-red-400 shrink-0" />
+                      {lang === 'cs' ? 'Tohoto uživatele nechci vidět (už ho neukazovat)' : 'I do not want to see this user (hide forever)'}
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowHideMenu(false);
+                        if (onRatePastUser) {
+                          onRatePastUser();
+                        } else if (onNope) {
+                          onNope(); 
+                        }
+                      }}
+                      className="w-full text-left px-4 py-3 text-xs font-mono text-white/80 hover:text-white hover:bg-white/10 transition-colors flex items-center gap-3"
+                    >
+                      <Star size={14} className="text-mafia-gold shrink-0" />
+                      {lang === 'cs' ? 'Ohodnotit uživatele z dřívějška (přesunout do ctitelů)' : 'Rate past user (move to Admirers)'}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         )}
 
@@ -1207,6 +1656,23 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
                   {profile.age}
                 </span>
               </div>
+              
+              <div className="flex flex-wrap gap-2 mb-2 items-center">
+                {profile.criticalWarnings && profile.criticalWarnings.length > 0 ? (
+                  <div className="flex items-center gap-1.5 bg-red-900/80 backdrop-blur-sm px-3 py-1 rounded-full border border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.5)] cursor-help" title={lang === 'cs' ? 'Uživatel má závažná upozornění. Klikněte pro více detailů.' : 'User has critical warnings. Click for details.'}>
+                    <AlertTriangle size={16} className="text-red-500" />
+                  </div>
+                ) : (
+                  (profile.trustScore !== undefined || profile.trustEndorsements !== undefined) && (
+                    <div className="flex items-center gap-1.5 bg-blue-900/40 backdrop-blur-sm px-2.5 py-1 rounded-full border border-blue-500/50" title="Skóre důvěryhodnosti">
+                      <ShieldCheck size={14} className="text-blue-400" />
+                      <span className="text-blue-400 text-xs font-mono uppercase font-bold tracking-widest">
+                        TRUST {profile.trustScore || 0}% {endorsements > 0 ? `(${endorsements})` : ''}
+                      </span>
+                    </div>
+                  )
+                )}
+              </div>
 
               {profile.lastOnline ? (
                 <div className="text-white/50 text-[10px] font-mono mt-1 mb-2 flex items-center gap-1">
@@ -1303,15 +1769,7 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
                   </div>
                 )}
 
-                {/* Trust Score */}
-                {(profile.trustScore !== undefined || profile.trustEndorsements !== undefined) && (
-                  <div className="flex items-center gap-1.5 bg-blue-900/40 backdrop-blur-sm px-2 py-0.5 rounded-full border border-blue-500/50" title="Skóre důvěryhodnosti">
-                    <ShieldCheck size={10} className="text-blue-400" />
-                    <span className="text-blue-400 text-[9px] font-mono uppercase font-bold tracking-widest">
-                      TRUST {profile.trustScore || 0}% ({endorsements})
-                    </span>
-                  </div>
-                )}
+
 
                 {/* Mutual Friends */}
                 {profile.showMutualFriends !== false && profile.mutualFriendsCount !== undefined && profile.mutualFriendsCount > 0 && (
@@ -1367,6 +1825,14 @@ export const ProfileCard = React.memo(function ProfileCard({ profile, onReport, 
       <div className="hidden md:flex flex-1 flex-col bg-mafia-dark/95 md:border-t-0 md:border-l border-mafia-gold/30 relative h-full overflow-hidden">
         {renderDetails()}
       </div>
+
+      <DsaReportModal
+        isOpen={isDsaModalOpen}
+        onClose={() => setIsDsaModalOpen(false)}
+        reportedProfileId={profile.id || ""}
+        reportedProfileName={profile.name}
+        lang={lang as 'cs' | 'en'}
+      />
     </div>
   );
 });

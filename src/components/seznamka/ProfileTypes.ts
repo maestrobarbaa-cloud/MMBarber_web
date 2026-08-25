@@ -91,6 +91,14 @@ export interface HousingPrefs {
   distanceFromFamily?: string;
 }
 
+export interface HealthConditionsPrefs {
+  visionHearing?: string[];
+  mobility?: string[];
+  chronic?: string[];
+  neurodivergent?: string[];
+  dietaryOrLifestyleConstraints?: string[];
+}
+
 // 8. Děti - podrobněji
 export interface KidsPrefs {
   wantKids?: string;
@@ -294,6 +302,19 @@ export interface ProfileData {
   digitalLife?: string;
   guiltyPleasures?: string[];
   workLifeBalance?: string;
+  housingStatus?: string;
+  car?: string;
+  assets?: string[];
+  timeline?: {
+    past?: string[];
+    present?: string[];
+    future?: string[];
+  };
+  parenting?: {
+    vision?: string[];
+    upbringing?: string[];
+    relationshipPostKids?: string[];
+  };
   
   // Socials
   instagram?: string;
@@ -385,6 +406,7 @@ export interface ProfileData {
   animals?: AnimalPrefs;
   habits?: HabitsPrefs;
   moneyDetailed?: MoneyPrefs;
+  healthConditions?: HealthConditionsPrefs;
   
   // Community / Groups Feature
   communityType?: 'entrance' | 'building' | 'street' | 'neighborhood';
