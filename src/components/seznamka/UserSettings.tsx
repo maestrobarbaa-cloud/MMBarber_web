@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { ShieldCheck, EyeOff, Clock, Trash2, RotateCcw, Users, MessageCircle, Bell, UserCog, Lock, ChevronRight, Link2, Info } from 'lucide-react';
+import { ShieldCheck, EyeOff, Clock, Trash2, RotateCcw, Users, MessageCircle, Bell, UserCog, Lock, ChevronRight, Link2, Info, Wallet, Gift, Copy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CustomSelect } from './CustomSelect';
 import { ProfileData } from './ProfileCard';
@@ -12,7 +12,7 @@ interface UserSettingsProps {
   onDeleteAccount: () => void;
 }
 
-type TabType = 'chat' | 'privacy' | 'notifications' | 'account';
+type TabType = 'chat' | 'privacy' | 'notifications' | 'account' | 'wallet';
 
 export function UserSettings({ userProfile, onUpdateProfile, onResetPreferences, onDeleteAccount }: UserSettingsProps) {
   const { lang } = useTranslation();
@@ -31,6 +31,66 @@ export function UserSettings({ userProfile, onUpdateProfile, onResetPreferences,
   const [linkedAccounts, setLinkedAccounts] = useState<{id: string, email: string}[]>([]);
   const [newLinkEmail, setNewLinkEmail] = useState('');
   const [newLinkPassword, setNewLinkPassword] = useState('');
+
+  // Wallet states
+  const [mmcoins, setMmcoins] = useState(0);
+  const [freeBoosts, setFreeBoosts] = useState(0);
+  const [rewardShards, setRewardShards] = useState(0);
+  const [referralCode, setReferralCode] = useState('');
+  const [referralInput, setReferralInput] = useState('');
+  const [claimStatus, setClaimStatus] = useState<string | null>(null);
+
+  // Load wallet data
+  useEffect(() => {
+    const fetchWallet = async () => {
+      try {
+        const res = await fetch('/api/user/wallet'); // We will create this API
+        if (res.ok) {
+          const data = await res.json();
+          setMmcoins(data.mmcoins);
+          setFreeBoosts(data.freeBoosts);
+          setReferralCode(data.referralCode);
+          setRewardShards(data.rewardShards || 0);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchWallet();
+  }, [activeTab]);
+
+  const claimDaily = async () => {
+    try {
+      const res = await fetch('/api/rewards/monthly', { method: 'POST' });
+      const data = await res.json();
+      setClaimStatus(data.message);
+      if (data.success && data.mmcoins !== undefined) {
+        setMmcoins(data.mmcoins);
+      }
+    } catch (e) {
+      setClaimStatus('Chyba při komunikaci se serverem.');
+    }
+  };
+
+  const applyReferral = async () => {
+    if (!referralInput) return;
+    try {
+      const res = await fetch('/api/rewards/referral', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: referralInput })
+      });
+      const data = await res.json();
+      alert(data.message || data.error);
+      if (data.success) {
+        setMmcoins(prev => prev + 5);
+        setFreeBoosts(prev => prev + 5);
+        setReferralInput('');
+      }
+    } catch (e) {
+      alert('Chyba při komunikaci se serverem.');
+    }
+  };
 
   useEffect(() => {
     const savedSafeChat = localStorage.getItem('seznamka_safe_chat');
@@ -60,6 +120,7 @@ export function UserSettings({ userProfile, onUpdateProfile, onResetPreferences,
     { id: 'privacy', icon: ShieldCheck, label: { cs: 'Soukromí', en: 'Privacy' } },
     { id: 'notifications', icon: Bell, label: { cs: 'Oznámení', en: 'Notifications' } },
     { id: 'account', icon: UserCog, label: { cs: 'Účet', en: 'Account' } },
+    { id: 'wallet', icon: Wallet, label: { cs: 'Peněženka', en: 'Wallet' } },
   ];
 
   return (
@@ -258,6 +319,94 @@ export function UserSettings({ userProfile, onUpdateProfile, onResetPreferences,
                     </label>
                   </div>
 
+                  {/* Private Profile (Ghost Mode) */}
+                  <div className="p-5 bg-black/60 border border-white/10 rounded-xl flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <EyeOff size={16} className="text-white/40" />
+                      <div>
+                        <h5 className="text-xs font-bold text-white uppercase tracking-widest">{lang === 'cs' ? 'Neveřejný profil (Ghost Mode)' : 'Private Profile (Ghost Mode)'}</h5>
+                        <p className="text-[10px] font-mono text-white/50 max-w-sm">{lang === 'cs' ? 'Skryje profil před běžným vyhledáváním. Zobrazí se pouze při specifické shodě algoritmu.' : 'Hides your profile from regular search. Shows only on specific algorithm matches.'}</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer"
+                        checked={userProfile?.isPrivate === true}
+                        onChange={(e) => {
+                          if (userProfile && onUpdateProfile) onUpdateProfile({ ...userProfile, isPrivate: e.target.checked });
+                        }}
+                      />
+                      <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-mafia-gold"></div>
+                    </label>
+                  </div>
+
+                  {/* Ninja Mode */}
+                  <div className="p-5 bg-black/60 border border-white/10 rounded-xl flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <ShieldCheck size={16} className="text-white/40" />
+                      <div>
+                        <h5 className="text-xs font-bold text-white uppercase tracking-widest">{lang === 'cs' ? 'Ninja Mód' : 'Ninja Mode'}</h5>
+                        <p className="text-[10px] font-mono text-white/50 max-w-sm">{lang === 'cs' ? 'Uvidí vás jen lidé, kterým jste už dali Like. Ostatním se profil neukáže.' : 'Only people you liked can see you. You are hidden from the rest.'}</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer"
+                        checked={userProfile?.isNinjaMode === true}
+                        onChange={(e) => {
+                          if (userProfile && onUpdateProfile) onUpdateProfile({ ...userProfile, isNinjaMode: e.target.checked });
+                        }}
+                      />
+                      <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-mafia-gold"></div>
+                    </label>
+                  </div>
+
+                  {/* Blurred Mode */}
+                  <div className="p-5 bg-black/60 border border-white/10 rounded-xl flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <EyeOff size={16} className="text-white/40" />
+                      <div>
+                        <h5 className="text-xs font-bold text-white uppercase tracking-widest">{lang === 'cs' ? 'Zamaskovaný Mód (Slepé Rande)' : 'Blurred Mode (Blind Date)'}</h5>
+                        <p className="text-[10px] font-mono text-white/50 max-w-sm">{lang === 'cs' ? 'Rozmaže vaše fotky pro ostatní. Hodnotí vás primárně podle osobnosti.' : 'Blurs your photos. You are judged primarily by personality.'}</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer"
+                        checked={userProfile?.isBlurredMode === true}
+                        onChange={(e) => {
+                          if (userProfile && onUpdateProfile) onUpdateProfile({ ...userProfile, isBlurredMode: e.target.checked });
+                        }}
+                      />
+                      <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-mafia-gold"></div>
+                    </label>
+                  </div>
+
+                  {/* Zen Mode */}
+                  <div className="p-5 bg-black/60 border border-white/10 rounded-xl flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <Clock size={16} className="text-white/40" />
+                      <div>
+                        <h5 className="text-xs font-bold text-white uppercase tracking-widest">{lang === 'cs' ? 'Zen Mód (Pomalé seznamování)' : 'Zen Mode (Slow Dating)'}</h5>
+                        <p className="text-[10px] font-mono text-white/50 max-w-sm">{lang === 'cs' ? 'Zamezuje nekonečnému swipování. Zobrazí max 3 pečlivě vybrané profily denně.' : 'Prevents endless swiping. Shows max 3 curated profiles per day.'}</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer"
+                        checked={userProfile?.isZenMode === true}
+                        onChange={(e) => {
+                          if (userProfile && onUpdateProfile) onUpdateProfile({ ...userProfile, isZenMode: e.target.checked });
+                        }}
+                      />
+                      <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-mafia-gold"></div>
+                    </label>
+                  </div>
+
                   {/* Account Linking / Trust */}
                   <div className="p-5 bg-black/60 border border-mafia-gold/20 rounded-xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-mafia-gold/5 rounded-full blur-2xl pointer-events-none" />
@@ -411,6 +560,106 @@ export function UserSettings({ userProfile, onUpdateProfile, onResetPreferences,
                     <button onClick={() => { if (window.confirm(lang === 'cs' ? 'Opravdu smazat účet?' : 'Really delete account?')) onDeleteAccount(); }} className="w-full md:w-auto px-6 py-2.5 bg-red-500 text-white hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all font-mono text-[10px] uppercase font-bold flex items-center justify-center gap-2 rounded">
                       <Trash2 size={14} /> {lang === 'cs' ? 'Smazat účet' : 'Delete'}
                     </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* WALLET TAB */}
+            {activeTab === 'wallet' && (
+              <motion.div key="wallet" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-6">
+                <div>
+                  <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4 border-b border-mafia-gold/20 pb-2 flex items-center gap-2">
+                    <Wallet size={18} />
+                    {lang === 'cs' ? 'Peněženka a Odměny' : 'Wallet & Rewards'}
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="bg-mafia-gold/10 border border-mafia-gold/30 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+                      <div className="text-3xl font-black text-mafia-gold mb-2">{mmcoins}</div>
+                      <div className="text-xs font-mono text-white/70 uppercase tracking-widest">MMCOINS</div>
+                    </div>
+                    <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+                      <div className="text-3xl font-black text-blue-400 mb-2">{freeBoosts}</div>
+                      <div className="text-xs font-mono text-white/70 uppercase tracking-widest">{lang === 'cs' ? 'Zdarma Zvýraznění' : 'Free Boosts'}</div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {/* Monthly Claim */}
+                    <div className="p-4 bg-black/60 border border-white/10 rounded-xl">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                          <h5 className="font-bold text-white text-sm uppercase tracking-widest flex items-center gap-2">
+                            <Gift size={16} className="text-pink-500" />
+                            {lang === 'cs' ? 'Odměna za věrnost' : 'Loyalty Reward'}
+                          </h5>
+                          <p className="text-xs text-white/50 mt-1">
+                            {lang === 'cs' ? 'Získejte MMCOIN každý měsíc zdarma.' : 'Get MMCOIN every month for free.'}
+                          </p>
+                          {claimStatus && <p className="text-xs text-mafia-gold mt-2 font-mono">{claimStatus}</p>}
+                        </div>
+                        <button 
+                          onClick={claimDaily}
+                          className="px-6 py-2 bg-mafia-gold text-black rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-white transition-colors"
+                        >
+                          {lang === 'cs' ? 'Vyzvednout' : 'Claim'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Referrals */}
+                    <div className="p-4 bg-black/60 border border-white/10 rounded-xl">
+                      <h5 className="font-bold text-white text-sm uppercase tracking-widest mb-2">
+                        {lang === 'cs' ? 'Doporuč a získej odměnu' : 'Refer and Earn'}
+                      </h5>
+                      <p className="text-xs text-white/50 mb-4">
+                        {lang === 'cs' ? 'Přiveďte kamaráda, rodinu nebo páry. Za každého získáte MMCOINy a oni získají MMCOINy a Zvýraznění profilu navíc!' : 'Bring a friend. You both get MMCOINs and they get free profile boosts!'}
+                      </p>
+                      
+                      <div className="mb-4">
+                        <label className="text-[10px] font-mono text-white/40 uppercase mb-1 block">
+                          {lang === 'cs' ? 'Váš unikátní kód:' : 'Your unique code:'}
+                        </label>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            readOnly 
+                            value={referralCode || 'Generuje se...'} 
+                            className="bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white font-mono text-sm w-full outline-none"
+                          />
+                          <button 
+                            onClick={() => { navigator.clipboard.writeText(referralCode); alert('Kód zkopírován!'); }}
+                            className="bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg text-white transition-colors flex items-center justify-center"
+                            title="Kopírovat"
+                          >
+                            <Copy size={16} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-white/5">
+                        <label className="text-[10px] font-mono text-white/40 uppercase mb-1 block">
+                          {lang === 'cs' ? 'Zadat kód doporučitele:' : 'Enter referral code:'}
+                        </label>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <input 
+                            type="text" 
+                            value={referralInput}
+                            onChange={(e) => setReferralInput(e.target.value)}
+                            placeholder={lang === 'cs' ? 'Např. KOD123' : 'e.g. CODE123'}
+                            className="bg-white/5 border border-white/10 focus:border-mafia-gold rounded-lg px-3 py-2 text-white text-sm w-full outline-none"
+                          />
+                          <button 
+                            onClick={applyReferral}
+                            disabled={!referralInput}
+                            className="bg-blue-600 disabled:bg-white/10 disabled:text-white/30 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold uppercase tracking-widest text-xs transition-colors shrink-0"
+                          >
+                            {lang === 'cs' ? 'Potvrdit kód' : 'Apply'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </motion.div>

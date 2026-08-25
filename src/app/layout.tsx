@@ -19,6 +19,7 @@ import { Providers } from "@/components/Providers";
 import { BugReporter } from "@/components/BugReporter";
 import { AntiTheft } from "@/components/AntiTheft";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { ClientActivityTracker } from "@/components/ClientActivityTracker";
 import Script from "next/script";
 import { Scissors } from "lucide-react";
 
@@ -355,6 +356,7 @@ export default function RootLayout({
                 <FutureSEO />
                 <DynamicSEO />
                 <InstallPrompt />
+                <ClientActivityTracker />
                 <Header />
 
                 <BarberProvider>

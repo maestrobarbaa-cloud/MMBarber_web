@@ -4,11 +4,14 @@ import { getServerSession } from 'next-auth'
 
 export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url)
+    const allowPrivate = searchParams.get('allowPrivate') === 'true'
     const session = await getServerSession()
     // V budoucnu můžeme omezit profily jen pro přihlášené uživatele:
     // if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     let excludedIds: string[] = []
+    let fetchLimit = 50
 
     if (session?.user?.email) {
       const currentUser = await prisma.user.findUnique({
@@ -28,11 +31,18 @@ export async function GET(request: Request) {
         )
         // Also exclude the current user themselves
         excludedIds.push(currentUser.id)
+        
+        const myProfile = await prisma.profile.findUnique({ where: { userId: currentUser.id } })
+        if (myProfile?.isZenMode) {
+          fetchLimit = 3
+        }
       }
     }
 
     const profiles = await prisma.profile.findMany({
       where: {
+        isPrivate: allowPrivate ? undefined : false,
+        isNinjaMode: false,
         user: {
           isShadowBanned: false,
           id: {
@@ -41,7 +51,7 @@ export async function GET(request: Request) {
         }
       },
       orderBy: { lastOnline: 'desc' },
-      take: 50
+      take: fetchLimit
     })
 
     // Zpětný překlad JSON dat z databáze na objekty pro frontend
@@ -107,7 +117,7 @@ export async function POST(request: Request) {
     // Očištění základních dat
     let { 
       name, age, gender, seeking, city, height, smoking, drinking, interests, bio, photos,
-      salonVerified, physicallyVerifiedAt, originSalonId,
+      salonVerified, physicallyVerifiedAt, originSalonId, isPrivate, isNinjaMode, isBlurredMode, isZenMode,
       ...extendedData 
     } = data
 
@@ -134,6 +144,10 @@ export async function POST(request: Request) {
         salonVerified: salonVerified ?? false,
         physicallyVerifiedAt: physicallyVerifiedAt ? JSON.stringify(physicallyVerifiedAt) : null,
         originSalonId,
+        isPrivate: isPrivate ?? false,
+        isNinjaMode: isNinjaMode ?? false,
+        isBlurredMode: isBlurredMode ?? false,
+        isZenMode: isZenMode ?? false,
         extendedData: JSON.stringify(extendedData),
         lastOnline: new Date()
       },
@@ -153,6 +167,10 @@ export async function POST(request: Request) {
         salonVerified: salonVerified ?? false,
         physicallyVerifiedAt: physicallyVerifiedAt ? JSON.stringify(physicallyVerifiedAt) : null,
         originSalonId,
+        isPrivate: isPrivate ?? false,
+        isNinjaMode: isNinjaMode ?? false,
+        isBlurredMode: isBlurredMode ?? false,
+        isZenMode: isZenMode ?? false,
         extendedData: JSON.stringify(extendedData)
       }
     })

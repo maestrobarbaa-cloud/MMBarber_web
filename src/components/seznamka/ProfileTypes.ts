@@ -231,6 +231,10 @@ export interface ProfileData {
   lastName?: string;
   nickname?: string;
   showMutualFriends?: boolean;
+  isPrivate?: boolean;
+  isNinjaMode?: boolean;
+  isBlurredMode?: boolean;
+  isZenMode?: boolean;
   mutualFriendsCount?: number;
   age: string;
   birthDate?: string;

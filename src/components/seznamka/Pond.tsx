@@ -389,11 +389,11 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
 
     // Deduct coin for paid algorithms
     if (matchStrategy !== 'random' && !hasSubscription) {
-      if (localMmCoins < 1) {
+      if (localMmCoins < 5) {
         setShowCoinModal(true);
         return;
       }
-      setLocalMmCoins(prev => prev - 1);
+      setLocalMmCoins(prev => prev - 5);
     }
 
     setLoading(true);

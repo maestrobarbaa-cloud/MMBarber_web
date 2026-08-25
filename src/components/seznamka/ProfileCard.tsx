@@ -98,6 +98,40 @@ export const ProfileCard = React.memo(function ProfileCard({
     return String(currentUserProfile[key]).toLowerCase() === String(val).toLowerCase();
   };
 
+  const calculateTrustScore = () => {
+    if (profile.trustScore !== undefined && profile.trustScore > 0) return profile.trustScore;
+
+    let score = 50; // Base score
+    if (profile.salonVerified) score += 15;
+    if (profile.idVerified) score += 20;
+    if (profile.photos && profile.photos.length > 2) score += 10;
+    if (profile.replyRate === 'high') score += 10;
+    if (profile.replyRate === 'low') score -= 10;
+    
+    if (profile.trustEndorsements) {
+      const endorsementsCount = profile.trustEndorsements.reduce((acc, curr) => acc + curr.count, 0);
+      score += Math.min(endorsementsCount * 2, 20); // up to 20% from endorsements
+    }
+    
+    if (profile.reportsCount) {
+      score -= profile.reportsCount * 15;
+    }
+
+    return Math.max(0, Math.min(100, score)); // Clamp between 0 and 100
+  };
+
+  const trustScore = calculateTrustScore();
+
+  const getTrustSmiley = (score: number) => {
+    if (score < 20) return { emoji: '😡', label: lang === 'cs' ? 'Nedůvěryhodný' : 'Untrustworthy', color: 'text-red-500', bg: 'bg-red-500/10 border-red-500/30' };
+    if (score < 40) return { emoji: '🙁', label: lang === 'cs' ? 'Slabá důvěra' : 'Low Trust', color: 'text-orange-500', bg: 'bg-orange-500/10 border-orange-500/30' };
+    if (score < 60) return { emoji: '😐', label: lang === 'cs' ? 'Neutrální' : 'Neutral', color: 'text-yellow-500', bg: 'bg-yellow-500/10 border-yellow-500/30' };
+    if (score < 80) return { emoji: '🙂', label: lang === 'cs' ? 'Důvěryhodný' : 'Trustworthy', color: 'text-green-500', bg: 'bg-green-500/10 border-green-500/30' };
+    return { emoji: '🤩', label: lang === 'cs' ? 'Vysoce důvěryhodný' : 'Highly Trusted', color: 'text-emerald-400', bg: 'bg-emerald-400/10 border-emerald-400/30' };
+  };
+
+  const trustSmiley = getTrustSmiley(trustScore);
+
   const isPremiumUnlocked = currentStrategy && currentStrategy !== 'random';
 
   const getMatchClass = (isMatch: boolean) => isMatch
@@ -147,6 +181,18 @@ export const ProfileCard = React.memo(function ProfileCard({
 
 
       <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8 pb-24 relative">
+        {/* TRUST SCORE INDICATOR */}
+        <div className={`border rounded-xl p-4 mb-4 flex items-center justify-between ${trustSmiley.bg}`}>
+          <div className="flex items-center gap-4">
+            <div className="text-4xl">{trustSmiley.emoji}</div>
+            <div>
+              <div className="text-xs font-mono text-white/50 uppercase tracking-widest">{lang === 'cs' ? 'Důvěryhodnost Profilu' : 'Profile Trust Score'}</div>
+              <div className={`font-heading font-black uppercase tracking-widest text-lg ${trustSmiley.color}`}>{trustSmiley.label}</div>
+            </div>
+          </div>
+          <div className={`text-2xl font-black ${trustSmiley.color}`}>{trustScore}%</div>
+        </div>
+
         {/* CRITICAL WARNING BANNER */}
         {profile.criticalWarnings && profile.criticalWarnings.length > 0 && (
           <div className="bg-red-900/40 border border-red-500/50 rounded-xl p-6 relative overflow-hidden shadow-[0_0_30px_rgba(220,38,38,0.3)] mb-8">
@@ -215,8 +261,8 @@ export const ProfileCard = React.memo(function ProfileCard({
               </h4>
               <p className="text-white/60 text-xs font-mono uppercase tracking-widest relative z-10">
                 {lang === 'cs' 
-                  ? 'Spusť prémiový algoritmus (za 1 MMCOIN), abys zjistil, proč se k sobě hodíte a viděl detailní statistiky.' 
-                  : 'Run a premium algorithm (for 1 MMCOIN) to see why you match and detailed stats.'}
+                  ? 'Spusť prémiový algoritmus (za 5 MMCOINů), abys zjistil, proč se k sobě hodíte a viděl detailní statistiky.' 
+                  : 'Run a premium algorithm (for 5 MMCOINs) to see why you match and detailed stats.'}
               </p>
             </div>
           ) : (
@@ -1377,10 +1423,16 @@ export const ProfileCard = React.memo(function ProfileCard({
               src={displayPhotos[currentPhotoIndex]}
               alt={`${profile.name} photo`}
               fill
-              className="object-cover"
+              className={`object-cover ${profile.isBlurredMode ? 'blur-3xl scale-125' : ''}`}
               sizes="(max-width: 768px) 100vw, 400px"
               priority={currentPhotoIndex === 0}
             />
+            {profile.isBlurredMode && (
+              <div className="absolute inset-0 flex items-center justify-center flex-col bg-black/20 z-10 pointer-events-none">
+                <EyeOff size={48} className="text-white/50 mb-2" />
+                <span className="text-white/70 font-heading uppercase tracking-widest text-sm bg-black/60 px-4 py-2 rounded-full border border-white/10">Slepé rande</span>
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
 

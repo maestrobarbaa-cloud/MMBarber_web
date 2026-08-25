@@ -49,6 +49,20 @@ model User {
   applicantTrustScore Int @default(100)
   idVerified    Boolean   @default(false)
   
+  mmcoins           Int       @default(5)
+  freeBoosts        Int       @default(5)
+  referralCode      String?   @unique
+  referredById      String?
+  lastMonthlyReward DateTime?
+  
+  dailyMinutesSpent Int       @default(0)
+  lastActiveDate    DateTime?
+  activityStreakDays Int      @default(0)
+  hasGoldFrameUntil DateTime?
+  
+  referredBy        User?     @relation("Referrals", fields: [referredById], references: [id])
+  referredUsers     User[]    @relation("Referrals")
+
   accounts      Account[]
   sessions      Session[]
   
@@ -128,6 +142,10 @@ model Profile {
   
   extendedData         String?   
   showMutualFriends    Boolean   @default(true)
+  isPrivate            Boolean   @default(false)
+  isNinjaMode          Boolean   @default(false)
+  isBlurredMode        Boolean   @default(false)
+  isZenMode            Boolean   @default(false)
 
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
