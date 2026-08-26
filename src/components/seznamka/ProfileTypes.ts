@@ -43,6 +43,9 @@ export interface PhysicalAttractionPrefs {
 export interface ConflictPrefs {
   myReaction?: string; 
   iNeedFromPartner?: string[]; 
+  apologyCapacity?: string; // Schopnost omluvit se
+  stubbornness?: string; // Tvrdohlavost
+  partnerSupport?: string; // Zastani partnera
 }
 
 // 3. Komunikace
@@ -71,6 +74,7 @@ export interface ValuesPrefs {
   familyImportance?: TraitImportance;
   workAttitude?: string;
   moneyAttitude?: string;
+  finance?: string;
   kidsAttitude?: string;
 }
 
@@ -223,6 +227,7 @@ export interface ProfileData {
   distanceFromUser?: number;
   accountType?: AccountType;
   mmCoins?: number;
+  autoConvertPoints?: boolean;
   subscription?: 'monthly' | 'quarterly' | 'halfyearly' | 'yearly' | 'none';
   members?: GroupMember[];
   linkedUserIds?: string[];
@@ -235,6 +240,7 @@ export interface ProfileData {
   isNinjaMode?: boolean;
   isBlurredMode?: boolean;
   isZenMode?: boolean;
+  visibilityMode?: 'public' | 'serious_only' | 'b2b_only' | 'ghost';
   mutualFriendsCount?: number;
   age: string;
   birthDate?: string;
@@ -244,12 +250,51 @@ export interface ProfileData {
   seekingTags?: string[];
   city?: string;
   height: string;
+  weight?: string; // Váha v kg (pro BMI)
+  religion?: string; // Víra / Přesvědčení
   smoking: string;
   drinking: string;
+  substances?: string[]; // Omamné látky a závislosti
+  
+  // Rodina a Minulost
+  siblings?: string;
+  childhoodEnvironment?: string;
+  childhoodTraumas?: string[];
+  caregiving?: string;
+  
+  // Hot Topics (Moderní témata)
+  aiAttitude?: string;
+  therapyAttitude?: string;
+  dietEco?: string;
+  workModel?: string;
+  polarization?: string;
   interests: string;
   myTags?: string[];
   bio: string;
-  education?: string;
+  education?: string; // legacy generic education
+  
+  // Kariéra a B2B (Headhunting)
+  educationLevel?: string;
+  educationGrades?: string;
+  educationFinalExam?: string;
+  workEthic?: string;
+  familyLegacy?: string;
+  legacyContinue?: string;
+  employmentPreference?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  b2bConsentAgreed?: boolean;
+  openToJobOffers?: boolean;
+  careerProgression?: string[];
+
+  // Sociální Sítě a Vliv
+  socialMediaRole?: 'consumer' | 'balance' | 'creator' | 'none';
+  socialMediaTime?: number; // 0-100 posuvník
+
+  // Sporty
+  sportsPlayed?: string[];
+  sportsWatching?: string[];
+
   energy?: string;
   matchStrategy?: string;
   firstDate?: string;
@@ -279,6 +324,9 @@ export interface ProfileData {
   locationPrivacy?: 'local' | 'incognito' | 'any';
   categories?: string[];
   activeCategories?: string[];
+
+  dietaryPrefs?: string[];
+  healthManagement?: string; // Jak přistupuje ke zdraví
   activeModules?: string[];
   petDetails?: string;
   pets?: Pet[];
@@ -289,6 +337,7 @@ export interface ProfileData {
   mbti?: string;
   temperament?: string;
   mindset?: string;
+  mindsetContext?: string; // Pozitivni/Negativni v kontextu doby
   intelligence?: string;
   socialBattery?: string;
   attachmentStyle?: string;
@@ -297,6 +346,8 @@ export interface ProfileData {
   chronotype?: string;
   jungArchetype?: string;
   darkTriad?: string;
+  peacefulness?: string; // Pacifista, klidny, vybusny
+  autoTags?: string[]; // Tagy generovane z odpovedi
   conflictStyle?: string;
   apologyLanguage?: string;
   brainHemisphere?: string;
@@ -318,6 +369,8 @@ export interface ProfileData {
     vision?: string[];
     upbringing?: string[];
     relationshipPostKids?: string[];
+    instinct?: string[];
+    respectForElders?: string;
   };
   
   // Socials
@@ -348,6 +401,13 @@ export interface ProfileData {
   partnerExpectedIncome?: string;
 
   // New Fields
+  offersServices?: boolean;
+  serviceVoucher?: {
+    title: string;
+    description: string;
+    discount: string;
+    code?: string;
+  };
   livingStatus?: string;
   ownsHousing?: boolean;
   personalityDynamics?: string;

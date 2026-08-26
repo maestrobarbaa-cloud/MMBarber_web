@@ -19,6 +19,8 @@ export async function GET(req: Request) {
           select: {
             name: true,
             logoUrl: true,
+            industry: true,
+            address: true,
           }
         }
       },

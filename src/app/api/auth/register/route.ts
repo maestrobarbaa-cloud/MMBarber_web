@@ -19,6 +19,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Tento e-mail už se v Síti nachází.' }, { status: 400 })
     }
 
+    // Anti-farming check
+    const forwardedFor = request.headers.get('x-forwarded-for')
+    const ipAddress = forwardedFor ? forwardedFor.split(',')[0] : request.headers.get('x-real-ip') || 'unknown'
+    
+    const accountsOnIp = await prisma.user.count({
+      where: { ipAddress }
+    })
+
+    const isFarming = accountsOnIp >= 2
+    const mmcoins = isFarming ? 0 : 5
+    const freeBoosts = isFarming ? 0 : 5
+    const isShadowBanned = isFarming
+
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const user = await prisma.user.create({
@@ -26,7 +39,11 @@ export async function POST(request: Request) {
         name,
         email,
         passwordHash: hashedPassword,
-        role: 'USER'
+        role: 'USER',
+        ipAddress,
+        mmcoins,
+        freeBoosts,
+        isShadowBanned
       }
     })
 

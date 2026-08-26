@@ -10,15 +10,16 @@ import { DiscoveryHub, SearchFilters, CATEGORIES } from "./DiscoveryHub";
 import { BarberAdCard } from "./BarberAdCard";
 import { useTranslation } from "@/hooks/useTranslation";
 import { calculateCompatibility, generateMatchReport } from "./MatchAlgorithm";
-import { Heart, X, Skull, User, Users, Flag, MessageCircleHeart, Bookmark, ShieldCheck, Crosshair, Crown, Fish, Layers, DollarSign, Dumbbell, Wine, Filter, Search, Sparkles, Calendar, TrendingUp, MapPin, ChevronDown } from "lucide-react";
+import { Heart, X, Skull, User, Users, Flag, MessageCircleHeart, Bookmark, ShieldCheck, Crosshair, Crown, Fish, Layers, DollarSign, Dumbbell, Wine, Filter, Search, Sparkles, Calendar, TrendingUp, MapPin, ChevronDown, Repeat, Check, Flame, Zap } from "lucide-react";
 import { OnboardingGuide } from "./OnboardingGuide";
 import { MatchVoucherCard, VoucherData } from "./MatchVoucherCard";
 import { DsaTransparencyInfo } from "./DsaTransparencyInfo";
 import { LegalHubModal } from "./LegalHubModal";
+import { DynamicEventEngine } from "@/lib/algorithms/DynamicEventEngine";
 
 interface PondProps {
-  currentUser: ProfileData;
-  onEditProfile?: () => void;
+  currentUser?: ProfileData | null;
+  onEditProfile?: (type?: string) => void;
   onMatch?: (profile: ProfileData) => void;
   onGoToMessages?: () => void;
 
@@ -26,6 +27,7 @@ interface PondProps {
 
 export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: PondProps) {
   const { lang } = useTranslation();
+  const eventStatus = DynamicEventEngine.getEventStatus();
   const [allProfiles, setAllProfiles] = useState<ProfileData[]>([]);
   const [profiles, setProfiles] = useState<ProfileData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -248,6 +250,8 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
   const [distanceModalVisible, setDistanceModalVisible] = useState<boolean>(false);
   const [accountFilter, setAccountFilter] = useState<string>('all');
   const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [showActiveAccountMenu, setShowActiveAccountMenu] = useState(false);
+  const [showViewMenu, setShowViewMenu] = useState(false);
   const [maxDistance, setMaxDistance] = useState<number>(50); // Default 50 km
   const [distanceMode, setDistanceMode] = useState<"max" | "min">("max");
   const [showConnectionsModal, setShowConnectionsModal] = useState(false);
@@ -562,27 +566,84 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
 
   return (
     <div className="w-full flex flex-col items-center py-4 px-4 h-full">
-      <div className="relative z-50 w-full max-w-sm md:max-w-7xl flex flex-col xl:flex-row justify-center items-center mb-6 gap-4 xl:gap-0">
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row h-[calc(100vh-60px)] md:h-[calc(100vh-140px)] gap-6">
 
+        {/* Dynamic Event Banner */}
+        {eventStatus.phase !== 'NORMAL' && (
+          <div className="absolute top-0 left-0 right-0 z-50 flex justify-center -mt-4 pointer-events-none">
+            <div className={`px-4 py-1.5 rounded-b-xl shadow-lg border-b border-x flex items-center gap-2 backdrop-blur-md ${
+              eventStatus.phase === 'HOLIDAY' ? 'bg-mafia-gold/20 border-mafia-gold/50 text-mafia-gold' : 
+              eventStatus.phase === 'PEAK' ? 'bg-orange-900/40 border-orange-500/50 text-orange-400' : 
+              'bg-blue-900/40 border-blue-400/50 text-blue-400'
+            }`}>
+              {eventStatus.phase === 'HOLIDAY' ? <Sparkles size={14} /> : eventStatus.phase === 'PEAK' ? <Flame size={14} /> : <Zap size={14} />}
+              <span className="font-heading uppercase tracking-widest text-xs font-bold">{eventStatus.eventName}</span>
+            </div>
+          </div>
+        )}
+
+        {/* LEFT COLUMN: SWIPER */}
         <div className="flex flex-col md:flex-row items-center gap-3">
-          {/* Main View Modes Toggle */}
-          <div className="flex bg-black/60 rounded-full border border-white/10 p-1.5 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          {/* Active Profile Switcher */}
+          <div className="relative">
             <button
-              onClick={() => setViewMode("swipe")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-300 font-heading font-black tracking-widest text-xs uppercase ${viewMode === 'swipe' ? 'bg-mafia-gold text-black shadow-[0_0_15px_rgba(197,160,89,0.4)] scale-105' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
-              title={lang === 'cs' ? 'Klasický výběr' : 'Classic swipe'}
+              onClick={() => setShowActiveAccountMenu(!showActiveAccountMenu)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-black/60 rounded-full border border-mafia-gold/30 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)] transition-all duration-300 font-heading font-black tracking-widest text-xs uppercase text-mafia-gold hover:border-mafia-gold hover:bg-mafia-gold/10"
+              title={lang === 'cs' ? 'Spravovaný profil' : 'Managed Profile'}
             >
-              <Layers size={18} />
-              <span className="hidden md:inline">{lang === 'cs' ? 'Karty' : 'Cards'}</span>
+              <Repeat size={18} />
+              <span className="hidden md:inline">{
+                currentUser?.accountType === 'individual' ? (lang === 'cs' ? 'Jednotlivec' : 'Individual') :
+                currentUser?.accountType === 'couple' ? (lang === 'cs' ? 'Pár' : 'Couple') :
+                currentUser?.accountType === 'group' ? (lang === 'cs' ? 'Skupina' : 'Group') :
+                currentUser?.accountType === 'family' ? (lang === 'cs' ? 'Rodina' : 'Family') :
+                currentUser?.accountType === 'pet' ? (lang === 'cs' ? 'Mazlíček' : 'Pet') :
+                currentUser?.accountType === 'property' ? (lang === 'cs' ? 'Nemovitost' : 'Property') :
+                currentUser?.accountType === 'object' ? (lang === 'cs' ? 'Věc' : 'Object') :
+                currentUser?.accountType === 'activity' ? (lang === 'cs' ? 'Aktivita' : 'Activity') :
+                currentUser?.accountType === 'job' ? (lang === 'cs' ? 'Firma' : 'Company') :
+                (lang === 'cs' ? 'Jednotlivec' : 'Individual')
+              }</span>
             </button>
-            <button
-              onClick={() => setViewMode("fishing")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-300 font-heading font-black tracking-widest text-xs uppercase ${viewMode === 'fishing' ? 'bg-blue-500 text-black shadow-[0_0_15px_rgba(59,130,246,0.6)] scale-105' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
-              title={lang === 'cs' ? 'Rybářská minihra' : 'Fishing minigame'}
-            >
-              <Fish size={18} />
-              <span className="hidden md:inline">{lang === 'cs' ? 'Lov' : 'Fish'}</span>
-            </button>
+            <AnimatePresence>
+              {showActiveAccountMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute top-full mt-2 left-0 w-48 bg-mafia-dark/95 border border-mafia-gold/30 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] overflow-hidden z-50 backdrop-blur-xl"
+                >
+                  <div className="py-2 flex flex-col">
+                    <div className="px-4 py-2 text-[10px] text-white/40 uppercase tracking-widest font-mono border-b border-white/5">
+                      {lang === 'cs' ? 'Přepnout profil' : 'Switch profile'}
+                    </div>
+                    {['individual', 'couple', 'group', 'job', 'pet', 'family', 'property', 'object', 'activity'].map(type => (
+                      <button
+                        key={type}
+                        onClick={() => {
+                          setShowActiveAccountMenu(false);
+                          if (onEditProfile) onEditProfile(type);
+                        }}
+                        className="px-4 py-3 text-left text-sm font-sans hover:bg-white/5 transition-colors flex items-center justify-between"
+                      >
+                        <span className={currentUser?.accountType === type ? "text-mafia-gold font-bold" : "text-smoke-white/70"}>
+                          {type === 'individual' ? (lang === 'cs' ? 'Jednotlivec' : 'Individual') :
+                           type === 'couple' ? (lang === 'cs' ? 'Pár' : 'Couple') :
+                           type === 'group' ? (lang === 'cs' ? 'Skupina' : 'Group') :
+                           type === 'family' ? (lang === 'cs' ? 'Rodina' : 'Family') :
+                           type === 'pet' ? (lang === 'cs' ? 'Mazlíček' : 'Pet') :
+                           type === 'property' ? (lang === 'cs' ? 'Nemovitost' : 'Property') :
+                           type === 'object' ? (lang === 'cs' ? 'Věc' : 'Object') :
+                           type === 'activity' ? (lang === 'cs' ? 'Aktivita' : 'Activity') :
+                           type === 'job' ? (lang === 'cs' ? 'Firma' : 'Company') : type}
+                        </span>
+                        {currentUser?.accountType === type && <Check size={14} className="text-mafia-gold" />}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Account Type Filter Menu */}
@@ -600,7 +661,10 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                       accountFilter === 'group' ? (lang === 'cs' ? 'Skupiny' : 'Groups') :
                         accountFilter === 'family' ? (lang === 'cs' ? 'Rodiny' : 'Families') :
                           accountFilter === 'pet' ? (lang === 'cs' ? 'Zvířata' : 'Pets') :
-                            accountFilter === 'property' ? (lang === 'cs' ? 'Místa' : 'Properties') : (lang === 'cs' ? 'Vše' : 'All')
+                              accountFilter === 'object' ? (lang === 'cs' ? 'Věci' : 'Objects') :
+                                accountFilter === 'activity' ? (lang === 'cs' ? 'Aktivity' : 'Activities') :
+                                  accountFilter === 'job' ? (lang === 'cs' ? 'Firmy/Práce' : 'Companies/Jobs') :
+                                    (lang === 'cs' ? 'Vše' : 'All')
               }</span>
             </button>
 
@@ -619,7 +683,9 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                     { id: 'group', icon: '👥', label: lang === 'cs' ? 'Skupiny' : 'Groups' },
                     { id: 'family', icon: '👨‍👩‍👧‍👦', label: lang === 'cs' ? 'Rodiny' : 'Families' },
                     { id: 'pet', icon: '🐾', label: lang === 'cs' ? 'Zvířata' : 'Pets' },
-                    { id: 'property', icon: '🏠', label: lang === 'cs' ? 'Místa' : 'Properties' }
+                    { id: 'object', icon: '📦', label: lang === 'cs' ? 'Věci' : 'Objects' },
+                    { id: 'activity', icon: '🎯', label: lang === 'cs' ? 'Aktivity' : 'Activities' },
+                    { id: 'job', icon: '💼', label: lang === 'cs' ? 'Firmy / Práce' : 'Companies / Jobs' }
                   ].map(type => (
                     <button
                       key={type.id}
@@ -636,6 +702,57 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                       {type.label}
                     </button>
                   ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Discovery Hub Button */}
+          <button
+              onClick={() => setShowFilters(true)}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full border backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)] transition-all duration-300 font-heading font-black tracking-widest text-xs uppercase ${searchFilters.subCategories && searchFilters.subCategories.length > 0
+                  ? 'bg-mafia-gold/20 text-mafia-gold border-mafia-gold/50'
+                  : 'bg-black/60 text-white border-white/10 hover:border-white/30 hover:bg-white/10'
+                }`}
+              title={lang === 'cs' ? 'Discovery Hub (Kategorie)' : 'Discovery Hub (Categories)'}
+          >
+              <Search size={18} className={searchFilters.subCategories && searchFilters.subCategories.length > 0 ? "text-mafia-gold" : "text-white/70"} />
+              <span className="hidden md:inline">{lang === 'cs' ? 'Co hledáš' : 'Looking for'}</span>
+          </button>
+
+          {/* Main View Modes Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setShowViewMenu(!showViewMenu)}
+              className="flex items-center gap-2 px-5 py-2.5 bg-black/60 rounded-full border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)] transition-all duration-300 font-heading font-black tracking-widest text-xs uppercase text-white hover:border-white/30 hover:bg-white/10"
+              title={lang === 'cs' ? 'Zobrazení' : 'View Mode'}
+            >
+              {viewMode === 'swipe' ? <Layers size={18} className="text-mafia-gold" /> : <Fish size={18} className="text-blue-500" />}
+              <span className="hidden md:inline">{lang === 'cs' ? 'Zobrazení: ' : 'View: '}{viewMode === 'swipe' ? (lang === 'cs' ? 'Karty' : 'Cards') : (lang === 'cs' ? 'Lov' : 'Fish')}</span>
+            </button>
+
+            <AnimatePresence>
+              {showViewMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute top-full left-0 mt-2 w-48 bg-black/95 border border-white/20 rounded-xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 backdrop-blur-md"
+                >
+                  <button
+                    onClick={() => { setViewMode('swipe'); setShowViewMenu(false); }}
+                    className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors text-xs font-mono uppercase tracking-widest ${viewMode === 'swipe' ? 'bg-white/20 text-white' : 'text-white/60 hover:bg-white/10 hover:text-white'}`}
+                  >
+                    <Layers size={18} className={viewMode === 'swipe' ? "text-mafia-gold" : "text-white/60"} />
+                    {lang === 'cs' ? 'Karty' : 'Cards'}
+                  </button>
+                  <button
+                    onClick={() => { setViewMode('fishing'); setShowViewMenu(false); }}
+                    className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors text-xs font-mono uppercase tracking-widest ${viewMode === 'fishing' ? 'bg-white/20 text-white' : 'text-white/60 hover:bg-white/10 hover:text-white'}`}
+                  >
+                    <Fish size={18} className={viewMode === 'fishing' ? "text-blue-500" : "text-white/60"} />
+                    {lang === 'cs' ? 'Lov' : 'Fishing'}
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -743,16 +860,6 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
 
           {/* Tools & Filters Pill */}
           <div className="flex items-center bg-black/60 rounded-full border border-white/10 p-1.5 backdrop-blur-md">
-            <button
-              onClick={() => setShowFilters(true)}
-              className={`p-3 rounded-full transition-all duration-300 ${searchFilters.subCategories && searchFilters.subCategories.length > 0
-                  ? 'bg-mafia-gold/20 text-mafia-gold border border-mafia-gold/50'
-                  : 'text-white/50 hover:text-white hover:bg-white/10'
-                }`}
-              title={lang === 'cs' ? 'Discovery Hub (Kategorie)' : 'Discovery Hub (Categories)'}
-            >
-              <Search size={20} />
-            </button>
             <button
               onClick={() => {
                 setShowPromoteModal(true);
@@ -891,8 +998,9 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                                 matchReport={matchReport}
                                 currentStrategy={matchStrategy}
                                 onStrategyChange={handleStrategyChange}
-                                currentUserProfile={currentUser}
-                                suggestedVouchers={getRecommendedVouchers(currentUser, profile, vouchers.length > 0 ? vouchers : [
+                                currentUserProfile={currentUser || undefined}
+                                eventPhase={eventStatus.phase}
+                                suggestedVouchers={getRecommendedVouchers(currentUser as any, profile, vouchers.length > 0 ? vouchers : [
                                   {
                                     id: "demo-coffee",
                                     title: "20% sleva na výběrovou kávu",
@@ -917,7 +1025,7 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                                     code: "VINO24",
                                     company: { name: "Vinárna pod Věží", logoUrl: null }
                                   }
-                                ])}
+                                ] as any)}
                               />
                             )}
 
@@ -1205,6 +1313,7 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
               lang={lang}
               onBuyCoins={(amt) => setLocalMmCoins(prev => prev + amt)}
               onSubscribe={(plan) => setHasSubscription(true)}
+              onEditProfile={onEditProfile}
             />
           </AnimatePresence>
           <AnimatePresence>
@@ -1418,15 +1527,18 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
         onClose,
         lang,
         onBuyCoins,
-        onSubscribe
+        onSubscribe,
+        onEditProfile
       }: {
         isOpen: boolean; 
   onClose: () => void;
       lang: string;
   onBuyCoins: (amount: number) => void;
   onSubscribe: (plan: string) => void;
+  onEditProfile?: (type?: string) => void;
 }) => {
   const [amount, setAmount] = React.useState(1);
+  const { ArrowRight, Zap, Sparkles, X } = require('lucide-react');
       if (!isOpen) return null;
       return (
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -1485,6 +1597,38 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                   className="px-6 py-3 bg-mafia-gold text-black font-bold uppercase tracking-widest rounded-lg hover:bg-white transition-colors"
                 >
                   {lang === 'cs' ? 'Koupit' : 'Buy'}
+                </button>
+              </div>
+            </div>
+
+            {/* Convert Points to Coins */}
+            <div className="p-4 rounded-xl border border-mafia-gold/30 bg-mafia-gold/5 relative overflow-hidden">
+              <div className="absolute -top-10 -right-10 text-mafia-gold/10 blur-2xl">
+                <Sparkles size={100} />
+              </div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-mafia-gold/20 flex items-center justify-center text-mafia-gold">
+                    <Zap size={14} />
+                  </div>
+                  <div>
+                    <h3 className="text-white text-sm font-bold tracking-widest font-heading uppercase">{lang === 'cs' ? 'Směnit Body' : 'Convert Points'}</h3>
+                    <p className="text-[10px] text-white/50 font-mono uppercase">{lang === 'cs' ? 'Získej Coiny za profil' : 'Get Coins for profile'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between bg-black/40 rounded-lg p-3 border border-white/5 mb-3">
+                  <span className="text-white/60 text-xs font-mono">100 {lang === 'cs' ? 'Bodů' : 'Points'}</span>
+                  <span className="text-white/40"><ArrowRight size={14} /></span>
+                  <span className="text-mafia-gold font-bold text-xs uppercase tracking-wider">1 MMCOIN</span>
+                </div>
+                <button
+                  onClick={() => { 
+                    onClose();
+                    if (onEditProfile) onEditProfile(); 
+                  }}
+                  className="w-full py-3 bg-transparent border-2 border-mafia-gold/50 text-mafia-gold font-bold uppercase tracking-widest rounded-lg hover:bg-mafia-gold/10 transition-colors"
+                >
+                  {lang === 'cs' ? 'Přejít do Směnárny' : 'Go to Exchange'}
                 </button>
               </div>
             </div>

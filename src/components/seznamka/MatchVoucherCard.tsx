@@ -12,6 +12,8 @@ export interface VoucherData {
   company: {
     name: string;
     logoUrl: string | null;
+    industry: string | null;
+    address: string | null;
   };
 }
 
@@ -42,7 +44,21 @@ export const MatchVoucherCard: React.FC<Props> = ({ voucher, lang }) => {
       )}
 
       <div className="flex-grow z-10 text-center md:text-left">
-        <div className="text-xs font-mono text-mafia-gold mb-1 uppercase tracking-widest">{voucher.company.name}</div>
+        <div className="text-xs font-mono text-mafia-gold mb-1 uppercase tracking-widest flex items-center justify-center md:justify-start gap-2 flex-wrap">
+          <span className="font-bold">{voucher.company.name}</span>
+          {voucher.company.industry && (
+            <>
+              <span className="text-white/30">•</span>
+              <span className="text-white/70">{voucher.company.industry}</span>
+            </>
+          )}
+          {voucher.company.address && (
+            <>
+              <span className="text-white/30">•</span>
+              <span className="text-white/70 flex items-center gap-1"><MapPin size={10} /> {voucher.company.address}</span>
+            </>
+          )}
+        </div>
         <h3 className="text-lg font-bold text-white mb-1 leading-tight">{voucher.title}</h3>
         <p className="text-sm text-zinc-400 line-clamp-2">{voucher.description}</p>
       </div>

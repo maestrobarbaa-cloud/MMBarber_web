@@ -2,26 +2,38 @@
 import React, { useEffect, useState } from "react"
 import { JobSwipeCard } from "@/components/jobs/JobSwipeCard"
 import { motion, AnimatePresence } from "framer-motion"
-import { Briefcase, Loader2, Sparkles } from "lucide-react"
+import { Briefcase, Loader2, Sparkles, ShieldCheck } from "lucide-react"
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [isLocked, setIsLocked] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
 
   useEffect(() => {
-    fetchJobs()
+    checkAccessAndFetchJobs()
   }, [])
 
-  const fetchJobs = async () => {
+  const checkAccessAndFetchJobs = async () => {
     try {
+      const meRes = await fetch("/api/profiles/me")
+      if (meRes.ok) {
+        const myProfile = await meRes.json()
+        const ext = myProfile.extendedData || {}
+        if (!ext.b2bConsentAgreed || !ext.openToJobOffers) {
+          setIsLocked(true)
+          setLoading(false)
+          return
+        }
+      }
+      
       const res = await fetch("/api/jobs")
       if (res.ok) {
         const data = await res.json()
         setJobs(data)
       }
     } catch (error) {
-      console.error("Failed to fetch jobs:", error)
+      console.error("Failed to fetch jobs or profile:", error)
     } finally {
       setLoading(false)
     }
@@ -60,6 +72,17 @@ export default function JobsPage() {
           <div className="flex flex-col items-center text-mafia-gold">
             <Loader2 className="animate-spin mb-4" size={48} />
             <span className="font-mono uppercase tracking-widest text-sm">Načítám nabídky...</span>
+          </div>
+        ) : isLocked ? (
+          <div className="flex flex-col items-center text-center bg-black/60 p-8 rounded-2xl border border-mafia-red/50 shadow-[0_0_30px_rgba(200,0,0,0.15)]">
+            <ShieldCheck className="text-mafia-red mb-6" size={64} />
+            <h2 className="font-heading font-black text-2xl uppercase text-white mb-2">Přístup odepřen</h2>
+            <p className="font-mono text-xs text-white/60 mb-8 max-w-[250px]">
+              Tato sekce je dostupná pouze uživatelům, kteří ve svém profilu odsouhlasili poskytnutí B2B údajů a zaškrtli zájem o pracovní nabídky.
+            </p>
+            <a href="/seznamka/profile" className="px-6 py-3 bg-mafia-gold hover:bg-white text-black font-heading font-black uppercase tracking-widest text-sm transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)]">
+              Upravit profil
+            </a>
           </div>
         ) : jobs.length > 0 && currentIndex < jobs.length ? (
           <div className="relative w-full h-full">

@@ -43,6 +43,10 @@ export async function GET(request: Request) {
       where: {
         isPrivate: allowPrivate ? undefined : false,
         isNinjaMode: false,
+        NOT: [
+          { extendedData: { contains: '"visibilityMode":"ghost"' } },
+          { extendedData: { contains: '"visibilityMode":"b2b_only"' } }
+        ],
         user: {
           isShadowBanned: false,
           id: {

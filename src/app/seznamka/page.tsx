@@ -365,7 +365,24 @@ export default function SeznamkaPage() {
                    <div className="h-[900px]">
                      <Pond 
                        currentUser={userProfile} 
-                       onEditProfile={() => setCurrentView("profil")}
+                       onEditProfile={(type) => {
+                          if (type) {
+                            setUserProfile(prev => prev ? { ...prev, accountType: type as any } : { 
+                              name: session?.user?.name || '', 
+                              age: '', 
+                              gender: 'muž', 
+                              height: '', 
+                              smoking: 'ne', 
+                              drinking: 'ne', 
+                              interests: '', 
+                              bio: '', 
+                              photos: [], 
+                              seeking: 'female',
+                              accountType: type as any
+                            });
+                          }
+                          setCurrentView("profil");
+                        }}
                        onMatch={(profile) => {
                          if (!matches.some(m => m.name === profile.name)) {
                            setMatches(prev => [...prev, profile]);
@@ -442,7 +459,7 @@ export default function SeznamkaPage() {
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.5, ease: [0.04, 0.62, 0.23, 0.98] }}>
                   <div className="p-8 md:p-12 border-t border-white/5 space-y-12">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 pt-4">
                       
                       <div className="space-y-6">
                         <h4 className="text-mafia-gold font-heading font-black text-[10px] uppercase tracking-[0.3em]">{lang === 'cs' ? 'PODMÍNKY A ZŘEKNUTÍ SE ODPOVĚDNOSTI' : 'TERMS & DISCLAIMER'}</h4>
@@ -466,22 +483,49 @@ export default function SeznamkaPage() {
                       </div>
 
                       <div className="space-y-6">
-                        <h4 className="text-mafia-gold font-heading font-black text-[10px] uppercase tracking-[0.3em]">{lang === 'cs' ? 'GDPR & OCHRANA SOUKROMÍ' : 'GDPR & PRIVACY'}</h4>
+                        <h4 className="text-mafia-gold font-heading font-black text-[10px] uppercase tracking-[0.3em]">{lang === 'cs' ? 'GDPR, DSA & OCHRANA SOUKROMÍ' : 'GDPR, DSA & PRIVACY'}</h4>
                         <div className="space-y-4 text-[10px] font-mono uppercase tracking-wider leading-relaxed text-smoke-white/60">
                           <div><span className="text-mafia-gold/80 block mb-1">{lang === 'cs' ? 'Nesbírání a Neprodej dat' : 'No Data Mining or Selling'}</span>
                             {lang === 'cs' 
                               ? 'Provozovatel aplikaci nijak nesleduje, nesbírá o vás skrytá data, data NIKDY neprodává a ani to nemá v úmyslu. Data slouží pouze pro Matchmaking.' 
                               : 'The operator does not track you, collect hidden data, NEVER sells data, and has no intention to do so. Data is solely for Matchmaking.'}
                           </div>
+                          <div><span className="text-mafia-gold/80 block mb-1">{lang === 'cs' ? 'DSA (Digital Services Act)' : 'DSA (Digital Services Act)'}</span>
+                            {lang === 'cs' 
+                              ? 'V souladu s Nařízením o digitálních službách (DSA) zajišťujeme transparentní a bezpečné online prostředí. Jakýkoliv nezákonný obsah je aktivně moderován a lze jej nahlásit prostřednictvím k tomu určených mechanismů platformy.' 
+                              : 'In accordance with the Digital Services Act (DSA), we ensure a transparent and safe online environment. Any illegal content is actively moderated and can be reported through the platform\'s designated mechanisms.'}
+                          </div>
                           <div><span className="text-mafia-gold/80 block mb-1">{lang === 'cs' ? 'Autorská Práva (Duševní Vlastnictví)' : 'Intellectual Property'}</span>
                             {lang === 'cs' 
                               ? 'Celý koncept Loviště, Matchmaking algoritmus a design jsou výhradním duševním vlastnictvím autora MMBarber. Kopírování je zakázáno.' 
-                              : 'The entire concept, Matchmaking algorithm, and design are the exclusive intellectual property of MMBarber. Copying is prohibited.'}
+                              : 'The entire Pond concept, Matchmaking algorithm, and design are the exclusive intellectual property of the MMBarber author. Copying is prohibited.'}
                           </div>
                           <div><span className="text-mafia-gold/80 block mb-1">{lang === 'cs' ? 'Právo na výmaz' : 'Right to Erasure'}</span>
                             {lang === 'cs' 
                               ? 'Kdykoliv můžete svůj profil jedním kliknutím v Nastavení kompletně smazat z databáze.' 
                               : 'You can completely delete your profile from the database at any time with one click.'}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* NEW SECTION: ECONOMICS */}
+                      <div className="space-y-6">
+                        <h4 className="text-mafia-gold font-heading font-black text-[10px] uppercase tracking-[0.3em]">{lang === 'cs' ? 'EKONOMIKA: PROČ JE SÍŤ PLACENÁ' : 'ECONOMICS: WHY IT IS PAID'}</h4>
+                        <div className="space-y-4 text-[10px] font-mono uppercase tracking-wider leading-relaxed text-smoke-white/60">
+                          <div><span className="text-mafia-gold/80 block mb-1">{lang === 'cs' ? 'Náklady na Provoz a Servery' : 'Operating Costs & Servers'}</span>
+                            {lang === 'cs' 
+                              ? 'Aplikace běží na profesionálních serverech s databázemi, které vyžadují údržbu, elektřinu a pravidelné měsíční poplatky. Tento provoz zkrátka není zadarmo.' 
+                              : 'The app runs on professional servers with databases requiring maintenance, electricity, and regular monthly fees. This operation is simply not free.'}
+                          </div>
+                          <div><span className="text-mafia-gold/80 block mb-1">{lang === 'cs' ? 'Bezpečnost, Verifikace a Moderace' : 'Security, Verification & Moderation'}</span>
+                            {lang === 'cs' 
+                              ? 'Někdo to musí ručně kontrolovat. Živý člověk hodiny sedí, ověřuje profily, filtruje podvodníky a dohlíží na to, aby síť byla bezpečná.' 
+                              : 'Someone has to check it manually. A live person spends hours verifying profiles, filtering scammers, and ensuring the network is safe.'}
+                          </div>
+                          <div><span className="text-mafia-gold/80 block mb-1">{lang === 'cs' ? 'Daně, OSVČ a Odvedená práce' : 'Taxes, Freelancing & Hard Work'}</span>
+                            {lang === 'cs' 
+                              ? 'Vývoj a podpora této platformy zabrala stovky hodin práce. Jako tvůrce platím nemalé daně a odvody. Síť si na sebe musí vydělat, abychom ji mohli nadále provozovat a vylepšovat.' 
+                              : 'Developing and supporting this platform took hundreds of hours. As a creator, I pay significant taxes. The network must sustain itself to keep operating and improving.'}
                           </div>
                         </div>
                       </div>

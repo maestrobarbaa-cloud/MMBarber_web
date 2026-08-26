@@ -9,6 +9,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 
 import { ProfileData } from "./ProfileTypes";
 export * from "./ProfileTypes";
+import { EventPhase } from "@/lib/algorithms/DynamicEventEngine";
 import { MatchVoucherCard, VoucherData } from "./MatchVoucherCard";
 import { AccordionSection } from "./AccordionSection";
 import { DsaReportModal } from "./DsaReportModal";
@@ -52,6 +53,7 @@ interface ProfileCardProps {
   onStrategyChange?: (strategy: string) => void;
   suggestedVouchers?: VoucherData[];
   currentUserProfile?: ProfileData;
+  eventPhase?: EventPhase;
 }
 
 export const ProfileCard = React.memo(function ProfileCard({ 
@@ -68,7 +70,8 @@ export const ProfileCard = React.memo(function ProfileCard({
   currentStrategy, 
   onStrategyChange, 
   suggestedVouchers, 
-  currentUserProfile 
+  currentUserProfile,
+  eventPhase = 'NORMAL'
 }: ProfileCardProps) {
   const { lang: hookLang } = useTranslation();
   const lang = propLang || hookLang;
@@ -1423,14 +1426,25 @@ export const ProfileCard = React.memo(function ProfileCard({
               src={displayPhotos[currentPhotoIndex]}
               alt={`${profile.name} photo`}
               fill
-              className={`object-cover ${profile.isBlurredMode ? 'blur-3xl scale-125' : ''}`}
+              className={`object-cover ${profile.isBlurredMode || (eventPhase === 'PEAK' && currentPhotoIndex > 0) ? 'blur-3xl scale-125' : ''}`}
               sizes="(max-width: 768px) 100vw, 400px"
               priority={currentPhotoIndex === 0}
             />
-            {profile.isBlurredMode && (
-              <div className="absolute inset-0 flex items-center justify-center flex-col bg-black/20 z-10 pointer-events-none">
-                <EyeOff size={48} className="text-white/50 mb-2" />
-                <span className="text-white/70 font-heading uppercase tracking-widest text-sm bg-black/60 px-4 py-2 rounded-full border border-white/10">Slepé rande</span>
+            {(profile.isBlurredMode || (eventPhase === 'PEAK' && currentPhotoIndex > 0)) && (
+              <div className="absolute inset-0 flex items-center justify-center flex-col bg-black/40 z-10 pointer-events-none p-6 text-center">
+                {profile.isBlurredMode ? (
+                  <>
+                    <EyeOff size={48} className="text-white/50 mb-2" />
+                    <span className="text-white/70 font-heading uppercase tracking-widest text-sm bg-black/60 px-4 py-2 rounded-full border border-white/10">Slepé rande</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock size={48} className="text-orange-500/50 mb-2" />
+                    <span className="text-orange-400 font-heading uppercase tracking-widest text-sm bg-black/80 px-4 py-2 rounded-full border border-orange-500/30">
+                      {lang === 'cs' ? 'Peak Hours: Skryto' : 'Peak Hours: Hidden'}
+                    </span>
+                  </>
+                )}
               </div>
             )}
           </motion.div>

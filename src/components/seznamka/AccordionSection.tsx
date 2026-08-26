@@ -14,6 +14,7 @@ export const AccordionSection: React.FC<AccordionSectionProps> = ({ title, icon,
   return (
     <div className="border border-mafia-gold/20 rounded-lg overflow-hidden bg-black/40 mb-4 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
       <button 
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="w-full p-4 flex justify-between items-center bg-mafia-dark hover:bg-mafia-gold/10 transition-colors"
       >

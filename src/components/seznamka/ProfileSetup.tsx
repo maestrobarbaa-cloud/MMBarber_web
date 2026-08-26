@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { 
   User, Calendar, Camera, MapPin, 
   Heart, Ruler, X, ImagePlus, 
-  Cigarette, Wine, Sparkles, Target, Coffee, Check,
+  Cigarette, Wine, Sparkles, Target, Coffee, Check, Lock,
   Skull, Flag, MessageCircleHeart, Flame, GraduationCap, Zap, Bookmark, Instagram, Link, PawPrint, Search, ChevronRight, ChevronLeft, ShieldCheck, Users,
   Eye, Brain, Activity, Scale, Settings, Save, MessageSquare, EyeOff, Plus, Home, Leaf, Briefcase
 } from "lucide-react";
@@ -17,7 +17,8 @@ import { CATEGORIES } from "./DiscoveryHub";
 import { CustomSelect } from "./CustomSelect";
 import { PersonalityQuiz } from "./PersonalityQuiz";
 import { PreferenceSelector, TraitSelector, InfoTooltip } from "./SetupHelpers";
-import { Step2Physical, Step3Character, Step4Lifestyle, Step5CommLove, Step6FutureKids, Step7ValuesMoney, Step8Protocol, StepSchools, StepAssets, StepTimeline, StepParenting, StepHealth } from "./ProfileSetupSteps";
+import { Step2Physical, Step3Character, StepPsychology, Step4Lifestyle, Step5CommLove, Step6FutureKids, Step7ValuesMoney, Step8Protocol, StepSchools, StepAssets, StepTimeline, StepParenting, StepHealth, StepIntimacy, StepCareerEducation, StepMedia, PointsBadge } from "./ProfileSetupSteps";
+import { PointsExchangeModal } from "./PointsExchangeModal";
 import { PsychologyQuiz, MBTI_QUIZ, LOVE_LANGUAGE_QUIZ, ATTACHMENT_STYLE_QUIZ, CHRONOTYPE_QUIZ, TEMPERAMENT_QUIZ, ENNEAGRAM_QUIZ, CONFLICT_STYLE_QUIZ, APOLOGY_LANGUAGE_QUIZ, BRAIN_HEMISPHERE_QUIZ, INTIMACY_DYNAMIC_QUIZ, LOVE_STYLE_QUIZ, DARK_TRIAD_QUIZ, SPONTANEITY_QUIZ, INFIDELITY_BOUNDARY_QUIZ, QuizDef } from './PsychologyQuiz';
 
 
@@ -73,6 +74,7 @@ interface ProfileSetupProps {
 
 export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }: ProfileSetupProps) {
   const { lang } = useTranslation();
+  const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   
   const [formData, setFormData] = useState<ProfileData>(() => {
     if (initialData) return initialData;
@@ -151,25 +153,29 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
   const isDating = formData.activeCategories?.includes('relationships') || false;
   const isClassmates = formData.activeCategories?.includes('school') || false;
   const isHumanAccount = ['individual', 'couple', 'family', 'group'].includes(formData.accountType || 'individual');
+  const isPersonalAccount = ['individual', 'couple'].includes(formData.accountType || 'individual');
   const activeModules = formData.activeModules || [];
   
   const wizardSteps = [
     { id: 'categories', label: lang === 'cs' ? 'Kategorie' : 'Categories' },
     { id: 'basic', label: lang === 'cs' ? 'Základní údaje' : 'Basic Info' },
-    { id: 'assets', label: lang === 'cs' ? 'Majetek a Bydlení' : 'Assets & Housing' },
-    { id: 'timeline', label: lang === 'cs' ? 'Časová osa' : 'Timeline' },
-    { id: 'parenting', label: lang === 'cs' ? 'Děti a Výchova' : 'Kids & Parenting' },
-    { id: 'health', label: lang === 'cs' ? 'Zdraví a Omezení' : 'Health & Constraints' },
-    ...(isHumanAccount ? [
+    ...(isPersonalAccount ? [
+      { id: 'assets', label: lang === 'cs' ? 'Majetek a Bydlení' : 'Assets & Housing' },
+      { id: 'timeline', label: lang === 'cs' ? 'Časová osa' : 'Timeline' },
+      { id: 'parenting', label: lang === 'cs' ? 'Děti a Výchova' : 'Kids & Parenting' },
+      { id: 'health', label: lang === 'cs' ? 'Zdraví a Omezení' : 'Health & Constraints' },
       { id: 'personality', label: lang === 'cs' ? 'Osobnost a Vzhled' : 'Personality & Looks' },
-      ...(isDating ? [
-        { id: 'lifestyle', label: lang === 'cs' ? 'Životní styl a Hodnoty' : 'Lifestyle & Values' },
-        { id: 'relationships', label: lang === 'cs' ? 'Vztahy a Komunikace' : 'Relationships' },
-        { id: 'intimacy', label: lang === 'cs' ? 'Intimita' : 'Intimacy' }
-      ] : []),
-      ...(isClassmates ? [{ id: 'schools', label: lang === 'cs' ? 'Školy' : 'Schools' }] : [])
+      { id: 'psychology', label: lang === 'cs' ? 'Psychologie a Mysl' : 'Psychology & Mind' },
+      
+      { id: 'lifestyle', label: lang === 'cs' ? 'Životní styl a Hodnoty' : 'Lifestyle & Values', locked: !isDating, lockCategory: 'relationships' },
+      { id: 'relationships', label: lang === 'cs' ? 'Vztahy a Komunikace' : 'Relationships', locked: !isDating, lockCategory: 'relationships' },
+      { id: 'intimacy', label: lang === 'cs' ? 'Intimita' : 'Intimacy', locked: !isDating, lockCategory: 'relationships' },
+      
+      { id: 'schools', label: lang === 'cs' ? 'Školy' : 'Schools', locked: !isClassmates, lockCategory: 'school' },
+      { id: 'career', label: lang === 'cs' ? 'Kariéra a Vzdělání' : 'Career & Education' },
+      { id: 'media', label: lang === 'cs' ? 'Sítě a Média' : 'Social Media' }
     ] : []),
-    { id: 'about', label: lang === 'cs' ? 'O mně (Bio)' : 'About me (Bio)' },
+    { id: 'about', label: formData.accountType === 'job' ? (lang === 'cs' ? 'O firmě (Bio)' : 'About company') : formData.accountType === 'property' ? (lang === 'cs' ? 'Pravidla' : 'Rules') : (lang === 'cs' ? 'O mně (Bio)' : 'About me (Bio)') },
     { id: 'protocol', label: lang === 'cs' ? 'Pravidla' : 'Protocol' }
   ];
 
@@ -435,6 +441,238 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
     setFormData(prev => ({ ...prev, photos: prev.photos.filter((_, index) => index !== indexToRemove) }));
   };
 
+  const calculateTotalPoints = (data: any) => {
+    let pts = 0;
+    // Basic
+    if (data.bio && data.bio.length > 5) pts += 5;
+    if (data.interests && data.interests.length > 0) pts += 5;
+    if (data.icebreakerPrompts && data.icebreakerPrompts.length > 0 && data.icebreakerPrompts[0].answer) pts += 5;
+    if (data.nickname) pts += 5;
+    if (data.age) pts += 5;
+    if (data.height) pts += 5;
+    if (data.weight) pts += 5;
+    if (data.gender) pts += 5;
+    if (data.seeking && data.seeking.length > 0) pts += 5;
+    
+    // Physical
+    if ((data.physicalAttraction as any)?.height) pts += 5;
+    if ((data.physicalAttraction as any)?.bodyType) pts += 5;
+    if ((data.physicalAttraction as any)?.smoking) pts += 5;
+    if ((data.physicalAttraction as any)?.drinking) pts += 5;
+    if ((data.physicalAttraction as any)?.tattoos) pts += 5;
+    if ((data.physicalAttraction as any)?.piercings) pts += 5;
+    if ((data.physicalAttraction as any)?.petAllergies) pts += 5;
+    
+    // Character
+    if (data.socialBattery) pts += 5;
+    if (data.personalityDynamics) pts += 5;
+    if (data.diagnoses) pts += 5;
+    if (data.loveLanguage) pts += 5;
+    if (data.attachmentStyle) pts += 5;
+    if (data.chronotype) pts += 5;
+    
+    // Assets & Lifestyle
+    if (data.livingStatus) pts += 5;
+    if (data.ownsHousing !== undefined) pts += 5;
+    if (data.carOwnership) pts += 5;
+    if (data.financialSituation) pts += 5;
+    if (data.pastRelationships) pts += 5;
+    if (data.currentLifeStage) pts += 5;
+    if (data.futurePlans) pts += 5;
+    if (data.weekendActivity) pts += 5;
+    if (data.vacationStyle) pts += 5;
+    if (data.screenTime) pts += 5;
+    
+    // Parenting & Future
+    if (data.wantKids) pts += 5;
+    if (data.parentingStyle) pts += 5;
+    if (data.partnerWithKids) pts += 5;
+    if (data.expectedRelationship) pts += 5;
+    if (data.parenting?.instinct && data.parenting.instinct.length > 0) pts += 5;
+    if (data.parenting?.respectForElders) pts += 5;
+
+    // Mindset & Povaha
+    if (data.peacefulness) pts += 5;
+    if (data.mindsetContext) pts += 5;
+
+    // Zdraví
+    if (data.healthManagement) pts += 5;
+
+    // Komunikace a Konflikty (nové)
+    if (data.conflicts?.apologyCapacity) pts += 5;
+    if (data.conflicts?.stubbornness) pts += 5;
+    if (data.conflicts?.partnerSupport) pts += 5;
+
+    // Sporty
+    if (data.sportsPlayed && data.sportsPlayed.length > 0) pts += 5;
+    if (data.sportsWatching && data.sportsWatching.length > 0) pts += 5;
+
+    // Kariéra a Vzdělání
+    if (data.educationLevel) pts += 10;
+    if (data.educationGrades) pts += 5;
+    if (data.educationFinalExam) pts += 5;
+    if (data.workEthic) pts += 10;
+    if (data.familyLegacy) pts += 5;
+    if (data.legacyContinue) pts += 5;
+    if (data.employmentPreference) pts += 10;
+    if (data.careerProgression && data.careerProgression.length > 0) pts += 10;
+    if (data.contactEmail) pts += 10;
+    if (data.contactPhone) pts += 10;
+    if (data.openToJobOffers) pts += 20;
+
+    // Sítě a Média
+    if (data.socialMediaRole) pts += 10;
+    if (data.socialMediaTime !== undefined) pts += 5;
+
+    // Spicy / Deep (+15)
+    if (data.intimacyDynamic) pts += 15;
+    if (data.kinks) pts += 15;
+    if (data.secretDesires) pts += 15;
+    if (data.infidelityDefinition) pts += 15;
+    if (data.bodyCount) pts += 15;
+    
+    // Dětství a Traumata
+    if (data.siblings) pts += 5;
+    if (data.childhoodEnvironment) pts += 10;
+    if (data.caregiving) pts += 10;
+    if (data.childhoodTraumas && data.childhoodTraumas.length > 0) pts += 15;
+    
+    // Závislosti
+    if (data.substances && data.substances.length > 0) pts += 10;
+    
+    // Hot Topics
+    if (data.aiAttitude) pts += 10;
+    if (data.therapyAttitude) pts += 10;
+    if (data.dietEco) pts += 10;
+    if (data.workModel) pts += 10;
+    if (data.polarization) pts += 15;
+    
+    // Víra
+    if (data.values?.religion) pts += 10;
+    
+    // Dealbreakers
+    if (data.dealBreakers && data.dealBreakers.length > 0) pts += 15;
+    
+    return pts;
+  };
+
+  const totalPoints = calculateTotalPoints(formData);
+
+  // Auto-Tagging Logika (Generování štítků z psychologických odpovědí)
+  useEffect(() => {
+    const generateAutoTags = () => {
+      const tags: string[] = [];
+      
+      // Osobnost a Mindset
+      if (formData.peacefulness === 'pacifist' || formData.peacefulness === 'calm') tags.push('Kliďas');
+      if (formData.peacefulness === 'explosive' || formData.peacefulness === 'fighter') tags.push('Výbušnější');
+      
+      if (formData.mindsetContext === 'realistic_optimist' || formData.mindsetContext === 'toxic_positivity') tags.push('Optimista');
+      if (formData.mindsetContext === 'prepared_pessimist' || formData.mindsetContext === 'doomer') tags.push('Pesimista');
+      if (formData.mindsetContext === 'neutral') tags.push('Zlatá střední cesta');
+
+      // Výchova
+      if (formData.parenting?.instinct?.includes('protector')) tags.push('Ochranářský typ');
+      if (formData.parenting?.instinct?.includes('friend')) tags.push('Kamarádský typ');
+      if (formData.parenting?.respectForElders === 'traditional') tags.push('Rodinné tradice');
+      if (formData.parenting?.respectForElders === 'rebel') tags.push('Rebel');
+
+      // Sítě
+      if (formData.socialMediaRole === 'creator') tags.push('Tvůrce obsahu');
+      if (formData.socialMediaRole === 'none') tags.push('Offline typ');
+
+      // Sport
+      if (formData.sportsPlayed && formData.sportsPlayed.length > 0 && !formData.sportsPlayed.includes('none')) {
+        tags.push('Aktivní sportovec');
+      }
+
+      // Víra
+      if (formData.values?.religion === 'higher_power') tags.push('Spirituální');
+      if (formData.values?.religion === 'christian' || formData.values?.religion === 'islam' || formData.values?.religion === 'buddhism') tags.push('Věřící');
+      if (formData.values?.religion === 'none') tags.push('Ateista');
+
+      // Fyzická kondice (z BMI)
+      if (formData.height && formData.weight) {
+        const bmi = Number(formData.weight) / ((Number(formData.height)/100) ** 2);
+        if (bmi > 10 && bmi < 18.5) tags.push('Podváha');
+        if (bmi >= 18.5 && bmi < 25) tags.push('Normální postava');
+        if (bmi >= 25 && bmi < 30) tags.push('Nadváha');
+        if (bmi >= 30 && bmi < 100) tags.push('Obezita');
+      }
+
+      // Rodina a Traumata
+      if (formData.caregiving && formData.caregiving !== 'none') tags.push('Pečovatel');
+      if (formData.childhoodEnvironment === 'harmonious') tags.push('Rodinný typ');
+      if (formData.childhoodTraumas && formData.childhoodTraumas.length > 0 && !formData.childhoodTraumas.includes('none')) {
+        tags.push('Bojovník');
+      }
+      
+      // Závislosti
+      if (formData.substances && formData.substances.includes('none')) tags.push('Straight Edge (Bez závislostí)');
+
+      // Hot Topics
+      if (formData.aiAttitude === 'enthusiast') tags.push('Tech nadšenec');
+      if (formData.therapyAttitude === 'active') tags.push('Seberozvoj (Terapie)');
+      if (formData.dietEco === 'vegan_vegetarian') tags.push('Vegan/Vegetarián');
+      if (formData.dietEco === 'carnivore') tags.push('Masožravec');
+      if (formData.workModel === 'nomad') tags.push('Digitální Nomád');
+      if (formData.workModel === 'hustler') tags.push('Hustler');
+
+      return tags;
+    };
+
+    const generatedTags = generateAutoTags();
+    // Aktualizace formData jen pokud se štítky liší (prevence nekonečného renderování)
+    if (JSON.stringify(generatedTags) !== JSON.stringify(formData.autoTags)) {
+      setFormData(prev => ({ ...prev, autoTags: generatedTags }));
+    }
+  }, [
+    formData.peacefulness, 
+    formData.mindsetContext, 
+    formData.parenting?.instinct, 
+    formData.parenting?.respectForElders,
+    formData.socialMediaRole,
+    formData.sportsPlayed,
+    formData.values?.religion,
+    formData.height,
+    formData.weight,
+    formData.caregiving,
+    formData.childhoodEnvironment,
+    formData.childhoodTraumas,
+    formData.substances,
+    formData.aiAttitude,
+    formData.therapyAttitude,
+    formData.dietEco,
+    formData.workModel,
+    formData.polarization
+  ]);
+
+  // Inteligentní Auto-Fill pro "Flegmatiky / Pacifisty"
+  useEffect(() => {
+    if (formData.peacefulness === 'pacifist' || formData.peacefulness === 'calm') {
+      setFormData(prev => {
+        let changed = false;
+        const newConflicts = { ...prev.conflicts };
+        
+        // Pokud je pacifista a nemá ještě vyplněnou tvrdohlavost, předvyplníme kompromisní "Je mi to jedno" nebo "Přizpůsobím se"
+        if (!newConflicts.stubbornness) {
+          newConflicts.stubbornness = 'adaptive';
+          changed = true;
+        }
+        // Pokud nemá vyplněnou omluvu, pacifisti většinou ustoupí
+        if (!newConflicts.apologyCapacity) {
+          newConflicts.apologyCapacity = 'easy';
+          changed = true;
+        }
+
+        if (changed) {
+          return { ...prev, conflicts: newConflicts };
+        }
+        return prev;
+      });
+    }
+  }, [formData.peacefulness, setFormData]);
+
   return (
     <>
       <motion.form 
@@ -483,11 +721,22 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
             </button>
           </div>
 
-          <div className="text-right">
+          <div className="text-right flex flex-col items-end">
             <h3 className="text-xl md:text-2xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] mb-1">
               {lang === 'cs' ? "Tvůj Profil" : "Your Profile"}
             </h3>
-            <p className="text-white/50 font-mono text-[10px] uppercase tracking-widest">
+            <button 
+              type="button"
+              onClick={() => setIsExchangeModalOpen(true)}
+              className="flex items-center gap-2 bg-mafia-gold/10 border border-mafia-gold/30 px-3 py-1 rounded-full shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:bg-mafia-gold/20 hover:scale-105 transition-all cursor-pointer"
+              title={lang === 'cs' ? 'Otevřít směnárnu' : 'Open exchange'}
+            >
+              <Sparkles size={12} className="text-mafia-gold" />
+              <span className="text-mafia-gold font-mono font-bold text-xs uppercase tracking-widest">
+                {totalPoints} 🪙 {lang === 'cs' ? 'bodů celkem' : 'total points'}
+              </span>
+            </button>
+            <p className="text-white/50 font-mono text-[10px] uppercase tracking-widest mt-1">
               {lang === 'cs' 
                 ? "Vyplň detaily, ať víme, s kým máme tu čest."
                 : "Fill in the details so we know who we're dealing with."}
@@ -500,18 +749,31 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
           <div className="flex flex-row overflow-x-auto pb-4 gap-2 hide-scrollbar w-full lg:w-64 lg:flex-col lg:pb-0 lg:sticky lg:top-24 shrink-0">
             {wizardSteps.map((tab) => {
               const isActive = activeTab === tab.id;
+              const isLocked = (tab as any).locked;
               return (
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    if (isLocked) {
+                      const newCategories = [...(formData.activeCategories || []), (tab as any).lockCategory];
+                      setFormData({ ...formData, activeCategories: newCategories });
+                      setActiveTab(tab.id);
+                    } else {
+                      setActiveTab(tab.id);
+                    }
+                  }}
                   className={`flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 px-5 py-2.5 lg:py-4 rounded-full lg:rounded-xl transition-all duration-300 border lg:border-l-4 lg:border-y-0 lg:border-r-0 ${
                     isActive 
                       ? 'bg-mafia-gold/20 border-mafia-gold shadow-[0_0_15px_rgba(197,160,89,0.2)] lg:shadow-none' 
-                      : 'bg-black/40 border-white/10 lg:border-transparent hover:bg-white/10 lg:hover:border-white/20'
+                      : isLocked
+                        ? 'bg-black/80 border-white/5 opacity-50 hover:opacity-100 lg:border-transparent hover:border-mafia-gold/50 cursor-pointer'
+                        : 'bg-black/40 border-white/10 lg:border-transparent hover:bg-white/10 lg:hover:border-white/20'
                   }`}
+                  title={isLocked ? (lang === 'cs' ? 'Odemkne se aktivací kategorie v první záložce (nebo kliknutím odemkněte rovnou)' : 'Unlocks by activating category in first tab (or click to unlock)') : undefined}
                 >
-                  <span className={`font-mono text-[11px] lg:text-xs uppercase tracking-widest font-bold whitespace-nowrap ${isActive ? 'text-mafia-gold' : 'text-white/60'}`}>
+                  {isLocked && <Lock size={12} className="text-white/40" />}
+                  <span className={`font-mono text-[11px] lg:text-xs uppercase tracking-widest font-bold whitespace-nowrap ${isActive ? 'text-mafia-gold' : isLocked ? 'text-white/40' : 'text-white/60'}`}>
                     {tab.label}
                   </span>
                 </button>
@@ -697,20 +959,41 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                   </label>
                   
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {[
-                      { value: "female", icon: User, label: lang === 'cs' ? 'Ženy' : 'Women' },
-                      { value: "male", icon: User, label: lang === 'cs' ? 'Muže' : 'Men' },
-                      { value: "couple", icon: Heart, label: lang === 'cs' ? 'Páry' : 'Couples' },
-                      { value: "family", icon: Users, label: lang === 'cs' ? 'Rodiny' : 'Families' },
-                      { value: "group", icon: Users, label: lang === 'cs' ? 'Skupiny' : 'Groups' },
-                      { value: "pet", icon: PawPrint, label: lang === 'cs' ? 'Zvířata' : 'Pets' },
-                      { value: "property", icon: Home, label: lang === 'cs' ? 'Nemovitosti' : 'Properties' },
-                      { value: "object", icon: Leaf, label: lang === 'cs' ? 'Věci/Rostliny' : 'Objects/Plants' },
-                      { value: "activity", icon: Calendar, label: lang === 'cs' ? 'Aktivity' : 'Activities' },
-                      { value: "job", icon: Briefcase, label: lang === 'cs' ? 'Služby' : 'Services' },
-                      { value: "both", icon: Sparkles, label: lang === 'cs' ? 'Lidi (Vše)' : 'People (All)' },
-                      { value: "any", icon: Target, label: lang === 'cs' ? 'Úplně cokoliv' : 'Absolutely anything' }
-                    ].map(opt => {
+                    {(() => {
+                      const allOptions = [
+                        { value: "female", icon: User, label: lang === 'cs' ? 'Ženy' : 'Women' },
+                        { value: "male", icon: User, label: lang === 'cs' ? 'Muže' : 'Men' },
+                        { value: "both", icon: Sparkles, label: lang === 'cs' ? 'Lidi (Vše)' : 'People (All)' },
+                        { value: "couple", icon: Heart, label: lang === 'cs' ? 'Páry' : 'Couples' },
+                        { value: "family", icon: Users, label: lang === 'cs' ? 'Rodiny' : 'Families' },
+                        { value: "group", icon: Users, label: lang === 'cs' ? 'Skupiny' : 'Groups' },
+                        { value: "pet", icon: PawPrint, label: lang === 'cs' ? 'Zvířata' : 'Pets' },
+                        { value: "property", icon: Home, label: lang === 'cs' ? 'Místa' : 'Places' },
+                        { value: "object", icon: Leaf, label: lang === 'cs' ? 'Věci/Rostliny' : 'Objects/Plants' },
+                        { value: "activity", icon: Calendar, label: lang === 'cs' ? 'Aktivity' : 'Activities' },
+                        { value: "job", icon: Briefcase, label: lang === 'cs' ? 'Firmy/Služby' : 'Companies' },
+                        { value: "any", icon: Target, label: lang === 'cs' ? 'Úplně cokoliv' : 'Absolutely anything' }
+                      ];
+
+                      const type = formData.accountType || 'individual';
+                      if (type === 'pet') {
+                        return allOptions.filter(o => ['female', 'male', 'both', 'pet', 'activity', 'job'].includes(o.value));
+                      }
+                      if (type === 'job') {
+                        return allOptions.filter(o => ['female', 'male', 'both', 'couple', 'family', 'group', 'job', 'pet'].includes(o.value));
+                      }
+                      if (type === 'property') {
+                        return allOptions.filter(o => ['female', 'male', 'both', 'couple', 'family', 'group', 'activity'].includes(o.value));
+                      }
+                      if (type === 'object') {
+                        return allOptions.filter(o => ['female', 'male', 'both', 'couple', 'family', 'group'].includes(o.value));
+                      }
+                      if (type === 'activity') {
+                        return allOptions.filter(o => ['female', 'male', 'both', 'couple', 'family', 'group', 'pet', 'job'].includes(o.value));
+                      }
+                      
+                      return allOptions; // Human accounts get all options
+                    })().map(opt => {
                       const currentSeeking = Array.isArray(formData.seeking) ? formData.seeking : [];
                       const isSelected = currentSeeking.includes(opt.value);
                       
@@ -795,6 +1078,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                     {lang === 'cs' 
                       ? (formData.accountType === 'group' ? 'Název skupiny *' : formData.accountType === 'couple' ? 'Vaše jména *' : formData.accountType === 'family' ? 'Název rodiny *' : formData.accountType === 'pet' ? 'Jméno zvířete *' : formData.accountType === 'activity' ? 'Název akce / plánu *' : formData.accountType === 'job' ? 'Název služby / práce *' : formData.accountType === 'object' ? 'Co nabízíš / hledáš (Věc/Rostlina) *' : formData.accountType === 'property' ? 'Název Komunity (Místa) *' : 'Jméno / Přezdívka *') 
                       : (formData.accountType === 'group' ? 'Group Name *' : formData.accountType === 'couple' ? 'Your Names *' : formData.accountType === 'family' ? 'Family Name *' : formData.accountType === 'pet' ? 'Pet Name *' : formData.accountType === 'activity' ? 'Event / Plan Name *' : formData.accountType === 'job' ? 'Service / Job Name *' : formData.accountType === 'object' ? 'What (Object/Plant) *' : formData.accountType === 'property' ? 'Community (Place) Name *' : 'Name / Nickname *')}
+                    <PointsBadge points={5} />
                     <InfoTooltip text={lang === 'cs' ? 'Jak se chceš v Matchmakeru prezentovat.' : 'How you want to present yourself in the Matchmaker.'} />
                   </label>
                   <div className="relative">
@@ -855,6 +1139,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                     {lang === 'cs' 
                       ? (formData.accountType === 'group' ? 'Věkové rozmezí (např. 20-30) *' : formData.accountType === 'couple' ? 'Váš věk (např. 25 a 27) *' : formData.accountType === 'family' ? 'Průměrný věk (dospělí) *' : formData.accountType === 'pet' ? 'Věk zvířete *' : 'Datum narození *') 
                       : (formData.accountType === 'group' ? 'Age range (e.g. 20-30) *' : formData.accountType === 'couple' ? 'Your ages (e.g. 25 and 27) *' : formData.accountType === 'family' ? 'Average age (adults) *' : formData.accountType === 'pet' ? 'Pet Age *' : 'Date of Birth *')}
+                    <PointsBadge points={5} />
                     <InfoTooltip text={lang === 'cs' ? 'Pomáhá algoritmu spojit tě s lidmi v odpovídajícím věku a určit znamení.' : 'Helps the algorithm match you with people of appropriate age and determine zodiac.'} />
                   </label>
                   <div className="relative">
@@ -885,7 +1170,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                   <>
                     <div id="field-gender">
                       <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center">
-                        {lang === 'cs' ? 'Jsem *' : 'I am *'}
+                        {lang === 'cs' ? 'Jsem *' : 'I am *'} <PointsBadge points={5} />
                         <InfoTooltip text={lang === 'cs' ? 'Důležité pro to, abychom tě správně zařadili do vyhledávání.' : 'Important for us to place you correctly in searches.'} />
                       </label>
                       <CustomSelect
@@ -928,7 +1213,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
 
                     <div id="field-height">
                       <label className="block text-xs font-mono text-white/40 uppercase tracking-widest mb-2 flex items-center">
-                        {lang === 'cs' ? 'Výška (cm)' : 'Height (cm)'}
+                        {lang === 'cs' ? 'Výška (cm)' : 'Height (cm)'} <PointsBadge points={5} />
                         <InfoTooltip text={lang === 'cs' ? 'Pomáhá ostatním získat lepší představu.' : 'Helps others get a better picture.'} />
                       </label>
                       <div className="relative">
@@ -1148,8 +1433,11 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
               <Step2Physical formData={formData} setFormData={setFormData} lang={lang} />
               <Step3Character formData={formData} setFormData={setFormData} lang={lang} />
-              {/* Intellect */}
-              
+            </motion.div>
+          )}
+          {activeTab === "psychology" && (
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+              <StepPsychology formData={formData} setFormData={setFormData} lang={lang} />
             </motion.div>
           )}
           {activeTab === "lifestyle" && (
@@ -1169,34 +1457,74 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
           )}
           {activeTab === "intimacy" && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
-              
+              <StepIntimacy formData={formData} setFormData={setFormData} lang={lang} />
             </motion.div>
           )}
           {activeTab === "assets" && <StepAssets formData={formData} setFormData={setFormData} lang={lang} />}
           {activeTab === "timeline" && <StepTimeline formData={formData} setFormData={setFormData} lang={lang} />}
           {activeTab === "parenting" && <StepParenting formData={formData} setFormData={setFormData} lang={lang} />}
           {activeTab === "health" && <StepHealth formData={formData} setFormData={setFormData} lang={lang} />}
-{activeTab === 'schools' && <StepSchools formData={formData} setFormData={setFormData} lang={lang} />}
+          {activeTab === 'schools' && <StepSchools formData={formData} setFormData={setFormData} lang={lang} />}
+          {activeTab === 'career' && <StepCareerEducation formData={formData} setFormData={setFormData} lang={lang} />}
+          {activeTab === 'media' && <StepMedia formData={formData} setFormData={setFormData} lang={lang} />}
           {activeTab === 'protocol' && <Step8Protocol formData={formData} setFormData={setFormData} lang={lang} />}
           {activeTab === 'about' && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
               <div>
                 <label className="block text-xs font-mono uppercase tracking-widest mb-2 flex items-center justify-between">
                   <span className="flex items-center text-white/40">
-                    {formData.accountType === 'property' ? (lang === 'cs' ? 'Pravidla a Popis (Bio)' : 'Rules & Description (Bio)') : (lang === 'cs' ? 'Něco o tobě (Bio)' : 'About you (Bio)')}
-                    <InfoTooltip text={formData.accountType === 'property' ? (lang === 'cs' ? 'Popište komunitu, pravidla pro členy nebo důvod vzniku.' : 'Describe the community, member rules or its purpose.') : (lang === 'cs' ? 'Lidi, co čtou bio, hledají něco navíc. Ukaž jim, čím jsi jedinečný(á).' : 'People who read bios look for something extra. Show them what makes you unique.')} />
+                    {formData.accountType === 'job' ? (lang === 'cs' ? 'O firmě (Bio)' : 'About company (Bio)') : formData.accountType === 'property' ? (lang === 'cs' ? 'Pravidla a Popis (Bio)' : 'Rules & Description (Bio)') : (lang === 'cs' ? 'Něco o tobě (Bio)' : 'About you (Bio)')}
+                    <InfoTooltip text={formData.accountType === 'job' ? (lang === 'cs' ? 'Popište co vaše firma dělá a jaké služby nabízí.' : 'Describe what your company does and what services it offers.') : formData.accountType === 'property' ? (lang === 'cs' ? 'Popište komunitu, pravidla pro členy nebo důvod vzniku.' : 'Describe the community, member rules or its purpose.') : (lang === 'cs' ? 'Lidi, co čtou bio, hledají něco navíc. Ukaž jim, čím jsi jedinečný(á).' : 'People who read bios look for something extra. Show them what makes you unique.')} />
                   </span>
                   <span className={`text-[10px] font-mono tracking-widest ${formData.bio.length >= 1000 ? 'text-red-500 font-bold' : 'text-white/30'}`}>{formData.bio.length} / 1000</span>
                 </label>
-                <textarea ref={bioRef} value={formData.bio} maxLength={1000} onChange={(e) => setFormData({ ...formData, bio: e.target.value })} rows={3} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus:border-mafia-gold transition-colors font-sans text-sm resize-none overflow-hidden" placeholder={formData.accountType === 'property' ? (lang === 'cs' ? 'Napiš pravidla nebo popis místa...' : 'Write rules or place description...') : (lang === 'cs' ? 'Napiš něco krátkého o sobě...' : 'Write something short about yourself...')} />
+                <textarea ref={bioRef} value={formData.bio} maxLength={1000} onChange={(e) => setFormData({ ...formData, bio: e.target.value })} rows={3} className="w-full bg-black/40 border border-white/10 rounded-lg py-3 px-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-mafia-gold focus:border-mafia-gold transition-colors font-sans text-sm resize-none overflow-hidden" placeholder={formData.accountType === 'job' ? (lang === 'cs' ? 'Napiš něco o vaší firmě nebo službách...' : 'Write something about your company or services...') : formData.accountType === 'property' ? (lang === 'cs' ? 'Napiš pravidla nebo popis místa...' : 'Write rules or place description...') : (lang === 'cs' ? 'Napiš něco krátkého o sobě...' : 'Write something short about yourself...')} />
               </div>
+
+              {formData.accountType === 'job' && (
+                <div className="mt-6 border border-white/10 bg-black/30 rounded-xl p-5">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className={`w-5 h-5 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${formData.offersServices ? 'bg-mafia-gold border-mafia-gold' : 'border-white/30 group-hover:border-mafia-gold'}`} onClick={() => setFormData({...formData, offersServices: !formData.offersServices})}>
+                      {formData.offersServices && <Check size={14} className="text-black" />}
+                    </div>
+                    <span className="text-sm font-mono tracking-widest uppercase text-white/80 group-hover:text-white transition-colors" onClick={() => setFormData({...formData, offersServices: !formData.offersServices})}>
+                      {lang === 'cs' ? 'Nabízet své služby / Vytvořit voucher' : 'Offer your services / Create voucher'}
+                    </span>
+                  </label>
+                  
+                  <AnimatePresence>
+                    {formData.offersServices && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden mt-4 space-y-4">
+                        <div>
+                          <label className="block text-[10px] font-mono text-white/40 mb-1 uppercase tracking-widest">{lang === 'cs' ? 'Název služby' : 'Service title'}</label>
+                          <input type="text" value={formData.serviceVoucher?.title || ''} onChange={(e) => setFormData({...formData, serviceVoucher: {...(formData.serviceVoucher || {description: '', discount: ''}), title: e.target.value}})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-mafia-gold outline-none" placeholder={lang === 'cs' ? 'např. Pánský střih nebo Vstupenka' : 'e.g. Men haircut'} />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-mono text-white/40 mb-1 uppercase tracking-widest">{lang === 'cs' ? 'Popis služby / nabídky' : 'Description'}</label>
+                          <textarea rows={2} value={formData.serviceVoucher?.description || ''} onChange={(e) => setFormData({...formData, serviceVoucher: {...(formData.serviceVoucher || {title: '', discount: ''}), description: e.target.value}})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-mafia-gold outline-none resize-none" placeholder={lang === 'cs' ? 'Co voucher obsahuje...' : 'What does it include...'} />
+                        </div>
+                        <div className="flex gap-4">
+                          <div className="flex-1">
+                            <label className="block text-[10px] font-mono text-white/40 mb-1 uppercase tracking-widest">{lang === 'cs' ? 'Sleva / Výhoda' : 'Discount / Offer'}</label>
+                            <input type="text" value={formData.serviceVoucher?.discount || ''} onChange={(e) => setFormData({...formData, serviceVoucher: {...(formData.serviceVoucher || {title: '', description: ''}), discount: e.target.value}})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-mafia-gold outline-none" placeholder={lang === 'cs' ? 'např. -20% nebo 1+1' : 'e.g. -20% or 1+1'} />
+                          </div>
+                          <div className="flex-1">
+                            <label className="block text-[10px] font-mono text-white/40 mb-1 uppercase tracking-widest">{lang === 'cs' ? 'Kód (Volitelné)' : 'Code (Optional)'}</label>
+                            <input type="text" value={formData.serviceVoucher?.code || ''} onChange={(e) => setFormData({...formData, serviceVoucher: {...(formData.serviceVoucher || {title: '', description: '', discount: ''}), code: e.target.value}})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-mafia-gold outline-none uppercase" placeholder="MM2026" />
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-mono text-mafia-gold uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <Sparkles size={14} /> {lang === 'cs' ? 'Icebreakers (Lehčí otázky)' : 'Icebreakers'}
+                  <Sparkles size={14} /> {formData.accountType === 'job' ? (lang === 'cs' ? 'Firemní FAQ' : 'Company FAQ') : (lang === 'cs' ? 'Icebreakers (Lehčí otázky)' : 'Icebreakers')}
                 </label>
                 <p className="text-[10px] font-mono text-white/40 mb-3 leading-relaxed">
-                  {lang === 'cs' ? 'Vyber si jednu otázku a odpověz. Pomůže to lidem začít konverzaci.' : 'Pick a question and answer it to help others start a conversation.'}
+                  {formData.accountType === 'job' ? (lang === 'cs' ? 'Vyberte nejčastější dotaz a odpovězte na něj, ať se o vás klienti dozví víc.' : 'Select a common question and answer it so clients can learn more about you.') : (lang === 'cs' ? 'Vyber si jednu otázku a odpověz. Pomůže to lidem začít konverzaci.' : 'Pick a question and answer it to help others start a conversation.')}
                 </p>
                 <div className="flex gap-2">
                   <select 
@@ -1205,10 +1533,21 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                     className="flex-1 bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:border-mafia-gold outline-none"
                   >
                     <option value="">{lang === 'cs' ? 'Vyber otázku...' : 'Select a question...'}</option>
-                    <option value="Jaký je tvůj perfect day?">Jaký je tvůj perfect day?</option>
-                    <option value="Jaká maličkost ti zaručeně udělá radost?">Jaká maličkost ti zaručeně udělá radost?</option>
-                    <option value="Co by tě dokázalo rozesmát i ve špatný den?">Co by tě dokázalo rozesmát i ve špatný den?</option>
-                    <option value="Jaké jídlo miluješ ze všeho nejvíc?">Jaké jídlo miluješ ze všeho nejvíc?</option>
+                    {formData.accountType === 'job' ? (
+                      <>
+                        <option value="Proč si vybrat právě nás?">Proč si vybrat právě nás?</option>
+                        <option value="Na co se u nás můžete nejvíc těšit?">Na co se u nás můžete nejvíc těšit?</option>
+                        <option value="Jaká je naše firemní vize a kultura?">Jaká je naše firemní vize a kultura?</option>
+                        <option value="Kde nás najdete a jak to u nás vypadá?">Kde nás najdete a jak to u nás vypadá?</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value="Jaký je tvůj perfect day?">Jaký je tvůj perfect day?</option>
+                        <option value="Jaká maličkost ti zaručeně udělá radost?">Jaká maličkost ti zaručeně udělá radost?</option>
+                        <option value="Co by tě dokázalo rozesmát i ve špatný den?">Co by tě dokázalo rozesmát i ve špatný den?</option>
+                        <option value="Jaké jídlo miluješ ze všeho nejvíc?">Jaké jídlo miluješ ze všeho nejvíc?</option>
+                      </>
+                    )}
                   </select>
                 </div>
                 {formData.icebreakerPrompts?.[0]?.question && (
@@ -1224,12 +1563,12 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
               
               <div>
                 <label className="block text-xs font-mono text-mafia-gold uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <Sparkles size={14} /> {lang === 'cs' ? 'Moje štítky' : 'My Tags'}
+                  <Sparkles size={14} /> {formData.accountType === 'job' ? (lang === 'cs' ? 'Služby a Specializace' : 'Services & Specialization') : (lang === 'cs' ? 'Moje štítky' : 'My Tags')}
                 </label>
                 <p className="text-[10px] font-mono text-white/40 mb-3 leading-relaxed">
-                  {lang === 'cs' 
-                    ? 'Vyber štítky, které tě nejlépe vystihují. Zvyšují šanci na nalezení lidí s podobnými zájmy.' 
-                    : 'Select tags that best describe you. They increase the chance of finding people with similar interests.'}
+                  {formData.accountType === 'job' 
+                    ? (lang === 'cs' ? 'Přidejte štítky (klíčová slova), které nejlépe vystihují vaši firmu (např. Fade, Veganské jídlo, Luxusní prostředí).' : 'Add tags (keywords) that best describe your company (e.g. Fade, Vegan food, Luxury space).') 
+                    : (lang === 'cs' ? 'Vyber štítky, které tě nejlépe vystihují. Zvyšují šanci na nalezení lidí s podobnými zájmy.' : 'Select tags that best describe you. They increase the chance of finding people with similar interests.')}
                 </p>
                 <CustomSelect 
                   isMulti={true}
@@ -1756,6 +2095,15 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
           </motion.div>
         )}
       </AnimatePresence>
+
+      <PointsExchangeModal 
+        isOpen={isExchangeModalOpen} 
+        onClose={() => setIsExchangeModalOpen(false)} 
+        totalPoints={totalPoints} 
+        formData={formData} 
+        setFormData={setFormData} 
+        lang={lang} 
+      />
     </>
   );
 }
