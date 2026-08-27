@@ -74,6 +74,7 @@ export const ProfileCard = React.memo(function ProfileCard({
   eventPhase = 'NORMAL'
 }: ProfileCardProps) {
   const { lang: hookLang } = useTranslation();
+  const isJobProfile = profile.accountType === 'job';
   const lang = propLang || hookLang;
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
@@ -436,6 +437,29 @@ export const ProfileCard = React.memo(function ProfileCard({
           )}
 
 
+        </AccordionSection>
+
+        
+        <AccordionSection title={lang === 'cs' ? 'Kariéra a Profesní Profil' : 'Career & Professional Profile'} icon={<Briefcase size={16} />} defaultOpen={false}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {profile.educationLevel && <div className="flex flex-col"><span className="text-[10px] text-white/40 uppercase tracking-widest mb-1">{lang === 'cs' ? 'Vzdělání' : 'Education'}</span><span className="text-white text-sm bg-black/40 px-3 py-2 rounded-lg border border-white/5">{profile.educationLevel}</span></div>}
+            {profile.careerField && <div className="flex flex-col"><span className="text-[10px] text-white/40 uppercase tracking-widest mb-1">{lang === 'cs' ? 'Obor' : 'Field'}</span><span className="text-white text-sm bg-black/40 px-3 py-2 rounded-lg border border-white/5">{profile.careerField}</span></div>}
+            {profile.workEthic && <div className="flex flex-col"><span className="text-[10px] text-white/40 uppercase tracking-widest mb-1">{lang === 'cs' ? 'Pracovní nasazení' : 'Work Ethic'}</span><span className="text-white text-sm bg-black/40 px-3 py-2 rounded-lg border border-white/5">{profile.workEthic}</span></div>}
+            {profile.employmentPreference && <div className="flex flex-col"><span className="text-[10px] text-white/40 uppercase tracking-widest mb-1">{lang === 'cs' ? 'Forma práce' : 'Employment'}</span><span className="text-white text-sm bg-black/40 px-3 py-2 rounded-lg border border-white/5">{profile.employmentPreference}</span></div>}
+            
+            {profile.gallupStrengths && profile.gallupStrengths.length > 0 && (
+              <div className="flex flex-col md:col-span-2">
+                <span className="text-[10px] text-white/40 uppercase tracking-widest mb-1">{lang === 'cs' ? 'Silné stránky (Gallup)' : 'Gallup Strengths'}</span>
+                <div className="flex flex-wrap gap-2">
+                  {Array.isArray(profile.gallupStrengths) ? profile.gallupStrengths.map(s => <span key={s} className="px-2 py-1 bg-mafia-gold/10 text-mafia-gold border border-mafia-gold/20 rounded-md text-xs">{s}</span>) : null}
+                </div>
+              </div>
+            )}
+            
+            {profile.coreMotivation && <div className="flex flex-col"><span className="text-[10px] text-white/40 uppercase tracking-widest mb-1">{lang === 'cs' ? 'Hlavní motivátor' : 'Core Motivation'}</span><span className="text-white text-sm bg-black/40 px-3 py-2 rounded-lg border border-white/5">{profile.coreMotivation}</span></div>}
+            {profile.workEnvironmentPref && <div className="flex flex-col"><span className="text-[10px] text-white/40 uppercase tracking-widest mb-1">{lang === 'cs' ? 'Pracovní prostředí' : 'Work Env. Pref'}</span><span className="text-white text-sm bg-black/40 px-3 py-2 rounded-lg border border-white/5">{profile.workEnvironmentPref}</span></div>}
+            {profile.workConflictStyle && <div className="flex flex-col"><span className="text-[10px] text-white/40 uppercase tracking-widest mb-1">{lang === 'cs' ? 'Řešení konfliktů' : 'Conflict Resolution'}</span><span className="text-white text-sm bg-black/40 px-3 py-2 rounded-lg border border-white/5">{profile.workConflictStyle}</span></div>}
+          </div>
         </AccordionSection>
 
         <AccordionSection title={lang === 'cs' ? 'Základní údaje' : 'Basic Info'} icon={<Info size={16} />} defaultOpen={false}>

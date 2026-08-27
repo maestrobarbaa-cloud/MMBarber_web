@@ -218,6 +218,22 @@ export interface ProfileData {
     boundaries?: { infidelityDef?: string; };
   id?: string;
   userId?: string;
+  // Missing fields restored
+  careerField?: string;
+  gallupStrengths?: string[];
+  coreMotivation?: string;
+  workEnvironmentPref?: string;
+  workConflictStyle?: string;
+  
+  lifeSatisfaction?: string;
+  listenToAdvice?: string;
+  trendsVsTested?: string;
+  naiveVsOpinionated?: string;
+  friendsCircle?: string;
+  infidelityBoundaries?: string;
+  publicAffection?: string;
+  loyaltyApproach?: string;
+
   matchId?: string;
   messageRetentionDays?: number | null;
   schemaVersion?: number;
@@ -371,6 +387,7 @@ export interface ProfileData {
     relationshipPostKids?: string[];
     instinct?: string[];
     respectForElders?: string;
+    familyRole?: string;
   };
   
   // Socials

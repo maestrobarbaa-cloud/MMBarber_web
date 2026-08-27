@@ -18,6 +18,7 @@ interface Holiday {
 export function HolidayCountdown() {
   const { lang, t } = useTranslation();
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
+  const [showIntel, setShowIntel] = useState(false);
   const [graphicsTier, setGraphicsTier] = useState<string>("high");
 
   const isTimelineView = graphicsTier !== 'low' && graphicsTier !== 'lite' && graphicsTier !== 'standard';
@@ -140,6 +141,7 @@ export function HolidayCountdown() {
           { name: t?.holidayCountdown?.holidays?.independenceDay?.name || "Independence Day", date: new Date(currentYear, 6, 4), icon: <Flag className="w-5 h-5 text-mafia-gold" />, desc: t?.holidayCountdown?.holidays?.independenceDay?.desc || "", isHighSeason: true, type: 'public' },
           { name: t?.holidayCountdown?.holidays?.lfs?.name || "Summer Film School", date: new Date(currentYear, 6, 25), icon: <Film className="w-5 h-5 text-mafia-gold" />, desc: t?.holidayCountdown?.holidays?.lfs?.desc || "", isHighSeason: true, type: 'commercial' },
           { name: t?.holidayCountdown?.holidays?.slavnostiVina?.name || "Wine Festival", date: new Date(currentYear, 8, 13), icon: <Utensils className="w-5 h-5 text-mafia-gold" />, desc: t?.holidayCountdown?.holidays?.slavnostiVina?.desc || "", isHighSeason: true, type: 'commercial' },
+          { name: "Slovácké hody", date: new Date(currentYear, 9, 15), icon: <Utensils className="w-5 h-5 text-mafia-gold" />, desc: "Traditional Slovácko feasts.", isHighSeason: true, type: 'commercial' },
           { name: t?.holidayCountdown?.holidays?.halloween?.name || "Halloween", date: new Date(currentYear, 9, 31), icon: <Ghost className="w-5 h-5 text-mafia-gold" />, desc: t?.holidayCountdown?.holidays?.halloween?.desc || "", isHighSeason: true, type: 'commercial' },
           { name: t?.holidayCountdown?.holidays?.thanksgiving?.name || "Thanksgiving", date: new Date(currentYear, 10, 27), icon: <Gift className="w-5 h-5 text-mafia-gold" />, desc: t?.holidayCountdown?.holidays?.thanksgiving?.desc || "", isHighSeason: true, type: 'public' },
           { name: t?.holidayCountdown?.holidays?.christmas?.name || "Christmas Day", date: new Date(currentYear, 11, 25), icon: <Sparkles className="w-5 h-5 text-mafia-gold" />, desc: t?.holidayCountdown?.holidays?.christmas?.desc || "", isHighSeason: true, type: 'public' },
@@ -180,6 +182,7 @@ export function HolidayCountdown() {
         { name: t.holidayCountdown.holidays.vacationSeason?.name || "Dovolené", date: new Date(currentYear, 6, 1), icon: <Sparkles className="w-5 h-5 text-mafia-gold" />, desc: t.holidayCountdown.holidays.vacationSeason?.desc || "", isHighSeason: true, type: 'commercial' },
         { name: t.holidayCountdown.holidays.lfs?.name || "Letní filmová škola", date: new Date(currentYear, 6, 25), icon: <Film className="w-5 h-5 text-mafia-gold" />, desc: t.holidayCountdown.holidays.lfs?.desc || "", isHighSeason: true, type: 'commercial' },
         { name: t.holidayCountdown.holidays.slavnostiVina?.name || "Slavnosti vína", date: new Date(currentYear, 8, 13), icon: <Utensils className="w-5 h-5 text-mafia-gold" />, desc: t.holidayCountdown.holidays.slavnostiVina?.desc || "", isHighSeason: true, type: 'commercial' },
+        { name: "Slovácké Hody", date: new Date(currentYear, 9, 15), icon: <Utensils className="w-5 h-5 text-mafia-gold" />, desc: "Tradiční hody v okolí UH. Ke kroji to musí ladit na 100%.", isHighSeason: true, type: 'commercial' },
         { name: t.holidayCountdown.holidays.christmas?.name || "Vánoce", date: new Date(currentYear, 11, 24), icon: <Sparkles className="w-5 h-5 text-mafia-gold" />, desc: t.holidayCountdown.holidays.christmas?.desc || "", isHighSeason: true, type: 'public' },
         { name: "Začátek svatební sezóny", date: new Date(currentYear, 4, 1), icon: <Heart className="w-5 h-5 text-mafia-gold" />, desc: "Diář se plní. Zajisti si termín včas.", isHighSeason: true, type: 'other' },
         { name: "Konec svatební sezóny", date: new Date(currentYear, 8, 30), icon: <Heart className="w-5 h-5 text-mafia-gold" />, desc: "Poslední záchrana pro opozdilce.", type: 'other' },
@@ -394,6 +397,59 @@ export function HolidayCountdown() {
             {t?.holidayCountdown?.title || (lang === 'cs' ? 'TO NEJLEPŠÍ Z TÝDNE' : 'BEST OF THE WEEK')}
           </h2>
           <div className="section-underline w-24 h-1 bg-gradient-to-r from-transparent via-mafia-gold to-transparent mx-auto mt-8 mb-12 opacity-80" style={{ boxShadow: '0 0 15px var(--user-glow-color)' }}></div>
+
+          {/* NEW INTEL SECTION - GOLD THEME, SHORT, GAME-LIKE */}
+          <div className="w-full max-w-2xl mx-auto px-4 flex flex-col items-center z-20">
+            <button
+              onClick={() => setShowIntel(!showIntel)}
+              className="group relative flex items-center gap-2 px-4 py-2 border border-mafia-gold/30 bg-mafia-gold/5 hover:bg-mafia-gold/10 transition-all cursor-pointer shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.1)] hover:shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.2)] overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-mafia-gold/10 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300"></div>
+              <Sparkles size={14} className="text-mafia-gold relative z-10 animate-pulse" />
+              <span className="font-mono text-mafia-gold tracking-widest uppercase text-[10px] sm:text-xs relative z-10">
+                {lang === 'cs' ? 'INFO: VYTÍŽENÉ OBDOBÍ' : 'INFO: HIGH SEASON'}
+              </span>
+              <ChevronDown size={14} className={`text-mafia-gold transition-transform duration-300 relative z-10 ${showIntel ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+              {showIntel && (
+                <motion.div
+                  initial={graphicsTier === 'low' ? {} : { opacity: 0, height: 0 }}
+                  animate={graphicsTier === 'low' ? {} : { opacity: 1, height: 'auto' }}
+                  exit={graphicsTier === 'low' ? {} : { opacity: 0, height: 0 }}
+                  className="w-full mt-4 overflow-hidden"
+                >
+                  <div className="p-4 sm:p-6 border border-mafia-gold/30 bg-mafia-black/90 backdrop-blur-sm relative shadow-2xl">
+                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-mafia-gold to-transparent opacity-50"></div>
+                    
+                    <div className="flex flex-col sm:flex-row items-center gap-6">
+                      <div className="flex-1 space-y-2 text-center sm:text-left">
+                        <h4 className="text-lg font-heading font-black text-mafia-gold uppercase tracking-widest">
+                          {lang === 'cs' ? 'KRITICKÉ VYTÍŽENÍ' : 'CRITICAL LOAD'}
+                        </h4>
+                        <p className="text-smoke-white/80 font-mono text-xs leading-relaxed">
+                          {lang === 'cs' 
+                            ? 'Události výše znamenají plná křesla. Nechceš přece Donovi vysvětlovat amatérský sestřih. Rezervuj 14 dní předem.'
+                            : 'These events mean fully booked chairs. Don\'t explain an amateur cut to the Don. Book 14 days ahead.'}
+                        </p>
+                      </div>
+                      
+                      <div className="flex-shrink-0 w-full sm:w-auto">
+                        <a 
+                          href="#booking"
+                          className="block w-full px-6 py-3 bg-mafia-gold text-mafia-black font-black uppercase tracking-widest text-[10px] sm:text-xs hover:bg-white transition-colors text-center shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]"
+                        >
+                          {lang === 'cs' ? 'ZAJISTIT KŘESLO' : 'SECURE CHAIR'}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
 
 
         </div>

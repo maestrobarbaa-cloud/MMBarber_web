@@ -85,6 +85,9 @@ model User {
   eventMessages    EventMessage[]
   donations        Donation[]
   
+  activityLogs    UserActivityLog[]
+  stats           UserStats?
+  
   friendRequestsSent     FriendRequest[] @relation("FriendRequestsSent")
   friendRequestsReceived FriendRequest[] @relation("FriendRequestsReceived")
   
@@ -99,6 +102,11 @@ model User {
   bugReports       BugReport[]
   ratingsGiven     ProfileRating[] @relation("RatingsGiven")
   ratingsReceived  ProfileRating[] @relation("RatingsReceived")
+  
+  employerReviewsGiven    EmployerReview[] @relation("EmployerReviewsGiven")
+  employerReviewsReceived EmployerReview[] @relation("EmployerReviewsReceived")
+  companyReviewsGiven      CompanyReview[]  @relation("CompanyReviewsGiven")
+  companyReviewsReceived   CompanyReview[]  @relation("CompanyReviewsReceived")
 
 }
 
@@ -488,4 +496,70 @@ model ProfileRating {
   target      User     @relation("RatingsReceived", fields: [targetId], references: [id], onDelete: Cascade)
 
   @@unique([raterId, targetId])
+}
+
+model EmployerReview {
+  id              String   @id @default(cuid())
+  reviewerId      String   
+  targetUserId    String   
+  
+  workEthicRating Int      
+  teamDynamics    String   
+  drivePercentage Int      
+  
+  textReview      String?  
+  isVerified      Boolean  @default(false) 
+
+  createdAt       DateTime @default(now())
+  
+  reviewer        User     @relation("EmployerReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade)
+  targetUser      User     @relation("EmployerReviewsReceived", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewerId, targetUserId])
+}
+
+
+model CompanyReview {
+  id              String   @id @default(cuid())
+  reviewerId      String   
+  targetCompanyId String   
+  
+  salaryRating      Int      // 1-10
+  managementRating  Int      // 1-10
+  environmentRating Int      // 1-10
+  textReview        String?
+  
+  createdAt       DateTime @default(now())
+  
+  reviewer        User     @relation("CompanyReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade)
+  targetCompany   User     @relation("CompanyReviewsReceived", fields: [targetCompanyId], references: [id], onDelete: Cascade)
+}
+
+
+model UserActivityLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  actionType  String   // "PAGE_VIEW", "PROFILE_UPDATE", "MESSAGE_SENT"
+  metadata    Json?
+  durationSec Int      @default(0)
+  points      Int      @default(0)
+  
+  createdAt   DateTime @default(now())
+}
+
+model UserStats {
+  id             String @id @default(cuid())
+  userId         String @unique
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  totalTimeSec   Int    @default(0)
+  totalPoints    Int    @default(0)
+  
+  pointsThisWeek Int    @default(0)
+  pointsThisMonth Int   @default(0)
+  pointsThisYear Int    @default(0)
+  
+  updatedAt      DateTime @updatedAt
 }

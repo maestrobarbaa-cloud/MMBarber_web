@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Search, Heart, Briefcase, Plane, PawPrint, Users, X, ArrowLeft, Gamepad2, Moon, Flame, Star, Eye, Sparkles, Music, BookOpen, Crown, Palette, Flag, Calendar, Leaf, Home, Activity, Wrench, History, Zap } from 'lucide-react';
+import { Search, Heart, Briefcase, Plane, PawPrint, Users, X, ArrowLeft, Gamepad2, Moon, Flame, Star, Eye, Sparkles, Music, BookOpen, Crown, Palette, Flag, Calendar, Leaf, Home, Activity, Wrench, History, Zap, Coffee } from 'lucide-react';
 import { ProfileData } from './ProfileCard';
 
 export interface SearchFilters {
@@ -21,6 +21,98 @@ export interface DiscoveryCategory {
 
 export const CATEGORIES: DiscoveryCategory[] = [
   {
+    id: 'wellness',
+    icon: Sparkles,
+    title: { cs: 'Wellness & Spiritual', en: 'Wellness & Spiritual' },
+    description: { cs: 'Jóga, meditace, sauny a osobní rozvoj.', en: 'Yoga, meditation, saunas and personal growth.' },
+    color: 'border-teal-400 text-teal-400 bg-teal-400/10',
+    subOptions: [
+      { id: 'yoga', label: { cs: '🧘‍♀️ Jóga & Pilates', en: '🧘‍♀️ Yoga & Pilates' }, tag: '🧘‍♀️ Jóga' },
+      { id: 'meditation', label: { cs: '🧘‍♂️ Meditace / Mindfulness', en: '🧘‍♂️ Meditation' }, tag: '🧘‍♂️ Meditace' },
+      { id: 'sauna', label: { cs: '🧖‍♀️ Sauna & Spa', en: '🧖‍♀️ Sauna & Spa' }, tag: '🧖‍♀️ Sauna' },
+      { id: 'retreat', label: { cs: '🏕️ Retreaty', en: '🏕️ Retreats' }, tag: '🏕️ Retreaty' },
+      { id: 'massage', label: { cs: '💆‍♀️ Masáže', en: '💆‍♀️ Massages' }, tag: '💆‍♀️ Masáže' },
+      { id: 'cold_therapy', label: { cs: '🧊 Otužování (Wim Hof)', en: '🧊 Cold Therapy' }, tag: '🧊 Otužování' },
+      { id: 'healing', label: { cs: '✨ Reiki & Léčitelství', en: '✨ Healing' }, tag: '✨ Léčitelství' }
+    ]
+  },
+  {
+    id: 'extreme_sports',
+    icon: Flame,
+    title: { cs: 'Adrenalin & Extrém', en: 'Adrenaline & Extreme' },
+    description: { cs: 'Urbex, seskoky, parkour a vše pro odvážné.', en: 'Urbex, skydiving, parkour and more.' },
+    color: 'border-red-600 text-red-600 bg-red-600/10',
+    subOptions: [
+      { id: 'urbex', label: { cs: '🏚️ Urbex', en: '🏚️ Urbex' }, tag: '🏚️ Urbex' },
+      { id: 'skydiving', label: { cs: '🪂 Skydiving / Paragliding', en: '🪂 Skydiving' }, tag: '🪂 Skydiving' },
+      { id: 'bungee', label: { cs: '🧗 Bungee Jumping', en: '🧗 Bungee' }, tag: '🧗 Bungee' },
+      { id: 'parkour', label: { cs: '🤸‍♂️ Parkour & Freerun', en: '🤸‍♂️ Parkour' }, tag: '🤸‍♂️ Parkour' },
+      { id: 'survival', label: { cs: '🌲 Survival & Bushcraft', en: '🌲 Survival' }, tag: '🌲 Survival' },
+      { id: 'motorsport', label: { cs: '🏎️ Okruhy & Závody', en: '🏎️ Track Days' }, tag: '🏎️ Závody' }
+    ]
+  },
+  {
+    id: 'gastro_foodies',
+    icon: Coffee,
+    title: { cs: 'Gastro & Foodies', en: 'Gastro & Foodies' },
+    description: { cs: 'Kavárny, Fine Dining, Street food a degustace.', en: 'Cafes, Fine Dining, Street food.' },
+    color: 'border-orange-400 text-orange-400 bg-orange-400/10',
+    subOptions: [
+      { id: 'cafe', label: { cs: '☕ Kavárenský povaleč', en: '☕ Cafe lover' }, tag: '☕ Kavárny' },
+      { id: 'fine_dining', label: { cs: '🍽️ Fine Dining', en: '🍽️ Fine Dining' }, tag: '🍽️ Fine Dining' },
+      { id: 'street_food', label: { cs: '🍔 Street Food', en: '🍔 Street Food' }, tag: '🍔 Street Food' },
+      { id: 'vegan_food', label: { cs: '🥗 Vegan & Raw', en: '🥗 Vegan & Raw' }, tag: '🥗 Vegan/Raw' },
+      { id: 'cooking_class', label: { cs: '🍳 Kurzy vaření', en: '🍳 Cooking Classes' }, tag: '🍳 Kurz vaření' },
+      { id: 'bbq', label: { cs: '🥩 BBQ & Grilování', en: '🥩 BBQ & Grilling' }, tag: '🥩 BBQ' }
+    ]
+  },
+  {
+    id: 'creatives',
+    icon: Palette,
+    title: { cs: 'Kreativa & Umění', en: 'Creativity & Arts' },
+    description: { cs: 'Keramika, malování, DIY a šití.', en: 'Pottery, painting, DIY and sewing.' },
+    color: 'border-fuchsia-400 text-fuchsia-400 bg-fuchsia-400/10',
+    subOptions: [
+      { id: 'pottery', label: { cs: '🏺 Keramika', en: '🏺 Pottery' }, tag: '🏺 Keramika' },
+      { id: 'painting', label: { cs: '🎨 Malování & Kresba', en: '🎨 Painting & Drawing' }, tag: '🎨 Malování' },
+      { id: 'sewing', label: { cs: '🧵 Šití & Móda', en: '🧵 Sewing & Fashion' }, tag: '🧵 Šití' },
+      { id: 'woodwork', label: { cs: '🪚 Práce se dřevem', en: '🪚 Woodworking' }, tag: '🪚 Dřevo' },
+      { id: 'writing', label: { cs: '✍️ Tvůrčí psaní / Poezie', en: '✍️ Creative Writing' }, tag: '✍️ Psaní' },
+      { id: 'theater_acting', label: { cs: '🎭 Amatérské divadlo', en: '🎭 Amateur Theater' }, tag: '🎭 Divadlo' }
+    ]
+  },
+  {
+    id: 'motor_heads',
+    icon: Zap,
+    title: { cs: 'Autosalon & Motorky', en: 'Cars & Motorcycles' },
+    description: { cs: 'Motorkáři, JDM, Tuning a Veteráni.', en: 'Bikers, JDM, Tuning and Classics.' },
+    color: 'border-zinc-500 text-zinc-500 bg-zinc-500/10',
+    subOptions: [
+      { id: 'bikers', label: { cs: '🏍️ Motorkáři', en: '🏍️ Bikers' }, tag: '🏍️ Motorkáři' },
+      { id: 'jdm', label: { cs: '🇯🇵 JDM (Japonská auta)', en: '🇯🇵 JDM Cars' }, tag: '🇯🇵 JDM' },
+      { id: 'tuning', label: { cs: '🔧 Tuning & Upravy', en: '🔧 Tuning' }, tag: '🔧 Tuning' },
+      { id: 'classic_cars', label: { cs: '🚙 Veteráni', en: '🚙 Classic Cars' }, tag: '🚙 Veteráni' },
+      { id: 'offroad', label: { cs: '🚙 Offroad & 4x4', en: '🚙 Offroad & 4x4' }, tag: '🚙 Offroad' },
+      { id: 'vanlife', label: { cs: '🚐 Vanlife / Obytná auta', en: '🚐 Vanlife' }, tag: '🚐 Vanlife' }
+    ]
+  },
+  {
+    id: 'tech_geeks',
+    icon: Sparkles,
+    title: { cs: 'Tech & Inovace', en: 'Tech & Geeks' },
+    description: { cs: 'Hackathony, 3D tisk, Krypto a AI.', en: 'Hackathons, 3D printing, Crypto and AI.' },
+    color: 'border-blue-400 text-blue-400 bg-blue-400/10',
+    subOptions: [
+      { id: 'hackathon', label: { cs: '💻 Hackathony', en: '💻 Hackathons' }, tag: '💻 Hackathon' },
+      { id: '3d_printing', label: { cs: '🖨️ 3D Tisk', en: '🖨️ 3D Printing' }, tag: '🖨️ 3D Tisk' },
+      { id: 'crypto_meetup', label: { cs: '🪙 Crypto Meetups', en: '🪙 Crypto Meetups' }, tag: '🪙 Krypto' },
+      { id: 'ai_community', label: { cs: '🤖 AI Komunita', en: '🤖 AI Community' }, tag: '🤖 AI' },
+      { id: 'robotics', label: { cs: '🦾 Robotika & Drony', en: '🦾 Robotics & Drones' }, tag: '🦾 Robotika' },
+      { id: 'electronics', label: { cs: '🔌 Bastlení & Arduino', en: '🔌 Electronics/Arduino' }, tag: '🔌 Bastlení' }
+    ]
+  },
+
+  {
     id: 'relationships',
     icon: Heart,
     title: { cs: 'Vztahy', en: 'Relationships' },
@@ -37,6 +129,31 @@ export const CATEGORIES: DiscoveryCategory[] = [
       { id: 'sapiosexual', label: { cs: '🧠 Sapiosexuál', en: '🧠 Sapiosexual' }, tag: '🧠 Sapiosexuál' },
     ]
   },
+  {
+    id: 'nightlife_alternative',
+    icon: Flame,
+    title: { cs: 'Noční Život & Párty Singles', en: 'Nightlife & Singles Parties' },
+    description: { cs: 'Kluby, singles párty a alternativní scéna.', en: 'Clubs, singles parties and alternative scene.' },
+    color: 'border-rose-500 text-rose-500 bg-rose-500/10',
+    subOptions: [
+      { id: 'singles_party', label: { cs: '🍸 Singles Párty', en: '🍸 Singles Party' }, tag: '🍸 Singles Párty' },
+      { id: 'clubbing', label: { cs: '🪩 Clubbing & VIP', en: '🪩 Clubbing & VIP' }, tag: '🪩 Clubbing' },
+      { id: 'afterparty', label: { cs: '🌅 Afterparty', en: '🌅 Afterparty' }, tag: '🌅 Afterparty' },
+      { id: 'rave', label: { cs: '🔊 Rave / Underground', en: '🔊 Rave / Underground' }, tag: '🔊 Rave' },
+      { id: 'speed_dating', label: { cs: '⏱️ Speed Dating', en: '⏱️ Speed Dating' }, tag: '⏱️ Speed Dating' },
+      { id: 'burlesque', label: { cs: '🎭 Burleska / Kabaret', en: '🎭 Burlesque / Cabaret' }, tag: '🎭 Burleska' },
+      { id: 'kink_friendly', label: { cs: '🖤 Alternativní scéna (Kink-friendly)', en: '🖤 Alternative scene' }, tag: '🖤 Alternativní scéna' },
+      { id: 'exclusive_events', label: { cs: '🥂 Exkluzivní uzavřené akce', en: '🥂 Exclusive Private Events' }, tag: '🥂 Exkluzivní akce' },
+      { id: 'secret_location', label: { cs: '🤫 Secret Location', en: '🤫 Secret Location' }, tag: '🤫 Secret Location' },
+      { id: 'pole_dance', label: { cs: '💃 Pole Dance / Aerial', en: '💃 Pole Dance' }, tag: '💃 Pole Dance' },
+      { id: 'karaoke', label: { cs: '🎤 Karaoke Night', en: '🎤 Karaoke Night' }, tag: '🎤 Karaoke' },
+      { id: 'bachelor_party', label: { cs: '🎉 Rozlučka se svobodou', en: '🎉 Bachelor/Bachelorette Party' }, tag: '🎉 Rozlučka' },
+      { id: 'casino_night', label: { cs: '🎲 Kasino & Poker Night', en: '🎲 Casino & Poker Night' }, tag: '🎲 Kasino/Poker' },
+      { id: 'yacht_party', label: { cs: '🛥️ Jachty & VIP', en: '🛥️ Yachts & VIP' }, tag: '🛥️ Jachty & VIP' },
+      { id: 'mixology', label: { cs: '🍹 Mixology / Koktejly', en: '🍹 Mixology / Cocktails' }, tag: '🍹 Mixology' }
+    ]
+  },
+
   {
     id: 'friends',
     icon: Users,

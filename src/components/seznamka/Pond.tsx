@@ -16,6 +16,7 @@ import { MatchVoucherCard, VoucherData } from "./MatchVoucherCard";
 import { DsaTransparencyInfo } from "./DsaTransparencyInfo";
 import { LegalHubModal } from "./LegalHubModal";
 import { DynamicEventEngine } from "@/lib/algorithms/DynamicEventEngine";
+import { useActivityTracker } from "@/hooks/useActivityTracker";
 
 interface PondProps {
   currentUser?: ProfileData | null;
@@ -26,6 +27,7 @@ interface PondProps {
 }
 
 export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: PondProps) {
+  useActivityTracker(); // Initialize analytics tracking
   const { lang } = useTranslation();
   const eventStatus = DynamicEventEngine.getEventStatus();
   const [allProfiles, setAllProfiles] = useState<ProfileData[]>([]);
@@ -583,7 +585,7 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
         )}
 
         {/* LEFT COLUMN: SWIPER */}
-        <div className="flex flex-col md:flex-row items-center gap-3">
+        <div className="flex flex-col md:flex-row items-center gap-3 relative z-[100]">
           {/* Active Profile Switcher */}
           <div className="relative">
             <button

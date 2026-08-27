@@ -17,7 +17,7 @@ import { CATEGORIES } from "./DiscoveryHub";
 import { CustomSelect } from "./CustomSelect";
 import { PersonalityQuiz } from "./PersonalityQuiz";
 import { PreferenceSelector, TraitSelector, InfoTooltip } from "./SetupHelpers";
-import { Step2Physical, Step3Character, StepPsychology, Step4Lifestyle, Step5CommLove, Step6FutureKids, Step7ValuesMoney, Step8Protocol, StepSchools, StepAssets, StepTimeline, StepParenting, StepHealth, StepIntimacy, StepCareerEducation, StepMedia, PointsBadge } from "./ProfileSetupSteps";
+import { Step2Physical, Step3Character, StepPsychology, Step4Lifestyle, Step5CommLove, Step6FutureKids, Step7ValuesMoney, Step8Protocol, StepSchools, StepAssets, StepTimeline, StepFamilyBackground, StepParenting, StepHealth, StepIntimacy, StepCareerEducation, StepMedia, PointsBadge } from "./ProfileSetupSteps";
 import { PointsExchangeModal } from "./PointsExchangeModal";
 import { PsychologyQuiz, MBTI_QUIZ, LOVE_LANGUAGE_QUIZ, ATTACHMENT_STYLE_QUIZ, CHRONOTYPE_QUIZ, TEMPERAMENT_QUIZ, ENNEAGRAM_QUIZ, CONFLICT_STYLE_QUIZ, APOLOGY_LANGUAGE_QUIZ, BRAIN_HEMISPHERE_QUIZ, INTIMACY_DYNAMIC_QUIZ, LOVE_STYLE_QUIZ, DARK_TRIAD_QUIZ, SPONTANEITY_QUIZ, INFIDELITY_BOUNDARY_QUIZ, QuizDef } from './PsychologyQuiz';
 
@@ -162,12 +162,15 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
     ...(isPersonalAccount ? [
       { id: 'assets', label: lang === 'cs' ? 'Majetek a Bydlení' : 'Assets & Housing' },
       { id: 'timeline', label: lang === 'cs' ? 'Časová osa' : 'Timeline' },
+      { id: 'family', label: lang === 'cs' ? 'Rodina a Minulost' : 'Family & Background' },
       { id: 'parenting', label: lang === 'cs' ? 'Děti a Výchova' : 'Kids & Parenting' },
       { id: 'health', label: lang === 'cs' ? 'Zdraví a Omezení' : 'Health & Constraints' },
-      { id: 'personality', label: lang === 'cs' ? 'Osobnost a Vzhled' : 'Personality & Looks' },
+      { id: 'looks', label: lang === 'cs' ? 'Vzhled a Tělo' : 'Looks & Body' },
+      { id: 'character', label: lang === 'cs' ? 'Povaha a Charakter' : 'Character & Personality' },
       { id: 'psychology', label: lang === 'cs' ? 'Psychologie a Mysl' : 'Psychology & Mind' },
       
-      { id: 'lifestyle', label: lang === 'cs' ? 'Životní styl a Hodnoty' : 'Lifestyle & Values', locked: !isDating, lockCategory: 'relationships' },
+      { id: 'habits', label: lang === 'cs' ? 'Zvyky a Lifestyle' : 'Lifestyle & Habits', locked: !isDating, lockCategory: 'relationships' },
+      { id: 'values', label: lang === 'cs' ? 'Hodnoty a Přesvědčení' : 'Values & Beliefs', locked: !isDating, lockCategory: 'relationships' },
       { id: 'relationships', label: lang === 'cs' ? 'Vztahy a Komunikace' : 'Relationships', locked: !isDating, lockCategory: 'relationships' },
       { id: 'intimacy', label: lang === 'cs' ? 'Intimita' : 'Intimacy', locked: !isDating, lockCategory: 'relationships' },
       
@@ -1429,9 +1432,13 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
           )}
 
           
-          {activeTab === "personality" && (
+          {activeTab === "looks" && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
               <Step2Physical formData={formData} setFormData={setFormData} lang={lang} />
+            </motion.div>
+          )}
+          {activeTab === "character" && (
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
               <Step3Character formData={formData} setFormData={setFormData} lang={lang} />
             </motion.div>
           )}
@@ -1440,9 +1447,13 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
               <StepPsychology formData={formData} setFormData={setFormData} lang={lang} />
             </motion.div>
           )}
-          {activeTab === "lifestyle" && (
+          {activeTab === "habits" && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
               <Step4Lifestyle formData={formData} setFormData={setFormData} lang={lang} />
+            </motion.div>
+          )}
+          {activeTab === "values" && (
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
               <Step7ValuesMoney formData={formData} setFormData={setFormData} lang={lang} />
             </motion.div>
           )}
@@ -1462,6 +1473,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
           )}
           {activeTab === "assets" && <StepAssets formData={formData} setFormData={setFormData} lang={lang} />}
           {activeTab === "timeline" && <StepTimeline formData={formData} setFormData={setFormData} lang={lang} />}
+          {activeTab === "family" && <StepFamilyBackground formData={formData} setFormData={setFormData} lang={lang} />}
           {activeTab === "parenting" && <StepParenting formData={formData} setFormData={setFormData} lang={lang} />}
           {activeTab === "health" && <StepHealth formData={formData} setFormData={setFormData} lang={lang} />}
           {activeTab === 'schools' && <StepSchools formData={formData} setFormData={setFormData} lang={lang} />}

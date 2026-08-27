@@ -225,6 +225,55 @@ const MONTHLY_DIALOGUES: Record<number, DialogueTurn[][]> = {
   ]
 };
 
+const TOMAS_QUOTES: string[] = [
+  "Nic nestojí samo. Ani to, co tak vypadá.",
+  "Každá věc má svůj konec někde jinde.",
+  "Svět není ze spojení. Svět je spojení.",
+  "To, co spolu nesouvisí, jen ještě neznáme.",
+  "Všechno se dotýká všeho, jen ne vždycky ve stejný čas.",
+  "Mezi dvěma věcmi je vždycky něco třetího.",
+  "Náhoda je jméno pro souvislost, kterou zatím nevidíme.",
+  "I věci, které se nikdy nepotkaly, mají společný příběh.",
+  "Nic není oddělené, jen některé souvislosti jsou příliš tiché.",
+  "Svět drží pohromadě věcmi, které spolu zdánlivě nesouvisí.",
+  "To, co vypadá jako náhoda, možná jen nezná své jméno.",
+  "Každá věc je začátkem něčeho, co ještě nevidíme.",
+  "Mezi ničím a vším vede víc cest, než dokážeme spočítat.",
+  "Všechno se něčeho dotýká, i když přes nekonečno.",
+  "Možná jsme se nepotkali ve správný čas, ale ve správném příběhu.",
+  "Jsou lidé, jejichž nepřítomnost má větší přítomnost než většina lidí.",
+  "Někdy si dva lidé nejsou souzeni navždy, ale jen na tak dlouho, aby se navzájem změnili.",
+  "Nejzvláštnější na některých lidech je, že odejdou z místnosti, ale ne z myšlenek.",
+  "Některé vztahy se nerozbijí. Jen přestanou mít kam růst.",
+  "Potkali jsme se jako cizí lidé a rozešli se jako vzpomínka.",
+  "Někdy se dva lidé najdou právě proto, aby zjistili, proč se hledali.",
+  "Možná nejde o to, kdo zůstane, ale o to, kdo v nás zůstane.",
+  "Možná po člověku nezůstane to, co udělal, ale to, co v někom změnil.",
+  "Člověk odchází dřív, než zmizí jeho stopa.",
+  "Jednou po nás zůstanou jen věci, které jsme změnili v druhých.",
+  "Nezůstává po nás to, co jsme měli, ale to, co jsme v někom zanechali.",
+  "Až jednou nebudeme, budou po nás žít věci, o kterých ani nebudeme vědět.",
+  "Možná je život jen o tom, co po sobě necháme v cizích příbězích.",
+  "Po některých lidech zůstane prázdno. Po jiných člověk, kterým jsme díky nim.",
+  "Na konci nezáleží, kolik času jsme měli, ale kolik života po nás zůstalo v ostatních.",
+  "Některé stopy nejsou vidět na cestě, ale v lidech, kteří po ní jdou dál.",
+  "Možná neumíráme tehdy, když odejdeme, ale tehdy, když po nás přestane něco pokračovat.",
+  "Kdo ovládne jiné, získá moc. Kdo ovládne sebe, získá svobodu.",
+  "Největší bitvy se nevedou před očima lidí.",
+  "Člověk pozná svou sílu až ve chvíli, kdy ji nemusí nikomu dokazovat.",
+  "Láska člověka nepřipoutá. Ukáže mu, ke komu se chce vracet.",
+  "Některá setkání jsou krátká, protože jejich smysl není zůstat, ale změnit.",
+  "Kdo někoho opravdu miloval, nenese jeho odchod. Nese jeho část.",
+  "Někdy člověk ztratí druhého, aby poznal, co v něm zanechal.",
+  "Jméno může zmizet z kamene, ale nemusí zmizet z paměti.",
+  "Člověk odchází jednou. Jeho vliv může odcházet po staletí.",
+  "Když člověk pozná celý svět, teprve potom zjistí, že nejméně znal sebe.",
+  "Osud není cesta před námi. Je to stopa, kterou za sebou poznáme až na konci.",
+  "Co nazýváme náhodou, může být jen souvislost, která ještě nezná své místo.",
+  "Svět si nepamatuje všechny naše kroky. Pamatuje si, co se kvůli nim změnilo.",
+  "Každý člověk je chvílí v životě druhého a celý život ve svém vlastním."
+];
+
 const TOMAS_QUOTES_EN = [
   "Divide et impera.",
   "Vires acquirit eundo.",
@@ -971,7 +1020,7 @@ function BarberCard({
               {/* Dialogue Bubble - Increased space and added background for clarity */}
               <div className="mb-10 relative w-full min-h-[160px] flex items-center justify-center">
                   <AnimatePresence mode="wait">
-                    {activeSpeaker === (barber.name === 'Tomáš' || barber.name === 'Tomas' ? 'tomas' : 'nella') && (
+                    {activeSpeaker === (barber.id === 'tomas' ? 'tomas' : 'nella') && (
                       <motion.div
                         key={`${barber.name}-${dialogueIndex}`}
                         initial={{ opacity: 0, scale: 0.9, y: 10 }}
@@ -1523,7 +1572,7 @@ function ChairWithCard({
       <div className="relative z-10">
         <BarberCard 
           barber={barber}
-          isActive={activeSpeaker === (barber.name === 'Tomáš' || barber.name === 'Tomas' ? 'tomas' : 'nella')}
+          isActive={activeSpeaker === (barber.id === 'tomas' ? 'tomas' : 'nella')}
           dialogueIndex={dialogueIndex}
           lang={lang}
           t={t}
@@ -1722,77 +1771,54 @@ export function Profiles() {
     }, 80);
   };
 
-  // Re-enabled dialogue system - Alternating monthly sequential mode
+  // TOMAS QUOTES ALGORITHM
   useEffect(() => {
-    // DISABLED per user request to hide Tomáš & Nella chat
-    setActiveSpeaker(null);
-    setActiveDialogueText("");
-    return;
-
     const isMobile = window.innerWidth < 1280;
+    // Povolíme zobrazení na desktopu (kde je aktivní sekce operativi)
     if (!isSectionVisible || isMobile) {
       setActiveSpeaker(null);
       setActiveDialogueText("");
       return;
     }
 
-    const currentMonth = new Date().getMonth(); // 0 = Leden, 11 = Prosinec
-    const chats = MONTHLY_DIALOGUES[currentMonth] || MONTHLY_DIALOGUES[0];
-    if (chats.length === 0) return;
-
     let t1: NodeJS.Timeout;
     let t2: NodeJS.Timeout;
 
-    const playTurn = (cIdx: number, tIdx: number) => {
-      const currentChat = chats[cIdx % chats.length];
-      if (!currentChat) return;
+    const playQuote = () => {
+      let seen: string[] = [];
+      try {
+        const stored = localStorage.getItem('mmbarber_tomas_quotes_seen');
+        if (stored) seen = JSON.parse(stored);
+      } catch(e) {}
 
-      const isAnyKia = currentChat.some(turn => {
-        const p = barbers.find(b => {
-          if (turn.speaker === 'tomas') return b.id === 'tomas' || b.name === 'Tomáš' || b.name === 'Tomas';
-          if (turn.speaker === 'nella') return b.id === 'nella' || b.name === 'Nella';
-          return false;
-        });
-        return p?.missionFailed;
-      });
-
-      if (isAnyKia) {
-        t1 = setTimeout(() => {
-          playTurn((cIdx + 1) % chats.length, 0);
-        }, 1000);
-        return;
+      if (seen.length >= TOMAS_QUOTES.length) {
+        seen = [];
       }
 
-      const turn = currentChat[tIdx];
-      if (!turn) {
-        // Chat is finished
-        setActiveSpeaker(null);
-        setActiveDialogueText("");
-        // Wait 6 seconds before starting the next chat
-        t1 = setTimeout(() => {
-          playTurn((cIdx + 1) % chats.length, 0);
-        }, 6000);
-        return;
-      }
+      const availableQuotes = TOMAS_QUOTES.filter((q: string) => !seen.includes(q));
+      const randomIndex = Math.floor(Math.random() * availableQuotes.length);
+      const selectedQuote = availableQuotes[randomIndex] || TOMAS_QUOTES[0];
 
-      // Start current turn
-      setActiveSpeaker(turn.speaker);
-      setActiveDialogueText(turn.text[lang as 'cs' | 'en'] || turn.text.cs);
+      seen.push(selectedQuote);
+      try {
+        localStorage.setItem('mmbarber_tomas_quotes_seen', JSON.stringify(seen));
+      } catch(e) {}
 
-      // Speak for 7.5 seconds
+      setActiveSpeaker('tomas');
+      setActiveDialogueText(selectedQuote);
+
       t2 = setTimeout(() => {
         setActiveSpeaker(null);
         setActiveDialogueText("");
-        // Silence for 2.5 seconds
+        
         t1 = setTimeout(() => {
-          playTurn(cIdx, tIdx + 1);
-        }, 2500);
-      }, 7500);
+          playQuote();
+        }, 12000);
+      }, 10000);
     };
 
-    // Start with a 4s initial delay
     const initialDelay = setTimeout(() => {
-      playTurn(0, 0);
+      playQuote();
     }, 4000);
 
     return () => {
@@ -1802,7 +1828,7 @@ export function Profiles() {
       setActiveSpeaker(null);
       setActiveDialogueText("");
     };
-  }, [isSectionVisible, lang]);
+  }, [isSectionVisible]);
 
   const translatedBarbers = useMemo(() => {
     return visibleBarbers.map(b => {
