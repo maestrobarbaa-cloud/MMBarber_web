@@ -102,7 +102,7 @@ export function BugReporter() {
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
-                      Našli jste něco, co nefunguje, nebo máte nápad, jak aplikaci vylepšit? Budeme rádi za každý podnět!
+                      Našli jste něco, co nefunguje, chybí vám tu něco nebo máte připomínku k nesrozumitelnosti? Dejte nám vědět!
                     </p>
 
                     <div className="flex gap-2 mb-6">
@@ -119,8 +119,8 @@ export function BugReporter() {
                         onClick={() => setFeedbackType('idea')}
                         className={`flex-1 py-3 px-4 rounded-xl flex flex-col items-center gap-2 transition-all border ${feedbackType === 'idea' ? 'bg-mafia-gold/10 border-mafia-gold text-mafia-gold' : 'bg-neutral-100 dark:bg-neutral-800 border-transparent text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`}
                       >
-                        <Lightbulb className="w-5 h-5" />
-                        <span className="text-xs font-bold uppercase tracking-widest">Nápad na vylepšení</span>
+                        <MessageSquare className="w-5 h-5" />
+                        <span className="text-xs font-bold uppercase tracking-widest">Feedback</span>
                       </button>
                     </div>
                     
@@ -132,7 +132,7 @@ export function BugReporter() {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder={feedbackType === 'bug' ? "Např. Nejde nahrát fotka" : "Např. Přidat tmavý režim"}
+                        placeholder={feedbackType === 'bug' ? "Např. Nejde nahrát fotka" : "Např. Chybí mi tu možnost..."}
                         required
                         className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-mafia-gold dark:text-white transition-shadow"
                       />
@@ -140,12 +140,12 @@ export function BugReporter() {
                     
                     <div>
                       <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                        Detaily {feedbackType === 'bug' ? 'a postup' : 'návrhu'}
+                        Detaily {feedbackType === 'bug' ? 'a postup' : 'feedbacku'}
                       </label>
                       <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        placeholder={feedbackType === 'bug' ? "Popište, jak přesně chyba nastala a co jste předtím udělali..." : "Popište váš nápad detailněji..."}
+                        placeholder={feedbackType === 'bug' ? "Popište, jak přesně chyba nastala a co jste předtím udělali..." : "Co se vám nelíbilo, nebo co bylo nesrozumitelné?"}
                         required
                         rows={4}
                         className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-mafia-gold dark:text-white transition-shadow resize-none"
