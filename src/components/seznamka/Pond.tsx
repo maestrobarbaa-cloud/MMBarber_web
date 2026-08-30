@@ -917,8 +917,8 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
           ) : (
             <>
 
-              <div className="flex flex-col items-center w-full max-w-sm md:max-w-7xl mx-auto">
-                <div className="relative w-full h-[600px] md:h-[700px] flex-shrink-0">
+              <div className="flex flex-col items-center w-full max-w-sm md:max-w-7xl mx-auto relative z-0">
+                <div className="relative z-0 w-full h-[600px] md:h-[700px] flex-shrink-0">
                   {loading ? (
                     <div className="absolute inset-0 flex items-center justify-center text-mafia-gold font-mono uppercase tracking-widest animate-pulse z-0">
                       Načítání profilů...
