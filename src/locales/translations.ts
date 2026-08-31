@@ -588,15 +588,15 @@ export const translations = {
       cameraFollows: "Kamera tě sleduje",
       headquarters: "CENTRÁLA"
     },
-    sidliste: {
-      title: "SÍDLIŠTĚ",
-      sector: "SÍDLIŠTĚ // SEKTOR VII",
+    zajimavosti: {
+      title: "ZAJÍMAVOSTI",
+      sector: "INSPIRACE // UH",
       return: "ZPĚT NA ZÁKLADNU",
-      subtitle: "Přidej se k lidem, co nechtějí jen sedět na místě.",
-      description: "U nás na sídlišti tvoříme komunitu, kde se rodí ty nejlepší nápady. Tady se nehraje na efekt, ale na loajalitu a společné vize.",
-      ideaTitle: "Máš vlastní nápad?",
-      ideaText: "Bylo by fajn tu vymyslet nějakou společnou akci. Pokud máš vizi, která dává smysl, ozvi se nám.",
-      proposeBtn: "NAVRHNOUT AKCI"
+      subtitle: "Zajímaví lidé z Uherského Hradiště a jejich příběhy.",
+      description: "Poznejte lidi z našeho města, kteří dělají věci jinak. Inspirativní osobnosti, umělci, řemeslníci a vizionáři, kteří tvoří jedinečnou atmosféru Uherského Hradiště.",
+      ideaTitle: "Znáte někoho zajímavého?",
+      ideaText: "Pokud víte o někom, kdo by tu neměl chybět, dejte nám vědět. Rádi jeho příběh posdílíme dál.",
+      proposeBtn: "NAPSAT TIP"
     },
     newspaper: {
       masthead: "Denní rozkaz",

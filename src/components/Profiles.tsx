@@ -797,6 +797,11 @@ function BarberCard({
 }) {
   const { totalCollected } = useGame();
   const [isHovered, setIsHovered] = useState(false);
+  const [cohort, setCohort] = useState('gold');
+
+  useEffect(() => {
+    setCohort(localStorage.getItem('mmbarber_cohort') || 'gold');
+  }, []);
 
   const stats = globalStats[barber.id] || { xp: 0, likes: 0 };
   const globalXp = stats.xp;
@@ -1074,7 +1079,9 @@ function BarberCard({
                   }}
                   className="w-full max-w-[200px] py-3 bg-mafia-gold text-mafia-black font-black uppercase tracking-widest text-sm hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]"
                 >
-                  {lang === 'cs' ? "REZERVOVAT" : "BOOK NOW"}
+                  {lang === 'cs' 
+                    ? (cohort === 'blood' ? "VYŽÁDAT AUDIENCI" : "REZERVOVAT") 
+                    : (cohort === 'blood' ? "REQUEST AUDIENCE" : "BOOK NOW")}
                   <ArrowRight size={16} />
                 </button>
               </div>
@@ -1221,7 +1228,9 @@ function BarberCard({
                     >
                       {barber.image === "question-mark"
                         ? (lang === 'cs' ? "ZAMČENO" : "LOCKED")
-                        : (lang === 'cs' ? "REZERVOVAT" : "BOOK NOW")}
+                        : (lang === 'cs' 
+                           ? (cohort === 'blood' ? "VYŽÁDAT AUDIENCI" : "REZERVOVAT") 
+                           : (cohort === 'blood' ? "REQUEST AUDIENCE" : "BOOK NOW"))}
                     </button>
                 </div>
               )}
@@ -1405,6 +1414,25 @@ function ChairWithCard({
   const [isCardHovered, setIsCardHovered] = useState(false);
   const [isSitting, setIsSitting] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [clientNickname, setClientNickname] = useState<string | null>(null);
+  const [liveViewers, setLiveViewers] = useState(0);
+
+  useEffect(() => {
+    const d = new Date();
+    const seed = d.getFullYear() * 10000 + d.getMonth() * 100 + d.getDate() + (barber.id === 'tomas' ? 1 : 2);
+    const x = Math.sin(seed) * 10000;
+    const random = x - Math.floor(x);
+    const day = d.getDay();
+    const isBusyDay = day === 5 || day === 6;
+    const count = isBusyDay ? Math.floor(random * 10) + 12 : Math.floor(random * 6) + 2;
+    setLiveViewers(count);
+
+    const { getUserRatingsData } = require("@/utils/voting");
+    const data = getUserRatingsData();
+    if (data?.nickname) {
+      setClientNickname(data.nickname);
+    }
+  }, [barber.id]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isCardHovered) return;
@@ -1424,13 +1452,6 @@ function ChairWithCard({
     }, 600); 
   };
 
-  const [clientNickname, setClientNickname] = useState<string | null>(null);
-
-  useEffect(() => {
-    const { getUserRatingsData } = require("@/utils/voting");
-    const data = getUserRatingsData();
-    if (data && data.clientNickname) setClientNickname(data.clientNickname);
-  }, []);
 
   const vocativeName = getVocative(clientNickname || "", lang);
 
@@ -1491,13 +1512,23 @@ function ChairWithCard({
             y: isCardHovered || isSitting ? -20 : 0
           }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="absolute -top-12 left-0 w-full flex flex-row items-center justify-center z-50 pointer-events-none"
+          className="absolute -top-16 left-0 w-full flex flex-col items-center justify-center z-50 pointer-events-none gap-2"
         >
-          <div className="h-px w-8 bg-gradient-to-r from-transparent to-mafia-gold/30 mr-4"></div>
-          <p className="font-heading text-lg text-mafia-gold italic tracking-[0.2em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
-            {chairGreeting}
-          </p>
-          <div className="h-px w-8 bg-gradient-to-l from-transparent to-mafia-gold/30 ml-4"></div>
+          {liveViewers > 0 && !isSitting && (
+            <div className="flex items-center gap-2 bg-mafia-red/10 border border-mafia-red/30 px-3 py-1 rounded-full animate-pulse shadow-[0_0_10px_rgba(179,0,0,0.5)]">
+              <span className="w-1.5 h-1.5 bg-mafia-red rounded-full"></span>
+              <span className="text-[9px] font-mono text-mafia-red uppercase tracking-widest font-bold">
+                {lang === 'cs' ? `Právě si prohlíží profil ${liveViewers} lidí` : `${liveViewers} people viewing right now`}
+              </span>
+            </div>
+          )}
+          <div className="flex flex-row items-center justify-center">
+            <div className="h-px w-8 bg-gradient-to-r from-transparent to-mafia-gold/30 mr-4"></div>
+            <p className="font-heading text-lg text-mafia-gold italic tracking-[0.2em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+              {chairGreeting}
+            </p>
+            <div className="h-px w-8 bg-gradient-to-l from-transparent to-mafia-gold/30 ml-4"></div>
+          </div>
         </motion.div>
         <motion.div 
           animate={{ y: 0, scaleX: side === 'left' ? -1 : 1 }}
@@ -1598,6 +1629,23 @@ export function Profiles() {
   const [isRandomizing, setIsRandomizing] = useState(false);
   const [activeSpeaker, setActiveSpeaker] = useState<'tomas' | 'nella' | null>(null);
   const [activeDialogueText, setActiveDialogueText] = useState("");
+  
+  const [activeEvent, setActiveEvent] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const d = new Date();
+    const month = d.getMonth(); // 0 = Jan, 11 = Dec
+    const day = d.getDate();
+    
+    if (month === 1 && day >= 10 && day <= 15) setActiveEvent('valentyn');
+    else if ((month === 9 && day >= 25) || (month === 10 && day <= 2)) setActiveEvent('halloween');
+    else if (month === 10 && day >= 20 && day <= 30) setActiveEvent('blackfriday');
+    else if (month === 11 && day >= 20 && day <= 26) setActiveEvent('xmas');
+    else if ((month === 11 && day >= 30) || (month === 0 && day <= 5)) setActiveEvent('newyear');
+    else if (month === 6 || month === 7) setActiveEvent('summer');
+    else setActiveEvent(null);
+  }, []);
+  
   const [isDecided, setIsDecided] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -1607,8 +1655,30 @@ export function Profiles() {
   const [graphicsTier, setGraphicsTier] = useState<string>("low");
   const [selectedBarberForModal, setSelectedBarberForModal] = useState<any>(null);
   const [chairGreetingsIndices, setChairGreetingsIndices] = useState<{ [key: string]: number }>({});
+  const [trackerScores, setTrackerScores] = useState<{[key: string]: number}>({});
 
   const { barbers, loading } = useBarbers();
+
+  useEffect(() => {
+    const handleTrackerUpdate = () => {
+      const scores: {[key: string]: number} = {};
+      barbers.forEach(b => {
+        scores[b.id] = parseInt(localStorage.getItem(`mmbarber_${b.id}_clicks`) || '0', 10);
+      });
+      setTrackerScores(scores);
+    };
+    handleTrackerUpdate();
+    window.addEventListener('mmbarber-tracker-update', handleTrackerUpdate);
+    return () => window.removeEventListener('mmbarber-tracker-update', handleTrackerUpdate);
+  }, [barbers]);
+
+  const handleOpenDossier = (barber: any) => {
+    setSelectedBarberForModal(barber);
+    const key = `mmbarber_${barber.id}_clicks`;
+    const current = parseInt(localStorage.getItem(key) || '0', 10);
+    localStorage.setItem(key, (current + 1).toString());
+    window.dispatchEvent(new Event('mmbarber-tracker-update'));
+  };
 
   const visibleBarbers = barbers
     .filter(b => b.id !== 'nella' && b.name !== 'Nella') // Hide Nella
@@ -1619,7 +1689,7 @@ export function Profiles() {
       modifiedB.image = "question-mark";
     }
     return modifiedB;
-  });
+  }).sort((a, b) => (trackerScores[b.id] || 0) - (trackerScores[a.id] || 0));
 
   useEffect(() => {
     const indices: { [key: string]: number } = {};
@@ -1878,22 +1948,69 @@ export function Profiles() {
                         </span>
                         
                         <div className="mt-6 flex justify-center">
-                            <Link 
-                                href="/losovat-barbera"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-6 py-3 bg-mafia-gold/5 border border-mafia-gold/30 hover:border-mafia-gold hover:bg-mafia-gold text-mafia-gold hover:text-mafia-black font-heading font-black tracking-[0.2em] uppercase text-xs transition-all duration-300 rounded shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:shadow-[0_0_25px_rgba(197,160,89,0.4)] flex items-center gap-2 group cursor-pointer"
-                                onClick={() => playSound("/sounds/hover.mp3", 0.4)}
-                            >
-                                <span>Losovat barbera</span>
-                                <motion.span 
-                                  animate={{ x: [0, 4, 0] }}
+                            {activeEvent ? (
+                              <motion.div
+                                  animate={{ scale: [1, 1.05, 1], boxShadow: ["0 0 20px rgba(138,7,7,0.4)", "0 0 40px rgba(138,7,7,0.8)", "0 0 20px rgba(138,7,7,0.4)"] }}
                                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                                  className="inline-block font-sans font-bold"
-                                >
-                                  ➔
-                                </motion.span>
-                            </Link>
+                                  className="rounded"
+                              >
+                                  <Link 
+                                      href={
+                                        activeEvent === 'valentyn' ? "/valentynmatch" :
+                                        activeEvent === 'halloween' ? "/halloween-sins" :
+                                        activeEvent === 'blackfriday' ? "/blackfriday-darkweb" :
+                                        activeEvent === 'xmas' ? "/xmas-ledger" :
+                                        activeEvent === 'newyear' ? "/newyear-tarot" :
+                                        "/summer-vice"
+                                      }
+                                      className="px-8 py-4 bg-[#0a0a0a] border-2 border-[#b30000] text-[#ff3333] hover:bg-[#b30000] hover:text-white font-heading font-black tracking-[0.2em] uppercase text-sm md:text-base transition-colors duration-300 rounded flex items-center gap-3 cursor-pointer"
+                                      onClick={() => playSound("/sounds/digital_start.mp3", 0.5)}
+                                  >
+                                      <span className="drop-shadow-[0_0_8px_rgba(179,0,0,0.8)]">
+                                        {lang === 'cs' ? (
+                                          activeEvent === 'valentyn' ? 'VZTAHOVÁ RULETA' :
+                                          activeEvent === 'halloween' ? 'KNIHA HŘÍCHŮ' :
+                                          activeEvent === 'blackfriday' ? 'ČERNÝ TRH' :
+                                          activeEvent === 'xmas' ? 'KMOTRŮV SEZNAM' :
+                                          activeEvent === 'newyear' ? 'SYNDIKÁTNÍ VĚŠTBA' :
+                                          'MIAMSKÝ KONTRABAND'
+                                        ) : (
+                                          activeEvent === 'valentyn' ? 'RELATIONSHIP ROULETTE' :
+                                          activeEvent === 'halloween' ? 'BOOK OF SINS' :
+                                          activeEvent === 'blackfriday' ? 'DARK WEB' :
+                                          activeEvent === 'xmas' ? "GODFATHER'S LEDGER" :
+                                          activeEvent === 'newyear' ? 'SYNDICATE TAROT' :
+                                          'VICE CITY STASH'
+                                        )}
+                                      </span>
+                                      <span className="text-xl">
+                                        {activeEvent === 'valentyn' ? '🎰' :
+                                         activeEvent === 'halloween' ? '💀' :
+                                         activeEvent === 'blackfriday' ? '💻' :
+                                         activeEvent === 'xmas' ? '💼' :
+                                         activeEvent === 'newyear' ? '🃏' :
+                                         '🌴'}
+                                      </span>
+                                  </Link>
+                              </motion.div>
+                            ) : (
+                              <Link 
+                                  href="/losovat-barbera"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-6 py-3 bg-mafia-gold/5 border border-mafia-gold/30 hover:border-mafia-gold hover:bg-mafia-gold text-mafia-gold hover:text-mafia-black font-heading font-black tracking-[0.2em] uppercase text-xs transition-all duration-300 rounded shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:shadow-[0_0_25px_rgba(197,160,89,0.4)] flex items-center gap-2 group cursor-pointer"
+                                  onClick={() => playSound("/sounds/hover.mp3", 0.4)}
+                              >
+                                  <span>{lang === 'cs' ? 'Losovat barbera' : 'Draw a barber'}</span>
+                                  <motion.span 
+                                    animate={{ x: [0, 4, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                                    className="inline-block font-sans font-bold"
+                                  >
+                                    ➔
+                                  </motion.span>
+                              </Link>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -1926,7 +2043,7 @@ export function Profiles() {
                             globalStats={globalStats}
                             likedMap={likedMap}
                             onLike={handleLike}
-                            onOpenDossier={setSelectedBarberForModal}
+                            onOpenDossier={handleOpenDossier}
                             chairGreetingText={chairGreetingText || ""}
                             evaluatedStatus={evaluated}
                           />

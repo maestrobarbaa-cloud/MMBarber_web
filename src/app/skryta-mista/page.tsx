@@ -9,7 +9,7 @@ import Image from "@/components/OptimizedImage";
 import TacticalClickEffects from "@/components/TacticalClickEffects";
 import { Footer } from "@/components/Footer";
 import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
-import { HiddenSEOArchive } from "@/components/HiddenSEOArchive";
+import { HiddenSeoArchive } from "@/components/HiddenSEOArchive";
 
 export default function HiddenPlacesPage() {
   const { t, lang } = useTranslation();
@@ -284,7 +284,7 @@ export default function HiddenPlacesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1 }}
               >
-                <HiddenSEOArchive />
+                <HiddenSeoArchive lang={lang} />
               </motion.div>
             )}
           </>

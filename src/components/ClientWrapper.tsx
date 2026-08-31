@@ -21,6 +21,7 @@ const BarberChat = dynamic(() => import("@/components/BarberChat").then(mod => m
 const UserSettingsManager = dynamic(() => import("@/components/UserSettingsManager").then(mod => mod.UserSettingsManager), { ssr: false });
 const ElitaGame = dynamic(() => import("@/components/ElitaGame").then(mod => mod.ElitaGame), { ssr: false });
 const SlotMachine = dynamic(() => import("@/components/SlotMachine").then(mod => mod.SlotMachine), { ssr: false });
+const CorporateTricks = dynamic(() => import("@/components/CorporateTricks").then(mod => mod.CorporateTricks), { ssr: false });
 
 export function ClientWrapper() {
   const [mounted, setMounted] = useState(false);
@@ -34,6 +35,9 @@ export function ClientWrapper() {
   const pathname = usePathname();
 
   useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch((err) => console.log('SW setup failed', err));
+    }
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     
     const handleEarthProtocolTrigger = () => {
@@ -95,7 +99,11 @@ export function ClientWrapper() {
           currentTier = config.tier;
         } catch (e) {}
       } else {
-        // First time initialization - Add Geo-Language Detection
+        // First time initialization - Add Geo-Language Detection & Faction Assignment
+        if (!localStorage.getItem('mmbarber_cohort')) {
+           localStorage.setItem('mmbarber_cohort', Math.random() > 0.5 ? 'blood' : 'gold');
+        }
+
         (async () => {
            try {
              const res = await fetch('https://ipapi.co/json/');
@@ -103,6 +111,11 @@ export function ClientWrapper() {
              if (data.country_code === 'CZ') {
                window.dispatchEvent(new CustomEvent('language_changed', { detail: 'cs' }));
                localStorage.setItem('mmbarber_lang', 'cs');
+               
+               if (data.city && !data.city.includes('Hradiště') && !data.city.includes('Hradiste')) {
+                  localStorage.setItem('mmbarber_geo_city', data.city);
+                  window.dispatchEvent(new CustomEvent('mmbarber-geofence', { detail: data.city }));
+               }
              } else {
                window.dispatchEvent(new CustomEvent('language_changed', { detail: 'en' }));
                localStorage.setItem('mmbarber_lang', 'en');
@@ -164,6 +177,19 @@ export function ClientWrapper() {
     window.addEventListener('mmbarber-toggle-chat', handleChatToggle as any);
     window.addEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as any);
     window.addEventListener('mmbarber-force-theme-eval', handleForceThemeEval);
+
+    const handleStealthUpdate = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail) {
+         document.documentElement.classList.add('mode-stealth');
+      } else {
+         document.documentElement.classList.remove('mode-stealth');
+      }
+    };
+    if (localStorage.getItem("mmbarber_stealth_mode") === "true") {
+       document.documentElement.classList.add('mode-stealth');
+    }
+    window.addEventListener('mmbarber-stealth-update', handleStealthUpdate as any);
     
     setMounted(true);
     
@@ -173,6 +199,7 @@ export function ClientWrapper() {
       window.removeEventListener('mmbarber-toggle-chat', handleChatToggle as any);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as any);
       window.removeEventListener('mmbarber-force-theme-eval', handleForceThemeEval);
+      window.removeEventListener('mmbarber-stealth-update', handleStealthUpdate as any);
     };
   }, []);
 
@@ -262,6 +289,44 @@ export function ClientWrapper() {
     return () => window.removeEventListener('mmbarber-atmosphere-update', checkAtmosphere);
   }, [mounted]);
 
+  useEffect(() => {
+    if (!mounted) return;
+    
+    let keySequence = "";
+    const targetSequence = "valentyn";
+    
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      // Prevent listening when user is typing in inputs or textareas
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      
+      keySequence += e.key.toLowerCase();
+      
+      if (keySequence.length > targetSequence.length) {
+        keySequence = keySequence.slice(-targetSequence.length);
+      }
+      
+      if (keySequence === targetSequence) {
+        // Flash screen effect before redirecting
+        const flash = document.createElement('div');
+        flash.style.position = 'fixed';
+        flash.style.inset = '0';
+        flash.style.backgroundColor = 'white';
+        flash.style.zIndex = '999999';
+        flash.style.opacity = '1';
+        flash.style.transition = 'opacity 0.5s ease-out';
+        flash.style.pointerEvents = 'none';
+        document.body.appendChild(flash);
+        
+        setTimeout(() => {
+          window.location.href = "/valentynmatch";
+        }, 100);
+      }
+    };
+    
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [mounted]);
+
   if (!mounted) return null;
 
   const isRodinaPage = pathname === "/rodina";
@@ -272,9 +337,9 @@ export function ClientWrapper() {
     <MotionConfig reducedMotion={isActuallyMobile || graphicsTier === "low" || graphicsTier === "medium" || graphicsTier === "lite" ? "always" : "user"}>
       {/* Games are currently disabled by request */}
       {/* {showEffects && <BarberGame />} */}
-      {/* BarberChat is disabled per user request */}
       {/* {showEffects && <BarberChat isOpen={isBarberChatOpen} />} */}
       {showEffects && <Radio />}
+      <CorporateTricks />
       <CookieBanner />
       {!isActuallyMobile && !isRodinaPage && !isGalaxyVisible && graphicsTier !== 'lite' && graphicsTier !== 'low' && <FloatingScissors />}
       <VipControlBar />

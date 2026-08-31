@@ -365,7 +365,7 @@ html:not(.is-mobile-device) {
   --color-mafia-dark: #121212;
   --color-mafia-sepia: #704214;
   --color-mafia-gold: var(--user-accent-color, #c5a059);
-  --color-mafia-gold-rgb: 197, 160, 89;
+  --color-mafia-gold-rgb: var(--user-accent-color-rgb, 197, 160, 89);
   --color-mafia-gold-accent: var(--user-accent-color);
   --color-mafia-red: var(--user-red-color, #8b0000);
   --color-mafia-silver: #e2e2e2;
@@ -607,6 +607,32 @@ html.crt-active::after {
   z-index: 10008;
   background-size: 100% 4px, 3px 100%;
   pointer-events: none;
+}
+
+html.mode-stealth {
+  background: #000 !important;
+  color: #0f0 !important;
+  --color-mafia-gold: #0f0;
+  --color-mafia-red: #0f0;
+}
+
+html.mode-stealth body {
+  background: #000 !important;
+}
+
+html.mode-stealth * {
+  background-color: transparent !important;
+  border-color: #0f0 !important;
+  color: #0f0 !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  background-image: none !important;
+}
+
+html.mode-stealth img, html.mode-stealth video {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 html.mode-crt body {
@@ -1307,12 +1333,25 @@ button, input, select, textarea {
 }
 
 /* Specific subtle red accents for Blood Mode */
+.theme-blood h1,
+.theme-blood h2.font-heading,
+.theme-blood h3.font-heading,
+.theme-blood .text-mafia-gold.font-heading {
+  color: #8b0000 !important;
+  text-shadow: 0 0 15px rgba(139, 0, 0, 0.4) !important;
+}
+
 .theme-blood .header-booking-btn-text {
   color: #c0c0c0 !important;
 }
 
 .theme-blood .header-booking-btn:hover {
-  border-color: #600000 !important;
+  border-color: #8b0000 !important;
+  box-shadow: 0 0 15px rgba(139, 0, 0, 0.3) !important;
+}
+
+.theme-blood strong.text-mafia-gold {
+  color: #9a0000 !important;
 }
 
 .theme-blood .card-symbol-front {

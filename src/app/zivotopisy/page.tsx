@@ -33,7 +33,8 @@ import {
   Compass,
   Share2
 } from "lucide-react";
-
+import { TomasSkillTree } from "@/components/TomasSkillTree";
+import { HiddenSeoArchive } from "@/components/HiddenSEOArchive";
 
 export default function BiographiesPage() {
   const { lang } = useTranslation();
@@ -236,8 +237,8 @@ export default function BiographiesPage() {
 
   const activeRating = getBarberRatingData(activeBarberSafe.id);
 
-  const isPhotoUnlocked = activeBarberSafe.id === "tomas" ? effectiveTotalCollected >= 2 : (activeBarberSafe.id === "nella" ? effectiveTotalCollected >= 4 : false);
-  const isFullyUnlocked = activeBarberSafe.id === "tomas" ? isTomasFullyUnlocked : (activeBarberSafe.id === "nella" ? isNellaFullyUnlocked : false);
+  const isPhotoUnlocked = activeBarberSafe.id === "tomas" ? effectiveTotalCollected >= 2 : (activeBarberSafe.id === "nella" ? true : false);
+  const isFullyUnlocked = activeBarberSafe.id === "tomas" ? isTomasFullyUnlocked : (activeBarberSafe.id === "nella" ? true : false);
   
   // Calculate how many text parts to show
   // Fallback to match to avoid Safari syntax error on lookbehinds
@@ -281,7 +282,7 @@ export default function BiographiesPage() {
       </header>
 
       {/* Main Container */}
-      <div className="flex-grow max-w-6xl mx-auto w-full px-6 py-12 md:py-16 z-10 flex flex-col justify-center gap-12">
+      <div className={`flex-grow mx-auto w-full px-4 md:px-6 py-12 md:py-16 z-10 flex flex-col justify-center gap-12 ${selectedBarberId && activeBarberSafe.id === 'tomas' ? 'max-w-[1800px] w-[95vw]' : 'max-w-6xl'}`}>
         
         <AnimatePresence mode="wait">
           {!selectedBarberId ? (
@@ -398,7 +399,7 @@ export default function BiographiesPage() {
                          if (!nella) return null;
                          const customName = customNellaName;
                          
-                         const isNellaHierarchyUnlocked = effectiveTotalCollected >= 2;
+                         const isNellaHierarchyUnlocked = true;
 
                          if (!isNellaHierarchyUnlocked) {
                            return (
@@ -460,6 +461,25 @@ export default function BiographiesPage() {
 
                  </div>
               </div>
+            </motion.div>
+          ) : activeBarberSafe.id === 'tomas' ? (
+            /* TOMAS SKILL TREE MODE */
+            <motion.div
+              key="barber-dossier-tomas"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              className="w-full relative py-6 md:py-12"
+            >
+              <button 
+                onClick={handleBackToSelection}
+                className="group inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors font-mono text-[9px] uppercase tracking-[0.3em] mb-8"
+              >
+                <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
+                <span>{lang === 'cs' ? "Zpět na hierarchii" : "Back to Hierarchy"}</span>
+              </button>
+              <TomasSkillTree totalCollected={effectiveTotalCollected} lang={lang} />
             </motion.div>
           ) : (
             /* DOSSIER DETAIL MODE */
@@ -991,6 +1011,7 @@ export default function BiographiesPage() {
       </div>
 
       <Footer />
+      <HiddenSeoArchive lang={lang} />
     </main>
   );
 }

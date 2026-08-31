@@ -69,6 +69,40 @@ const nextConfig: NextConfig = {
       }
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/pribeh',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/barbershop-zlin',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/faq',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/region-slovacko',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/specialni-mise',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/fade-gallery',
+        destination: '/',
+        permanent: true,
+      }
+    ];
+  },
   experimental: {
     workerThreads: false,
     cpus: 1,

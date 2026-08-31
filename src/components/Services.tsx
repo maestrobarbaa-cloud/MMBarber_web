@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Scissors, Clock, Globe, X, ChevronRight, Target, Star, Heart, Lock, Camera, Building2, Ticket, Scale, Info, Users, Sparkles } from "lucide-react";
+import { Scissors, Clock, Globe, X, ChevronRight, Target, Star, Heart, Lock, Camera, Building2, Ticket, Scale, Info, Users, Sparkles, UserSquare2 } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
@@ -178,10 +178,10 @@ export function Services() {
             },
             { 
               id: 'housing',
-              title: t?.sidliste?.title || (lang === 'cs' ? 'SÍDLIŠTĚ' : 'HOUSING ESTATE'),
-              icon: <Building2 size={48} className="text-mafia-gold" />,
-              description: lang === 'cs' ? 'LOKÁLNÍ KOMUNITA A PŘÍBĚHY' : 'LOCAL COMMUNITY AND STORIES',
-              onClick: () => { router.push('/sidliste'); trackEvent("open_housing_estate_page"); }
+              title: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : 'INTERESTING PEOPLE'),
+              icon: <UserSquare2 size={48} className="text-mafia-gold" />,
+              description: lang === 'cs' ? 'PŘÍBĚHY MÍSTNÍCH' : 'LOCAL STORIES',
+              onClick: () => { router.push('/zajimavosti'); trackEvent("open_interesting_people_page"); }
             },
             { 
               id: 'hidden',
@@ -259,9 +259,9 @@ export function Services() {
             },
             { 
               id: 'housing',
-              title: t?.sidliste?.title || (lang === 'cs' ? 'SÍDLIŠTĚ' : 'HOUSING ESTATE'),
-              icon: <Building2 size={32} className="text-mafia-gold" />,
-              onClick: () => { router.push('/sidliste'); trackEvent("open_housing_estate_page"); }
+              title: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : 'INTERESTING'),
+              icon: <UserSquare2 size={32} className="text-mafia-gold" />,
+              onClick: () => { router.push('/zajimavosti'); trackEvent("open_interesting_people_page"); }
             },
             { 
               id: 'hidden',

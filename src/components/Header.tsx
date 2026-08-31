@@ -20,8 +20,10 @@ import { trackEvent } from "../utils/analytics";
 import { playSound } from "../utils/audio";
 import { getUserRatingsData } from "@/utils/voting";
 import { GameFragment } from "./GameFragment";
+import { useGame } from "@/contexts/GameContext";
 
 export function Header() {
+  const { mafiaRank } = useGame();
   const [clicks, setClicks] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeFolder, setActiveFolder] = useState<string | null>(null);
@@ -95,6 +97,8 @@ export function Header() {
    const [shouldFlashFamily, setShouldFlashFamily] = useState(false);
    const [shouldFlashRating, setShouldFlashRating] = useState(false);
    const [clientNickname, setClientNickname] = useState<string | null>(null);
+   const [isStealthMode, setIsStealthMode] = useState(false);
+   const [geoCity, setGeoCity] = useState<string | null>(null);
 
   useEffect(() => {
     const savedSound = localStorage.getItem("mmbarber_sound_enabled");
@@ -105,7 +109,15 @@ export function Header() {
       localStorage.setItem("mmbarber_sound_enabled", "false");
     }
 
-
+    setIsStealthMode(localStorage.getItem("mmbarber_stealth_mode") === "true");
+    const handleStealthUpdate = (e: Event) => setIsStealthMode((e as CustomEvent).detail);
+    window.addEventListener('mmbarber-stealth-update', handleStealthUpdate as any);
+    
+    const savedCity = localStorage.getItem('mmbarber_geo_city');
+    if (savedCity) setGeoCity(savedCity);
+    const handleGeofence = (e: Event) => setGeoCity((e as CustomEvent).detail);
+    window.addEventListener('mmbarber-geofence', handleGeofence as any);
+    
     // Read accent color from CSS variable or localStorage
     const readAccentColor = () => {
       const saved = localStorage.getItem("mmbarber_user_config");
@@ -125,7 +137,7 @@ export function Header() {
             setIsCustomLookActive(!isDefault);
             return;
           }
-        } catch {}
+        } catch (e) {}
       }
       
       // Fallback: read from CSS variable
@@ -171,6 +183,8 @@ export function Header() {
       window.removeEventListener("mmbarber-game-status-update", handleGameUpdate as EventListener);
       window.removeEventListener("mmbarber-graphics-open", handleGraphicsOpen);
       window.removeEventListener("mmbarber-sound-update-remote", handleSoundToggleRemote);
+      window.removeEventListener('mmbarber-stealth-update', handleStealthUpdate as any);
+      window.removeEventListener('mmbarber-geofence', handleGeofence as any);
     };
   }, []);
 
@@ -397,13 +411,63 @@ export function Header() {
     }, 500);
   };
 
+  const searchTimestamps = useRef<number[]>([]);
+  const [isInterrogationActive, setIsInterrogationActive] = useState(false);
+  const [mouseDelta, setMouseDelta] = useState(0);
+  const lastMouseX = useRef(0);
+
+  const handleInterrogationMouseMove = (e: React.MouseEvent) => {
+    if (!isInterrogationActive) return;
+    if (lastMouseX.current !== 0) {
+      const delta = Math.abs(e.clientX - lastMouseX.current);
+      setMouseDelta(prev => {
+        const next = prev + delta;
+        if (next > 2000) {
+          setIsInterrogationActive(false);
+          searchTimestamps.current = [];
+          return 0;
+        }
+        return next;
+      });
+    }
+    lastMouseX.current = e.clientX;
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const now = Date.now();
+    searchTimestamps.current = searchTimestamps.current.filter(t => now - t < 10000);
+    searchTimestamps.current.push(now);
+
+    if (searchTimestamps.current.length > 5) {
+      setIsInterrogationActive(true);
+      setSearchQuery("");
+      setIsSearchOpen(false);
+      return;
+    }
+
     const query = searchQuery.toLowerCase().trim();
     if (!query) return;
 
     if (query === "intro" || query === "menu" || query === "welcome" || query === "odkrýt" || query === "odkryt" || query === "reveal" || query === "admin") {
       runCommand(query);
+      setSearchQuery("");
+      setIsSearchOpen(false);
+      return;
+    }
+
+    if (query === "valentýn" || query === "valentyn") {
+      setIsSearchOpen(false);
+      setSearchQuery("");
+      router.push("/valentynmatch");
+      return;
+    }
+
+    if (query === "stealth") {
+      const current = localStorage.getItem("mmbarber_stealth_mode") === "true";
+      localStorage.setItem("mmbarber_stealth_mode", String(!current));
+      window.dispatchEvent(new CustomEvent("mmbarber-stealth-update", { detail: !current }));
       setSearchQuery("");
       setIsSearchOpen(false);
       return;
@@ -801,15 +865,36 @@ export function Header() {
 
   return (
     <>
+      <AnimatePresence>
+        {geoCity && pathname === '/' && localStorage.getItem('mmbarber_geo_city_dismissed') !== 'true' && (
+           <motion.div 
+             initial={{ height: 0, opacity: 0 }}
+             animate={{ height: 32, opacity: 1 }}
+             exit={{ height: 0, opacity: 0 }}
+             className="fixed top-0 left-0 w-full h-8 z-[35000] bg-mafia-black border-b border-mafia-gold/30 flex items-center justify-center overflow-hidden"
+           >
+             <div className="flex items-center gap-4 h-full">
+                <MapPin size={12} className="text-mafia-gold animate-bounce" />
+                <span className="text-[10px] font-mono text-mafia-gold uppercase tracking-widest whitespace-nowrap truncate max-w-[80vw]">
+                  {lang === 'cs' ? `DALEKÁ CESTA Z MĚSTA ${geoCity}? RODINA TĚ VÍTÁ.` : `LONG WAY FROM ${geoCity}? THE FAMILY WELCOMES YOU.`}
+                </span>
+                <button onClick={() => { setGeoCity(null); localStorage.setItem('mmbarber_geo_city_dismissed', 'true'); }} className="text-white/40 hover:text-white p-1 ml-4">
+                  <X size={12} />
+                </button>
+             </div>
+           </motion.div>
+        )}
+      </AnimatePresence>
 
-      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-[calc(88px+env(safe-area-inset-top,0px))] block'}`} aria-hidden="true" />
+      <div className={`w-full ${(isIntroActive || pathname === "/") ? 'hidden' : 'h-[calc(88px+env(safe-area-inset-top,0px))] block'} ${geoCity && pathname === '/' && localStorage.getItem('mmbarber_geo_city_dismissed') !== 'true' ? 'mt-8' : ''}`} aria-hidden="true" />
       <header
-        className={`fixed top-0 w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between xl:justify-center xl:gap-16 transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] h-[calc(5.5rem+env(safe-area-inset-top,0px))] gpu-accelerate 
+        className={`fixed w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between xl:justify-center xl:gap-16 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] h-[calc(5.5rem+env(safe-area-inset-top,0px))] gpu-accelerate 
+          ${geoCity && pathname === '/' && localStorage.getItem('mmbarber_geo_city_dismissed') !== 'true' ? 'top-8' : 'top-0'}
           ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black/80 backdrop-blur-xl border-b border-white/5' : `bg-transparent border-b border-transparent ${isMenuOpen ? 'bg-mafia-black' : ''}`} 
           ${(isIntroActive && pathname === "/") 
-            ? "xl:opacity-0 xl:-translate-y-full xl:pointer-events-none opacity-100 translate-y-0" 
+            ? "xl:opacity-0 xl:-translate-y-[calc(100%+2rem)] xl:pointer-events-none opacity-100 translate-y-0" 
             : (!isVisible && !isMenuOpen && !isMobile) 
-              ? "-translate-y-full opacity-0 pointer-events-none" 
+              ? "-translate-y-[calc(100%+2rem)] opacity-0 pointer-events-none" 
               : "translate-y-0 opacity-100 pointer-events-auto"
           }`}
       >
@@ -836,6 +921,10 @@ export function Header() {
               >
                 MMBARBER
               </span>
+              <div className="flex items-center gap-1 mt-0.5 opacity-80">
+                <Crown size={10} className="text-mafia-gold" />
+                <span className="text-[9px] md:text-[10px] font-mono text-mafia-gold uppercase tracking-widest">{mafiaRank}</span>
+              </div>
             </div>
           </button>
         </div>
@@ -978,6 +1067,7 @@ export function Header() {
                         placeholder={t.header.searchPlaceholder || (lang === 'cs' ? "VYHLEDAT CÍL..." : "LOCATE TARGET...")}
                         className="w-full bg-mafia-black/90 border-2 border-mafia-gold/50 text-white text-[10px] font-mono px-4 py-2 outline-none placeholder:text-mafia-gold/20 focus:border-mafia-gold transition-all tracking-[0.2em] relative z-10"
                         onKeyDown={(e) => e.key === 'Escape' && setIsSearchOpen(false)}
+                        autoComplete="off"
                       />
                       {/* Animated Scanline Overlay */}
                       <div className="absolute inset-0 pointer-events-none z-20 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.1)_0px,rgba(0,0,0,0.1)_1px,transparent_1px,transparent_2px)] opacity-30"></div>
@@ -986,6 +1076,22 @@ export function Header() {
                         transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                         className="absolute left-0 right-0 h-[1px] bg-mafia-gold/30 shadow-[0_0_10px_var(--color-mafia-gold-glow)] z-30 opacity-50"
                       />
+                      {searchQuery.length > 1 && (
+                        <div className="absolute top-full left-0 w-full bg-mafia-black border border-mafia-gold/30 z-[40000] mt-1 shadow-lg">
+                           {["valentyn", "halloween", "xmas", "blackfriday", "summer", "newyear", "earth", "galaxy", "night", "classic", "day", "dev", "intro", "menu", "reveal"]
+                              .filter(c => c.includes(searchQuery.toLowerCase().trim()))
+                              .map(suggestion => (
+                                <button
+                                  key={suggestion}
+                                  type="button"
+                                  onClick={() => { setSearchQuery(suggestion); setTimeout(() => handleSearch({ preventDefault: () => {} } as any), 50); }}
+                                  className="w-full text-left px-4 py-2 font-mono text-[10px] text-mafia-gold/70 hover:text-mafia-gold hover:bg-mafia-gold/10 tracking-widest uppercase border-b border-white/5 last:border-0"
+                                >
+                                  {suggestion}
+                                </button>
+                           ))}
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 )}
@@ -1244,6 +1350,15 @@ export function Header() {
                       className="overflow-hidden"
                     >
                       <div className="flex flex-col px-6 pb-4 gap-2">
+                        <button onClick={() => { const newState = !isStealthMode; localStorage.setItem("mmbarber_stealth_mode", String(newState)); window.dispatchEvent(new CustomEvent('mmbarber-stealth-update', { detail: newState })); }} className="py-5 px-6 border border-white/10 flex items-center justify-between active:scale-95 transition-all bg-black/20">
+                          <div className="flex items-center gap-4">
+                            <Radio size={24} className={isStealthMode ? 'text-[#0f0]' : 'text-white/40'} />
+                            <span className={`text-sm md:text-base font-sans font-bold uppercase ${isStealthMode ? 'text-[#0f0]' : 'text-smoke-white'}`}>{lang === 'cs' ? 'STEALTH MÓD' : 'STEALTH MODE'}</span>
+                          </div>
+                          <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isStealthMode ? 'bg-[#0f0]' : 'bg-white/10'}`}>
+                             <motion.div animate={{ x: isStealthMode ? 22 : 3 }} className="w-3.5 h-3.5 rounded-full bg-black shadow-sm" />
+                          </div>
+                        </button>
                         <button onClick={() => { const newState = !isMobileEffectsEnabled; localStorage.setItem("mmbarber_mobile_effects_enabled", String(newState)); window.dispatchEvent(new CustomEvent('mmbarber-mobile-effects-update', { detail: newState })); }} className="py-5 px-6 border border-white/10 flex items-center justify-between active:scale-95 transition-all bg-black/20">
                           <div className="flex items-center gap-4">
                             <Sparkles size={24} className={isMobileEffectsEnabled ? 'text-mafia-gold' : 'text-white/40'} />
@@ -1339,6 +1454,28 @@ export function Header() {
                 transition={{ duration: 0.8, repeat: Infinity }}
                 className="w-1.5 h-3 bg-mafia-gold ml-4 inline-block align-middle"
               />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isInterrogationActive && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[99999] bg-black flex flex-col items-center justify-center cursor-crosshair"
+            onMouseMove={handleInterrogationMouseMove}
+          >
+            <div className="absolute inset-0 bg-red-900/20 blur-[100px] pointer-events-none" />
+            <div className="w-20 h-20 border border-red-500/50 rounded-full flex items-center justify-center mb-6 animate-pulse">
+               <Target size={32} className="text-red-500" />
+            </div>
+            <h1 className="text-4xl text-red-500 font-black uppercase tracking-widest mb-4">VÝSLECH</h1>
+            <p className="text-red-400 font-mono text-center max-w-md border border-red-500/20 bg-red-900/10 p-4 rounded">
+              Příliš mnoho dotazů. Nejsi ty od policajtů? Hýbni myší zleva doprava a dokaž svou nevinu.
+            </p>
+            <div className="mt-8 w-64 h-2 bg-red-900/30 rounded-full overflow-hidden">
+               <div className="h-full bg-red-500 transition-all duration-100" style={{ width: `${Math.min(100, (mouseDelta / 2000) * 100)}%` }} />
             </div>
           </motion.div>
         )}

@@ -29,6 +29,7 @@ const DailyIntelligence = dynamic(() => import("@/components/DailyIntelligence")
 import { CinematicIntro } from "@/components/Intro";
 import { CinematicSequence737 } from "@/components/CinematicSequence737";
 import { MafiaClickEffects } from "@/components/MafiaClickEffects";
+import { HiddenSeoArchive } from '@/components/HiddenSEOArchive';
 import { useTranslation } from "@/hooks/useTranslation";
 
 // SectionReveal defined outside to prevent re-initialization on parent render
@@ -52,7 +53,7 @@ const SectionReveal = ({ children, delay = 0, isMobile, isMobileEffectsEnabled }
 
 export default function Home() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const [showContent, setShowContent] = useState(true);
   const [isIntroDismissed, setIsIntroDismissed] = useState(true); // SSR safe default
   const [isMobile, setIsMobile] = useState(false);
@@ -241,7 +242,7 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
-
+      <HiddenSeoArchive lang={lang} mode="seo-hidden" />
     </div>
   );
 }

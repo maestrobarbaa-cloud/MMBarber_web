@@ -9,6 +9,7 @@ interface GameContextProps {
   isTomasUnlocked: boolean;
   isNellaUnlocked: boolean;
   totalCollected: number;
+  mafiaRank: string;
   resetProgress: () => Promise<void>;
 }
 
@@ -19,6 +20,7 @@ export const NELLA_THRESHOLD = 10;
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [collectedIds, setCollectedIds] = useState<string[]>([]);
+  const [bonusXp, setBonusXp] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -27,8 +29,21 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       if (saved) {
         setCollectedIds(JSON.parse(saved));
       }
+      
+      const savedXp = parseInt(localStorage.getItem('mmbarber_bonus_xp') || '0', 10);
+      let currentBonus = savedXp;
+
+      const lastLogin = localStorage.getItem('mmbarber_last_login');
+      const today = new Date().toDateString();
+      
+      if (lastLogin !== today) {
+        currentBonus += 50;
+        localStorage.setItem('mmbarber_bonus_xp', currentBonus.toString());
+        localStorage.setItem('mmbarber_last_login', today);
+      }
+      setBonusXp(currentBonus);
     } catch (e) {
-      console.error("Failed to load fragments from local storage:", e);
+      console.error("Failed to load game data:", e);
     } finally {
       setIsLoaded(true);
     }
@@ -42,23 +57,27 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     
     try {
       localStorage.setItem('mmbarber_fragments', JSON.stringify(newCollected));
-    } catch (e) {
-      console.error("Failed to save fragment to local storage:", e);
-    }
+    } catch (e) {}
   };
 
   const resetProgress = async () => {
     setCollectedIds([]);
+    setBonusXp(0);
     try {
       localStorage.removeItem('mmbarber_fragments');
-    } catch (e) {
-      console.error("Failed to reset fragments in local storage:", e);
-    }
+      localStorage.removeItem('mmbarber_bonus_xp');
+      localStorage.removeItem('mmbarber_last_login');
+    } catch (e) {}
   };
 
-  const totalCollected = collectedIds.length;
+  const totalCollected = (collectedIds.length * 10) + bonusXp; // Base fragments worth 10 XP
   const isTomasUnlocked = totalCollected >= TOMAS_THRESHOLD;
   const isNellaUnlocked = totalCollected >= NELLA_THRESHOLD;
+
+  let mafiaRank = "Soldato";
+  if (totalCollected >= 150) mafiaRank = "Capo";
+  if (totalCollected >= 500) mafiaRank = "Underboss";
+  if (totalCollected >= 1000) mafiaRank = "Don";
 
   return (
     <GameContext.Provider value={{
@@ -67,6 +86,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       isTomasUnlocked,
       isNellaUnlocked,
       totalCollected,
+      mafiaRank,
       resetProgress
     }}>
       {children}

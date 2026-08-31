@@ -192,7 +192,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.4,
     },
     {
-      url: `${baseUrl}/sidliste`,
+      url: `${baseUrl}/zajimavosti`,
       lastModified,
       changeFrequency: 'monthly',
       priority: 0.7,
