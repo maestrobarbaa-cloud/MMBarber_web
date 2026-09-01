@@ -1849,73 +1849,6 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                     <p className="text-white/40 text-xs font-mono mt-1">{lang === 'cs' ? 'Moje štítky' : 'My tags'}</p>
                   </div>
 
-                  {/* DYNAMIC CATEGORY QUESTIONS */}
-                  {editingMyCategory === 'real_estate' && (
-                    <div className="mt-8 border-t border-white/10 pt-6 space-y-4">
-                      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Doplňující dotazy k bydlení</h4>
-                      <div>
-                        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Kouření</label>
-                        <CustomSelect value={formData.smoking || ""} onChange={(v) => setFormData({...formData, smoking: v as string})} options={[{value:'no', label:'Nekuřák'}, {value:'yes', label:'Kuřák'}, {value:'outside', label:'Kouřím jen venku'}]} placeholder="Vyber..." />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Domácí mazlíčci</label>
-                        <CustomSelect value={formData.pets?.length ? "yes" : "no"} onChange={(v) => {
-                          if (v === 'yes' && (!formData.pets || formData.pets.length === 0)) {
-                            setFormData({...formData, pets: [{id: Date.now().toString(), type: 'Nespecifikováno', breed: '', purpose: 'none'}]})
-                          } else if (v === 'no') {
-                            setFormData({...formData, pets: []})
-                          }
-                        }} options={[{value:'no', label:'Nemám zvířata'}, {value:'yes', label:'Mám zvíře'}]} placeholder="Vyber..." />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Běžný režim (Chronotyp)</label>
-                        <CustomSelect value={formData.temperament || ""} onChange={(v) => setFormData({...formData, temperament: v as string})} options={[{value:'Ranní ptáče', label:'Ranní ptáče'}, {value:'Sova', label:'Noční sova'}, {value:'Flexibilní', label:'Něco mezi'}]} placeholder="Vyber..." />
-                      </div>
-                    </div>
-                  )}
-
-                  {editingMyCategory === 'services_work' && (
-                    <div className="mt-8 border-t border-white/10 pt-6 space-y-4">
-                      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Pracovní Profil</h4>
-                      <div>
-                        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Work-Life Balance</label>
-                        <CustomSelect value={formData.workLifeBalance || ""} onChange={(v) => setFormData({...formData, workLifeBalance: v as string})} options={[{value:'Hustle kultura (Kariéra na 1. místě)', label:'Hustle kultura (Kariéra na 1. místě)'}, {value:'Vyvážený', label:'Vyvážený střed'}, {value:'Pracuji, abych žil(a)', label:'Pracuji, abych žil(a)'}]} placeholder="Vyber..." />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Přístup k penězům</label>
-                        <CustomSelect value={formData.moneyDetailed?.myAttitude || ""} onChange={(v) => setFormData({...formData, moneyDetailed: {...(formData.moneyDetailed || {}), myAttitude: v as string}})} options={[{value:'Spořím a investuji', label:'Spořím a investuji'}, {value:'Užívám si a utrácím', label:'Užívám si a utrácím'}, {value:'Zlatá střední cesta', label:'Zlatá střední cesta'}]} placeholder="Vyber..." />
-                      </div>
-                    </div>
-                  )}
-
-                  {editingMyCategory === 'friends' && (
-                    <div className="mt-8 border-t border-white/10 pt-6 space-y-4">
-                      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Přátelský Profil</h4>
-                      <div>
-                        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Sociální Baterie</label>
-                        <CustomSelect value={formData.socialBattery || ""} onChange={(v) => setFormData({...formData, socialBattery: v as string})} options={[{value:'Introvert', label:'Introvert (Dobíjim o samotě)'}, {value:'Extrovert', label:'Extrovert (Dobíjim s lidmi)'}, {value:'Ambivert', label:'Něco mezi'}]} placeholder="Vyber..." />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Spontánnost</label>
-                        <CustomSelect value={formData.spontaneityLevel || ""} onChange={(v) => setFormData({...formData, spontaneityLevel: v as string})} options={[{value:'Extrémně spontánní', label:'Extrémně spontánní'}, {value:'Rád plánuji dopředu', label:'Plánovač'}, {value:'Flexibilní', label:'Něco mezi'}]} placeholder="Vyber..." />
-                      </div>
-                    </div>
-                  )}
-                  
-                  {editingMyCategory === 'relationships' && (
-                    <div className="mt-8 border-t border-white/10 pt-6 space-y-4">
-                      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Romantické Preference</h4>
-                      <div>
-                        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Jazyk Lásky (Love Language)</label>
-                        <CustomSelect value={formData.loveLanguage || ""} onChange={(v) => setFormData({...formData, loveLanguage: v as string})} options={[{value:'touch', label:'Fyzický kontakt'}, {value:'words', label:'Slova ujištění'}, {value:'acts', label:'Skutky a pomoc'}, {value:'gifts', label:'Dárky'}, {value:'time', label:'Společný čas'}]} placeholder="Vyber..." />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Hranice Nevěry</label>
-                        <CustomSelect value={(formData as any).boundaries?.infidelityDef || ""} onChange={(v) => setFormData({...formData, boundaries: {...((formData as any).boundaries || {}), infidelityDef: v as string}})} options={[{value:'Už flirtování je moc', label:'Už flirtování je moc'}, {value:'Fyzický kontakt', label:'Fyzický kontakt'}, {value:'Citové sblížení', label:'Citové sblížení s jiným'}]} placeholder="Vyber..." />
-                      </div>
-                    </div>
-                  )}
-
                   <button onClick={() => {
                     const hasTags = cat.subOptions.some(opt => (formData.categories || []).includes(opt.tag));
                     if (!hasTags) {
@@ -1924,6 +1857,73 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                     setEditingMyCategory(null);
                   }} className="p-2 text-white/40 hover:text-white"><X size={20} /></button>
                 </div>
+
+                {/* DYNAMIC CATEGORY QUESTIONS */}
+                {editingMyCategory === 'real_estate' && (
+                  <div className="mb-6 space-y-4">
+                    <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Doplňující dotazy k bydlení</h4>
+                    <div>
+                      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Kouření</label>
+                      <CustomSelect value={formData.smoking || ""} onChange={(v) => setFormData({...formData, smoking: v as string})} options={[{value:'no', label:'Nekuřák'}, {value:'yes', label:'Kuřák'}, {value:'outside', label:'Kouřím jen venku'}]} placeholder="Vyber..." />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Domácí mazlíčci</label>
+                      <CustomSelect value={formData.pets?.length ? "yes" : "no"} onChange={(v) => {
+                        if (v === 'yes' && (!formData.pets || formData.pets.length === 0)) {
+                          setFormData({...formData, pets: [{id: Date.now().toString(), type: 'Nespecifikováno', breed: '', purpose: 'none'}]})
+                        } else if (v === 'no') {
+                          setFormData({...formData, pets: []})
+                        }
+                      }} options={[{value:'no', label:'Nemám zvířata'}, {value:'yes', label:'Mám zvíře'}]} placeholder="Vyber..." />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Běžný režim (Chronotyp)</label>
+                      <CustomSelect value={formData.temperament || ""} onChange={(v) => setFormData({...formData, temperament: v as string})} options={[{value:'Ranní ptáče', label:'Ranní ptáče'}, {value:'Sova', label:'Noční sova'}, {value:'Flexibilní', label:'Něco mezi'}]} placeholder="Vyber..." />
+                    </div>
+                  </div>
+                )}
+
+                {editingMyCategory === 'services_work' && (
+                  <div className="mb-6 space-y-4">
+                    <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Pracovní Profil</h4>
+                    <div>
+                      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Work-Life Balance</label>
+                      <CustomSelect value={formData.workLifeBalance || ""} onChange={(v) => setFormData({...formData, workLifeBalance: v as string})} options={[{value:'Hustle kultura (Kariéra na 1. místě)', label:'Hustle kultura (Kariéra na 1. místě)'}, {value:'Vyvážený', label:'Vyvážený střed'}, {value:'Pracuji, abych žil(a)', label:'Pracuji, abych žil(a)'}]} placeholder="Vyber..." />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Přístup k penězům</label>
+                      <CustomSelect value={formData.moneyDetailed?.myAttitude || ""} onChange={(v) => setFormData({...formData, moneyDetailed: {...(formData.moneyDetailed || {}), myAttitude: v as string}})} options={[{value:'Spořím a investuji', label:'Spořím a investuji'}, {value:'Užívám si a utrácím', label:'Užívám si a utrácím'}, {value:'Zlatá střední cesta', label:'Zlatá střední cesta'}]} placeholder="Vyber..." />
+                    </div>
+                  </div>
+                )}
+
+                {editingMyCategory === 'friends' && (
+                  <div className="mb-6 space-y-4">
+                    <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Přátelský Profil</h4>
+                    <div>
+                      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Sociální Baterie</label>
+                      <CustomSelect value={formData.socialBattery || ""} onChange={(v) => setFormData({...formData, socialBattery: v as string})} options={[{value:'Introvert', label:'Introvert (Dobíjim o samotě)'}, {value:'Extrovert', label:'Extrovert (Dobíjim s lidmi)'}, {value:'Ambivert', label:'Něco mezi'}]} placeholder="Vyber..." />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Spontánnost</label>
+                      <CustomSelect value={formData.spontaneityLevel || ""} onChange={(v) => setFormData({...formData, spontaneityLevel: v as string})} options={[{value:'Extrémně spontánní', label:'Extrémně spontánní'}, {value:'Rád plánuji dopředu', label:'Plánovač'}, {value:'Flexibilní', label:'Něco mezi'}]} placeholder="Vyber..." />
+                    </div>
+                  </div>
+                )}
+                
+                {editingMyCategory === 'relationships' && (
+                  <div className="mb-6 space-y-4">
+                    <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Romantické Preference</h4>
+                    <div>
+                      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Jazyk Lásky (Love Language)</label>
+                      <CustomSelect value={formData.loveLanguage || ""} onChange={(v) => setFormData({...formData, loveLanguage: v as string})} options={[{value:'touch', label:'Fyzický kontakt'}, {value:'words', label:'Slova ujištění'}, {value:'acts', label:'Skutky a pomoc'}, {value:'gifts', label:'Dárky'}, {value:'time', label:'Společný čas'}]} placeholder="Vyber..." />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-2">Hranice Nevěry</label>
+                      <CustomSelect value={(formData as any).boundaries?.infidelityDef || ""} onChange={(v) => setFormData({...formData, boundaries: {...((formData as any).boundaries || {}), infidelityDef: v as string}})} options={[{value:'Už flirtování je moc', label:'Už flirtování je moc'}, {value:'Fyzický kontakt', label:'Fyzický kontakt'}, {value:'Citové sblížení', label:'Citové sblížení s jiným'}]} placeholder="Vyber..." />
+                    </div>
+                  </div>
+                )}
                 <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-wrap gap-2 mb-6 content-start">
                   {cat.subOptions.map(opt => {
                     const catTag = opt.tag;

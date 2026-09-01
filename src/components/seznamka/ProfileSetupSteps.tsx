@@ -19,43 +19,42 @@ export const PointsBadge = ({ points }: { points: number }) => (
 );
 
 export const Step2Physical = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Vzhled a Tělo</h4>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
-           Tvoje výška (cm)
-           <InfoTooltip text="Fyzické proporce jsou pro někoho důležité. Zadej reálnou výšku." />
-         </label>
-         <input type="number" value={formData.height || ''} onChange={(e) => setFormData({...formData, height: e.target.value})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold" />
+    <AccordionSection title="Vzhled a proporce" icon={<User size={18} />} defaultOpen={true}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+             Tvoje výška (cm)
+             <InfoTooltip text="Fyzické proporce jsou pro někoho důležité. Zadej reálnou výšku." />
+           </label>
+           <input type="number" value={formData.height || ''} onChange={(e) => setFormData({...formData, height: e.target.value})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold" />
+        </div>
+        <div>
+           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+             Tvoje váha (kg)
+             <InfoTooltip text="Pro výpočet BMI." />
+           </label>
+           <div className="flex gap-4 items-center">
+             <input type="number" value={formData.weight || ''} onChange={(e) => setFormData({...formData, weight: e.target.value})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold" />
+             {formData.height && formData.weight && (
+               <div className="text-xs font-mono px-3 py-2 bg-mafia-gold/20 text-mafia-gold rounded whitespace-nowrap">
+                 BMI: {(Number(formData.weight) / ((Number(formData.height)/100) ** 2)).toFixed(1)}
+               </div>
+             )}
+           </div>
+        </div>
+        <div>
+           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Tvoje postava <PointsBadge points={5} /></label>
+           <CustomSelect value={formData.myBodyType || ""} onChange={(v) => setFormData({...formData, myBodyType: v})} options={[{value:'slender', label:'Štíhlá'}, {value:'athletic', label:'Sportovní'}, {value:'average', label:'Normální'}, {value:'curvy', label:'Plnější/Robustnější'}]} placeholder="Vyber..." />
+        </div>
       </div>
-      <div>
-         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
-           Tvoje váha (kg)
-           <InfoTooltip text="Pro výpočet BMI." />
-         </label>
-         <div className="flex gap-4 items-center">
-           <input type="number" value={formData.weight || ''} onChange={(e) => setFormData({...formData, weight: e.target.value})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold" />
-           {formData.height && formData.weight && (
-             <div className="text-xs font-mono px-3 py-2 bg-mafia-gold/20 text-mafia-gold rounded whitespace-nowrap">
-               BMI: {(Number(formData.weight) / ((Number(formData.height)/100) ** 2)).toFixed(1)}
-             </div>
-           )}
-         </div>
-      </div>
-      <div>
-         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Tvoje postava <PointsBadge points={5} /></label>
-         <CustomSelect value={formData.myBodyType || ""} onChange={(v) => setFormData({...formData, myBodyType: v})} options={[{value:'slender', label:'Štíhlá'}, {value:'athletic', label:'Sportovní'}, {value:'average', label:'Normální'}, {value:'curvy', label:'Plnější/Robustnější'}]} placeholder="Vyber..." />
-      </div>
-    </div>
+    </AccordionSection>
 
-    
-
-    <div className="p-6 bg-gradient-to-br from-mafia-gold/10 to-transparent border border-mafia-gold/30 hover:border-mafia-gold/50 shadow-[0_0_20px_rgba(197,160,89,0.05)] rounded-xl transition-all">
-      <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Preference u partnera</h4>
+    <AccordionSection title="Preference u partnera" icon={<Heart size={18} />}>
       <div className="space-y-6">
         <TraitSelector label="Důležitost fyzické přitažlivosti" tooltipText="Záleží ti hodně na vzhledu, nebo spíš na povaze?" value={formData.physicalAttraction?.importance} onChange={(v) => setFormData({...formData, physicalAttraction: {...formData.physicalAttraction, importance: v as any}})} />
         <TraitSelector label="Jak moc musí dbát na vzhled" tooltipText="Hledáš někoho, kdo tráví hodiny před zrcadlem, nebo ti to je jedno?" value={formData.physicalAttraction?.careForLooks} onChange={(v) => setFormData({...formData, physicalAttraction: {...formData.physicalAttraction, careForLooks: v as any}})} />
@@ -86,9 +85,7 @@ export const Step2Physical = ({ formData, setFormData, lang }: StepProps) => (
            </div>
         </div>
       </div>
-    </div>
-
-    
+    </AccordionSection>
   </motion.div>
 );
 
@@ -267,35 +264,35 @@ const ComplexPersonalitySection = ({ formData, setFormData }: { formData: any, s
 };
 
 export const Step3Character = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Povaha a Charakter</h4>
     </div>
-    <div className="p-6 bg-gradient-to-br from-mafia-gold/10 to-transparent border border-mafia-gold/30 hover:border-mafia-gold/50 shadow-[0_0_20px_rgba(197,160,89,0.05)] rounded-xl mb-8 transition-all">
-      <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Moje povaha (Jaký/á jsem)</h4>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vyber, co tě nejlépe vystihuje <PointsBadge points={5} /></label>
-        <CustomSelect isMulti={true} value={formData.myTraits || []} onChange={(val) => setFormData({ ...formData, myTraits: val })} placeholder="Vyber vlastnosti..." options={[
-          { value: "honest", label: "Upřímný/á" },
-          { value: "loyal", label: "Věrný/á" },
-          { value: "funny", label: "Vtipný/á (Smysl pro humor)" },
-          { value: "reliable", label: "Spolehlivý/á" },
-          { value: "empathetic", label: "Empatický/á" },
-          { value: "ambitious", label: "Ambiciózní" },
-          { value: "calm", label: "Klidný/á (Flegmatik)" },
-          { value: "social", label: "Společenský/á" },
-          { value: "romantic", label: "Romantický/á" },
-          { value: "independent", label: "Samostatný/á" },
-          { value: "tolerant", label: "Tolerantní" },
-          { value: "family", label: "Rodinně založený/á" },
-          { value: "adventurous", label: "Dobrodružný/á" }
-        ]} />
+
+    <AccordionSection title="Moje povaha (Jaký/á jsem)" icon={<User size={18} />} defaultOpen={true}>
+      <div className="space-y-6">
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vyber, co tě nejlépe vystihuje <PointsBadge points={5} /></label>
+          <CustomSelect isMulti={true} value={formData.myTraits || []} onChange={(val) => setFormData({ ...formData, myTraits: val })} placeholder="Vyber vlastnosti..." options={[
+            { value: "honest", label: "Upřímný/á" },
+            { value: "loyal", label: "Věrný/á" },
+            { value: "funny", label: "Vtipný/á (Smysl pro humor)" },
+            { value: "reliable", label: "Spolehlivý/á" },
+            { value: "empathetic", label: "Empatický/á" },
+            { value: "ambitious", label: "Ambiciózní" },
+            { value: "calm", label: "Klidný/á (Flegmatik)" },
+            { value: "social", label: "Společenský/á" },
+            { value: "romantic", label: "Romantický/á" },
+            { value: "independent", label: "Samostatný/á" },
+            { value: "tolerant", label: "Tolerantní" },
+            { value: "family", label: "Rodinně založený/á" },
+            { value: "adventurous", label: "Dobrodružný/á" }
+          ]} />
+        </div>
       </div>
+    </AccordionSection>
 
-    </div>
-
-    <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/10 hover:border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.02)] rounded-xl transition-all">
-      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Preference u partnera</h4>
+    <AccordionSection title="Preference u partnera" icon={<Heart size={18} />}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <TraitSelector label="Upřímnost" tooltipText="Základ dobrého vztahu pro většinu, ale každý to má jinak." value={formData.characterTraits?.honesty} onChange={(val) => setFormData({ ...formData, characterTraits: { ...formData.characterTraits, honesty: val as any } })} />
         <TraitSelector label="Věrnost" tooltipText="Někdo preferuje otevřené vztahy, algoritmus to zohlední." value={formData.characterTraits?.loyalty} onChange={(val) => setFormData({ ...formData, characterTraits: { ...formData.characterTraits, loyalty: val as any } })} />
@@ -304,269 +301,269 @@ export const Step3Character = ({ formData, setFormData, lang }: StepProps) => (
         <TraitSelector label="Empatie" tooltipText="Schopnost druhého vnímat tvé emoce." value={formData.characterTraits?.empathy} onChange={(val) => setFormData({ ...formData, characterTraits: { ...formData.characterTraits, empathy: val as any } })} />
         <TraitSelector label="Ambice" tooltipText="Ambiciózní partneři většinou hledají stejně smýšlející." value={formData.characterTraits?.ambition} onChange={(val) => setFormData({ ...formData, characterTraits: { ...formData.characterTraits, ambition: val as any } })} />
       </div>
-    </div>
+    </AccordionSection>
     
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-white/5">
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Sociální baterie <PointsBadge points={5} /></label>
-        <CustomSelect value={formData.socialBattery || ""} onChange={(val) => setFormData({ ...formData, socialBattery: val })} placeholder="Vyber..." options={[{ value: "Extrovert", label: "Extrovert" }, { value: "Introvert", label: "Introvert" }, { value: "Ambivert", label: "Ambivert" }]} />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Osobnostní dynamika <PointsBadge points={5} /></label>
-        <CustomSelect value={formData.personalityDynamics || ""} onChange={(val) => setFormData({ ...formData, personalityDynamics: val })} placeholder="Vyber..." options={[{ value: "Dominantní", label: "Dominantní" }, { value: "Submisivní", label: "Submisivní" }, { value: "Switch", label: "Přepínač (Switch)" }, { value: "Egalitarian", label: "Rovnocenný" }]} />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Mírnost povahy (Konflikty) <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.peacefulness || ""} 
-          onChange={(val) => setFormData({ ...formData, peacefulness: val })} 
-          placeholder="Vyber..." 
-          options={[
-            { value: "pacifist", label: "Absolutní pacifista (vyhýbám se konfliktům)" },
-            { value: "calm", label: "Klidný vyjednavač (řeším věci s chladnou hlavou)" },
-            { value: "assertive", label: "Asertivní (nenechám si nic líbit, ale nekřičím)" },
-            { value: "explosive", label: "Výbušný (rychle vzplanu, rychle vychladnu)" },
-            { value: "fighter", label: "Bojovník (jdu do střetu hned)" }
-          ]} 
-        />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Tvůj přístup k dnešní době <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.mindsetContext || ""} 
-          onChange={(val) => setFormData({ ...formData, mindsetContext: val })} 
-          placeholder="Vyber..." 
-          options={[
-            { value: "toxic_positivity", label: "Vždy pozitivní, ignoruju negativa" },
-            { value: "realistic_optimist", label: "Realistický optimista (hledám řešení)" },
-            { value: "neutral", label: "Zlatá střední cesta (žiju přítomností)" },
-            { value: "prepared_pessimist", label: "Očekávám nejhorší (abych nebyl zklamaný)" },
-            { value: "doomer", label: "Doomer (svět se řítí do záhuby)" }
-          ]} 
-        />
-      </div>
-    </div>
-
-    <div className="p-6 bg-gradient-to-br from-blue-900/30 to-blue-950/20 border border-blue-500/30 hover:border-blue-400/50 shadow-[0_0_20px_rgba(59,130,246,0.1)] rounded-xl mt-8 space-y-4 transition-all">
-      <h4 className="font-heading font-black text-blue-400 uppercase tracking-widest text-sm mb-2">
-        💬 Lamač ledů (Icebreaker)
-      </h4>
-      <p className="text-white/60 font-mono text-[10px] uppercase mb-4">Ulehči lidem první krok. Vyber si výzvu, na kterou ti mají odpovědět.</p>
-      <CustomSelect 
-        value={formData.icebreaker || ""} 
-        onChange={(val) => setFormData({ ...formData, icebreaker: val })} 
-        placeholder="Zvol si svůj Icebreaker..." 
-        options={[
-          { value: "Jaké bylo tvoje absolutně nejhorší rande?", label: "Jaké bylo tvoje nejhorší rande?" },
-          { value: "Polož mi otázku pěkně na tělo.", label: "Polož mi otázku na tělo." },
-          { value: "Řekni mi svůj nejtrapnější zážitek.", label: "Tvůj nejtrapnější zážitek?" },
-          { value: "Jaký je tvůj nejhloupější zlozvyk?", label: "Jaký je tvůj zlozvyk?" },
-          { value: "Pizzu s ananasem: Ano, nebo Zločin?", label: "Pizza s ananasem?" }
-        ]} 
-      />
-    </div>
-
-    {/* Voice Prompts UI */}
-    <div className="p-6 bg-gradient-to-br from-purple-900/30 to-purple-950/20 border border-purple-500/30 hover:border-purple-400/50 shadow-[0_0_20px_rgba(168,85,247,0.1)] rounded-xl mt-8 space-y-4 transition-all">
-      <h4 className="font-heading font-black text-purple-400 uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
-        🎤 Hlasová odpověď (Voice Prompt)
-      </h4>
-      <p className="text-white/60 font-mono text-[10px] uppercase mb-4">Ukaž svou osobnost skrze hlas! Lidé slyší tvoji intonaci a humor ještě před prvním randem.</p>
-      
-      {!formData.voicePrompt ? (
-        <div className="flex flex-col gap-3">
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest">Zvol si otázku k odpovědi:</label>
+    <AccordionSection title="Osobnostní nastavení" icon={<User size={18} />}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Sociální baterie <PointsBadge points={5} /></label>
+          <CustomSelect value={formData.socialBattery || ""} onChange={(val) => setFormData({ ...formData, socialBattery: val })} placeholder="Vyber..." options={[{ value: "Extrovert", label: "Extrovert" }, { value: "Introvert", label: "Introvert" }, { value: "Ambivert", label: "Ambivert" }]} />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Osobnostní dynamika <PointsBadge points={5} /></label>
+          <CustomSelect value={formData.personalityDynamics || ""} onChange={(val) => setFormData({ ...formData, personalityDynamics: val })} placeholder="Vyber..." options={[{ value: "Dominantní", label: "Dominantní" }, { value: "Submisivní", label: "Submisivní" }, { value: "Switch", label: "Přepínač (Switch)" }, { value: "Egalitarian", label: "Rovnocenný" }]} />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Mírnost povahy (Konflikty) <PointsBadge points={5} /></label>
           <CustomSelect 
-            value="" 
-            onChange={(val) => setFormData({ ...formData, voicePrompt: { question: val as string, url: 'mock_audio.mp3' } })} 
-            placeholder="Vyber otázku pro hlasovku..." 
+            value={formData.peacefulness || ""} 
+            onChange={(val) => setFormData({ ...formData, peacefulness: val })} 
+            placeholder="Vyber..." 
             options={[
-              { value: "V čem jsi absolutní nerd?", label: "V čem jsi absolutní nerd?" },
-              { value: "Řekni mi svůj nejlepší vtip (nebo ten nejhorší).", label: "Nejlepší vtip" },
-              { value: "Na co jsi ve svém životě nejvíc pyšný/á?", label: "Na co jsi pyšný/á" },
-              { value: "Zazpívej kousek svojí guilty pleasure písničky.", label: "Guilty pleasure song (Zpěv)" }
+              { value: "pacifist", label: "Absolutní pacifista (vyhýbám se konfliktům)" },
+              { value: "calm", label: "Klidný vyjednavač (řeším věci s chladnou hlavou)" },
+              { value: "assertive", label: "Asertivní (nenechám si nic líbit, ale nekřičím)" },
+              { value: "explosive", label: "Výbušný (rychle vzplanu, rychle vychladnu)" },
+              { value: "fighter", label: "Bojovník (jdu do střetu hned)" }
             ]} 
           />
         </div>
-      ) : (
-        <div className="flex flex-col gap-3 bg-black/40 p-4 rounded-lg border border-purple-500/30">
-          <span className="text-purple-300 font-bold text-sm">Otázka: {formData.voicePrompt.question}</span>
-          <div className="flex items-center justify-between">
-            <span className="text-green-400 font-mono text-xs uppercase tracking-widest">✅ Nahráno úspěšně</span>
-            <button onClick={() => setFormData({ ...formData, voicePrompt: undefined })} className="text-red-400 hover:text-red-300 text-[10px] font-mono uppercase tracking-widest">
-              Smazat nahrávku
-            </button>
-          </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Tvůj přístup k dnešní době <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.mindsetContext || ""} 
+            onChange={(val) => setFormData({ ...formData, mindsetContext: val })} 
+            placeholder="Vyber..." 
+            options={[
+              { value: "toxic_positivity", label: "Vždy pozitivní, ignoruju negativa" },
+              { value: "realistic_optimist", label: "Realistický optimista (hledám řešení)" },
+              { value: "neutral", label: "Zlatá střední cesta (žiju přítomností)" },
+              { value: "prepared_pessimist", label: "Očekávám nejhorší (abych nebyl zklamaný)" },
+              { value: "doomer", label: "Doomer (svět se řítí do záhuby)" }
+            ]} 
+          />
         </div>
-      )}
-    </div>
+      </div>
+    </AccordionSection>
+
+    <AccordionSection title="Lamač ledů (Icebreaker)" icon={<User size={18} />}>
+      <div className="space-y-4">
+        <p className="text-white/60 font-mono text-[10px] uppercase mb-4">Ulehči lidem první krok. Vyber si výzvu, na kterou ti mají odpovědět.</p>
+        <CustomSelect 
+          value={formData.icebreaker || ""} 
+          onChange={(val) => setFormData({ ...formData, icebreaker: val })} 
+          placeholder="Zvol si svůj Icebreaker..." 
+          options={[
+            { value: "Jaké bylo tvoje absolutně nejhorší rande?", label: "Jaké bylo tvoje nejhorší rande?" },
+            { value: "Polož mi otázku pěkně na tělo.", label: "Polož mi otázku na tělo." },
+            { value: "Řekni mi svůj nejtrapnější zážitek.", label: "Tvůj nejtrapnější zážitek?" },
+            { value: "Jaký je tvůj nejhloupější zlozvyk?", label: "Jaký je tvůj zlozvyk?" },
+            { value: "Pizzu s ananasem: Ano, nebo Zločin?", label: "Pizza s ananasem?" }
+          ]} 
+        />
+      </div>
+    </AccordionSection>
+
+    <AccordionSection title="Hlasová odpověď (Voice Prompt)" icon={<User size={18} />}>
+      <div className="space-y-4">
+        <p className="text-white/60 font-mono text-[10px] uppercase mb-4">Ukaž svou osobnost skrze hlas! Lidé slyší tvoji intonaci a humor ještě před prvním randem.</p>
+        
+        {!formData.voicePrompt ? (
+          <div className="flex flex-col gap-3">
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest">Zvol si otázku k odpovědi:</label>
+            <CustomSelect 
+              value="" 
+              onChange={(val) => setFormData({ ...formData, voicePrompt: { question: val as string, url: 'mock_audio.mp3' } })} 
+              placeholder="Vyber otázku pro hlasovku..." 
+              options={[
+                { value: "V čem jsi absolutní nerd?", label: "V čem jsi absolutní nerd?" },
+                { value: "Řekni mi svůj nejlepší vtip (nebo ten nejhorší).", label: "Nejlepší vtip" },
+                { value: "Na co jsi ve svém životě nejvíc pyšný/á?", label: "Na co jsi pyšný/á" },
+                { value: "Zazpívej kousek svojí guilty pleasure písničky.", label: "Guilty pleasure song (Zpěv)" }
+              ]} 
+            />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 bg-black/40 p-4 rounded-lg border border-mafia-gold/30">
+            <span className="text-mafia-gold font-bold text-sm">Otázka: {formData.voicePrompt.question}</span>
+            <div className="flex items-center justify-between">
+              <span className="text-green-400 font-mono text-xs uppercase tracking-widest">✅ Nahráno úspěšně</span>
+              <button onClick={() => setFormData({ ...formData, voicePrompt: undefined })} className="text-red-400 hover:text-red-300 text-[10px] font-mono uppercase tracking-widest">
+                Smazat nahrávku
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </AccordionSection>
     
-
-    {/* RODINNÁ HISTORIE */}
-    <div className="p-6 bg-gradient-to-br from-amber-900/20 to-transparent border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.05)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-amber-500 uppercase tracking-widest text-sm mb-4">Rodinná historie a Předci (Volitelné)</h4>
-      <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">
-        Máš v rodokmenu někoho zajímavého? Modrá krev, slavný vynálezce, nebo umělec? Můžeš se o to podělit.
-      </p>
-      
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Slavní nebo významní předci <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.famousAncestors || ""} 
-          onChange={(v) => setFormData({...formData, famousAncestors: v as string})} 
-          options={[
-            {value:'none', label:'Ne, nebo o nich nevím'}, 
-            {value:'one', label:'Ano, máme v rodině významného předka'}, 
-            {value:'many', label:'Ano, je jich mnoho (zajímavý rodokmen)'}
-          ]} 
-          placeholder="Vyber..." 
-        />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Politické přesvědčení <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.values?.politics || ""} 
-          onChange={(v) => setFormData({...formData, values: {...formData.values, politics: v}})} 
-          options={[{value:'liberal', label:'Liberální'}, {value:'conservative', label:'Konzervativní'}, {value:'moderate', label:'Střed / Umírněné'}, {value:'apolitical', label:'Apolitický (Nezajímám se)'}]} 
-          placeholder="Vyber..." 
-        />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Postoj k financím <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.values?.finance || ""} 
-          onChange={(v) => setFormData({...formData, values: {...formData.values, finance: v}})} 
-          options={[{value:'saver', label:'Šetřivý/á (Myslím na budoucnost)'}, {value:'spender', label:'Užívám si života teď a tady'}, {value:'investor', label:'Investor (Peníze musí dělat peníze)'}, {value:'balanced', label:'Zlatá střední cesta'}]} 
-          placeholder="Vyber..." 
-        />
-      </div>
-      <div className="md:col-span-2 mt-4">
-        <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Budoucnost a Společný provoz</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Financování domácnosti <PointsBadge points={5} /></label>
-            <CustomSelect 
-              value={(formData as any).householdFinance || ""} 
-              onChange={(v) => setFormData({...formData, householdFinance: v} as any)} 
-              options={[
-                {value:'50_50', label:'Všechno striktně na půl (50/50)'}, 
-                {value:'proportional', label:'Kdo víc vydělá, ten víc platí (Poměrově)'}, 
-                {value:'shared_account', label:'Společný účet (Moje peníze jsou tvoje peníze)'}, 
-                {value:'traditional', label:'Tradiční model (Jeden hlavní živitel, většinou muž)'},
-                {value:'independent', label:'Nezávislé účty (Každý si platí své)'}
-              ]} 
-              placeholder="Jak si to představuješ?" 
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Představa o důchodu <PointsBadge points={5} /></label>
-            <CustomSelect 
-              value={(formData as any).retirementVision || ""} 
-              onChange={(v) => setFormData({...formData, retirementVision: v} as any)} 
-              options={[
-                {value:'early_retire', label:'Chci jít do důchodu co nejdřív a užívat si (FIRE)'}, 
-                {value:'workaholic', label:'Budu pracovat dokud to půjde, práce mě baví'}, 
-                {value:'passive_travel', label:'Pasivní příjem a cestování po světě'}, 
-                {value:'cabin_nature', label:'Klidný a skromný život na chatě v přírodě'}
-              ]} 
-              placeholder="Jak vidíš stáří?" 
-            />
+    <AccordionSection title="Rodinná historie a Předci (Volitelné)" icon={<User size={18} />}>
+      <div className="space-y-6">
+        <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">
+          Máš v rodokmenu někoho zajímavého? Modrá krev, slavný vynálezce, nebo umělec? Můžeš se o to podělit.
+        </p>
+        
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Slavní nebo významní předci <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.famousAncestors || ""} 
+            onChange={(v) => setFormData({...formData, famousAncestors: v as string})} 
+            options={[
+              {value:'none', label:'Ne, nebo o nich nevím'}, 
+              {value:'one', label:'Ano, máme v rodině významného předka'}, 
+              {value:'many', label:'Ano, je jich mnoho (zajímavý rodokmen)'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Politické přesvědčení <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.values?.politics || ""} 
+            onChange={(v) => setFormData({...formData, values: {...formData.values, politics: v}})} 
+            options={[{value:'liberal', label:'Liberální'}, {value:'conservative', label:'Konzervativní'}, {value:'moderate', label:'Střed / Umírněné'}, {value:'apolitical', label:'Apolitický (Nezajímám se)'}]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Postoj k financím <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.values?.finance || ""} 
+            onChange={(v) => setFormData({...formData, values: {...formData.values, finance: v}})} 
+            options={[{value:'saver', label:'Šetřivý/á (Myslím na budoucnost)'}, {value:'spender', label:'Užívám si života teď a tady'}, {value:'investor', label:'Investor (Peníze musí dělat peníze)'}, {value:'balanced', label:'Zlatá střední cesta'}]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+        
+        <div className="pt-4 border-t border-white/10">
+          <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Budoucnost a Společný provoz</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Financování domácnosti <PointsBadge points={5} /></label>
+              <CustomSelect 
+                value={(formData as any).householdFinance || ""} 
+                onChange={(v) => setFormData({...formData, householdFinance: v} as any)} 
+                options={[
+                  {value:'50_50', label:'Všechno striktně na půl (50/50)'}, 
+                  {value:'proportional', label:'Kdo víc vydělá, ten víc platí (Poměrově)'}, 
+                  {value:'shared_account', label:'Společný účet (Moje peníze jsou tvoje peníze)'}, 
+                  {value:'traditional', label:'Tradiční model (Jeden hlavní živitel, většinou muž)'},
+                  {value:'independent', label:'Nezávislé účty (Každý si platí své)'}
+                ]} 
+                placeholder="Jak si to představuješ?" 
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Představa o důchodu <PointsBadge points={5} /></label>
+              <CustomSelect 
+                value={(formData as any).retirementVision || ""} 
+                onChange={(v) => setFormData({...formData, retirementVision: v} as any)} 
+                options={[
+                  {value:'early_retire', label:'Chci jít do důchodu co nejdřív a užívat si (FIRE)'}, 
+                  {value:'workaholic', label:'Budu pracovat dokud to půjde, práce mě baví'}, 
+                  {value:'passive_travel', label:'Pasivní příjem a cestování po světě'}, 
+                  {value:'cabin_nature', label:'Klidný a skromný život na chatě v přírodě'}
+                ]} 
+                placeholder="Jak vidíš stáří?" 
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    {/* PSYCHOLOGICKÉ TESTY */}
-    <div className="p-6 bg-gradient-to-br from-indigo-900/20 to-transparent border border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.05)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-indigo-400 uppercase tracking-widest text-sm mb-4">Životní postoje a Testy</h4>
-      
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Životní spokojenost <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.lifeSatisfaction || ""} 
-          onChange={(v) => setFormData({...formData, lifeSatisfaction: v as string})} 
-          options={[
-            {value:'happy_with_little', label:'Jsem spokojený s málem, nepotřebuji moc k radosti'}, 
-            {value:'ambitious_always_more', label:'Mám se dobře, ale chci od života vždy víc'}, 
-            {value:'currently_struggling', label:'Teď se trochu plácám, ale snažím se'},
-            {value:'unhappy', label:'Jsem nespokojený se svým současným stavem'}
-          ]} 
-          placeholder="Vyber..." 
-        />
-      </div>
+    </AccordionSection>
 
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Přístup k radám a pomoci <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.listenToAdvice || ""} 
-          onChange={(v) => setFormData({...formData, listenToAdvice: v as string})} 
-          options={[
-            {value:'takes_advice', label:'Nechám si poradit od zkušenějších (jsem vděčný za pohled zvenčí)'}, 
-            {value:'stubborn_mistakes', label:'Vymýšlím blbosti a pak na to doplácím (ale poučím se)'}, 
-            {value:'my_way_only', label:'Jedu si tvrdě podle svého za všech okolností'},
-            {value:'overthinker', label:'Zeptám se všech, ale nakonec jsem nerozhodný'}
-          ]} 
-          placeholder="Vyber..." 
-        />
-      </div>
+    <AccordionSection title="Životní postoje a Testy" icon={<User size={18} />}>
+      <div className="space-y-6">
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Životní spokojenost <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.lifeSatisfaction || ""} 
+            onChange={(v) => setFormData({...formData, lifeSatisfaction: v as string})} 
+            options={[
+              {value:'happy_with_little', label:'Jsem spokojený s málem, nepotřebuji moc k radosti'}, 
+              {value:'ambitious_always_more', label:'Mám se dobře, ale chci od života vždy víc'}, 
+              {value:'currently_struggling', label:'Teď se trochu plácám, ale snažím se'},
+              {value:'unhappy', label:'Jsem nespokojený se svým současným stavem'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
 
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Inovace vs. Tradice <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.trendsVsTested || ""} 
-          onChange={(v) => setFormData({...formData, trendsVsTested: v as string})} 
-          options={[
-            {value:'trend_setter', label:'Miluju nové trendy a inovace, zkouším vše první'}, 
-            {value:'follower', label:'Naskočím, až když vidím, že to funguje ostatním'}, 
-            {value:'traditionalist', label:'Zůstávám u osvědčených věcí, které fungovaly vždy'},
-            {value:'skeptic', label:'Ke všemu modernímu a novému jsem silně skeptický'}
-          ]} 
-          placeholder="Vyber..." 
-        />
-      </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Přístup k radám a pomoci <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.listenToAdvice || ""} 
+            onChange={(v) => setFormData({...formData, listenToAdvice: v as string})} 
+            options={[
+              {value:'takes_advice', label:'Nechám si poradit od zkušenějších (jsem vděčný za pohled zvenčí)'}, 
+              {value:'stubborn_mistakes', label:'Vymýšlím blbosti a pak na to doplácím (ale poučím se)'}, 
+              {value:'my_way_only', label:'Jedu si tvrdě podle svého za všech okolností'},
+              {value:'overthinker', label:'Zeptám se všech, ale nakonec jsem nerozhodný'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
 
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vlastní názor vs. Naivita <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.naiveVsOpinionated || ""} 
-          onChange={(v) => setFormData({...formData, naiveVsOpinionated: v as string})} 
-          options={[
-            {value:'naive_trusting', label:'Jsem občas dost naivní a věřím lidem i nesmyslům'}, 
-            {value:'open_minded', label:'Mám otevřenou mysl, ale ověřuji si fakta'}, 
-            {value:'strong_opinions', label:'Mám pevný názor a málokdo mě přesvědčí o opaku'},
-            {value:'conspiracy', label:'Všechno je jinak a oficiálním zdrojům nevěřím (Alternativní pravda)'}
-          ]} 
-          placeholder="Vyber..." 
-        />
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Inovace vs. Tradice <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.trendsVsTested || ""} 
+            onChange={(v) => setFormData({...formData, trendsVsTested: v as string})} 
+            options={[
+              {value:'trend_setter', label:'Miluju nové trendy a inovace, zkouším vše první'}, 
+              {value:'follower', label:'Naskočím, až když vidím, že to funguje ostatním'}, 
+              {value:'traditionalist', label:'Zůstávám u osvědčených věcí, které fungovaly vždy'},
+              {value:'skeptic', label:'Ke všemu modernímu a novému jsem silně skeptický'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vlastní názor vs. Naivita <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.naiveVsOpinionated || ""} 
+            onChange={(v) => setFormData({...formData, naiveVsOpinionated: v as string})} 
+            options={[
+              {value:'naive_trusting', label:'Jsem občas dost naivní a věřím lidem i nesmyslům'}, 
+              {value:'open_minded', label:'Mám otevřenou mysl, ale ověřuji si fakta'}, 
+              {value:'strong_opinions', label:'Mám pevný názor a málokdo mě přesvědčí o opaku'},
+              {value:'conspiracy', label:'Všechno je jinak a oficiálním zdrojům nevěřím (Alternativní pravda)'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
       </div>
-    </div>
-    {/* TYPY CITOVÉ VAZBY */}
-    <div className="p-6 bg-gradient-to-br from-teal-900/20 to-transparent border border-teal-500/30 shadow-[0_0_20px_rgba(20,184,166,0.05)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-teal-400 uppercase tracking-widest text-sm mb-4">Typ citové vazby (Attachment Style)</h4>
-      <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">
-        Znáš svůj styl citové vazby z psychologie? Pomůže nám to předejít toxickým vzorcům.
-      </p>
-      
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Můj styl citové vazby <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.attachmentStyle || ""} 
-          onChange={(v) => setFormData({...formData, attachmentStyle: v as string})} 
-          options={[
-            {value:'secure', label:'Bezpečný (Secure)'}, 
-            {value:'anxious', label:'Úzkostný (Anxious)'}, 
-            {value:'avoidant', label:'Vyhýbavý (Avoidant)'},
-            {value:'disorganized', label:'Úzkostně-vyhýbavý (Disorganized)'},
-            {value:'unknown', label:'Nevím / Neřeším'}
-          ]} 
-          placeholder="Vyber..." 
-        />
+    </AccordionSection>
+
+    <AccordionSection title="Typ citové vazby (Attachment Style)" icon={<User size={18} />}>
+      <div className="space-y-6">
+        <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">
+          Znáš svůj styl citové vazby z psychologie? Pomůže nám to předejít toxickým vzorcům.
+        </p>
+        
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Můj styl citové vazby <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.attachmentStyle || ""} 
+            onChange={(v) => setFormData({...formData, attachmentStyle: v as string})} 
+            options={[
+              {value:'secure', label:'Bezpečný (Secure)'}, 
+              {value:'anxious', label:'Úzkostný (Anxious)'}, 
+              {value:'avoidant', label:'Vyhýbavý (Avoidant)'},
+              {value:'disorganized', label:'Úzkostně-vyhýbavý (Disorganized)'},
+              {value:'unknown', label:'Nevím / Neřeším'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
       </div>
-    </div>
+    </AccordionSection>
   </motion.div>
 );
 
 export const StepAssets = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-blue-400 font-heading font-black uppercase tracking-widest text-lg">Majetek a Bydlení</h4>
       <p className="text-white/50 text-xs font-mono">
@@ -631,7 +628,7 @@ export const StepAssets = ({ formData, setFormData, lang }: StepProps) => (
 );
 
 export const StepTimeline = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-purple-400 font-heading font-black uppercase tracking-widest text-lg">Časová osa (Minulost, Přítomnost, Budoucnost)</h4>
       <p className="text-white/50 text-xs font-mono">
@@ -732,7 +729,7 @@ export const StepTimeline = ({ formData, setFormData, lang }: StepProps) => (
 );
 
 export const StepPsychology = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Psychologie a Mysl</h4>
       <p className="text-white/60 text-sm mt-2">Pojďme trochu hlouběji do tvého způsobu myšlení a vnímání světa.</p>
@@ -744,323 +741,297 @@ export const StepPsychology = ({ formData, setFormData, lang }: StepProps) => (
 );
 
 export const Step4Lifestyle = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
-      <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Zvyky a Lifestyle</h4>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Ideální víkend <PointsBadge points={5} /></label>
-        <CustomSelect isMulti={true} value={formData.sharedLife?.idealWeekend || []} onChange={(v) => setFormData({...formData, sharedLife: {...formData.sharedLife, idealWeekend: v}})} options={[{value:'home', label:'Doma ve dvou'}, {value:'trip', label:'Výlet do přírody'}, {value:'party', label:'Párty / Město'}, {value:'friends', label:'S přáteli / Rodinou'}]} placeholder="Vyber..." />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Ideální dovolená <PointsBadge points={5} /></label>
-        <CustomSelect isMulti={true} value={formData.sharedLife?.idealHoliday || []} onChange={(v) => setFormData({...formData, sharedLife: {...formData.sharedLife, idealHoliday: v}})} options={[{value:'beach', label:'Pláž a odpočinek'}, {value:'explore', label:'Poznávání měst'}, {value:'mountains', label:'Hory a sport'}, {value:'roadtrip', label:'Roadtrip / Dobrodružství'}]} placeholder="Vyber..." />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vizuální Estetika <PointsBadge points={5} /></label>
-        <CustomSelect isMulti={true} value={(formData as any).aesthetics || []} onChange={(v) => setFormData({...formData, aesthetics: v} as any)} options={[{value:'mountains', label:'Hory a skály'}, {value:'forests', label:'Stromy a lesy'}, {value:'stars', label:'Hvězdná obloha'}, {value:'ocean', label:'Oceán a voda'}, {value:'city', label:'Noční město / Neony'}, {value:'minimalism', label:'Čistý minimalismus'}]} placeholder="Co tě uklidňuje..." />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Preferovaná společnost <PointsBadge points={5} /></label>
-        <CustomSelect isMulti={true} value={(formData as any).preferredSociety || []} onChange={(v) => setFormData({...formData, preferredSociety: v} as any)} options={[{value:'intellectuals', label:'Intelektuálové (Hluboké debaty)'}, {value:'high_society', label:'Smetánka (Vyšší společnost a luxus)'}, {value:'creatives', label:'Umělci a kreativci'}, {value:'chill_beer', label:'Normální pohodáři u piva'}, {value:'hustlers', label:'Podnikatelé a Hustle komunita'}, {value:'loner', label:'Nejradši jsem sám(a)'}]} placeholder="S kým se rád obklopuješ?" />
-      </div>
+      <h3 className="font-heading font-black text-2xl text-white uppercase tracking-wider mb-2">Zvyky a Lifestyle</h3>
+      <p className="text-white/50 text-sm max-w-md mx-auto">Tvoje každodenní rutina, zájmy a jak trávíš volný čas.</p>
     </div>
 
-    <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/20 rounded-xl mt-8">
-      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Domácnost a Samostatnost</h4>
-      <p className="text-[10px] font-mono text-white/40 mb-6">Jak jsi na tom s běžným provozem v domácnosti? (Důležité pro společné bydlení)</p>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Úklid a Pořádek <PointsBadge points={5} /></label>
-          <CustomSelect value={(formData as any).cleaningHabits || ""} onChange={(v) => setFormData({...formData, cleaningHabits: v} as any)} options={[
-            {value:'perfect', label:'Mám rád/a dokonalý pořádek (vše má své místo)'}, 
-            {value:'normal', label:'Běžný provoz (uklizeno, ale nehrotím to)'}, 
-            {value:'messy', label:'Jsem spíš bordelář / tvůrčí chaos'}, 
-            {value:'maid', label:'Mám na to paní na úklid'}
-          ]} placeholder="Jaký jsi typ?" />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <AccordionSection title="Volný čas a Estetika" icon={<Activity size={16} />} defaultOpen={true}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Ideální víkend <PointsBadge points={5} /></label>
+            <CustomSelect isMulti={true} value={formData.sharedLife?.idealWeekend || []} onChange={(v) => setFormData({...formData, sharedLife: {...formData.sharedLife, idealWeekend: v}})} options={[{value:'home', label:'Doma ve dvou'}, {value:'trip', label:'Výlet do přírody'}, {value:'party', label:'Párty / Město'}, {value:'friends', label:'S přáteli / Rodinou'}]} placeholder="Vyber..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Ideální dovolená <PointsBadge points={5} /></label>
+            <CustomSelect isMulti={true} value={formData.sharedLife?.idealHoliday || []} onChange={(v) => setFormData({...formData, sharedLife: {...formData.sharedLife, idealHoliday: v}})} options={[{value:'beach', label:'Pláž a odpočinek'}, {value:'explore', label:'Poznávání měst'}, {value:'mountains', label:'Hory a sport'}, {value:'roadtrip', label:'Roadtrip / Dobrodružství'}]} placeholder="Vyber..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vizuální Estetika <PointsBadge points={5} /></label>
+            <CustomSelect isMulti={true} value={(formData as any).aesthetics || []} onChange={(v) => setFormData({...formData, aesthetics: v} as any)} options={[{value:'mountains', label:'Hory a skály'}, {value:'forests', label:'Stromy a lesy'}, {value:'stars', label:'Hvězdná obloha'}, {value:'ocean', label:'Oceán a voda'}, {value:'city', label:'Noční město / Neony'}, {value:'minimalism', label:'Čistý minimalismus'}]} placeholder="Co tě uklidňuje..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Preferovaná společnost <PointsBadge points={5} /></label>
+            <CustomSelect isMulti={true} value={(formData as any).preferredSociety || []} onChange={(v) => setFormData({...formData, preferredSociety: v} as any)} options={[{value:'intellectuals', label:'Intelektuálové (Hluboké debaty)'}, {value:'high_society', label:'Smetánka (Vyšší společnost a luxus)'}, {value:'creatives', label:'Umělci a kreativci'}, {value:'chill_beer', label:'Normální pohodáři u piva'}, {value:'hustlers', label:'Podnikatelé a Hustle komunita'}, {value:'loner', label:'Nejradši jsem sám(a)'}]} placeholder="S kým se rád obklopuješ?" />
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vaření <PointsBadge points={5} /></label>
-          <CustomSelect value={(formData as any).cookingSkills || ""} onChange={(v) => setFormData({...formData, cookingSkills: v} as any)} options={[
-            {value:'masterchef', label:'Uvařím cokoliv, vařím rád/a'}, 
-            {value:'basics', label:'Zvládnu základy, hlady neumřu'}, 
-            {value:'takeout', label:'Jím převážně venku nebo z krabiček'}, 
-            {value:'partner', label:'Očekávám, že vaří partner'}
-          ]} placeholder="Tvůj vztah k plotně?" />
-        </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Domácí práce (Praní, Žehlení) <PointsBadge points={5} /></label>
-          <CustomSelect value={(formData as any).householdChores || ""} onChange={(v) => setFormData({...formData, householdChores: v} as any)} options={[
-            {value:'independent', label:'Naprosto samostatný/á (vyperu, vyžehlím)'}, 
-            {value:'basic', label:'Běžná údržba (pračku zapnout umím)'}, 
-            {value:'hopeless', label:'Jsem v tomhle trochu nepoužitelný/á'}, 
-            {value:'fair_share', label:'Dělíme se rovným dílem'}
-          ]} placeholder="Pereš a žehlíš?" />
-        </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kutilství a Opravy <PointsBadge points={5} /></label>
-          <CustomSelect value={(formData as any).diySkills || ""} onChange={(v) => setFormData({...formData, diySkills: v} as any)} options={[
-            {value:'handyman', label:'Opravím úplně všechno (Hodinový manžel)'}, 
-            {value:'ikea', label:'Složím nábytek z IKEA, vyměním žárovku'}, 
-            {value:'clueless', label:'Nezatluču ani hřebík, volám odborníky'}
-          ]} placeholder="Jsi kutil?" />
-        </div>
-      </div>
-    </div>
+      </AccordionSection>
 
-    <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/20 shadow-lg rounded-xl mt-8">
-      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Aktuální a Budoucí Bydlení</h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="md:col-span-2">
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kde a jak teď bydlíš? <PointsBadge points={5} /></label>
-          <CustomSelect 
-            value={(formData as any).currentHousing || ""} 
-            onChange={(v) => setFormData({...formData, currentHousing: v} as any)} 
-            options={[
-              {value:'own', label:'Bydlím sám/sama ve vlastním'}, 
-              {value:'rent', label:'Jsem v nájmu (sám/sama nebo s partnerem)'}, 
-              {value:'parents', label:'Bydlím u rodičů / rodiny'}, 
-              {value:'roommates', label:'Spolubydlení s přáteli'},
-              {value:'homeless', label:'Nemám teď kde bydlet / Hledám'}
-            ]} 
-            placeholder="Současná situace..." 
-          />
+      <AccordionSection title="Domácnost a Samostatnost" icon={<Coffee size={16} />} defaultOpen={false}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Úklid a Pořádek <PointsBadge points={5} /></label>
+            <CustomSelect value={(formData as any).cleaningHabits || ""} onChange={(v) => setFormData({...formData, cleaningHabits: v} as any)} options={[
+              {value:'perfect', label:'Mám rád/a dokonalý pořádek (vše má své místo)'}, 
+              {value:'normal', label:'Běžný provoz (uklizeno, ale nehrotím to)'}, 
+              {value:'messy', label:'Jsem spíš bordelář / tvůrčí chaos'}, 
+              {value:'maid', label:'Mám na to paní na úklid'}
+            ]} placeholder="Jaký jsi typ?" />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vaření <PointsBadge points={5} /></label>
+            <CustomSelect value={(formData as any).cookingSkills || ""} onChange={(v) => setFormData({...formData, cookingSkills: v} as any)} options={[
+              {value:'masterchef', label:'Uvařím cokoliv, vařím rád/a'}, 
+              {value:'basics', label:'Zvládnu základy, hlady neumřu'}, 
+              {value:'takeout', label:'Jím převážně venku nebo z krabiček'}, 
+              {value:'partner', label:'Očekávám, že vaří partner'}
+            ]} placeholder="Tvůj vztah k plotně?" />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Domácí práce (Praní, Žehlení) <PointsBadge points={5} /></label>
+            <CustomSelect value={(formData as any).householdChores || ""} onChange={(v) => setFormData({...formData, householdChores: v} as any)} options={[
+              {value:'independent', label:'Naprosto samostatný/á (vyperu, vyžehlím)'}, 
+              {value:'basic', label:'Běžná údržba (pračku zapnout umím)'}, 
+              {value:'hopeless', label:'Jsem v tomhle trochu nepoužitelný/á'}, 
+              {value:'fair_share', label:'Dělíme se rovným dílem'}
+            ]} placeholder="Pereš a žehlíš?" />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kutilství a Opravy <PointsBadge points={5} /></label>
+            <CustomSelect value={(formData as any).diySkills || ""} onChange={(v) => setFormData({...formData, diySkills: v} as any)} options={[
+              {value:'handyman', label:'Opravím úplně všechno (Hodinový manžel)'}, 
+              {value:'ikea', label:'Složím nábytek z IKEA, vyměním žárovku'}, 
+              {value:'clueless', label:'Nezatluču ani hřebík, volám odborníky'}
+            ]} placeholder="Jsi kutil?" />
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Plány do budoucna <PointsBadge points={5} /></label>
-          <CustomSelect 
-            value={(formData as any).futureHousing || ""} 
-            onChange={(v) => setFormData({...formData, futureHousing: v} as any)} 
-            options={[
-              {value:'move_in', label:'Čekám, ke komu se nastěhuju'}, 
-              {value:'build_together', label:'Společně něco vybudujeme / Koupíme dům'}, 
-              {value:'buy_apartment', label:'Koupíme společně byt'}, 
-              {value:'partner_moves_in', label:'Chci zůstat tam kde jsem, partner se nastěhuje ke mně'},
-              {value:'open', label:'Jsem otevřený/á všem možnostem'}
-            ]} 
-            placeholder="Jak to vidíš dál?" 
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Postoj k bydlení (Nájem / Vlastní) <PointsBadge points={5} /></label>
-          <CustomSelect 
-            value={(formData as any).housingAttitude || ""} 
-            onChange={(v) => setFormData({...formData, housingAttitude: v} as any)} 
-            options={[
-              {value:'own_only', label:'Nájem odmítám, chci jen vlastní'}, 
-              {value:'too_expensive', label:'Vlastní je teď moc drahé, musíme to zvládnout spolu v nájmu'}, 
-              {value:'does_not_matter', label:'Na bydlení mi nezáleží, hlavně že jsme spolu'}, 
-              {value:'luxury', label:'Priorita je luxus a komfort, ať to stojí co to stojí'}
-            ]} 
-            placeholder="Tvůj pohled..." 
-          />
-        </div>
-      </div>
-    </div>
+      </AccordionSection>
 
-    <div className="p-6 bg-gradient-to-br from-mafia-gold/5 to-transparent border border-mafia-gold/20 rounded-xl mt-8">
-      <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Moje Rituály (Zvyky)</h4>
-      <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vyber věci, které děláš pravidelně <PointsBadge points={5} /></label>
-      <CustomSelect 
-        isMulti={true} 
-        value={formData.rituals || []} 
-        onChange={(v) => setFormData({...formData, rituals: v})} 
-        options={[
-          {value:'pizza_friday', label:'🍕 Páteční pizza'}, 
-          {value:'morning_run', label:'🏃 Ranní běh'}, 
-          {value:'sunday_trip', label:'🚗 Nedělní výlet'}, 
-          {value:'sauna', label:'🧖‍♀️ Saunování'},
-          {value:'gym', label:'💪 Pravidelné fitko'},
-          {value:'reading', label:'📚 Čtení před spaním'},
-          {value:'meditation', label:'🧘 Meditace / Jóga'},
-          {value:'pub', label:'🍻 Pravidelné pivo s přáteli'},
-          {value:'coffee', label:'☕ Ranní káva v klidu'}
-        ]} 
-        placeholder="Vyber své rituály..." 
-      />
-    </div>
+      <AccordionSection title="Bydlení a Plány" icon={<Star size={16} />} defaultOpen={false}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kde a jak teď bydlíš? <PointsBadge points={5} /></label>
+            <CustomSelect 
+              value={(formData as any).currentHousing || ""} 
+              onChange={(v) => setFormData({...formData, currentHousing: v} as any)} 
+              options={[
+                {value:'own', label:'Bydlím sám/sama ve vlastním'}, 
+                {value:'rent', label:'Jsem v nájmu (sám/sama nebo s partnerem)'}, 
+                {value:'parents', label:'Bydlím u rodičů / rodiny'}, 
+                {value:'roommates', label:'Spolubydlení s přáteli'},
+                {value:'homeless', label:'Nemám teď kde bydlet / Hledám'}
+              ]} 
+              placeholder="Současná situace..." 
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Plány do budoucna <PointsBadge points={5} /></label>
+            <CustomSelect 
+              value={(formData as any).futureHousing || ""} 
+              onChange={(v) => setFormData({...formData, futureHousing: v} as any)} 
+              options={[
+                {value:'move_in', label:'Čekám, ke komu se nastěhuju'}, 
+                {value:'build_together', label:'Společně něco vybudujeme / Koupíme dům'}, 
+                {value:'buy_apartment', label:'Koupíme společně byt'}, 
+                {value:'partner_moves_in', label:'Chci zůstat tam kde jsem, partner se nastěhuje ke mně'},
+                {value:'open', label:'Jsem otevřený/á všem možnostem'}
+              ]} 
+              placeholder="Jak to vidíš dál?" 
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kde chci žít? <PointsBadge points={5} /></label>
+            <CustomSelect value={formData.housing?.locationPref || ""} onChange={(v) => setFormData({...formData, housing: {...formData.housing, locationPref: v}})} options={[{value:'city', label:'Velké město'}, {value:'suburb', label:'Okraj města'}, {value:'village', label:'Vesnice / Samota'}]} placeholder="Vyber..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Ochota se stěhovat za partnerem? <PointsBadge points={5} /></label>
+            <CustomSelect value={formData.housing?.moveForPartner || ""} onChange={(v) => setFormData({...formData, housing: {...formData.housing, moveForPartner: v}})} options={[{value:'yes', label:'Ano, klidně hned'}, {value:'maybe', label:'Záleží na situaci'}, {value:'no', label:'Ne, chci zůstat kde jsem'}]} placeholder="Vyber..." />
+          </div>
+        </div>
+      </AccordionSection>
 
-    <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.02)] rounded-xl mt-8 space-y-6">
-      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Sport a Aktivity</h4>
-      
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Aktivní sporty (Co dělám) <PointsBadge points={5} /></label>
-        <CustomSelect 
-          isMulti={true}
-          value={formData.sportsPlayed || []} 
-          onChange={(v) => setFormData({...formData, sportsPlayed: v})} 
-          options={[
-            {value: 'gym', label: 'Fitness / Gym'},
-            {value: 'running', label: 'Běh'},
-            {value: 'cycling', label: 'Cyklistika'},
-            {value: 'swimming', label: 'Plavání'},
-            {value: 'yoga', label: 'Jóga / Pilates'},
-            {value: 'martial_arts', label: 'Bojové sporty'},
-            {value: 'team_sports', label: 'Týmové sporty (fotbal, basket...)'},
-            {value: 'extreme', label: 'Extrémní sporty'},
-            {value: 'winter', label: 'Zimní sporty (lyže, snb)'},
-            {value: 'none', label: 'Nesportuji'}
-          ]} 
-          placeholder="Vyber..." 
-        />
-      </div>
+      <AccordionSection title="Rituály, Sport a Zájmy" icon={<Dumbbell size={16} />} defaultOpen={false}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Moje Rituály (Zvyky) <PointsBadge points={5} /></label>
+            <CustomSelect 
+              isMulti={true} 
+              value={formData.rituals || []} 
+              onChange={(v) => setFormData({...formData, rituals: v})} 
+              options={[
+                {value:'pizza_friday', label:'🍕 Páteční pizza'}, 
+                {value:'morning_run', label:'🏃 Ranní běh'}, 
+                {value:'sunday_trip', label:'🚗 Nedělní výlet'}, 
+                {value:'sauna', label:'🧖‍♀️ Saunování'},
+                {value:'gym', label:'💪 Pravidelné fitko'},
+                {value:'reading', label:'📚 Čtení před spaním'},
+                {value:'meditation', label:'🧘 Meditace / Jóga'},
+                {value:'pub', label:'🍻 Pravidelné pivo s přáteli'},
+                {value:'coffee', label:'☕ Ranní káva v klidu'}
+              ]} 
+              placeholder="Vyber své rituály..." 
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Aktivní sporty (Co dělám) <PointsBadge points={5} /></label>
+            <CustomSelect 
+              isMulti={true}
+              value={formData.sportsPlayed || []} 
+              onChange={(v) => setFormData({...formData, sportsPlayed: v})} 
+              options={[
+                {value: 'gym', label: 'Fitness / Gym'},
+                {value: 'running', label: 'Běh'},
+                {value: 'cycling', label: 'Cyklistika'},
+                {value: 'swimming', label: 'Plavání'},
+                {value: 'yoga', label: 'Jóga / Pilates'},
+                {value: 'martial_arts', label: 'Bojové sporty'},
+                {value: 'team_sports', label: 'Týmové sporty (fotbal, basket...)'},
+                {value: 'extreme', label: 'Extrémní sporty'},
+                {value: 'winter', label: 'Zimní sporty (lyže, snb)'},
+                {value: 'none', label: 'Nesportuji'}
+              ]} 
+              placeholder="Vyber..." 
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Pasivní sporty (Na co rád/a koukám) <PointsBadge points={5} /></label>
+            <CustomSelect 
+              isMulti={true}
+              value={formData.sportsWatching || []} 
+              onChange={(v) => setFormData({...formData, sportsWatching: v})} 
+              options={[
+                {value: 'mma', label: 'MMA / Oktagon'},
+                {value: 'football', label: 'Fotbal'},
+                {value: 'hockey', label: 'Hokej'},
+                {value: 'f1', label: 'F1 / Motorsport'},
+                {value: 'tennis', label: 'Tenis'},
+                {value: 'esports', label: 'E-Sports'},
+                {value: 'none', label: 'Nesleduju sport'}
+              ]} 
+              placeholder="Vyber..." 
+            />
+          </div>
+        </div>
+      </AccordionSection>
 
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Pasivní sporty (Na co rád/a koukám) <PointsBadge points={5} /></label>
-        <CustomSelect 
-          isMulti={true}
-          value={formData.sportsWatching || []} 
-          onChange={(v) => setFormData({...formData, sportsWatching: v})} 
-          options={[
-            {value: 'mma', label: 'MMA / Oktagon'},
-            {value: 'football', label: 'Fotbal'},
-            {value: 'hockey', label: 'Hokej'},
-            {value: 'f1', label: 'F1 / Motorsport'},
-            {value: 'tennis', label: 'Tenis'},
-            {value: 'esports', label: 'E-Sports'},
-            {value: 'none', label: 'Nesleduju sport'}
-          ]} 
-          placeholder="Vyber..." 
-        />
-      </div>
-    </div>
+      <AccordionSection title="Herní doupě (Volitelné)" icon={<Zap size={16} />} defaultOpen={false}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Co hraješ za hry? <PointsBadge points={5} /></label>
+            <CustomSelect 
+              isMulti={true} 
+              value={formData.gamingPrefs?.games || []} 
+              onChange={(v) => setFormData({...formData, gamingPrefs: {...formData.gamingPrefs, games: v}})} 
+              options={[
+                {value:'lol', label:'League of Legends'}, 
+                {value:'csgo', label:'CS:GO / Valorant'}, 
+                {value:'wow', label:'WoW / MMO'}, 
+                {value:'minecraft', label:'Minecraft'},
+                {value:'cod', label:'Call of Duty / Warzone'},
+                {value:'rpg', label:'Singleplayer RPGs'},
+                {value:'sim', label:'Simulátory (Sims, Farm...)'},
+                {value:'board', label:'Deskovky / DnD'},
+                {value:'mobile', label:'Mobilní hry'}
+              ]} 
+              placeholder="Vyber hry..." 
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Herní Nickname (IGN) <PointsBadge points={5} /></label>
+            <input 
+              type="text" 
+              value={formData.gamingPrefs?.nickname || ''} 
+              onChange={(e) => setFormData({...formData, gamingPrefs: {...formData.gamingPrefs, nickname: e.target.value}})} 
+              className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-mafia-gold rounded-md" 
+              placeholder="Např. Faker#EUNE" 
+            />
+          </div>
+        </div>
+      </AccordionSection>
 
-    <div className="p-6 bg-gradient-to-br from-indigo-900/20 to-transparent border border-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.05)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-indigo-400 uppercase tracking-widest text-sm mb-4">Herní doupě (Volitelné)</h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Co hraješ za hry? <PointsBadge points={5} /></label>
-          <CustomSelect 
-            isMulti={true} 
-            value={formData.gamingPrefs?.games || []} 
-            onChange={(v) => setFormData({...formData, gamingPrefs: {...formData.gamingPrefs, games: v}})} 
-            options={[
-              {value:'lol', label:'League of Legends'}, 
-              {value:'csgo', label:'CS:GO / Valorant'}, 
-              {value:'wow', label:'WoW / MMO'}, 
-              {value:'minecraft', label:'Minecraft'},
-              {value:'cod', label:'Call of Duty / Warzone'},
-              {value:'rpg', label:'Singleplayer RPGs'},
-              {value:'sim', label:'Simulátory (Sims, Farm...)'},
-              {value:'board', label:'Deskovky / DnD'},
-              {value:'mobile', label:'Mobilní hry'}
-            ]} 
-            placeholder="Vyber hry..." 
-          />
+      <AccordionSection title="Skupinové rande" icon={<Activity size={16} />} defaultOpen={false}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div className="flex justify-between items-start gap-4">
+            <div>
+              <p className="text-white/50 text-[10px] font-mono leading-relaxed">Pozvi kamarády přes jejich registrační e-mail a vytvořte skupinu. Aplikace vás bude spojovat s odpovídajícím počtem lidí na Double Date, Triple Date atd.</p>
+            </div>
+            <div className="bg-black/50 border border-white/10 p-2 rounded-lg text-right min-w-[140px] shrink-0">
+              <span className="block text-[8px] text-white/50 uppercase font-mono tracking-widest mb-1">🔥 Aktuální trend</span>
+              <span className="block text-[10px] text-white font-bold">78% Single Date</span>
+              <span className="block text-[10px] text-white/70">22% Double/Triple Date</span>
+            </div>
+          </div>
+          <div className="flex gap-2">
+             <input type="email" id="inviteEmail" className="flex-1 bg-black/40 border border-white/10 py-2 px-3 text-white text-sm focus:border-mafia-gold rounded-md" placeholder="Zadej e-mail kamaráda..." />
+             <button type="button" onClick={() => {
+                const el = document.getElementById('inviteEmail') as HTMLInputElement;
+                if(el && el.value) {
+                  const current = formData.linkedAccounts || [];
+                  setFormData({...formData, linkedAccounts: [...current, {email: el.value, status: 'pending'}]});
+                  el.value = '';
+                }
+             }} className="px-4 py-2 bg-mafia-gold/20 hover:bg-mafia-gold/40 text-mafia-gold border border-mafia-gold/50 rounded-md text-xs font-mono uppercase tracking-widest transition-colors">Pozvat</button>
+          </div>
+          {formData.linkedAccounts && formData.linkedAccounts.length > 0 && (
+            <div className="space-y-2 mt-4">
+              <label className="block text-[10px] font-mono text-white/40 uppercase tracking-widest">Přizvaní členové</label>
+              {formData.linkedAccounts.map((acc, idx) => (
+                 <div key={idx} className="flex justify-between items-center bg-black/40 px-3 py-2 rounded border border-white/5">
+                    <span className="text-white/80 text-xs font-mono">{acc.email}</span>
+                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${acc.status === 'accepted' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                       {acc.status === 'accepted' ? 'Přijato' : 'Čeká'}
+                    </span>
+                 </div>
+              ))}
+            </div>
+          )}
         </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Herní Nickname (IGN) <PointsBadge points={5} /></label>
-          <input 
-            type="text" 
-            value={formData.gamingPrefs?.nickname || ''} 
-            onChange={(e) => setFormData({...formData, gamingPrefs: {...formData.gamingPrefs, nickname: e.target.value}})} 
-            className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-indigo-400 rounded-md" 
-            placeholder="Např. Faker#EUNE" 
-          />
-        </div>
-      </div>
-    </div>
+      </AccordionSection>
 
-    <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/10 hover:border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.02)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Bydlení</h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kde chci žít? <PointsBadge points={5} /></label>
-          <CustomSelect value={formData.housing?.locationPref || ""} onChange={(v) => setFormData({...formData, housing: {...formData.housing, locationPref: v}})} options={[{value:'city', label:'Velké město'}, {value:'suburb', label:'Okraj města'}, {value:'village', label:'Vesnice / Samota'}]} placeholder="Vyber..." />
+      <AccordionSection title="Digitální život a Guilty Pleasures" icon={<ShieldAlert size={16} />} defaultOpen={false}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vztah k sítím (Screen Time) <PointsBadge points={5} /></label>
+            <CustomSelect 
+              value={formData.digitalLife || ""} 
+              onChange={(v) => setFormData({...formData, digitalLife: v as string})} 
+              options={[
+                {value:'chronically_online', label:'Jsem chronicky online (Doomscrolling)'}, 
+                {value:'messaging_only', label:'Sítě mám jen na zprávy s přáteli'}, 
+                {value:'detox', label:'Snažím se o digitální detox'},
+                {value:'offline', label:'Žiju v realitě, mobil mám na volání'}
+              ]} 
+              placeholder="Vyber..." 
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Zlozvyky a Guilty Pleasures <PointsBadge points={5} /></label>
+            <CustomSelect 
+              isMulti={true} 
+              value={formData.guiltyPleasures || []} 
+              onChange={(v) => setFormData({...formData, guiltyPleasures: v})} 
+              options={[
+                {value:'interrupts', label:'Skáču lidem do řeči'}, 
+                {value:'eating_in_bed', label:'Jím v posteli'}, 
+                {value:'late', label:'Často chodím pozdě'},
+                {value:'spending', label:'Zbytečně moc utrácím'},
+                {value:'ghosting_friends', label:'Neodepisuju hned (ani přátelům)'},
+                {value:'swearing', label:'Když se naštvu, mluvím sprostě'},
+                {value:'judging_drivers', label:'Soudím lidi podle toho, jak řídí'}
+              ]} 
+              placeholder="Vyber (jen pro zasmání)..." 
+            />
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Ochota se stěhovat za partnerem? <PointsBadge points={5} /></label>
-          <CustomSelect value={formData.housing?.moveForPartner || ""} onChange={(v) => setFormData({...formData, housing: {...formData.housing, moveForPartner: v}})} options={[{value:'yes', label:'Ano, klidně hned'}, {value:'maybe', label:'Záleží na situaci'}, {value:'no', label:'Ne, chci zůstat kde jsem'}]} placeholder="Vyber..." />
-        </div>
-      </div>
-    </div>
-
-    <div className="p-6 bg-gradient-to-br from-green-900/20 to-transparent border border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.05)] rounded-xl mt-8 space-y-6">
-      <div className="flex justify-between items-start gap-4">
-        <div>
-          <h4 className="font-heading font-black text-green-400 uppercase tracking-widest text-sm mb-2">Skupinové rande (Volitelné)</h4>
-          <p className="text-white/50 text-[10px] font-mono leading-relaxed">Pozvi kamarády přes jejich registrační e-mail a vytvořte skupinu. Aplikace vás bude spojovat s odpovídajícím počtem lidí na Double Date, Triple Date atd.</p>
-        </div>
-        <div className="bg-black/50 border border-green-500/30 p-2 rounded-lg text-right min-w-[140px] shrink-0">
-          <span className="block text-[8px] text-green-400 uppercase font-mono tracking-widest mb-1">🔥 Aktuální trend</span>
-          <span className="block text-[10px] text-white font-bold">78% Single Date</span>
-          <span className="block text-[10px] text-white/70">22% Double/Triple Date</span>
-        </div>
-      </div>
-
-      <div className="flex gap-2">
-         <input type="email" id="inviteEmail" className="flex-1 bg-black/40 border border-white/10 py-2 px-3 text-white text-sm focus:border-green-400 rounded-md" placeholder="Zadej e-mail kamaráda..." />
-         <button type="button" onClick={() => {
-            const el = document.getElementById('inviteEmail') as HTMLInputElement;
-            if(el && el.value) {
-              const current = formData.linkedAccounts || [];
-              setFormData({...formData, linkedAccounts: [...current, {email: el.value, status: 'pending'}]});
-              el.value = '';
-            }
-         }} className="px-4 py-2 bg-green-900/50 hover:bg-green-700/50 text-green-400 border border-green-500/30 rounded-md text-xs font-mono uppercase tracking-widest transition-colors">Pozvat</button>
-      </div>
-
-      {formData.linkedAccounts && formData.linkedAccounts.length > 0 && (
-        <div className="space-y-2 mt-4">
-          <label className="block text-[10px] font-mono text-white/40 uppercase tracking-widest">Přizvaní členové</label>
-          {formData.linkedAccounts.map((acc, idx) => (
-             <div key={idx} className="flex justify-between items-center bg-black/40 px-3 py-2 rounded border border-white/5">
-                <span className="text-white/80 text-xs font-mono">{acc.email}</span>
-                <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${acc.status === 'accepted' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                   {acc.status === 'accepted' ? 'Přijato' : 'Čeká'}
-                </span>
-             </div>
-          ))}
-        </div>
-      )}
-    </div>
-
-    {/* VZTAH K SÍTÍM A ZLOZVYKY */}
-    <div className="p-6 bg-gradient-to-br from-pink-900/20 to-transparent border border-pink-500/30 shadow-[0_0_20px_rgba(236,72,153,0.05)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-pink-400 uppercase tracking-widest text-sm mb-4">Digitální život a Guilty Pleasures</h4>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vztah k sítím (Screen Time) <PointsBadge points={5} /></label>
-          <CustomSelect 
-            value={formData.digitalLife || ""} 
-            onChange={(v) => setFormData({...formData, digitalLife: v as string})} 
-            options={[
-              {value:'chronically_online', label:'Jsem chronicky online (Doomscrolling)'}, 
-              {value:'messaging_only', label:'Sítě mám jen na zprávy s přáteli'}, 
-              {value:'detox', label:'Snažím se o digitální detox'},
-              {value:'offline', label:'Žiju v realitě, mobil mám na volání'}
-            ]} 
-            placeholder="Vyber..." 
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Zlozvyky a Guilty Pleasures <PointsBadge points={5} /></label>
-          <CustomSelect 
-            isMulti={true} 
-            value={formData.guiltyPleasures || []} 
-            onChange={(v) => setFormData({...formData, guiltyPleasures: v})} 
-            options={[
-              {value:'interrupts', label:'Skáču lidem do řeči'}, 
-              {value:'eating_in_bed', label:'Jím v posteli'}, 
-              {value:'late', label:'Často chodím pozdě'},
-              {value:'spending', label:'Zbytečně moc utrácím'},
-              {value:'ghosting_friends', label:'Neodepisuju hned (ani přátelům)'},
-              {value:'swearing', label:'Když se naštvu, mluvím sprostě'},
-              {value:'judging_drivers', label:'Soudím lidi podle toho, jak řídí'}
-            ]} 
-            placeholder="Vyber (jen pro zasmání)..." 
-          />
-        </div>
-      </div>
+      </AccordionSection>
     </div>
   </motion.div>
 );
 
 export const StepFamilyBackground = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-pink-400 font-heading font-black uppercase tracking-widest text-lg">Rodina a Minulost</h4>
       <p className="text-white/50 text-xs font-mono">
@@ -1091,7 +1062,7 @@ export const StepFamilyBackground = ({ formData, setFormData, lang }: StepProps)
 );
 
 export const StepParenting = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-pink-400 font-heading font-black uppercase tracking-widest text-lg">Děti a Výchova</h4>
       <p className="text-white/50 text-xs font-mono">
@@ -1282,149 +1253,144 @@ export const StepParenting = ({ formData, setFormData, lang }: StepProps) => (
 );
 
 export const Step5CommLove = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
-      <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Komunikace a Minulost</h4>
+      <h3 className="font-heading font-black text-2xl text-white uppercase tracking-wider mb-2">Komunikace a Minulost</h3>
+      <p className="text-white/50 text-sm max-w-md mx-auto">Základ každého vztahu. Jak funguješ, když o něco jde?</p>
     </div>
 
-    <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/20 shadow-lg rounded-xl mb-8">
-      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Současný stav a Minulost</h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Rodinný stav / Aktuální situace <PointsBadge points={5} /></label>
-          <CustomSelect 
-            value={(formData as any).relationshipStatus || ""} 
-            onChange={(v) => setFormData({...formData, relationshipStatus: v} as any)} 
-            options={[
-              {value:'single_long', label:'Jsem už dlouho sám/sama (Single)'}, 
-              {value:'fresh_breakup', label:'Čerstvě po rozchodu'}, 
-              {value:'divorced', label:'Rozvedený/á'}, 
-              {value:'widowed', label:'Vdovec / Vdova'},
-              {value:'dating', label:'Single, ale občas s někým randím'}
-            ]} 
-            placeholder="Tvůj aktuální stav?" 
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kdy proběhl poslední rozchod? <PointsBadge points={5} /></label>
-          <div className="flex gap-2">
-            <input 
-              type="text" 
-              className="w-full bg-black/40 border border-white/20 rounded-md p-2 text-sm text-white focus:border-mafia-gold/50 outline-none" 
-              placeholder="Měsíc a rok (např. 05/2024)"
-              value={(formData as any).lastBreakupDate || ""}
-              onChange={(e) => setFormData({...formData, lastBreakupDate: e.target.value} as any)}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <AccordionSection title="Současný stav a Minulost" icon={<Clock size={16} />} defaultOpen={true}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Rodinný stav / Aktuální situace <PointsBadge points={5} /></label>
+            <CustomSelect 
+              value={(formData as any).relationshipStatus || ""} 
+              onChange={(v) => setFormData({...formData, relationshipStatus: v} as any)} 
+              options={[
+                {value:'single_long', label:'Jsem už dlouho sám/sama (Single)'}, 
+                {value:'fresh_breakup', label:'Čerstvě po rozchodu'}, 
+                {value:'divorced', label:'Rozvedený/á'}, 
+                {value:'widowed', label:'Vdovec / Vdova'},
+                {value:'dating', label:'Single, ale občas s někým randím'}
+              ]} 
+              placeholder="Tvůj aktuální stav?" 
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kdy proběhl poslední rozchod? <PointsBadge points={5} /></label>
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                className="w-full bg-black/40 border border-white/20 rounded-md p-2 text-sm text-white focus:border-mafia-gold/50 outline-none" 
+                placeholder="Měsíc a rok (např. 05/2024)"
+                value={(formData as any).lastBreakupDate || ""}
+                onChange={(e) => setFormData({...formData, lastBreakupDate: e.target.value} as any)}
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Nejdelší vztah (Jak dlouho trval?) <PointsBadge points={5} /></label>
+            <CustomSelect 
+              value={(formData as any).longestRelationship || ""} 
+              onChange={(v) => setFormData({...formData, longestRelationship: v} as any)} 
+              options={[
+                {value:'less_year', label:'Méně než rok'}, 
+                {value:'1_3_years', label:'1 - 3 roky'}, 
+                {value:'3_7_years', label:'3 - 7 let'}, 
+                {value:'7_15_years', label:'7 - 15 let'},
+                {value:'more_15_years', label:'Více než 15 let'}
+              ]} 
+              placeholder="Vyber..." 
             />
           </div>
         </div>
-        <div className="md:col-span-2">
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Nejdelší vztah (Jak dlouho trval?) <PointsBadge points={5} /></label>
-          <CustomSelect 
-            value={(formData as any).longestRelationship || ""} 
-            onChange={(v) => setFormData({...formData, longestRelationship: v} as any)} 
-            options={[
-              {value:'less_year', label:'Méně než rok'}, 
-              {value:'1_3_years', label:'1 - 3 roky'}, 
-              {value:'3_7_years', label:'3 - 7 let'}, 
-              {value:'7_15_years', label:'7 - 15 let'},
-              {value:'more_15_years', label:'Více než 15 let'}
-            ]} 
-            placeholder="Vyber..." 
-          />
-        </div>
-      </div>
-    </div>
-    <div className="space-y-6">
-      <TraitSelector label="Důležitost každodenního psaní" value={formData.communication?.dailyTexting as any} onChange={(v) => setFormData({...formData, communication: {...formData.communication, dailyTexting: v as any}})} />
-      <TraitSelector label="Otevřenost o pocitech" value={formData.communication?.openFeelings as any} onChange={(v) => setFormData({...formData, communication: {...formData.communication, openFeelings: v as any}})} />
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Jak často jsi na telefonu? <PointsBadge points={5} /></label>
-          <CustomSelect value={formData.communication?.contactFreq || ""} onChange={(v) => setFormData({...formData, communication: {...formData.communication, contactFreq: v}})} options={[{value:'constant', label:'Píšu hned a pořád'}, {value:'regular', label:'Pravidelně během dne'}, {value:'slow', label:'Odepisuji klidně až za pár hodin / dní'}]} placeholder="Vyber..." />
-        </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Volání vs. Psaní <PointsBadge points={5} /></label>
-          <CustomSelect value={formData.communication?.callsVsTexts || ""} onChange={(v) => setFormData({...formData, communication: {...formData.communication, callsVsTexts: v}})} options={[{value:'calls', label:'Radši hned volám'}, {value:'texts', label:'Radši píšu (volání mě stresuje)'}, {value:'both', label:'Obojí je fajn'}]} placeholder="Vyber..." />
-        </div>
-      </div>
-    </div>
+      </AccordionSection>
 
-    <div className="p-6 bg-gradient-to-br from-red-900/30 to-red-950/20 border border-red-500/30 hover:border-red-400/50 shadow-[0_0_20px_rgba(239,68,68,0.1)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-red-500 uppercase tracking-widest text-sm mb-4">Když se pohádáme...</h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Já většinou: <PointsBadge points={5} /></label>
-          <CustomSelect value={formData.conflicts?.myReaction || ""} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, myReaction: v}})} options={[{value:'immediate', label:'Chci problém okamžitě řešit'}, {value:'space', label:'Potřebuji čas a klid'}, {value:'compromise', label:'Hledám kompromis'}, {value:'emotional', label:'Jsem hodně emotivní'}]} placeholder="Vyber..." />
+      <AccordionSection title="Komunikace ve vztahu" icon={<MessageCircle size={16} />} defaultOpen={false}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <TraitSelector label="Důležitost každodenního psaní" value={formData.communication?.dailyTexting as any} onChange={(v) => setFormData({...formData, communication: {...formData.communication, dailyTexting: v as any}})} />
+          <TraitSelector label="Otevřenost o pocitech" value={formData.communication?.openFeelings as any} onChange={(v) => setFormData({...formData, communication: {...formData.communication, openFeelings: v as any}})} />
+          
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Jak často jsi na telefonu? <PointsBadge points={5} /></label>
+            <CustomSelect value={formData.communication?.contactFreq || ""} onChange={(v) => setFormData({...formData, communication: {...formData.communication, contactFreq: v}})} options={[{value:'constant', label:'Píšu hned a pořád'}, {value:'regular', label:'Pravidelně během dne'}, {value:'slow', label:'Odepisuji klidně až za pár hodin / dní'}]} placeholder="Vyber..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Volání vs. Psaní <PointsBadge points={5} /></label>
+            <CustomSelect value={formData.communication?.callsVsTexts || ""} onChange={(v) => setFormData({...formData, communication: {...formData.communication, callsVsTexts: v}})} options={[{value:'calls', label:'Radši hned volám'}, {value:'texts', label:'Radši píšu (volání mě stresuje)'}, {value:'both', label:'Obojí je fajn'}]} placeholder="Vyber..." />
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Od partnera potřebuji: <PointsBadge points={5} /></label>
-          <CustomSelect isMulti={true} value={formData.conflicts?.iNeedFromPartner || []} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, iNeedFromPartner: v}})} options={[{value:'space', label:'Prostor'}, {value:'communication', label:'Komunikaci'}, {value:'apology', label:'Omluvu a uznání chyby'}, {value:'hugs', label:'Fyzickou blízkost'}]} placeholder="Vyber..." />
-        </div>
-      </div>
+      </AccordionSection>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-white/5">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Umění se omluvit <PointsBadge points={5} /></label>
-          <CustomSelect value={formData.conflicts?.apologyCapacity || ""} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, apologyCapacity: v}})} options={[{value:'easy', label:'Umím uznat chybu hned'}, {value:'hard', label:'Je to pro mě hrozně těžké'}, {value:'never', label:'Zásadně se neomlouvám'}, {value:'doesnt_matter', label:'Neřeším, je mi to jedno'}]} placeholder="Vyber..." />
+      <AccordionSection title="Když se pohádáme..." icon={<Flame size={16} />} defaultOpen={false}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Já většinou: <PointsBadge points={5} /></label>
+            <CustomSelect value={formData.conflicts?.myReaction || ""} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, myReaction: v}})} options={[{value:'immediate', label:'Chci problém okamžitě řešit'}, {value:'space', label:'Potřebuji čas a klid'}, {value:'compromise', label:'Hledám kompromis'}, {value:'emotional', label:'Jsem hodně emotivní'}]} placeholder="Vyber..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Od partnera potřebuji: <PointsBadge points={5} /></label>
+            <CustomSelect isMulti={true} value={formData.conflicts?.iNeedFromPartner || []} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, iNeedFromPartner: v}})} options={[{value:'space', label:'Prostor'}, {value:'communication', label:'Komunikaci'}, {value:'apology', label:'Omluvu a uznání chyby'}, {value:'hugs', label:'Fyzickou blízkost'}]} placeholder="Vyber..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Umění se omluvit <PointsBadge points={5} /></label>
+            <CustomSelect value={formData.conflicts?.apologyCapacity || ""} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, apologyCapacity: v}})} options={[{value:'easy', label:'Umím uznat chybu hned'}, {value:'hard', label:'Je to pro mě hrozně těžké'}, {value:'never', label:'Zásadně se neomlouvám'}, {value:'doesnt_matter', label:'Neřeším, je mi to jedno'}]} placeholder="Vyber..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Tvrdohlavost (Názory) <PointsBadge points={5} /></label>
+            <CustomSelect value={formData.conflicts?.stubbornness || ""} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, stubbornness: v}})} options={[{value:'stubborn', label:'Tvrdohlavý/á (Stojím si za svým za každou cenu)'}, {value:'open', label:'Otevřený/á diskuzi (Rád změním názor na základě faktů)'}, {value:'adaptive', label:'Přizpůsobím se (Nerada se hádám)'}, {value:'doesnt_matter', label:'Je mi to úplně jedno'}]} placeholder="Vyber..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Zastání partnera (Před ostatními) <PointsBadge points={5} /></label>
+            <CustomSelect value={formData.conflicts?.partnerSupport || ""} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, partnerSupport: v}})} options={[{value:'unconditional', label:'Stojím za ním vždycky (I když nemá pravdu, vyříkáme si to až v soukromí)'}, {value:'objective', label:'Jsem objektivní (Pokud plácá nesmysly, nepodpořím ho)'}, {value:'doesnt_matter', label:'Nevím / Je mi to jedno'}]} placeholder="Vyber..." />
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Tvrdohlavost (Názory) <PointsBadge points={5} /></label>
-          <CustomSelect value={formData.conflicts?.stubbornness || ""} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, stubbornness: v}})} options={[{value:'stubborn', label:'Tvrdohlavý/á (Stojím si za svým za každou cenu)'}, {value:'open', label:'Otevřený/á diskuzi (Rád změním názor na základě faktů)'}, {value:'adaptive', label:'Přizpůsobím se (Nerada se hádám)'}, {value:'doesnt_matter', label:'Je mi to úplně jedno'}]} placeholder="Vyber..." />
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Zastání partnera (Před ostatními) <PointsBadge points={5} /></label>
-          <CustomSelect value={formData.conflicts?.partnerSupport || ""} onChange={(v) => setFormData({...formData, conflicts: {...formData.conflicts, partnerSupport: v}})} options={[{value:'unconditional', label:'Stojím za ním vždycky (I když nemá pravdu, vyříkáme si to až v soukromí)'}, {value:'objective', label:'Jsem objektivní (Pokud plácá nesmysly, nepodpořím ho)'}, {value:'doesnt_matter', label:'Nevím / Je mi to jedno'}]} placeholder="Vyber..." />
-        </div>
-      </div>
-    </div>
+      </AccordionSection>
 
-
-    {/* JAZYKY LÁSKY A DEALBREAKERS */}
-    <div className="p-6 bg-gradient-to-br from-fuchsia-900/20 to-transparent border border-fuchsia-500/30 shadow-[0_0_20px_rgba(217,70,239,0.05)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-fuchsia-400 uppercase tracking-widest text-sm mb-4">Jazyky lásky a Dealbreakers</h4>
-      
-      <div className="grid grid-cols-1 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Pět jazyků lásky (Co je pro tebe nejdůležitější?) <PointsBadge points={5} /></label>
-          <CustomSelect 
-            isMulti={true} 
-            value={formData.loveLanguages || []} 
-            onChange={(v) => setFormData({...formData, loveLanguages: v})} 
-            options={[
-              {value:'words', label:'Slova ujištění (Chvála, vyznání)'}, 
-              {value:'time', label:'Pozornost (Kvalitně strávený čas)'}, 
-              {value:'gifts', label:'Přijímání dárků (Drobné pozornosti)'},
-              {value:'acts', label:'Skutky služby (Pomoc s úkoly)'},
-              {value:'touch', label:'Fyzický kontakt (Doteky, objímání)'}
-            ]} 
-            placeholder="Vyber max 2 hlavní..." 
-          />
+      <AccordionSection title="Jazyky lásky a Dealbreakers" icon={<HeartHandshake size={16} />} defaultOpen={false}>
+        <div className="grid grid-cols-1 gap-6 mt-4">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Pět jazyků lásky <PointsBadge points={5} /></label>
+            <CustomSelect 
+              isMulti={true} 
+              value={formData.loveLanguages || []} 
+              onChange={(v) => setFormData({...formData, loveLanguages: v})} 
+              options={[
+                {value:'words', label:'Slova ujištění (Chvála, vyznání)'}, 
+                {value:'time', label:'Pozornost (Kvalitně strávený čas)'}, 
+                {value:'gifts', label:'Přijímání dárků (Drobné pozornosti)'},
+                {value:'acts', label:'Skutky služby (Pomoc s úkoly)'},
+                {value:'touch', label:'Fyzický kontakt (Doteky, objímání)'}
+              ]} 
+              placeholder="Vyber max 2 hlavní..." 
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-red-400/80 uppercase tracking-widest mb-3 flex items-center text-red-400">Ultimátní Dealbreakers <PointsBadge points={15} /></label>
+            <CustomSelect 
+              isMulti={true} 
+              value={formData.dealbreakers || []} 
+              onChange={(v) => setFormData({...formData, dealbreakers: v})} 
+              options={[
+                {value:'lying', label:'Lhaní a manipulace'}, 
+                {value:'hygiene', label:'Špatná hygiena'}, 
+                {value:'addiction', label:'Závislosti (Alkohol, Sítě, Hry)'},
+                {value:'workaholic', label:'Workoholismus'},
+                {value:'passive_agressive', label:'Pasivní agresivita'},
+                {value:'no_apology', label:'Neschopnost se omluvit'}
+              ]} 
+              placeholder="Vyber své red flags..." 
+            />
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center text-red-400">Ultimátní Dealbreakers (Přes co vlak nejede) <PointsBadge points={15} /></label>
-          <CustomSelect 
-            isMulti={true} 
-            value={formData.dealbreakers || []} 
-            onChange={(v) => setFormData({...formData, dealbreakers: v})} 
-            options={[
-              {value:'lying', label:'Lhaní a manipulace'}, 
-              {value:'hygiene', label:'Špatná hygiena'}, 
-              {value:'addiction', label:'Závislosti (Alkohol, Sítě, Hry)'},
-              {value:'workaholic', label:'Workoholismus'},
-              {value:'passive_agressive', label:'Pasivní agresivita'},
-              {value:'no_apology', label:'Neschopnost se omluvit'}
-            ]} 
-            placeholder="Vyber své red flags..." 
-          />
-        </div>
-      </div>
+      </AccordionSection>
     </div>
   </motion.div>
 );
 
 export const Step6FutureKids = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Budoucnost a Děti</h4>
     </div>
@@ -1512,13 +1478,12 @@ export const Step6FutureKids = ({ formData, setFormData, lang }: StepProps) => (
 );
 
 export const Step7ValuesMoney = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Hodnoty a Přesvědčení</h4>
     </div>
 
-    <div className="p-6 bg-gradient-to-br from-white/10 to-transparent border border-white/20 shadow-lg rounded-xl mb-8">
-      <h4 className="font-heading font-black text-white uppercase tracking-widest text-sm mb-4">Pohled na svět</h4>
+    <AccordionSection title="Pohled na svět" icon={<User size={18} />} defaultOpen={true}>
       <div className="space-y-4">
         <label className="block text-xs font-mono text-white/60 uppercase tracking-widest flex items-center">Jak vnímáš současný svět a společnost? <PointsBadge points={10} /></label>
         <CustomSelect 
@@ -1536,105 +1501,106 @@ export const Step7ValuesMoney = ({ formData, setFormData, lang }: StepProps) => 
           placeholder="Vyber svůj postoj..." 
         />
       </div>
-    </div>
+    </AccordionSection>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Náboženství a Víra <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.values?.religion || ""} 
-          onChange={(v) => setFormData({...formData, values: {...formData.values, religion: v}})} 
-          options={[
-            {value:'none', label:'Žádné / Ateista'}, 
-            {value:'higher_power', label:'Věřím ve vyšší moc (Spirituální)'}, 
-            {value:'christian', label:'Křesťanství'}, 
-            {value:'islam', label:'Islám'},
-            {value:'buddhism', label:'Buddhismus'},
-            {value:'other', label:'Jiné vyznání'}
-          ]} 
-          placeholder="Vyber..." 
-        />
-      </div>
+    <AccordionSection title="Základní hodnoty" icon={<User size={18} />}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Náboženství a Víra <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.values?.religion || ""} 
+            onChange={(v) => setFormData({...formData, values: {...formData.values, religion: v}})} 
+            options={[
+              {value:'none', label:'Žádné / Ateista'}, 
+              {value:'higher_power', label:'Věřím ve vyšší moc (Spirituální)'}, 
+              {value:'christian', label:'Křesťanství'}, 
+              {value:'islam', label:'Islám'},
+              {value:'buddhism', label:'Buddhismus'},
+              {value:'other', label:'Jiné vyznání'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
 
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Okruh přátel <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.friendsCircle || ""} 
-          onChange={(v) => setFormData({...formData, friendsCircle: v as string})} 
-          options={[
-            {value:'many_acquaintances_few_friends', label:'Mám spoustu známých a pár opravdových přátel'}, 
-            {value:'small_tight_group', label:'Mám jen velmi malý, úzký okruh lidí, kterým věřím'}, 
-            {value:'loner', label:'Jsem spíše samotář, moc přátel nemám a nehledám'},
-            {value:'betrayed', label:'Většina přátel se ukázala jako falešná, jsem opatrný'},
-            {value:'butterfly', label:'Jsem společenský motýl, všude někoho znám a baví mě to'}
-          ]} 
-          placeholder="Vyber..." 
-        />
-      </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Okruh přátel <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.friendsCircle || ""} 
+            onChange={(v) => setFormData({...formData, friendsCircle: v as string})} 
+            options={[
+              {value:'many_acquaintances_few_friends', label:'Mám spoustu známých a pár opravdových přátel'}, 
+              {value:'small_tight_group', label:'Mám jen velmi malý, úzký okruh lidí, kterým věřím'}, 
+              {value:'loner', label:'Jsem spíše samotář, moc přátel nemám a nehledám'},
+              {value:'betrayed', label:'Většina přátel se ukázala jako falešná, jsem opatrný'},
+              {value:'butterfly', label:'Jsem společenský motýl, všude někoho znám a baví mě to'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
 
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vztahový přístup <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={(formData as any).relationshipGoal || ""} 
-          onChange={(v) => setFormData({...formData, relationshipGoal: v} as any)} 
-          options={[
-            {value:'life_partner', label:'Najít partnera na celý život'}, 
-            {value:'run_wild', label:'Za svobodna poběhat co se dá'}, 
-            {value:'let_it_flow', label:'Nechávám to plynout, co přijde to přijde'},
-            {value:'no_commitments', label:'Hledám jen zábavu bez závazků'}
-          ]} 
-          placeholder="Tvá priorita..." 
-        />
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Vztahový přístup <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={(formData as any).relationshipGoal || ""} 
+            onChange={(v) => setFormData({...formData, relationshipGoal: v} as any)} 
+            options={[
+              {value:'life_partner', label:'Najít partnera na celý život'}, 
+              {value:'run_wild', label:'Za svobodna poběhat co se dá'}, 
+              {value:'let_it_flow', label:'Nechávám to plynout, co přijde to přijde'},
+              {value:'no_commitments', label:'Hledám jen zábavu bez závazků'}
+            ]} 
+            placeholder="Tvá priorita..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Věrnost a Exkluzivita <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={(formData as any).fidelityFocus || ""} 
+            onChange={(v) => setFormData({...formData, fidelityFocus: v} as any)} 
+            options={[
+              {value:'strict_monogamy', label:'Striktní monogamie (Oči jen pro jednoho)'}, 
+              {value:'open_relationship', label:'Otevřený vztah (Upřímnost a volnost)'}, 
+              {value:'monogamish', label:'Monogamish (Občasné okořenění toleruji)'},
+              {value:'polyamory', label:'Polyamorie (Více paralelních vztahů)'}
+            ]} 
+            placeholder="Jak to cítíš?" 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Loajalita v těžkých časech <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={(formData as any).loyaltyApproach || ""} 
+            onChange={(v) => setFormData({...formData, loyaltyApproach: v} as any)} 
+            options={[
+              {value:'ride_or_die', label:'Ride or die (Stojím při něm ať se děje cokoliv)'}, 
+              {value:'bounded', label:'Podpořím, ale chráním i své vlastní hranice'}, 
+              {value:'independent', label:'Každý si své boje musí vybojovat primárně sám'},
+              {value:'avoidant', label:'Tlak a problémy mě spíš odhánějí'}
+            ]} 
+            placeholder="Tvá reakce na krizi..." 
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Hodnoty <PointsBadge points={5} /></label>
+          <CustomSelect value={formData.values?.traditionalVsModern || ""} onChange={(v) => setFormData({...formData, values: {...formData.values, traditionalVsModern: v}})} options={[{value:'traditional', label:'Tradiční'}, {value:'modern', label:'Moderní / Liberální'}]} placeholder="Vyber..." />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kariéra vs. Život <PointsBadge points={5} /></label>
+          <CustomSelect 
+            value={formData.workLifeBalance || ""} 
+            onChange={(v) => setFormData({...formData, workLifeBalance: v as string})} 
+            options={[
+              {value:'hustle', label:'Hustle kultura (Kariéra na 1. místě)'}, 
+              {value:'balance', label:'Work-Life Balance (Pracuji, abych žil)'}, 
+              {value:'free', label:'Volnomyšlenkář (Hlavně zážitky)'}
+            ]} 
+            placeholder="Vyber..." 
+          />
+        </div>
       </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Věrnost a Exkluzivita <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={(formData as any).fidelityFocus || ""} 
-          onChange={(v) => setFormData({...formData, fidelityFocus: v} as any)} 
-          options={[
-            {value:'strict_monogamy', label:'Striktní monogamie (Oči jen pro jednoho)'}, 
-            {value:'open_relationship', label:'Otevřený vztah (Upřímnost a volnost)'}, 
-            {value:'monogamish', label:'Monogamish (Občasné okořenění toleruji)'},
-            {value:'polyamory', label:'Polyamorie (Více paralelních vztahů)'}
-          ]} 
-          placeholder="Jak to cítíš?" 
-        />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Loajalita v těžkých časech <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={(formData as any).loyaltyApproach || ""} 
-          onChange={(v) => setFormData({...formData, loyaltyApproach: v} as any)} 
-          options={[
-            {value:'ride_or_die', label:'Ride or die (Stojím při něm ať se děje cokoliv)'}, 
-            {value:'bounded', label:'Podpořím, ale chráním i své vlastní hranice'}, 
-            {value:'independent', label:'Každý si své boje musí vybojovat primárně sám'},
-            {value:'avoidant', label:'Tlak a problémy mě spíš odhánějí'}
-          ]} 
-          placeholder="Tvá reakce na krizi..." 
-        />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Hodnoty <PointsBadge points={5} /></label>
-        <CustomSelect value={formData.values?.traditionalVsModern || ""} onChange={(v) => setFormData({...formData, values: {...formData.values, traditionalVsModern: v}})} options={[{value:'traditional', label:'Tradiční'}, {value:'modern', label:'Moderní / Liberální'}]} placeholder="Vyber..." />
-      </div>
-      <div>
-        <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Kariéra vs. Život <PointsBadge points={5} /></label>
-        <CustomSelect 
-          value={formData.workLifeBalance || ""} 
-          onChange={(v) => setFormData({...formData, workLifeBalance: v as string})} 
-          options={[
-            {value:'hustle', label:'Hustle kultura (Kariéra na 1. místě)'}, 
-            {value:'balance', label:'Work-Life Balance (Pracuji, abych žil)'}, 
-            {value:'free', label:'Volnomyšlenkář (Hlavně zážitky)'}
-          ]} 
-          placeholder="Vyber..." 
-        />
-      </div>
-    </div>
+    </AccordionSection>
 
-    <div className="p-6 bg-gradient-to-br from-mafia-gold/10 to-transparent border border-mafia-gold/30 hover:border-mafia-gold/50 shadow-[0_0_20px_rgba(197,160,89,0.05)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-mafia-gold uppercase tracking-widest text-sm mb-4">Peníze</h4>
+    <AccordionSection title="Peníze" icon={<User size={18} />}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Můj přístup k penězům <PointsBadge points={5} /></label>
@@ -1645,129 +1611,131 @@ export const Step7ValuesMoney = ({ formData, setFormData, lang }: StepProps) => 
           <CustomSelect value={formData.moneyDetailed?.sharedAccount || ""} onChange={(v) => setFormData({...formData, moneyDetailed: {...formData.moneyDetailed, sharedAccount: v}})} options={[{value:'shared', label:'Vše společné'}, {value:'split', label:'Společný účet + vlastní'}, {value:'separate', label:'Každý sám za sebe'}]} placeholder="Vyber..." />
         </div>
       </div>
-    </div>
+    </AccordionSection>
 
-    <div className="p-6 bg-gradient-to-br from-indigo-900/10 to-transparent border border-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.05)] rounded-xl mt-8 space-y-6 transition-all">
-      <h4 className="font-heading font-black text-indigo-400 uppercase tracking-widest text-sm mb-4">Moderní témata (Hot Topics)</h4>
-      <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">Tato témata v současnosti nejvíce rozdělují (či naopak spojují) společnost. Firmy i potenciální partneři ocení upřímnost.</p>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Postoj k AI a Technologiím <PointsBadge points={10} /></label>
-          <CustomSelect 
-            value={formData.aiAttitude || ""} 
-            onChange={(v) => setFormData({...formData, aiAttitude: v})} 
-            options={[
-              {value:'enthusiast', label:'Tech nadšenec (AI miluji a používám)'}, 
-              {value:'user', label:'Uživatel (Je to užitečný nástroj)'}, 
-              {value:'skeptic', label:'Skeptik (Mám z vývoje obavy)'}, 
-              {value:'refuser', label:'Odmítač (Chci být spíše offline)'}
-            ]} 
-            placeholder="Vyber..." 
-          />
-        </div>
+    <AccordionSection title="Moderní témata (Hot Topics)" icon={<User size={18} />}>
+      <div className="space-y-6">
+        <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">Tato témata v současnosti nejvíce rozdělují (či naopak spojují) společnost. Firmy i potenciální partneři ocení upřímnost.</p>
         
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Duševní zdraví a Terapie <PointsBadge points={10} /></label>
-          <CustomSelect 
-            value={formData.therapyAttitude || ""} 
-            onChange={(v) => setFormData({...formData, therapyAttitude: v})} 
-            options={[
-              {value:'active', label:'Chodím na terapii/koučink (Fitko pro mozek)'}, 
-              {value:'open', label:'Jsem otevřený/á (Dává mi to smysl)'}, 
-              {value:'self_solved', label:'Řeším si věci sám/sama (Nepotřebuji to)'}, 
-              {value:'against', label:'Jsem proti (Nevěřím tomu)'}
-            ]} 
-            placeholder="Vyber..." 
-          />
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Postoj k AI a Technologiím <PointsBadge points={10} /></label>
+            <CustomSelect 
+              value={formData.aiAttitude || ""} 
+              onChange={(v) => setFormData({...formData, aiAttitude: v})} 
+              options={[
+                {value:'enthusiast', label:'Tech nadšenec (AI miluji a používám)'}, 
+                {value:'user', label:'Uživatel (Je to užitečný nástroj)'}, 
+                {value:'skeptic', label:'Skeptik (Mám z vývoje obavy)'}, 
+                {value:'refuser', label:'Odmítač (Chci být spíše offline)'}
+              ]} 
+              placeholder="Vyber..." 
+            />
+          </div>
+          
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Duševní zdraví a Terapie <PointsBadge points={10} /></label>
+            <CustomSelect 
+              value={formData.therapyAttitude || ""} 
+              onChange={(v) => setFormData({...formData, therapyAttitude: v})} 
+              options={[
+                {value:'active', label:'Chodím na terapii/koučink (Fitko pro mozek)'}, 
+                {value:'open', label:'Jsem otevřený/á (Dává mi to smysl)'}, 
+                {value:'self_solved', label:'Řeším si věci sám/sama (Nepotřebuji to)'}, 
+                {value:'against', label:'Jsem proti (Nevěřím tomu)'}
+              ]} 
+              placeholder="Vyber..." 
+            />
+          </div>
 
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Strava a Ekologie <PointsBadge points={10} /></label>
-          <CustomSelect 
-            value={formData.dietEco || ""} 
-            onChange={(v) => setFormData({...formData, dietEco: v})} 
-            options={[
-              {value:'carnivore', label:'Masožravec (Maso je základ)'}, 
-              {value:'omnivore', label:'Všežravec (Sním vše, neřeším)'}, 
-              {value:'flexitarian', label:'Flexitarián (Omezuji maso z přesvědčení)'}, 
-              {value:'vegan_vegetarian', label:'Vegetarián / Vegan'},
-              {value:'bio_eco', label:'Bio / Udržitelnost (Velmi dbám na stopu)'}
-            ]} 
-            placeholder="Vyber..." 
-          />
-        </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Strava a Ekologie <PointsBadge points={10} /></label>
+            <CustomSelect 
+              value={formData.dietEco || ""} 
+              onChange={(v) => setFormData({...formData, dietEco: v})} 
+              options={[
+                {value:'carnivore', label:'Masožravec (Maso je základ)'}, 
+                {value:'omnivore', label:'Všežravec (Sním vše, neřeším)'}, 
+                {value:'flexitarian', label:'Flexitarián (Omezuji maso z přesvědčení)'}, 
+                {value:'vegan_vegetarian', label:'Vegetarián / Vegan'},
+                {value:'bio_eco', label:'Bio / Udržitelnost (Velmi dbám na stopu)'}
+              ]} 
+              placeholder="Vyber..." 
+            />
+          </div>
 
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Pracovní model <PointsBadge points={10} /></label>
-          <CustomSelect 
-            value={formData.workModel || ""} 
-            onChange={(v) => setFormData({...formData, workModel: v})} 
-            options={[
-              {value:'nomad', label:'Digitální Nomád (Ze světa)'}, 
-              {value:'remote', label:'Remote / Home Office (Jsem doma)'}, 
-              {value:'hybrid', label:'Hybrid (Zlatá střední cesta)'}, 
-              {value:'office_physical', label:'Kancelář / Fyzická práce'},
-              {value:'hustler', label:'Hustler / Podnikatel (24/7)'}
-            ]} 
-            placeholder="Vyber..." 
-          />
-        </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Pracovní model <PointsBadge points={10} /></label>
+            <CustomSelect 
+              value={formData.workModel || ""} 
+              onChange={(v) => setFormData({...formData, workModel: v})} 
+              options={[
+                {value:'nomad', label:'Digitální Nomád (Ze světa)'}, 
+                {value:'remote', label:'Remote / Home Office (Jsem doma)'}, 
+                {value:'hybrid', label:'Hybrid (Zlatá střední cesta)'}, 
+                {value:'office_physical', label:'Kancelář / Fyzická práce'},
+                {value:'hustler', label:'Hustler / Podnikatel (24/7)'}
+              ]} 
+              placeholder="Vyber..." 
+            />
+          </div>
 
-        <div className="md:col-span-2">
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Společenská Polarizace & Konflikt názorů <PointsBadge points={15} /></label>
-          <CustomSelect 
-            value={formData.polarization || ""} 
-            onChange={(v) => setFormData({...formData, polarization: v})} 
-            options={[
-              {value:'bubble', label:'Bublina (Bavím se spíše se stejně smýšlejícími)'}, 
-              {value:'debater', label:'Debatér (Rád diskutuji s oponenty)'}, 
-              {value:'cancel_culture', label:'Cancel Culture (Toxické názory okamžitě mažu)'}, 
-              {value:'phlegmatic', label:'Flegmatik (Tato dramata jdou mimo mě)'}
-            ]} 
-            placeholder="Vyber..." 
-          />
+          <div className="md:col-span-2">
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Společenská Polarizace & Konflikt názorů <PointsBadge points={15} /></label>
+            <CustomSelect 
+              value={formData.polarization || ""} 
+              onChange={(v) => setFormData({...formData, polarization: v})} 
+              options={[
+                {value:'bubble', label:'Bublina (Bavím se spíše se stejně smýšlejícími)'}, 
+                {value:'debater', label:'Debatér (Rád diskutuji s oponenty)'}, 
+                {value:'cancel_culture', label:'Cancel Culture (Toxické názory okamžitě mažu)'}, 
+                {value:'phlegmatic', label:'Flegmatik (Tato dramata jdou mimo mě)'}
+              ]} 
+              placeholder="Vyber..." 
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </AccordionSection>
 
-    <div className="p-6 bg-gradient-to-br from-red-900/10 to-transparent border border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.05)] rounded-xl mt-8 space-y-6">
-      <h4 className="font-heading font-black text-red-400 uppercase tracking-widest text-sm mb-4">Minulost a Body Count</h4>
-      <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">Počet minulých partnerů může být pro někoho důležitý, pro jiného red flag. Tato informace je defaultně skrytá. Odkryje se POUZE TEHDY, pokud ty i tvůj protějšek máte oba nastaveno "Vzájemné odhalení" a dojde k Matchi.</p>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Počet minulých partnerů (Body Count) <PointsBadge points={15} /></label>
-          <input type="number" min="0" value={formData.pastPartnersCount !== undefined ? formData.pastPartnersCount : ''} onChange={(e) => setFormData({...formData, pastPartnersCount: parseInt(e.target.value) || 0})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-red-400 rounded-md" placeholder="Zadej číslo..." />
-        </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
-            Odhalit po Matchi?
-            <InfoTooltip text="Mutual = ukáže se v Match reportu jen v případě, že to druhý povolil také." />
-          </label>
-          <CustomSelect value={formData.pastPartnersReveal || "hidden"} onChange={(v) => setFormData({...formData, pastPartnersReveal: v as any})} options={[{value:'hidden', label:'Skryté (Nechci sdílet)'}, {value:'mutual', label:'Mutual (Sdílet při oboustranné shodě)'}]} placeholder="Vyber..." />
+    <AccordionSection title="Minulost a Body Count" icon={<User size={18} />}>
+      <div className="space-y-6">
+        <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">Počet minulých partnerů může být pro někoho důležitý, pro jiného red flag. Tato informace je defaultně skrytá. Odkryje se POUZE TEHDY, pokud ty i tvůj protějšek máte oba nastaveno "Vzájemné odhalení" a dojde k Matchi.</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Počet minulých partnerů (Body Count) <PointsBadge points={15} /></label>
+            <input type="number" min="0" value={formData.pastPartnersCount !== undefined ? formData.pastPartnersCount : ''} onChange={(e) => setFormData({...formData, pastPartnersCount: parseInt(e.target.value) || 0})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-red-400 rounded-md" placeholder="Zadej číslo..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+              Odhalit po Matchi?
+              <InfoTooltip text="Mutual = ukáže se v Match reportu jen v případě, že to druhý povolil také." />
+            </label>
+            <CustomSelect value={formData.pastPartnersReveal || "hidden"} onChange={(v) => setFormData({...formData, pastPartnersReveal: v as any})} options={[{value:'hidden', label:'Skryté (Nechci sdílet)'}, {value:'mutual', label:'Mutual (Sdílet při oboustranné shodě)'}]} placeholder="Vyber..." />
+          </div>
         </div>
       </div>
-    </div>
+    </AccordionSection>
 
-    {/* SECRET DESIRES */}
-    <div className="p-6 bg-gradient-to-br from-purple-900/20 to-transparent border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.1)] rounded-xl mt-8 space-y-6">
-      <h4 className="font-heading font-black text-purple-400 uppercase tracking-widest text-sm mb-4">Tajná Přání (Secret Desires)</h4>
-      <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">Máš nějaký tajný sen, bucket list položku nebo byznys nápad, co chceš sdílet jen s někým, kdo to má stejně? Napiš to sem. Opět platí vzájemné odhalení po Matchi.</p>
-      
-      <div className="grid grid-cols-1 gap-6">
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Tvé tajné přání / Fantazie <PointsBadge points={5} /></label>
-          <input type="text" value={formData.secretDesires || ''} onChange={(e) => setFormData({...formData, secretDesires: e.target.value})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-purple-400 rounded-md" placeholder="Např. chci letět na měsíc..." />
-        </div>
-        <div>
-          <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
-            Odhalit po Matchi?
-           <PointsBadge points={5} /></label>
-          <CustomSelect value={formData.secretDesiresReveal || "hidden"} onChange={(v) => setFormData({...formData, secretDesiresReveal: v as any})} options={[{value:'hidden', label:'Skryté (Nechci sdílet)'}, {value:'mutual', label:'Mutual (Sdílet při oboustranné shodě)'}]} placeholder="Vyber..." />
+    <AccordionSection title="Tajná Přání (Secret Desires)" icon={<User size={18} />}>
+      <div className="space-y-6">
+        <p className="text-white/50 text-[10px] font-mono leading-relaxed mb-4">Máš nějaký tajný sen, bucket list položku nebo byznys nápad, co chceš sdílet jen s někým, kdo to má stejně? Napiš to sem. Opět platí vzájemné odhalení po Matchi.</p>
+        
+        <div className="grid grid-cols-1 gap-6">
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">Tvé tajné přání / Fantazie <PointsBadge points={5} /></label>
+            <input type="text" value={formData.secretDesires || ''} onChange={(e) => setFormData({...formData, secretDesires: e.target.value})} className="w-full bg-black/40 border border-white/10 py-3 px-4 text-white focus:border-purple-400 rounded-md" placeholder="Např. chci letět na měsíc..." />
+          </div>
+          <div>
+            <label className="block text-xs font-mono text-white/60 uppercase tracking-widest mb-3 flex items-center">
+              Odhalit po Matchi?
+             <PointsBadge points={5} /></label>
+            <CustomSelect value={formData.secretDesiresReveal || "hidden"} onChange={(v) => setFormData({...formData, secretDesiresReveal: v as any})} options={[{value:'hidden', label:'Skryté (Nechci sdílet)'}, {value:'mutual', label:'Mutual (Sdílet při oboustranné shodě)'}]} placeholder="Vyber..." />
+          </div>
         </div>
       </div>
-    </div>
+    </AccordionSection>
   </motion.div>
 );
 
@@ -1789,7 +1757,7 @@ export const Step8Protocol = ({ formData, setFormData, lang }: StepProps) => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
       <div className="text-center mb-6">
         <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Závazek Protokolu</h4>
         <p className="text-white/50 text-xs font-mono uppercase tracking-widest mt-2">MM Barber Síť má jasná pravidla.</p>
@@ -1919,7 +1887,7 @@ export const StepSchools = ({ formData, setFormData, lang }: StepProps) => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
       <div className="text-center mb-6">
         <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Tvoje Školy</h4>
         <p className="text-white/60 text-sm mt-2">Přidej své školy, ať tě tvoji spolužáci snadněji najdou.</p>
@@ -2045,7 +2013,7 @@ export const StepHealth = ({ formData, setFormData, lang }: { formData: any, set
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
       <div className="text-center mb-6">
         <h3 className="font-heading font-black text-2xl text-white uppercase tracking-wider mb-2">{t.title}</h3>
         <p className="text-white/50 text-sm max-w-md mx-auto">{t.desc}</p>
@@ -2170,7 +2138,7 @@ export const StepHealth = ({ formData, setFormData, lang }: { formData: any, set
 };
 
 export const StepIntimacy = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">{lang === 'cs' ? 'Hlubší poznání & Intimita' : 'Deeper connection & Intimacy'}</h4>
       <p className="text-[10px] font-mono text-white/50 mt-2">{lang === 'cs' ? 'Důležité pro sladění očekávání. Nech pole prázdná, pokud na to nechceš odpovídat.' : 'Important for aligning expectations. Leave blank if you prefer not to answer.'}</p>
@@ -2310,7 +2278,7 @@ export const StepIntimacy = ({ formData, setFormData, lang }: StepProps) => (
 );
 
 export const StepCareerEducation = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Kariéra a Vzdělání</h4>
       <p className="text-white/60 text-xs font-mono mt-2">Díky těmto údajům tě budeme moci propojit s nabídkami práce od elitních firem.</p>
@@ -2688,7 +2656,7 @@ export const StepCareerEducation = ({ formData, setFormData, lang }: StepProps) 
 );
 
 export const StepMedia = ({ formData, setFormData, lang }: StepProps) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6 max-w-2xl mx-auto w-full pb-20">
     <div className="text-center mb-6">
       <h4 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-lg">Sociální Sítě a Média</h4>
       <p className="text-white/60 text-xs font-mono mt-2">Tvůj vztah k digitálnímu světu nám pomůže najít lépe kompatibilní shody a firmám ukáže tvou nezávislost.</p>

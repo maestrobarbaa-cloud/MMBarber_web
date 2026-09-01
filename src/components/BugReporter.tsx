@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Bug, X } from 'lucide-react';
+import { Bug, X, Lightbulb, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 
 export function BugReporter() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [feedbackType, setFeedbackType] = useState<'bug' | 'idea'>('bug');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -31,7 +32,7 @@ export function BugReporter() {
       const res = await fetch('/api/bug-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description, url, userAgent, screenSize }),
+        body: JSON.stringify({ type: feedbackType, title, description, url, userAgent, screenSize }),
       });
 
       if (!res.ok) throw new Error('Network response was not ok');
@@ -53,11 +54,11 @@ export function BugReporter() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed top-24 left-1/2 -translate-x-1/2 z-[9999] px-6 py-2.5 rounded-full bg-red-600 text-white shadow-[0_0_25px_rgba(220,38,38,0.7)] hover:bg-red-700 hover:scale-105 transition-all flex items-center gap-2 group animate-pulse hover:animate-none border border-red-400"
-        title="Nahlásit chybu"
+        className="fixed top-24 left-1/2 -translate-x-1/2 z-[9999] px-6 py-2.5 rounded-full bg-black/80 text-mafia-gold backdrop-blur-md shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.6)] hover:scale-105 transition-all flex items-center gap-2 group border border-mafia-gold/50"
+        title="Zpětná vazba"
       >
-        <Bug className="w-5 h-5 group-hover:animate-bounce" />
-        <span className="font-bold uppercase tracking-wider text-sm">Našli jste chybu v betě?</span>
+        <MessageSquare className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+        <span className="font-bold uppercase tracking-widest text-[10px]">Chyby & Nápady</span>
       </button>
 
       <AnimatePresence>
@@ -75,9 +76,9 @@ export function BugReporter() {
               className="bg-white dark:bg-neutral-900 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800"
             >
               <div className="flex items-center justify-between p-6 border-b border-neutral-100 dark:border-neutral-800">
-                <div className="flex items-center gap-3 text-red-600 dark:text-red-500">
-                  <Bug className="w-6 h-6" />
-                  <h2 className="text-xl font-bold">Nahlásit chybu</h2>
+                <div className="flex items-center gap-3 text-white">
+                  <MessageSquare className="w-6 h-6 text-mafia-gold" />
+                  <h2 className="text-xl font-bold font-heading uppercase tracking-widest">Zpětná vazba</h2>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
@@ -100,35 +101,54 @@ export function BugReporter() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
-                      Našli jste v aplikaci nějakou chybu nebo problém? Napište nám, co nefunguje, a my se to pokusíme co nejdříve opravit.
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+                      Našli jste něco, co nefunguje, chybí vám tu něco nebo máte připomínku k nesrozumitelnosti? Dejte nám vědět!
                     </p>
+
+                    <div className="flex gap-2 mb-6">
+                      <button
+                        type="button"
+                        onClick={() => setFeedbackType('bug')}
+                        className={`flex-1 py-3 px-4 rounded-xl flex flex-col items-center gap-2 transition-all border ${feedbackType === 'bug' ? 'bg-red-500/10 border-red-500 text-red-500' : 'bg-neutral-100 dark:bg-neutral-800 border-transparent text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`}
+                      >
+                        <Bug className="w-5 h-5" />
+                        <span className="text-xs font-bold uppercase tracking-widest">Nahlásit chybu</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFeedbackType('idea')}
+                        className={`flex-1 py-3 px-4 rounded-xl flex flex-col items-center gap-2 transition-all border ${feedbackType === 'idea' ? 'bg-mafia-gold/10 border-mafia-gold text-mafia-gold' : 'bg-neutral-100 dark:bg-neutral-800 border-transparent text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`}
+                      >
+                        <MessageSquare className="w-5 h-5" />
+                        <span className="text-xs font-bold uppercase tracking-widest">Feedback</span>
+                      </button>
+                    </div>
                     
                     <div>
                       <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                        Co se stalo? (Stručný popis)
+                        Stručný popis
                       </label>
                       <input
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Např. Nejde nahrát fotka"
+                        placeholder={feedbackType === 'bug' ? "Např. Nejde nahrát fotka" : "Např. Chybí mi tu možnost..."}
                         required
-                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white transition-shadow"
+                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-mafia-gold dark:text-white transition-shadow"
                       />
                     </div>
                     
                     <div>
                       <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                        Detaily a postup
+                        Detaily {feedbackType === 'bug' ? 'a postup' : 'feedbacku'}
                       </label>
                       <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Popište, jak přesně chyba nastala a co jste předtím udělali..."
+                        placeholder={feedbackType === 'bug' ? "Popište, jak přesně chyba nastala a co jste předtím udělali..." : "Co se vám nelíbilo, nebo co bylo nesrozumitelné?"}
                         required
                         rows={4}
-                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white transition-shadow resize-none"
+                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-mafia-gold dark:text-white transition-shadow resize-none"
                       />
                     </div>
 
@@ -141,7 +161,7 @@ export function BugReporter() {
                     <button
                       type="submit"
                       disabled={status === 'loading'}
-                      className="w-full mt-6 py-3 px-4 bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 text-white rounded-lg font-medium shadow-md transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+                      className="w-full mt-6 py-4 px-4 bg-mafia-gold hover:bg-white text-black rounded-lg font-heading font-black uppercase tracking-widest shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all disabled:opacity-70 flex items-center justify-center gap-2"
                     >
                       {status === 'loading' ? (
                         <>
@@ -152,7 +172,7 @@ export function BugReporter() {
                           Odesílám...
                         </>
                       ) : (
-                        'Odeslat hlášení'
+                        'Odeslat'
                       )}
                     </button>
                   </form>
