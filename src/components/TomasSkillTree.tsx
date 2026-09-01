@@ -377,21 +377,8 @@ export function TomasSkillTree({
            </div>
            
            <div className="flex flex-col items-end gap-2">
-             <div className="flex flex-wrap justify-end gap-2">
-                 <div className="text-white/60 font-mono text-[10px] lg:text-xs uppercase tracking-widest bg-black/50 px-4 py-2 rounded-sm border border-white/10 flex items-center gap-2 backdrop-blur-md">
-                    <Lock size={12} className="text-mafia-gold" />
-                    {lang === 'cs' ? 'Fragmenty:' : 'Fragments:'} 
-                    <span className="text-mafia-gold font-bold text-sm lg:text-base">{totalCollected} / 10</span>
-                 </div>
-                 
-                 <div className="text-white/60 font-mono text-[10px] lg:text-xs uppercase tracking-widest bg-mafia-gold/10 px-4 py-2 rounded-sm border border-mafia-gold/30 flex items-center gap-2 backdrop-blur-md shadow-[0_0_15px_rgba(197,160,89,0.2)]">
-                    <ArrowUpCircle size={12} className="text-mafia-gold animate-bounce" />
-                    SP: <span className="text-mafia-gold font-bold text-sm lg:text-base">{availableSP}</span>
-                 </div>
-             </div>
-             
              {/* Total Completion Bar - "Maximální Odemčení" */}
-             <div className="w-full lg:w-64 bg-black/60 p-2 rounded-sm border border-white/10 mt-1 flex flex-col gap-1 backdrop-blur-md">
+             <div className="w-full lg:w-64 bg-black/60 p-2 rounded-sm border border-white/10 flex flex-col gap-1 backdrop-blur-md">
                 <div className="flex justify-between items-center px-1">
                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/50">
                       {lang === 'cs' ? 'MAXIMÁLNÍ ODEMČENÍ' : 'MAXIMUM UNLOCK'}
@@ -485,14 +472,9 @@ export function TomasSkillTree({
                        
                        {/* Level indicator (jen pokud je odemčeno, nebo se dá odemknout) */}
                        {(isUnlocked || isAvailableButLocked) && (
-                         <div className={`absolute -bottom-2 md:-bottom-3 bg-black border px-2 py-0.5 rounded text-[9px] md:text-[10px] font-mono font-bold ${isMaxed ? 'border-yellow-400 text-yellow-400' : isUnlocked ? 'border-mafia-gold text-mafia-gold' : 'border-white/30 text-white/50'}`}>
+                         <div className={`absolute -top-6 md:-top-7 bg-black border px-2 py-0.5 rounded text-[9px] md:text-[10px] font-mono font-bold ${isMaxed ? 'border-yellow-400 text-yellow-400' : isUnlocked ? 'border-mafia-gold text-mafia-gold' : 'border-white/30 text-white/50'}`}>
                            LVL {isUnlocked ? currentLevel : 1}
                          </div>
-                       )}
-
-                       {/* Rotační kruh kolem - rychlejší, pokud je max level */}
-                       {isUnlocked && (
-                          <div className={`absolute inset-[-8px] border-t-2 border-r-2 border-mafia-gold/40 rounded-full pointer-events-none ${isMaxed ? 'animate-[spin_3s_linear_infinite] border-yellow-400/60' : 'animate-[spin_5s_linear_infinite]'}`}></div>
                        )}
                     </div>
                     {/* Název schopnosti pod uzlem */}
@@ -502,6 +484,54 @@ export function TomasSkillTree({
                  </div>
               );
            })}
+        </div>
+
+        {/* Upgrade Button Bottom Center */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-sm z-40 px-4">
+           {selectedNode && isSelectedUnlocked ? (
+              currentSelectedLevel < selectedNode.maxLevel ? (
+                 <button 
+                    onClick={() => handleUpgrade(selectedNode.id, currentSelectedLevel)}
+                    disabled={availableSP < 1}
+                    className={`w-full py-4 px-6 flex items-center justify-between rounded-sm uppercase tracking-[0.2em] font-black text-xs transition-all ${
+                       availableSP >= 1 
+                       ? 'bg-mafia-gold text-black hover:bg-white hover:scale-[1.02] shadow-[0_0_20px_rgba(197,160,89,0.4)]' 
+                       : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
+                    }`}
+                 >
+                    <span className="flex items-center gap-2">
+                       <ArrowUpCircle size={16} />
+                       {lang === 'cs' ? 'Vylepšit Dovednost' : 'Upgrade Skill'}
+                    </span>
+                    <span className="font-mono bg-black/20 px-2 py-1 rounded">
+                       -1 SP
+                    </span>
+                 </button>
+              ) : (
+                 <div className="w-full py-4 text-center border border-yellow-400/50 bg-yellow-400/10 text-yellow-400 font-mono text-xs uppercase tracking-widest rounded-sm shadow-[inset_0_0_15px_rgba(250,204,21,0.2)] backdrop-blur-md">
+                    {lang === 'cs' ? 'Maximální úroveň dosažena' : 'Maximum level reached'}
+                 </div>
+              )
+           ) : selectedNode && !isSelectedUnlocked ? (
+              <div className="bg-black/80 backdrop-blur-md p-4 rounded-md border border-white/10 w-full shadow-lg">
+                 <div className="flex flex-col gap-3">
+                    <div className="flex justify-between items-center text-[10px] font-mono uppercase tracking-widest border-b border-white/5 pb-2">
+                       <span className="text-white/40">{lang === 'cs' ? 'K odemčení:' : 'To unlock:'}</span>
+                       <span className={`font-bold ${totalCollected >= selectedNode.requiredFragments ? 'text-mafia-gold' : 'text-red-500'}`}>
+                          {totalCollected} / {selectedNode.requiredFragments} {lang === 'cs' ? 'OTISKŮ' : 'FRAGMENTS'}
+                       </span>
+                    </div>
+                    {selectedNode.dependencies && selectedNode.dependencies.length > 0 && (
+                       <div className="flex justify-between items-center text-[10px] font-mono uppercase tracking-widest">
+                          <span className="text-white/40">{lang === 'cs' ? 'Předchozí:' : 'Previous:'}</span>
+                          <span className={`font-bold ${selectedNode.dependencies.every(d => unlockedNodes.has(d)) ? 'text-mafia-gold' : 'text-red-500'}`}>
+                             {selectedNode.dependencies.every(d => unlockedNodes.has(d)) ? (lang === 'cs' ? 'ODEMČENO' : 'UNLOCKED') : (lang === 'cs' ? 'UZAMČENO' : 'LOCKED')}
+                          </span>
+                       </div>
+                    )}
+                 </div>
+              </div>
+           ) : null}
         </div>
       </div>
 
@@ -592,53 +622,7 @@ export function TomasSkillTree({
                     )}
                  </div>
                  
-                 {/* Upgrade / Status Footer */}
-                 <div className="mt-8 pt-6 border-t border-white/10 sticky bottom-0 bg-black/95 backdrop-blur-md pb-4">
-                    {isSelectedUnlocked ? (
-                       currentSelectedLevel < selectedNode.maxLevel ? (
-                          <button 
-                             onClick={() => handleUpgrade(selectedNode.id, currentSelectedLevel)}
-                             disabled={availableSP < 1}
-                             className={`w-full py-4 px-6 flex items-center justify-between rounded-sm uppercase tracking-[0.2em] font-black text-xs transition-all ${
-                                availableSP >= 1 
-                                ? 'bg-mafia-gold text-black hover:bg-white hover:scale-[1.02] shadow-[0_0_20px_rgba(197,160,89,0.4)]' 
-                                : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
-                             }`}
-                          >
-                             <span className="flex items-center gap-2">
-                                <ArrowUpCircle size={16} />
-                                {lang === 'cs' ? 'Vylepšit Dovednost' : 'Upgrade Skill'}
-                             </span>
-                             <span className="font-mono bg-black/20 px-2 py-1 rounded">
-                                -1 SP
-                             </span>
-                          </button>
-                       ) : (
-                          <div className="w-full py-4 text-center border border-yellow-400/50 bg-yellow-400/10 text-yellow-400 font-mono text-xs uppercase tracking-widest rounded-sm shadow-[inset_0_0_15px_rgba(250,204,21,0.2)]">
-                             {lang === 'cs' ? 'Maximální úroveň dosažena' : 'Maximum level reached'}
-                          </div>
-                       )
-                    ) : (
-                       <div className="bg-black/60 p-5 rounded-md border border-white/10">
-                          <div className="flex flex-col gap-4">
-                             <div className="flex justify-between items-center text-xs font-mono uppercase tracking-widest border-b border-white/5 pb-3">
-                                <span className="text-white/40">{lang === 'cs' ? 'K odemčení:' : 'To unlock:'}</span>
-                                <span className={`font-bold text-sm ${totalCollected >= selectedNode.requiredFragments ? 'text-mafia-gold' : 'text-red-500'}`}>
-                                   {totalCollected} / {selectedNode.requiredFragments} {lang === 'cs' ? 'OTISKŮ' : 'FRAGMENTS'}
-                                </span>
-                             </div>
-                             {selectedNode.dependencies && selectedNode.dependencies.length > 0 && (
-                                <div className="flex justify-between items-center text-xs font-mono uppercase tracking-widest pt-1">
-                                   <span className="text-white/40">{lang === 'cs' ? 'Předchozí :' : 'Previous:'}</span>
-                                   <span className={`font-bold ${selectedNode.dependencies.every(d => unlockedNodes.has(d)) ? 'text-mafia-gold' : 'text-red-500'}`}>
-                                      {selectedNode.dependencies.every(d => unlockedNodes.has(d)) ? (lang === 'cs' ? 'ODEMČENO' : 'UNLOCKED') : (lang === 'cs' ? 'UZAMČENO' : 'LOCKED')}
-                                   </span>
-                                </div>
-                             )}
-                          </div>
-                       </div>
-                    )}
-                 </div>
+
                </div>
             </motion.div>
          )}

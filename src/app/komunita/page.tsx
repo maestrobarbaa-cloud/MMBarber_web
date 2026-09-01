@@ -149,7 +149,7 @@ export default function CommunityPage() {
           className="group flex items-center gap-4 text-mafia-gold/40 hover:text-mafia-gold transition-colors font-mono text-xs tracking-[0.4em] uppercase"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform" />
-          {t.sidliste.return}
+          {t?.sidliste?.return || 'ZPĚT NA ZÁKLADNU'}
         </Link>
         <div className="flex flex-col items-end">
             <div className="w-12 h-12 border border-mafia-gold/20 flex items-center justify-center overflow-hidden p-1">

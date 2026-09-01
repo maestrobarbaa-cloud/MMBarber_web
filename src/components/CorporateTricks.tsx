@@ -6,7 +6,11 @@ import { Users, X, AlertTriangle } from "lucide-react";
 import { playSound } from "@/utils/audio";
 import { useBarbers } from "@/contexts/BarberContext";
 
-const CITIES = ["Brno", "Praha", "Zlín", "Olomouc", "Bratislava", "Vídeň", "Ostrava", "Hodonín", "Kroměříž", "Staré Město"];
+const LOCAL_CITIES = [
+  "Uherského Hradiště", "Starého Města", "Kunovic", "Uherského Brodu", "Zlína",
+  "Napajedel", "Otrokovic", "Veselí nad Moravou", "Hluku", "Vlčnova",
+  "Ostrožské Nové Vsi", "Buchlovic", "Polešovic", "Babic"
+];
 
 export function CorporateTricks() {
   const { barbers } = useBarbers();
@@ -17,14 +21,21 @@ export function CorporateTricks() {
   useEffect(() => {
     // Generate a random booking toast every 1 to 3 minutes
     const triggerToast = () => {
-      const activeBarbers = barbers && barbers.length > 0 ? barbers : [{ name: "Tomáš" }, { name: "Nella" }];
+      const validBarbers = barbers?.filter(b => !b.missionFailed) || [];
+      const activeBarbers = validBarbers.length > 0 ? validBarbers : [{ name: "Tomáš" }];
       const barber = activeBarbers[Math.floor(Math.random() * activeBarbers.length)].name;
-      const city = CITIES[Math.floor(Math.random() * CITIES.length)];
       
+      let city = LOCAL_CITIES[Math.floor(Math.random() * LOCAL_CITIES.length)];
+      const rand = Math.random();
+      // Praha jen tak na vánoce (velmi vzácně - 2%), Brno sem tam (10%)
+      if (rand > 0.98) city = "Prahy";
+      else if (rand > 0.88) city = "Brna";
+
       const messages = [
-        `Někdo z města ${city} si právě zarezervoval místo u barbera ${barber}.`,
-        `Někdo z města ${city} právě vyžádal audienci.`,
-        `Poslední volný termín na tento týden u barbera ${barber} právě zmizel.`
+        `Někdo z ${city} si právě prohlíží profil barbera ${barber}.`,
+        `Návštěvník z okolí ${city} právě zkoumá naše služby.`,
+        `Někdo z lokality blízko ${city} právě otevřel rezervační systém.`,
+        `Další zájemce ze směru od ${city} zvažuje audienci u barbera ${barber}.`
       ];
       const msg = messages[Math.floor(Math.random() * messages.length)];
 
@@ -33,14 +44,14 @@ export function CorporateTricks() {
 
       setTimeout(() => {
         setToast((prev) => ({ ...prev, visible: false }));
-      }, 5000); // hide after 5 seconds
+      }, 7000); // hide after 7 seconds
 
       // Schedule next toast
-      const nextDelay = Math.random() * (180000 - 60000) + 60000; // 1-3 mins
+      const nextDelay = Math.random() * (240000 - 90000) + 90000; // 1.5-4 mins
       setTimeout(triggerToast, nextDelay);
     };
 
-    const initialDelay = Math.random() * (45000 - 15000) + 15000; // 15-45 secs for first
+    const initialDelay = Math.random() * (60000 - 30000) + 30000; // 30-60 secs for first
     const timer = setTimeout(triggerToast, initialDelay);
 
     return () => clearTimeout(timer);
@@ -72,19 +83,22 @@ export function CorporateTricks() {
       <AnimatePresence>
         {toast.visible && (
           <motion.div
-            initial={{ opacity: 0, x: -50, y: 50 }}
+            initial={{ opacity: 0, x: 50, y: 50 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: -50, y: 50 }}
-            className="fixed bottom-6 left-6 z-[9999] bg-[#0a0a0a] border border-mafia-gold/30 p-4 shadow-[0_0_20px_rgba(197,160,89,0.2)] max-w-sm rounded"
+            exit={{ opacity: 0, x: 50, y: 50 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="fixed bottom-8 right-8 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 p-6 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.25)] max-w-md rounded-sm"
           >
-            <div className="flex items-start gap-3">
-              <Users className="text-mafia-gold mt-1 shrink-0" size={20} />
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-mafia-gold/10 rounded-full shrink-0">
+                <Users className="text-mafia-gold" size={28} />
+              </div>
               <div>
-                <h4 className="text-sm font-heading font-bold text-smoke-white uppercase mb-1">Žhavá Aktivita</h4>
-                <p className="text-xs text-smoke-white/70 font-sans">{toast.message}</p>
+                <h4 className="text-lg font-heading font-black text-white uppercase mb-1 tracking-wider drop-shadow-md">Žhavá Aktivita</h4>
+                <p className="text-sm text-smoke-white/80 font-sans leading-relaxed">{toast.message}</p>
               </div>
             </div>
-            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-mafia-gold/0 via-mafia-gold to-mafia-gold/0"></div>
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-mafia-gold/50 via-transparent to-transparent"></div>
           </motion.div>
         )}
       </AnimatePresence>

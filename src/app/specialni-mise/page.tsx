@@ -102,7 +102,7 @@ export default function SpecialMissionPage() {
               className="inline-flex items-center gap-2 text-mafia-gold/50 hover:text-mafia-gold transition-colors font-mono text-xs uppercase tracking-widest group"
             >
               <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-              {t.career.backToHq}
+              {t?.career?.backToHq || 'ZPĚT NA ZÁKLADNU'}
             </Link>
           </motion.div>
 

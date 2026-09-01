@@ -563,3 +563,15 @@ model UserStats {
   
   updatedAt      DateTime @updatedAt
 }
+
+model TelemetryLog {
+  id        String   @id @default(cuid())
+  path      String
+  elementId String?
+  x         Int?
+  y         Int?
+  screenW   Int?
+  screenH   Int?
+  timestamp DateTime @default(now())
+}
+

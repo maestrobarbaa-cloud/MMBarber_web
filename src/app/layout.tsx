@@ -20,6 +20,9 @@ import { BugReporter } from "@/components/BugReporter";
 import { AntiTheft } from "@/components/AntiTheft";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { ClientActivityTracker } from "@/components/ClientActivityTracker";
+import { CommandPalette } from "@/components/CommandPalette";
+import { OfflineGame } from "@/components/OfflineGame";
+import { HeatmapTracker } from "@/components/HeatmapTracker";
 import Script from "next/script";
 import { Scissors } from "lucide-react";
 
@@ -281,11 +284,59 @@ export default function RootLayout({
             })
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "url": "https://mmbarber.cz",
+              "name": "MMBARBER",
+              "author": {
+                "@type": "Person",
+                "name": "Tomáš Mička",
+                "url": "https://www.mmbarber.cz",
+                "sameAs": [
+                  "https://github.com/tomasmicka",
+                  "https://www.linkedin.com/in/tomas-micka",
+                  "https://www.instagram.com/tomas_micka"
+                ],
+                "jobTitle": "Web Developer & Founder"
+              },
+              "creator": {
+                "@type": "Person",
+                "name": "Tomáš Mička"
+              },
+              "dateCreated": "2025-01-01"
+            })
+          }}
+        />
       </head>
       <body 
         className={`${playfair.variable} ${inter.variable} ${greatVibes.variable} antialiased selection:bg-mafia-gold selection:text-mafia-black min-h-screen relative bg-mafia-black overflow-x-hidden`}
         suppressHydrationWarning
       >
+        {/* 
+          =============================================================================
+          [  D E V E L O P E R   S I G N A T U R E  ]
+          Created by: Tomáš Mička
+          Role: Lead Web Developer & Founder
+          Development started: 2025
+          Connect: https://www.mmbarber.cz
+          "We build digital experiences that leave a mark."
+          =============================================================================
+        */}
+        <Script id="corporate-console-egg" strategy="afterInteractive">
+          {`
+            if (typeof window !== 'undefined') {
+              setTimeout(() => {
+                console.log("%cZASTAVTE!", "color: #8A0707; font-size: 50px; font-weight: 900; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; font-family: sans-serif;");
+                console.log("%cTato funkce prohlížeče je určena pouze pro vývojáře. Pokud vám někdo řekl, abyste sem něco zkopírovali a vložili, abyste získali VIP výhody MMBarber nebo 'hacknuli' systém, jedná se o podvod. Může to kompromitovat váš účet a data.", "font-size: 14px; font-family: sans-serif; color: #fff; padding: 10px 0;");
+                console.log("%c💼 Líbí se vám kód tohoto webu? My stavíme digitální zážitky, které zanechají stopu. Vývojář: Tomáš Mička | https://www.mmbarber.cz", "color: #C5A059; font-size: 14px; font-weight: bold; font-family: monospace; border: 1px solid #C5A059; padding: 10px; border-radius: 4px;");
+              }, 2000);
+            }
+          `}
+        </Script>
         <Script id="mmbarber-early-init" strategy="afterInteractive">
           {`
             try {
@@ -357,6 +408,9 @@ export default function RootLayout({
                 <DynamicSEO />
                 <InstallPrompt />
                 <ClientActivityTracker />
+                <CommandPalette />
+                <OfflineGame />
+                <HeatmapTracker />
                 <Header />
 
                 <BarberProvider>

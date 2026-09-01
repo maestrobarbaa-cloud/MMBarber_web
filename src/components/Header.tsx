@@ -99,6 +99,105 @@ export function Header() {
    const [clientNickname, setClientNickname] = useState<string | null>(null);
    const [isStealthMode, setIsStealthMode] = useState(false);
    const [geoCity, setGeoCity] = useState<string | null>(null);
+   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+
+   type MegaMenuData = {
+     [key: string]: {
+       title: string;
+       path: string;
+       groups: {
+         title: string;
+         items: { name: string; path: string }[];
+       }[];
+       promo?: {
+         title: string;
+         description: string;
+         cta: string;
+         path: string;
+         image: string;
+       }
+     }
+   }
+
+   const megaMenuData: MegaMenuData = {
+     services: {
+       title: lang === 'cs' ? "Služby" : "Services",
+       path: "/#services",
+       groups: [
+         {
+           title: lang === 'cs' ? "Základní péče" : "Basic Care",
+           items: [
+             { name: lang === 'cs' ? "Pánský střih" : "Haircut", path: "/#services" },
+             { name: lang === 'cs' ? "Úprava vousů" : "Beard Trim", path: "/#services" },
+             { name: "Skin Fade", path: "/#services" },
+           ]
+         },
+         {
+           title: lang === 'cs' ? "Speciální nabídka" : "Specials",
+           items: [
+             { name: "VIP Club", path: "/vip-club" },
+             { name: lang === 'cs' ? "Dárkové Vouchery" : "Vouchers", path: "/vouchery" },
+           ]
+         },
+         {
+           title: lang === 'cs' ? "Prohloubit zážitek" : "Enhance Experience",
+           items: [
+             { name: lang === 'cs' ? "Systém a návštěva" : "System & Visit", path: "/system-a-navsteva" },
+             { name: lang === 'cs' ? "Ceník a Rezervace" : "Prices & Booking", path: "/cenik" },
+           ]
+         }
+       ]
+     },
+     about: {
+       title: lang === 'cs' ? "O Nás" : "About Us",
+       path: "/pribeh",
+       groups: [
+         {
+           title: lang === 'cs' ? "Příběh" : "Story",
+           items: [
+             { name: lang === 'cs' ? "Jak to chodí" : "How it works", path: "/jak-to-chodi" },
+             { name: lang === 'cs' ? "Náš příběh" : "Our Story", path: "/zivotopisy" },
+             { name: lang === 'cs' ? "Speciální mise" : "Special Mission", path: "/barbergames" },
+           ]
+         },
+         {
+           title: lang === 'cs' ? "Kultura" : "Culture",
+           items: [
+             { name: lang === 'cs' ? "Náš tým (Rodina)" : "Our Team (Family)", path: "/rodina" },
+             { name: lang === 'cs' ? "Galerie" : "Gallery", path: "/galerie" },
+             { name: lang === 'cs' ? "Komunita" : "Community", path: "/komunita" },
+           ]
+         },
+         {
+           title: lang === 'cs' ? "Lokace" : "Location",
+           items: [
+             { name: lang === 'cs' ? "Kudy k nám" : "Find Us", path: "/#kontakt" },
+             { name: lang === 'cs' ? "Skrytá místa" : "Hidden Places", path: "/skryta-mista" },
+           ]
+         }
+       ]
+     },
+     career: {
+       title: lang === 'cs' ? "Kariéra & Rozvoj" : "Career & Growth",
+       path: "/kariera",
+       groups: [
+         {
+           title: lang === 'cs' ? "Spolupráce" : "Collaboration",
+           items: [
+             { name: lang === 'cs' ? "Volné pracovní pozice" : "Open Positions", path: "/kariera" },
+             { name: lang === 'cs' ? "Hledáme talenty" : "Talent Search", path: "/kariera" },
+           ]
+         }
+       ],
+       promo: {
+         title: "Chceš žít svůj vysněný život?",
+         description: "Flexibilita, svoboda a přesah. Ať už chceš pracovat v salonu, nebo tvořit od moře – s námi posouváš hranice nemožného. Učíme dovednosti a měníme mentalitu.",
+         cta: "Začni teď",
+         path: "/akademie",
+         image: "/obr/main-hero.png"
+       }
+     }
+   };
 
   useEffect(() => {
     const savedSound = localStorage.getItem("mmbarber_sound_enabled");
@@ -964,72 +1063,33 @@ export function Header() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden xl:flex items-center gap-8 font-sans text-[11px] tracking-[0.2em] uppercase text-smoke-white/70">
-
-            <Link 
-              href="/jak-to-chodi" 
-              onClick={(e) => {
-                trackEvent("nav_link_click", { label: "jak-to-chodi" });
-              }} 
-              className="hover:text-mafia-gold transition-colors duration-300"
-            >
-              {t.header.startMission}
-            </Link>
-            <Link 
-              href="/kariera" 
-              onClick={() => trackEvent("nav_link_click", { label: "kariera" })} 
-              className="hover:text-mafia-gold transition-colors duration-300"
-            >
-              {lang === 'cs' ? 'Pracovní pozice' : 'Jobs'}
-            </Link>
-            <Link href="/pribeh" onClick={() => trackEvent("nav_link_click", { label: "pribeh" })} className="hover:text-mafia-gold transition-colors duration-300">
-              {t.header.aboutUs}
-            </Link>
-
-            <Link 
-              href="/#services" 
-              onClick={(e) => {
-                trackEvent("nav_link_click", { label: "sluzby" });
-                if (pathname === "/") {
-                  e.preventDefault();
-                  document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
-                }
-              }} 
-              className="hover:text-mafia-gold transition-colors duration-300"
-            >
-              {t.header.services}
-            </Link>
-
-            <Link 
-              href="/cenik" 
-              onClick={() => trackEvent("nav_link_click", { label: "cenik" })} 
-              className="hover:text-mafia-gold transition-colors duration-300"
-            >
-              {t.header.priceList}
-            </Link>
-
-            <Link 
-              href="/#kontakt" 
-              onClick={(e) => {
-                trackEvent("nav_link_click", { label: "kontakt" });
-                if (pathname === "/") {
-                  e.preventDefault();
-                  document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth" });
-                }
-              }} 
-              className="hover:text-mafia-gold transition-colors duration-300"
-            >
-              {t.header.kudy_k_nam}
-            </Link>
-            <Link 
-              href="/specialni-mise" 
-              onClick={() => {
-                trackEvent("nav_link_click", { label: "designed_by_tm" });
-              }} 
-              className="hover:text-mafia-gold transition-colors duration-300"
-            >
-              {t.header.web || "WEB"}
-            </Link>
+        {/* Desktop Navigation */}
+        <nav 
+          className="hidden xl:flex items-center gap-8 font-sans text-[11px] tracking-[0.2em] uppercase text-smoke-white/70 h-full relative"
+          onMouseLeave={() => setHoveredCategory(null)}
+        >
+            {Object.entries(megaMenuData).map(([key, data]) => (
+              <div 
+                key={key} 
+                className="h-full flex items-center"
+                onMouseEnter={() => setHoveredCategory(key)}
+              >
+                <Link 
+                  href={data.path} 
+                  onClick={(e) => {
+                    trackEvent("nav_link_click", { label: key });
+                    setHoveredCategory(null);
+                    if (data.path.includes('#') && pathname === "/") {
+                      e.preventDefault();
+                      document.querySelector(data.path.replace('/', ''))?.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }} 
+                  className={`transition-colors duration-300 py-6 h-full flex items-center ${hoveredCategory === key ? 'text-mafia-gold' : 'hover:text-mafia-gold'}`}
+                >
+                  {data.title}
+                </Link>
+              </div>
+            ))}
 
             {/* VIP link removed per user request - access via 'VIP' keyword in search */}
             {visitCount >= 5 && (
@@ -1037,6 +1097,7 @@ export function Header() {
                 href="/vip-club" 
                 onClick={() => trackEvent("nav_link_click", { label: "vip-club-visiting" })} 
                 className="text-mafia-gold font-black transition-all duration-300 hover:scale-110 drop-shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.5)] ml-4 flex items-center gap-2"
+                onMouseEnter={() => setHoveredCategory(null)}
               >
                 <Sparkles size={16} className="animate-pulse" />
                 VIP CLUB
@@ -1064,7 +1125,7 @@ export function Header() {
                         aria-label={lang === 'cs' ? "Vyhledat" : "Search"}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder={t.header.searchPlaceholder || (lang === 'cs' ? "VYHLEDAT CÍL..." : "LOCATE TARGET...")}
+                        placeholder={t?.header?.searchPlaceholder || (lang === 'cs' ? "VYHLEDAT CÍL..." : "LOCATE TARGET...")}
                         className="w-full bg-mafia-black/90 border-2 border-mafia-gold/50 text-white text-[10px] font-mono px-4 py-2 outline-none placeholder:text-mafia-gold/20 focus:border-mafia-gold transition-all tracking-[0.2em] relative z-10"
                         onKeyDown={(e) => e.key === 'Escape' && setIsSearchOpen(false)}
                         autoComplete="off"
@@ -1148,6 +1209,79 @@ export function Header() {
             </span>
           </button>
         </nav>
+        
+        {/* Apple Style Mega Menu Dropdown */}
+        <AnimatePresence>
+          {hoveredCategory && !isMenuOpen && !isMobile && megaMenuData[hoveredCategory as keyof typeof megaMenuData] && (
+            <motion.div
+              initial={{ opacity: 0, y: -20, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: 'auto' }}
+              exit={{ opacity: 0, y: -10, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-[100%] left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-2xl border-b border-mafia-gold/20 overflow-hidden z-[29000] shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
+              onMouseEnter={() => setHoveredCategory(hoveredCategory)}
+              onMouseLeave={() => setHoveredCategory(null)}
+            >
+              <div className="max-w-7xl mx-auto px-12 py-12 flex justify-center gap-24">
+                {megaMenuData[hoveredCategory].groups.map((group, idx) => (
+                  <div key={idx} className="flex flex-col">
+                    <h3 className="text-mafia-gold/60 text-[10px] font-mono tracking-widest uppercase mb-6">
+                      {group.title}
+                    </h3>
+                    <ul className="flex flex-col gap-4">
+                      {group.items.map((item, itemIdx) => (
+                        <li key={itemIdx}>
+                          <Link
+                            href={item.path}
+                            className="text-smoke-white text-sm font-sans hover:text-mafia-gold transition-colors block whitespace-nowrap"
+                            onClick={(e) => {
+                              setHoveredCategory(null);
+                              if (item.path.includes('#') && pathname === "/") {
+                                e.preventDefault();
+                                document.querySelector(item.path.replace('/', ''))?.scrollIntoView({ behavior: "smooth" });
+                              }
+                            }}
+                          >
+                            {item.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                
+                {megaMenuData[hoveredCategory].promo && (
+                  <Link 
+                    href={megaMenuData[hoveredCategory].promo!.path} 
+                    onClick={() => setHoveredCategory(null)} 
+                    className="group relative w-[340px] rounded-xl overflow-hidden border border-mafia-gold/20 flex flex-col justify-end p-6 hover:border-mafia-gold/60 transition-all duration-500 hover:-translate-y-1 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+                  >
+                    <div className="absolute inset-0 z-0">
+                      <img 
+                        src={megaMenuData[hoveredCategory].promo!.image} 
+                        alt="Promo" 
+                        className="w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-mafia-black via-mafia-black/80 to-transparent" />
+                    </div>
+                    <div className="relative z-10 flex flex-col gap-3">
+                      <h4 className="text-smoke-white font-playfair font-bold text-2xl leading-tight group-hover:text-mafia-gold transition-colors">
+                        {megaMenuData[hoveredCategory].promo!.title}
+                      </h4>
+                      <p className="text-white/70 text-xs font-sans leading-relaxed">
+                        {megaMenuData[hoveredCategory].promo!.description}
+                      </p>
+                      <div className="mt-2 flex items-center gap-2 text-mafia-gold text-[11px] font-black uppercase tracking-widest">
+                        {megaMenuData[hoveredCategory].promo!.cta}
+                        <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </Link>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Mobile Navigation Overlay - Windows Mobile inspired tile menu */}
@@ -1221,7 +1355,7 @@ export function Header() {
                      <CreditCard size={28} className="text-white/60" />
                   </div>
                   <div className="flex flex-col items-start text-left">
-                     <span className="text-lg font-sans font-black text-smoke-white uppercase">{t.header.priceList}</span>
+                     <span className="text-lg font-sans font-black text-smoke-white uppercase">{t?.header?.priceList || 'Ceník'}</span>
                      <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{lang === 'cs' ? 'TARIF SLUŽEB' : 'SERVICE TARIFF'}</span>
                   </div>
                 </div>
@@ -1253,7 +1387,7 @@ export function Header() {
                       <div className="flex flex-col px-6 pb-4 gap-2">
                         <Link href="/jak-to-chodi" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                            <Target size={24} className="text-white/40" />
-                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.startMission}</span>
+                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.startMission || 'Jak to u nás chodí'}</span>
                         </Link>
                         <Link href="/kariera" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                            <Briefcase size={24} className="text-white/40" />
@@ -1261,15 +1395,15 @@ export function Header() {
                         </Link>
                         <Link href="/pribeh" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                            <Users size={24} className="text-white/40" />
-                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.aboutUs}</span>
+                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.aboutUs || 'O Nás'}</span>
                         </Link>
                         <Link href="/#services" onClick={(e) => { handleNavLinkClick(); if (pathname === "/") { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); } }} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                            <Briefcase size={24} className="text-white/40" />
-                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.services}</span>
+                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.services || 'Služby'}</span>
                         </Link>
                         <Link href="/#kontakt" onClick={(e) => { handleNavLinkClick(); if (pathname === "/") { e.preventDefault(); document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth" }); } }} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                            <MapPin size={24} className="text-white/40" />
-                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.kudy_k_nam}</span>
+                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.kudy_k_nam || 'Kudy k nám'}</span>
                         </Link>
                       </div>
                     </motion.div>
@@ -1303,7 +1437,7 @@ export function Header() {
                         <button onClick={() => { handleNavLinkClick(); router.push("/hodnoceni"); }} className="py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 border-white/10 hover:border-mafia-gold/30 text-left">
                            <Crown size={24} className="text-mafia-gold shrink-0" />
                            <div className="flex flex-col leading-tight">
-                              <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t.header.ratingAndNicknames || 'HODNOCENÍ ELITY'}</span>
+                              <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.ratingAndNicknames || 'HODNOCENÍ ELITY'}</span>
                               <span className="text-[10px] font-mono text-mafia-gold/50 uppercase mt-1">{lang === 'cs' ? 'KOMUNITNÍ HLASOVÁNÍ' : 'COMMUNITY VOTING'}</span>
                            </div>
                         </button>
@@ -1406,7 +1540,7 @@ export function Header() {
                 </button>
                 <button onClick={() => { window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass')); handleNavLinkClick(); }} className="bg-white/5 border border-white/10 p-5 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
                     <Compass size={24} className="text-mafia-gold animate-pulse" />
-                    <span className="text-[10px] font-sans font-black tracking-widest uppercase text-white">{t.header.navigate || 'NAVIGOVAT'}</span>
+                    <span className="text-[10px] font-sans font-black tracking-widest uppercase text-white">{t?.header?.navigate || 'NAVIGOVAT'}</span>
                 </button>
               </div>
             </div>

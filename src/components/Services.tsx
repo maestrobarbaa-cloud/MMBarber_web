@@ -46,6 +46,130 @@ export function Services() {
     setGraphicsTier(tier);
   }, []);
 
+  const [trackerScores, setTrackerScores] = useState<{[key: string]: number}>({});
+
+  useEffect(() => {
+    const handleTrackerUpdate = () => {
+      const scores: {[key: string]: number} = {};
+      const ids = ['services', 'dating', 'vouchers', 'gallery', 'members', 'housing', 'hidden', 'system', 'pece', 'community'];
+      ids.forEach(id => {
+        scores[id] = parseInt(localStorage.getItem(`mmbarber_service_${id}_clicks`) || '0', 10);
+      });
+      setTrackerScores(scores);
+    };
+    handleTrackerUpdate();
+    window.addEventListener('mmbarber-tracker-update', handleTrackerUpdate);
+    return () => window.removeEventListener('mmbarber-tracker-update', handleTrackerUpdate);
+  }, []);
+
+  const handleCardClick = (id: string, originalClick: () => void) => {
+    const key = `mmbarber_service_${id}_clicks`;
+    const current = parseInt(localStorage.getItem(key) || '0', 10);
+    localStorage.setItem(key, (current + 1).toString());
+    window.dispatchEvent(new Event('mmbarber-tracker-update'));
+    originalClick();
+  };
+
+  const mainCards = useMemo(() => {
+    const cards = [
+      {
+        id: 'services',
+        title: t?.services?.title || (lang === 'cs' ? 'SLUŽBY' : 'SERVICES'),
+        icon: <Target className="text-mafia-gold" size={48} />,
+        iconMobile: <Target className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" size={32} />,
+        description: lang === 'cs' ? 'CENÍK A REZERVACE' : 'PRICING & BOOKING',
+        onClick: () => { router.push('/cenik'); trackEvent("open_pricing_menu"); }
+      },
+      {
+        id: 'dating',
+        title: t?.header?.seznamka || (lang === 'cs' ? 'SEZNAMKA' : 'DATING'),
+        icon: <Heart size={48} className="text-mafia-gold" />,
+        iconMobile: <Heart size={32} className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" />,
+        description: lang === 'cs' ? 'NAŠI OPERATIVCI' : 'OUR OPERATIVES',
+        onClick: () => { router.push('/seznamka'); trackEvent("nav_seznamka_click"); }
+      }
+    ];
+    return cards.sort((a, b) => (trackerScores[a.id] || 0) - (trackerScores[b.id] || 0));
+  }, [lang, t, trackerScores, router]);
+
+  const otherCards = useMemo(() => {
+    const cards = [
+      { 
+        id: 'vouchers',
+        title: lang === 'cs' ? 'DÁRKOVÉ VOUCHERY' : 'GIFT VOUCHERS',
+        titleMobile: lang === 'cs' ? 'VOUCHERY' : 'VOUCHERS',
+        icon: <Ticket size={48} className="text-mafia-gold" />,
+        iconMobile: <Ticket size={32} className="text-mafia-gold" />,
+        description: lang === 'cs' ? 'DÁRKOVÉ BALENÍ S PEČETÍ / PLATNOST 1 ROK' : 'PREMIUM PACKAGING WITH SEAL / 1 YEAR VALIDITY',
+        onClick: () => { router.push('/vouchery'); trackEvent("open_vouchers_page"); }
+      },
+      { 
+        id: 'gallery',
+        title: lang === 'cs' ? 'GALERIE' : 'GALLERY',
+        titleMobile: lang === 'cs' ? 'GALERIE' : 'GALLERY',
+        icon: <Camera size={48} className="text-mafia-gold" />,
+        iconMobile: <Camera size={32} className="text-mafia-gold" />,
+        description: lang === 'cs' ? 'NAHLÉDNĚTE DO SVĚTA MMBARBER' : 'STEP INTO THE WORLD OF MMBARBER',
+        onClick: () => { router.push('/galerie'); trackEvent("open_gallery_page"); }
+      },
+      { 
+        id: 'members',
+        title: t?.rodina?.title || (lang === 'cs' ? 'RODINA' : 'FAMILY'),
+        titleMobile: t?.rodina?.list === 'Seznam' ? (lang === 'cs' ? 'RODINA' : 'FAMILY') : (lang === 'cs' ? 'RODINA' : 'FAMILY'),
+        icon: <Scissors size={48} className="text-mafia-gold" />,
+        iconMobile: <Scissors size={32} className="text-mafia-gold" />,
+        description: lang === 'cs' ? 'POZNEJTE NÁŠ TÝM' : 'MEET OUR TEAM',
+        onClick: () => { router.push('/rodina'); trackEvent("open_family_page"); }
+      },
+      { 
+        id: 'housing',
+        title: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : 'INTERESTING PEOPLE'),
+        titleMobile: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : 'INTERESTING'),
+        icon: <UserSquare2 size={48} className="text-mafia-gold" />,
+        iconMobile: <UserSquare2 size={32} className="text-mafia-gold" />,
+        description: lang === 'cs' ? 'PŘÍBĚHY MÍSTNÍCH' : 'LOCAL STORIES',
+        onClick: () => { router.push('/zajimavosti'); trackEvent("open_interesting_people_page"); }
+      },
+      { 
+        id: 'hidden',
+        title: t?.others?.hiddenPlaces?.title || (lang === 'cs' ? 'SKRYTÁ MÍSTA' : 'HIDDEN PLACES'),
+        titleMobile: lang === 'cs' ? 'SKRYTÁ' : 'HIDDEN',
+        icon: <Globe size={48} className="text-mafia-gold" />,
+        iconMobile: <Globe size={32} className="text-mafia-gold" />,
+        description: lang === 'cs' ? 'TAJEMNÉ KOUTY NAŠEHO MĚSTA' : 'DISCOVER HIDDEN URBEX SPOTS',
+        onClick: () => { router.push('/skryta-mista'); trackEvent("open_hidden_places_page"); }
+      },
+      { 
+        id: 'system',
+        title: t?.others?.systemVisit?.title || (lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : 'SYSTEM & VISIT'),
+        titleMobile: lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : 'SYSTEM & VISIT',
+        icon: <Info size={48} className="text-mafia-gold" />,
+        iconMobile: <Info size={32} className="text-mafia-gold" />,
+        description: t?.others?.systemVisit?.description,
+        onClick: () => { router.push('/system-a-navsteva'); trackEvent("open_system_visit_page"); }
+      },
+      { 
+        id: 'pece',
+        title: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : 'CARE'),
+        titleMobile: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : 'CARE'),
+        icon: <Sparkles size={48} className="text-mafia-gold" />,
+        iconMobile: <Sparkles size={32} className="text-mafia-gold" />,
+        description: t?.others?.pece?.description || (lang === 'cs' ? 'MAGAZÍN O PÉČI A KOSMETICE' : 'MAGAZINE ABOUT CARE & COSMETICS'),
+        onClick: () => { router.push('/pece'); trackEvent("open_care_magazine"); }
+      },
+      { 
+        id: 'community',
+        title: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : 'COMMUNITY'),
+        titleMobile: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : 'COMMUNITY'),
+        icon: <Users size={48} className="text-mafia-gold" />,
+        iconMobile: <Users size={32} className="text-mafia-gold" />,
+        description: t?.others?.community?.description || (lang === 'cs' ? 'PŘIDEJ SE K NÁM' : 'JOIN US'),
+        onClick: () => { router.push('/komunita'); trackEvent("open_community_page"); }
+      }
+    ];
+    return cards.sort((a, b) => (trackerScores[a.id] || 0) - (trackerScores[b.id] || 0));
+  }, [lang, t, trackerScores, router]);
+
   const playCardSound = () => {
     playSound("/sounds/card.mp3", 0.9);
   };
@@ -78,29 +202,14 @@ export function Services() {
 
         {/* DESKTOP FANNED VIEW FOR MAIN CARDS */}
         <div className={`hidden ${graphicsTier !== 'low' && graphicsTier !== 'lite' ? 'xl:flex' : ''} relative h-[550px] max-w-full mx-auto items-end justify-center overflow-visible pb-8`}>
-          {[
-            {
-              id: 'services',
-              title: t?.services?.title || (lang === 'cs' ? 'SLUŽBY' : 'SERVICES'),
-              icon: <Target className="text-mafia-gold" size={48} />,
-              description: lang === 'cs' ? 'CENÍK A REZERVACE' : 'PRICING & BOOKING',
-              onClick: () => { router.push('/cenik'); trackEvent("open_pricing_menu"); }
-            },
-            {
-              id: 'dating',
-              title: t?.header?.seznamka || (lang === 'cs' ? 'SEZNAMKA' : 'DATING'),
-              icon: <Heart size={48} className="text-mafia-gold" />,
-              description: lang === 'cs' ? 'NAŠI OPERATIVCI' : 'OUR OPERATIVES',
-              onClick: () => { router.push('/seznamka'); trackEvent("nav_seznamka_click"); }
-            }
-          ].map((card, idx, arr) => (
+          {mainCards.map((card, idx, arr) => (
             <MenuCard 
               key={card.id}
               variant="fanned"
               title={card.title}
               icon={card.icon}
               description={card.description}
-              onClick={card.onClick}
+              onClick={() => handleCardClick(card.id, card.onClick)}
               index={idx}
               total={arr.length}
               onHover={() => {
@@ -122,26 +231,19 @@ export function Services() {
 
         {/* MOBILE & LITE VIEW: Grid Layout FOR MAIN CARDS */}
         <div className={`${graphicsTier !== 'low' && graphicsTier !== 'lite' ? 'xl:hidden' : ''} grid grid-cols-2 lg:flex lg:flex-row items-center justify-center gap-3 lg:gap-16 max-w-4xl mx-auto mb-12`}>
-          <MenuCard 
-            variant="simple"
-            title={t?.services?.title || (lang === 'cs' ? 'SLUŽBY' : 'SERVICES')}
-            icon={<Target className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" size={32} />}
-            onClick={() => {
-              router.push('/cenik');
-              trackEvent("open_pricing_menu");
-            }}
-            onHover={playCardSound}
-          />
-          <MenuCard 
-            variant="simple"
-            title={t?.header?.seznamka || (lang === 'cs' ? 'SEZNAMKA' : 'DATING')}
-            icon={<Heart size={32} className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" />}
-            onClick={() => {
-              router.push('/seznamka');
-              trackEvent("nav_seznamka_click");
-            }}
-            onHover={playCardSound}
-          />
+          <AnimatePresence>
+            {mainCards.map(card => (
+              <motion.div layout transition={{ type: "spring", stiffness: 300, damping: 30 }} key={card.id}>
+                <MenuCard 
+                  variant="simple"
+                  title={card.title}
+                  icon={card.iconMobile}
+                  onClick={() => handleCardClick(card.id, card.onClick)}
+                  onHover={playCardSound}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
 
         <div className="text-center mt-40 mb-16 md:mb-24">
@@ -153,78 +255,19 @@ export function Services() {
 
         {/* DESKTOP FANNED VIEW */}
         <div className={`hidden ${graphicsTier !== 'low' && graphicsTier !== 'lite' ? 'xl:flex' : ''} relative h-[550px] max-w-full mx-auto items-end justify-center overflow-visible pb-8`}>
-          {[
-            { 
-              id: 'vouchers',
-              title: lang === 'cs' ? 'DÁRKOVÉ VOUCHERY' : 'GIFT VOUCHERS',
-              icon: <Ticket size={48} className="text-mafia-gold" />,
-              description: lang === 'cs' ? 'DÁRKOVÉ BALENÍ S PEČETÍ / PLATNOST 1 ROK' : 'PREMIUM PACKAGING WITH SEAL / 1 YEAR VALIDITY',
-              onClick: () => { router.push('/vouchery'); trackEvent("open_vouchers_page"); }
-            },
-            { 
-              id: 'gallery',
-              title: lang === 'cs' ? 'GALERIE' : 'GALLERY',
-              icon: <Camera size={48} className="text-mafia-gold" />,
-              description: lang === 'cs' ? 'NAHLÉDNĚTE DO SVĚTA MMBARBER' : 'STEP INTO THE WORLD OF MMBARBER',
-              onClick: () => { router.push('/galerie'); trackEvent("open_gallery_page"); }
-            },
-
-            { 
-              id: 'members',
-              title: t?.rodina?.title || (lang === 'cs' ? 'RODINA' : 'FAMILY'),
-              icon: <Scissors size={48} className="text-mafia-gold" />,
-              description: lang === 'cs' ? 'POZNEJTE NÁŠ TÝM' : 'MEET OUR TEAM',
-              onClick: () => { router.push('/rodina'); trackEvent("open_family_page"); }
-            },
-            { 
-              id: 'housing',
-              title: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : 'INTERESTING PEOPLE'),
-              icon: <UserSquare2 size={48} className="text-mafia-gold" />,
-              description: lang === 'cs' ? 'PŘÍBĚHY MÍSTNÍCH' : 'LOCAL STORIES',
-              onClick: () => { router.push('/zajimavosti'); trackEvent("open_interesting_people_page"); }
-            },
-            { 
-              id: 'hidden',
-              title: t?.others?.hiddenPlaces?.title || (lang === 'cs' ? 'SKRYTÁ MÍSTA' : 'HIDDEN PLACES'),
-              icon: <Globe size={48} className="text-mafia-gold" />,
-              description: lang === 'cs' ? 'TAJEMNÉ KOUTY NAŠEHO MĚSTA' : 'DISCOVER HIDDEN URBEX SPOTS',
-              onClick: () => { router.push('/skryta-mista'); trackEvent("open_hidden_places_page"); }
-            },
-            { 
-              id: 'system',
-              title: t?.others?.systemVisit?.title || (lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : 'SYSTEM & VISIT'),
-              icon: <Info size={48} className="text-mafia-gold" />,
-              description: t?.others?.systemVisit?.description,
-              onClick: () => { router.push('/system-a-navsteva'); trackEvent("open_system_visit_page"); }
-            },
-            { 
-              id: 'pece',
-              title: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : 'CARE'),
-              icon: <Sparkles size={48} className="text-mafia-gold" />,
-              description: t?.others?.pece?.description || (lang === 'cs' ? 'MAGAZÍN O PÉČI A KOSMETICE' : 'MAGAZINE ABOUT CARE & COSMETICS'),
-              onClick: () => { router.push('/pece'); trackEvent("open_care_magazine"); }
-            },
-            { 
-              id: 'community',
-              title: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : 'COMMUNITY'),
-              icon: <Users size={48} className="text-mafia-gold" />,
-              description: t?.others?.community?.description || (lang === 'cs' ? 'PŘIDEJ SE K NÁM' : 'JOIN US'),
-              onClick: () => { router.push('/komunita'); trackEvent("open_community_page"); }
-            }
-          ].map((card, idx, arr) => (
+          {otherCards.map((card, idx, arr) => (
             <MenuCard 
               key={card.id}
               variant="fanned"
               title={card.title}
               icon={card.icon}
               description={card.description}
-              onClick={card.onClick}
+              onClick={() => handleCardClick(card.id, card.onClick)}
               index={idx}
               total={arr.length}
               onHover={() => {
                 if (window.innerWidth >= 1024) {
                    setHoveredIndex(idx + 2); // offset index for hovered state so it doesn't conflict with main cards
-
                    playCardSound();
                 }
               }}
@@ -235,68 +278,20 @@ export function Services() {
           ))}
         </div>
 
-        {/* MOBILE OR LOW TIER GRID VIEW - Now using the same size and design as Services cards */}
+        {/* MOBILE OR LOW TIER GRID VIEW */}
         <div className={`flex ${graphicsTier !== 'low' && graphicsTier !== 'lite' ? 'xl:hidden' : ''} flex-wrap justify-center gap-3 md:gap-4 lg:gap-6 mb-10 w-full max-w-6xl mx-auto px-2`}>
-          {[
-            { 
-              id: 'vouchers',
-              title: lang === 'cs' ? 'VOUCHERY' : 'VOUCHERS',
-              icon: <Ticket size={32} className="text-mafia-gold" />,
-              onClick: () => { router.push('/vouchery'); trackEvent("open_vouchers_page"); }
-            },
-            { 
-              id: 'gallery',
-              title: lang === 'cs' ? 'GALERIE' : 'GALLERY',
-              icon: <Camera size={32} className="text-mafia-gold" />,
-              onClick: () => { router.push('/galerie'); trackEvent("open_gallery_page"); }
-            },
-
-            { 
-              id: 'members',
-              title: t?.rodina?.list === 'Seznam' ? (lang === 'cs' ? 'RODINA' : 'FAMILY') : (lang === 'cs' ? 'RODINA' : 'FAMILY'),
-              icon: <Scissors size={32} className="text-mafia-gold" />,
-              onClick: () => { router.push('/rodina'); trackEvent("open_family_page"); }
-            },
-            { 
-              id: 'housing',
-              title: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : 'INTERESTING'),
-              icon: <UserSquare2 size={32} className="text-mafia-gold" />,
-              onClick: () => { router.push('/zajimavosti'); trackEvent("open_interesting_people_page"); }
-            },
-            { 
-              id: 'hidden',
-              title: lang === 'cs' ? 'SKRYTÁ' : 'HIDDEN',
-              icon: <Globe size={32} className="text-mafia-gold" />,
-              onClick: () => { router.push('/skryta-mista'); trackEvent("open_hidden_places_page"); }
-            },
-            { 
-              id: 'system',
-              title: lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : 'SYSTEM & VISIT',
-              icon: <Info size={32} className="text-mafia-gold" />,
-              onClick: () => { router.push('/system-a-navsteva'); trackEvent("open_system_visit_page"); }
-            },
-            { 
-              id: 'pece',
-              title: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : 'CARE'),
-              icon: <Sparkles size={32} className="text-mafia-gold" />,
-              onClick: () => { router.push('/pece'); trackEvent("open_care_magazine"); }
-            },
-            { 
-              id: 'community',
-              title: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : 'COMMUNITY'),
-              icon: <Users size={32} className="text-mafia-gold" />,
-              onClick: () => { router.push('/komunita'); trackEvent("open_community_page"); }
-            }
-          ].map((card) => (
-             <div key={card.id} className="w-[calc(50%-0.375rem)] md:w-[220px] lg:w-[250px] flex-shrink-0">
-               <MenuCard 
-                 variant="simple"
-                 title={card.title}
-                 icon={card.icon}
-                 onClick={card.onClick}
-               />
-             </div>
-          ))}
+          <AnimatePresence>
+            {otherCards.map((card) => (
+               <motion.div layout transition={{ type: "spring", stiffness: 300, damping: 30 }} key={card.id} className="w-[calc(50%-0.375rem)] md:w-[220px] lg:w-[250px] flex-shrink-0">
+                 <MenuCard 
+                   variant="simple"
+                   title={card.titleMobile}
+                   icon={card.iconMobile}
+                   onClick={() => handleCardClick(card.id, card.onClick)}
+                 />
+               </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
 

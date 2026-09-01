@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  mmbarber-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:./dev.db
+    volumes:
+      - mmbarber_data:/app/prisma
+
+volumes:
+  mmbarber_data:

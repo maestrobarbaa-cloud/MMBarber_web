@@ -9,7 +9,8 @@ import {
   Facebook,
   Zap,
   Trophy,
-  X
+  X,
+  Eye
 } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 
@@ -236,6 +237,143 @@ const EasterEgg = () => {
   );
 };
 
+const ViewsGuessGame = ({ actualViews }: { actualViews: number | null }) => {
+  const [guess, setGuess] = React.useState("");
+  const [isRevealed, setIsRevealed] = React.useState(false);
+  const [isChecking, setIsChecking] = React.useState(false);
+  const [isInputOpen, setIsInputOpen] = React.useState(false);
+  const [hint, setHint] = React.useState<string | null>(null);
+  const [attempts, setAttempts] = React.useState(0);
+
+  if (actualViews === null) return null;
+
+  const handleGuess = () => {
+    if (!guess) return;
+    setIsChecking(true);
+    setAttempts(a => a + 1);
+    
+    setTimeout(() => {
+      setIsChecking(false);
+      const parsedGuess = parseInt(guess);
+      const diff = parsedGuess - actualViews;
+      const absDiff = Math.abs(diff);
+
+      trackEvent("views_guess", { guessed: parsedGuess, actual: actualViews, attempts });
+
+      if (absDiff <= 500) {
+        setIsRevealed(true);
+      } else if (diff < -5000) {
+        setHint("Zkus to znovu. Hrozně málo!");
+      } else if (diff > 5000) {
+        setHint("Zkus to znovu. Moc velký přestřel!");
+      } else if (diff >= -5000 && diff <= -1000) {
+        setHint("Zkus to znovu. Už se blížíš, přidej.");
+      } else if (diff >= 1000 && diff <= 5000) {
+        setHint("Zkus to znovu. Skoro, ale uber.");
+      } else if (diff > -1000 && diff < 0) {
+        setHint("Přihořívá! Ještě malinko přidej.");
+      } else if (diff > 0 && diff < 1000) {
+        setHint("Trošku přestřel! Přihořívá, uber.");
+      }
+    }, 600);
+  };
+
+  return (
+    <div className="flex flex-col items-center mt-2 w-full max-w-[280px]">
+      {!isRevealed ? (
+        <div className="flex flex-col items-center w-full">
+          {!isInputOpen ? (
+            <button 
+              onClick={() => setIsInputOpen(true)}
+              className="group relative flex flex-col items-center gap-2 cursor-pointer border-none bg-transparent"
+            >
+              <div className="w-12 h-12 rounded-full border border-mafia-gold/20 flex items-center justify-center transition-all duration-500 group-hover:border-mafia-gold group-hover:shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.3)]">
+                <Eye size={18} className="text-mafia-gold opacity-50 group-hover:opacity-100 group-hover:animate-pulse transition-opacity" />
+              </div>
+              <span className="text-mafia-gold/70 group-hover:text-mafia-gold font-mono text-[9px] uppercase tracking-[0.3em] font-bold transition-colors">
+                Uhádni zobrazení
+              </span>
+            </button>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }} 
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center gap-3 w-full border border-mafia-gold/20 bg-mafia-black/80 p-4 relative"
+            >
+              <button 
+                onClick={() => setIsInputOpen(false)}
+                className="absolute top-2 right-2 text-mafia-gold/50 hover:text-mafia-gold"
+              >
+                <X size={14} />
+              </button>
+              <span className="text-[9px] text-smoke-white/60 font-mono uppercase tracking-widest text-center mt-2">
+                Tipni si (v řádu tisíců):
+              </span>
+              <div className="flex flex-col gap-2 w-full">
+                <input 
+                  type="number" 
+                  value={guess}
+                  onChange={(e) => setGuess(e.target.value)}
+                  placeholder="Např. 30000"
+                  className="bg-black/50 border border-mafia-gold/30 focus:border-mafia-gold text-mafia-gold font-mono text-center text-sm px-4 py-2 outline-none w-full"
+                  disabled={isChecking}
+                />
+                <button 
+                  onClick={handleGuess}
+                  disabled={isChecking || !guess}
+                  className="w-full py-2 bg-mafia-gold text-mafia-black font-black hover:bg-white transition-colors disabled:opacity-50 text-[10px] tracking-widest uppercase"
+                >
+                  {isChecking ? 'Ověřuji...' : 'Tipnout'}
+                </button>
+              </div>
+              <AnimatePresence mode="wait">
+                {hint && (
+                  <motion.div 
+                    key={hint}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className={`text-[10px] font-mono text-center w-full px-2 py-1 ${
+                      hint.includes('Přihořívá') || hint.includes('přestřel') 
+                        ? 'text-mafia-gold font-bold' 
+                        : 'text-mafia-red'
+                    }`}
+                  >
+                    {hint}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </div>
+      ) : (
+        <motion.div 
+          initial={{ scale: 0.9, opacity: 0 }} 
+          animate={{ scale: 1, opacity: 1 }}
+          className="flex flex-col items-center w-full gap-2 p-5 border border-mafia-gold/40 bg-mafia-gold/5 shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.1)] relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.03)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-[shimmer_2s_infinite]"></div>
+          <Eye size={20} className="text-mafia-gold mb-1" />
+          <span className="text-[9px] text-smoke-white/60 font-mono uppercase tracking-widest text-center">
+            Celkový počet zobrazení
+          </span>
+          <span className="text-3xl font-heading font-black text-white tracking-widest drop-shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.5)]">
+            {actualViews.toLocaleString('cs-CZ')}
+          </span>
+          <div className="mt-3 text-center border-t border-mafia-gold/20 pt-3 w-full">
+            <span className="text-mafia-gold text-[10px] font-mono block">
+              Tvůj tip: {parseInt(guess).toLocaleString('cs-CZ')}
+            </span>
+            <div className="text-smoke-white/50 text-[9px] mt-1 font-mono">
+              Rozdíl: {Math.abs(actualViews - parseInt(guess)).toLocaleString('cs-CZ')}
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
 interface FooterLinkProps {
   href: string;
   children: React.ReactNode;
@@ -288,8 +426,16 @@ export function Footer() {
   const [showResponsibleModal, setShowResponsibleModal] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = React.useState(false);
+  const [views, setViews] = React.useState<number | null>(null);
 
   React.useEffect(() => {
+    fetch('/api/views', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.views) setViews(data.views);
+      })
+      .catch(err => console.error("Failed to fetch views", err));
+      
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -466,8 +612,9 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="mt-10 w-full flex flex-col items-center gap-8">
+          <div className="mt-10 w-full flex flex-col items-center gap-6">
             <EasterEgg />
+            <ViewsGuessGame actualViews={views} />
 
 
           </div>
@@ -618,7 +765,7 @@ export function Footer() {
             </p>
             
 
-            <div className="flex items-center gap-4 mt-4">
+            <div className="flex items-center gap-4 mt-4 flex-wrap justify-center">
               <span className="text-smoke-white/20 font-mono text-[9px] uppercase tracking-widest">© 2024–{new Date().getFullYear()} MMBARBER</span>
               <span className="text-mafia-red text-[9px] font-black tracking-[0.2em] px-2 py-0.5 border border-mafia-red/20">V 3.5.2</span>
             </div>
