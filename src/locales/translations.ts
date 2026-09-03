@@ -3068,4 +3068,139 @@ export const translations = {
       hiddenDump: "Wiener Stil, Imperialer Standard, Hradiště Elite, Champagner, Luxus, Tradition."
     }
   }
+,
+  zh: {
+    header: {
+      services: "服务 (Služby)",
+      gallery: "画廊 (Galerie)",
+      seznamka: "约会 (Seznamka)",
+      payment: "付款 (Platba)",
+      schedule: "日程 (Rozvrh)",
+      theCode: "信息 (Informace)",
+      more: "更多 (Více)",
+      career: "职业 (Kariéra)",
+      aboutUs: "关于我们 (O Nás)",
+      franchise: "特许经营 (FRANCHISE)",
+      startMission: "我们的运作方式 (JAK TO U NÁS CHODÍ)",
+      compass: "指南针 (KOMPAS)",
+      web: "网络 (WEB)",
+      priceList: "价格表 (Ceník)",
+      kudy_k_nam: "怎么走 (Kudy k nám)",
+      on: "开 (ZAPNUTO)",
+      off: "关 (VYPNUTO)",
+      tracking: "定位中 (SLEDUJI POLOHU)",
+      savingData: "节省数据 (ŠETŘÍ DATA)",
+      navigate: "导航 (NAVIGOVAT)",
+      searchPlaceholder: "正确提问。 (Ptej se právně.)",
+      reviews: "评论 (Recenze)",
+      ratingAndNicknames: "评分和昵称 (Hodnocení a přezdívky)",
+      nicknames: "昵称 (Přezdívky)"
+    },
+    hero: {
+      title: "理发艺术 (UMĚNÍ HOLIČSTVÍ)",
+      subtitle: "精准。风格。力量。 (PŘESNOST. STYL. SÍLA.)",
+      callToAction: "立即预订 (REZERVUJ HNED)",
+      scrollDown: "向下滚动 (SCROLLUJ DOLŮ)",
+      motto: "第一章：风格诞生的地方 (Příběh první: Kde se rodí styl)",
+      mottoes: [
+        "第一章：风格诞生的地方 (Příběh první: Kde se rodí styl)",
+        "第二章：关于忠诚 (Příběh druhý: O loajalitě)",
+        "第三章：诚实的手艺 (Příběh třetí: Poctivé řemeslo)"
+      ],
+      description: [
+        "一个为不需要向世界宣告自己风格的人准备的地方。",
+        "质量不言自明。",
+        "风格是买不到的。你必须去争取。",
+        "我们不在乎数量。我们希望你离开时像一个全新的人。",
+        "这不仅仅是一家理发店。这是我们邀请你进入的世界。"
+      ]
+    },
+    services: {
+      title: "我们的服务 (NAŠE SLUŽBY)",
+      haircut: "经典理发 (Klasický Střih)",
+      beard: "胡须修剪 (Úprava Vousů)",
+      combo: "理发 + 胡须 (Kombinace Střih + Vousy)",
+      premium: "高级服务 (Premium Služba)",
+      items: [
+        { time: "5 分钟 (5 m)", name: "快速修饰 (RYCHLÁ ÚPRAVA)", desc: "轮廓、细节或快速更新。 (Kontury, detaily...)", price: "100 Kč", priceValue: 100 },
+        { time: "10 分钟 (10 m)", name: "加急服务 (EXPRES SERVIS)", desc: "剃须、无需推子的修剪。 (Zaholení krku...)", price: "180 Kč", priceValue: 180 },
+        { time: "15 分钟 (15 m)", name: "快速渐变 (QUICK FADE)", desc: "寸头、简单的推子修剪。 (Buzzcut, jednoduchý střih...)", price: "250 Kč", priceValue: 250 },
+        { time: "20 分钟 (20 m)", name: "基本理发 (ZÁKLADNÍ STŘIH)", desc: "儿童理发或简单修饰。 (Dětské střihy...)", price: "320 Kč", priceValue: 320 },
+        { time: "30 分钟 (30 m)", name: "经典理发 (KLASIKA)", desc: "剪刀和推子的精准修剪。 (Precizní střih...)", price: "450 Kč", priceValue: 450 },
+        { time: "45 分钟 (45 m)", name: "全套护理 (KOMPLETNÍ PÉČE)", desc: "洗发、理发、剃须。 (Mytí, střih, zaholení...)", price: "650 Kč", priceValue: 650 },
+        { time: "1 小时 (1 h)", name: "高级组合 (PREMIUM KOMBO)", desc: "头发、胡须、洗发和完全放松。 (Vlasy, vousy, mytí...)", price: "1 000 Kč", priceValue: 1000 }
+      ],
+      addons: [
+        { id: "add1", name: "鼻毛脱毛 (Depilace nosu)", priceValue: 30, desc: "使用蜡快速除毛。 (Rychle a bezbolestně...)" },
+        { id: "add2", name: "耳毛脱毛 (Depilace uší)", priceValue: 30, desc: "耳部蜜蜡脱毛。 (Vosková epilace...)" },
+        { id: "add3", name: "热毛巾 (Hot Towel)", priceValue: 100, desc: "传统热敷。 (Tradiční napaření...)" },
+        { id: "add6", name: "洗发加按摩 (Mytí s masáží)", priceValue: 100, desc: "洗发及头部按摩。 (Mytí vlasů s masáží...)" },
+        { id: "add4", name: "胡须热敷 (Napařování vousů)", priceValue: 70, desc: "为精准剃须做准备。 (Příprava na holení...)" },
+        { id: "add5", name: "耳毛火疗 (Opalování uší)", priceValue: 20, desc: "传统的绒毛去除方法。 (Tradiční metoda...)" }
+      ]
+    },
+    operatives: {
+      title: "行业大师 (Mistři v oboru)",
+      subtitle: "一切都取决于人。今天您将形象托付给谁？ (Všechno stojí na lidech...)",
+      openFile: "打开个人资料 (Otevřít profil)",
+      bookBarber: "预约 (Rezervovat termín)",
+      barbers: {
+        tomas: {
+          name: "Tomáš (托马斯)",
+          role: "创始人 & 首席理发师 (Zakladatel & Hlavní barber)",
+          story: "相信细节就是力量的人。不走捷径。(Člověk, který věří...)",
+          schedule: "周二至周五 9:00–18:00 | 周六至周日 9:00–12:00 (Út–Pá 9:00–18:00)",
+          englishSpeaking: "English Speaking",
+          specializations: ["主要是男士发型", "也能做女士发型"]
+        },
+        nella: {
+          name: "Nella (内拉)",
+          role: "新秀 (Mladé ucho)",
+          motto: "驯服你的理发师 (Ochoč si svoji barberku)",
+          story: "团队的新鲜血液。(Čerstvá krev...)",
+          schedule: "灵活工作制 (Individuální režim práce.)",
+          specializations: ["染色", "烫发", "男士理发", "女士理发", "儿童"]
+        }
+      }
+    },
+    contact: {
+      title: "怎么走 (Kudy k nám)",
+      subtitle: "",
+      address: "商店地址 (Adresa shopu)",
+      connection: "联系方式 (Spojení)",
+      responsiblePerson: "负责人 (Odpovědná osoba)",
+      parking: "停车 (Parkování)",
+      parkingText1: "免费停车 (ZDARMA hned u nás...)",
+      parkingText2: "上午车位充足 (Dopoledne je tu místa víc než dost.)",
+      transit: "公共交通 (MHD)",
+      transitText1: "Rudy Kubíčka 站",
+      transitText2: "离门仅几步之遥 (je doslova pár kroků od dveří.)"
+    },
+    partners: {
+      title: "我们的伙伴 (Naši Kumpáni)",
+      subtitle: ""
+    },
+    theCode: {
+      title: "您应该知道的 (Co byste měli vědět)",
+      subtitle: "顺利进行的一些细节： (Pár drobností pro hladký průběh:)"
+    },
+    intro: {
+      welcome: "欢迎来到 MMBARBER (Vítejte v MMBARBER)",
+      parking: "免费停车 (PARKOVÁNÍ ZDARMA)",
+      parkingHint: "谁寻找，谁就能在 Mařatice 找到我们。 (kdo hledá, ten nás najde.)",
+      copyAddress: "复制地址 (KOPÍROVAT ADRESU)",
+      openMaps: "打开地图 (OTEVŘÍT MAPY)",
+      payment: "现金 / 二维码 (HOTOVOST / QR KÓD)",
+      acknowledge: "我明白了 (ROZUMÍM)",
+      acceptMission: "进入 (VSTOUPIT)"
+    },
+    holidayCountdown: {
+      holidays: {
+        statehoodDay: {
+          name: "捷克建国日 (Den české státnosti)",
+          desc: "自豪与风格 (Hrdost a styl.)"
+        }
+      }
+    }
+  }
 };

@@ -294,7 +294,7 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
 
 }
 
-export function generateMatchReport(user: ProfileData, partner: ProfileData, lang: 'cs' | 'en' = 'cs', forcedStrategy?: string): string[] {
+export function generateMatchReport(user: ProfileData, partner: ProfileData, lang: 'cs' | 'en' | 'zh' = 'cs', forcedStrategy?: string): string[] {
   const report: string[] = [];
   const strategy = forcedStrategy || user.matchStrategy || 'closest';
 

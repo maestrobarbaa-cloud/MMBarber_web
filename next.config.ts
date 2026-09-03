@@ -73,11 +73,6 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/pribeh',
-        destination: '/',
-        permanent: true,
-      },
-      {
         source: '/barbershop-zlin',
         destination: '/',
         permanent: true,

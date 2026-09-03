@@ -10,7 +10,7 @@ interface PointsExchangeModalProps {
   totalPoints: number;
   formData: ProfileData;
   setFormData: (data: ProfileData) => void;
-  lang: 'cs' | 'en';
+  lang: 'cs' | 'en' | 'zh';
 }
 
 export const PointsExchangeModal = ({ isOpen, onClose, totalPoints, formData, setFormData, lang }: PointsExchangeModalProps) => {

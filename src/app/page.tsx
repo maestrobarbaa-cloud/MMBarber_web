@@ -150,7 +150,9 @@ export default function Home() {
             <CinematicSequence737 />
             <Hero />
             
-            <div className="relative bg-transparent w-full">
+            <div className="relative bg-transparent w-full border-y border-mafia-gold/10 overflow-hidden">
+              <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-mafia-black to-transparent z-0 pointer-events-none"></div>
               {/* Core sections */}
               <div id="operativi" className="section-optimize" style={{ scrollMarginTop: '100px' }}>
                 <Profiles />

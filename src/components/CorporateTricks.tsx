@@ -9,7 +9,13 @@ import { useBarbers } from "@/contexts/BarberContext";
 const LOCAL_CITIES = [
   "Uherského Hradiště", "Starého Města", "Kunovic", "Uherského Brodu", "Zlína",
   "Napajedel", "Otrokovic", "Veselí nad Moravou", "Hluku", "Vlčnova",
-  "Ostrožské Nové Vsi", "Buchlovic", "Polešovic", "Babic"
+  "Ostrožské Nové Vsi", "Buchlovic", "Polešovic", "Babic",
+  "Uherského Ostrohu", "Bojkovic", "Brumova-Bylnice", "Valašských Klobouk", "Slavičína", 
+  "Luhačovic", "Kyjova", "Strážnice", "Bánova", "Bílovic", "Březolup", "Tupes", 
+  "Zlechova", "Nedakonic", "Jalubí", "Huštěnovic", "Traplic", "Velehradu", "Modré", 
+  "Kudlovic", "Spytihněvi", "Březnice", "Malenovic", "Nivnice", "Strání", "Korytné", 
+  "Boršic", "Prakšic", "Pašovic", "Hradčovic", "Slavkova", "Osvětiman", "Nedachlebic", 
+  "Mistřic", "Kněžpole", "Jarošova", "Mařatic", "Popovic", "Břestku", "Salaše", "Sušic"
 ];
 
 export function CorporateTricks() {
@@ -19,39 +25,61 @@ export function CorporateTricks() {
 
   // 1. Social Proof (Booking.com style Toast)
   useEffect(() => {
-    // Generate a random booking toast every 1 to 3 minutes
+    // Generate a random booking toast every few minutes
     const triggerToast = () => {
       const validBarbers = barbers?.filter(b => !b.missionFailed) || [];
       const activeBarbers = validBarbers.length > 0 ? validBarbers : [{ name: "Tomáš" }];
       const barber = activeBarbers[Math.floor(Math.random() * activeBarbers.length)].name;
       
+      // Pokusíme se načíst reálné město uživatele, pokud ho systém dříve zjistil podle IP
+      const realCity = localStorage.getItem("mmbarber_geo_city");
+      
       let city = LOCAL_CITIES[Math.floor(Math.random() * LOCAL_CITIES.length)];
       const rand = Math.random();
-      // Praha jen tak na vánoce (velmi vzácně - 2%), Brno sem tam (10%)
-      if (rand > 0.98) city = "Prahy";
-      else if (rand > 0.88) city = "Brna";
+      
+      // 30% šance, že použijeme reálné město uživatele pro maximální FOMO efekt
+      if (realCity && rand > 0.70) {
+        city = realCity;
+      } else if (rand > 0.98) {
+        city = "Prahy";
+      } else if (rand > 0.95) {
+        city = "Brna";
+      }
 
-      const messages = [
-        `Někdo z ${city} si právě prohlíží profil barbera ${barber}.`,
-        `Návštěvník z okolí ${city} právě zkoumá naše služby.`,
-        `Někdo z lokality blízko ${city} právě otevřel rezervační systém.`,
-        `Další zájemce ze směru od ${city} zvažuje audienci u barbera ${barber}.`
-      ];
+      const numPeople = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3
+      let messages = [];
+
+      if (numPeople > 1) {
+        messages = [
+          `Právě teď si ${numPeople} lidé z okolí ${city} prohlíží profil barbera ${barber}.`,
+          `Rezervační systém hlásí zvýšený zájem: ${numPeople} klienti z lokality ${city} hledají termín.`,
+          `Vidíme aktivitu: ${numPeople} lidé ze směru od ${city} právě otevřeli rezervační systém.`,
+          `Náš algoritmus detekoval ${numPeople} uživatele z ${city}, kteří právě tvoří rezervaci.`
+        ];
+      } else {
+        messages = [
+          `Někdo z okolí ${city} si právě prohlíží profil barbera ${barber}.`,
+          `Návštěvník z lokality ${city} zrovna zkoumá naše služby.`,
+          `Někdo ze směru od ${city} právě otevřel rezervační kalendář.`,
+          `Další zájemce z okolí ${city} zvažuje audienci u barbera ${barber}.`,
+          `Zaznamenán pohyb v kalendáři od klienta z ${city}.`
+        ];
+      }
+      
       const msg = messages[Math.floor(Math.random() * messages.length)];
 
       setToast({ message: msg, visible: true });
-      playSound("/sounds/notification.mp3", 0.5); // Ensure you have this sound or fallback to default
+      playSound("/sounds/notification.mp3", 0.3);
 
       setTimeout(() => {
         setToast((prev) => ({ ...prev, visible: false }));
-      }, 7000); // hide after 7 seconds
+      }, 8000);
 
-      // Schedule next toast
-      const nextDelay = Math.random() * (240000 - 90000) + 90000; // 1.5-4 mins
+      const nextDelay = Math.random() * (480000 - 120000) + 120000; 
       setTimeout(triggerToast, nextDelay);
     };
 
-    const initialDelay = Math.random() * (60000 - 30000) + 30000; // 30-60 secs for first
+    const initialDelay = Math.random() * (90000 - 45000) + 45000;
     const timer = setTimeout(triggerToast, initialDelay);
 
     return () => clearTimeout(timer);
@@ -87,7 +115,7 @@ export function CorporateTricks() {
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, x: 50, y: 50 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="fixed bottom-8 right-8 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 p-6 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.25)] max-w-md rounded-sm"
+            className="hidden md:block fixed bottom-8 right-8 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 p-6 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.25)] max-w-md rounded-sm"
           >
             <div className="flex items-center gap-4">
               <div className="p-3 bg-mafia-gold/10 rounded-full shrink-0">

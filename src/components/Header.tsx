@@ -8,6 +8,8 @@ import gsap from "gsap";
 import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, LayoutGrid, Menu, Volume2, VolumeX, Palette, Sparkles, Radio, Briefcase, CreditCard, MapPin, Monitor, Settings, Target, Handshake, Trophy, Star, Crown, Dices } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
+import { useHeaderSearch } from "@/hooks/useHeaderSearch";
+import { HeaderSearchBar } from "./HeaderSearchBar";
 import dynamic from "next/dynamic";
 const AboutMeModal = dynamic(() => import("./AboutMeModal").then(mod => mod.AboutMeModal), { ssr: false });
 const ThoughtsModal = dynamic(() => import("./ThoughtsModal").then(mod => mod.ThoughtsModal), { ssr: false });
@@ -16,17 +18,20 @@ const WebInfoModal = dynamic(() => import("./WebInfoModal").then(mod => mod.WebI
 const PerformanceModal = dynamic(() => import("./PerformanceModal").then(mod => mod.PerformanceModal), { ssr: false });
 const GraphicsSettingsModal = dynamic(() => import("./GraphicsSettingsModal").then(mod => mod.GraphicsSettingsModal), { ssr: false });
 import { type Language } from "../hooks/useTranslation";
+import { useUI } from "@/contexts/UIContext";
 import { trackEvent } from "../utils/analytics";
 import { playSound } from "../utils/audio";
 import { getUserRatingsData } from "@/utils/voting";
 import { GameFragment } from "./GameFragment";
 import { useGame } from "@/contexts/GameContext";
+import { getMegaMenuData } from "@/data/megaMenuData";
+import { DesktopMegaMenu } from "./DesktopMegaMenu";
+import { MobileMegaMenu } from "./MobileMegaMenu";
 
 export function Header() {
   const { mafiaRank } = useGame();
   const [clicks, setClicks] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeFolder, setActiveFolder] = useState<string | null>(null);
   const [activeMode, setActiveMode] = useState<string | null>(null);
 
   useEffect(() => {
@@ -83,9 +88,17 @@ export function Header() {
   const [isPerformanceOpen, setIsPerformanceOpen] = useState(false);
   const [isGraphicsOpen, setIsGraphicsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const settingsContainerRef = useRef<HTMLDivElement>(null);
-   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  
+  const searchProps = useHeaderSearch({
+    lang,
+    switchLanguage,
+    setIsAboutMeOpen,
+    setIsThoughtsOpen,
+    setIsVisionOpen,
+    setIsWebInfoOpen,
+    setIsPerformanceOpen
+  });
    const [isRadioPlaying, setIsRadioPlaying] = useState(false);
    const [isGameActive, setIsGameActive] = useState(false);
    const [userAccentColor, setUserAccentColor] = useState<string>("var(--color-mafia-gold)");
@@ -97,120 +110,14 @@ export function Header() {
    const [shouldFlashFamily, setShouldFlashFamily] = useState(false);
    const [shouldFlashRating, setShouldFlashRating] = useState(false);
    const [clientNickname, setClientNickname] = useState<string | null>(null);
-   const [isStealthMode, setIsStealthMode] = useState(false);
+   const { isSoundEnabled, setIsSoundEnabled, isStealthMode, setIsStealthMode } = useUI();
    const [geoCity, setGeoCity] = useState<string | null>(null);
    const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
-   type MegaMenuData = {
-     [key: string]: {
-       title: string;
-       path: string;
-       groups: {
-         title: string;
-         items: { name: string; path: string }[];
-       }[];
-       promo?: {
-         title: string;
-         description: string;
-         cta: string;
-         path: string;
-         image: string;
-       }
-     }
-   }
-
-   const megaMenuData: MegaMenuData = {
-     services: {
-       title: lang === 'cs' ? "Služby" : "Services",
-       path: "/#services",
-       groups: [
-         {
-           title: lang === 'cs' ? "Základní péče" : "Basic Care",
-           items: [
-             { name: lang === 'cs' ? "Pánský střih" : "Haircut", path: "/#services" },
-             { name: lang === 'cs' ? "Úprava vousů" : "Beard Trim", path: "/#services" },
-             { name: "Skin Fade", path: "/#services" },
-           ]
-         },
-         {
-           title: lang === 'cs' ? "Speciální nabídka" : "Specials",
-           items: [
-             { name: "VIP Club", path: "/vip-club" },
-             { name: lang === 'cs' ? "Dárkové Vouchery" : "Vouchers", path: "/vouchery" },
-           ]
-         },
-         {
-           title: lang === 'cs' ? "Prohloubit zážitek" : "Enhance Experience",
-           items: [
-             { name: lang === 'cs' ? "Systém a návštěva" : "System & Visit", path: "/system-a-navsteva" },
-             { name: lang === 'cs' ? "Ceník a Rezervace" : "Prices & Booking", path: "/cenik" },
-           ]
-         }
-       ]
-     },
-     about: {
-       title: lang === 'cs' ? "O Nás" : "About Us",
-       path: "/pribeh",
-       groups: [
-         {
-           title: lang === 'cs' ? "Příběh" : "Story",
-           items: [
-             { name: lang === 'cs' ? "Jak to chodí" : "How it works", path: "/jak-to-chodi" },
-             { name: lang === 'cs' ? "Náš příběh" : "Our Story", path: "/zivotopisy" },
-             { name: lang === 'cs' ? "Speciální mise" : "Special Mission", path: "/barbergames" },
-           ]
-         },
-         {
-           title: lang === 'cs' ? "Kultura" : "Culture",
-           items: [
-             { name: lang === 'cs' ? "Náš tým (Rodina)" : "Our Team (Family)", path: "/rodina" },
-             { name: lang === 'cs' ? "Galerie" : "Gallery", path: "/galerie" },
-             { name: lang === 'cs' ? "Komunita" : "Community", path: "/komunita" },
-           ]
-         },
-         {
-           title: lang === 'cs' ? "Lokace" : "Location",
-           items: [
-             { name: lang === 'cs' ? "Kudy k nám" : "Find Us", path: "/#kontakt" },
-             { name: lang === 'cs' ? "Skrytá místa" : "Hidden Places", path: "/skryta-mista" },
-           ]
-         }
-       ]
-     },
-     career: {
-       title: lang === 'cs' ? "Kariéra & Rozvoj" : "Career & Growth",
-       path: "/kariera",
-       groups: [
-         {
-           title: lang === 'cs' ? "Spolupráce" : "Collaboration",
-           items: [
-             { name: lang === 'cs' ? "Volné pracovní pozice" : "Open Positions", path: "/kariera" },
-             { name: lang === 'cs' ? "Hledáme talenty" : "Talent Search", path: "/kariera" },
-           ]
-         }
-       ],
-       promo: {
-         title: "Chceš žít svůj vysněný život?",
-         description: "Flexibilita, svoboda a přesah. Ať už chceš pracovat v salonu, nebo tvořit od moře – s námi posouváš hranice nemožného. Učíme dovednosti a měníme mentalitu.",
-         cta: "Začni teď",
-         path: "/akademie",
-         image: "/obr/main-hero.png"
-       }
-     }
-   };
+   const megaMenuData = getMegaMenuData(lang);
 
   useEffect(() => {
-    const savedSound = localStorage.getItem("mmbarber_sound_enabled");
-    // Default to DISABLED (false) on first visit
-    const initialSound = savedSound === "true";
-    setIsSoundEnabled(initialSound);
-    if (savedSound === null) {
-      localStorage.setItem("mmbarber_sound_enabled", "false");
-    }
-
-    setIsStealthMode(localStorage.getItem("mmbarber_stealth_mode") === "true");
-    const handleStealthUpdate = (e: Event) => setIsStealthMode((e as CustomEvent).detail);
-    window.addEventListener('mmbarber-stealth-update', handleStealthUpdate as any);
+    // UIContext now handles stealth mode persistence
     
     const savedCity = localStorage.getItem('mmbarber_geo_city');
     if (savedCity) setGeoCity(savedCity);
@@ -264,25 +171,18 @@ export function Header() {
       setIsGraphicsOpen(true);
     };
 
-    const handleSoundToggleRemote = () => {
-      const savedSound = localStorage.getItem("mmbarber_sound_enabled");
-      setIsSoundEnabled(savedSound === "true");
-    };
-
     readAccentColor();
     window.addEventListener("mmbarber-user-settings-update", readAccentColor);
     window.addEventListener("mmbarber-radio-update", handleRadioUpdate as EventListener);
     window.addEventListener("mmbarber-game-status-update", handleGameUpdate as EventListener);
     window.addEventListener("mmbarber-graphics-open", handleGraphicsOpen);
-    window.addEventListener("mmbarber-sound-update-remote", handleSoundToggleRemote);
 
     return () => {
       window.removeEventListener("mmbarber-user-settings-update", readAccentColor);
       window.removeEventListener("mmbarber-radio-update", handleRadioUpdate as EventListener);
       window.removeEventListener("mmbarber-game-status-update", handleGameUpdate as EventListener);
       window.removeEventListener("mmbarber-graphics-open", handleGraphicsOpen);
-      window.removeEventListener("mmbarber-sound-update-remote", handleSoundToggleRemote);
-      window.removeEventListener('mmbarber-stealth-update', handleStealthUpdate as any);
+      // stealth update event listener removed
       window.removeEventListener('mmbarber-geofence', handleGeofence as any);
     };
   }, []);
@@ -458,380 +358,6 @@ export function Header() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const searchIndex = [
-    { keywords: ["barber", "tomáš", "tomas", "specialista", "specialist", "rezerv", "book", "kadeřník", "holič", "operativci"], id: "operativi" },
-    { keywords: ["informace", "info", "pravidla", "platba", "cash", "parkování", "parking", "vlasy", "hair", "gel", "umyt", "wash", "svátky", "holiday", "calend", "kalendář"], id: "holidays" },
-    { keywords: ["kontakt", "contact", "adresa", "address", "telefon", "phone", "mapa", "map", "najít", "find"], id: "kontakt" },
-    { keywords: ["ceník", "cena", "price", "services", "služby", "střih", "cut", "vous", "beard", "kombo", "combo", "exclusive", "premium", "fade", "basic"], id: "services" },
-    { keywords: ["galerie", "gallery", "foto", "photo", "prostředí", "environment", "salon", "interior"], id: "galerie-prostredi" },
-    { keywords: ["hodnocení", "hodnoceni", "přezdívky", "prezdivky", "rating", "nicknames", "elita", "elite"], id: "hodnoceni_page" },
-  ];
-
-  const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
-  const [isConsoleOpen, setIsConsoleOpen] = useState(false);
-
-  const runCommand = (cmd: string) => {
-    const query = cmd.toLowerCase().trim();
-    setIsConsoleOpen(true);
-    setConsoleOutput(lang === 'cs' ? ["Inicializace..."] : ["Initializing..."]);
-    
-    setTimeout(() => {
-      setConsoleOutput(prev => [...prev, lang === 'cs' ? `Vyhledávání v databázi pro: ${query}` : `Searching database for: ${query}`]);
-      
-      setTimeout(() => {
-        if (query === "intro" || query === "menu" || query === "welcome") {
-          localStorage.removeItem("mmbarber_visited");
-          const csIntroReset = ["RESETOVÁNÍ PŘÍZNAKU NÁVŠTĚVY...", "SPUŠTĚNÍ UVÍTACÍHO MENU...", "ČEKEJTE."];
-          const enIntroReset = ["RESETTING VISIT FLAG...", "LAUNCHING WELCOME MENU...", "STAND BY."];
-          setConsoleOutput(prev => [...prev, ...(lang === 'cs' ? csIntroReset : enIntroReset)]);
-          playSound("/sounds/success.mp3", 0.5);
-          setTimeout(() => {
-            setIsConsoleOpen(false);
-            window.dispatchEvent(new Event("mmbarber-trigger-intro"));
-          }, 1800);
-        } else if (query === "odkrýt" || query === "odkryt" || query === "reveal") {
-          setConsoleOutput(prev => [...prev, lang === 'cs' ? "PŘÍSTUP POVOLEN." : "ACCESS GRANTED.", lang === 'cs' ? "Dešifrování operativních souborů..." : "Decrypting operative files...", lang === 'cs' ? "Profily odhaleny." : "Profiles revealed."]);
-          window.dispatchEvent(new Event("mmbarber-reveal-barbers"));
-          playSound("/sounds/success.mp3", 0.5);
-          setTimeout(() => setIsConsoleOpen(false), 3000);
-        } else if (query === "admin") {
-          setConsoleOutput(prev => [...prev, lang === 'cs' ? "DETEKOVÁNO ADMINISTRÁTORSKÉ OPRÁVNĚNÍ." : "ADMIN CLEARANCE DETECTED.", lang === 'cs' ? "Přesměrování na centrální velitelství..." : "Redirecting to central command...", lang === 'cs' ? "Čekejte." : "Stand by."]);
-          playSound("/sounds/success.mp3", 0.5);
-          setTimeout(() => {
-            setIsConsoleOpen(false);
-            router.push("/admin");
-          }, 2000);
-        } else {
-          setConsoleOutput(prev => [...prev, lang === 'cs' ? "CHYBA: Příkaz nenalezen nebo přístup odepřen." : "ERROR: Command not found or Access Denied."]);
-          playSound("/sounds/vrong.mp3", 0.5);
-          setTimeout(() => setIsConsoleOpen(false), 2000);
-        }
-      }, 800);
-    }, 500);
-  };
-
-  const searchTimestamps = useRef<number[]>([]);
-  const [isInterrogationActive, setIsInterrogationActive] = useState(false);
-  const [mouseDelta, setMouseDelta] = useState(0);
-  const lastMouseX = useRef(0);
-
-  const handleInterrogationMouseMove = (e: React.MouseEvent) => {
-    if (!isInterrogationActive) return;
-    if (lastMouseX.current !== 0) {
-      const delta = Math.abs(e.clientX - lastMouseX.current);
-      setMouseDelta(prev => {
-        const next = prev + delta;
-        if (next > 2000) {
-          setIsInterrogationActive(false);
-          searchTimestamps.current = [];
-          return 0;
-        }
-        return next;
-      });
-    }
-    lastMouseX.current = e.clientX;
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const now = Date.now();
-    searchTimestamps.current = searchTimestamps.current.filter(t => now - t < 10000);
-    searchTimestamps.current.push(now);
-
-    if (searchTimestamps.current.length > 5) {
-      setIsInterrogationActive(true);
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      return;
-    }
-
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return;
-
-    if (query === "intro" || query === "menu" || query === "welcome" || query === "odkrýt" || query === "odkryt" || query === "reveal" || query === "admin") {
-      runCommand(query);
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      return;
-    }
-
-    if (query === "valentýn" || query === "valentyn") {
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      router.push("/valentynmatch");
-      return;
-    }
-
-    if (query === "stealth") {
-      const current = localStorage.getItem("mmbarber_stealth_mode") === "true";
-      localStorage.setItem("mmbarber_stealth_mode", String(!current));
-      window.dispatchEvent(new CustomEvent("mmbarber-stealth-update", { detail: !current }));
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      return;
-    }
-
-    if (query === "dev") {
-      const current = localStorage.getItem("mmbarber_dev_mode") === "true";
-      localStorage.setItem("mmbarber_dev_mode", String(!current));
-      window.dispatchEvent(new Event("mmbarber-dev-mode-toggle"));
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_dev", { enabled: !current });
-      return;
-    }
-
-    if (query === "země" || query === "zeme" || query === "earth") {
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      window.dispatchEvent(new Event('mmbarber-earth-protocol'));
-      trackEvent("header_search_earth_protocol");
-      return;
-    }
-
-    if (query === "galaxy" || query === "noc" || query === "night") {
-      localStorage.setItem("mmbarber_atmosphere_override", "galaxy");
-      window.dispatchEvent(new Event("mmbarber-atmosphere-update"));
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      trackEvent("header_search_atmosphere_galaxy");
-      return;
-    }
-
-    if (query === "classic" || query === "den" || query === "day" || query === "standard") {
-      localStorage.setItem("mmbarber_atmosphere_override", "classic");
-      window.dispatchEvent(new Event("mmbarber-atmosphere-update"));
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      trackEvent("header_search_atmosphere_classic");
-      return;
-    }
-
-    if (query === "auto" || query === "reset") {
-      localStorage.removeItem("mmbarber_atmosphere_override");
-      window.dispatchEvent(new Event("mmbarber-atmosphere-update"));
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      return;
-    }
-
-    if (query === "vip") {
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      router.push("/vip-club");
-      trackEvent("header_search_vip_access");
-      return;
-    }
-
-    if (query === "mák" || query === "maky" || query === "poppy" || query === "veteran") {
-      localStorage.setItem("mmbarber_dev_visual_mode", "poppy");
-      window.dispatchEvent(new Event("mmbarber-force-theme-eval"));
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      return;
-    }
-
-    if (query === "normal") {
-      localStorage.setItem("mmbarber_dev_visual_mode", "normal");
-      window.dispatchEvent(new Event("mmbarber-force-theme-eval"));
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      return;
-    }
-
-    if (query === "737") {
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      window.dispatchEvent(new Event('mmbarber-trigger-737'));
-      trackEvent("header_search_737_sequence");
-      return;
-    }
-
-    if (query === "cheat" || query === "cheaty" || query === "kódy" || query === "kody") {
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      router.push("/the-cheats");
-      trackEvent("header_search_cheat_sheet");
-      return;
-    }
-
-    if (query === "normal") {
-      const modeClasses = Array.from(document.documentElement.classList).filter(c => c.startsWith('mode-'));
-      modeClasses.forEach(c => document.documentElement.classList.remove(c));
-      localStorage.setItem("mmbarber_dev_visual_mode", 'normal');
-      window.dispatchEvent(new Event('mmbarber-mode-update'));
-
-      const themeClasses = Array.from(document.documentElement.classList).filter(c => c.startsWith('theme-'));
-      themeClasses.forEach(c => document.documentElement.classList.remove(c));
-      localStorage.removeItem("mmbarber_dev_accent_color");
-      window.dispatchEvent(new Event('mmbarber-accent-update'));
-
-      document.documentElement.classList.remove("noir-mode");
-      localStorage.setItem("mmbarber_noir_mode", "false");
-      localStorage.setItem("mmbarber_game_enabled", "false");
-      localStorage.setItem("mmbarber_dev_theme_override", 'default');
-      switchLanguage('cs');
-      
-      window.dispatchEvent(new Event('mmbarber-game-update'));
-      window.dispatchEvent(new Event('mmbarber-theme-update'));
-      window.dispatchEvent(new Event('mmbarber-dev-mode-toggle'));
-
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_reset_all");
-      return;
-    }
-
-    if (query === "omne" || query === "autor" || query === "micka") {
-      setIsAboutMeOpen(true);
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_about_me");
-      return;
-    }
-
-    if (query === "myslenky" || query === "filozofie" || query === "pravda") {
-      setIsThoughtsOpen(true);
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_thoughts");
-      return;
-    }
-
-    if (query === "vize" || query === "budoucnost" || query === "sny") {
-      setIsVisionOpen(true);
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_vision");
-      return;
-    }
-
-    if (query === "o webu" || query === "owebu" || query === "o-webu" || query === "web") {
-      setIsWebInfoOpen(true);
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_web_info");
-      return;
-    }
-
-    if (query === "výkon" || query === "vykon" || query === "performance" || query === "stats" || query === "diagnostika") {
-      setIsPerformanceOpen(true);
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_performance");
-      return;
-    }
-
-    if (query === "boss") {
-      switchLanguage('boss');
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_boss_mode");
-      return;
-    }
-
-    if (query === "falco" || query === "pes" || query === "dog") {
-      switchLanguage('falco');
-      
-      const classes = Array.from(document.documentElement.classList).filter(c => c.startsWith('mode-'));
-      classes.forEach(c => document.documentElement.classList.remove(c));
-      document.documentElement.classList.add('mode-falco');
-      localStorage.setItem("mmbarber_dev_visual_mode", "falco");
-      window.dispatchEvent(new Event('mmbarber-mode-update'));
-
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_falco_mode");
-      return;
-    }
-
-    if (query === "radio") {
-      const current = localStorage.getItem("mmbarber_radio_forced") === "true";
-      localStorage.setItem("mmbarber_radio_forced", String(!current));
-      window.dispatchEvent(new Event('mmbarber-radio-force-update'));
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      trackEvent("header_search_radio_toggle", { enabled: !current });
-      return;
-    }
-
-    if (query === "hry" || query === "games") {
-      const current = localStorage.getItem("mmbarber_game_forced") === "true";
-      localStorage.setItem("mmbarber_game_forced", String(!current));
-      window.dispatchEvent(new Event('mmbarber-game-force-update'));
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      trackEvent("header_search_game_force");
-      return;
-    }
-
-    if (query === "legacy" || query === "812" || query === "founder") {
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      const classes = Array.from(document.documentElement.classList).filter(c => c.startsWith('mode-'));
-      classes.forEach(c => document.documentElement.classList.remove(c));
-      document.documentElement.classList.add('mode-legacy');
-      localStorage.setItem("mmbarber_dev_visual_mode", "legacy");
-      window.dispatchEvent(new Event('mmbarber-mode-update'));
-      trackEvent("header_search_legacy_mode");
-      return;
-    }
-
-    if (["matrix", "crt", "pixel", "chaos", "valentine", "halloween", "christmas", "newyear", "czech", "secret", "tajne", "tajně", "patrik", "stpatricks", "patrick", "friday13", "friday15", "witches", "carodejnice", "victory", "vitezstvi", "vítězství"].includes(query)) {
-      const themeClasses = Array.from(document.documentElement.classList).filter(c => c.startsWith('mode-'));
-      themeClasses.forEach(c => document.documentElement.classList.remove(c));
-      
-      let mode = query;
-      if (query === 'pixel') mode = 'pixelate';
-      if (query === 'tajne' || query === 'tajně') mode = 'secret';
-      if (['patrik', 'stpatricks', 'patrick'].includes(query)) mode = 'st-patricks';
-      if (query === 'friday15') mode = 'friday13';
-      if (query === 'carodejnice') mode = 'witches';
-      if (query === 'vitezstvi' || query === 'vítězství') mode = 'victory';
-
-      document.documentElement.classList.add(`mode-${mode}`);
-      localStorage.setItem("mmbarber_dev_visual_mode", mode);
-      
-      window.dispatchEvent(new Event('mmbarber-mode-update'));
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_visual_mode", { mode });
-      return;
-    }
-
-    const match = searchIndex.find(item =>
-      item.keywords.some(kw => query.includes(kw) || kw.includes(query))
-    );
-
-    if (match) {
-      if (match.id === "services") {
-        router.push("/cenik");
-        trackEvent("header_search", { query, matched: "cenik_page" });
-      } else if (match.id === "hodnoceni_page") {
-        router.push("/hodnoceni");
-        trackEvent("header_search", { query, matched: "hodnoceni_page" });
-      } else {
-        const el = document.getElementById(match.id);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-          trackEvent("header_search", { query, matched: match.id });
-        }
-      }
-    } else {
-      playSound("/sounds/vrong.mp3", 0.5);
-    }
-    setSearchQuery("");
-    setIsSearchOpen(false);
-  };
-
-  const toggleSearch = () => {
-    setIsSearchOpen(prev => {
-      if (!prev) setTimeout(() => searchInputRef.current?.focus(), 100);
-      return !prev;
-    });
-  };
-
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -989,7 +515,7 @@ export function Header() {
       <header
         className={`fixed w-full left-0 z-[30000] px-4 md:px-12 flex items-center justify-between xl:justify-center xl:gap-16 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pt-[env(safe-area-inset-top,0px)] h-[calc(5.5rem+env(safe-area-inset-top,0px))] gpu-accelerate 
           ${geoCity && pathname === '/' && localStorage.getItem('mmbarber_geo_city_dismissed') !== 'true' ? 'top-8' : 'top-0'}
-          ${isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black/80 backdrop-blur-xl border-b border-white/5' : `bg-transparent border-b border-transparent ${isMenuOpen ? 'bg-mafia-black' : ''}`} 
+          ${hoveredCategory ? 'bg-mafia-black border-b border-white/5' : (isScrolled || pathname !== '/' || isMobile ? 'bg-mafia-black/80 backdrop-blur-xl border-b border-white/5' : `bg-transparent border-b border-transparent ${isMenuOpen ? 'bg-mafia-black' : ''}`)} 
           ${(isIntroActive && pathname === "/") 
             ? "xl:opacity-0 xl:-translate-y-[calc(100%+2rem)] xl:pointer-events-none opacity-100 translate-y-0" 
             : (!isVisible && !isMenuOpen && !isMobile) 
@@ -1106,75 +632,7 @@ export function Header() {
 
           {/* Advanced Game-style Search Bar & Action Icons */}
           <div className="relative flex items-center h-full gap-2 ml-4">
-            <form onSubmit={handleSearch} className="flex items-center gap-2">
-              <AnimatePresence>
-                {isSearchOpen && (
-                  <motion.div 
-                    initial={{ width: 0, opacity: 0, x: 20 }}
-                    animate={{ width: 220, opacity: 1, x: 0 }}
-                    exit={{ width: 0, opacity: 0, x: 20 }}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="overflow-hidden relative"
-                  >
-                    {/* Search Field with Shimmer & Scanlines */}
-                    <div className="relative">
-                      <input
-                        ref={searchInputRef}
-                        id="header-search-desktop"
-                        type="text"
-                        aria-label={lang === 'cs' ? "Vyhledat" : "Search"}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder={t?.header?.searchPlaceholder || (lang === 'cs' ? "VYHLEDAT CÍL..." : "LOCATE TARGET...")}
-                        className="w-full bg-mafia-black/90 border-2 border-mafia-gold/50 text-white text-[10px] font-mono px-4 py-2 outline-none placeholder:text-mafia-gold/20 focus:border-mafia-gold transition-all tracking-[0.2em] relative z-10"
-                        onKeyDown={(e) => e.key === 'Escape' && setIsSearchOpen(false)}
-                        autoComplete="off"
-                      />
-                      {/* Animated Scanline Overlay */}
-                      <div className="absolute inset-0 pointer-events-none z-20 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.1)_0px,rgba(0,0,0,0.1)_1px,transparent_1px,transparent_2px)] opacity-30"></div>
-                      <motion.div 
-                        animate={{ top: ['0%', '100%', '0%'] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                        className="absolute left-0 right-0 h-[1px] bg-mafia-gold/30 shadow-[0_0_10px_var(--color-mafia-gold-glow)] z-30 opacity-50"
-                      />
-                      {searchQuery.length > 1 && (
-                        <div className="absolute top-full left-0 w-full bg-mafia-black border border-mafia-gold/30 z-[40000] mt-1 shadow-lg">
-                           {["valentyn", "halloween", "xmas", "blackfriday", "summer", "newyear", "earth", "galaxy", "night", "classic", "day", "dev", "intro", "menu", "reveal"]
-                              .filter(c => c.includes(searchQuery.toLowerCase().trim()))
-                              .map(suggestion => (
-                                <button
-                                  key={suggestion}
-                                  type="button"
-                                  onClick={() => { setSearchQuery(suggestion); setTimeout(() => handleSearch({ preventDefault: () => {} } as any), 50); }}
-                                  className="w-full text-left px-4 py-2 font-mono text-[10px] text-mafia-gold/70 hover:text-mafia-gold hover:bg-mafia-gold/10 tracking-widest uppercase border-b border-white/5 last:border-0"
-                                >
-                                  {suggestion}
-                                </button>
-                           ))}
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              
-              {isSearchOpen && (
-                <button 
-                  type="submit" 
-                  className="text-mafia-gold hover:scale-110 transition-transform p-1 animate-pulse"
-                >
-                  <Search size={18} />
-                </button>
-              )}
-            </form>
-            
-            <button
-              onClick={toggleSearch}
-              className={`p-2 transition-all duration-300 rounded-full hover:bg-white/5 group relative ${isSearchOpen ? 'scale-110' : 'hover:scale-110'}`}
-              aria-label={lang === 'cs' ? "Vyhledat" : "Search"}
-            >
-              <Search size={20} className="relative z-10 transition-transform duration-300 group-hover:scale-110" style={{ color: 'var(--user-accent-color)', filter: `drop-shadow(0 0 8px var(--user-glow-color))` }} />
-            </button>
+            <HeaderSearchBar lang={lang} t={t} {...searchProps} />
 
             {clientNickname && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.03] border border-mafia-gold/25 rounded-sm shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.1)]">
@@ -1211,344 +669,31 @@ export function Header() {
         </nav>
         
         {/* Apple Style Mega Menu Dropdown */}
-        <AnimatePresence>
-          {hoveredCategory && !isMenuOpen && !isMobile && megaMenuData[hoveredCategory as keyof typeof megaMenuData] && (
-            <motion.div
-              initial={{ opacity: 0, y: -20, height: 0 }}
-              animate={{ opacity: 1, y: 0, height: 'auto' }}
-              exit={{ opacity: 0, y: -10, height: 0 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[100%] left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-2xl border-b border-mafia-gold/20 overflow-hidden z-[29000] shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
-              onMouseEnter={() => setHoveredCategory(hoveredCategory)}
-              onMouseLeave={() => setHoveredCategory(null)}
-            >
-              <div className="max-w-7xl mx-auto px-12 py-12 flex justify-center gap-24">
-                {megaMenuData[hoveredCategory].groups.map((group, idx) => (
-                  <div key={idx} className="flex flex-col">
-                    <h3 className="text-mafia-gold/60 text-[10px] font-mono tracking-widest uppercase mb-6">
-                      {group.title}
-                    </h3>
-                    <ul className="flex flex-col gap-4">
-                      {group.items.map((item, itemIdx) => (
-                        <li key={itemIdx}>
-                          <Link
-                            href={item.path}
-                            className="text-smoke-white text-sm font-sans hover:text-mafia-gold transition-colors block whitespace-nowrap"
-                            onClick={(e) => {
-                              setHoveredCategory(null);
-                              if (item.path.includes('#') && pathname === "/") {
-                                e.preventDefault();
-                                document.querySelector(item.path.replace('/', ''))?.scrollIntoView({ behavior: "smooth" });
-                              }
-                            }}
-                          >
-                            {item.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-                
-                {megaMenuData[hoveredCategory].promo && (
-                  <Link 
-                    href={megaMenuData[hoveredCategory].promo!.path} 
-                    onClick={() => setHoveredCategory(null)} 
-                    className="group relative w-[340px] rounded-xl overflow-hidden border border-mafia-gold/20 flex flex-col justify-end p-6 hover:border-mafia-gold/60 transition-all duration-500 hover:-translate-y-1 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
-                  >
-                    <div className="absolute inset-0 z-0">
-                      <img 
-                        src={megaMenuData[hoveredCategory].promo!.image} 
-                        alt="Promo" 
-                        className="w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-mafia-black via-mafia-black/80 to-transparent" />
-                    </div>
-                    <div className="relative z-10 flex flex-col gap-3">
-                      <h4 className="text-smoke-white font-playfair font-bold text-2xl leading-tight group-hover:text-mafia-gold transition-colors">
-                        {megaMenuData[hoveredCategory].promo!.title}
-                      </h4>
-                      <p className="text-white/70 text-xs font-sans leading-relaxed">
-                        {megaMenuData[hoveredCategory].promo!.description}
-                      </p>
-                      <div className="mt-2 flex items-center gap-2 text-mafia-gold text-[11px] font-black uppercase tracking-widest">
-                        {megaMenuData[hoveredCategory].promo!.cta}
-                        <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </Link>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <DesktopMegaMenu 
+          lang={lang} 
+          hoveredCategory={hoveredCategory} 
+          setHoveredCategory={setHoveredCategory} 
+          isMenuOpen={isMenuOpen}
+          isMobile={isMobile}
+          pathname={pathname}
+        />
       </header>
 
-      {/* Mobile Navigation Overlay - Windows Mobile inspired tile menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 h-[100dvh] bg-mafia-black z-[20000] overflow-y-auto touch-pan-y px-4 py-4 pb-24 overscroll-contain"
-          >
-            <div className="flex items-center justify-between mb-8 overflow-hidden shrink-0">
-               <div className="flex items-center">
-                  <Image src="/logo.png" alt="MM" width={40} height={32} className="w-10 h-8 object-contain" />
-                  <span className="text-xl font-heading font-black text-mafia-gold tracking-widest ml-2">MMBARBER</span>
-               </div>
-               {/* Close button removed here because the main header button now stays on top */}
-            </div>
-
-            {/* Search Bar in Mobile Menu */}
-            <div className="mb-6 px-2">
-              <form onSubmit={handleSearch} className="relative group">
-                <input
-                  id="header-search-mobile"
-                  type="text"
-                  aria-label={lang === 'cs' ? "Vyhledat" : "Search"}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={lang === 'cs' ? "ZADEJTE CÍL..." : "SEARCH TARGET..."}
-                  className="w-full bg-white/5 border-2 border-mafia-gold/30 noir-mode:border-mafia-silver/30 theme-blood:border-mafia-blood/30 text-white text-base font-mono px-6 py-4 outline-none focus:border-mafia-gold noir-mode:focus:border-mafia-silver theme-blood:focus:border-mafia-blood transition-all tracking-[0.2em] uppercase"
-                />
-                <div className="absolute top-0 right-0 h-full flex items-center pr-6 pointer-events-none">
-                  <Search size={20} className="text-mafia-gold/40 noir-mode:text-mafia-silver/40 theme-blood:text-mafia-blood/40" />
-                </div>
-              </form>
-            </div>
-
-            {/* List Menu Layout - Folder Based */}
-            <div className="flex flex-col gap-3 mb-8 pb-10">
-
-              {/* 👥 RODINA (Primary CTA) */}
-              <button 
-                onClick={() => {
-                  markFamilyOpened();
-                  handleNavLinkClick();
-                  router.push("/rodina");
-                }}
-                className={`bg-white/5 border px-6 py-6 flex items-center justify-between active:scale-95 transition-all duration-500 ${shouldFlashFamily ? 'border-mafia-gold bg-mafia-gold/5 animate-pulse shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.2)]' : 'border-mafia-gold/50'}`}
-              >
-                <div className="flex items-center gap-5">
-                  <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors duration-500 ${shouldFlashFamily ? 'border-mafia-gold bg-mafia-gold/20' : 'border-mafia-gold/20 bg-mafia-gold/10'}`}>
-                    <Users size={28} className={shouldFlashFamily ? 'text-mafia-gold' : 'text-mafia-gold'} />
-                  </div>
-                  <div className="flex flex-col items-start text-left">
-                    <span className="text-xl font-sans font-black text-mafia-gold uppercase tracking-widest">{lang === 'cs' ? 'RODINA' : 'FAMILY'}</span>
-                    <span className="text-[10px] font-mono text-mafia-gold/60 uppercase">{lang === 'cs' ? 'STAŇ SE ČLENEM' : 'BECOME A MEMBER'}</span>
-                  </div>
-                </div>
-                <ChevronRight size={20} className="text-mafia-gold" />
-              </button>
-
-              {/* 💰 CENÍK */}
-              <Link 
-                href="/cenik" 
-                onClick={handleNavLinkClick} 
-                className="bg-white/5 border border-white/10 px-6 py-5 flex items-center justify-between active:scale-95 transition-all duration-500 hover:border-mafia-gold/50"
-              >
-                <div className="flex items-center gap-5">
-                  <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center">
-                     <CreditCard size={28} className="text-white/60" />
-                  </div>
-                  <div className="flex flex-col items-start text-left">
-                     <span className="text-lg font-sans font-black text-smoke-white uppercase">{t?.header?.priceList || 'Ceník'}</span>
-                     <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{lang === 'cs' ? 'TARIF SLUŽEB' : 'SERVICE TARIFF'}</span>
-                  </div>
-                </div>
-                <ChevronRight size={20} className="text-white/20" />
-              </Link>
-
-              {/* FOLDER: 🏠 HLAVNÍ */}
-              <div className={`border transition-all duration-300 ${activeFolder === 'main' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5'}`}>
-                <button 
-                  onClick={() => setActiveFolder(activeFolder === 'main' ? null : 'main')}
-                  className="w-full px-6 py-5 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-4">
-                    <LayoutGrid size={24} className={activeFolder === 'main' ? 'text-mafia-gold' : 'text-white/40'} />
-                    <span className={`font-sans font-black uppercase tracking-widest ${activeFolder === 'main' ? 'text-mafia-gold' : 'text-smoke-white'}`}>
-                      {lang === 'cs' ? 'HLAVNÍ MENU' : 'MAIN MENU'}
-                    </span>
-                  </div>
-                  <ChevronDown size={20} className={`transition-transform duration-300 ${activeFolder === 'main' ? 'rotate-180 text-mafia-gold' : 'text-white/20'}`} />
-                </button>
-                <AnimatePresence>
-                  {activeFolder === 'main' && (
-                    <motion.div 
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="flex flex-col px-6 pb-4 gap-2">
-                        <Link href="/jak-to-chodi" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
-                           <Target size={24} className="text-white/40" />
-                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.startMission || 'Jak to u nás chodí'}</span>
-                        </Link>
-                        <Link href="/kariera" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
-                           <Briefcase size={24} className="text-white/40" />
-                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'Pracovní pozice' : 'Jobs'}</span>
-                        </Link>
-                        <Link href="/pribeh" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
-                           <Users size={24} className="text-white/40" />
-                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.aboutUs || 'O Nás'}</span>
-                        </Link>
-                        <Link href="/#services" onClick={(e) => { handleNavLinkClick(); if (pathname === "/") { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); } }} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
-                           <Briefcase size={24} className="text-white/40" />
-                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.services || 'Služby'}</span>
-                        </Link>
-                        <Link href="/#kontakt" onClick={(e) => { handleNavLinkClick(); if (pathname === "/") { e.preventDefault(); document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth" }); } }} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
-                           <MapPin size={24} className="text-white/40" />
-                           <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.kudy_k_nam || 'Kudy k nám'}</span>
-                        </Link>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* FOLDER: 🎮 HRY */}
-              <div className={`border transition-all duration-300 ${activeFolder === 'games' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5'}`}>
-                <button 
-                  onClick={() => setActiveFolder(activeFolder === 'games' ? null : 'games')}
-                  className="w-full px-6 py-5 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-4">
-                    <Target size={24} className={activeFolder === 'games' ? 'text-mafia-gold' : 'text-white/40'} />
-                    <span className={`font-sans font-black uppercase tracking-widest ${activeFolder === 'games' ? 'text-mafia-gold' : 'text-smoke-white'}`}>
-                      {lang === 'cs' ? 'HRY & ELITA' : 'GAMES & ELITE'}
-                    </span>
-                  </div>
-                  <ChevronDown size={20} className={`transition-transform duration-300 ${activeFolder === 'games' ? 'rotate-180 text-mafia-gold' : 'text-white/20'}`} />
-                </button>
-                <AnimatePresence>
-                  {activeFolder === 'games' && (
-                    <motion.div 
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="flex flex-col px-6 pb-4 gap-2">
-                        <button onClick={() => { handleNavLinkClick(); router.push("/hodnoceni"); }} className="py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 border-white/10 hover:border-mafia-gold/30 text-left">
-                           <Crown size={24} className="text-mafia-gold shrink-0" />
-                           <div className="flex flex-col leading-tight">
-                              <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.ratingAndNicknames || 'HODNOCENÍ ELITY'}</span>
-                              <span className="text-[10px] font-mono text-mafia-gold/50 uppercase mt-1">{lang === 'cs' ? 'KOMUNITNÍ HLASOVÁNÍ' : 'COMMUNITY VOTING'}</span>
-                           </div>
-                        </button>
-                        <button onClick={() => { markShootingOpened(); setIsMenuOpen(false); window.dispatchEvent(new Event('mmbarber-elita-game-open')); }} className={`py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 text-left ${shouldFlashShooting ? 'border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.2)]' : 'border-white/10 hover:border-mafia-gold/30'}`}>
-                           <Trophy size={24} className="text-mafia-red shrink-0" />
-                           <div className="flex flex-col leading-tight">
-                              <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'ELITNÍ STŘELBA' : 'ELITE SHOOTING'}</span>
-                              <span className="text-[10px] font-mono text-mafia-red/70 uppercase mt-1">{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
-                           </div>
-                        </button>
-                        <button onClick={() => { setIsMenuOpen(false); window.dispatchEvent(new Event('mmbarber-slot-machine-open')); }} className="py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 border-white/10 hover:border-mafia-gold/30 text-left">
-                           <Dices size={24} className="text-mafia-gold shrink-0" />
-                           <div className="flex flex-col leading-tight">
-                              <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'HAZARDNÍ AUTOMAT' : 'SLOT MACHINE'}</span>
-                              <span className="text-[10px] font-mono text-mafia-gold/50 uppercase mt-1">{lang === 'cs' ? 'KASINO & VÝHRA' : 'CASINO & WIN'}</span>
-                           </div>
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* FOLDER: ⚙️ NASTAVENÍ */}
-              <div className={`border transition-all duration-300 ${activeFolder === 'settings' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5'}`}>
-                <button 
-                  onClick={() => setActiveFolder(activeFolder === 'settings' ? null : 'settings')}
-                  className="w-full px-6 py-5 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-4">
-                    <Settings size={24} className={activeFolder === 'settings' ? 'text-mafia-gold' : 'text-white/40'} />
-                    <span className={`font-sans font-black uppercase tracking-widest ${activeFolder === 'settings' ? 'text-mafia-gold' : 'text-smoke-white'}`}>
-                      {lang === 'cs' ? 'NASTAVENÍ' : 'SETTINGS'}
-                    </span>
-                  </div>
-                  <ChevronDown size={20} className={`transition-transform duration-300 ${activeFolder === 'settings' ? 'rotate-180 text-mafia-gold' : 'text-white/20'}`} />
-                </button>
-                <AnimatePresence>
-                  {activeFolder === 'settings' && (
-                    <motion.div 
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="flex flex-col px-6 pb-4 gap-2">
-                        <button onClick={() => { const newState = !isStealthMode; localStorage.setItem("mmbarber_stealth_mode", String(newState)); window.dispatchEvent(new CustomEvent('mmbarber-stealth-update', { detail: newState })); }} className="py-5 px-6 border border-white/10 flex items-center justify-between active:scale-95 transition-all bg-black/20">
-                          <div className="flex items-center gap-4">
-                            <Radio size={24} className={isStealthMode ? 'text-[#0f0]' : 'text-white/40'} />
-                            <span className={`text-sm md:text-base font-sans font-bold uppercase ${isStealthMode ? 'text-[#0f0]' : 'text-smoke-white'}`}>{lang === 'cs' ? 'STEALTH MÓD' : 'STEALTH MODE'}</span>
-                          </div>
-                          <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isStealthMode ? 'bg-[#0f0]' : 'bg-white/10'}`}>
-                             <motion.div animate={{ x: isStealthMode ? 22 : 3 }} className="w-3.5 h-3.5 rounded-full bg-black shadow-sm" />
-                          </div>
-                        </button>
-                        <button onClick={() => { const newState = !isMobileEffectsEnabled; localStorage.setItem("mmbarber_mobile_effects_enabled", String(newState)); window.dispatchEvent(new CustomEvent('mmbarber-mobile-effects-update', { detail: newState })); }} className="py-5 px-6 border border-white/10 flex items-center justify-between active:scale-95 transition-all bg-black/20">
-                          <div className="flex items-center gap-4">
-                            <Sparkles size={24} className={isMobileEffectsEnabled ? 'text-mafia-gold' : 'text-white/40'} />
-                            <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'EFEKTY' : 'EFFECTS'}</span>
-                          </div>
-                          <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isMobileEffectsEnabled ? 'bg-mafia-gold' : 'bg-white/10'}`}>
-                             <motion.div animate={{ x: isMobileEffectsEnabled ? 22 : 3 }} className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" />
-                          </div>
-                        </button>
-                        <button onClick={() => toggleSound()} className="py-5 px-6 border border-white/10 flex items-center justify-between active:scale-95 transition-all bg-black/20">
-                          <div className="flex items-center gap-4">
-                            {isSoundEnabled ? <Volume2 size={24} className="text-mafia-gold" /> : <VolumeX size={24} className="text-white/40" />}
-                            <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'ZVUK' : 'SOUND'}</span>
-                          </div>
-                          <div className={`w-10 h-5 rounded-full relative transition-colors duration-500 flex items-center ${isSoundEnabled ? 'bg-mafia-gold' : 'bg-white/10'}`}>
-                             <motion.div animate={{ x: isSoundEnabled ? 22 : 3 }} className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" />
-                          </div>
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* VIP CLUB TILE (Conditional) */}
-              {visitCount >= 5 && (
-                <Link 
-                  href="/vip-club" 
-                  onClick={handleNavLinkClick} 
-                  className="bg-mafia-gold/10 noir-mode:bg-mafia-silver/10 theme-blood:bg-mafia-blood/10 border border-mafia-gold/50 px-6 py-5 flex items-center justify-between active:scale-95 transition-transform"
-                >
-                  <div className="flex items-center gap-4">
-                    <Sparkles size={24} className="text-mafia-gold animate-pulse" />
-                    <span className="text-lg font-sans font-black text-mafia-gold uppercase">VIP CLUB</span>
-                  </div>
-                  <ChevronRight size={20} className="text-mafia-gold" />
-                </Link>
-              )}
-
-              {/* QUICK CALL & MAP TILES (Side by side for these two) */}
-              <div className="grid grid-cols-2 gap-3 mt-2">
-                <button onClick={() => { window.location.href = "tel:+420577544073"; handleNavLinkClick(); }} className="bg-white/5 border border-white/10 p-5 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
-                   <Phone size={24} className="text-mafia-gold" />
-                   <span className="text-[10px] font-sans font-black tracking-widest uppercase text-white">{t.specialProjects?.callUs || 'ZAVOLAT'}</span>
-                </button>
-                <button onClick={() => { window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass')); handleNavLinkClick(); }} className="bg-white/5 border border-white/10 p-5 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
-                    <Compass size={24} className="text-mafia-gold animate-pulse" />
-                    <span className="text-[10px] font-sans font-black tracking-widest uppercase text-white">{t?.header?.navigate || 'NAVIGOVAT'}</span>
-                </button>
-              </div>
-            </div>
-
-
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Mobile Navigation Overlay */}
+      <MobileMegaMenu
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
+        lang={lang}
+        t={t}
+        searchQuery={searchProps.searchQuery}
+        setSearchQuery={searchProps.setSearchQuery}
+        handleSearch={searchProps.handleSearch}
+        shouldFlashFamily={shouldFlashFamily}
+        markFamilyOpened={markFamilyOpened}
+        shouldFlashShooting={shouldFlashShooting}
+        markShootingOpened={markShootingOpened}
+        visitCount={visitCount}
+      />
 
 
       <AboutMeModal isOpen={isAboutMeOpen} onClose={() => setIsAboutMeOpen(false)} />
@@ -1557,63 +702,7 @@ export function Header() {
       <WebInfoModal isOpen={isWebInfoOpen} onClose={() => setIsWebInfoOpen(false)} />
       <PerformanceModal isOpen={isPerformanceOpen} onClose={() => setIsPerformanceOpen(false)} />
       <GraphicsSettingsModal isOpen={isGraphicsOpen} onClose={() => setIsGraphicsOpen(false)} />
-      {/* Console Overlay */}
-      <AnimatePresence>
-        {isConsoleOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed bottom-10 left-10 z-[100] w-[350px] bg-black/90 border border-mafia-gold/30 p-6 font-mono text-[10px] text-mafia-gold shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-xl rounded-sm"
-          >
-            <div className="flex items-center gap-2 mb-4 border-b border-mafia-gold/10 pb-2">
-              <div className="w-2 h-2 rounded-full bg-mafia-gold animate-pulse" />
-              <span className="uppercase tracking-[0.2em] font-bold">MM SYSTEM CONSOLE</span>
-            </div>
-            <div className="space-y-1">
-              {consoleOutput.map((line, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -5 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex items-start gap-2"
-                >
-                  <span className="opacity-40">{">"}</span>
-                  <span className="tracking-widest">{line}</span>
-                </motion.div>
-              ))}
-              <motion.div 
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
-                className="w-1.5 h-3 bg-mafia-gold ml-4 inline-block align-middle"
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {isInterrogationActive && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[99999] bg-black flex flex-col items-center justify-center cursor-crosshair"
-            onMouseMove={handleInterrogationMouseMove}
-          >
-            <div className="absolute inset-0 bg-red-900/20 blur-[100px] pointer-events-none" />
-            <div className="w-20 h-20 border border-red-500/50 rounded-full flex items-center justify-center mb-6 animate-pulse">
-               <Target size={32} className="text-red-500" />
-            </div>
-            <h1 className="text-4xl text-red-500 font-black uppercase tracking-widest mb-4">VÝSLECH</h1>
-            <p className="text-red-400 font-mono text-center max-w-md border border-red-500/20 bg-red-900/10 p-4 rounded">
-              Příliš mnoho dotazů. Nejsi ty od policajtů? Hýbni myší zleva doprava a dokaž svou nevinu.
-            </p>
-            <div className="mt-8 w-64 h-2 bg-red-900/30 rounded-full overflow-hidden">
-               <div className="h-full bg-red-500 transition-all duration-100" style={{ width: `${Math.min(100, (mouseDelta / 2000) * 100)}%` }} />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <GraphicsSettingsModal isOpen={isGraphicsOpen} onClose={() => setIsGraphicsOpen(false)} />
     </>
   );
 }

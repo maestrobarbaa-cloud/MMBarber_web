@@ -104,7 +104,7 @@ const EasterEgg = () => {
             setShowShow(true);
             trackEvent("click_easter_egg_v3");
           }}
-          className="group relative flex flex-col items-center gap-3 cursor-pointer border-none bg-transparent"
+          className="hidden md:flex group relative flex-col items-center gap-3 cursor-pointer border-none bg-transparent"
         >
           <div className={`w-16 h-16 rounded-full border border-mafia-gold/40 flex items-center justify-center transition-all duration-500 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:border-mafia-gold group-hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)]' : ''}`}>
             <Zap size={24} className={`text-mafia-gold ${(!isMobile || isMobileEffectsEnabled) ? 'group-hover:animate-pulse' : ''}`} />
@@ -766,7 +766,12 @@ export function Footer() {
             
 
             <div className="flex items-center gap-4 mt-4 flex-wrap justify-center">
-              <span className="text-smoke-white/20 font-mono text-[9px] uppercase tracking-widest">© 2024–{new Date().getFullYear()} MMBARBER</span>
+              <span 
+                className="text-smoke-white/20 font-mono text-[9px] uppercase tracking-widest cursor-help hover:text-smoke-white/40 transition-colors"
+                title={lang === 'cs' ? "Začátek vývoje a založení: 1. 4. 2024" : "Founded and development started: April 1, 2024"}
+              >
+                © 2024–{new Date().getFullYear()} MMBARBER
+              </span>
               <span className="text-mafia-red text-[9px] font-black tracking-[0.2em] px-2 py-0.5 border border-mafia-red/20">V 3.5.2</span>
             </div>
           </div>

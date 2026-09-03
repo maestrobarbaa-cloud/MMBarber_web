@@ -35,7 +35,7 @@ export function ClientActivityTracker() {
   if (!notification) return null;
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-mafia-gold text-black px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-2xl animate-bounce">
+    <div className="hidden md:block fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-mafia-gold text-black px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs shadow-2xl animate-bounce">
       🎁 {notification}
     </div>
   );

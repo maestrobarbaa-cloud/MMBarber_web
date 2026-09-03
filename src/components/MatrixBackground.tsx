@@ -13,7 +13,7 @@ export function MatrixBackground() {
 
     checkActive();
     window.addEventListener("mmbarber-mode-update", checkActive);
-
+    
     // Initial check for server-side hydration delay
     const timer = setTimeout(checkActive, 100);
 
@@ -33,7 +33,9 @@ export function MatrixBackground() {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    const columns = Math.floor(width / 20);
+    const fontSize = 14;
+    const columnSpacing = 35; // Větší rozestup pro méně sloupců
+    const columns = Math.floor(width / columnSpacing);
     const drops: number[] = [];
 
     for (let i = 0; i < columns; i++) {
@@ -43,40 +45,41 @@ export function MatrixBackground() {
     const chars = "MMBARBER0101シハミヒニリサテトボポウエ".split("");
 
     let animationFrameId: number;
-    let accentColor = "#00ff41";
-
-    const updateColor = () => {
-        const rootStyle = getComputedStyle(document.documentElement);
-        accentColor = rootStyle.getPropertyValue('--color-mafia-gold').trim() || "#00ff41";
-    };
-    updateColor();
+    const accentColor = "#00ff41";
 
     const draw = () => {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, width, height);
 
-      ctx.fillStyle = accentColor;
-      ctx.font = "bold 20pt monospace";
+      ctx.font = `bold ${fontSize}pt monospace`;
 
       for (let i = 0; i < drops.length; i++) {
         const text = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(text, i * 20, drops[i] * 20);
 
-        if (drops[i] * 20 > height && Math.random() > 0.975) {
+        ctx.fillStyle = accentColor;
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = accentColor;
+        ctx.fillText(text, i * columnSpacing, drops[i] * fontSize);
+        
+        ctx.shadowBlur = 0;
+
+        if (drops[i] * fontSize > height && Math.random() > 0.975) {
           drops[i] = 0;
         }
 
         drops[i]++;
       }
-      animationFrameId = requestAnimationFrame(draw);
+      
+      // Zpomaleni animace (cca 20 fps misto 60 fps)
+      animationFrameId = setTimeout(() => requestAnimationFrame(draw), 50) as any;
     };
 
-    animationFrameId = requestAnimationFrame(draw);
+    draw();
 
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-      const newCols = Math.floor(width / 20);
+      const newCols = Math.floor(width / columnSpacing);
       if (newCols > drops.length) {
         for (let i = drops.length; i < newCols; i++) drops[i] = 1;
       }
@@ -85,12 +88,13 @@ export function MatrixBackground() {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      clearTimeout(animationFrameId);
       window.removeEventListener("resize", handleResize);
     };
   }, [isActive]);
 
   if (!isActive) return null;
+  if (typeof window !== 'undefined' && window.innerWidth < 1024) return null;
 
   return (
     <canvas

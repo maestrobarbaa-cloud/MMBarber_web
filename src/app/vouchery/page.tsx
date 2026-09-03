@@ -43,6 +43,21 @@ export default function VouchersPage() {
       return;
     }
 
+    // Vytvoření mailto odkazu
+    const subject = lang === 'cs' 
+      ? `Objednávka voucheru - ${formData.name}` 
+      : `Voucher Order - ${formData.name}`;
+      
+    const deliveryText = formData.delivery === 'electronic' 
+      ? (lang === 'cs' ? 'Elektronicky (e-mailem)' : 'Electronic (email)')
+      : (lang === 'cs' ? 'Osobně na salonu' : 'In person at the salon');
+
+    const body = lang === 'cs'
+      ? `Dobrý den,\n\nmám zájem o dárkový poukaz s následujícími údaji:\n\nJméno: ${formData.name}\nE-mail: ${formData.email}\nTelefon: ${formData.phone}\nHodnota voucheru: ${formData.amount} Kč\nZpůsob dodání: ${deliveryText}\n\nZpráva:\n${formData.message}\n\nDěkuji,\n${formData.name}`
+      : `Hello,\n\nI would like to order a gift voucher with the following details:\n\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nVoucher Value: ${formData.amount} CZK\nDelivery: ${deliveryText}\n\nMessage:\n${formData.message}\n\nThank you,\n${formData.name}`;
+
+    window.location.href = `mailto:mmbarber@mmbarber.cz?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
     const saved = localStorage.getItem("mmbarber_voucher_requests");
     const requests = saved ? JSON.parse(saved) : [];
     

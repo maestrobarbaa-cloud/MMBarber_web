@@ -7,6 +7,7 @@ import { getActiveTheme } from "@/lib/holidays";
 import { getLiveTemperature } from "@/lib/weather";
 import { useTranslation } from "@/hooks/useTranslation";
 import { MotionConfig } from "framer-motion";
+import { useUI } from "@/contexts/UIContext";
 
 const BarberGame = dynamic(() => import("@/components/BarberGame").then(mod => mod.BarberGame), { ssr: false });
 const Radio = dynamic(() => import("@/components/Radio").then(mod => mod.Radio), { ssr: false });
@@ -22,14 +23,13 @@ const UserSettingsManager = dynamic(() => import("@/components/UserSettingsManag
 const ElitaGame = dynamic(() => import("@/components/ElitaGame").then(mod => mod.ElitaGame), { ssr: false });
 const SlotMachine = dynamic(() => import("@/components/SlotMachine").then(mod => mod.SlotMachine), { ssr: false });
 const CorporateTricks = dynamic(() => import("@/components/CorporateTricks").then(mod => mod.CorporateTricks), { ssr: false });
-
+const SeasonalAtmosphere = dynamic(() => import("@/components/SeasonalAtmosphere").then(mod => mod.SeasonalAtmosphere), { ssr: false });
 export function ClientWrapper() {
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isEarthProtocolOpen, setIsEarthProtocolOpen] = useState(false);
   const [isBarberChatOpen, setIsBarberChatOpen] = useState(false);
-  const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
-  const [graphicsTier, setGraphicsTier] = useState<"lite" | "low" | "medium" | "high" | "ultra" | "soft">("low");
+  const { isMobileEffectsEnabled, setIsMobileEffectsEnabled, graphicsTier, setGraphicsTier, isStealthMode, atmosphereOverride } = useUI();
   const [themeRevision, setThemeRevision] = useState(0);
   const { lang } = useTranslation();
   const pathname = usePathname();
@@ -46,11 +46,6 @@ export function ClientWrapper() {
 
     const handleChatToggle = () => {
       setIsBarberChatOpen(prev => !prev);
-    };
-
-    const handleMobileEffectsUpdate = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      setIsMobileEffectsEnabled(detail);
     };
 
     const handleForceThemeEval = () => {
@@ -167,41 +162,31 @@ export function ClientWrapper() {
         window.dispatchEvent(new CustomEvent('mmbarber-graphics-update', { detail: { tier: currentTier } }));
       };
 
-    const initialEffectsState = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
-    setIsMobileEffectsEnabled(initialEffectsState);
-
     initializeGraphics();
     handleResize();
     window.addEventListener('resize', handleResize);
     window.addEventListener('mmbarber-earth-protocol', handleEarthProtocolTrigger as any);
     window.addEventListener('mmbarber-toggle-chat', handleChatToggle as any);
-    window.addEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as any);
     window.addEventListener('mmbarber-force-theme-eval', handleForceThemeEval);
 
-    const handleStealthUpdate = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      if (detail) {
-         document.documentElement.classList.add('mode-stealth');
-      } else {
-         document.documentElement.classList.remove('mode-stealth');
-      }
-    };
-    if (localStorage.getItem("mmbarber_stealth_mode") === "true") {
-       document.documentElement.classList.add('mode-stealth');
-    }
-    window.addEventListener('mmbarber-stealth-update', handleStealthUpdate as any);
-    
     setMounted(true);
     
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mmbarber-earth-protocol', handleEarthProtocolTrigger as any);
       window.removeEventListener('mmbarber-toggle-chat', handleChatToggle as any);
-      window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as any);
       window.removeEventListener('mmbarber-force-theme-eval', handleForceThemeEval);
-      window.removeEventListener('mmbarber-stealth-update', handleStealthUpdate as any);
     };
   }, []);
+
+  // Sync stealth mode class to DOM
+  useEffect(() => {
+    if (isStealthMode) {
+      document.documentElement.classList.add('mode-stealth');
+    } else {
+      document.documentElement.classList.remove('mode-stealth');
+    }
+  }, [isStealthMode]);
 
   // Theme Management Effect
   useEffect(() => {
@@ -232,28 +217,7 @@ export function ClientWrapper() {
       document.documentElement.classList.remove('theme-blood');
     }
 
-    // Restore Visual Mode Logic (CRT, Matrix, Holidays, etc.)
-    const override = localStorage.getItem("mmbarber_dev_visual_mode");
-    if (!override || override === 'normal') {
-      (async () => {
-        const theme = getActiveTheme();
-        const temp = await getLiveTemperature();
-        const currentClasses = Array.from(document.documentElement.classList).filter(c => c.startsWith('mode-'));
-        currentClasses.forEach(c => document.documentElement.classList.remove(c));
-        
-        if (temp <= -10) {
-          document.documentElement.classList.add('mode-noirblue');
-        } else if (theme !== 'default') {
-          document.documentElement.classList.add(`mode-${theme}`);
-        }
-        window.dispatchEvent(new Event('mmbarber-theme-update'));
-      })();
-    } else {
-      const currentClasses = Array.from(document.documentElement.classList).filter(c => c.startsWith('mode-'));
-      currentClasses.forEach(c => document.documentElement.classList.remove(c));
-      document.documentElement.classList.add(`mode-${override}`);
-      window.dispatchEvent(new Event('mmbarber-theme-update'));
-    }
+    // Removed legacy mmbarber_dev_visual_mode logic
   }, [pathname, mounted, themeRevision]);
 
   // Visit Count Logic
@@ -271,23 +235,47 @@ export function ClientWrapper() {
 
 
   const [isGalaxyVisible, setIsGalaxyVisible] = useState(false);
+  const [activeTheme, setActiveTheme] = useState<any>('default');
 
   useEffect(() => {
     if (!mounted) return;
-    const checkAtmosphere = () => {
-      const hour = new Date().getHours();
-      const override = localStorage.getItem("mmbarber_atmosphere_override");
-      let isGalaxy = hour >= 22 || hour < 4;
-      if (pathname === '/') isGalaxy = false;
-      if (override === "galaxy") isGalaxy = pathname === '/' ? false : true;
-      else if (override === "classic") isGalaxy = false;
-      // If auto, keep the time-based value
-      setIsGalaxyVisible(isGalaxy);
-    };
-    checkAtmosphere();
-    window.addEventListener('mmbarber-atmosphere-update', checkAtmosphere);
-    return () => window.removeEventListener('mmbarber-atmosphere-update', checkAtmosphere);
-  }, [mounted]);
+    
+    const now = new Date();
+    const hour = now.getHours();
+    
+    let isGalaxy = hour >= 22 || hour < 4;
+    let currentTheme = getActiveTheme();
+    
+    if (atmosphereOverride === "galaxy") { 
+      isGalaxy = true; 
+      currentTheme = 'default'; 
+    } else if (atmosphereOverride === "classic") { 
+      isGalaxy = false; 
+      currentTheme = 'default'; 
+    } else if (atmosphereOverride && atmosphereOverride !== 'galaxy') {
+      isGalaxy = false;
+      currentTheme = atmosphereOverride as any;
+    }
+    
+    if (pathname === '/') {
+      if (atmosphereOverride !== 'galaxy') {
+         isGalaxy = false;
+      }
+    }
+
+    setIsGalaxyVisible(isGalaxy);
+    setActiveTheme(currentTheme);
+
+    const currentClasses = Array.from(document.documentElement.classList).filter(c => c.startsWith('mode-'));
+    currentClasses.forEach(c => document.documentElement.classList.remove(c));
+    
+    const visualThemes = ['matrix', 'crt', 'pixelate', 'vintage', 'noirblue', 'noirred', 'chaos', 'czech', 'friday13', 'legacy', 'secret'];
+    if (visualThemes.includes(currentTheme)) {
+      document.documentElement.classList.add(`mode-${currentTheme}`);
+    }
+    
+    window.dispatchEvent(new Event('mmbarber-mode-update'));
+  }, [mounted, atmosphereOverride, pathname]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -341,7 +329,8 @@ export function ClientWrapper() {
       {showEffects && <Radio />}
       <CorporateTricks />
       <CookieBanner />
-      {!isActuallyMobile && !isRodinaPage && !isGalaxyVisible && graphicsTier !== 'lite' && graphicsTier !== 'low' && <FloatingScissors />}
+      {activeTheme !== 'default' && <SeasonalAtmosphere theme={activeTheme} />}
+      {!isActuallyMobile && !isRodinaPage && !isGalaxyVisible && activeTheme === 'default' && graphicsTier !== 'lite' && graphicsTier !== 'low' && <FloatingScissors />}
       <VipControlBar />
       {showEffects && <GlobalSound />}
       {showEffects && <MatrixBackground />}

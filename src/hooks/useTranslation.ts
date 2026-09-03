@@ -1,15 +1,17 @@
-export type Language = 'cs' | 'en' | 'boss' | 'falco';
+export type Language = 'cs' | 'en' | 'boss' | 'falco' | 'zh';
 
 export const LANGUAGE_LABELS: Record<string, string> = {
   cs: 'Česky',
   en: 'English',
   boss: 'Boss Edition',
   falco: 'Falco Mode',
+  zh: '中文 (C.N.Y.)',
 };
 
 import { useState, useEffect, useMemo } from "react";
 import { translations } from "../locales/translations";
 import { getVocative } from "../utils/nameInflection";
+import { getActiveTheme } from "../lib/holidays";
 
 function injectPlaceholders(obj: any, nickname: string, vocative: string): any {
   if (typeof obj === 'string') {
@@ -50,13 +52,19 @@ export function useTranslation() {
 
   useEffect(() => {
     const saved = localStorage.getItem('mmbarber_lang') as Language;
-    const validLangs: Language[] = ['cs', 'en', 'boss', 'falco'];
+    const validLangs: Language[] = ['cs', 'en', 'boss', 'falco', 'zh'];
     
     // Automatic Boss Mode check (4:00 - 6:00)
     const hour = new Date().getHours();
     const isEarlyMorning = hour >= 4 && hour < 6;
 
-    if (saved && validLangs.includes(saved)) {
+    // Check if CNY is active
+    const themeOverride = localStorage.getItem("mmbarber_atmosphere_override");
+    const isCnyActive = themeOverride === 'cny' || (!themeOverride && getActiveTheme() === 'cny');
+
+    if (isCnyActive) {
+      setLang('zh');
+    } else if (saved && validLangs.includes(saved)) {
       setLang(saved);
     } else if (isEarlyMorning) {
       setLang('boss');
@@ -85,11 +93,28 @@ export function useTranslation() {
 
     handleNicknameChange(); // Load initial
 
+    const handleAtmosphereUpdate = () => {
+      const themeOverride = localStorage.getItem("mmbarber_atmosphere_override");
+      const isCnyActive = themeOverride === 'cny' || (!themeOverride && getActiveTheme() === 'cny');
+      if (isCnyActive) {
+        setLang('zh');
+      } else {
+        const currentSaved = localStorage.getItem('mmbarber_lang') as Language;
+        if (currentSaved && validLangs.includes(currentSaved) && currentSaved !== 'zh') {
+          setLang(currentSaved);
+        } else {
+          setLang('cs'); // default fallback if returning from CNY
+        }
+      }
+    };
+
     window.addEventListener('language_changed', handleLanguageChange);
     window.addEventListener('mmbarber_ratings_updated', handleNicknameChange);
+    window.addEventListener('mmbarber-atmosphere-update', handleAtmosphereUpdate);
     return () => {
       window.removeEventListener('language_changed', handleLanguageChange);
       window.removeEventListener('mmbarber_ratings_updated', handleNicknameChange);
+      window.removeEventListener('mmbarber-atmosphere-update', handleAtmosphereUpdate);
     };
   }, []);
 
@@ -114,6 +139,20 @@ export function useTranslation() {
         operatives: { ...translations.cs.operatives, ...(translations.falco as any).operatives },
         intro: { ...translations.cs.intro, ...(translations.falco as any).intro },
         theCode: { ...translations.cs.theCode, ...(translations.falco as any).theCode }
+      };
+    } else if (lang === 'zh') {
+      const zhBase = (translations as any).zh || {};
+      baseTranslations = { 
+        ...translations.cs,
+        ...zhBase,
+        header: { ...translations.cs.header, ...(zhBase.header || {}) },
+        hero: { ...translations.cs.hero, ...(zhBase.hero || {}) },
+        services: { ...translations.cs.services, ...(zhBase.services || {}) },
+        operatives: { ...translations.cs.operatives, ...(zhBase.operatives || {}) },
+        contact: { ...translations.cs.contact, ...(zhBase.contact || {}) },
+        partners: { ...translations.cs.partners, ...(zhBase.partners || {}) },
+        theCode: { ...translations.cs.theCode, ...(zhBase.theCode || {}) },
+        intro: { ...translations.cs.intro, ...(zhBase.intro || {}) }
       };
     } else {
       baseTranslations = (translations as any)[lang] || (translations as any).en;

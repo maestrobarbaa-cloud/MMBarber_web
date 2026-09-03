@@ -1591,7 +1591,7 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
                     opt.tag, 
                     { 
                       value: opt.tag, 
-                      label: typeof opt.label === 'string' ? opt.label : opt.label[lang] || opt.label['en'] 
+                      label: typeof opt.label === 'string' ? opt.label : opt.label[lang as 'cs' | 'en'] || opt.label['en'] 
                     }
                   ]))).values())} 
                 />

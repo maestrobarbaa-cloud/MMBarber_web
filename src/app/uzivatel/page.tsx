@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Save, RotateCcw, Home, Palette, Type, Zap, Sparkles, MousePointer2, X, Check, Sliders } from "lucide-react";
+import { Save, RotateCcw, Home, Palette, Type, Zap, Sparkles, X, Check, Sliders, User, Shield, Volume2, VolumeX, Trophy, Activity, Moon, Sun, Ghost, Flame, Rocket, Star, Heart, Monitor, AlertTriangle, Camera, Wind, Skull, Flag, Diamond } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "@/utils/audio";
+import { useGame } from "@/contexts/GameContext";
 
 const FONTS = [
   { name: "Classic Noir", value: '"Courier New", Courier, monospace', preview: "Courier" },
@@ -22,7 +23,7 @@ const PRESETS = [
     accentColor: "var(--color-mafia-gold)",
     glowIntensity: 50,
     fontFamily: '"Courier New", Courier, monospace',
-    atmosphereOverride: 'auto',
+    atmosphereOverride: 'classic',
     floatingItems: 'scissors',
     desc: "Tradiční styl MMBarber se zlatým tónem a létajícími nůžkami.",
     descEn: "Traditional MMBarber style with golden tones and flying scissors."
@@ -36,7 +37,7 @@ const PRESETS = [
     fontFamily: 'var(--font-inter), sans-serif',
     atmosphereOverride: 'galaxy',
     floatingItems: 'clippers',
-    desc: "Moderní neonově modrý styl s vesmírnou atmosférou na pozadí.",
+    desc: "Moderní neonově modrý styl s vesmírnou atmosférou.",
     descEn: "Modern neon cyan theme featuring a deep cosmic atmosphere."
   },
   {
@@ -47,7 +48,7 @@ const PRESETS = [
     glowIntensity: 80,
     fontFamily: 'var(--font-playfair), serif',
     atmosphereOverride: 'classic',
-    floatingItems: 'scissors',
+    floatingItems: 'random',
     desc: "Dramatická rudá barva doprovázená elegantním patkovým písmem.",
     descEn: "Dramatic dark crimson red accompanied by elegant serif font."
   },
@@ -60,9 +61,46 @@ const PRESETS = [
     fontFamily: 'system-ui, sans-serif',
     atmosphereOverride: 'classic',
     floatingItems: 'off',
-    desc: "Minimalistický design bez zářivých efektů a s vypnutým pozadím.",
+    desc: "Minimalistický design bez zářivých efektů a bez částic.",
     descEn: "Minimalist look with low intensity and no floating particles."
   }
+];
+
+const ATMOSPHERE_ITEMS = [
+  { id: 'classic', label: 'Classic', icon: Shield },
+  { id: 'winter', label: 'Winter', icon: Zap },
+  { id: 'cny', label: 'C.N.Y.', icon: Flame },
+  { id: 'valentine', label: 'Valentine', icon: Heart },
+  { id: 'spring', label: 'Spring', icon: Sparkles },
+  { id: 'easter', label: 'Easter', icon: Sparkles },
+  { id: 'witches', label: 'Witches', icon: Flame },
+  { id: 'may', label: 'May', icon: Heart },
+  { id: 'sakura', label: 'Sakura', icon: Sparkles },
+  { id: 'midsummer', label: 'Midsummer', icon: Sun },
+  { id: 'summer', label: 'Summer', icon: Sun },
+  { id: 'harvest', label: 'Harvest', icon: Activity },
+  { id: 'halloween', label: 'Halloween', icon: Ghost },
+  { id: 'allsouls', label: 'All Souls', icon: Moon },
+  { id: 'christmas', label: 'Xmas', icon: Star },
+  { id: 'silvestr', label: 'NYE', icon: Rocket },
+  { id: 'galaxy', label: 'Galaxy', icon: Moon },
+  { id: 'crt', label: 'CRT', icon: Monitor },
+  { id: 'matrix', label: 'Matrix', icon: Monitor },
+  { id: 'pixelate', label: 'Pixel', icon: Sparkles },
+  { id: 'vintage', label: 'Vintage', icon: Camera },
+  { id: 'noirblue', label: 'Cold', icon: Wind },
+  { id: 'noirred', label: 'Hot', icon: Zap },
+  { id: 'chaos', label: 'Chaos', icon: Ghost },
+  { id: 'czech', label: 'CZECH', icon: Flag },
+  { id: 'friday13', label: 'FRIDAY 13', icon: Skull },
+  { id: 'secret', label: 'SECRET', icon: Diamond },
+  { id: 'legacy', label: 'LEGACY', icon: Trophy }
+];
+
+const TABS = [
+  { id: 'profile', label: 'Profil & Hra', labelEn: 'Profile & Game', icon: User },
+  { id: 'aesthetics', label: 'Estetika', labelEn: 'Aesthetics', icon: Palette },
+  { id: 'system', label: 'Systém', labelEn: 'System', icon: Sliders }
 ];
 
 interface ClickEffect {
@@ -74,21 +112,21 @@ interface ClickEffect {
 
 export default function UserSettings() {
   const router = useRouter();
-  const { lang } = useTranslation();
+  const { lang, t } = useTranslation();
+  const { totalCollected, isTomasUnlocked, isNellaUnlocked, mafiaRank, resetProgress } = useGame();
   
+  const [activeTab, setActiveTab] = useState('profile');
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+
   const defaultConfig = {
     accentColor: "var(--color-mafia-gold)",
     glowIntensity: 50,
     fontFamily: '"Courier New", Courier, monospace',
-    atmosphereOverride: 'auto',
+    atmosphereOverride: 'classic',
     floatingItems: 'scissors'
   };
 
   const [config, setConfig] = useState(defaultConfig);
-  const isCustomActive = config.accentColor !== defaultConfig.accentColor || 
-                        config.glowIntensity !== defaultConfig.glowIntensity || 
-                        config.fontFamily !== defaultConfig.fontFamily;
-
   const [clickEffects, setClickEffects] = useState<ClickEffect[]>([]);
 
   useEffect(() => {
@@ -98,24 +136,26 @@ export default function UserSettings() {
         setConfig(prev => ({ ...prev, ...JSON.parse(saved) }));
       } catch {}
     }
+    
+    // Sync sound state
+    setIsSoundEnabled(localStorage.getItem("mmbarber_sound_enabled") !== "false");
+    
+    // Also sync from the legacy overrides if they exist independently
+    const savedAtmosphere = localStorage.getItem("mmbarber_atmosphere_override");
+    if (savedAtmosphere) {
+      setConfig(prev => ({...prev, atmosphereOverride: savedAtmosphere}));
+    }
   }, []);
 
   const handleSave = () => {
     localStorage.setItem("mmbarber_user_config", JSON.stringify(config));
     
-    // Sync with legacy storage and graphics config
-    localStorage.setItem("mmbarber_atmosphere_override", config.atmosphereOverride);
-    localStorage.setItem("mmbarber_floating_item_override", config.floatingItems);
-    
-    const graphicsSaved = localStorage.getItem("mmbarber_graphics_config");
-    if (graphicsSaved) {
-      try {
-        const parsed = JSON.parse(graphicsSaved);
-        parsed.atmosphereOverride = config.atmosphereOverride;
-        parsed.floatingItems = config.floatingItems;
-        localStorage.setItem("mmbarber_graphics_config", JSON.stringify(parsed));
-      } catch (e) {}
+    if (config.atmosphereOverride === 'classic') {
+      localStorage.removeItem("mmbarber_atmosphere_override");
+    } else {
+      localStorage.setItem("mmbarber_atmosphere_override", config.atmosphereOverride);
     }
+    localStorage.setItem("mmbarber_floating_item_override", config.floatingItems);
 
     window.dispatchEvent(new Event("mmbarber-user-settings-update"));
     window.dispatchEvent(new CustomEvent('mmbarber-atmosphere-update', { detail: config.atmosphereOverride }));
@@ -123,7 +163,7 @@ export default function UserSettings() {
 
     playSound("/sounds/click.mp3", 0.3);
 
-    // Create a special success burst effect
+    // Success burst effect
     for(let i = 0; i < 15; i++) {
         setTimeout(() => {
             const x = Math.random() * window.innerWidth;
@@ -134,23 +174,39 @@ export default function UserSettings() {
   };
 
   const handleReset = () => {
-    const default_ = {
-      accentColor: "var(--color-mafia-gold)",
-      glowIntensity: 50,
-      fontFamily: '"Courier New", Courier, monospace',
-      atmosphereOverride: 'auto' as const,
-      floatingItems: 'scissors' as const
-    };
-    setConfig(default_);
-    localStorage.setItem("mmbarber_user_config", JSON.stringify(default_));
-    localStorage.setItem("mmbarber_atmosphere_override", "auto");
+    if(!confirm(lang === 'cs' ? 'Opravdu chcete obnovit vizuál do základního nastavení?' : 'Reset visuals to default?')) return;
+    
+    setConfig(defaultConfig);
+    localStorage.setItem("mmbarber_user_config", JSON.stringify(defaultConfig));
+    localStorage.removeItem("mmbarber_atmosphere_override");
     localStorage.setItem("mmbarber_floating_item_override", "scissors");
     
     window.dispatchEvent(new Event("mmbarber-user-settings-update"));
-    window.dispatchEvent(new CustomEvent('mmbarber-atmosphere-update', { detail: 'auto' }));
+    window.dispatchEvent(new CustomEvent('mmbarber-atmosphere-update', { detail: 'classic' }));
     window.dispatchEvent(new CustomEvent('mmbarber-floaters-update', { detail: 'scissors' }));
     
     playSound("/sounds/click.mp3", 0.2);
+  };
+
+  const handleHardReset = () => {
+    if(!confirm(lang === 'cs' ? 'VAROVÁNÍ: Tento krok vymaže veškerý váš postup hrou, rank a skryté úpravy. Opravdu to chcete udělat?' : 'WARNING: This will wipe all game progress, rank and settings. Are you sure?')) return;
+    
+    resetProgress();
+    
+    setConfig(defaultConfig);
+    localStorage.setItem("mmbarber_user_config", JSON.stringify(defaultConfig));
+    
+    // Additional resets
+    localStorage.removeItem("mmbarber_atmosphere_override");
+    localStorage.removeItem("mmbarber_floating_item_override");
+    localStorage.removeItem("mmbarber_visited");
+    localStorage.removeItem("mmbarber_dev_mode");
+    localStorage.removeItem("mmbarber_dev_visual_mode");
+    localStorage.setItem("mmbarber_sound_enabled", "true");
+    setIsSoundEnabled(true);
+    
+    // Force reload to completely clear memory
+    window.location.href = "/";
   };
 
   const applyPreset = (preset: typeof PRESETS[0]) => {
@@ -164,6 +220,13 @@ export default function UserSettings() {
     playSound("/sounds/click.mp3", 0.25);
   };
 
+  const toggleSound = () => {
+    const newVal = !isSoundEnabled;
+    setIsSoundEnabled(newVal);
+    localStorage.setItem("mmbarber_sound_enabled", String(newVal));
+    if (newVal) playSound("/sounds/click.mp3", 0.3);
+  };
+
   const addClickEffect = useCallback((x: number, y: number, color: string) => {
     const id = Date.now() + Math.random();
     setClickEffects(prev => [...prev, { id, x, y, color }]);
@@ -173,45 +236,44 @@ export default function UserSettings() {
   }, []);
 
   const handlePageClick = (e: React.MouseEvent) => {
-    addClickEffect(e.clientX, e.clientY, config.accentColor);
+    const color = config.accentColor.startsWith('var') ? '#c5a059' : config.accentColor;
+    addClickEffect(e.clientX, e.clientY, color);
   };
+
+  // Helper variables for UI
+  const displayColor = config.accentColor.startsWith('var') ? '#c5a059' : config.accentColor;
 
   return (
     <main 
       onClick={handlePageClick}
-      className="min-h-screen bg-mafia-black text-white pt-24 pb-20 px-4 md:px-8 font-sans relative overflow-hidden selection:bg-mafia-gold selection:text-mafia-black"
+      className="min-h-screen bg-mafia-black text-white pt-20 pb-20 px-4 md:px-8 font-sans relative overflow-x-hidden selection:bg-mafia-gold selection:text-mafia-black"
     >
-      {/* Floating Close Button */}
       <button 
         onClick={(e) => {
           e.stopPropagation();
           playSound("/sounds/click.mp3", 0.2);
-          if (typeof window !== "undefined" && window.history.length > 1) {
-            router.back();
-          } else {
-            router.push("/");
-          }
+          router.push("/");
         }}
-        className="fixed top-6 right-6 md:top-24 md:left-8 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:text-mafia-gold hover:border-mafia-gold transition-all duration-300 z-[100] group"
-        aria-label="Zavřít"
+        className="fixed top-6 right-6 md:top-20 md:left-8 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 z-[100] group backdrop-blur-xl shadow-2xl hover:scale-110"
+        style={{ hover: { borderColor: displayColor, color: displayColor } } as any}
       >
         <X size={20} className="transition-transform group-hover:rotate-90 duration-300" />
       </button>
 
-      {/* Background Decorative Elements */}
-      <div className="absolute inset-0 pointer-events-none opacity-20">
-         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px]" style={{ backgroundColor: config.accentColor }}></div>
-         <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] rounded-full blur-[100px]" style={{ backgroundColor: config.accentColor }}></div>
-         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+      {/* Background Decorative */}
+      <div className="fixed inset-0 pointer-events-none opacity-20 z-0">
+         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] transition-colors duration-1000" style={{ backgroundColor: displayColor }}></div>
+         <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] rounded-full blur-[100px] transition-colors duration-1000" style={{ backgroundColor: displayColor }}></div>
+         <div className="absolute inset-0 bg-[url('/obr/pattern-carbon.png')] opacity-20"></div>
       </div>
 
-      {/* Click Effects Layer */}
+      {/* Click Effects */}
       <AnimatePresence>
         {clickEffects.map(effect => (
           <motion.div
             key={effect.id}
             initial={{ scale: 0, opacity: 1 }}
-            animate={{ scale: 2, opacity: 0 }}
+            animate={{ scale: 2.5, opacity: 0 }}
             exit={{ opacity: 0 }}
             className="fixed w-10 h-10 rounded-full border-2 pointer-events-none z-[100] -translate-x-1/2 -translate-y-1/2"
             style={{ left: effect.x, top: effect.y, borderColor: effect.color, boxShadow: `0 0 20px ${effect.color}` }}
@@ -219,69 +281,69 @@ export default function UserSettings() {
         ))}
       </AnimatePresence>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10 flex flex-col min-h-[80vh]">
         
-        {/* Title Block */}
+        {/* Title */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center mb-10 text-center"
         >
           <div className="relative mb-4">
-            <Palette 
-              className={`transition-all duration-700 ${isCustomActive ? 'animate-pulse' : 'opacity-30'}`} 
-              size={56} 
-              style={{ 
-                color: isCustomActive ? config.accentColor : '#ffffff', 
-                filter: isCustomActive ? `drop-shadow(0 0 15px ${config.accentColor})` : 'none' 
-              }} 
-            />
-            {isCustomActive && (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="absolute -top-2 -right-12 px-2 py-0.5 bg-mafia-gold text-mafia-black text-[8px] font-black rounded uppercase tracking-widest"
-                style={{ backgroundColor: config.accentColor }}
-              >
-                Active
-              </motion.div>
-            )}
-            <Sparkles className={`absolute -top-2 -right-2 text-white/50 transition-opacity duration-700 ${isCustomActive ? 'opacity-100 animate-bounce' : 'opacity-0'}`} size={20} />
+            <Monitor size={48} className="opacity-80 transition-colors duration-700" style={{ color: displayColor, filter: `drop-shadow(0 0 15px ${displayColor}80)` }} />
           </div>
-          
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-black tracking-[0.2em] uppercase drop-shadow-2xl">
-            {lang === 'cs' ? "VLASTNÍ VZHLED" : "CUSTOM LOOK"}
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-black tracking-[0.2em] uppercase drop-shadow-2xl">
+            {lang === 'cs' ? "OSOBNÍ TERMINÁL" : "PERSONAL TERMINAL"}
           </h1>
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: 140 }}
-            className="h-1 mt-4" 
-            style={{ backgroundColor: config.accentColor, boxShadow: `0 0 20px ${config.accentColor}` }}
+            className="h-1 mt-4 transition-colors duration-700" 
+            style={{ backgroundColor: displayColor, boxShadow: `0 0 20px ${displayColor}` }}
           ></motion.div>
-          <p className="mt-3 text-white/40 font-mono text-[9px] uppercase tracking-[0.4em]">Personalized Aesthetic Protocol v2.5</p>
         </motion.div>
 
-        {/* Master Layout Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="flex flex-col lg:flex-row gap-8 flex-grow">
           
-          {/* LEFT SIDEBAR (lg:col-span-4): Sticky Live Preview & Action Deck */}
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-4 space-y-6 lg:sticky lg:top-24"
-          >
+          {/* LEFT SIDEBAR: Nav Tabs & Live Preview */}
+          <div className="w-full lg:w-1/3 flex flex-col gap-6 lg:sticky lg:top-24 h-max">
+            
+            {/* Tabs */}
+            <div className="flex lg:flex-col overflow-x-auto lg:overflow-visible gap-2 pb-2 lg:pb-0 thin-scrollbar">
+              {TABS.map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={(e) => { e.stopPropagation(); setActiveTab(tab.id); playSound("/sounds/click.mp3", 0.1); }}
+                  className={`flex items-center gap-3 px-5 py-4 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 min-w-[160px] lg:min-w-0 flex-shrink-0 border ${
+                    activeTab === tab.id 
+                      ? "bg-white/10 text-white shadow-lg" 
+                      : "bg-black/30 border-white/5 text-white/50 hover:bg-white/5 hover:border-white/10"
+                  }`}
+                  style={{ 
+                    borderColor: activeTab === tab.id ? displayColor : '',
+                    boxShadow: activeTab === tab.id ? `0 0 20px ${displayColor}30, inset 0 0 10px ${displayColor}10` : '' 
+                  }}
+                >
+                  <tab.icon size={18} style={{ color: activeTab === tab.id ? displayColor : '' }} />
+                  {lang === 'cs' ? tab.label : tab.labelEn}
+                </button>
+              ))}
+            </div>
+
             {/* Live Preview Card */}
-            <div className="bg-mafia-black/80 border border-white/10 p-6 backdrop-blur-xl relative group overflow-hidden shadow-2xl">
-              <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-white/20 uppercase tracking-widest">Live Preview</div>
-              <div className="space-y-5">
+            <div className="hidden lg:block bg-black/60 border border-white/10 p-6 rounded-xl backdrop-blur-xl relative overflow-hidden shadow-2xl mt-4 group">
+              <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-white/20 uppercase tracking-widest z-10">Live Preview</div>
+              
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
+              
+              <div className="relative z-10 space-y-5">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-500" style={{ borderColor: config.accentColor, boxShadow: `0 0 ${config.glowIntensity/3}px ${config.accentColor}`, backgroundColor: `${config.accentColor}10` }}>
-                    <MousePointer2 size={18} style={{ color: config.accentColor }} />
+                  <div className="w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-500" style={{ borderColor: displayColor, boxShadow: `0 0 ${config.glowIntensity/3}px ${displayColor}`, backgroundColor: `${displayColor}10` }}>
+                    <User size={18} style={{ color: displayColor }} />
                   </div>
                   <div>
-                    <h3 className="font-heading font-black text-lg uppercase transition-colors" style={{ color: config.accentColor }}>MMBARBER</h3>
-                    <p className="text-[9px] opacity-45 uppercase tracking-widest">Est. 2024</p>
+                    <h3 className="font-heading font-black text-lg uppercase transition-colors" style={{ color: displayColor }}>MMBARBER</h3>
+                    <p className="font-mono font-black text-[10px] text-mafia-gold/60 uppercase tracking-widest">Rank: {t.operatives.ranks[mafiaRank as keyof typeof t.operatives.ranks]}</p>
                   </div>
                 </div>
                 
@@ -291,321 +353,277 @@ export default function UserSettings() {
                       animate={{ width: ['0%', '100%'] }} 
                       transition={{ duration: 3, repeat: Infinity }} 
                       className="h-full" 
-                      style={{ backgroundColor: config.accentColor }}
+                      style={{ backgroundColor: displayColor, boxShadow: `0 0 10px ${displayColor}` }}
                     ></motion.div>
                   </div>
                   <p className="text-[11px] italic leading-relaxed opacity-80" style={{ fontFamily: config.fontFamily }}>
-                    &quot;Když se podíváš do zrcadla, měl bys vidět muže, který má svůj osud pod kontrolou. Styl je tvoje brnění.&quot;
+                    &quot;Styl není jen o vzhledu. Je to tvoje brnění proti obyčejnosti.&quot;
                   </p>
                 </div>
-                
-                <button className="w-full py-2.5 border font-black text-[10px] uppercase tracking-widest transition-all" style={{ borderColor: config.accentColor, color: config.accentColor, boxShadow: `0 0 ${config.glowIntensity/5}px ${config.accentColor}` }}>
-                  {lang === 'cs' ? 'Rezervovat Termín' : 'Book Appointment'}
-                </button>
               </div>
             </div>
 
-            {/* HIGH-TECH ACTION DECK - User Friendly placement */}
-            <div className="bg-mafia-dark/80 border border-white/10 p-5 backdrop-blur-xl space-y-4 shadow-2xl">
+            {/* Action Buttons */}
+            <div className="flex gap-2">
               <button 
-                onClick={handleSave}
-                className="w-full bg-mafia-gold text-mafia-black py-4 font-heading font-black text-xs uppercase tracking-[0.25em] flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-lg group"
-                style={{ backgroundColor: config.accentColor, boxShadow: `0 8px 24px ${config.accentColor}30` }}
+                onClick={(e) => { e.stopPropagation(); handleSave(); }}
+                className="flex-grow py-3 rounded-lg font-black text-[11px] uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl flex items-center justify-center gap-2"
+                style={{ backgroundColor: displayColor, color: '#000', boxShadow: `0 0 ${config.glowIntensity/3}px ${displayColor}60` }}
               >
-                <Save size={18} className="group-hover:rotate-12 transition-transform" />
-                {lang === 'cs' ? "ULOŽIT ARCHIV" : "SAVE CONFIG"}
+                <Save size={16} />
+                {lang === 'cs' ? "Uložit Změny" : "Save Changes"}
               </button>
-
-              <div className="grid grid-cols-2 gap-3">
-                <button 
-                  onClick={handleReset}
-                  className="py-3.5 border border-white/10 text-white/40 hover:border-mafia-red hover:text-mafia-red active:scale-95 transition-all flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-wider group"
-                  title="Reset to defaults"
-                >
-                  <RotateCcw size={14} className="group-hover:rotate-[-180deg] transition-transform duration-500" />
-                  {lang === 'cs' ? "RESET" : "RESET"}
-                </button>
-                
-                <button 
-                  onClick={() => router.push("/")}
-                  className="py-3.5 bg-white/5 border border-transparent text-white/40 hover:bg-white/10 hover:text-white active:scale-95 transition-all flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-wider"
-                >
-                  <Home size={14} />
-                  {lang === 'cs' ? "DOMŮ" : "HOME"}
-                </button>
-              </div>
             </div>
 
-            {/* Caution Alert */}
-            <div className="bg-mafia-red/5 border border-mafia-red/20 p-4 flex gap-3 items-center">
-              <Zap className="text-mafia-red shrink-0" size={20} />
-              <p className="text-[9px] text-mafia-red/80 uppercase tracking-wider font-bold leading-relaxed">
-                {lang === 'cs' ? "POZOR: Změny vzhledu se okamžitě projeví napříč celou touto aplikací." : "CAUTION: Aesthetic settings apply instantly across the entire application."}
-              </p>
-            </div>
-          </motion.div>
+          </div>
 
-          {/* RIGHT CONTROL GRID (lg:col-span-8): 2x2 Grid of settings cards */}
-          <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="lg:col-span-8"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* RIGHT CONTENT AREA */}
+          <div className="w-full lg:w-2/3">
+            <AnimatePresence mode="wait">
               
-              {/* CARD 1: Color & Glow */}
-              <section className="bg-mafia-dark/30 border border-white/10 p-6 backdrop-blur-md flex flex-col justify-between hover:border-white/20 transition-all duration-300 shadow-xl">
-                <div>
-                  <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-5">
-                    <div className="flex items-center gap-2">
-                      <Palette size={18} style={{ color: config.accentColor }} />
-                      <h2 className="text-lg font-heading font-black uppercase tracking-wider">
-                        {lang === 'cs' ? "BARVA A NEON" : "COLOR & NEON"}
-                      </h2>
+              {/* TAB 1: PROFILE & GAME */}
+              {activeTab === 'profile' && (
+                <motion.div 
+                  key="profile"
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+                  className="space-y-6"
+                >
+                  <div className="bg-black/40 border border-white/10 rounded-xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Shield size={100} />
                     </div>
-                    <span className="font-mono text-[8px] text-white/30 uppercase">Accent Style</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-5 mb-5">
-                    {/* Circle Color Picker */}
-                    <div className="relative shrink-0">
-                      <input 
-                        type="color" 
-                        value={config.accentColor.startsWith('var') ? '#c5a880' : config.accentColor}
-                        onChange={(e) => setConfig({ ...config, accentColor: e.target.value })}
-                        className="w-16 h-16 bg-transparent cursor-pointer rounded-full border-2 border-white/15 appearance-none overflow-hidden"
-                        style={{ boxShadow: `0 0 ${config.glowIntensity/2}px ${config.accentColor}` }}
-                      />
-                      <div className="absolute inset-0 pointer-events-none rounded-full ring-2 ring-black ring-inset"></div>
+                    
+                    <h2 className="text-2xl font-heading font-black uppercase mb-6 flex items-center gap-3">
+                      <Trophy style={{ color: displayColor }} />
+                      {lang === 'cs' ? 'Váš Status' : 'Your Status'}
+                    </h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <p className="text-[10px] text-white/50 uppercase tracking-widest font-mono">Mafiánský Rank</p>
+                        <p className="text-3xl font-black uppercase text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(45deg, #fff, ${displayColor})` }}>
+                          {t.operatives.ranks[mafiaRank as keyof typeof t.operatives.ranks]}
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <p className="text-[10px] text-white/50 uppercase tracking-widest font-mono">{lang === 'cs' ? 'Nasbírané Cennosti' : 'Items Collected'}</p>
+                        <p className="text-3xl font-black font-mono">
+                          {totalCollected} <span className="text-sm text-white/30 ml-2">/ ∞</span>
+                        </p>
+                      </div>
                     </div>
 
-                    {/* HEX Input */}
-                    <div className="flex-grow space-y-2">
-                      <div className="relative group">
-                        <input 
-                          type="text" 
-                          value={config.accentColor}
-                          onChange={(e) => setConfig({ ...config, accentColor: e.target.value })}
-                          className="bg-black/50 border border-white/10 px-4 py-2.5 text-sm font-mono w-full outline-none focus:border-mafia-gold transition-all text-center rounded"
-                          style={{ color: config.accentColor }}
-                        />
-                        <div className="absolute bottom-0 left-0 h-0.5 w-0 group-focus-within:w-full transition-all duration-500" style={{ backgroundColor: config.accentColor }}></div>
+                    <div className="mt-8 pt-6 border-t border-white/10">
+                      <p className="text-[10px] text-white/50 uppercase tracking-widest font-mono mb-4">{lang === 'cs' ? 'Odemčení Agenti (Bookable)' : 'Unlocked Agents'}</p>
+                      <div className="flex gap-4">
+                        <div className={`p-4 rounded-lg border flex items-center gap-3 transition-all ${isTomasUnlocked ? 'bg-white/5 border-white/20' : 'bg-black/50 border-white/5 opacity-50 grayscale'}`}>
+                          <div className="w-10 h-10 rounded-full bg-cover bg-center border border-white/20" style={{ backgroundImage: "url('/obr/tomasmicka.png')" }}></div>
+                          <div>
+                            <p className="font-bold text-sm">Tomáš</p>
+                            <p className="text-[9px] text-white/50 uppercase tracking-widest">{isTomasUnlocked ? 'Unlocked' : 'Locked'}</p>
+                          </div>
+                        </div>
+
+                        <div className={`p-4 rounded-lg border flex items-center gap-3 transition-all ${isNellaUnlocked ? 'bg-white/5 border-white/20' : 'bg-black/50 border-white/5 opacity-50 grayscale'}`}>
+                          <div className="w-10 h-10 rounded-full bg-cover bg-center border border-white/20" style={{ backgroundImage: "url('/obr/nellapelikanova.png')" }}></div>
+                          <div>
+                            <p className="font-bold text-sm">Nella</p>
+                            <p className="text-[9px] text-white/50 uppercase tracking-widest">{isNellaUnlocked ? 'Unlocked' : 'Locked'}</p>
+                          </div>
+                        </div>
                       </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* TAB 2: AESTHETICS */}
+              {activeTab === 'aesthetics' && (
+                <motion.div 
+                  key="aesthetics"
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+                  className="space-y-6"
+                >
+                  {/* Colors & Typography */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-black/40 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
+                      <h3 className="font-black text-sm uppercase tracking-wider mb-5 flex items-center gap-2">
+                        <Palette size={14} style={{ color: displayColor }} /> {lang === 'cs' ? 'Barva & Záře' : 'Color & Glow'}
+                      </h3>
                       
-                      {/* Presets Dots */}
-                      <div className="flex gap-1.5 justify-center">
-                        {["var(--color-mafia-gold)", "#ff1a1a", "#00ff41", "#00ccff", "#ffffff"].map(c => (
-                          <button 
-                            key={c} 
-                            onClick={() => setConfig({...config, accentColor: c})}
-                            className="h-5 w-5 rounded-full border border-white/10 hover:scale-125 transition-transform cursor-pointer" 
-                            style={{ 
-                              backgroundColor: c.startsWith('var') ? '#c5a880' : c,
-                              boxShadow: config.accentColor === c ? `0 0 8px ${c.startsWith('var') ? '#c5a880' : c}` : 'none'
-                            }} 
-                          ></button>
+                      <div className="flex items-center gap-4 mb-6">
+                        <input 
+                          type="color" 
+                          value={displayColor}
+                          onChange={(e) => setConfig({ ...config, accentColor: e.target.value })}
+                          className="w-12 h-12 bg-transparent cursor-pointer rounded-full border-2 border-white/10 p-0 overflow-hidden"
+                        />
+                        <div className="flex-grow">
+                          <input 
+                            type="text" 
+                            value={config.accentColor}
+                            onChange={(e) => setConfig({ ...config, accentColor: e.target.value })}
+                            className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-xs font-mono outline-none focus:border-white/30"
+                            style={{ color: displayColor }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-[9px] font-mono uppercase text-white/50">
+                          <span>Intensity</span>
+                          <span style={{ color: displayColor }}>{config.glowIntensity}%</span>
+                        </div>
+                        <input 
+                          type="range" min="0" max="150" 
+                          value={config.glowIntensity}
+                          onChange={(e) => setConfig({ ...config, glowIntensity: parseInt(e.target.value) })}
+                          className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer"
+                          style={{ '--user-accent': displayColor } as any}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-black/40 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
+                      <h3 className="font-black text-sm uppercase tracking-wider mb-5 flex items-center gap-2">
+                        <Type size={14} style={{ color: displayColor }} /> {lang === 'cs' ? 'Typografie' : 'Typography'}
+                      </h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        {FONTS.map(f => (
+                          <button
+                            key={f.name}
+                            onClick={(e) => { e.stopPropagation(); setConfig({ ...config, fontFamily: f.value }); playSound("/sounds/click.mp3", 0.1); }}
+                            className={`p-3 border rounded-lg text-left transition-all ${
+                              config.fontFamily === f.value ? 'bg-white/10 border-white/30' : 'bg-transparent border-white/5 hover:border-white/15'
+                            }`}
+                            style={{ fontFamily: f.value, borderColor: config.fontFamily === f.value ? displayColor : '' }}
+                          >
+                            <div className="text-[9px] uppercase font-black tracking-widest mb-1 opacity-50">{f.name}</div>
+                            <div className="text-lg">{f.preview}</div>
+                          </button>
                         ))}
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Glow Intensity */}
-                <div className="space-y-3 pt-3 border-t border-white/5">
-                  <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-white/70">
-                    <span className="flex items-center gap-1.5">
-                      <Sliders size={12} />
-                      {lang === 'cs' ? "ZÁŘE NEONU" : "GLOW INTENSITY"}
-                    </span>
-                    <span style={{ color: config.accentColor }} className="font-mono">{config.glowIntensity}%</span>
-                  </div>
-                  <div className="relative py-2">
-                    <input 
-                      type="range" 
-                      min="0" 
-                      max="150" 
-                      value={config.glowIntensity}
-                      onChange={(e) => setConfig({ ...config, glowIntensity: parseInt(e.target.value) })}
-                      className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-mafia-gold"
-                      style={{ '--user-accent': config.accentColor } as any}
-                    />
-                    <div className="flex justify-between mt-2 text-[7px] font-mono text-white/20 uppercase tracking-widest">
-                      <span>Muted</span>
-                      <span>Classic</span>
-                      <span>Overdrive</span>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* CARD 2: Typography Selection */}
-              <section className="bg-mafia-dark/30 border border-white/10 p-6 backdrop-blur-md flex flex-col justify-between hover:border-white/20 transition-all duration-300 shadow-xl">
-                <div>
-                  <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-4">
-                    <div className="flex items-center gap-2">
-                      <Type size={18} style={{ color: config.accentColor }} />
-                      <h2 className="text-lg font-heading font-black uppercase tracking-wider">
-                        {lang === 'cs' ? "TYPOGRAFIE" : "TYPOGRAPHY"}
-                      </h2>
-                    </div>
-                    <span className="font-mono text-[8px] text-white/30 uppercase">Global Font</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    {FONTS.map((f) => {
-                      const isSelected = config.fontFamily === f.value;
-                      return (
+                  {/* Seasonal Atmospheres */}
+                  <div className="bg-black/40 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
+                    <h3 className="font-black text-sm uppercase tracking-wider mb-5 flex items-center gap-2">
+                      <Sparkles size={14} style={{ color: displayColor }} /> {lang === 'cs' ? 'Atmosféra (Pozadí)' : 'Atmosphere (Background)'}
+                    </h3>
+                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                      {ATMOSPHERE_ITEMS.map(item => (
                         <button
-                          key={f.name}
-                          onClick={() => setConfig({ ...config, fontFamily: f.value })}
-                          className={`group p-3 border rounded text-left relative overflow-hidden transition-all duration-300 hover:scale-[1.02] cursor-pointer ${
-                            isSelected ? "border-mafia-gold bg-white/5" : "border-white/5 hover:border-white/10"
+                          key={item.id}
+                          onClick={(e) => { e.stopPropagation(); setConfig({...config, atmosphereOverride: item.id}); playSound("/sounds/click.mp3", 0.1); }}
+                          className={`flex flex-col items-center justify-center p-3 gap-2 border rounded-lg transition-all ${
+                            config.atmosphereOverride === item.id ? 'bg-white/10 border-white/40 shadow-lg' : 'bg-transparent border-white/5 hover:bg-white/5'
                           }`}
-                          style={{ 
-                            fontFamily: f.value,
-                            borderColor: isSelected ? config.accentColor : undefined
-                          }}
+                          style={{ borderColor: config.atmosphereOverride === item.id ? displayColor : '' }}
                         >
-                          <div className="flex justify-between items-start mb-1">
-                            <span className="text-[10px] uppercase font-black tracking-wider group-hover:text-mafia-gold transition-colors" style={{ color: isSelected ? config.accentColor : undefined }}>
-                              {f.name}
-                            </span>
-                            {isSelected && <Check size={10} style={{ color: config.accentColor }} />}
-                          </div>
-                          <div className="text-xl font-bold opacity-75 mt-1 text-center py-1">
-                            {f.preview}
-                          </div>
+                          <item.icon size={16} style={{ color: config.atmosphereOverride === item.id ? displayColor : '#ffffff50' }} />
+                          <span className="text-[8px] font-black uppercase tracking-wider text-center">{item.label}</span>
                         </button>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="text-[8px] text-white/30 uppercase tracking-widest mt-4 pt-2 border-t border-white/5 text-center font-mono">
-                  {lang === 'cs' ? "Mění vzhled veškerých textů a nabídek" : "Alters the typography for all descriptions and headers"}
-                </div>
-              </section>
-
-              {/* CARD 3: Atmosphere & Animation settings */}
-              <section className="bg-mafia-dark/30 border border-white/10 p-6 backdrop-blur-md flex flex-col justify-between hover:border-white/20 transition-all duration-300 shadow-xl">
-                <div>
-                  <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-4">
-                    <div className="flex items-center gap-2">
-                      <Sparkles size={18} style={{ color: config.accentColor }} />
-                      <h2 className="text-lg font-heading font-black uppercase tracking-wider">
-                        {lang === 'cs' ? "ATMOSFÉRA" : "ATMOSPHERE"}
-                      </h2>
-                    </div>
-                    <span className="font-mono text-[8px] text-white/30 uppercase">FX Elements</span>
-                  </div>
-
-                  <div className="space-y-4">
-                    {/* Environment Override */}
-                    <div className="space-y-1.5">
-                      <label className="text-[8px] font-mono text-white/30 uppercase tracking-wider">{lang === 'cs' ? "Pozadí a Efekty" : "Background Mode"}</label>
-                      <div className="grid grid-cols-3 gap-1.5">
-                        {(['auto', 'classic', 'galaxy'] as const).map((mode) => {
-                          const isActive = config.atmosphereOverride === mode;
-                          return (
-                            <button
-                              key={mode}
-                              onClick={() => setConfig({...config, atmosphereOverride: mode})}
-                              className={`py-2 text-[9px] font-black uppercase tracking-wider transition-all border rounded cursor-pointer ${isActive ? 'text-black' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/20'}`}
-                              style={{ 
-                                backgroundColor: isActive ? config.accentColor : undefined, 
-                                borderColor: isActive ? config.accentColor : undefined 
-                              }}
-                            >
-                              {mode}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Floating Items */}
-                    <div className="space-y-1.5">
-                      <label className="text-[8px] font-mono text-white/30 uppercase tracking-wider">{lang === 'cs' ? "Poletující prvky" : "Floating Floaties"}</label>
-                      <div className="grid grid-cols-3 gap-1.5">
-                        {(['scissors', 'clippers', 'off'] as const).map((item) => {
-                          const isActive = config.floatingItems === item;
-                          return (
-                            <button
-                              key={item}
-                              onClick={() => setConfig({...config, floatingItems: item})}
-                              className={`py-2 text-[9px] font-black uppercase tracking-wider transition-all border rounded cursor-pointer ${isActive ? 'text-black' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/20'}`}
-                              style={{ 
-                                backgroundColor: isActive ? config.accentColor : undefined, 
-                                borderColor: isActive ? config.accentColor : undefined 
-                              }}
-                            >
-                              {item === 'scissors' ? (lang === 'cs' ? 'Nůžky' : 'Scissors') : item === 'clippers' ? (lang === 'cs' ? 'Strojky' : 'Clippers') : (lang === 'cs' ? 'Vypnuto' : 'Off')}
-                            </button>
-                          );
-                        })}
-                      </div>
+                      ))}
                     </div>
                   </div>
-                </div>
-                <div className="text-[8px] text-white/30 uppercase tracking-widest mt-4 pt-2 border-t border-white/5 text-center font-mono">
-                  {lang === 'cs' ? "Vymění poletující nůžky za strojky nebo je vypne" : "Swap the default floating particles for custom shapes"}
-                </div>
-              </section>
 
-              {/* CARD 4: Quick Presets (Awesome new user-friendly addition) */}
-              <section className="bg-mafia-dark/30 border border-white/10 p-6 backdrop-blur-md flex flex-col justify-between hover:border-white/20 transition-all duration-300 shadow-xl">
-                <div>
-                  <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-4">
-                    <div className="flex items-center gap-2">
-                      <Zap size={18} style={{ color: config.accentColor }} />
-                      <h2 className="text-lg font-heading font-black uppercase tracking-wider">
-                        {lang === 'cs' ? "RYCHLÉ STYLY" : "QUICK STYLES"}
-                      </h2>
-                    </div>
-                    <span className="font-mono text-[8px] text-white/30 uppercase">One-Click Look</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    {PRESETS.map((preset) => {
-                      const isMatching = config.accentColor === preset.accentColor && 
-                                        config.glowIntensity === preset.glowIntensity && 
-                                        config.fontFamily === preset.fontFamily &&
-                                        config.atmosphereOverride === preset.atmosphereOverride &&
-                                        config.floatingItems === preset.floatingItems;
-                      return (
+                  {/* Presets */}
+                  <div className="bg-black/40 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
+                    <h3 className="font-black text-sm uppercase tracking-wider mb-5 flex items-center gap-2">
+                      <Zap size={14} style={{ color: displayColor }} /> {lang === 'cs' ? 'Rychlé Styly' : 'Quick Presets'}
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {PRESETS.map((preset) => (
                         <button
                           key={preset.id}
-                          onClick={() => applyPreset(preset)}
-                          className={`group p-2.5 border rounded text-left transition-all duration-300 hover:scale-[1.02] cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[75px] ${
-                            isMatching ? 'border-white bg-white/5 shadow-lg' : 'border-white/5 hover:border-white/10'
-                          }`}
-                          style={{
-                            boxShadow: isMatching ? `0 0 12px ${preset.accentColor}20` : 'none',
-                            borderColor: isMatching ? preset.accentColor : undefined
-                          }}
+                          onClick={(e) => { e.stopPropagation(); applyPreset(preset); }}
+                          className="p-3 border border-white/5 rounded-lg text-left hover:bg-white/5 transition-all group"
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-black uppercase tracking-wider transition-colors" style={{ color: preset.accentColor }}>
-                              {lang === 'cs' ? preset.nameCs : preset.name}
-                            </span>
-                            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: preset.accentColor.startsWith('var') ? '#c5a880' : preset.accentColor }} />
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: preset.accentColor.startsWith('var') ? '#c5a059' : preset.accentColor }}></div>
                           </div>
-                          
-                          <p className="text-[7.5px] opacity-40 uppercase leading-normal tracking-tight group-hover:opacity-60 transition-opacity mt-1">
-                            {lang === 'cs' ? preset.desc : preset.descEn}
-                          </p>
+                          <div className="text-[10px] font-black uppercase tracking-wider">{lang === 'cs' ? preset.nameCs : preset.name}</div>
                         </button>
-                      );
-                    })}
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div className="text-[8px] text-white/30 uppercase tracking-widest mt-4 pt-2 border-t border-white/5 text-center font-mono">
-                  {lang === 'cs' ? "Kliknutím okamžitě změníte celkový vzhled" : "Instantly load a curated set of aesthetic settings"}
-                </div>
-              </section>
+                </motion.div>
+              )}
 
-            </div>
-          </motion.div>
+              {/* TAB 3: SYSTEM */}
+              {activeTab === 'system' && (
+                <motion.div 
+                  key="system"
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+                  className="space-y-6"
+                >
+                  <div className="bg-black/40 border border-white/10 rounded-xl p-6 md:p-8 backdrop-blur-xl">
+                    <h2 className="text-2xl font-heading font-black uppercase mb-8 flex items-center gap-3">
+                      <Sliders style={{ color: displayColor }} />
+                      {lang === 'cs' ? 'Systémová Nastavení' : 'System Settings'}
+                    </h2>
+
+                    <div className="space-y-6">
+                      {/* Audio Toggle */}
+                      <div className="flex items-center justify-between p-4 border border-white/10 rounded-lg bg-black/50">
+                        <div>
+                          <p className="font-bold text-sm uppercase tracking-wider">{lang === 'cs' ? 'Globální Zvuky' : 'Global Audio'}</p>
+                          <p className="text-[10px] text-white/50">{lang === 'cs' ? 'Zvukové efekty tlačítek a animací' : 'Sound effects for buttons and animations'}</p>
+                        </div>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); toggleSound(); }}
+                          className={`p-4 rounded-full transition-all ${isSoundEnabled ? 'bg-white/10 text-white' : 'bg-black/80 text-white/30 border border-white/10'}`}
+                          style={{ color: isSoundEnabled ? displayColor : '', borderColor: isSoundEnabled ? displayColor : '' }}
+                        >
+                          {isSoundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+                        </button>
+                      </div>
+
+                      {/* Floating Items */}
+                      <div className="flex items-center justify-between p-4 border border-white/10 rounded-lg bg-black/50">
+                        <div>
+                          <p className="font-bold text-sm uppercase tracking-wider">{lang === 'cs' ? 'Částice a Nůžky' : 'Floating Particles'}</p>
+                          <p className="text-[10px] text-white/50">{lang === 'cs' ? 'Létající nástroje na pozadí' : 'Background flying tools'}</p>
+                        </div>
+                        <select 
+                          value={config.floatingItems}
+                          onChange={(e) => setConfig({...config, floatingItems: e.target.value})}
+                          className="bg-black border border-white/20 rounded p-2 text-xs font-mono outline-none"
+                        >
+                          <option value="scissors">Scissors</option>
+                          <option value="clippers">Clippers</option>
+                          <option value="random">Random</option>
+                          <option value="off">Off</option>
+                        </select>
+                      </div>
+
+                      {/* Hard Reset */}
+                      <div className="mt-12 p-5 border border-mafia-red/30 rounded-lg bg-mafia-red/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="flex gap-4 items-center">
+                          <AlertTriangle size={32} className="text-mafia-red shrink-0" />
+                          <div>
+                            <p className="font-bold text-mafia-red text-sm uppercase tracking-wider">{lang === 'cs' ? 'Vymazat Paměť (Hard Reset)' : 'Wipe Memory (Hard Reset)'}</p>
+                            <p className="text-[10px] text-mafia-red/70">{lang === 'cs' ? 'Kompletně smaže váš herní postup, rank a veškerá nastavení. Tuto akci nelze vrátit.' : 'Completely deletes game progress, rank and settings. This cannot be undone.'}</p>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleHardReset(); }}
+                          className="shrink-0 px-6 py-3 bg-mafia-red/20 text-mafia-red border border-mafia-red/50 font-black text-[10px] uppercase tracking-widest rounded hover:bg-mafia-red hover:text-white transition-all"
+                        >
+                          {lang === 'cs' ? 'Smazat Vše' : 'Wipe Data'}
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+            </AnimatePresence>
+          </div>
+
         </div>
       </div>
 
@@ -621,15 +639,6 @@ export default function UserSettings() {
           border: 2px solid white;
           margin-top: -7px;
         }
-        input[type="range"]::-moz-range-thumb {
-          height: 18px;
-          width: 18px;
-          border-radius: 50%;
-          background: var(--user-accent, var(--color-mafia-gold));
-          cursor: pointer;
-          box-shadow: 0 0 10px var(--user-accent, var(--color-mafia-gold));
-          border: 2px solid white;
-        }
         input[type="range"]::-webkit-slider-runnable-track {
           width: 100%;
           height: 3px;
@@ -637,6 +646,9 @@ export default function UserSettings() {
           background: rgba(255, 255, 255, 0.1);
           border-radius: 1.5px;
         }
+        .thin-scrollbar::-webkit-scrollbar { height: 4px; }
+        .thin-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+        .thin-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 2px; }
       `}</style>
     </main>
   );

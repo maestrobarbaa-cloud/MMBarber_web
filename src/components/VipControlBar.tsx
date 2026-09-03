@@ -28,38 +28,26 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import { isDaytime } from "../lib/weather";
+import { useUI } from "@/contexts/UIContext";
 
 type WeatherState = 'clear' | 'clouds' | 'rain' | 'snow' | 'thunderstorm' | 'live';
 
 export function VipControlBar() {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [isNoirMode, setIsNoirMode] = useState(false);
-  const [weatherOverride, setWeatherOverride] = useState<WeatherState>('live');
-  const [isGameEnabled, setIsGameEnabled] = useState(false);
-  const [floatingItemOverride, setFloatingItemOverride] = useState<string>('random');
-  const [accentColor, setAccentColor] = useState<string>('gold');
-  const [visualMode, setVisualMode] = useState<string>('normal');
+  const {
+    isDevMode, setIsDevMode,
+    isNoirMode, setIsNoirMode,
+    weatherOverride, setWeatherOverride,
+    isGameEnabled, setIsGameEnabled,
+    floatingItemOverride, setFloatingItemOverride,
+    atmosphereOverride, setAtmosphereOverride,
+    accentColor, setAccentColor
+  } = useUI();
+
 
   useEffect(() => {
-    // Check dev mode visibility
-    const devMode = localStorage.getItem("mmbarber_dev_mode") === "true";
-    setIsVisible(devMode);
-
-    const handleDevToggle = () => {
-      setIsVisible(localStorage.getItem("mmbarber_dev_mode") === "true");
-    };
-    window.addEventListener("mmbarber-dev-mode-toggle", handleDevToggle);
-
-    // Initial load from localStorage / actual class applied
-    setIsNoirMode(document.documentElement.classList.contains("noir-mode"));
-    const savedWeather = (localStorage.getItem("mmbarber_dev_weather_override") || 'live') as WeatherState;
-    setWeatherOverride(savedWeather);
-    setIsGameEnabled(localStorage.getItem("mmbarber_game_enabled") === "true");
-    setFloatingItemOverride(localStorage.getItem("mmbarber_floating_item_override") || 'random');
-    
-    // Handle accent color
+    // Initial load from localStorage (most already handled by UIContext, but we ensure Accent Color syncs here since it controls DOM classes directly within VipControlBar)
     const initAccentColor = async () => {
       const savedColor = localStorage.getItem("mmbarber_dev_accent_color");
       if (savedColor) {
@@ -72,72 +60,38 @@ export function VipControlBar() {
       }
     };
     initAccentColor();
-    
-    const savedMode = localStorage.getItem("mmbarber_dev_visual_mode") || 'normal';
-    setVisualMode(savedMode);
-    if (savedMode !== 'normal') applyModeClass(savedMode);
 
-    const onModeUpdate = () => {
-      const m = localStorage.getItem("mmbarber_dev_visual_mode") || 'normal';
-      setVisualMode(m);
-      applyModeClass(m);
-    };
-    
-    const onAccentUpdate = async () => {
-      const savedColor = localStorage.getItem("mmbarber_dev_accent_color");
-      if (savedColor) {
-        setAccentColor(savedColor);
-        applyThemeClass(savedColor);
-      } else {
-        setAccentColor('live');
-        const day = await isDaytime();
-        applyThemeClass(day ? 'gold' : 'silver');
-      }
-    };
-
-    const onGameUpdate = () => setIsGameEnabled(localStorage.getItem("mmbarber_game_enabled") === "true");
-    const onNoirUpdate = () => setIsNoirMode(document.documentElement.classList.contains("noir-mode"));
-
-    window.addEventListener("mmbarber-mode-update", onModeUpdate);
-    window.addEventListener("mmbarber-accent-update", onAccentUpdate);
-    window.addEventListener("mmbarber-game-update", onGameUpdate);
-    window.addEventListener("mmbarber-dev-mode-toggle", onNoirUpdate);
-
-    return () => {
-      window.removeEventListener("mmbarber-dev-mode-toggle", handleDevToggle);
-      window.removeEventListener("mmbarber-mode-update", onModeUpdate);
-      window.removeEventListener("mmbarber-accent-update", onAccentUpdate);
-      window.removeEventListener("mmbarber-game-update", onGameUpdate);
-      window.removeEventListener("mmbarber-dev-mode-toggle", onNoirUpdate);
-    };
   }, []);
 
   const toggleNoirMode = () => {
     const newVal = !isNoirMode;
     setIsNoirMode(newVal);
     localStorage.setItem("mmbarber_noir_mode", String(newVal));
-    if (newVal) document.documentElement.classList.add("noir-mode");
-    else document.documentElement.classList.remove("noir-mode");
-    window.dispatchEvent(new Event("mmbarber-dev-mode-toggle"));
   };
 
   const setWeather = (mode: WeatherState) => {
     setWeatherOverride(mode);
     localStorage.setItem("mmbarber_dev_weather_override", mode);
-    window.dispatchEvent(new Event('mmbarber-weather-update'));
+  };
+
+  const setAtmosphere = (mode: string) => {
+    setAtmosphereOverride(mode);
+    if (mode === 'classic') {
+      localStorage.removeItem("mmbarber_atmosphere_override");
+    } else {
+      localStorage.setItem("mmbarber_atmosphere_override", mode);
+    }
   };
 
   const toggleGame = () => {
     const newVal = !isGameEnabled;
     setIsGameEnabled(newVal);
     localStorage.setItem("mmbarber_game_enabled", String(newVal));
-    window.dispatchEvent(new Event('mmbarber-game-update'));
   };
 
   const setFloatingItem = (itemType: string) => {
     setFloatingItemOverride(itemType);
     localStorage.setItem("mmbarber_floating_item_override", itemType);
-    window.dispatchEvent(new Event('mmbarber-floaters-update'));
   };
 
   const updateAccentColor = async (color: string) => {
@@ -169,18 +123,14 @@ export function VipControlBar() {
       if (color === 'gold') {
         setIsNoirMode(false);
         localStorage.setItem("mmbarber_noir_mode", "false");
-        document.documentElement.classList.remove("noir-mode");
       }
       
       // If user forces silver or blood, turn ON noir mode (grayscale)
       if (color === 'silver' || color === 'blood') {
         setIsNoirMode(true);
         localStorage.setItem("mmbarber_noir_mode", "true");
-        document.documentElement.classList.add("noir-mode");
       }
     }
-    window.dispatchEvent(new Event('mmbarber-accent-update'));
-    window.dispatchEvent(new Event('mmbarber-theme-update'));
   };
 
   const applyThemeClass = (color: string) => {
@@ -189,42 +139,43 @@ export function VipControlBar() {
     if (color !== 'gold') document.documentElement.classList.add(`theme-${color}`);
   };
 
-  const updateVisualMode = (mode: string) => {
-    setVisualMode(mode);
-    localStorage.setItem("mmbarber_dev_visual_mode", mode);
-    applyModeClass(mode);
-    window.dispatchEvent(new Event('mmbarber-mode-update'));
-  };
+  if (!isDevMode) return null;
 
-  const applyModeClass = (mode: string) => {
-    const classes = Array.from(document.documentElement.classList).filter(c => c.startsWith('mode-'));
-    classes.forEach(c => document.documentElement.classList.remove(c));
-    if (mode !== 'normal') document.documentElement.classList.add(`mode-${mode}`);
-  };
 
-  if (!isVisible) return null;
 
-  const visualModeItems: { id: string; icon: React.ElementType; label: string }[] = [
-    { id: 'normal', icon: Scissors, label: 'Normal' },
-    { id: 'crt', icon: Monitor, label: 'CRT' },
-    { id: 'matrix', icon: Monitor, label: 'Matrix' },
-    { id: 'pixelate', icon: Contrast, label: 'Pixel' },
-    { id: 'vintage', icon: Camera, label: 'Vintage' },
-    { id: 'noirblue', icon: Wind, label: 'Cold' },
-    { id: 'noirred', icon: Zap, label: 'Hot' },
-    { id: 'chaos', icon: Ghost, label: 'Chaos' },
-    { id: 'valentine', icon: Heart, label: 'LOVE' },
-    { id: 'halloween', icon: Ghost, label: 'FEST' },
-    { id: 'christmas', icon: Gift, label: 'XMAS' },
-    { id: 'newyear', icon: Rocket, label: 'NYE' },
-    { id: 'czech', icon: Flag, label: 'CZECH' },
-    { id: 'friday13', icon: Skull, label: 'FRIDAY 13' },
-    { id: 'secret', icon: Diamond, label: 'SECRET' },
-    { id: 'legacy', icon: Trophy, label: 'LEGACY' }
+  const atmosphereItems = [
+    { id: 'classic', label: 'Classic' },
+    { id: 'winter', label: 'Winter' },
+    { id: 'cny', label: 'C.N.Y.' },
+    { id: 'valentine', label: 'Valentine' },
+    { id: 'spring', label: 'Spring' },
+    { id: 'easter', label: 'Easter' },
+    { id: 'witches', label: 'Witches' },
+    { id: 'may', label: 'May' },
+    { id: 'sakura', label: 'Sakura' },
+    { id: 'midsummer', label: 'Midsummer' },
+    { id: 'summer', label: 'Summer' },
+    { id: 'harvest', label: 'Harvest' },
+    { id: 'halloween', label: 'Halloween' },
+    { id: 'allsouls', label: 'All Souls' },
+    { id: 'christmas', label: 'Xmas' },
+    { id: 'silvestr', label: 'NYE' },
+    { id: 'galaxy', label: 'Galaxy' },
+    { id: 'crt', label: 'CRT' },
+    { id: 'matrix', label: 'Matrix' },
+    { id: 'pixelate', label: 'Pixel' },
+    { id: 'vintage', label: 'Vintage' },
+    { id: 'noirblue', label: 'Cold' },
+    { id: 'noirred', label: 'Hot' },
+    { id: 'chaos', label: 'Chaos' },
+    { id: 'czech', label: 'CZECH' },
+    { id: 'friday13', label: 'FRIDAY 13' },
+    { id: 'secret', label: 'SECRET' },
+    { id: 'legacy', label: 'LEGACY' }
   ];
 
   return (
-    <div className="fixed bottom-6 left-6 z-[200] flex flex-col items-start gap-2">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] flex flex-col items-center gap-2">
       <AnimatePresence>
         {isOpen && (
           <motion.div 
@@ -241,7 +192,7 @@ export function VipControlBar() {
                 <button 
                   onClick={() => {
                     localStorage.setItem("mmbarber_dev_mode", "false");
-                    setIsVisible(false);
+                    setIsDevMode(false);
                   }}
                   className="text-mafia-red hover:scale-110 transition-transform"
                 >
@@ -301,6 +252,26 @@ export function VipControlBar() {
               </div>
             </div>
 
+            {/* Atmosphere Override */}
+            <div className="space-y-2 pt-2 border-t border-mafia-gold/10">
+              <span className="text-[10px] font-bold text-mafia-gold/60 uppercase tracking-widest">Atmosphere</span>
+              <div className="grid grid-cols-4 gap-1">
+                {atmosphereItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setAtmosphere(item.id)}
+                    className={`py-2 px-1 border text-[7.5px] font-black uppercase transition-all truncate text-center ${
+                      (!localStorage.getItem("mmbarber_atmosphere_override") && item.id === 'classic') || atmosphereOverride === item.id 
+                        ? "bg-mafia-gold text-black border-mafia-gold" 
+                        : "bg-mafia-black text-mafia-gold/40 border-mafia-gold/10"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Floating Items Override */}
             <div className="space-y-2 pt-2 border-t border-mafia-gold/10">
               <span className="text-[10px] font-bold text-mafia-gold/60 uppercase tracking-widest">{t.devPanel.tools}</span>
@@ -323,24 +294,7 @@ export function VipControlBar() {
               </div>
             </div>
 
-            {/* Visual Modes Grid (Now with all modes) */}
-            <div className="space-y-2 pt-2 border-t border-mafia-gold/10">
-              <span className="text-[10px] font-bold text-mafia-gold/60 uppercase tracking-widest">{t.devPanel.filters}</span>
-              <div className="grid grid-cols-4 gap-1">
-                {visualModeItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => updateVisualMode(item.id)}
-                    className={`px-1 py-2 flex flex-col items-center justify-center gap-1 border transition-all ${
-                       visualMode === item.id ? "bg-mafia-gold text-black border-mafia-gold" : "bg-mafia-dark text-mafia-gold/40 border-mafia-gold/10"
-                    }`}
-                  >
-                    {item.icon && <item.icon size={10} />}
-                    <span className="text-[7px] font-mono font-black uppercase leading-tight truncate w-full text-center">{item.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+
 
             {/* General Toggles */}
             <div className="space-y-2 pt-2 border-t border-mafia-gold/10">

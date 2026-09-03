@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, X, Eye, HeartPulse, Brain, Activity, Coffee, ShieldCheck , Target } from "lucide-react";
+import { Plus, X, Eye, HeartPulse, Brain, Activity, Coffee, ShieldCheck, Target, User, Heart, Star, Dumbbell, Zap, ShieldAlert, Clock, MessageCircle, Flame, HeartHandshake } from "lucide-react";
 import { ProfileData } from "./ProfileTypes";
 import { CustomSelect } from "./CustomSelect";
 import { AccordionSection } from "./AccordionSection";
@@ -9,7 +9,7 @@ import { PreferenceSelector, TraitSelector, InfoTooltip } from "./SetupHelpers";
 interface StepProps {
   formData: ProfileData;
   setFormData: (data: ProfileData) => void;
-  lang: 'cs' | 'en';
+  lang: 'cs' | 'en' | 'zh';
 }
 
 export const PointsBadge = ({ points }: { points: number }) => (

@@ -15,7 +15,7 @@ const DEFAULT_SERVICES = [
 
 const BARBERS = [
   { id: 'tomas', name: 'Tomáš', image: '/obr/tomasmicka.png', role: 'The Enforcer' },
-  { id: 'nella', name: 'Nella', image: '/obr/nellapelikanova.png', role: 'Mladé ucho' },
+  // { id: 'nella', name: 'Nella', image: '/obr/nellapelikanova.png', role: 'Mladé ucho' },
 ];
 
 interface BookingFlowProps {

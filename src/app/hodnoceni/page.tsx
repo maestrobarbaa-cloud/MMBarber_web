@@ -15,7 +15,8 @@ import {
   Target, ArrowRight, Settings, Check, Plus, Minus,
   ArrowLeft, Home, UserCircle, ChevronDown, Sparkles, Edit3
 } from "lucide-react";
-import { MilitaryInsignia } from "@/components/Profiles";
+import { Profiles } from "@/components/Profiles";
+import { MilitaryInsignia } from "@/components/profiles/MilitaryInsignia";
 import Image from "@/components/OptimizedImage";
 import { playSound } from "@/utils/audio";
 import { trackEvent } from "@/utils/analytics";

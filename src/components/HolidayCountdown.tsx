@@ -297,13 +297,7 @@ export function HolidayCountdown() {
             {h.desc}
           </p>
 
-          {h.isHighSeason && (
-            <div className="absolute bottom-4 flex flex-col items-center opacity-60 group-hover:opacity-100 transition-opacity">
-              <Sparkles size={16} className="text-mafia-gold animate-pulse mb-1" />
-              <span className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.3em]">Premium</span>
-            </div>
-          )}
-
+          {/* removed premium label */}
           <AnimatePresence>
             {isClicking && (
               <motion.div
@@ -365,22 +359,14 @@ export function HolidayCountdown() {
               </p>
             </div>
 
-            {h.isHighSeason && (
-              <div className="hidden md:flex ml-auto flex-col items-end opacity-50">
-                <Sparkles size={16} className="text-mafia-gold animate-pulse mb-1" />
-                <span className="text-[9px] font-mono text-mafia-gold uppercase tracking-widest">Premium</span>
-              </div>
-            )}
-          </div>
+            {/* removed premium label */}          </div>
         </div>
       </motion.div>
     );
   };
 
   return (
-    <section id="holidays" className="relative w-full py-24 bg-transparent overflow-hidden border-y border-mafia-gold/10">
-      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-mafia-black to-transparent z-0"></div>
+    <section id="holidays" className="relative w-full py-24 bg-transparent overflow-hidden">
 
       <div className="w-full mx-auto relative z-10">
         <div className="max-w-7xl mx-auto px-6 mb-12 flex flex-col items-center">

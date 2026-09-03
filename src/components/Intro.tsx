@@ -39,6 +39,7 @@ interface MenuItem {
   id: string;
   titleCs: string;
   titleEn: string;
+  titleZh?: string;
 }
 
 export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) => void }) {
@@ -56,13 +57,13 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
   const flickerRef = useRef<HTMLDivElement>(null);
 
   const menuItems: MenuItem[] = [
-    { id: "rezervace", titleCs: "Rezervace", titleEn: "Reservation" },
-    { id: "start", titleCs: "Přejít na web", titleEn: "Enter Website" },
-    { id: "galerie", titleCs: "Galerie", titleEn: "Gallery" },
-    { id: "vice", titleCs: "Více o podniku", titleEn: "About Us" },
-    { id: "komunita", titleCs: "Rodina MM Barber", titleEn: "MM Barber Family" },
-    { id: "kontakt", titleCs: "Kontakt", titleEn: "Contact" },
-    { id: "seznamka", titleCs: "Seznamka", titleEn: "Dating" },
+    { id: "rezervace", titleCs: "Rezervace", titleEn: "Reservation", titleZh: "预约" },
+    { id: "start", titleCs: "Přejít na web", titleEn: "Enter Website", titleZh: "进入网站" },
+    { id: "galerie", titleCs: "Galerie", titleEn: "Gallery", titleZh: "画廊" },
+    { id: "vice", titleCs: "Více o podniku", titleEn: "About Us", titleZh: "关于我们" },
+    { id: "komunita", titleCs: "Rodina MM Barber", titleEn: "MM Barber Family", titleZh: "MM Barber 家族" },
+    { id: "kontakt", titleCs: "Kontakt", titleEn: "Contact", titleZh: "联系我们" },
+    { id: "seznamka", titleCs: "Seznamka", titleEn: "Dating", titleZh: "交友" },
   ];
 
   useEffect(() => {
@@ -446,7 +447,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
                         ? "bg-mafia-gold text-mafia-black px-6 py-2 md:px-4 md:py-1 md:translate-x-2 shadow-[0_0_20px_rgba(197,160,89,0.4)]" 
                         : "text-smoke-white/50 hover:text-smoke-white/80"
                     }`}>
-                      {lang === 'cs' ? item.titleCs : item.titleEn}
+                      {lang === 'zh' ? (item.titleZh || item.titleEn) : lang === 'cs' ? item.titleCs : item.titleEn}
                     </span>
                   </div>
                 </button>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUI } from "@/contexts/UIContext";
 
 /**
  * Global component that plays a sound effect on background clicks,
@@ -13,6 +14,7 @@ export function GlobalSound() {
   const kulometRef = useRef<HTMLAudioElement | null>(null);
   const [bulletHoles, setBulletHoles] = useState<{ id: number; x: number; y: number; rotation: number; size: number }[]>([]);
   const [weaponType, setWeaponType] = useState<'pistol' | 'burst'>('pistol');
+  const { isSoundEnabled } = useUI();
 
   useEffect(() => {
     // ... audio initialization ...
@@ -33,9 +35,7 @@ export function GlobalSound() {
     };
     
     const handleGlobalClick = (e: MouseEvent) => {
-      const soundSetting = localStorage.getItem("mmbarber_sound_enabled");
-      const isEnabled = soundSetting === null || soundSetting === "true";
-      if (!isEnabled || window.location.pathname === '/rodina/elektrikari/roman-jakubcak') return;
+      if (!isSoundEnabled || window.location.pathname === '/rodina/elektrikari/roman-jakubcak') return;
 
       const target = e.target as HTMLElement;
       const isExempt = target.closest('button, a, [role="button"], .barber-card, .menu-card, .editorial-photo, .holiday-card, .radio-container, .game-container, input, select, textarea, img, canvas');
@@ -118,7 +118,7 @@ export function GlobalSound() {
       window.removeEventListener("click", handleGlobalClick);
       window.removeEventListener("mmbarber-weapon-update", handleWeaponUpdate as EventListener);
     };
-  }, []);
+  }, [isSoundEnabled]);
 
   return (
     <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-[10000] overflow-visible">

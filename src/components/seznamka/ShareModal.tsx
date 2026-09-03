@@ -9,7 +9,7 @@ interface ShareModalProps {
   onClose: () => void;
   url: string;
   title: string;
-  lang: 'cs' | 'en';
+  lang: 'cs' | 'en' | 'zh';
 }
 
 export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, url, title, lang }) => {

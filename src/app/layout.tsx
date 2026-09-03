@@ -25,6 +25,7 @@ import { OfflineGame } from "@/components/OfflineGame";
 import { HeatmapTracker } from "@/components/HeatmapTracker";
 import Script from "next/script";
 import { Scissors } from "lucide-react";
+import { HistoricalEvents } from "@/components/HistoricalEvents";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -434,6 +435,7 @@ export default function RootLayout({
                 <CustomCursor />
                 <MobileCompass />
                 <BugReporter />
+                <HistoricalEvents />
               </>
             </GameProvider>
           </SecurityProvider>

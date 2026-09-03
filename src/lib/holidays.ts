@@ -23,7 +23,7 @@ function normalizeDate(date: Date): Date {
   return d;
 }
 
-export type ThemeType = 'default' | 'matrix' | 'valentine' | 'st-patricks' | 'halloween' | 'christmas' | 'newyear' | 'czech' | 'legacy' | 'easter' | 'friday13' | 'witches' | 'victory' | 'childrens-day';
+export type ThemeType = 'default' | 'matrix' | 'valentine' | 'st-patricks' | 'halloween' | 'christmas' | 'newyear' | 'czech' | 'legacy' | 'easter' | 'friday13' | 'witches' | 'victory' | 'childrens-day' | 'winter' | 'cny' | 'spring' | 'may' | 'midsummer' | 'summer' | 'harvest' | 'allsouls' | 'silvestr' | 'sakura';
 
 /**
  * Returns the currently active theme based on the provided date (or today).
@@ -63,44 +63,81 @@ export function getActiveTheme(currentDate: Date = new Date()): ThemeType {
     return 'victory';
   }
 
+  // April Fools' Day - Matrix (Apr 1)
+  if (month === 4 && day === 1) {
+    return 'matrix';
+  }
+
   // St. Patrick's Day (March 17)
   if (month === 3 && (day >= 16 && day <= 18)) {
     return 'st-patricks';
   }
 
-  // Witches' Night / Pálení čarodějnic (April 30th to May 1st noon)
-  if ((month === 4 && day === 30) || (month === 5 && day === 1 && hour < 12)) {
+  // --- NEW SEASONAL CALENDAR ---
+
+  // Silvestr / New Year (Dec 30 - Jan 1)
+  if ((month === 12 && day >= 30) || (month === 1 && day === 1 && hour < 12)) {
+    return 'silvestr';
+  }
+
+  // Winter / Snow (Jan 2 - Jan 7)
+  if (month === 1 && day >= 2 && day <= 7) {
+    return 'winter';
+  }
+
+  // Chinese New Year (Approx. mid Feb, let's set fixed for showcase Feb 8 - Feb 11)
+  if (month === 2 && day >= 8 && day <= 11) {
+    return 'cny';
+  }
+
+  // Valentine's (Feb 12 - Feb 15)
+  if (month === 2 && day >= 12 && day <= 15) {
+    return 'valentine';
+  }
+  
+  // First Flowers / Spring (March 20 - March 24)
+  if (month === 3 && day >= 20 && day <= 24) {
+    return 'spring';
+  }
+
+  // Witches' Night (Walpurgis) (Apr 29 - Apr 30 night)
+  if (month === 4 && (day === 29 || day === 30)) {
     return 'witches';
   }
 
-  // Legacy / Founder Birthday (Dec 8)
-  if (month === 12 && day === 8) {
-    return 'legacy';
+  // May / Sakura (May 1 - May 5)
+  if (month === 5 && day >= 1 && day <= 5) {
+    return 'may';
   }
 
-  // Matrix (April 1st)
-  if (month === 4 && day === 1) {
-    return 'matrix';
+  // Midsummer (June 22 - June 25)
+  if (month === 6 && day >= 22 && day <= 25) {
+    return 'midsummer';
   }
 
-  // Valentine's (Love) (Feb 14)
-  if (month === 2 && (day >= 13 && day <= 15)) {
-    return 'valentine';
+  // Summer / Lavender (July 15 - July 20)
+  if (month === 7 && day >= 15 && day <= 20) {
+    return 'summer';
   }
 
-  // Halloween / Dušičky (Chaos) (Oct 31 to Nov 2)
-  if ((month === 10 && day === 31) || (month === 11 && (day === 1 || day === 2))) {
+  // Harvest / Dozinky (Sept 1 - Sept 5)
+  if (month === 9 && day >= 1 && day <= 5) {
+    return 'harvest';
+  }
+
+  // Halloween (Oct 29 - Oct 31)
+  if (month === 10 && day >= 29 && day <= 31) {
     return 'halloween';
   }
 
-  // Christmas (Xmas) (Dec 24)
-  if (month === 12 && day === 24) {
-    return 'christmas';
+  // All Souls / Dusicky (Nov 1 - Nov 3)
+  if (month === 11 && day >= 1 && day <= 3) {
+    return 'allsouls';
   }
 
-  // New Year's (NYE) (Dec 31st 12:00 to Jan 1st 12:00)
-  if ((month === 12 && day === 31 && hour >= 12) || (month === 1 && day === 1 && hour < 12)) {
-    return 'newyear';
+  // Christmas (Dec 20 - Dec 26)
+  if (month === 12 && day >= 20 && day <= 26) {
+    return 'christmas';
   }
 
   // Czech National Holidays

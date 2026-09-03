@@ -21,11 +21,11 @@ export function GameFragment({ id, className = "", size = 32, delay = 0 }: GameF
   const [graphicsTier, setGraphicsTier] = useState<string>("high");
 
   useEffect(() => {
-    const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
+    const tier = document.documentElement.getAttribute('data-graphics-tier') || "high";
     setGraphicsTier(tier);
     
     if (tier !== 'low' && tier !== 'lite') {
-      const t = setTimeout(() => setIsVisible(true), 2000 + delay);
+      const t = setTimeout(() => setIsVisible(true), 1000 + delay);
       return () => clearTimeout(t);
     }
   }, [delay]);

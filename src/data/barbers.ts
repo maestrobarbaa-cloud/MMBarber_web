@@ -1,4 +1,4 @@
-import { BarberProfile } from "@/components/Profiles";
+import { BarberProfile } from "@/data/profilesData";
 
 export const barbers: BarberProfile[] = [
   {

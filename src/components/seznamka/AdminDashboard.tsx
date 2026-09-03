@@ -10,7 +10,7 @@ interface AdminDashboardProps {
   onDeleteProfile: (profileName: string) => void;
   onUpdateProfile: (profile: ProfileData) => void;
   onClose: () => void;
-  lang: 'cs' | 'en';
+  lang: 'cs' | 'en' | 'zh';
 }
 
 export function AdminDashboard({ currentUser, allProfiles, onDeleteProfile, onUpdateProfile, onClose, lang }: AdminDashboardProps) {

@@ -9,6 +9,7 @@ import { WeatherOverlay } from "./WeatherOverlay";
 import NextImage from "@/components/OptimizedImage";
 import Image from "./OptimizedImage";
 import { GameFragment } from "./GameFragment";
+import { translations } from "../locales/translations";
 
 const LATIN_SLOGANS: Record<string, string> = {
   // CZECH SLOGANS
@@ -115,6 +116,7 @@ export function Hero() {
   const [isGlitching, setIsGlitching] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [displayText, setDisplayText] = useState("");
+  const [mirroredText, setMirroredText] = useState("");
   const [isEasterEgg, setIsEasterEgg] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
@@ -147,11 +149,14 @@ export function Hero() {
       const now = new Date();
       const hour = now.getHours();
       let slogans = t.hero.description;
+      let baseSlogans = (translations.cs as any).hero.description;
       
       if (hour >= 19 && hour <= 23) {
         slogans = t.hero.nightSlogans || slogans;
+        baseSlogans = (translations.cs as any).hero.nightSlogans || baseSlogans;
       } else if (hour >= 0 && hour < 6) {
         slogans = t.hero.deepNightSlogans || slogans;
+        baseSlogans = (translations.cs as any).hero.deepNightSlogans || baseSlogans;
       }
 
       const isGoldEnabled = typeof window !== 'undefined' && 
@@ -160,22 +165,29 @@ export function Hero() {
       
       if (isGoldEnabled && Math.random() < 0.15 && t.hero.easterEggSlogans) {
         slogans = t.hero.easterEggSlogans;
+        baseSlogans = (translations.cs as any).hero.easterEggSlogans || baseSlogans;
       }
 
       if (Array.isArray(slogans)) {
-        return slogans[Math.floor(Math.random() * slogans.length)];
+        const idx = Math.floor(Math.random() * slogans.length);
+        const displayStr = slogans[idx];
+        const mirrorStr = Array.isArray(baseSlogans) ? baseSlogans[idx] : displayStr;
+        return { display: displayStr, mirrored: mirrorStr };
       }
-      return slogans as string;
+      return { display: slogans as string, mirrored: baseSlogans as string };
     };
 
     const initialSlogan = getNewSlogan();
-    setDisplayText(initialSlogan);
+    setDisplayText(initialSlogan.display);
+    setMirroredText(initialSlogan.mirrored);
 
     // Slogan Rotation Interval
     const sloganInterval = setInterval(() => {
       setIsSloganHovered(currentHover => {
         if (!currentHover) {
-          setDisplayText(getNewSlogan());
+          const sl = getNewSlogan();
+          setDisplayText(sl.display);
+          setMirroredText(sl.mirrored);
         }
         return currentHover;
       });
@@ -263,9 +275,10 @@ export function Hero() {
   // Sync Motto (Kapitola) with Active Hero — only small bottom text
   useEffect(() => {
     const heroData = t.hero as any;
+    if (!heroData) return;
     const mottoes = heroData.mottoes || [heroData.motto];
     // activeHero is 1, 2, or 3. Array is 0-indexed.
-    const targetMotto = mottoes[activeHero - 1] || mottoes[0];
+    const targetMotto = mottoes[activeHero - 1] || mottoes[0] || "";
     setSelectedMotto(targetMotto);
   }, [activeHero, t.hero, lang]);
 
@@ -647,9 +660,9 @@ export function Hero() {
                       className={`text-5xl md:text-6xl tracking-normal leading-[1.3] whitespace-nowrap ${isBloodImage ? 'text-white/40' : (isEasterEgg ? 'text-mafia-gold' : 'text-white/60')}`}
                       style={{ fontFamily: "var(--font-great-vibes), cursive" }}
                     >
-                      {isMounted && displayText && (displayText.length > 40 ? (LATIN_SLOGANS[displayText] || displayText) : (LATIN_SLOGANS[displayText] || displayText).split("").map((char, i) => (
+                      {isMounted && displayText && (displayText.length > 40 ? (LATIN_SLOGANS[mirroredText] || mirroredText) : (LATIN_SLOGANS[mirroredText] || mirroredText).split("").map((char, i) => (
                         <motion.span
-                          key={`reflect-sync-${displayText}-${i}`}
+                          key={`reflect-sync-${mirroredText}-${i}`}
                           initial={{ opacity: 0, filter: "blur(4px)", scale: 1.05 }}
                           animate={{ 
                             opacity: 1,
@@ -694,7 +707,7 @@ export function Hero() {
             className={`${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold'} font-mono text-[10px] tracking-[0.4em] uppercase transition-all duration-700 group-hover:scale-105 group-hover:tracking-[0.6em] group-hover:text-white`}
             style={{ textShadow: isBloodImage ? "0 0 10px rgba(139, 0, 0, 0.4)" : "0 0 10px rgba(var(--color-mafia-gold-rgb), 0.4)" }}
           >
-            {isMounted && selectedMotto.split("").map((char: string, i: number) => {
+            {isMounted && selectedMotto && selectedMotto.split("").map((char: string, i: number) => {
               const firstPeriodIndex = selectedMotto.indexOf('.');
               const isSecondSentence = firstPeriodIndex !== -1 && i > firstPeriodIndex;
               const pauseDelay = isSecondSentence ? 2.0 : 0;
