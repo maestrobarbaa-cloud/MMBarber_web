@@ -1688,12 +1688,16 @@ export const ProfileCard = React.memo(function ProfileCard({
           >
             <Bookmark size={18} className={`${bookmarked ? "fill-mafia-gold" : ""} transition-colors duration-500 pointer-events-none`} />
           </button>
+        </div>
+
+        {/* Mobile Info Button (Bottom Right) */}
+        <div className="absolute bottom-24 right-4 md:hidden z-50 pointer-events-auto">
           <button
             onClick={(e) => { e.stopPropagation(); setShowDetails(true); }}
             title={lang === 'cs' ? 'Více informací' : 'More info'}
-            className="md:hidden w-10 h-10 rounded-full transition-all duration-500 border backdrop-blur-md flex items-center justify-center pointer-events-auto bg-black/60 group-hover:bg-white/10 hover:!bg-white/20 text-white/60 group-hover:text-white/80 hover:!text-white border-white/10 group-hover:border-white/30 hover:!border-white/50"
+            className="w-12 h-12 rounded-full transition-all duration-500 border backdrop-blur-md flex items-center justify-center pointer-events-auto bg-black/60 hover:bg-white/20 text-white/80 hover:text-white border-white/20 shadow-lg"
           >
-            <Info size={18} className="transition-colors duration-500 pointer-events-none" />
+            <Info size={22} className="transition-colors duration-500 pointer-events-none" />
           </button>
         </div>
 

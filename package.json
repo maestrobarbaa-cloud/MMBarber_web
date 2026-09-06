@@ -12,6 +12,7 @@
     "@auth/prisma-adapter": "^2.11.3",
     "@google/genai": "^2.16.0",
     "@prisma/client": "^6.19.3",
+    "@stripe/stripe-js": "^9.15.0",
     "@types/dompurify": "^3.0.5",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
@@ -26,6 +27,7 @@
     "react-easy-crop": "^6.2.3",
     "react-intersection-observer": "^10.0.3",
     "sharp": "^0.33.5",
+    "stripe": "^22.6.1",
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {

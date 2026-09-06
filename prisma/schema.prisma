@@ -60,6 +60,10 @@ model User {
   activityStreakDays Int      @default(0)
   hasGoldFrameUntil DateTime?
   
+  mmcoinFragments   Int       @default(0)
+  lastDailyLogin    DateTime?
+  hasClaimedProfileFragments Boolean @default(false)
+  
   referredBy        User?     @relation("Referrals", fields: [referredById], references: [id])
   referredUsers     User[]    @relation("Referrals")
 
@@ -70,6 +74,8 @@ model User {
   companyProfile CompanyProfile?
   jobApplications JobApplication[]
   jobSwipes       JobSwipe[]
+  
+  fragmentSpawns  FragmentSpawn[]
   
   messagesSent     Message[] @relation("MessagesSent")
   messagesReceived Message[] @relation("MessagesReceived")
@@ -562,6 +568,19 @@ model UserStats {
   pointsThisYear Int    @default(0)
   
   updatedAt      DateTime @updatedAt
+}
+
+model FragmentSpawn {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  location    String   // např. 'POND', 'ADMIRERS', 'PROFILE', 'MATCHES', 'SETTINGS'
+  spawnedAt   DateTime @default(now())
+  expiresAt   DateTime
+  isCollected Boolean  @default(false)
+  
+  @@index([userId, location])
 }
 
 model TelemetryLog {
