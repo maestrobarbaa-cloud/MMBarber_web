@@ -4,6 +4,7 @@ import { ShieldCheck, EyeOff, Clock, Trash2, RotateCcw, Users, MessageCircle, Be
 import { motion, AnimatePresence } from 'framer-motion';
 import { CustomSelect } from './CustomSelect';
 import { ProfileData } from './ProfileCard';
+import { useFragmentsContext } from "@/contexts/FragmentsContext";
 
 interface UserSettingsProps {
   userProfile?: ProfileData | null;
@@ -16,6 +17,11 @@ type TabType = 'chat' | 'privacy' | 'notifications' | 'account' | 'wallet';
 
 export function UserSettings({ userProfile, onUpdateProfile, onResetPreferences, onDeleteAccount }: UserSettingsProps) {
   const { lang } = useTranslation();
+  
+  const fragmentsContext = useFragmentsContext();
+  const currentFragments = fragmentsContext?.fragments || 0;
+  const fragmentsPerCoin = fragmentsContext?.fragmentsPerCoin || 10;
+  const progress = Math.min(100, Math.max(0, (currentFragments / fragmentsPerCoin) * 100));
   
   const [activeTab, setActiveTab] = useState<TabType>('chat');
 
@@ -575,9 +581,29 @@ export function UserSettings({ userProfile, onUpdateProfile, onResetPreferences,
                   </h4>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div className="bg-mafia-gold/10 border border-mafia-gold/30 rounded-xl p-6 flex flex-col items-center justify-center text-center">
-                      <div className="text-3xl font-black text-mafia-gold mb-2">{mmcoins}</div>
-                      <div className="text-xs font-mono text-white/70 uppercase tracking-widest">MMCOINS</div>
+                    <div className="bg-mafia-gold/10 border border-mafia-gold/30 rounded-xl p-6 flex flex-col justify-center">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex flex-col">
+                          <span className="text-3xl font-black text-mafia-gold leading-none">{fragmentsContext?.coins || mmcoins}</span>
+                          <span className="text-[10px] font-mono text-mafia-gold/70 uppercase tracking-widest mt-1">Plné MMCOINS</span>
+                        </div>
+                        <div className="bg-black/50 p-2 rounded text-xs font-mono text-white/50 border border-white/5">
+                          {currentFragments} / {fragmentsPerCoin} 🧩
+                        </div>
+                      </div>
+                      
+                      {/* Progress Bar pro zlomky */}
+                      <div className="w-full h-2 bg-black/60 rounded-full overflow-hidden shadow-inner border border-white/5 relative">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${progress}%` }}
+                          transition={{ duration: 1, ease: "easeOut" }}
+                          className="absolute top-0 left-0 h-full bg-gradient-to-r from-mafia-gold/50 to-mafia-gold shadow-[0_0_10px_rgba(212,175,55,0.5)]"
+                        />
+                      </div>
+                      <div className="text-[9px] text-right text-white/40 mt-1 uppercase tracking-widest font-mono">
+                        Do další mince: {fragmentsPerCoin - currentFragments}
+                      </div>
                     </div>
                     <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6 flex flex-col items-center justify-center text-center">
                       <div className="text-3xl font-black text-blue-400 mb-2">{freeBoosts}</div>

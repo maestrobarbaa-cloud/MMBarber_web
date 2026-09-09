@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { motion, AnimatePresence } from "framer-motion";
+import { Switch } from '@/components/ui/switch';
+import { useFragmentsContext } from '@/contexts/FragmentsContext';
 import Cropper from 'react-easy-crop';
 import { ProfileCard, ProfileData, Pet } from "./ProfileCard";
 import { ANIMAL_TYPES, PET_BREEDS } from "@/lib/PetAtlas";
@@ -75,6 +77,9 @@ interface ProfileSetupProps {
 export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }: ProfileSetupProps) {
   const { lang } = useTranslation();
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
+  const [isAdvancedFieldsOpen, setIsAdvancedFieldsOpen] = useState(false);
+
+  const fragmentsContext = useFragmentsContext();
   
   const [formData, setFormData] = useState<ProfileData>(() => {
     if (initialData) return initialData;
@@ -313,6 +318,10 @@ export function ProfileSetup({ initialData, onFinish, onDeleteAccount, onReset }
             localStorage.removeItem('mmbarber_profile_draft');
             localStorage.removeItem('mmbarber_profile_step');
           }
+          
+          // Získání odměny za profil
+          fragmentsContext?.claimProfileReward();
+          
           onFinish(formData);
         } else {
           console.error('Failed to save profile');

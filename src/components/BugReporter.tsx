@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Bug, X, Lightbulb, MessageSquare } from 'lucide-react';
+import { Bug, X, Lightbulb, MessageSquare, MessageCircleHeart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 
@@ -57,8 +57,8 @@ export function BugReporter() {
         className="fixed top-24 left-1/2 -translate-x-1/2 z-[9999] px-6 py-2.5 rounded-full bg-black/80 text-mafia-gold backdrop-blur-md shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.6)] hover:scale-105 transition-all flex items-center gap-2 group border border-mafia-gold/50"
         title="Zpětná vazba"
       >
-        <MessageSquare className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-        <span className="font-bold uppercase tracking-widest text-[10px]">Chyby & Nápady</span>
+        <MessageCircleHeart size={16} className="text-mafia-gold group-hover:animate-bounce" />
+        <span className="font-bold uppercase tracking-widest text-[10px]">Chyby & Feedback</span>
       </button>
 
       <AnimatePresence>

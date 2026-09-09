@@ -10,13 +10,14 @@ import { DiscoveryHub, SearchFilters, CATEGORIES } from "./DiscoveryHub";
 import { BarberAdCard } from "./BarberAdCard";
 import { useTranslation } from "@/hooks/useTranslation";
 import { calculateCompatibility, generateMatchReport } from "./MatchAlgorithm";
-import { Heart, X, Skull, User, Users, Flag, MessageCircleHeart, Bookmark, ShieldCheck, Crosshair, Crown, Fish, Layers, DollarSign, Dumbbell, Wine, Filter, Search, Sparkles, Calendar, TrendingUp, MapPin, ChevronDown, Repeat, Check, Flame, Zap } from "lucide-react";
+import { Heart, X, Skull, User, Users, Flag, MessageCircleHeart, Bookmark, ShieldCheck, Crosshair, Crown, Fish, Layers, DollarSign, CircleDollarSign, Dumbbell, Wine, Filter, Search, Sparkles, Calendar, TrendingUp, MapPin, ChevronDown, Repeat, Check, Flame, Zap, Diamond } from "lucide-react";
 import { OnboardingGuide } from "./OnboardingGuide";
 import { MatchVoucherCard, VoucherData } from "./MatchVoucherCard";
 import { DsaTransparencyInfo } from "./DsaTransparencyInfo";
 import { LegalHubModal } from "./LegalHubModal";
 import { DynamicEventEngine } from "@/lib/algorithms/DynamicEventEngine";
 import { useActivityTracker } from "@/hooks/useActivityTracker";
+import { useFragmentsContext } from "@/contexts/FragmentsContext";
 
 interface PondProps {
   currentUser?: ProfileData | null;
@@ -29,6 +30,7 @@ interface PondProps {
 export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: PondProps) {
   useActivityTracker(); // Initialize analytics tracking
   const { lang } = useTranslation();
+  const fragmentsContext = useFragmentsContext();
   const eventStatus = DynamicEventEngine.getEventStatus();
   const [allProfiles, setAllProfiles] = useState<ProfileData[]>([]);
   const [profiles, setProfiles] = useState<ProfileData[]>([]);
@@ -247,6 +249,47 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
   const [localMmCoins, setLocalMmCoins] = useState<number>(currentUser?.mmCoins || 0);
   const [hasSubscription, setHasSubscription] = useState<boolean>(currentUser?.subscription && currentUser.subscription !== 'none' ? true : false);
   const [showCoinModal, setShowCoinModal] = useState(false);
+  const [paymentSuccessData, setPaymentSuccessData] = useState<{ amount: number } | null>(null);
+
+  // Check for successful payment on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const paymentStatus = searchParams.get('payment');
+      const sessionId = searchParams.get('session_id');
+
+      if (paymentStatus === 'success' && sessionId) {
+        // Verify payment
+        fetch(`/api/checkout/verify?session_id=${sessionId}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success && data.message.includes('Added')) {
+              // Parse amount added from message "Added X MMCOINs"
+              const addedStr = data.message.split(' ')[1];
+              const added = parseInt(addedStr, 10);
+              if (!isNaN(added)) {
+                setPaymentSuccessData({ amount: added });
+                // Přičteme lokálně
+                setLocalMmCoins(prev => prev + added);
+                // The hard reload will happen when the user clicks OK on the modal
+              }
+            } else if (data.success && data.message === 'Already processed') {
+              const added = data.amount || 0;
+              setPaymentSuccessData({ amount: added });
+            } else {
+              window.history.replaceState({}, document.title, window.location.pathname);
+            }
+          })
+          .catch(err => {
+            console.error('Payment verification failed:', err);
+          });
+      } else if (paymentStatus === 'cancelled') {
+        alert(lang === 'cs' ? 'Platba byla zrušena.' : 'Payment was cancelled.');
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  }, [lang]);
+
   const [showPromoteModal, setShowPromoteModal] = useState(false);
   const [isPromoted, setIsPromoted] = useState(false);
   const [distanceModalVisible, setDistanceModalVisible] = useState<boolean>(false);
@@ -854,10 +897,15 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
             className="flex items-center gap-3 bg-black/80 rounded-full border border-mafia-gold p-3 px-6 backdrop-blur-md shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:bg-mafia-gold/20 hover:shadow-[0_0_30px_rgba(197,160,89,0.6)] transition-all scale-105"
             title={lang === 'cs' ? 'Koupit MMCOIN' : 'Buy MMCOIN'}
           >
-            <span className="text-mafia-gold font-black font-heading tracking-widest text-sm md:text-base uppercase">
-              {localMmCoins}
+            <span className="flex items-center gap-3">
+              <span className="text-mafia-gold font-black font-heading tracking-widest text-sm md:text-base uppercase flex items-center gap-1">
+                {fragmentsContext?.coins || localMmCoins} <CircleDollarSign size={16} />
+              </span>
+              <span className="text-white/50">|</span>
+              <span className="text-blue-400 font-mono tracking-widest text-xs md:text-sm uppercase flex items-center gap-1">
+                {fragmentsContext?.fragments || 0}/{fragmentsContext?.fragmentsPerCoin || 10} <Diamond size={14} className="text-blue-400" />
+              </span>
             </span>
-            <span className="text-white/90 font-mono tracking-widest text-[10px] md:text-xs uppercase font-bold">MMCOIN</span>
           </button>
 
           {/* Tools & Filters Pill */}
@@ -1308,6 +1356,41 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
               </motion.div>
             )}
           </AnimatePresence>
+
+          <AnimatePresence>
+            {paymentSuccessData && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+              >
+                <div className="bg-[#111] border border-mafia-gold/30 rounded-2xl p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(197,160,89,0.2)]">
+                  <div className="w-20 h-20 bg-mafia-gold/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-mafia-gold/50 shadow-[0_0_30px_rgba(197,160,89,0.4)]">
+                    <CircleDollarSign size={40} className="text-mafia-gold" />
+                  </div>
+                  <h2 className="text-2xl font-black font-heading text-mafia-gold mb-2 uppercase tracking-wider">
+                    {lang === 'cs' ? 'Platba Úspěšná!' : 'Payment Successful!'}
+                  </h2>
+                  <p className="text-gray-300 mb-8 font-mono">
+                    {lang === 'cs' 
+                      ? `Získali jste ${paymentSuccessData.amount} MMCOINů. Děkujeme za nákup.` 
+                      : `You received ${paymentSuccessData.amount} MMCOINs. Thank you for your purchase.`}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setPaymentSuccessData(null);
+                      window.location.href = window.location.pathname;
+                    }}
+                    className="w-full bg-mafia-gold text-black font-black font-heading tracking-widest py-3 rounded-lg hover:bg-[#a68648] transition-all hover:scale-105 shadow-[0_0_20px_rgba(197,160,89,0.4)] uppercase"
+                  >
+                    {lang === 'cs' ? 'Pokračovat' : 'Continue'}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <AnimatePresence>
             <CoinPurchaseModal
               isOpen={showCoinModal}
@@ -1316,6 +1399,7 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
               onBuyCoins={(amt) => setLocalMmCoins(prev => prev + amt)}
               onSubscribe={(plan) => setHasSubscription(true)}
               onEditProfile={onEditProfile}
+              fragmentsCount={fragmentsContext?.fragments || 0}
             />
           </AnimatePresence>
           <AnimatePresence>
@@ -1530,7 +1614,8 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
         lang,
         onBuyCoins,
         onSubscribe,
-        onEditProfile
+        onEditProfile,
+        fragmentsCount
       }: {
         isOpen: boolean; 
   onClose: () => void;
@@ -1538,9 +1623,35 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
   onBuyCoins: (amount: number) => void;
   onSubscribe: (plan: string) => void;
   onEditProfile?: (type?: string) => void;
+  fragmentsCount?: number;
 }) => {
   const [amount, setAmount] = React.useState(1);
-  const { ArrowRight, Zap, Sparkles, X } = require('lucide-react');
+  const [isLoading, setIsLoading] = React.useState(false);
+  const { ArrowRight, Zap, Sparkles, X, Loader2, Diamond } = require('lucide-react');
+
+  const handleCheckout = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount }),
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error('Checkout error:', data.error);
+        alert(lang === 'cs' ? 'Chyba při vytvoření platby.' : 'Checkout error.');
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      alert(lang === 'cs' ? 'Chyba při vytvoření platby.' : 'Checkout error.');
+      setIsLoading(false);
+    }
+  };
+
       if (!isOpen) return null;
       return (
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -1558,8 +1669,14 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
           </div>
 
           <div className="flex flex-col items-center mb-6 mt-2">
-            <div className="w-16 h-16 bg-mafia-gold/20 rounded-full flex items-center justify-center border border-mafia-gold/50 mb-4 shadow-[0_0_30px_rgba(197,160,89,0.3)]">
-              <span className="text-3xl font-black text-mafia-gold font-heading tracking-tighter">M</span>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-16 h-16 bg-mafia-gold/20 rounded-full flex items-center justify-center border border-mafia-gold/50 shadow-[0_0_30px_rgba(197,160,89,0.3)]">
+                <span className="text-3xl font-black text-mafia-gold font-heading tracking-tighter">M</span>
+              </div>
+              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex flex-col items-center justify-center border border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.3)]">
+                <Diamond size={20} className="text-blue-400 mb-1" />
+                <span className="text-sm font-black text-blue-400">{fragmentsCount || 0}/10</span>
+              </div>
             </div>
             <h2 className="text-xl font-heading font-black text-mafia-gold uppercase tracking-widest text-center mb-2">
               {lang === 'cs' ? 'Koupit MMCOIN' : 'Buy MMCOIN'}
@@ -1576,50 +1693,51 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                 <span className="text-white text-sm font-bold tracking-widest font-heading uppercase">{lang === 'cs' ? 'Počet MMCOINů' : 'Amount of MMCOINs'}</span>
                 <span className="text-mafia-gold font-bold text-lg">{amount * 20} Kč</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="flex-1 flex items-center bg-black/50 rounded-lg border border-white/10 overflow-hidden">
+              <div className="flex flex-col gap-3">
+                <div className="w-full flex items-center bg-black/50 rounded-lg border border-white/10 overflow-hidden">
                   <button
                     onClick={() => setAmount(Math.max(1, amount - 1))}
-                    className="px-4 py-3 text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+                    className="px-6 py-3 text-white/50 hover:text-white hover:bg-white/10 transition-colors border-r border-white/10"
                   >-</button>
                   <input
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="flex-1 bg-transparent text-center text-white font-bold focus:outline-none"
+                    className="flex-1 min-w-[50px] bg-transparent text-center text-white font-bold focus:outline-none"
                     min="1"
                   />
                   <button
                     onClick={() => setAmount(amount + 1)}
-                    className="px-4 py-3 text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+                    className="px-6 py-3 text-white/50 hover:text-white hover:bg-white/10 transition-colors border-l border-white/10"
                   >+</button>
                 </div>
                 <button
-                  onClick={() => { onBuyCoins(amount); onClose(); }}
-                  className="px-6 py-3 bg-mafia-gold text-black font-bold uppercase tracking-widest rounded-lg hover:bg-white transition-colors"
+                  onClick={handleCheckout}
+                  disabled={isLoading}
+                  className="px-6 py-3 bg-mafia-gold text-black font-bold uppercase tracking-widest rounded-lg hover:bg-white transition-colors disabled:opacity-50 flex items-center justify-center min-w-[100px]"
                 >
-                  {lang === 'cs' ? 'Koupit' : 'Buy'}
+                  {isLoading ? <Loader2 size={20} className="animate-spin" /> : (lang === 'cs' ? 'Koupit' : 'Buy')}
                 </button>
               </div>
             </div>
 
-            {/* Convert Points to Coins */}
-            <div className="p-4 rounded-xl border border-mafia-gold/30 bg-mafia-gold/5 relative overflow-hidden">
-              <div className="absolute -top-10 -right-10 text-mafia-gold/10 blur-2xl">
+            {/* Convert Fragments to Coins */}
+            <div className="p-4 rounded-xl border border-blue-500/30 bg-blue-500/5 relative overflow-hidden">
+              <div className="absolute -top-10 -right-10 text-blue-500/10 blur-2xl">
                 <Sparkles size={100} />
               </div>
               <div className="relative z-10">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-mafia-gold/20 flex items-center justify-center text-mafia-gold">
-                    <Zap size={14} />
+                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                    <Diamond size={14} />
                   </div>
                   <div>
-                    <h3 className="text-white text-sm font-bold tracking-widest font-heading uppercase">{lang === 'cs' ? 'Směnit Body' : 'Convert Points'}</h3>
-                    <p className="text-[10px] text-white/50 font-mono uppercase">{lang === 'cs' ? 'Získej Coiny za profil' : 'Get Coins for profile'}</p>
+                    <h3 className="text-white text-sm font-bold tracking-widest font-heading uppercase">{lang === 'cs' ? 'Složit Fragmenty' : 'Merge Fragments'}</h3>
+                    <p className="text-[10px] text-white/50 font-mono uppercase">{lang === 'cs' ? 'Najdi skryté fragmenty v aplikaci' : 'Find hidden fragments in the app'}</p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between bg-black/40 rounded-lg p-3 border border-white/5 mb-3">
-                  <span className="text-white/60 text-xs font-mono">100 {lang === 'cs' ? 'Bodů' : 'Points'}</span>
+                  <span className="text-white/60 text-xs font-mono">10 {lang === 'cs' ? 'Fragmentů' : 'Fragments'}</span>
                   <span className="text-white/40"><ArrowRight size={14} /></span>
                   <span className="text-mafia-gold font-bold text-xs uppercase tracking-wider">1 MMCOIN</span>
                 </div>
@@ -1628,9 +1746,9 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
                     onClose();
                     if (onEditProfile) onEditProfile(); 
                   }}
-                  className="w-full py-3 bg-transparent border-2 border-mafia-gold/50 text-mafia-gold font-bold uppercase tracking-widest rounded-lg hover:bg-mafia-gold/10 transition-colors"
+                  className="w-full py-3 bg-transparent border-2 border-blue-500/50 text-blue-400 font-bold uppercase tracking-widest rounded-lg hover:bg-blue-500/10 transition-colors"
                 >
-                  {lang === 'cs' ? 'Přejít do Směnárny' : 'Go to Exchange'}
+                  {lang === 'cs' ? 'Více informací' : 'More info'}
                 </button>
               </div>
             </div>
