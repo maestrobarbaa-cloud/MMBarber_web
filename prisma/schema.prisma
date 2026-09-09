@@ -107,7 +107,7 @@ model User {
   employerReviewsReceived EmployerReview[] @relation("EmployerReviewsReceived")
   companyReviewsGiven      CompanyReview[]  @relation("CompanyReviewsGiven")
   companyReviewsReceived   CompanyReview[]  @relation("CompanyReviewsReceived")
-
+  recruitmentApplications  RecruitmentApplication[]
 }
 
 model VerificationToken {
@@ -343,13 +343,13 @@ model Event {
   
   title       String
   description String
-  category    String   // např. "party", "sport", "kultura", "chill"
+  category    String   // napĹ™. "party", "sport", "kultura", "chill"
   region      String   // Kraj / Oblast
-  city        String?  // Konkrétní město
+  city        String?  // KonkrĂ©tnĂ­ mÄ›sto
   eventDate   DateTime
   
-  maxCapacity Int?     // Volitelný limit lidí
-  isPrivate   Boolean  @default(false) // Jen pro přátele/matches
+  maxCapacity Int?     // VolitelnĂ˝ limit lidĂ­
+  isPrivate   Boolean  @default(false) // Jen pro pĹ™Ăˇtele/matches
   
   attendees   EventAttendee[]
   messages    EventMessage[]
@@ -573,5 +573,60 @@ model TelemetryLog {
   screenW   Int?
   screenH   Int?
   timestamp DateTime @default(now())
+}
+
+model VisitorProgress {
+  ipAddress            String   @id
+  totalVisits          Int      @default(0)
+  activeChapter        String   @default("products")
+  productsVisits       Int      @default(0)
+  communityVisits      Int      @default(0)
+  secretVisits         Int      @default(0)
+  lastVisitDate        DateTime @default(now())
+  unlockedAchievements String   @default("[]")
+  collectedFragments   String   @default("[]")
+}
+
+
+model RecruitmentApplication {
+  id              String   @id @default(cuid())
+  applicantId     String   @unique @default(cuid()) // Formát: HOL-2026-001 (vygenerujeme při odeslání)
+  userId          String?
+  
+  // Základní údaje a soubory
+  name            String
+  email           String
+  phone           String?
+  city            String?
+  experience      String?  // Praxe
+  cvUrl           String?
+  coverLetterUrl  String?
+  photoUrl        String?
+  agreedToTerms   Boolean  @default(false)
+  signature       String?
+  
+  // Fáze 1, 2, 3 (Odpovědi a Skóre)
+  phase1Answers   String?  // JSON string
+  phase1Score     Int?
+  phase1Status    String   @default("PENDING") // PENDING, PASSED, FAILED, BORDERLINE
+  
+  phase2Answers   String?  // JSON string
+  phase2Score     Int?
+  phase2Status    String   @default("PENDING") // PENDING, PASSED, FAILED, BORDERLINE
+  
+  phase3Answers   String?  // Osobnostní kolo
+  phase3Score     Int?
+  phase3Status    String   @default("PENDING")
+
+  // Výsledky AI (celkové zhodnocení, red flags, dimenze)
+  aiReport        String?  // JSON string
+  aiPersonalityReport String? // JSON string (Radar data, silné stránky, rizika, atd.)
+  
+  status          String   @default("NEW") // NEW, IN_PROGRESS, COMPLETED, INVITED, REJECTED
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 

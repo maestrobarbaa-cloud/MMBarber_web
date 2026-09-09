@@ -13,16 +13,20 @@ interface Report {
   resolvedAt: string | null;
 }
 
+import { useGame } from "@/contexts/GameContext";
+
 export default function AdminCompromisedAccounts() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const { unlockAchievement } = useGame();
 
   useEffect(() => {
     if (sessionStorage.getItem("mmbarber_admin_auth") === "true") {
       setIsAuthenticated(true);
+      unlockAchievement('investigator');
     }
-  }, []);
+  }, [unlockAchievement]);
 
   useEffect(() => {
     if (!isAuthenticated) return;

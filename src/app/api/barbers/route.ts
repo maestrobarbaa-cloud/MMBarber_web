@@ -12,6 +12,9 @@ export async function GET() {
       specializations: b.specializations ? JSON.parse(b.specializations) : [],
       requiresUnlock: Boolean(b.requiresUnlock),
       missionFailed: Boolean(b.missionFailed),
+      isHidden: Boolean(b.isHidden),
+      quotes: b.quotes ? JSON.parse(b.quotes) : [],
+      quoteTiming: b.quoteTiming ? JSON.parse(b.quoteTiming) : { showFor: 10000, waitFor: 12000 },
       rank: b.rankLevel !== null ? {
         level: b.rankLevel,
         title: b.rankTitle,
@@ -32,7 +35,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, role, image, desc, schedule, bookingLink, specializations, bookingSystemType, structuredSchedule } = body;
+    const { name, role, image, desc, schedule, bookingLink, specializations, bookingSystemType, structuredSchedule, isHidden, quotes, quoteTiming } = body;
     
     if (!name || !role || !image || !desc || !schedule) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -63,6 +66,9 @@ export async function POST(request: Request) {
       requiresUnlock: body.requiresUnlock ? 1 : 0,
       unlockThreshold: body.unlockThreshold || 5,
       missionFailed: body.missionFailed ? 1 : 0,
+      isHidden: body.isHidden ? 1 : 0,
+      quotes: quotes ? JSON.stringify(quotes) : null,
+      quoteTiming: quoteTiming ? JSON.stringify(quoteTiming) : null,
       rankLevel: null,
       rankTitle: null,
       rankStatus: null,
@@ -82,7 +88,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed, bookingSystemType, structuredSchedule } = body;
+    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed, isHidden, bookingSystemType, structuredSchedule, quotes, quoteTiming } = body;
     
     if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
 
@@ -109,6 +115,9 @@ export async function PUT(request: Request) {
       requiresUnlock: requiresUnlock !== undefined ? (requiresUnlock ? 1 : 0) : current.requiresUnlock,
       unlockThreshold: unlockThreshold ?? current.unlockThreshold,
       missionFailed: missionFailed !== undefined ? (missionFailed ? 1 : 0) : current.missionFailed,
+      isHidden: isHidden !== undefined ? (isHidden ? 1 : 0) : current.isHidden,
+      quotes: quotes ? JSON.stringify(quotes) : current.quotes,
+      quoteTiming: quoteTiming ? JSON.stringify(quoteTiming) : current.quoteTiming,
       bookingSystemType: bookingSystemType !== undefined ? bookingSystemType : current.bookingSystemType,
       structuredSchedule: structuredSchedule ? JSON.stringify(structuredSchedule) : current.structuredSchedule
     };
@@ -138,3 +147,4 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Failed to delete barber' }, { status: 500 });
   }
 }
+

@@ -15,8 +15,7 @@ import {
   Briefcase, 
   MapPin, 
   Crown, 
-  Trophy, 
-  Dices, 
+  Gamepad2, 
   Settings, 
   Radio, 
   Sparkles, 
@@ -24,7 +23,9 @@ import {
   VolumeX, 
   Phone, 
   Compass, 
-  Search 
+  Search,
+  Bell,
+  Monitor
 } from "lucide-react";
 import { useUI } from "@/contexts/UIContext";
 import { type Language } from "@/hooks/useTranslation";
@@ -44,7 +45,7 @@ interface MobileMegaMenuProps {
   visitCount: number;
 }
 
-export function MobileMegaMenu({
+export const MobileMegaMenu = React.memo(function MobileMegaMenu({
   isMenuOpen,
   setIsMenuOpen,
   lang,
@@ -230,20 +231,13 @@ export function MobileMegaMenu({
                             <span className="text-[10px] font-mono text-mafia-gold/50 uppercase mt-1">{lang === 'cs' ? 'KOMUNITNÍ HLASOVÁNÍ' : 'COMMUNITY VOTING'}</span>
                          </div>
                       </button>
-                      <button onClick={() => { markShootingOpened(); setIsMenuOpen(false); window.dispatchEvent(new Event('mmbarber-elita-game-open')); }} className={`py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 text-left ${shouldFlashShooting ? 'border-mafia-gold shadow-[0_0_10px_rgba(var(--color-mafia-gold-rgb),0.2)]' : 'border-white/10 hover:border-mafia-gold/30'}`}>
-                         <Trophy size={24} className="text-mafia-red shrink-0" />
+                      <Link href="/hry" onClick={handleNavLinkClick} className="py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 border-white/10 hover:border-mafia-red/30 text-left">
+                         <Gamepad2 size={24} className="text-mafia-red shrink-0" />
                          <div className="flex flex-col leading-tight">
-                            <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'ELITNÍ STŘELBA' : 'ELITE SHOOTING'}</span>
-                            <span className="text-[10px] font-mono text-mafia-red/70 uppercase mt-1">{lang === 'cs' ? 'ZÍSKEJ RESPEKT' : 'EARN RESPECT'}</span>
+                            <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'ZÁBAVA & PODSVĚTÍ' : 'ENTERTAINMENT'}</span>
+                            <span className="text-[10px] font-mono text-mafia-red/50 uppercase mt-1">{lang === 'cs' ? 'MINIHRY A AUTOMAT' : 'MINIGAMES'}</span>
                          </div>
-                      </button>
-                      <button onClick={() => { setIsMenuOpen(false); window.dispatchEvent(new Event('mmbarber-slot-machine-open')); }} className="py-5 px-6 border flex items-center gap-4 active:scale-95 transition-all bg-black/20 border-white/10 hover:border-mafia-gold/30 text-left">
-                         <Dices size={24} className="text-mafia-gold shrink-0" />
-                         <div className="flex flex-col leading-tight">
-                            <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'HAZARDNÍ AUTOMAT' : 'SLOT MACHINE'}</span>
-                            <span className="text-[10px] font-mono text-mafia-gold/50 uppercase mt-1">{lang === 'cs' ? 'KASINO & VÝHRA' : 'CASINO & WIN'}</span>
-                         </div>
-                      </button>
+                      </Link>
                     </div>
                   </motion.div>
                 )}
@@ -290,6 +284,18 @@ export function MobileMegaMenu({
                            <motion.div animate={{ x: isMobileEffectsEnabled ? 22 : 3 }} className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" />
                         </div>
                       </button>
+                      <Link href="/nastaveni" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center justify-between active:scale-95 transition-all bg-black/20 hover:border-mafia-gold/30">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1">
+                            <Settings size={18} className="text-white/40" />
+                          </div>
+                          <div className="flex flex-col leading-tight">
+                            <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'CENTRÁLNÍ NASTAVENÍ' : 'CENTRAL SETTINGS'}</span>
+                            <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest mt-0.5">{lang === 'cs' ? 'PŘIZPŮSOBENÍ WEBU' : 'WEB CUSTOMIZATION'}</span>
+                          </div>
+                        </div>
+                        <ChevronRight size={16} className="text-white/20" />
+                      </Link>
                       <button onClick={toggleSound} className="py-5 px-6 border border-white/10 flex items-center justify-between active:scale-95 transition-all bg-black/20">
                         <div className="flex items-center gap-4">
                           {isSoundEnabled ? <Volume2 size={24} className="text-mafia-gold" /> : <VolumeX size={24} className="text-white/40" />}
@@ -334,4 +340,4 @@ export function MobileMegaMenu({
       )}
     </AnimatePresence>
   );
-}
+});

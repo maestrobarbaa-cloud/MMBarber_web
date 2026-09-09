@@ -248,16 +248,18 @@ export default function UserSettings() {
       onClick={handlePageClick}
       className="min-h-screen bg-mafia-black text-white pt-20 pb-20 px-4 md:px-8 font-sans relative overflow-x-hidden selection:bg-mafia-gold selection:text-mafia-black"
     >
+      {/* Zavřít */}
       <button 
         onClick={(e) => {
           e.stopPropagation();
           playSound("/sounds/click.mp3", 0.2);
           router.push("/");
         }}
-        className="fixed top-6 right-6 md:top-20 md:left-8 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 z-[100] group backdrop-blur-xl shadow-2xl hover:scale-110"
-        style={{ hover: { borderColor: displayColor, color: displayColor } } as any}
+        className="fixed top-6 right-6 md:top-10 md:right-12 z-[100] px-4 md:px-6 py-2 md:py-3 bg-black/50 border border-white/10 text-white hover:bg-mafia-gold hover:text-black hover:border-mafia-gold transition-all duration-300 font-mono text-[10px] md:text-xs uppercase tracking-widest rounded-sm shadow-[0_0_10px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(197,160,89,0.5)] backdrop-blur-md flex items-center gap-2 group"
       >
-        <X size={20} className="transition-transform group-hover:rotate-90 duration-300" />
+        <X size={14} className="group-hover:rotate-90 transition-transform" />
+        <span className="hidden md:inline">[ ESC ] ZAVŘÍT</span>
+        <span className="md:hidden">ZAVŘÍT</span>
       </button>
 
       {/* Background Decorative */}

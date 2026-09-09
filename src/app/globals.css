@@ -220,6 +220,7 @@ html[data-graphics-tier='lite'] *::after {
   mix-blend-mode: normal !important;
   background-blend-mode: normal !important;
   -webkit-box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 html[data-graphics-tier='lite'] img,
@@ -564,16 +565,7 @@ html.mode-blood [style*="background-image"] {
   filter: grayscale(1) brightness(1.1) contrast(1.1) !important;
 }
 
-html.theme-blood .hero-blood-img,
-html.mode-blood .hero-blood-img,
-html.theme-blood img.hero-blood-img,
-html.mode-blood img.hero-blood-img,
-.hero-blood-wrapper,
-.hero-blood-wrapper img,
-img[src*="main-hero-blood"],
-#hero img.hero-blood-img {
-  /* Only inline blur from Hero.tsx is applied now */
-}
+/* hero-blood-img — styly aplikovány inline z Hero.tsx */
 
 /* Also ensure hero background div with direct inline style is handled */
 /* Removed hero-background override to allow global grayscale */
@@ -1292,4 +1284,45 @@ html.noir-mode img[src*="logo.png"] {
     transition-duration: 0ms !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   3D EXPERIENCE + 3D LAB — potlačení globálního UI
+   ═══════════════════════════════════════════════════════════════════════════════ */
+body:has(.experience-page) header,
+body:has(.lab-page) header,
+body:has(.experience-page) [data-header],
+body:has(.lab-page) [data-header],
+body:has(.experience-page) [class*="scroll-indicator"],
+body:has(.lab-page) [class*="scroll-indicator"],
+body:has(.experience-page) [class*="ScrollIndicator"],
+body:has(.lab-page) [class*="ScrollIndicator"],
+body:has(.experience-page) [class*="CustomCursor"],
+body:has(.lab-page) [class*="CustomCursor"],
+body:has(.experience-page) [class*="Atmosphere"],
+body:has(.lab-page) [class*="Atmosphere"],
+body:has(.experience-page) [class*="FilmGrain"],
+body:has(.lab-page) [class*="FilmGrain"],
+body:has(.experience-page) [class*="film-grain"],
+body:has(.lab-page) [class*="film-grain"],
+body:has(.experience-page) [class*="TableOfContents"],
+body:has(.lab-page) [class*="TableOfContents"],
+body:has(.experience-page) [class*="BugReporter"],
+body:has(.lab-page) [class*="BugReporter"],
+body:has(.experience-page) [class*="InstallPrompt"],
+body:has(.lab-page) [class*="InstallPrompt"],
+body:has(.experience-page) [class*="HistoricalEvents"],
+body:has(.lab-page) [class*="HistoricalEvents"],
+body:has(.experience-page) [class*="offline-game"],
+body:has(.lab-page) [class*="offline-game"] {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body:has(.experience-page) main,
+body:has(.lab-page) main {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 

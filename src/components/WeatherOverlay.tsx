@@ -11,6 +11,9 @@ export function WeatherOverlay() {
   const [snowItems, setSnowItems] = useState<{id: number, left: number, duration: number, delay: number, size: number, opacity: number}[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
+  const [isHidden, setIsHidden] = useState(() =>
+    typeof window !== 'undefined' && localStorage.getItem("mmbarber_hide_weather") === "true"
+  );
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 1280);
@@ -28,6 +31,14 @@ export function WeatherOverlay() {
         window.removeEventListener("resize", handleResize);
         window.removeEventListener('mmbarber-mobile-effects-update', ((e: CustomEvent) => setIsMobileEffectsEnabled(e.detail)) as EventListener);
     };
+  }, []);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setIsHidden(localStorage.getItem("mmbarber_hide_weather") === "true");
+    };
+    window.addEventListener("mmbarber-ui-prefs-update", handleUpdate);
+    return () => window.removeEventListener("mmbarber-ui-prefs-update", handleUpdate);
   }, []);
 
   useEffect(() => {
@@ -73,6 +84,7 @@ export function WeatherOverlay() {
   }, []);
 
   if (weather === 'loading') return null;
+  if (isHidden) return null;
 
   const showClearVideo = weather === 'clear' && (!isMobile || isMobileEffectsEnabled);
 

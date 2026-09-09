@@ -35,7 +35,7 @@ export function GlobalSound() {
     };
     
     const handleGlobalClick = (e: MouseEvent) => {
-      if (!isSoundEnabled || window.location.pathname === '/rodina/elektrikari/roman-jakubcak') return;
+      if (!isSoundEnabled || window.location.pathname === '/rodina/remesla') return;
 
       const target = e.target as HTMLElement;
       const isExempt = target.closest('button, a, [role="button"], .barber-card, .menu-card, .editorial-photo, .holiday-card, .radio-container, .game-container, input, select, textarea, img, canvas');

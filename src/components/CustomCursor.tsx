@@ -72,7 +72,7 @@ export function CustomCursor() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); 
 
-  if (!mounted || window.innerWidth < 1024 || isLowTier || window.location.pathname === '/rodina/elektrikari/roman-jakubcak') return null;
+  if (!mounted || window.innerWidth < 1024 || isLowTier || window.location.pathname === '/rodina/remesla') return null;
 
   return (
     <div className="custom-cursor">

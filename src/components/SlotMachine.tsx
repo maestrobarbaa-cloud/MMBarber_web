@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "../hooks/useTranslation";
 import { playSound } from "../utils/audio";
+import { useGame } from "@/contexts/GameContext";
 
 const THEMES = {
   fruits: [
@@ -37,6 +38,7 @@ const THEMES = {
 
 export function SlotMachine() {
   const { lang } = useTranslation();
+  const { unlockAchievement } = useGame();
   const [isOpen, setIsOpen] = useState(false);
   const [gameState, setGameState] = useState<'idle' | 'spinning' | 'won' | 'lost'>('idle');
   const [selectedTheme, setSelectedTheme] = useState<keyof typeof THEMES>('retro');
@@ -82,6 +84,7 @@ export function SlotMachine() {
     if (gameState === 'spinning') return;
     setGameState('spinning');
     playSound("/sounds/hover.mp3", 0.5);
+    unlockAchievement('gambler');
 
     const symbols = THEMES[selectedTheme];
     // Výhra je možná POUZE, pokud je jackpot k dispozici

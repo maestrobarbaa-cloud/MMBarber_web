@@ -91,6 +91,7 @@ export default function AdminDashboardPage() {
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       sessionStorage.setItem("mmbarber_admin_auth", "true");
+      window.dispatchEvent(new Event("mmbarber_admin_auth_changed"));
       checkVouchers();
     } else {
       alert("ACCESS DENIED: INVALID CLEARANCE");
@@ -100,6 +101,7 @@ export default function AdminDashboardPage() {
 
   const handleLogout = () => {
     sessionStorage.removeItem("mmbarber_admin_auth");
+    window.dispatchEvent(new Event("mmbarber_admin_auth_changed"));
     setIsAuthenticated(false);
   };
 
@@ -146,15 +148,6 @@ export default function AdminDashboardPage() {
       link: '/admin/vouchery',
       color: 'rgba(197, 160, 89, 0.25)',
       badge: newVouchersCount > 0 ? newVouchersCount : undefined
-    },
-    {
-      id: 'status',
-      title: 'STATUS OPERATIVCŮ',
-      subtitle: 'OPERATIVE_STATUS',
-      desc: 'Ruční a automatický kalendář stavu online/offline na kartách barberů.',
-      icon: <Activity className="text-mafia-gold" size={40} />,
-      link: '/admin/status',
-      color: 'rgba(34, 197, 94, 0.2)'
     },
     {
       id: 'chat',

@@ -23,9 +23,16 @@ export const HistoricalEvents = () => {
   const [hasFetched, setHasFetched] = useState(false);
   const [dateStr, setDateStr] = useState("");
   const [isClient, setIsClient] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    setIsHidden(localStorage.getItem("mmbarber_hide_historical_events") === "true");
+    const handleUpdate = () => {
+      setIsHidden(localStorage.getItem("mmbarber_hide_historical_events") === "true");
+    };
+    window.addEventListener("mmbarber-ui-prefs-update", handleUpdate);
+    return () => window.removeEventListener("mmbarber-ui-prefs-update", handleUpdate);
   }, []);
 
   const fetchEvents = async () => {
@@ -56,6 +63,7 @@ export const HistoricalEvents = () => {
   };
 
   if (!isClient) return null;
+  if (isHidden) return null;
 
   return (
     <>

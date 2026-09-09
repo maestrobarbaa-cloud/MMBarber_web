@@ -10,6 +10,7 @@ import NextImage from "@/components/OptimizedImage";
 import Image from "./OptimizedImage";
 import { GameFragment } from "./GameFragment";
 import { translations } from "../locales/translations";
+import { useUI } from "../contexts/UIContext";
 
 const LATIN_SLOGANS: Record<string, string> = {
   // CZECH SLOGANS
@@ -23,6 +24,7 @@ const LATIN_SLOGANS: Record<string, string> = {
   "Tady neřešíme, kdo jsi byl. Zajímá nás, s jakou vizí odcházíš.": "Hic non curamus quis fueris. Interest qua visione abeas.",
   "Ne všechno, co tu vytváříme, uvidíš jen v zrcadle.": "Non omnia quae hic creamus in speculo tantum videntur.",
   "Sebevědomí, které si od nás odneseš, u dveří nekončí.": "Fiducia quam hinc aufers ad ostium non desinit.",
+  "Každý tvůj úspěch je i naším úspěchem. Jsme v tom spolu.": "Omnis successus tuus etiam noster est. Una sumus.",
   "Every success of yours is our success too. We're in this together.": "Omnis successus tuus etiam noster est. Una sumus.",
   "Nezáleží na tom, odkud přicházíš. Záleží na tom, co po tobě zůstane.": "Non interest unde venias. Interest quid post te maneat.",
   "Když se rozhodneš změnit pravidla hry, začneš psát novou historii.": "Cum regulas ludi mutare statueris, novam historiam scribere incipies.",
@@ -110,6 +112,8 @@ const LATIN_SLOGANS: Record<string, string> = {
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { t, lang } = useTranslation();
+  const { isLowBandwidth, graphicsTier: _graphicsTier } = useUI();
+  const graphicsTier = _graphicsTier as string;
   
   // Dynamic Hero Logic - Random Start
   const [activeHero, setActiveHero] = useState<1 | 2 | 3>(1);
@@ -121,20 +125,13 @@ export function Hero() {
   const [isMounted, setIsMounted] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
   const [selectedMotto, setSelectedMotto] = useState("");
-  const [graphicsTier, setGraphicsTier] = useState<string>("low");
 
   useEffect(() => {
     setIsMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 1280);
-    const updateTier = () => {
-      const tier = document.documentElement.getAttribute('data-graphics-tier') || "low";
-      setGraphicsTier(tier);
-    };
 
     checkMobile();
-    updateTier();
     window.addEventListener('resize', checkMobile);
-    window.addEventListener('mmbarber-graphics-update', updateTier);
 
     const initialEffectsState = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
     setIsMobileEffectsEnabled(initialEffectsState);
@@ -198,7 +195,6 @@ export function Hero() {
     return () => {
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
-      window.removeEventListener('mmbarber-graphics-update', updateTier);
       clearInterval(sloganInterval);
     };
   }, [t.hero.description, t.hero.easterEggSlogans, t.hero.nightSlogans, t.hero.deepNightSlogans, lang]);
@@ -444,7 +440,7 @@ export function Hero() {
 
       {/* PREMIUM GAMING ARROWS HIDDEN PER USER REQUEST */}
 
-      <div className="absolute inset-0 w-full h-[100dvh] xl:h-full xl:-z-10 pointer-events-none overflow-hidden flex flex-col justify-center xl:rounded-none">
+      <div className="absolute inset-0 w-full h-[100dvh] xl:h-full xl:-z-10 pointer-events-none overflow-hidden hidden md:flex flex-col justify-center xl:rounded-none">
         {/* Main background image with Clean Transition */}
         {graphicsTier !== 'lite' && (
         <AnimatePresence mode="wait">
@@ -461,27 +457,38 @@ export function Hero() {
             exit={{ opacity: 0 }}
             transition={{ 
               opacity: { duration: 0.8, ease: "easeOut" },
-              scale: (isMobile || graphicsTier === 'lite' || graphicsTier === 'low' || graphicsTier === 'medium') 
+              scale: (isMobile || (graphicsTier as string) === 'lite' || graphicsTier === 'low' || graphicsTier === 'medium') 
                 ? { duration: 0 } 
                 : { duration: 15, ease: "easeOut" }
             }}
             className={`absolute inset-0 w-full h-full z-0 overflow-hidden will-change-transform will-change-opacity transform-gpu ${isGlitching ? 'animate-glitch' : ''} ${heroImage.includes('blood') ? 'hero-blood-wrapper' : ''}`}
           >
-
-            <Image
-              src={heroImage}
-              alt="MMBARBER Background"
-              priority
-              unoptimized={graphicsTier !== 'lite' && graphicsTier !== 'low' && graphicsTier !== 'medium'}
-              fill
-              className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${heroImage.includes('blood') ? 'hero-blood-img' : ''}`}
-              style={{ 
-                filter: heroImage.includes('blood') ? 'blur(2.5px)' : undefined 
-              }}
-            />
-            {/* Overlay Gradient - Minimized for absolute maximum clarity and vibrant colors */}
-            <div className={`absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/75 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
-            <div className={`absolute inset-0 bg-black/5 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
+            {/* DATA SAVER MODE: Rendrujeme pouze CSS gradient, pokud je slabý signál */}
+            {isLowBandwidth ? (
+              <div className="absolute inset-0 bg-mafia-black">
+                {/* Fallback CSS Texture & Glow */}
+                <div className="absolute inset-0 opacity-30 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[80%] h-[50%] bg-mafia-gold/20 blur-[100px] rounded-full mix-blend-screen opacity-50"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mafia-black/50 to-mafia-black z-10"></div>
+              </div>
+            ) : (
+              <>
+                <Image
+                  src={heroImage}
+                  alt="MMBARBER Background"
+                  priority
+                  unoptimized={graphicsTier !== 'lite' && graphicsTier !== 'low' && graphicsTier !== 'medium'}
+                  fill
+                  className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${heroImage.includes('blood') ? 'hero-blood-img' : ''}`}
+                  style={{ 
+                    filter: heroImage.includes('blood') ? 'blur(2.5px)' : undefined 
+                  }}
+                />
+                {/* Overlay Gradient - Minimized for absolute maximum clarity and vibrant colors */}
+                <div className={`absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/75 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
+                <div className={`absolute inset-0 bg-black/5 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
+              </>
+            )}
           </motion.div>
         </AnimatePresence>
         )}
@@ -499,7 +506,7 @@ export function Hero() {
           <div 
             onMouseEnter={() => setIsSloganHovered(true)}
             onMouseLeave={() => setIsSloganHovered(false)}
-            className="min-h-[120px] w-full flex flex-col items-center justify-center"
+            className="hidden md:flex min-h-[120px] w-full flex-col items-center justify-center"
           >
             <div className="relative">
               <AnimatePresence mode="wait">
@@ -554,7 +561,7 @@ export function Hero() {
 
           {/* MOBILE GOLD MOTTO - MOVED TO BOTTOM */}
           {graphicsTier !== 'lite' && graphicsTier !== 'low' && (
-          <div className={`absolute bottom-8 left-0 right-0 ${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold/70'} font-mono text-[9px] tracking-[0.2em] uppercase text-center px-6 transition-colors duration-700`}>
+          <div className={`hidden md:block absolute bottom-8 left-0 right-0 ${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold/70'} font-mono text-[9px] tracking-[0.2em] uppercase text-center px-6 transition-colors duration-700`}>
             {isMounted && selectedMotto}
           </div>
           )}
@@ -642,7 +649,7 @@ export function Hero() {
 
               {/* Perfect Mirror Reflection Effect - Disabled for Low/Medium Tiers or hidden when not hovered */}
               {graphicsTier !== 'lite' && graphicsTier !== 'low' && graphicsTier !== 'medium' && isSloganHovered && (
-                <div className="absolute top-full left-0 w-full pointer-events-none select-none mt-20 flex justify-center">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-max pointer-events-none select-none mt-20">
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.6 }}
@@ -651,7 +658,7 @@ export function Hero() {
                     className="w-full flex justify-center overflow-visible"
                     style={{ 
                       transformOrigin: "top center",
-                      transform: "scaleY(-1) scaleX(-1)",
+                      transform: "scaleY(-1)",
                       maskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.6) 40%, transparent 95%)",
                       WebkitMaskImage: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.6) 40%, transparent 95%)",
                     }}
@@ -730,7 +737,7 @@ export function Hero() {
           <div 
             className="absolute top-full left-0 w-full opacity-20 pointer-events-none select-none blur-[2px]"
             style={{ 
-              transform: "scaleY(-0.8) scaleX(-1) translateY(4px)",
+              transform: "scaleY(-0.8) translateY(4px)",
               maskImage: "linear-gradient(to bottom, white, transparent)",
               WebkitMaskImage: "linear-gradient(to bottom, white, transparent)"
             }}

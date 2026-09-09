@@ -14,7 +14,7 @@ import { DynamicSEO } from "@/components/DynamicSEO";
 import { TableOfContents } from "@/components/TableOfContents";
 import { BarberProvider } from "@/contexts/BarberContext";
 import { GameProvider } from "@/contexts/GameContext";
-import { MobileCompass } from "@/components/MobileCompass";
+import dynamic from "next/dynamic";
 import { Providers } from "@/components/Providers";
 import { BugReporter } from "@/components/BugReporter";
 import { AntiTheft } from "@/components/AntiTheft";
@@ -26,6 +26,8 @@ import { HeatmapTracker } from "@/components/HeatmapTracker";
 import Script from "next/script";
 import { Scissors } from "lucide-react";
 import { HistoricalEvents } from "@/components/HistoricalEvents";
+import { ProgressWidget } from "@/components/ProgressWidget";
+import { AdminWidget } from "@/components/AdminWidget";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -433,9 +435,10 @@ export default function RootLayout({
                 <TableOfContents />
                 <ScrollIndicator />
                 <CustomCursor />
-                <MobileCompass />
                 <BugReporter />
                 <HistoricalEvents />
+                <ProgressWidget />
+                <AdminWidget />
               </>
             </GameProvider>
           </SecurityProvider>

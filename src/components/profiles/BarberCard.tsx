@@ -158,7 +158,7 @@ function BarberCard({
               <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={140} />
             ) : (
               <Image 
-                src={barber.image} 
+                src={(barber.image && (barber.image.startsWith("/") || barber.image.startsWith("http"))) ? barber.image : "/obr/placeholder.jpg"} 
                 alt={barber.name} 
                 width={192} 
                 height={192} 
@@ -421,7 +421,7 @@ function BarberCard({
                           <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={220} />
                         ) : (
                           <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
-                            <Image src={barber.image} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
+                            <Image src={(barber.image && (barber.image.startsWith("/") || barber.image.startsWith("http"))) ? barber.image : "/obr/placeholder.jpg"} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
                           </motion.div>
                         )}
                     </div>
@@ -453,7 +453,7 @@ function BarberCard({
                           <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={220} />
                         ) : (
                           <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
-                            <Image src={barber.image} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
+                            <Image src={(barber.image && (barber.image.startsWith("/") || barber.image.startsWith("http"))) ? barber.image : "/obr/placeholder.jpg"} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
                           </motion.div>
                         )}
                     </div>
@@ -596,7 +596,7 @@ function SlotReel({
             style={{ height: reelH }}
           >
             <Image
-              src={barber.image}
+              src={(barber.image && (barber.image.startsWith("/") || barber.image.startsWith("http"))) ? barber.image : "/obr/placeholder.jpg"}
               alt={barber.name}
               width={200}
               height={200}
@@ -755,14 +755,6 @@ export function ChairWithCard({
           transition={{ duration: 0.6, delay: 0.2 }}
           className="absolute -top-16 left-0 w-full flex flex-col items-center justify-center z-50 pointer-events-none gap-2"
         >
-          {liveViewers > 0 && !isSitting && (
-            <div className="flex items-center gap-2 bg-mafia-red/10 border border-mafia-red/30 px-3 py-1 rounded-full animate-pulse shadow-[0_0_10px_rgba(179,0,0,0.5)]">
-              <span className="w-1.5 h-1.5 bg-mafia-red rounded-full"></span>
-              <span className="text-[9px] font-mono text-mafia-red uppercase tracking-widest font-bold">
-                {lang === 'cs' ? `Právě si prohlíží profil ${liveViewers} lidí` : `${liveViewers} people viewing right now`}
-              </span>
-            </div>
-          )}
           <div className="flex flex-row items-center justify-center">
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-mafia-gold/30 mr-4"></div>
             <p className="font-heading text-lg text-mafia-gold italic tracking-[0.2em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
@@ -864,3 +856,4 @@ export function ChairWithCard({
   );
 }
 
+

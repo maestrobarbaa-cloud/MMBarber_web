@@ -1,140 +1,130 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useGame } from "@/contexts/GameContext";
 import { 
   ArrowLeft, 
   Users,
   ShieldCheck,
   Zap,
   BookOpen,
-  Instagram,
-  Facebook,
   Trophy,
   Camera,
   Bell,
   MessageSquare,
-  Lightbulb
+  Lightbulb,
+  Lock,
+  CheckCircle2,
+  Gift
 } from "lucide-react";
 import Link from "next/link";
 import Image from "@/components/OptimizedImage";
 import { Footer } from "@/components/Footer";
 
+const COMMUNITY_LEVELS = [
+  {
+    id: 'grafika',
+    title: 'GRAFIKA',
+    subtitle: 'BRAND ASSETS',
+    desc: 'Stáhni si exkluzivní grafiku a tapety.',
+    icon: Camera,
+    link: '/grafika',
+    xpRequired: 300
+  },
+  {
+    id: 'nabor',
+    title: 'NÁBOR',
+    subtitle: 'KARIÉRA',
+    desc: 'Nábor ambiciózních lidí do týmu.',
+    icon: Users,
+    link: '/komunita/nabor',
+    xpRequired: 700
+  },
+  {
+    id: 'novinky',
+    title: 'NOVINKY',
+    subtitle: 'AKTUALITY',
+    desc: 'Zůstaň v obraze. Nejnovější akce.',
+    icon: Bell,
+    link: '/komunita/novinky',
+    xpRequired: 1150
+  },
+  {
+    id: 'hodnoceni',
+    title: 'HODNOCENÍ',
+    subtitle: 'FEEDBACK',
+    desc: 'Přečti si nebo zanech hodnocení.',
+    icon: ShieldCheck,
+    link: '/komunita/hodnoceni',
+    xpRequired: 1750
+  },
+  {
+    id: 'historky',
+    title: 'HISTORKY Z KŘESLA',
+    subtitle: 'PŘÍBĚHY',
+    desc: 'Zajímavé příběhy a zákulisí.',
+    icon: BookOpen,
+    link: '/komunita/historky',
+    xpRequired: 2400
+  },
+  {
+    id: 'projekty',
+    title: 'PROJEKTY',
+    subtitle: 'SPOLUPRÁCE',
+    desc: 'Speciální projekty a kolaborace.',
+    icon: Zap,
+    link: '/komunita/projekty',
+    xpRequired: 3150
+  },
+  {
+    id: 'sin-slavy',
+    title: 'SÍŇ SLÁVY',
+    subtitle: 'LEGENDY',
+    desc: 'Naši nejvěrnější klienti a legendy.',
+    icon: Trophy,
+    link: '/komunita/sin-slavy',
+    xpRequired: 4000
+  },
+  {
+    id: 'zlepseni',
+    title: 'ZLEPŠENÍ',
+    subtitle: 'NÁPADY',
+    desc: 'Máš nápad jak MMBarber vylepšit?',
+    icon: Lightbulb,
+    link: '/komunita/zlepseni',
+    xpRequired: 4900
+  },
+  {
+    id: 'chat',
+    title: 'TAJNÝ CHAT',
+    subtitle: 'DISKUSE',
+    desc: 'Živá diskuse jen pro elitu.',
+    icon: MessageSquare,
+    link: '/komunita/chat',
+    xpRequired: 5950
+  }
+];
+
 export default function CommunityPage() {
   const { t, lang } = useTranslation();
-  const [visibility, setVisibility] = useState<Record<string, boolean>>({});
+  const { chapterXp } = useGame();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const fetchVisibility = async () => {
-      try {
-        const res = await fetch('/api/settings');
-        if (res.ok) {
-          const data = await res.json();
-          const parsed: Record<string, boolean> = {};
-          if (data.values) {
-            Object.entries(data.values).forEach(([key, val]) => {
-              parsed[key] = val === 'true';
-            });
-          }
-          setVisibility(parsed);
-        }
-      } catch (e) {}
-    };
-    fetchVisibility();
+    setMounted(true);
   }, []);
 
-  const communitySectionsBase = [
-    {
-      id: 'grafika',
-      title: lang === 'cs' ? 'GRAFIKA' : 'GRAPHICS',
-      subtitle: 'BRAND_ASSETS',
-      desc: lang === 'cs' ? 'Stáhni si exkluzivní MMBarber grafiku, tapety a brandové materiály pro tvůj setup.' : 'Download exclusive MMBarber graphics, wallpapers and brand assets for your setup.',
-      icon: <Camera className="text-mafia-gold" size={48} />,
-      link: '/grafika',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    },
-    {
-      id: 'nabor',
-      title: lang === 'cs' ? 'NÁBOR' : 'RECRUITMENT',
-      subtitle: 'KARIÉRA',
-      desc: lang === 'cs' ? 'Nábor ambiciózních mladých lidí. Bude se konat řízení, zájemci ať se dostaví na stříhání.' : 'Recruitment for ambitious young people. Come for a haircut to apply.',
-      icon: <Users className="text-mafia-gold" size={48} />,
-      link: '/komunita/nabor',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    },
-    {
-      id: 'chat',
-      title: lang === 'cs' ? 'CHAT' : 'CHAT',
-      subtitle: 'DISKUSE',
-      desc: lang === 'cs' ? 'Zapoj se do živé diskuse s ostatními členy komunity. Sdílej tipy, zeptej se na radu.' : 'Join live discussions with other community members. Share tips, ask for advice.',
-      icon: <MessageSquare className="text-mafia-gold" size={48} />,
-      link: '/komunita/chat',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    },
-    {
-      id: 'historky',
-      title: lang === 'cs' ? 'HISTORKY Z KŘESLA' : 'BARBER STORIES',
-      subtitle: 'PŘÍBĚHY',
-      desc: lang === 'cs' ? 'Zajímavé příběhy, nečekaná setkání a zákulisí z našeho barbershopu.' : 'Interesting stories, unexpected meetings and behind the scenes from our barbershop.',
-      icon: <BookOpen className="text-mafia-gold" size={48} />,
-      link: '/komunita/historky',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    },
-    {
-      id: 'hodnoceni',
-      title: lang === 'cs' ? 'HODNOCENÍ' : 'REVIEWS',
-      subtitle: 'FEEDBACK',
-      desc: lang === 'cs' ? 'Přečti si, co o nás říkají ostatní, nebo zanech své vlastní hodnocení.' : 'Read what others say about us, or leave your own review.',
-      icon: <ShieldCheck className="text-mafia-gold" size={48} />,
-      link: '/komunita/hodnoceni',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    },
-    {
-      id: 'novinky',
-      title: lang === 'cs' ? 'NOVINKY' : 'NEWS',
-      subtitle: 'AKTUALITY',
-      desc: lang === 'cs' ? 'Zůstaň v obraze. Nejnovější akce, nové služby a důležitá oznámení.' : 'Stay updated. Latest events, new services and important announcements.',
-      icon: <Bell className="text-mafia-gold" size={48} />,
-      link: '/komunita/novinky',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    },
-    {
-      id: 'projekty',
-      title: lang === 'cs' ? 'PROJEKTY' : 'PROJECTS',
-      subtitle: 'SPOLUPRÁCE',
-      desc: lang === 'cs' ? 'Nahlédni pod pokličku našich speciálních projektů a spoluprací.' : 'Take a peek under the hood of our special projects and collaborations.',
-      icon: <Zap className="text-mafia-gold" size={48} />,
-      link: '/komunita/projekty',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    },
-    {
-      id: 'sin-slavy',
-      title: lang === 'cs' ? 'SÍŇ SLÁVY' : 'HALL OF FAME',
-      subtitle: 'LEGENDY',
-      desc: lang === 'cs' ? 'Oslavujeme naše nejvěrnější klienty a legendární účesy.' : 'Celebrating our most loyal clients and legendary haircuts.',
-      icon: <Trophy className="text-mafia-gold" size={48} />,
-      link: '/komunita/sin-slavy',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    },
-    {
-      id: 'zlepseni',
-      title: lang === 'cs' ? 'ZLEPŠENÍ' : 'IMPROVEMENTS',
-      subtitle: 'NÁPADY',
-      desc: lang === 'cs' ? 'Máš nápad, jak MMBarber vylepšit? Sem s ním.' : 'Have an idea how to improve MMBarber? Share it here.',
-      icon: <Lightbulb className="text-mafia-gold" size={48} />,
-      link: '/komunita/zlepseni',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
-    }
-  ];
+  if (!mounted) return null;
 
-  const communitySections = communitySectionsBase.filter(section => {
-    const key = `visibility_komunita_${section.id.replace('-', '_')}`;
-    return visibility[key] !== false; // if undefined or true, it's visible
-  });
+  const currentCommunityXp = chapterXp['community'] || 0;
+  const maxXP = COMMUNITY_LEVELS[COMMUNITY_LEVELS.length - 1].xpRequired;
+  const chapterProgress = Math.min(100, (currentCommunityXp / maxXP) * 100);
 
   return (
-    <div className="min-h-screen bg-black text-smoke-white overflow-x-hidden relative selection:bg-mafia-gold selection:text-mafia-black">
+    <div className="min-h-screen bg-mafia-black text-smoke-white overflow-x-hidden relative selection:bg-mafia-gold selection:text-mafia-black">
       
       {/* Cinematic Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
@@ -159,7 +149,7 @@ export default function CommunityPage() {
         </div>
       </nav>
 
-      <main className="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-40">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 pt-10 pb-40">
         
         <div className="flex flex-col items-center text-center">
           
@@ -169,51 +159,117 @@ export default function CommunityPage() {
             transition={{ duration: 1 }}
             className="flex flex-col items-center w-full"
           >
-            <div className="text-mafia-gold font-mono text-[10px] uppercase tracking-[0.8em] mb-12 flex items-center gap-4">
+            <div className="text-mafia-gold font-mono text-[10px] uppercase tracking-[0.8em] mb-8 flex items-center gap-4">
                <div className="h-[1px] w-12 bg-mafia-gold/30"></div>
                {lang === 'cs' ? "MMBARBER_ECOSYSTEM" : "MMBARBER_ECOSYSTEM"}
                <div className="h-[1px] w-12 bg-mafia-gold/30"></div>
             </div>
 
-            <h1 className="text-7xl md:text-[10rem] font-heading font-black uppercase tracking-tighter italic leading-none mb-12 drop-shadow-[0_20px_50px_rgba(0,0,0,1)]">
+            <h1 className="text-6xl md:text-[8rem] font-heading font-black uppercase tracking-tighter italic leading-none mb-8 drop-shadow-[0_20px_50px_rgba(0,0,0,1)]">
               {t.others.community.title.slice(0, -3)}<span className="text-mafia-gold">{t.others.community.title.slice(-3)}</span>
             </h1>
             
-            <p className="text-2xl md:text-5xl font-heading text-smoke-white leading-tight uppercase tracking-tight mb-16 max-w-4xl">
-              {t.others.community.subtitle}
+            <p className="text-xl md:text-3xl font-heading text-smoke-white leading-tight uppercase tracking-tight mb-8 max-w-4xl">
+              Tvé místo v rodině se odvíjí od tvých zkušeností. Sbírej XP a odemykej nové možnosti v komunitě.
             </p>
 
-            <div className="w-24 h-px bg-mafia-gold/40 mb-32"></div>
+            <div className="inline-flex items-center gap-3 bg-white/5 border border-mafia-gold/30 px-8 py-4 rounded-xl text-mafia-gold font-mono uppercase tracking-widest shadow-[0_0_30px_rgba(197,160,89,0.2)] mb-20">
+              <Zap size={20} className="animate-pulse" />
+              <span className="text-sm">Tvůj vliv v komunitě:</span>
+              <span className="text-2xl font-bold">{currentCommunityXp.toLocaleString()} XP</span>
+            </div>
 
-            {/* Main Action Hubs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full mb-48">
-               {communitySections.map((section, i) => (
-                 <Link href={section.link} key={section.id}>
-                    <motion.div 
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 + i * 0.1 }}
-                      className="group relative p-12 h-full border border-white/10 bg-white/[0.02] backdrop-blur-xl hover:border-mafia-gold/40 transition-all duration-700 overflow-hidden"
-                    >
-                        {/* Background Glow */}
-                        <div 
-                           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-                           style={{ background: `radial-gradient(circle at center, ${section.color}, transparent 70%)` }}
-                        ></div>
+            {/* Timeline Section */}
+            <div className="w-full relative bg-white/[0.02] border border-white/10 rounded-3xl backdrop-blur-xl p-8 md:p-12 shadow-2xl overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+              
+              <div className="flex justify-between items-center mb-12">
+                <h2 className="text-2xl font-light text-white uppercase tracking-[0.3em]">Cesta Komunitou</h2>
+                <div className="text-right">
+                  <div className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest mb-1">Celkový postup</div>
+                  <div className="text-3xl font-light text-white">{Math.floor(chapterProgress)}%</div>
+                </div>
+              </div>
+
+              <div 
+                className="relative py-12 px-4 overflow-x-auto custom-scrollbar"
+                ref={scrollContainerRef}
+              >
+                <div className="flex items-center min-w-max gap-12 md:gap-20 relative px-10">
+                  {/* Background Line */}
+                  <div className="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-[2px] bg-white/10" />
+                  
+                  {/* Active Progress Line */}
+                  <div 
+                    className="absolute left-10 top-1/2 -translate-y-1/2 h-[2px] bg-mafia-gold shadow-[0_0_15px_rgba(197,160,89,0.8)] transition-all duration-1000 ease-out"
+                    style={{ width: `calc(${chapterProgress}% - 40px)` }} 
+                  />
+
+                  {COMMUNITY_LEVELS.map((level, idx) => {
+                    const isCompleted = currentCommunityXp >= level.xpRequired;
+                    const isNext = !isCompleted && currentCommunityXp < level.xpRequired && (idx === 0 || currentCommunityXp >= COMMUNITY_LEVELS[idx - 1].xpRequired);
+                    const Icon = level.icon;
+
+                    return (
+                      <div key={level.id} className="relative z-10 flex flex-col items-center w-56 shrink-0 group">
                         
-                        <div className="relative z-10 flex flex-col items-center">
-                            <div className="mb-10 group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-700">
-                                {section.icon}
-                            </div>
-                            <h3 className="text-sm font-mono text-mafia-gold/60 uppercase tracking-[0.5em] mb-4">{section.subtitle}</h3>
-                            <h2 className="text-4xl font-heading font-black text-white uppercase mb-8 tracking-tighter italic group-hover:text-mafia-gold transition-colors">{section.title}</h2>
-                            <p className="text-smoke-white/40 text-sm leading-relaxed uppercase font-mono tracking-wider max-w-xs">{section.desc}</p>
-                            
-                            <div className="mt-12 w-12 h-[2px] bg-white/10 group-hover:w-full group-hover:bg-mafia-gold transition-all duration-700"></div>
+                        {/* XP Badge */}
+                        <div className={`absolute -top-14 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded bg-black/90 text-[10px] font-mono tracking-widest border whitespace-nowrap transition-all duration-300 shadow-xl
+                          ${isCompleted || isNext ? 'border-mafia-gold/50 text-mafia-gold' : 'border-white/10 text-white/40'}
+                        `}>
+                          {level.xpRequired} XP
                         </div>
-                    </motion.div>
-                 </Link>
-               ))}
+
+                        {/* Node */}
+                        <Link 
+                          href={isCompleted ? level.link : '#'}
+                          onClick={(e) => {
+                            if (!isCompleted) e.preventDefault();
+                          }}
+                          className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500 relative bg-black backdrop-blur-md
+                            ${isCompleted ? 'border-2 border-mafia-gold text-mafia-gold shadow-[0_0_30px_rgba(197,160,89,0.3)] hover:scale-110 hover:bg-mafia-gold/10 cursor-pointer' : 'border border-white/10 text-white/30 cursor-not-allowed'}
+                            ${isNext ? 'border-2 border-white text-white scale-110 shadow-[0_0_30px_rgba(255,255,255,0.2)] animate-pulse' : ''}
+                          `}
+                        >
+                          {isCompleted ? (
+                            <Icon size={32} />
+                          ) : (
+                            isNext ? <Gift size={28} /> : <Lock size={24} />
+                          )}
+                        </Link>
+                        
+                        {/* Reward Info */}
+                        <div className={`mt-8 text-center transition-all duration-500 ${!isCompleted && !isNext ? 'opacity-40' : 'opacity-100'}`}>
+                          <div className="text-xs uppercase tracking-[0.3em] mb-2 font-mono text-mafia-gold/80">
+                            {level.subtitle}
+                          </div>
+                          <div className={`font-black text-xl uppercase tracking-widest mb-3 ${isCompleted || isNext ? 'text-white' : 'text-white/60'}`}>
+                            {level.title}
+                          </div>
+                          <p className="text-sm font-light text-white/50 leading-relaxed">
+                            {level.desc}
+                          </p>
+                        </div>
+                        
+                        {/* Action Button (only if completed) */}
+                        {isCompleted && (
+                          <Link 
+                            href={level.link}
+                            className="mt-6 px-6 py-2 border border-mafia-gold/30 text-mafia-gold font-mono text-[10px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-colors rounded-full"
+                          >
+                            Vstoupit
+                          </Link>
+                        )}
+                        {!isCompleted && isNext && (
+                          <div className="mt-6 px-6 py-2 border border-white/10 text-white/30 font-mono text-[10px] uppercase tracking-widest rounded-full">
+                            Zamčeno
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
           </motion.div>
@@ -221,6 +277,23 @@ export default function CommunityPage() {
       </main>
 
       <Footer />
+
+      <style dangerouslySetInnerHTML={{__html: `
+        .custom-scrollbar::-webkit-scrollbar {
+          height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255,255,255,0.02);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(197,160,89,0.3);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(197,160,89,0.6);
+        }
+      `}} />
     </div>
   );
 }

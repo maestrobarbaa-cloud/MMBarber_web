@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Briefcase, ArrowLeft, ArrowRight, CheckCircle2, XCircle } from 'lucide-react';
 import type { PersonalityType } from './PersonalityTest';
+import { RecruitmentPhase1 } from './RecruitmentPhase1';
 
 interface DynamicJobOffersProps {
   personality: PersonalityType;
@@ -155,32 +156,9 @@ export function DynamicJobOffers({ personality, onReset }: DynamicJobOffersProps
               key="success"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-full flex flex-col items-center text-center"
+              className="w-full flex flex-col items-center justify-center min-h-[400px]"
             >
-              <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-500/10 border border-green-500/30 mb-8 mx-auto">
-                <CheckCircle2 className="text-green-500 w-10 h-10" />
-              </div>
-
-              <h2 className="text-3xl font-heading font-black text-white uppercase tracking-widest mb-6">
-                {quizSuccess ? 'Výborně! Poznáš krávu!' : 'Jsme rádi, že se chceš přidat'}
-              </h2>
-              
-              <p className="text-white/80 font-mono text-sm md:text-base leading-relaxed text-center mb-6 max-w-xl mx-auto">
-                {quizSuccess 
-                  ? 'Zjevně máš všechny potřebné kvalifikace pro práci u nás. Bučíme na stejné vlně.'
-                  : 'Vypadá to, že by nám to mohlo klapat.'}
-                <br /><br />
-                Osobní setkání je ale víc než tisíc slov. Dostav se za námi přímo na pobočku:
-              </p>
-
-              <div className="bg-white/5 border border-white/10 p-6 rounded-xl mb-8">
-                <p className="font-heading font-black text-mafia-gold text-xl uppercase tracking-widest mb-2">MMBARBER</p>
-                <p className="font-mono text-white/70">Sadová 1383<br/>Uherské Hradiště</p>
-              </div>
-
-              <p className="text-white/50 font-mono text-xs uppercase tracking-widest">
-                Těšíme se na tebe!
-              </p>
+              <RecruitmentPhase1 />
             </motion.div>
           ) : null}
         </AnimatePresence>

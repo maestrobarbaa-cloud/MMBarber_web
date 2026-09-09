@@ -230,7 +230,7 @@ const members = [
     div: "elektro",
     role: "Elektro / Revize", roleEn: "Electric / Revision",
     img: "/logo.png",
-    link: "/rodina/elektrikari/roman-jakubcak",
+    link: "/rodina/remesla",
     phone: "+420 732 169 799",
     year: 2026,
     specialHover: "Když to nejde silou, jde to Jakubčákem...",

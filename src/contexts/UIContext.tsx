@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useNetworkStatus, NetworkStatus } from "../hooks/useNetworkStatus";
 
 export type GraphicsTier = "lite" | "low" | "medium" | "high" | "ultra" | "soft";
 export type WeatherState = 'clear' | 'clouds' | 'rain' | 'snow' | 'thunderstorm' | 'live';
@@ -30,6 +31,8 @@ interface UIContextProps {
   setIsNoirMode: (val: boolean) => void;
   isBloodMode: boolean;
   setIsBloodMode: (val: boolean) => void;
+  networkStatus: NetworkStatus;
+  isLowBandwidth: boolean;
 }
 
 const UIContext = createContext<UIContextProps | undefined>(undefined);
@@ -49,6 +52,9 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   
   const [isNoirMode, setIsNoirMode] = useState(false);
   const [isBloodMode, setIsBloodMode] = useState(false);
+
+  const networkStatus = useNetworkStatus();
+  const isLowBandwidth = networkStatus.isLowBandwidth;
 
   useEffect(() => {
     setIsSoundEnabled(localStorage.getItem("mmbarber_sound_enabled") !== "false");
@@ -105,7 +111,8 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
       atmosphereOverride, setAtmosphereOverride,
       accentColor, setAccentColor,
       isNoirMode, setIsNoirMode,
-      isBloodMode, setIsBloodMode
+      isBloodMode, setIsBloodMode,
+      networkStatus, isLowBandwidth
     }}>
       {children}
     </UIContext.Provider>

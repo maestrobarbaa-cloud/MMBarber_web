@@ -3,8 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Lock } from "lucide-react";
 import { getMegaMenuData, type MegaMenuData } from "@/data/megaMenuData";
+import { useGame } from "@/contexts/GameContext";
 import { type Language } from "@/hooks/useTranslation";
 
 interface DesktopMegaMenuProps {
@@ -16,7 +17,7 @@ interface DesktopMegaMenuProps {
   pathname: string;
 }
 
-export function DesktopMegaMenu({
+export const DesktopMegaMenu = React.memo(function DesktopMegaMenu({
   lang,
   hoveredCategory,
   setHoveredCategory,
@@ -26,6 +27,7 @@ export function DesktopMegaMenu({
 }: DesktopMegaMenuProps) {
   const megaMenuData = getMegaMenuData(lang);
   const currentCategory = hoveredCategory as keyof typeof megaMenuData;
+  const { totalCollected, chapterXp } = useGame();
 
   return (
     <AnimatePresence>
@@ -46,25 +48,41 @@ export function DesktopMegaMenu({
                   {group.title}
                 </h3>
                 <ul className="flex flex-col gap-4">
-                  {group.items.map((item, itemIdx) => (
+                  {group.items.map((item, itemIdx) => {
+                    const isLocked = item.requiredXP && (
+                      item.path === '/komunita' 
+                        ? (chapterXp['community'] || 0) < item.requiredXP 
+                        : totalCollected < item.requiredXP
+                    );
+                    
+                    return (
                     <li key={itemIdx}>
-                      <Link
-                        href={item.path}
-                        className="text-smoke-white text-sm font-sans hover:text-mafia-gold transition-colors block whitespace-nowrap"
-                        onClick={(e) => {
-                          setHoveredCategory(null);
-                          if (item.path.includes("#") && pathname === "/") {
-                            e.preventDefault();
-                            document
-                              .querySelector(item.path.replace("/", ""))
-                              ?.scrollIntoView({ behavior: "smooth" });
-                          }
-                        }}
-                      >
-                        {item.name}
-                      </Link>
+                      {isLocked ? (
+                        <div className="text-white/30 text-sm font-sans flex items-center gap-2 cursor-not-allowed opacity-50">
+                          <Lock size={14} className="text-white/30" />
+                          {item.name}
+                          <span className="text-[10px] font-mono text-mafia-gold/40 ml-2">{item.requiredXP} XP</span>
+                        </div>
+                      ) : (
+                        <Link
+                          href={item.path}
+                          className="text-smoke-white text-sm font-sans hover:text-mafia-gold transition-colors block whitespace-nowrap"
+                          onClick={(e) => {
+                            setHoveredCategory(null);
+                            if (item.path.includes("#") && pathname === "/") {
+                              e.preventDefault();
+                              document
+                                .querySelector(item.path.replace("/", ""))
+                                ?.scrollIntoView({ behavior: "smooth" });
+                            }
+                          }}
+                        >
+                          {item.name}
+                        </Link>
+                      )}
                     </li>
-                  ))}
+                  );
+                  })}
                 </ul>
               </div>
             ))}
@@ -105,4 +123,4 @@ export function DesktopMegaMenu({
       )}
     </AnimatePresence>
   );
-}
+});

@@ -14,7 +14,7 @@ const waitingQueue = new Array<string>() // IPs in queue
 let MAX_ACTIVE_USERS = 100 // Default kapacita, lze snížit přes ?test_queue=1 pro otestování
 const SESSION_TIMEOUT_MS = 5 * 60 * 1000 // 5 minut neaktivity = vyhození z activeUsers
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Aplikujeme jen na API cesty
   if (request.nextUrl.pathname.startsWith('/api/')) {
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'

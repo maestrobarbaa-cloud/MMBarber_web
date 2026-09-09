@@ -9,6 +9,7 @@ import Image from "./OptimizedImage";
 import { useRouter } from "next/navigation";
 import { playSound } from "../utils/audio";
 import { GameFragment } from "./GameFragment";
+import { useGame } from "../contexts/GameContext";
 
 
 type Currency = "CZK" | "EUR" | "USD" | "PLN" | "UAH";
@@ -27,6 +28,7 @@ const LANG_CURRENCY: Record<string, Currency> = {
 
 export function Services() {
   const { t, lang } = useTranslation();
+  const { chapterXp } = useGame();
   const router = useRouter();
   const [currency, setCurrency] = useState<Currency>(() => LANG_CURRENCY[lang] ?? "CZK");
 
@@ -167,8 +169,15 @@ export function Services() {
         onClick: () => { router.push('/komunita'); trackEvent("open_community_page"); }
       }
     ];
-    return cards.sort((a, b) => (trackerScores[a.id] || 0) - (trackerScores[b.id] || 0));
-  }, [lang, t, trackerScores, router]);
+    
+    // Zviditělnit komunitu pouze pokud má uživatel v komunitním battlepassu alespoň 100 XP (level 1)
+    const currentCommunityXp = chapterXp['community'] || 0;
+    const filteredCards = currentCommunityXp >= 100 
+      ? cards 
+      : cards.filter(c => c.id !== 'community');
+
+    return filteredCards.sort((a, b) => (trackerScores[a.id] || 0) - (trackerScores[b.id] || 0));
+  }, [lang, t, trackerScores, router, chapterXp]);
 
   const playCardSound = () => {
     playSound("/sounds/card.mp3", 0.9);

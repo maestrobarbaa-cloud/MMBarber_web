@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 import { 
@@ -14,7 +14,9 @@ import {
   Radio,
   Crown,
   Users,
-  Dices
+  Dices,
+  Bell,
+  Settings
 } from "lucide-react";
 import { playSound } from "@/utils/audio";
 
@@ -33,6 +35,8 @@ export function TableOfContents() {
   const [isMounted, setIsMounted] = useState(false);
   const [soundState, setSoundState] = useState(true);
   const [isIntroActive, setIsIntroActive] = useState(false);
+  const [clickStats, setClickStats] = useState<Record<number, number>>({});
+  const [justOpened, setJustOpened] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -54,10 +58,17 @@ export function TableOfContents() {
     readSound();
     window.addEventListener("mmbarber-sound-update-remote", readSound);
 
+    // Load Click Stats
+    try {
+      const stats = localStorage.getItem("mmbarber_radial_stats");
+      if (stats) {
+        setClickStats(JSON.parse(stats));
+      }
+    } catch(e) {}
+
     // Keyboard shortcuts: TAB key triggers weapon wheel selection HUD!
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Tab") {
-        // Allow native Tab navigation if user is focused on an interactive element (input, button, etc.)
         if (document.activeElement && document.activeElement !== document.body) {
           return;
         }
@@ -66,6 +77,8 @@ export function TableOfContents() {
           const nextState = !prev;
           if (nextState) {
             playSound("/sounds/success.mp3", 0.4);
+            setJustOpened(true);
+            setTimeout(() => setJustOpened(false), 500);
           } else {
             playSound("/sounds/click.mp3", 0.2);
           }
@@ -86,9 +99,67 @@ export function TableOfContents() {
     };
   }, [isOpen]);
 
-  const handleSelectWedge = (item: HUDWeaponItem) => {
+  const hudItems: HUDWeaponItem[] = [
+    {
+      name: "Nastavení Webu",
+      desc: "Kompletní správa vzhledu, grafiky, upozornění a zvuků.",
+      subText: "PŘIZPŮSOBENÍ WEBU",
+      icon: <Settings />,
+      link: "/nastaveni",
+      color: "rgba(197, 160, 89, 0.4)"
+    },
+    {
+      name: "Hodnocení a přezdívky",
+      desc: "Zde můžete hodnotit naše barbery a spravovat své uživatelské jméno.",
+      subText: "KOMUNITA",
+      icon: <Crown />,
+      link: "/hodnoceni",
+      color: "rgba(197, 160, 89, 0.4)"
+    },
+    {
+      name: "Zábava & Hry",
+      desc: "Vyzkoušejte elitní střelbu nebo hazardní automat a získejte respekt.",
+      subText: "ZÁBAVA A PODSVĚTÍ",
+      icon: <Dices />,
+      link: "/hry",
+      color: "rgba(255, 255, 255, 0.2)"
+    },
+    {
+      name: "Náš Tým",
+      desc: "Prozkoumejte profily, specializace a celková hodnocení našich barberů.",
+      subText: "ZAMĚSTNANCI",
+      icon: <Users />,
+      link: "/zivotopisy",
+      color: "rgba(255, 255, 255, 0.2)"
+    },
+    {
+      name: "Zavřít menu",
+      desc: "Zavře tento navigační panel a vrátí vás zpět na stránku.",
+      subText: "NAVIGACE",
+      icon: <X />,
+      link: "close",
+      color: "rgba(197, 160, 89, 0.4)"
+    }
+  ];
+
+  // Find Favorite (most clicked) Item
+  const favoriteIndex = useMemo(() => {
+    let max = 0;
+    let fav = -1;
+    for (const [key, val] of Object.entries(clickStats)) {
+       if (val > max) { max = val; fav = parseInt(key); }
+    }
+    return fav;
+  }, [clickStats]);
+
+  const handleSelectWedge = (item: HUDWeaponItem, index: number) => {
     playSound("/sounds/success.mp3", 0.6);
     setIsOpen(false);
+
+    // Save stats
+    const newStats = { ...clickStats, [index]: (clickStats[index] || 0) + 1 };
+    setClickStats(newStats);
+    localStorage.setItem("mmbarber_radial_stats", JSON.stringify(newStats));
 
     if (item.link === "close") {
       return;
@@ -169,81 +240,6 @@ export function TableOfContents() {
     ].join(" ");
   };
 
-  const hudItems: HUDWeaponItem[] = [
-    {
-      name: "Vzhled rozhraní",
-      desc: "Přizpůsobte si barevné schéma, intenzitu záře a vizuální styly webu podle sebe.",
-      subText: "NASTAVENÍ VZHLEDU",
-      icon: <Palette />,
-      link: "/uzivatel",
-      color: "rgba(197, 160, 89, 0.4)"
-    },
-    {
-      name: "Grafika systému",
-      desc: "Otevře panel pro úpravu atmosférických efektů a stínů na webu.",
-      subText: "NASTAVENÍ GRAFIKY",
-      icon: <Monitor />,
-      link: "graphics_settings",
-      color: "rgba(255, 255, 255, 0.2)"
-    },
-    {
-      name: "Zvukové efekty",
-      desc: "Zapnutí nebo vypnutí zvuků na webu.",
-      subText: "NASTAVENÍ ZVUKŮ",
-      icon: <Volume2 />,
-      link: "sound_toggle",
-      color: "rgba(197, 160, 89, 0.3)"
-    },
-    {
-      name: "MMBarber Rádio",
-      desc: "Spustí nebo zastaví rádio s exkluzivním výběrem hudby.",
-      subText: "HUDEBNÍ PŘEHRÁVAČ",
-      icon: <Radio />,
-      link: "radio_toggle",
-      color: "rgba(255, 255, 255, 0.2)"
-    },
-    {
-      name: "Hodnocení a přezdívky",
-      desc: "Zde můžete hodnotit naše barbery a spravovat své uživatelské jméno.",
-      subText: "KOMUNITA",
-      icon: <Crown />,
-      link: "/hodnoceni",
-      color: "rgba(197, 160, 89, 0.4)"
-    },
-    {
-      name: "Elitní střelba",
-      desc: "Zlepšete své reakce a přesnost ve střelecké minihře.",
-      subText: "MINIHRA",
-      icon: <Target />,
-      link: "elite_shooting",
-      color: "rgba(255, 255, 255, 0.2)"
-    },
-    {
-      name: "Hazardní Automat",
-      desc: "Zkuste štěstí v našem retro výherním automatu s exkluzivními odměnami.",
-      subText: "MINIHRA",
-      icon: <Dices />,
-      link: "slot_machine",
-      color: "rgba(197, 160, 89, 0.3)"
-    },
-    {
-      name: "Náš Tým",
-      desc: "Prozkoumejte profily, specializace a celková hodnocení našich barberů.",
-      subText: "ZAMĚSTNANCI",
-      icon: <Users />,
-      link: "/zivotopisy",
-      color: "rgba(255, 255, 255, 0.2)"
-    },
-    {
-      name: "Zavřít menu",
-      desc: "Zavře tento navigační panel a vrátí vás zpět na stránku.",
-      subText: "NAVIGACE",
-      icon: <X />,
-      link: "close",
-      color: "rgba(197, 160, 89, 0.4)"
-    }
-  ];
-
   const activeHoveredItem = hoveredIndex !== null ? hudItems[hoveredIndex] : null;
 
   if (!isMounted) return null;
@@ -253,9 +249,16 @@ export function TableOfContents() {
   return (
     <>
       <div 
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+          setJustOpened(true);
+          setTimeout(() => setJustOpened(false), 500);
+          playSound("/sounds/success.mp3", 0.4);
+        }}
         onMouseEnter={() => {
           setIsOpen(true);
+          setJustOpened(true);
+          setTimeout(() => setJustOpened(false), 500);
           playSound("/sounds/success.mp3", 0.4);
         }}
         className={`fixed left-0 top-0 h-screen w-8 bg-gradient-to-r from-mafia-black to-black/80 border-r border-mafia-gold/40 cursor-pointer transition-all duration-500 hover:w-12 hover:bg-mafia-gold/10 flex flex-col items-center justify-center group z-[29000] hidden xl:flex shadow-[5px_0_15px_rgba(197,160,89,0.15)] ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
@@ -281,16 +284,28 @@ export function TableOfContents() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 w-screen h-screen bg-black z-[45000] flex flex-col items-center justify-center overflow-hidden font-sans select-none"
           >
+            {/* BOOT UP GLITCH EFFECT */}
+            {justOpened && (
+              <motion.div 
+                initial={{ opacity: 0.8 }} 
+                animate={{ opacity: 0 }} 
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="absolute inset-0 bg-white z-[50000] pointer-events-none mix-blend-difference"
+                style={{ clipPath: "polygon(0 10%, 100% 20%, 100% 30%, 0 40%, 0 60%, 100% 70%, 100% 80%, 0 90%)" }}
+              />
+            )}
+
             {/* Global HUD Scanline / CRT overlay */}
-            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] z-10 opacity-30"></div>
+            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] z-10 opacity-40 mix-blend-overlay"></div>
+            <div className="absolute inset-0 pointer-events-none opacity-20 shadow-[inset_0_0_150px_rgba(0,0,0,1)] z-10"></div>
             
             {/* HUD HEADER */}
             <div className="absolute top-10 left-12 right-12 flex items-center justify-between border-b border-white/10 pb-6 z-20">
               <div className="flex items-center gap-4">
                 <Target className="w-8 h-8 text-mafia-gold animate-[spin_8s_linear_infinite]" />
                 <div className="flex flex-col">
-                  <span className="text-white font-heading font-black text-2xl uppercase tracking-widest">MMBARBER NAVIGACE</span>
-                  <span className="text-[10px] text-mafia-gold/60 uppercase tracking-wider">MENU</span>
+                  <span className="text-white font-heading font-black text-2xl uppercase tracking-widest text-shadow-glow">MMBARBER NAVIGACE</span>
+                  <span className="text-[10px] text-mafia-gold/60 uppercase tracking-wider">WEAPON WHEEL</span>
                 </div>
               </div>
               <button 
@@ -298,9 +313,11 @@ export function TableOfContents() {
                   playSound("/sounds/click.mp3", 0.2);
                   setIsOpen(false);
                 }}
-                className="px-6 py-3 bg-white/5 border border-white/10 text-white hover:bg-mafia-gold hover:text-black transition-all font-mono text-xs uppercase tracking-widest rounded-sm"
+                className="fixed top-6 right-6 md:top-10 md:right-12 z-[100] px-4 md:px-6 py-2 md:py-3 bg-black/50 border border-white/10 text-white hover:bg-mafia-gold hover:text-black hover:border-mafia-gold transition-all duration-300 font-mono text-[10px] md:text-xs uppercase tracking-widest rounded-sm shadow-[0_0_10px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(197,160,89,0.5)] backdrop-blur-md flex items-center gap-2 group"
               >
-                [ ESC ] ZAVŘÍT
+                <X size={14} className="group-hover:rotate-90 transition-transform" />
+                <span className="hidden md:inline">[ ESC ] ZAVŘÍT</span>
+                <span className="md:hidden">ZAVŘÍT</span>
               </button>
             </div>
 
@@ -320,23 +337,32 @@ export function TableOfContents() {
                       const startAngle = -(angleStep/2) + i * angleStep;
                       const endAngle = (angleStep/2) + i * angleStep;
                       const isHovered = hoveredIndex === i;
+                      const isFavorite = favoriteIndex === i;
+                      
+                      // Calculate offset for "pop out" effect
+                      const midAngle = (startAngle + endAngle) / 2;
+                      const popAmount = isHovered ? 12 : 0; // Push out by 12px
+                      const popX = polarToCartesian(0, 0, popAmount, midAngle).x;
+                      const popY = polarToCartesian(0, 0, popAmount, midAngle).y;
                       
                       return (
                         <motion.path 
                           key={i}
+                          animate={{ x: popX, y: popY }}
+                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
                           d={getWedgePath(240, 240, 95, 235, startAngle, endAngle)}
                           fill={isHovered ? item.color : "rgba(20, 20, 20, 0.75)"}
-                          stroke={isHovered ? "var(--color-mafia-gold)" : "rgba(255, 255, 255, 0.08)"}
-                          strokeWidth={isHovered ? 2.5 : 1}
-                          className="cursor-pointer transition-all duration-300 ease-out"
+                          stroke={isHovered ? "var(--color-mafia-gold)" : (isFavorite && !isHovered ? "rgba(197, 160, 89, 0.4)" : "rgba(255, 255, 255, 0.08)")}
+                          strokeWidth={isHovered ? 2.5 : (isFavorite ? 2 : 1)}
+                          className="cursor-pointer transition-colors duration-300 ease-out"
                           style={{
-                            filter: isHovered ? `drop-shadow(0 0 15px ${item.color})` : 'none'
+                            filter: isHovered ? `drop-shadow(0 0 15px ${item.color})` : (isFavorite ? 'drop-shadow(0 0 8px rgba(197,160,89,0.3))' : 'none')
                           }}
                           onMouseEnter={() => {
                             setHoveredIndex(i);
                             playSound("/sounds/hover.mp3", 0.1);
                           }}
-                          onClick={() => handleSelectWedge(item)}
+                          onClick={() => handleSelectWedge(item, i)}
                         />
                       );
                     })}
@@ -347,40 +373,49 @@ export function TableOfContents() {
                 {hudItems.map((item, i) => {
                   const angleStep = 360 / hudItems.length;
                   const angleRad = (i * angleStep * Math.PI) / 180.0;
-                  const x = 240 + 172 * Math.sin(angleRad);
-                  const y = 240 - 172 * Math.cos(angleRad);
                   const isHovered = hoveredIndex === i;
+                  
+                  // Same push logic for icons
+                  const popAmount = isHovered ? 12 : 0;
+                  const centerX = 240 + popAmount * Math.sin(angleRad);
+                  const centerY = 240 - popAmount * Math.cos(angleRad);
+
+                  // Adjusted radius to perfectly center icons vertically within the wedge (95 + 235) / 2 = 165
+                  const x = centerX + 165 * Math.sin(angleRad);
+                  const y = centerY - 165 * Math.cos(angleRad);
+                  
+                  const isFavorite = favoriteIndex === i;
 
                   return (
-                    <button
+                    <motion.button
                       key={i}
-                      onClick={() => handleSelectWedge(item)}
+                      onClick={() => handleSelectWedge(item, i)}
                       onMouseEnter={() => {
                         setHoveredIndex(i);
                         playSound("/sounds/hover.mp3", 0.1);
                       }}
-                      className="absolute w-14 h-14 rounded-full border flex items-center justify-center transition-all duration-300 z-20 cursor-pointer"
+                      animate={{ left: x, top: y }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      className="absolute w-14 h-14 rounded-full border flex items-center justify-center z-20 cursor-pointer"
                       style={{
-                        left: `${x}px`,
-                        top: `${y}px`,
-                        backgroundColor: isHovered ? "var(--color-mafia-gold)" : "rgba(10, 10, 10, 0.9)",
-                        borderColor: isHovered ? "white" : "rgba(255, 255, 255, 0.15)",
+                        backgroundColor: isHovered ? "var(--color-mafia-gold)" : (isFavorite ? "rgba(197, 160, 89, 0.15)" : "rgba(10, 10, 10, 0.9)"),
+                        borderColor: isHovered ? "white" : (isFavorite ? "rgba(197, 160, 89, 0.6)" : "rgba(255, 255, 255, 0.15)"),
                         color: isHovered ? "black" : "var(--color-mafia-gold)",
-                        boxShadow: isHovered ? "0 0 25px var(--color-mafia-gold)" : "none",
+                        boxShadow: isHovered ? "0 0 25px var(--color-mafia-gold)" : (isFavorite ? "0 0 15px rgba(197,160,89,0.2)" : "none"),
                         transform: `translate(-50%, -50%) scale(${isHovered ? 1.15 : 1.0})`
                       }}
                     >
                       {React.cloneElement(item.icon as React.ReactElement<{ size?: number }>, { size: 22 })}
-                    </button>
+                    </motion.button>
                   );
                 })}
 
                 {/* Inner HUD Circular Card (Center Focal Point) */}
                 <div 
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] rounded-full bg-mafia-black border-2 flex flex-col items-center justify-center p-4 text-center z-30 transition-all duration-300 shadow-[inset_0_0_20px_rgba(0,0,0,0.9)]"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] rounded-full bg-mafia-black border-2 flex flex-col items-center justify-center p-4 text-center z-30 transition-all duration-300 shadow-[inset_0_0_30px_rgba(0,0,0,0.9)]"
                   style={{
                     borderColor: activeHoveredItem ? "var(--color-mafia-gold)" : "rgba(255, 255, 255, 0.1)",
-                    boxShadow: activeHoveredItem ? `0 0 35px ${activeHoveredItem.color}` : "none"
+                    boxShadow: activeHoveredItem ? `0 0 45px ${activeHoveredItem.color}, inset 0 0 30px ${activeHoveredItem.color}` : "none"
                   }}
                 >
                   <AnimatePresence mode="wait">
@@ -393,13 +428,13 @@ export function TableOfContents() {
                         transition={{ duration: 0.2 }}
                         className="flex flex-col items-center justify-center h-full"
                       >
-                        <div className="text-mafia-gold mb-2">
-                          {React.cloneElement(activeHoveredItem.icon as React.ReactElement<{ size?: number }>, { size: 32 })}
+                        <div className="text-mafia-gold mb-2 drop-shadow-[0_0_8px_rgba(197,160,89,0.9)]">
+                          {React.cloneElement(activeHoveredItem.icon as React.ReactElement<{ size?: number }>, { size: 36 })}
                         </div>
-                        <span className="text-[10px] text-white/50 uppercase tracking-wider font-semibold mb-1">
+                        <span className="text-[10px] text-white/70 uppercase tracking-wider font-semibold mb-1">
                           {activeHoveredItem.subText}
                         </span>
-                        <h3 className="text-white font-heading font-bold text-sm uppercase tracking-wider leading-tight">
+                        <h3 className="text-white font-heading font-black text-sm uppercase tracking-wider leading-tight drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
                           {activeHoveredItem.name}
                         </h3>
                       </motion.div>
@@ -409,9 +444,9 @@ export function TableOfContents() {
                         animate={{ opacity: 1 }}
                         className="flex flex-col items-center justify-center h-full"
                       >
-                        <Target className="w-8 h-8 text-white/20 mb-3" />
-                        <span className="text-[12px] font-heading font-bold text-white/50 uppercase tracking-widest">
-                          MENU
+                        <Target className="w-10 h-10 text-white/10 mb-3 animate-pulse" />
+                        <span className="text-[12px] font-heading font-black text-white/30 uppercase tracking-widest">
+                          SYSTEM
                         </span>
                       </motion.div>
                     )}
@@ -419,71 +454,97 @@ export function TableOfContents() {
                 </div>
                 
                 {/* Rotating decorative rings */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full border border-white/5 pointer-events-none animate-[spin_40s_linear_infinite]" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border border-dashed border-mafia-gold/20 pointer-events-none animate-[spin_20s_linear_infinite_reverse]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full border border-white/10 pointer-events-none animate-[spin_40s_linear_infinite]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border border-dashed border-mafia-gold/30 pointer-events-none animate-[spin_20s_linear_infinite_reverse]" />
               </div>
 
               {/* RIGHT COLUMN: PREMIUM DESCRIPTION ONLY PANEL */}
-              <div className="w-[420px] h-[480px] flex flex-col justify-center shrink-0">
+              <div className="w-[480px] h-[480px] flex flex-col justify-center shrink-0">
                 <AnimatePresence mode="wait">
                   {activeHoveredItem ? (
                     <motion.div
                       key={hoveredIndex}
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 50 }}
-                      transition={{ duration: 0.3 }}
-                      className="bg-mafia-black/90 border border-mafia-gold/20 p-8 flex flex-col justify-between rounded-sm h-[320px] shadow-[0_20px_50px_rgba(0,0,0,0.85)] text-left relative overflow-hidden"
+                      initial={{ opacity: 0, x: 50, filter: "blur(10px)", scale: 0.95 }}
+                      animate={{ opacity: 1, x: 0, filter: "blur(0px)", scale: 1 }}
+                      exit={{ opacity: 0, x: 50, filter: "blur(10px)", scale: 0.95 }}
+                      transition={{ duration: 0.3, type: "spring", stiffness: 200, damping: 20 }}
+                      className="bg-black/80 border border-mafia-gold/30 p-8 flex flex-col justify-between rounded-sm h-[360px] text-left relative overflow-hidden backdrop-blur-xl"
                       style={{
-                        boxShadow: `0 20px 50px rgba(0,0,0,0.9), 0 0 20px ${activeHoveredItem.color}`
+                        boxShadow: `0 20px 50px rgba(0,0,0,0.9), inset 0 0 60px rgba(0,0,0,0.8), 0 0 30px ${activeHoveredItem.color}`
                       }}
                     >
+                      {/* Watermark Icon */}
+                      <div className="absolute -bottom-10 -right-10 text-white/[0.03] rotate-[-15deg] pointer-events-none">
+                         {React.cloneElement(activeHoveredItem.icon as React.ReactElement<{ size?: number }>, { size: 280 })}
+                      </div>
+
                       {/* Smooth top accent line */}
-                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-mafia-gold/30" />
+                      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-mafia-gold to-transparent shadow-[0_0_15px_rgba(197,160,89,1)]" />
+                      <div className="absolute bottom-0 left-0 w-1/3 h-[2px] bg-mafia-gold/30" />
+                      <div className="absolute bottom-0 left-0 w-2 h-full bg-gradient-to-b from-mafia-gold/20 to-transparent" />
 
                       <div className="flex flex-col gap-2 z-20">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-mafia-gold" />
-                          <span className="text-[11px] text-mafia-gold uppercase tracking-widest font-semibold">{activeHoveredItem.subText}</span>
+                        <div className="flex items-center gap-3 mb-2 bg-mafia-gold/10 w-max px-3 py-1 rounded-sm border border-mafia-gold/20">
+                          <span className="w-2 h-2 rounded-full bg-mafia-gold animate-pulse shadow-[0_0_8px_rgba(197,160,89,1)]" />
+                          <span className="text-[10px] text-mafia-gold uppercase tracking-[0.3em] font-black">{activeHoveredItem.subText}</span>
                         </div>
-                        <h3 className="text-white font-heading font-bold text-3xl">
+                        <h3 className="text-white font-heading font-black text-4xl drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] tracking-wide">
                           {activeHoveredItem.name}
                         </h3>
                       </div>
                       
-                      <div className="my-6 z-20">
-                        <p className="text-[14px] text-smoke-white/80 leading-relaxed">
+                      <div className="my-6 z-20 flex-1 border-l-2 border-white/10 pl-5 relative">
+                        {/* Ammo / Stat Bars for flavor */}
+                        <div className="absolute -left-6 top-0 bottom-0 w-[2px] bg-white/5 flex flex-col justify-between py-1">
+                          {[...Array(6)].map((_, idx) => (
+                             <div key={idx} className="w-full h-1 bg-mafia-gold/30"></div>
+                          ))}
+                        </div>
+
+                        <p className="text-base text-smoke-white/90 leading-relaxed font-sans">
                           {activeHoveredItem.link === "sound_toggle"
-                            ? `Zapnutí nebo vypnutí zvuků na webu. Zvukové efekty jsou nyní: ${soundState ? "ZAPNUTÉ" : "VYPNUTÉ"}.`
+                            ? `Tato položka umožňuje zapnutí nebo vypnutí veškerých zvuků na webu. Zvukové efekty jsou v tuto chvíli: ${soundState ? "ZAPNUTÉ" : "VYPNUTÉ"}.`
                             : activeHoveredItem.desc}
                         </p>
                       </div>
 
-                      <div className="flex items-center border-t border-white/10 pt-4 z-20 mt-auto">
-                        <span className="text-[11px] text-mafia-gold font-semibold uppercase tracking-widest hover:text-white transition-colors">
-                          KLIKNUTÍM OTEVŘÍT &rarr;
-                        </span>
+                      <div className="flex items-center justify-between border-t border-white/10 pt-5 z-20 mt-auto">
+                        <div className="flex flex-col">
+                           <span className="text-[9px] text-white/30 uppercase tracking-[0.2em]">AKCE</span>
+                           <span className="text-[13px] text-mafia-gold font-black uppercase tracking-widest hover:text-white transition-colors cursor-pointer drop-shadow-[0_0_5px_rgba(197,160,89,0.6)]">
+                             [ POTVRDIT LKM ] &rarr;
+                           </span>
+                        </div>
+                        
+                        <div className="text-[10px] font-mono text-mafia-gold/30 text-right">
+                           {hoveredIndex !== null && clickStats[hoveredIndex] ? `POUŽITO: ${clickStats[hoveredIndex]}x` : 'POUŽITO: 0x'}
+                        </div>
                       </div>
                     </motion.div>
                   ) : (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="bg-white/[0.02] border border-white/5 p-8 flex flex-col justify-between rounded-sm text-left h-[320px] relative overflow-hidden"
+                      className="bg-black/40 border border-white/5 p-8 flex flex-col justify-between rounded-sm text-left h-[360px] relative overflow-hidden backdrop-blur-sm"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-tl from-mafia-gold/5 via-transparent to-transparent opacity-50"></div>
+                      <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(197,160,89,0.02)_25%,transparent_25%,transparent_50%,rgba(197,160,89,0.02)_50%,rgba(197,160,89,0.02)_75%,transparent_75%,transparent)] bg-[length:20px_20px]"></div>
                       
-                      <div className="space-y-4 relative z-10 mt-4">
-                        <div className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                          <span className="text-[11px] text-white/40 uppercase tracking-widest font-semibold">INFORMACE</span>
+                      <div className="space-y-4 relative z-10 mt-6">
+                        <div className="flex items-center gap-3 opacity-50">
+                          <span className="w-2 h-2 rounded-full border border-white/50" />
+                          <span className="text-[10px] text-white/50 uppercase tracking-[0.3em] font-black">SYSTÉM PŘIPRAVEN</span>
                         </div>
-                        <h3 className="text-white/60 font-heading font-bold text-2xl uppercase tracking-wider">
-                          VÝBĚR Z MENU
+                        <h3 className="text-white/40 font-heading font-black text-3xl uppercase tracking-wider">
+                          ČEKÁM NA VÝBĚR
                         </h3>
-                        <p className="text-[14px] text-smoke-white/50 leading-relaxed mt-4">
-                          Najeďte myší na libovolnou část kruhu vlevo pro zobrazení podrobností a kliknutím položku vyberte.
+                        <div className="h-[2px] w-12 bg-white/10 my-4"></div>
+                        <p className="text-[14px] text-smoke-white/40 leading-relaxed font-sans">
+                          Najeďte myší na libovolnou výseč taktického kruhu vlevo. Objeví se zde podrobné informace o zbrani/modulu a možnost rychlého spuštění.
                         </p>
+                      </div>
+
+                      <div className="absolute bottom-6 right-8 opacity-20">
+                         <Target size={120} className="animate-[spin_20s_linear_infinite]" />
                       </div>
                     </motion.div>
                   )}
@@ -492,13 +553,11 @@ export function TableOfContents() {
 
             </div>
 
-
-
             {/* Corner Accents */}
-            <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-mafia-gold z-30"></div>
-            <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-mafia-gold z-30"></div>
-            <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-mafia-gold z-30"></div>
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-mafia-gold z-30"></div>
+            <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-mafia-gold z-30 opacity-50"></div>
+            <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-mafia-gold z-30 opacity-50"></div>
+            <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-mafia-gold z-30 opacity-50"></div>
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-mafia-gold z-30 opacity-50"></div>
 
           </motion.div>
         )}

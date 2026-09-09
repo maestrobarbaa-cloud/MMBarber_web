@@ -19,7 +19,9 @@
       "orderIndex": 1,
       "requiresUnlock": 0,
       "unlockThreshold": 5,
-      "missionFailed": 0
+      "missionFailed": 0,
+      "quotes": "[\"dss\"]",
+      "quoteTiming": "{\"showFor\":10000,\"waitFor\":12000}"
     },
     {
       "id": "nella",
@@ -40,14 +42,14 @@
       "orderIndex": 2,
       "requiresUnlock": 0,
       "unlockThreshold": 5,
-      "missionFailed": 0
+      "missionFailed": 1
     }
   ],
   "chat_messages": [],
   "seznamka_requests": [
     {
       "id": "915ff54a-8c27-4c34-a237-db448b5c5adf",
-      "status": "new",
+      "status": "read",
       "createdAt": 1783515534342,
       "name": "adela",
       "age": 25,
@@ -63,17 +65,32 @@
   "barber_novinky": [],
   "suggestions": [],
   "hall_of_fame": [],
-  "settings": {},
+  "settings": {
+    "visibility_barber_tomas": "true",
+    "visibility_barber_nella": "false",
+    "visibility_services": "true",
+    "visibility_partners": "true",
+    "visibility_reviews": "true",
+    "visibility_contact": "true",
+    "visibility_intelligence": "true",
+    "visibility_komunita_grafika": "true",
+    "visibility_komunita_nabor": "true",
+    "visibility_komunita_chat": "true",
+    "visibility_komunita_historky": "true",
+    "visibility_komunita_hodnoceni": "true",
+    "visibility_komunita_novinky": "true",
+    "visibility_komunita_projekty": "true",
+    "visibility_komunita_sin_slavy": "true",
+    "visibility_komunita_zlepseni": "true",
+    "visibility_seznamka": "true",
+    "visibility_akademie": "true",
+    "visibility_vip_club": "true",
+    "visibility_vouchery": "true",
+    "visibility_kariera": "true"
+  },
   "user_fragments": [],
   "game_winners": [],
-  "cv_passwords": [
-    {
-      "id": "53d24a58-48e3-408b-b6fb-b14187b38b7d",
-      "password": "KRYPTON-6YDO-W9O4",
-      "createdAt": 1780385169020,
-      "expiresAt": 1780471569020
-    }
-  ],
+  "cv_passwords": [],
   "secret_articles": [],
   "services": [],
   "appointments": [],
@@ -163,5 +180,7 @@
     "revision": 3500,
     "hours": 550,
     "expressMult": 1.3
-  }
+  },
+  "dating_friend_requests": [],
+  "dating_friendships": []
 }

@@ -1,0 +1,248 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   MM BARBER — 3D Experience Page Styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.experience-page {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  background: #05050f;
+}
+
+/* ─── Canvas container ──────────────────────────────────────────────────────── */
+.experience-container {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  background: #05050f;
+}
+
+.experience-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ─── Loading screen ────────────────────────────────────────────────────────── */
+.experience-loading {
+  position: fixed;
+  inset: 0;
+  background: #05050f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.experience-loading__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.experience-loading__spinner {
+  width: 56px;
+  height: 56px;
+  border: 3px solid rgba(200, 169, 110, 0.15);
+  border-top-color: #c8a96e;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.experience-loading__text {
+  font-family: 'Inter', sans-serif;
+  color: rgba(200, 169, 110, 0.7);
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ─── UI Overlay ────────────────────────────────────────────────────────────── */
+.experience-ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* Header */
+.experience-ui__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  pointer-events: none;
+  animation: fadeInDown 1s ease forwards;
+}
+
+.experience-ui__logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #c8a96e;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 20px rgba(200, 169, 110, 0.6), 0 0 60px rgba(200, 169, 110, 0.2);
+}
+
+.experience-ui__title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.experience-ui__title span:first-child {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+.experience-ui__title-accent {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #c8a96e;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Hint */
+.experience-ui__hint {
+  margin-top: auto;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: rgba(200, 169, 110, 0.07);
+  border: 1px solid rgba(200, 169, 110, 0.15);
+  border-radius: 100px;
+  backdrop-filter: blur(12px);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.05em;
+  animation: fadeInUp 1.5s 0.5s ease both;
+}
+
+.experience-ui__hint-icon {
+  font-size: 0.9rem;
+}
+
+/* Badges */
+.experience-ui__badges {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeInUp 1.5s 0.8s ease both;
+}
+
+.experience-ui__badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  background: rgba(10, 10, 20, 0.6);
+  border: 1px solid rgba(200, 169, 110, 0.2);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.04em;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.experience-ui__badge:hover {
+  border-color: rgba(200, 169, 110, 0.5);
+  background: rgba(200, 169, 110, 0.1);
+}
+
+/* ─── Keyframe animace ──────────────────────────────────────────────────────── */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Skryje hlavní layout header na této stránce ───────────────────────────── */
+.experience-page ~ header,
+body:has(.experience-page) header,
+body:has(.experience-page) nav,
+body:has(.experience-page) footer {
+  display: none !important;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .experience-ui__badges {
+    display: none;
+  }
+
+  .experience-ui__hint {
+    font-size: 0.65rem;
+    padding: 0.5rem 0.9rem;
+  }
+
+  .experience-ui__logo {
+    font-size: 1.5rem;
+  }
+}
+
+/* ─── Skryje hlavní layout UI na 3D experience stránce ──────────────────────── */
+body:has(.experience-page) header,
+body:has(.experience-page) nav,
+body:has(.experience-page) footer,
+body:has(.experience-page) [class*="Header"],
+body:has(.experience-page) [class*="ScrollIndicator"],
+body:has(.experience-page) [class*="CustomCursor"],
+body:has(.experience-page) [class*="Atmosphere"],
+body:has(.experience-page) [class*="FilmGrain"],
+body:has(.experience-page) [class*="TableOfContents"],
+body:has(.experience-page) [class*="CommandPalette"],
+body:has(.experience-page) [class*="BugReporter"],
+body:has(.experience-page) [class*="InstallPrompt"] {
+  display: none !important;
+}
+
+/* Ujistíme se, že main tag nezabírá padding od headeru */
+body:has(.experience-page) main {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+

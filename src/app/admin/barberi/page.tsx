@@ -2,14 +2,34 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Scissors, Plus, Trash2, Save, X, Lock, Unlock, Skull } from "lucide-react";
+import { ArrowLeft, Scissors, Plus, Trash2, Save, X, Lock, Unlock, Skull, Eye, EyeOff, MessageCircle, Activity, CalendarDays, Power, ShieldAlert, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useBarbers } from "@/contexts/BarberContext";
+import { getOperativeStatusData, setOperativeStatusData, fetchOperativeStatusData, OperativeStatusData, OperativeStatusConfig } from "@/utils/status";
+
+const DAYS = [
+  { id: 1, label: 'Pondělí' },
+  { id: 2, label: 'Úterý' },
+  { id: 3, label: 'Středa' },
+  { id: 4, label: 'Čtvrtek' },
+  { id: 5, label: 'Pátek' },
+  { id: 6, label: 'Sobota' },
+  { id: 0, label: 'Neděle' }
+];
 
 export default function BarberAdminPage() {
   const { barbers, loading, refreshBarbers } = useBarbers();
   const [isAdding, setIsAdding] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [quotesModalBarber, setQuotesModalBarber] = useState<any>(null);
+  const [editingQuotes, setEditingQuotes] = useState<string[]>([]);
+  const [newQuoteText, setNewQuoteText] = useState("");
+  const [quoteTiming, setQuoteTiming] = useState({ showFor: 10, waitFor: 12 });
+  
+  const [statusModalBarber, setStatusModalBarber] = useState<any>(null);
+  const [statusData, setStatusData] = useState<OperativeStatusData | null>(null);
+  const [currentStatusConfig, setCurrentStatusConfig] = useState<OperativeStatusConfig | null>(null);
+  const [savedStatusMessage, setSavedStatusMessage] = useState(false);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -38,6 +58,9 @@ export default function BarberAdminPage() {
   useEffect(() => {
     if (sessionStorage.getItem("mmbarber_admin_auth") === "true") {
       setIsAuthenticated(true);
+      fetchOperativeStatusData().then(fetchedData => {
+        setStatusData(fetchedData);
+      });
     } else {
       window.location.href = "/admin";
     }
@@ -113,6 +136,121 @@ export default function BarberAdminPage() {
       });
       if (res.ok) await refreshBarbers();
     } catch (e) {}
+  };
+
+  const openQuotesModal = (b: any) => {
+    setQuotesModalBarber(b);
+    setEditingQuotes(b.quotes || []);
+    
+    // Timing is stored in ms in DB, we want to show it in seconds
+    const dbTiming = b.quoteTiming || { showFor: 10000, waitFor: 12000 };
+    setQuoteTiming({
+      showFor: Math.max(1, Math.round(dbTiming.showFor / 1000)),
+      waitFor: Math.max(1, Math.round(dbTiming.waitFor / 1000))
+    });
+    setNewQuoteText("");
+  };
+
+  const closeQuotesModal = () => {
+    setQuotesModalBarber(null);
+    setEditingQuotes([]);
+    setNewQuoteText("");
+  };
+
+  const handleAddQuote = () => {
+    if (!newQuoteText.trim()) return;
+    setEditingQuotes([...editingQuotes, newQuoteText.trim()]);
+    setNewQuoteText("");
+  };
+
+  const handleRemoveQuote = (index: number) => {
+    setEditingQuotes(editingQuotes.filter((_, i) => i !== index));
+  };
+
+  const handleSaveQuotes = async () => {
+    if (!quotesModalBarber) return;
+    try {
+      const res = await fetch("/api/barbers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          id: quotesModalBarber.id, 
+          quotes: editingQuotes,
+          quoteTiming: {
+            showFor: quoteTiming.showFor * 1000,
+            waitFor: quoteTiming.waitFor * 1000
+          }
+        })
+      });
+      if (res.ok) {
+        await refreshBarbers();
+        closeQuotesModal();
+      }
+    } catch (e) {}
+  };
+
+  const openStatusModal = (b: any) => {
+    setStatusModalBarber(b);
+    if (statusData && statusData[b.id]) {
+      setCurrentStatusConfig(statusData[b.id]);
+    } else {
+      // Default config for new barber
+      setCurrentStatusConfig({
+        mode: 'calendar',
+        manualState: 'online',
+        manualCustomText: '',
+        isIndividualSchedule: false,
+        calendar: [
+          { dayOfWeek: 1, start: "09:00", end: "18:00" },
+          { dayOfWeek: 2, start: "09:00", end: "18:00" },
+          { dayOfWeek: 3, start: "09:00", end: "18:00" },
+          { dayOfWeek: 4, start: "09:00", end: "18:00" },
+          { dayOfWeek: 5, start: "09:00", end: "18:00" }
+        ]
+      });
+    }
+  };
+
+  const closeStatusModal = () => {
+    setStatusModalBarber(null);
+    setCurrentStatusConfig(null);
+  };
+
+  const updateStatusConfig = (newConfig: Partial<OperativeStatusConfig>) => {
+    setCurrentStatusConfig(prev => prev ? { ...prev, ...newConfig } : null);
+  };
+
+  const updateCalendarEntry = (dayId: number, field: 'start' | 'end' | 'breakStart' | 'breakEnd', value: string) => {
+    if (!currentStatusConfig) return;
+    const updatedCal = [...currentStatusConfig.calendar];
+    const index = updatedCal.findIndex(c => c.dayOfWeek === dayId);
+    if (index >= 0) {
+      updatedCal[index] = { ...updatedCal[index], [field]: value };
+    } else {
+      updatedCal.push({
+        dayOfWeek: dayId,
+        start: field === 'start' ? value : '09:00',
+        end: field === 'end' ? value : '18:00',
+      });
+    }
+    updateStatusConfig({ calendar: updatedCal });
+  };
+
+  const handleSaveStatus = async () => {
+    if (!statusModalBarber || !currentStatusConfig || !statusData) return;
+    
+    const newData = {
+      ...statusData,
+      [statusModalBarber.id]: currentStatusConfig
+    };
+    
+    await setOperativeStatusData(newData);
+    setStatusData(newData);
+    setSavedStatusMessage(true);
+    setTimeout(() => {
+      setSavedStatusMessage(false);
+      closeStatusModal();
+    }, 1500);
   };
 
   if (!isAuthenticated || loading) return null;
@@ -298,6 +436,12 @@ export default function BarberAdminPage() {
                     <button onClick={() => handleToggleLock(b)} className={`transition p-2 border ${b.requiresUnlock ? 'text-mafia-gold border-mafia-gold/50 bg-mafia-gold/10' : 'text-white/30 border-white/10 hover:text-white'}`} title={b.requiresUnlock ? `Zamčeno (potřeba ${b.unlockThreshold} fragmentů)` : 'Odemčeno'}>
                       {b.requiresUnlock ? <Lock size={16} /> : <Unlock size={16} />}
                     </button>
+                    <button onClick={() => openQuotesModal(b)} className="text-white/30 hover:text-blue-400 transition p-2 border border-white/10" title="Citáty a hlášky">
+                      <MessageCircle size={16} />
+                    </button>
+                    <button onClick={() => openStatusModal(b)} className="text-white/30 hover:text-green-500 transition p-2 border border-white/10" title="Status operativce (Kalendář / Online)">
+                      <Activity size={16} />
+                    </button>
                     {b.id !== 'tomas' && b.id !== 'nella' && (
                       <button onClick={() => handleDelete(b.id)} className="text-white/30 hover:text-mafia-red transition p-2 border border-white/10">
                         <Trash2 size={16} />
@@ -326,8 +470,344 @@ export default function BarberAdminPage() {
             </div>
           ))}
         </div>
-        
       </div>
+
+      <AnimatePresence>
+        {quotesModalBarber && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="bg-[#0c0c0c] border border-white/10 w-full max-w-2xl max-h-[90vh] flex flex-col relative"
+            >
+              <button onClick={closeQuotesModal} className="absolute top-4 right-4 text-white/50 hover:text-white">
+                <X size={20} />
+              </button>
+              
+              <div className="p-6 border-b border-white/10">
+                <h2 className="text-2xl font-heading font-black tracking-widest uppercase text-mafia-gold">
+                  Citáty a Hlášky - {quotesModalBarber.name}
+                </h2>
+                <p className="text-xs text-white/50 font-mono mt-1">Spravujte hlášky, které se objevují v bublině na hlavní stránce.</p>
+              </div>
+
+              <div className="p-6 overflow-y-auto flex-1 space-y-6">
+                <div>
+                  <h3 className="text-sm font-black uppercase text-white mb-4">Časování citátů</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] text-white/50 font-mono uppercase mb-1">Zobrazit bublinu na (sekundy)</label>
+                      <input 
+                        type="number" 
+                        min="1"
+                        value={quoteTiming.showFor} 
+                        onChange={(e) => setQuoteTiming({...quoteTiming, showFor: parseInt(e.target.value) || 10})}
+                        className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-mafia-gold outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-white/50 font-mono uppercase mb-1">Skrýt bublinu na (sekundy)</label>
+                      <input 
+                        type="number" 
+                        min="1"
+                        value={quoteTiming.waitFor} 
+                        onChange={(e) => setQuoteTiming({...quoteTiming, waitFor: parseInt(e.target.value) || 12})}
+                        className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-mafia-gold outline-none" 
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-black uppercase text-white mb-4">Seznam citátů ({editingQuotes.length})</h3>
+                  <div className="space-y-2 mb-4 max-h-[300px] overflow-y-auto pr-2">
+                    {editingQuotes.length === 0 && <p className="text-xs text-white/30 italic">Žádné citáty nejsou nastaveny. Bublina se nebude objevovat.</p>}
+                    {editingQuotes.map((q, idx) => (
+                      <div key={idx} className="flex gap-2 items-start bg-white/5 p-3 border border-white/10">
+                        <p className="text-sm text-white/80 flex-1">{q}</p>
+                        <button onClick={() => handleRemoveQuote(idx)} className="text-white/30 hover:text-mafia-red">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      value={newQuoteText} 
+                      onChange={(e) => setNewQuoteText(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleAddQuote()}
+                      placeholder="Napište novou hlášku..."
+                      className="flex-1 bg-black border border-white/20 p-2 text-sm focus:border-mafia-gold outline-none"
+                    />
+                    <button onClick={handleAddQuote} className="px-4 py-2 bg-white/10 hover:bg-white/20 transition text-sm font-black uppercase tracking-widest border border-white/20">
+                      Přidat
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 border-t border-white/10 flex justify-end gap-4 bg-black/50">
+                <button onClick={closeQuotesModal} className="px-6 py-2 text-white/50 hover:text-white uppercase text-xs font-black tracking-widest">
+                  Zrušit
+                </button>
+                <button onClick={handleSaveQuotes} className="px-6 py-2 bg-mafia-gold text-black uppercase text-xs font-black tracking-widest flex items-center gap-2 hover:bg-white transition">
+                  <Save size={14} /> Uložit změny
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {statusModalBarber && currentStatusConfig && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="bg-[#0c0c0c] border border-white/10 w-full max-w-4xl max-h-[90vh] flex flex-col relative"
+            >
+              <button onClick={closeStatusModal} className="absolute top-4 right-4 text-white/50 hover:text-white">
+                <X size={20} />
+              </button>
+              
+              <div className="p-6 border-b border-white/10 flex items-center gap-4">
+                <Activity className="text-green-500" size={24} />
+                <div>
+                  <h2 className="text-2xl font-heading font-black tracking-widest uppercase text-mafia-gold">
+                    STATUS - {statusModalBarber.name}
+                  </h2>
+                  <p className="text-xs text-white/50 font-mono mt-1">Spravujte kalendář a online/offline stav operativce.</p>
+                </div>
+              </div>
+
+              <div className="p-6 overflow-y-auto flex-1 space-y-8 bg-[#050505] relative">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(197,160,89,0.05)_0%,transparent_50%)] pointer-events-none"></div>
+                
+                <div className="p-4 border border-mafia-gold/20 bg-mafia-gold/5 flex gap-4 items-start relative z-10">
+                  <ShieldAlert className="text-mafia-gold shrink-0 mt-1" size={20} />
+                  <p className="font-mono text-xs text-white/60 leading-relaxed">
+                    Zde nastavuješ, jestli má na kartě zelenou tečku (online), červenou (offline), nebo skrytou. Můžeš to nechat běžet automaticky podle hodin, nebo to ručně přebít.
+                  </p>
+                </div>
+
+                <div className="space-y-12 relative z-10">
+                  <div>
+                    <h3 className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6">REŽIM OVLÁDÁNÍ</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <label className={`cursor-pointer p-6 border transition-all flex items-center gap-4 ${
+                        currentStatusConfig.mode === 'manual' ? 'border-mafia-gold bg-mafia-gold/10' : 'border-white/10 hover:border-white/30'
+                      }`}>
+                        <input type="radio" name="mode" className="hidden" checked={currentStatusConfig.mode === 'manual'} onChange={() => updateStatusConfig({ mode: 'manual' })} />
+                        <Power size={24} className={currentStatusConfig.mode === 'manual' ? 'text-mafia-gold' : 'text-white/40'} />
+                        <div>
+                          <div className={`font-heading font-black tracking-widest uppercase mb-1 ${currentStatusConfig.mode === 'manual' ? 'text-white' : 'text-white/60'}`}>Ruční ovládání</div>
+                          <div className="font-mono text-[9px] text-white/40 uppercase">Okamžitě změní status nezávisle na čase.</div>
+                        </div>
+                      </label>
+                      
+                      <label className={`cursor-pointer p-6 border transition-all flex items-center gap-4 ${
+                        currentStatusConfig.mode === 'calendar' ? 'border-mafia-gold bg-mafia-gold/10' : 'border-white/10 hover:border-white/30'
+                      }`}>
+                        <input type="radio" name="mode" className="hidden" checked={currentStatusConfig.mode === 'calendar'} onChange={() => updateStatusConfig({ mode: 'calendar' })} />
+                        <CalendarDays size={24} className={currentStatusConfig.mode === 'calendar' ? 'text-mafia-gold' : 'text-white/40'} />
+                        <div>
+                          <div className={`font-heading font-black tracking-widest uppercase mb-1 ${currentStatusConfig.mode === 'calendar' ? 'text-white' : 'text-white/60'}`}>Automatický kalendář</div>
+                          <div className="font-mono text-[9px] text-white/40 uppercase">Sám se přepíná podle pracovní doby.</div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  {currentStatusConfig.mode === 'manual' && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
+                      <h3 className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 border-t border-white/5 pt-10">ZVOLTE RUČNÍ STAV</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <label className={`cursor-pointer p-4 border flex flex-col items-center justify-center gap-3 transition-all ${
+                          currentStatusConfig.manualState === 'online' ? 'border-green-500 bg-green-500/10' : 'border-white/10 hover:border-white/30'
+                        }`}>
+                          <input type="radio" className="hidden" checked={currentStatusConfig.manualState === 'online'} onChange={() => updateStatusConfig({ manualState: 'online' })} />
+                          <div className={`w-4 h-4 rounded-full bg-green-500 ${currentStatusConfig.manualState === 'online' ? 'shadow-[0_0_15px_rgba(34,197,94,0.6)] animate-pulse' : ''}`}></div>
+                          <span className="font-mono text-[10px] uppercase tracking-widest font-bold">Online</span>
+                        </label>
+                        <label className={`cursor-pointer p-4 border flex flex-col items-center justify-center gap-3 transition-all ${
+                          currentStatusConfig.manualState === 'offline' ? 'border-red-600 bg-red-600/10' : 'border-white/10 hover:border-white/30'
+                        }`}>
+                          <input type="radio" className="hidden" checked={currentStatusConfig.manualState === 'offline'} onChange={() => updateStatusConfig({ manualState: 'offline' })} />
+                          <div className={`w-4 h-4 rounded-full bg-red-600 ${currentStatusConfig.manualState === 'offline' ? 'shadow-[0_0_15px_rgba(220,38,38,0.6)] animate-pulse' : ''}`}></div>
+                          <span className="font-mono text-[10px] uppercase tracking-widest font-bold">Offline</span>
+                        </label>
+                        <label className={`cursor-pointer p-4 border flex flex-col items-center justify-center gap-3 transition-all ${
+                          currentStatusConfig.manualState === 'custom' ? 'border-mafia-gold bg-mafia-gold/10' : 'border-white/10 hover:border-white/30'
+                        }`}>
+                          <input type="radio" className="hidden" checked={currentStatusConfig.manualState === 'custom'} onChange={() => updateStatusConfig({ manualState: 'custom' })} />
+                          <div className={`w-4 h-4 rounded-full bg-mafia-gold ${currentStatusConfig.manualState === 'custom' ? 'shadow-[0_0_15px_rgba(197,160,89,0.6)] animate-pulse' : ''}`}></div>
+                          <span className="font-mono text-[10px] uppercase tracking-widest font-bold">Vlastní text</span>
+                        </label>
+                        <label className={`cursor-pointer p-4 border flex flex-col items-center justify-center gap-3 transition-all ${
+                          currentStatusConfig.manualState === 'transparent' ? 'border-white bg-white/5' : 'border-white/10 hover:border-white/30'
+                        }`}>
+                          <input type="radio" className="hidden" checked={currentStatusConfig.manualState === 'transparent'} onChange={() => updateStatusConfig({ manualState: 'transparent' })} />
+                          <EyeOff size={16} className={currentStatusConfig.manualState === 'transparent' ? 'text-white' : 'text-white/40'} />
+                          <span className="font-mono text-[10px] uppercase tracking-widest font-bold">Skrýt (Nic)</span>
+                        </label>
+                      </div>
+                      {currentStatusConfig.manualState === 'custom' && (
+                        <div className="p-6 border border-mafia-gold/30 bg-mafia-gold/5 mt-4">
+                          <label className="block text-[10px] font-mono text-mafia-gold uppercase tracking-[0.2em] mb-4">Text vedle oranžové tečky:</label>
+                          <input 
+                            type="text" 
+                            value={currentStatusConfig.manualCustomText}
+                            onChange={(e) => updateStatusConfig({ manualCustomText: e.target.value })}
+                            placeholder="např. Nemoc, Dovolená, Plno..."
+                            className="w-full bg-black/50 border border-mafia-gold/50 p-4 text-white font-mono uppercase focus:border-mafia-gold focus:outline-none"
+                          />
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {currentStatusConfig.mode === 'calendar' && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
+                      <h3 className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 border-t border-white/5 pt-10">PRACOVNÍ DOBA (Pro vizitku a online stav)</h3>
+                      <div className="mb-8 p-6 border border-white/10 bg-white/5">
+                        <label className="flex items-center gap-4 cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="accent-mafia-gold w-5 h-5"
+                            checked={currentStatusConfig.isIndividualSchedule}
+                            onChange={(e) => updateStatusConfig({ isIndividualSchedule: e.target.checked })}
+                          />
+                          <div>
+                            <div className="font-heading font-black tracking-widest uppercase text-white mb-1">Individuální režim</div>
+                            <div className="font-mono text-[9px] uppercase text-white/40">Na kartě se místo časů vypíše "Individuální režim". Online tečka se nebude zapínat automaticky.</div>
+                          </div>
+                        </label>
+                      </div>
+                      {!currentStatusConfig.isIndividualSchedule && (
+                        <div className="space-y-3">
+                          {DAYS.map(day => {
+                            const entry = currentStatusConfig.calendar.find(c => c.dayOfWeek === day.id);
+                            const isActive = !!entry;
+                            return (
+                              <div key={day.id} className="flex items-center gap-4 bg-white/[0.02] border border-white/5 p-4">
+                                <div className="w-24 shrink-0 font-heading font-bold uppercase tracking-widest text-sm">
+                                  {day.label}
+                                </div>
+                                <label className="flex items-center gap-2 cursor-pointer ml-4 mr-8">
+                                  <input 
+                                    type="checkbox" 
+                                    className="accent-mafia-gold w-4 h-4"
+                                    checked={isActive}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        updateCalendarEntry(day.id, 'start', '09:00');
+                                      } else {
+                                        updateStatusConfig({ calendar: currentStatusConfig.calendar.filter(c => c.dayOfWeek !== day.id) });
+                                      }
+                                    }}
+                                  />
+                                  <span className="font-mono text-[10px] uppercase text-white/60">Pracuje</span>
+                                </label>
+                                {isActive ? (
+                                  <div className="flex flex-col gap-3">
+                                    <div className="flex items-center gap-4">
+                                      <input 
+                                        type="time" 
+                                        value={entry.start}
+                                        onChange={(e) => updateCalendarEntry(day.id, 'start', e.target.value)}
+                                        className="bg-black border border-white/20 p-2 text-white font-mono text-sm focus:border-mafia-gold outline-none"
+                                      />
+                                      <span className="text-white/40 font-mono text-xs">do</span>
+                                      <input 
+                                        type="time" 
+                                        value={entry.end}
+                                        onChange={(e) => updateCalendarEntry(day.id, 'end', e.target.value)}
+                                        className="bg-black border border-white/20 p-2 text-white font-mono text-sm focus:border-mafia-gold outline-none"
+                                      />
+                                    </div>
+                                    <label className="flex items-center gap-2 cursor-pointer mt-1">
+                                      <input 
+                                        type="checkbox" 
+                                        className="accent-mafia-red w-3 h-3"
+                                        checked={!!(entry.breakStart || entry.breakEnd)}
+                                        onChange={(e) => {
+                                          if (e.target.checked) {
+                                            updateCalendarEntry(day.id, 'breakStart', '12:00');
+                                            updateCalendarEntry(day.id, 'breakEnd', '13:00');
+                                          } else {
+                                            updateCalendarEntry(day.id, 'breakStart', '');
+                                            updateCalendarEntry(day.id, 'breakEnd', '');
+                                          }
+                                        }}
+                                      />
+                                      <span className="font-mono text-[9px] uppercase text-white/40">Přidat pauzu (Offline)</span>
+                                    </label>
+                                    {(entry.breakStart || entry.breakEnd) && (
+                                      <div className="flex items-center gap-4 ml-5">
+                                        <span className="text-mafia-red font-mono text-[10px] uppercase">Pauza:</span>
+                                        <input 
+                                          type="time" 
+                                          value={entry.breakStart || ''}
+                                          onChange={(e) => updateCalendarEntry(day.id, 'breakStart', e.target.value)}
+                                          className="bg-mafia-red/10 border border-mafia-red/30 p-1 px-2 text-mafia-red font-mono text-xs focus:border-mafia-red outline-none"
+                                        />
+                                        <span className="text-white/40 font-mono text-[10px]">do</span>
+                                        <input 
+                                          type="time" 
+                                          value={entry.breakEnd || ''}
+                                          onChange={(e) => updateCalendarEntry(day.id, 'breakEnd', e.target.value)}
+                                          className="bg-mafia-red/10 border border-mafia-red/30 p-1 px-2 text-mafia-red font-mono text-xs focus:border-mafia-red outline-none"
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <div className="text-white/20 font-mono text-[10px] uppercase italic tracking-widest">
+                                    Offline (Volno)
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-6 border-t border-white/10 flex justify-end items-center gap-4 bg-black/50">
+                {savedStatusMessage && (
+                  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="text-green-500 flex items-center gap-2 font-mono text-xs uppercase tracking-widest mr-4">
+                    <CheckCircle size={14} /> Uloženo
+                  </motion.div>
+                )}
+                <button onClick={closeStatusModal} className="px-6 py-2 text-white/50 hover:text-white uppercase text-xs font-black tracking-widest">
+                  Zrušit
+                </button>
+                <button onClick={handleSaveStatus} className="px-6 py-2 bg-mafia-gold text-black uppercase text-xs font-black tracking-widest flex items-center gap-2 hover:bg-white transition">
+                  <Save size={14} /> Uložit změny
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

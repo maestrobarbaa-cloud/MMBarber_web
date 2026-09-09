@@ -29,6 +29,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import { isDaytime } from "../lib/weather";
 import { useUI } from "@/contexts/UIContext";
+import { useGame } from "@/contexts/GameContext";
+import { Tooltip } from "./Tooltip";
 
 type WeatherState = 'clear' | 'clouds' | 'rain' | 'snow' | 'thunderstorm' | 'live';
 
@@ -62,6 +64,13 @@ export function VipControlBar() {
     initAccentColor();
 
   }, []);
+
+  const { unlockAchievement } = useGame();
+  useEffect(() => {
+    if (isDevMode) {
+      unlockAchievement('vip_member');
+    }
+  }, [isDevMode, unlockAchievement]);
 
   const toggleNoirMode = () => {
     const newVal = !isNoirMode;
@@ -232,22 +241,23 @@ export function VipControlBar() {
               <span className="text-[10px] font-bold text-mafia-gold/60 uppercase tracking-widest">{t.devPanel.atmosphere}</span>
               <div className="grid grid-cols-6 gap-1">
                 {[
-                  { id: 'live', icon: Monitor },
-                  { id: 'clear', icon: Sun },
-                  { id: 'clouds', icon: Cloud },
-                  { id: 'rain', icon: CloudRain },
-                  { id: 'snow', icon: Snowflake },
-                  { id: 'thunderstorm', icon: CloudLightning }
+                  { id: 'live', icon: Monitor, label: 'Live Weather' },
+                  { id: 'clear', icon: Sun, label: 'Clear' },
+                  { id: 'clouds', icon: Cloud, label: 'Clouds' },
+                  { id: 'rain', icon: CloudRain, label: 'Rain' },
+                  { id: 'snow', icon: Snowflake, label: 'Snow' },
+                  { id: 'thunderstorm', icon: CloudLightning, label: 'Storm' }
                 ].map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setWeather(item.id as WeatherState)}
-                    className={`p-2 flex flex-col items-center border transition-all ${
-                      weatherOverride === item.id ? "bg-mafia-gold text-black border-mafia-gold" : "bg-mafia-black text-mafia-gold/40 border-mafia-gold/10"
-                    }`}
-                  >
-                    <item.icon size={14} />
-                  </button>
+                  <Tooltip key={item.id} content={item.label} position="top">
+                    <button
+                      onClick={() => setWeather(item.id as WeatherState)}
+                      className={`p-2 w-full flex flex-col items-center border transition-all ${
+                        weatherOverride === item.id ? "bg-mafia-gold text-black border-mafia-gold" : "bg-mafia-black text-mafia-gold/40 border-mafia-gold/10"
+                      }`}
+                    >
+                      <item.icon size={14} />
+                    </button>
+                  </Tooltip>
                 ))}
               </div>
             </div>

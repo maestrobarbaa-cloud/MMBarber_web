@@ -77,7 +77,7 @@ export function Profiles() {
   const { t, lang } = useTranslation();
   const { isTomasUnlocked, isNellaUnlocked, totalCollected } = useGame();
   const [isRandomizing, setIsRandomizing] = useState(false);
-  const [activeSpeaker, setActiveSpeaker] = useState<'tomas' | 'nella' | null>(null);
+  const [activeSpeaker, setActiveSpeaker] = useState<string | null>(null);
   const [activeDialogueText, setActiveDialogueText] = useState("");
   
   const [activeEvent, setActiveEvent] = useState<string | null>(null);
@@ -140,6 +140,83 @@ export function Profiles() {
     }
     return modifiedB;
   }).sort((a, b) => (trackerScores[b.id] || 0) - (trackerScores[a.id] || 0));
+
+  const barbersWithQuotesJson = JSON.stringify(visibleBarbers.map(b => ({
+    id: b.id,
+    quotes: b.quotes || [],
+    quoteTiming: b.quoteTiming || { showFor: 10000, waitFor: 12000 }
+  })));
+
+  // ALL BARBERS QUOTES ALGORITHM
+  useEffect(() => {
+    const isMobile = window.innerWidth < 1280;
+    if (!isSectionVisible || isMobile) {
+      setActiveSpeaker(null);
+      setActiveDialogueText("");
+      return;
+    }
+
+    const barbersInfo = JSON.parse(barbersWithQuotesJson);
+    const barbersWithQuotes = barbersInfo.filter((b: any) => b.quotes && b.quotes.length > 0);
+    
+    if (barbersWithQuotes.length === 0) {
+      setActiveSpeaker(null);
+      setActiveDialogueText("");
+      return;
+    }
+
+    let t1: NodeJS.Timeout;
+    let t2: NodeJS.Timeout;
+
+    const playQuote = () => {
+      const currentBarberIndex = Math.floor(Math.random() * barbersWithQuotes.length);
+      const b = barbersWithQuotes[currentBarberIndex];
+      const timing = b.quoteTiming;
+      
+      let seen: string[] = [];
+      try {
+        const stored = localStorage.getItem(`mmbarber_${b.id}_quotes_seen`);
+        if (stored) seen = JSON.parse(stored);
+      } catch(e) {}
+
+      if (seen.length >= b.quotes.length) {
+        seen = [];
+      }
+
+      const availableQuotes = b.quotes.filter((q: string) => !seen.includes(q));
+      const randomIndex = Math.floor(Math.random() * availableQuotes.length);
+      const selectedQuote = availableQuotes[randomIndex] || b.quotes[0];
+
+      seen.push(selectedQuote);
+      try {
+        localStorage.setItem(`mmbarber_${b.id}_quotes_seen`, JSON.stringify(seen));
+      } catch(e) {}
+
+      setActiveSpeaker(b.id);
+      setActiveDialogueText(selectedQuote);
+
+      t2 = setTimeout(() => {
+        setActiveSpeaker(null);
+        setActiveDialogueText("");
+        
+        t1 = setTimeout(() => {
+          playQuote();
+        }, timing.waitFor);
+      }, timing.showFor);
+    };
+
+    const initialDelay = setTimeout(() => {
+      playQuote();
+    }, 4000);
+
+    return () => {
+      clearTimeout(initialDelay);
+      if (t1) clearTimeout(t1);
+      if (t2) clearTimeout(t2);
+      setActiveSpeaker(null);
+      setActiveDialogueText("");
+    };
+  }, [isSectionVisible, barbersWithQuotesJson]);
 
   useEffect(() => {
     const indices: { [key: string]: number } = {};
@@ -291,64 +368,7 @@ export function Profiles() {
     }, 80);
   };
 
-  // TOMAS QUOTES ALGORITHM
-  useEffect(() => {
-    const isMobile = window.innerWidth < 1280;
-    // Povolíme zobrazení na desktopu (kde je aktivní sekce operativi)
-    if (!isSectionVisible || isMobile) {
-      setActiveSpeaker(null);
-      setActiveDialogueText("");
-      return;
-    }
-
-    let t1: NodeJS.Timeout;
-    let t2: NodeJS.Timeout;
-
-    const playQuote = () => {
-      let seen: string[] = [];
-      try {
-        const stored = localStorage.getItem('mmbarber_tomas_quotes_seen');
-        if (stored) seen = JSON.parse(stored);
-      } catch(e) {}
-
-      if (seen.length >= TOMAS_QUOTES.length) {
-        seen = [];
-      }
-
-      const availableQuotes = TOMAS_QUOTES.filter((q: string) => !seen.includes(q));
-      const randomIndex = Math.floor(Math.random() * availableQuotes.length);
-      const selectedQuote = availableQuotes[randomIndex] || TOMAS_QUOTES[0];
-
-      seen.push(selectedQuote);
-      try {
-        localStorage.setItem('mmbarber_tomas_quotes_seen', JSON.stringify(seen));
-      } catch(e) {}
-
-      setActiveSpeaker('tomas');
-      setActiveDialogueText(selectedQuote);
-
-      t2 = setTimeout(() => {
-        setActiveSpeaker(null);
-        setActiveDialogueText("");
-        
-        t1 = setTimeout(() => {
-          playQuote();
-        }, 12000);
-      }, 10000);
-    };
-
-    const initialDelay = setTimeout(() => {
-      playQuote();
-    }, 4000);
-
-    return () => {
-      clearTimeout(initialDelay);
-      if (t1) clearTimeout(t1);
-      if (t2) clearTimeout(t2);
-      setActiveSpeaker(null);
-      setActiveDialogueText("");
-    };
-  }, [isSectionVisible]);
+  // TOMAS QUOTES ALGORITHM Removed in favor of simple customChatText
 
   const translatedBarbers = useMemo(() => {
     return visibleBarbers.map(b => {
@@ -357,7 +377,7 @@ export function Profiles() {
       const barberTranslations = t.operatives?.barbers?.[barberKey as 'tomas' | 'nella'];
       
       const staticDesc = barberTranslations?.story || "";
-      const dialogueText = activeSpeaker === barberKey ? activeDialogueText : "";
+      const dialogueText = activeSpeaker === b.id ? activeDialogueText : (b.customChatText || "");
       const customName = isTomas ? customNames.tomas : customNames.nella;
       return {
         ...b,
@@ -372,7 +392,7 @@ export function Profiles() {
         isHidden: false
       };
     });
-  }, [visibleBarbers, t, customNames, activeSpeaker, activeDialogueText, statusData, lang, totalCollected]);
+  }, [visibleBarbers, t, customNames, statusData, lang, totalCollected]);
 
   if (loading || visibleBarbers.length === 0) return null;
 
@@ -390,7 +410,11 @@ export function Profiles() {
             <div className="w-full">
                 {graphicsTier !== 'lite' && (
                 <div className="text-center mb-16 md:mb-24">
-                    <h2 className="text-3xl md:text-5xl font-heading font-black text-smoke-white mb-3 md:mb-4 tracking-[0.3em] uppercase">{t.operatives.title}</h2>
+                    <h2 className="text-3xl md:text-5xl font-heading font-black text-smoke-white mb-3 md:mb-4 tracking-[0.3em] uppercase">
+                      {visibleBarbers.length === 1 
+                        ? (lang === 'cs' ? 'Mistr v oboru' : lang === 'en' ? 'Master in the field' : '行业大师 (Mistr v oboru)') 
+                        : t.operatives.title}
+                    </h2>
                     <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-4 md:mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
                     <div className="text-smoke-white/60 font-sans tracking-widest uppercase text-[10px] md:text-sm px-4 mb-4 flex flex-col items-center gap-1 md:gap-2 cursor-default group">
                         <span className="group-hover:text-white transition-colors duration-500">
@@ -465,7 +489,7 @@ export function Profiles() {
                     </div>
                 </div>
                 )}
-                <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full mx-auto py-4 xl:py-8 relative">
+                <div className="flex flex-wrap justify-center items-center gap-8 xl:gap-10 px-4 md:px-0 w-full max-w-[800px] mx-auto py-4 xl:py-8 relative">
                     {translatedBarbers.map((barber, index) => {
                       const isTomas = barber.name === 'Tomáš' || barber.name === 'Tomas';
                       const barberKey = isTomas ? 'tomas' : 'nella';
@@ -483,8 +507,8 @@ export function Profiles() {
                         <motion.div layout transition={{ type: "spring", stiffness: 300, damping: 30 }} key={barber.id} className="relative flex flex-col items-center w-full">
                           <ChairWithCard 
                             barber={barber} 
-                            activeSpeaker={activeSpeaker} 
-                            dialogueIndex={activeDialogueText} 
+                            activeSpeaker={activeSpeaker || (barber.customChatText ? barber.id : null)} 
+                            dialogueIndex={activeSpeaker === barber.id ? activeDialogueText : (barber.customChatText || "")} 
                             lang={lang} 
                             t={t} 
                             playCardSound={playCardSound} 

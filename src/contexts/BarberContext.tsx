@@ -27,6 +27,9 @@ export interface BarberProfile {
   requiresUnlock?: boolean;
   unlockThreshold?: number;
   missionFailed?: boolean;
+  isHidden?: boolean;
+  quotes?: string[];
+  quoteTiming?: { showFor: number, waitFor: number };
   bookingSystemType?: 'external' | 'internal';
   structuredSchedule?: Record<string, { work: boolean, start: string, end: string }>;
 }
@@ -73,3 +76,5 @@ export const BarberProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     </BarberContext.Provider>
   );
 };
+
+

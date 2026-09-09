@@ -24,15 +24,29 @@ const ElitaGame = dynamic(() => import("@/components/ElitaGame").then(mod => mod
 const SlotMachine = dynamic(() => import("@/components/SlotMachine").then(mod => mod.SlotMachine), { ssr: false });
 const CorporateTricks = dynamic(() => import("@/components/CorporateTricks").then(mod => mod.CorporateTricks), { ssr: false });
 const SeasonalAtmosphere = dynamic(() => import("@/components/SeasonalAtmosphere").then(mod => mod.SeasonalAtmosphere), { ssr: false });
+const MobileCompass = dynamic(() => import("@/components/MobileCompass").then(mod => mod.MobileCompass), { ssr: false });
+const AchievementUnlocked = dynamic(() => import("@/components/AchievementUnlocked").then(mod => mod.AchievementUnlocked), { ssr: false });
+
+import { useGame } from "@/contexts/GameContext";
+
 export function ClientWrapper() {
+  const { unlockAchievement } = useGame();
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isEarthProtocolOpen, setIsEarthProtocolOpen] = useState(false);
   const [isBarberChatOpen, setIsBarberChatOpen] = useState(false);
-  const { isMobileEffectsEnabled, setIsMobileEffectsEnabled, graphicsTier, setGraphicsTier, isStealthMode, atmosphereOverride } = useUI();
+  const { isMobileEffectsEnabled, setIsMobileEffectsEnabled, graphicsTier, setGraphicsTier, isStealthMode, atmosphereOverride, isLowBandwidth } = useUI();
   const [themeRevision, setThemeRevision] = useState(0);
   const { lang } = useTranslation();
   const pathname = usePathname();
+  const [isSeasonalHidden, setIsSeasonalHidden] = useState(false);
+
+  useEffect(() => {
+    // Check for Noir Mode Achievement
+    if (document.documentElement.classList.contains('noir-mode')) {
+      unlockAchievement('night_owl');
+    }
+  }, [unlockAchievement]);
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -56,9 +70,7 @@ export function ClientWrapper() {
     const detectPerformance = () => {
       const isMobileDevice = window.innerWidth < 1024;
       const cores = navigator.hardwareConcurrency || 4;
-      // @ts-expect-error - experimental API
-      const ram = navigator.deviceMemory || 4;
-      // @ts-expect-error - experimental API
+      const ram = (navigator as any).deviceMemory || 4;
       const connection = navigator.connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
       const isDataSaving = connection?.saveData === true;
       const isSlowConnection = connection?.effectiveType === '2g' || connection?.effectiveType === '3g';
@@ -142,7 +154,6 @@ export function ClientWrapper() {
         localStorage.setItem("mmbarber_graphics_config", JSON.stringify(initialConfig));
         
         // Also auto-enable mobile effects if performance is good enough AND not in data-saving mode
-        // @ts-expect-error - experimental API
         const connection = navigator.connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
         const isDataSaving = connection?.saveData === true;
         const isSlowConnection = connection?.effectiveType === '2g' || connection?.effectiveType === '3g';
@@ -169,6 +180,13 @@ export function ClientWrapper() {
     window.addEventListener('mmbarber-toggle-chat', handleChatToggle as any);
     window.addEventListener('mmbarber-force-theme-eval', handleForceThemeEval);
 
+    // UI prefs
+    const readUIPrefs = () => {
+      setIsSeasonalHidden(localStorage.getItem("mmbarber_hide_seasonal") === "true");
+    };
+    readUIPrefs();
+    window.addEventListener('mmbarber-ui-prefs-update', readUIPrefs);
+
     setMounted(true);
     
     return () => {
@@ -176,6 +194,7 @@ export function ClientWrapper() {
       window.removeEventListener('mmbarber-earth-protocol', handleEarthProtocolTrigger as any);
       window.removeEventListener('mmbarber-toggle-chat', handleChatToggle as any);
       window.removeEventListener('mmbarber-force-theme-eval', handleForceThemeEval);
+      window.removeEventListener('mmbarber-ui-prefs-update', readUIPrefs);
     };
   }, []);
 
@@ -329,7 +348,7 @@ export function ClientWrapper() {
       {showEffects && <Radio />}
       <CorporateTricks />
       <CookieBanner />
-      {activeTheme !== 'default' && <SeasonalAtmosphere theme={activeTheme} />}
+      {activeTheme !== 'default' && !isSeasonalHidden && <SeasonalAtmosphere theme={activeTheme} />}
       {!isActuallyMobile && !isRodinaPage && !isGalaxyVisible && activeTheme === 'default' && graphicsTier !== 'lite' && graphicsTier !== 'low' && <FloatingScissors />}
       <VipControlBar />
       {showEffects && <GlobalSound />}
@@ -338,6 +357,17 @@ export function ClientWrapper() {
       {graphicsTier !== 'lite' && <EarthProtocol isOpen={isEarthProtocolOpen} onClose={() => setIsEarthProtocolOpen(false)} lang={lang} />}
       {graphicsTier !== 'lite' && <ElitaGame />}
       {graphicsTier !== 'lite' && <SlotMachine />}
+      
+      {/* DATA SAVER INDICATOR */}
+      {isLowBandwidth && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none px-3 py-1.5 bg-black/60 backdrop-blur-md border border-mafia-gold/40 rounded-sm flex items-center gap-2 shadow-[0_0_10px_rgba(197,160,89,0.2)]">
+           <span className="w-1.5 h-1.5 rounded-full bg-mafia-gold animate-pulse"></span>
+           <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-mafia-gold/90">DATA SAVER LITE</span>
+        </div>
+      )}
+      
+      <MobileCompass />
+      <AchievementUnlocked />
     </MotionConfig>
   );
 }

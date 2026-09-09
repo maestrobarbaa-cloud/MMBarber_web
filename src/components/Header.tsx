@@ -9,6 +9,7 @@ import { ChevronDown, ChevronRight, X, Search, Calendar, Compass, Phone, Users, 
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import { useHeaderSearch } from "@/hooks/useHeaderSearch";
+import { useThrottledScroll } from "@/hooks/useThrottledScroll";
 import { HeaderSearchBar } from "./HeaderSearchBar";
 import dynamic from "next/dynamic";
 const AboutMeModal = dynamic(() => import("./AboutMeModal").then(mod => mod.AboutMeModal), { ssr: false });
@@ -25,8 +26,9 @@ import { getUserRatingsData } from "@/utils/voting";
 import { GameFragment } from "./GameFragment";
 import { useGame } from "@/contexts/GameContext";
 import { getMegaMenuData } from "@/data/megaMenuData";
-import { DesktopMegaMenu } from "./DesktopMegaMenu";
-import { MobileMegaMenu } from "./MobileMegaMenu";
+
+const DesktopMegaMenu = dynamic(() => import("./DesktopMegaMenu").then(mod => mod.DesktopMegaMenu), { ssr: false });
+const MobileMegaMenu = dynamic(() => import("./MobileMegaMenu").then(mod => mod.MobileMegaMenu), { ssr: false });
 
 export function Header() {
   const { mafiaRank } = useGame();
@@ -76,6 +78,8 @@ export function Header() {
   
   const router = useRouter();
   const pathname = usePathname();
+
+  // (přesunuto dolů kvůli Rules of Hooks)
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
   const lastScrollY = useRef(0);
   const { t, lang, switchLanguage } = useTranslation();
@@ -379,16 +383,24 @@ export function Header() {
       if (isIntroActive) handleIntroDismissed();
     }, 8000);
 
-    const handleScroll = () => {
+    let ticking = false;
+
+    const updateScroll = () => {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 20);
 
-      if (isIntroActive) return;
+      if (isIntroActive) {
+        ticking = false;
+        return;
+      }
+      
+      const hasVisited = typeof window !== 'undefined' && localStorage.getItem("mmbarber_visited") === "true";
       
       // ALWAYS visible on mobile/tablet to fix Android visibility issues
       if (isMobile) {
         setIsVisible(true);
         lastScrollY.current = currentScrollY;
+        ticking = false;
         return;
       }
 
@@ -406,6 +418,14 @@ export function Header() {
       }
 
       lastScrollY.current = currentScrollY;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -486,7 +506,15 @@ export function Header() {
     setShouldFlashFamily(false);
   };
 
-  if (pathname === '/rodina/elektrikari/roman-jakubcak' || pathname === '/rodina/elektrikari/roman-jakubcak/admin') return null;
+  if (
+    pathname === '/rodina/remesla' || 
+    pathname === '/rodina/remesla/admin' ||
+    pathname?.startsWith("/3d-experience") || 
+    pathname?.startsWith("/3d-lab") ||
+    pathname?.startsWith("/physics-demo")
+  ) {
+    return null;
+  }
 
   return (
     <>
@@ -542,13 +570,13 @@ export function Header() {
             <div className="relative ml-2 flex flex-col justify-center">
               <span 
                 ref={logoRef}
-                className="text-lg md:text-xl font-heading font-black text-mafia-gold noir-mode:text-smoke-white tracking-widest group-hover:text-smoke-white transition-all duration-300 leading-none"
+                className="text-lg md:text-xl font-heading font-black text-mafia-gold noir-mode:text-smoke-white theme-blood:text-red-500 tracking-widest group-hover:text-smoke-white transition-all duration-300 leading-none"
               >
                 MMBARBER
               </span>
               <div className="flex items-center gap-1 mt-0.5 opacity-80">
-                <Crown size={10} className="text-mafia-gold" />
-                <span className="text-[9px] md:text-[10px] font-mono text-mafia-gold uppercase tracking-widest">{mafiaRank}</span>
+                <Crown size={10} className="text-mafia-gold theme-blood:text-red-500 noir-mode:text-white" />
+                <span className="text-[9px] md:text-[10px] font-mono text-mafia-gold theme-blood:text-red-500 noir-mode:text-white uppercase tracking-widest">{mafiaRank}</span>
               </div>
             </div>
           </button>

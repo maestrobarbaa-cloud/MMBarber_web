@@ -22,10 +22,37 @@ export function CorporateTricks() {
   const { barbers } = useBarbers();
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
   const [showExitModal, setShowExitModal] = useState(false);
+  const [isHidden, setIsHidden] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem("mmbarber_hide_hot_activity") === "true";
+    }
+    return false;
+  });
+  const [isRadioActive, setIsRadioActive] = useState(false);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setIsHidden(localStorage.getItem("mmbarber_hide_hot_activity") === "true");
+    };
+    const handleRadioUpdate = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setIsRadioActive(detail);
+    };
+    
+    window.addEventListener("mmbarber-ui-prefs-update", handleUpdate);
+    window.addEventListener("mmbarber-radio-update", handleRadioUpdate);
+    
+    return () => {
+      window.removeEventListener("mmbarber-ui-prefs-update", handleUpdate);
+      window.removeEventListener("mmbarber-radio-update", handleRadioUpdate);
+    };
+  }, []);
 
   // 1. Social Proof (Booking.com style Toast)
   useEffect(() => {
+    if (isHidden) return;
     // Generate a random booking toast every few minutes
+
     const triggerToast = () => {
       const validBarbers = barbers?.filter(b => !b.missionFailed) || [];
       const activeBarbers = validBarbers.length > 0 ? validBarbers : [{ name: "Tomáš" }];
@@ -83,7 +110,7 @@ export function CorporateTricks() {
     const timer = setTimeout(triggerToast, initialDelay);
 
     return () => clearTimeout(timer);
-  }, [barbers]);
+  }, [barbers, isHidden]);
 
   // 2. Exit Intent (Mouse leaves window at the top)
   useEffect(() => {
@@ -105,6 +132,8 @@ export function CorporateTricks() {
     return () => document.removeEventListener("mouseleave", handleMouseLeave);
   }, []);
 
+  if (isHidden) return null;
+
   return (
     <>
       {/* Toast Notification */}
@@ -115,7 +144,7 @@ export function CorporateTricks() {
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, x: 50, y: 50 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="hidden md:block fixed bottom-8 right-8 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 p-6 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.25)] max-w-md rounded-sm"
+            className={`hidden md:block fixed right-8 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 p-6 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.25)] max-w-md rounded-sm transition-all duration-500 ${isRadioActive ? 'bottom-40' : 'bottom-8'}`}
           >
             <div className="flex items-center gap-4">
               <div className="p-3 bg-mafia-gold/10 rounded-full shrink-0">

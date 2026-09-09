@@ -6,7 +6,7 @@ export type MegaMenuData = {
     path: string;
     groups: {
       title: string;
-      items: { name: string; path: string }[];
+      items: { name: string; path: string; requiredXP?: number }[];
     }[];
     promo?: {
       title: string;
@@ -64,7 +64,7 @@ export const getMegaMenuData = (lang: Language): MegaMenuData => ({
         items: [
           { name: lang === 'cs' ? "Náš tým (Rodina)" : "Our Team (Family)", path: "/rodina" },
           { name: lang === 'cs' ? "Galerie" : "Gallery", path: "/galerie" },
-          { name: lang === 'cs' ? "Komunita" : "Community", path: "/komunita" },
+          { name: lang === 'cs' ? "Komunita" : "Community", path: "/komunita", requiredXP: 100 },
         ]
       },
       {

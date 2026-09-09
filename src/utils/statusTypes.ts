@@ -19,4 +19,5 @@ export interface OperativeStatusConfig {
 export interface OperativeStatusData {
   tomas: OperativeStatusConfig;
   nella: OperativeStatusConfig;
+  [key: string]: OperativeStatusConfig;
 }

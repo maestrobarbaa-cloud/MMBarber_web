@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus } from "lucide-react";
+import { Plus, Lock } from "lucide-react";
 import Image from "./OptimizedImage";
 import gsap from "gsap";
 import { useTranslation } from "../hooks/useTranslation";
+import { useGame } from "../contexts/GameContext";
 import { playSound } from "../utils/audio";
 import { getVocative } from "../utils/nameInflection";
 
@@ -44,6 +45,7 @@ interface MenuItem {
 
 export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) => void }) {
   const { t, lang, switchLanguage } = useTranslation();
+  const { totalCollected } = useGame();
   const [isActuallyMobile, setIsActuallyMobile] = useState(false);
   const [nickname, setNickname] = useState("");
   const [showIntro, setShowIntro] = useState(false);
@@ -284,6 +286,24 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
           </div>
         );
       case "komunita":
+        if (totalCollected < 50) {
+          return (
+            <div className="flex flex-col gap-4 text-center md:text-left w-full h-full items-center justify-center">
+              <Lock size={48} className="text-mafia-gold/40 mb-4 animate-pulse" />
+              <h3 className="text-2xl md:text-4xl font-heading font-black text-smoke-white/50 uppercase tracking-wider">
+                {lang === 'cs' ? "ZAMČENÁ SEKCE" : "LOCKED SECTION"}
+              </h3>
+              <p className="text-sm md:text-base text-smoke-white/40 leading-relaxed font-sans mt-2 max-w-sm text-center">
+                {lang === 'cs'
+                  ? "Pro vstup do rodiny musíš získat nějaké zkušenosti. Nasbírej alespoň 50 XP (např. aktivním čtením webu) a brány se ti otevřou."
+                  : "To enter the family, you must gain some experience. Collect at least 50 XP (e.g. by actively browsing) and the gates will open."}
+              </p>
+              <div className="mt-6 px-6 py-2 border border-mafia-gold/20 text-mafia-gold/50 font-mono text-xs uppercase tracking-widest bg-mafia-black">
+                {totalCollected} / 50 XP
+              </div>
+            </div>
+          );
+        }
         return (
           <div className="flex flex-col gap-4 text-center md:text-left w-full h-full items-center md:items-start justify-center md:justify-start">
             <span className="text-xs font-mono text-mafia-gold/50 tracking-[0.3em] uppercase">
