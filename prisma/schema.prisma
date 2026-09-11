@@ -64,6 +64,8 @@ model User {
   lastDailyLogin    DateTime?
   hasClaimedProfileFragments Boolean @default(false)
   
+  isInWaitlist      Boolean   @default(false)
+  
   referredBy        User?     @relation("Referrals", fields: [referredById], references: [id])
   referredUsers     User[]    @relation("Referrals")
 

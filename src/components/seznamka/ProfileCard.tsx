@@ -1450,11 +1450,11 @@ export const ProfileCard = React.memo(function ProfileCard({
               src={displayPhotos[currentPhotoIndex]}
               alt={`${profile.name} photo`}
               fill
-              className={`object-cover ${profile.isBlurredMode || (eventPhase === 'PEAK' && currentPhotoIndex > 0) ? 'blur-3xl scale-125' : ''}`}
+              className={`object-cover ${profile.isBlurredMode || matchScores?.isRelaxed || (eventPhase === 'PEAK' && currentPhotoIndex > 0) ? 'blur-3xl scale-125' : ''}`}
               sizes="(max-width: 768px) 100vw, 400px"
               priority={currentPhotoIndex === 0}
             />
-            {(profile.isBlurredMode || (eventPhase === 'PEAK' && currentPhotoIndex > 0)) && (
+            {(profile.isBlurredMode || matchScores?.isRelaxed || (eventPhase === 'PEAK' && currentPhotoIndex > 0)) && (
               <div className="absolute inset-0 flex items-center justify-center flex-col bg-black/40 z-10 pointer-events-none p-6 text-center">
                 {profile.isBlurredMode ? (
                   <>
@@ -1558,6 +1558,13 @@ export const ProfileCard = React.memo(function ProfileCard({
               <div className={`px-4 py-1.5 backdrop-blur-md rounded-full border-2 font-heading font-black tracking-widest flex items-center gap-2 shadow-[0_0_20px_rgba(0,0,0,0.5)] ${matchScores.overall >= 80 ? 'border-mafia-gold text-mafia-gold bg-black/60 shadow-[0_0_15px_rgba(197,160,89,0.3)]' : matchScores.overall >= 50 ? 'border-white/50 text-white bg-black/50' : 'border-red-900/50 text-red-500 bg-black/50'}`}>
                 <Sparkles size={14} />
                 {matchScores.overall}% MATCH
+              </div>
+            )}
+            {matchScores?.isRelaxed && matchScores.compromiseReason && (
+              <div className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-orange-500/50 flex items-center gap-2 shadow-[0_0_15px_rgba(249,115,22,0.3)] mt-1">
+                <span className="text-orange-400 text-[10px] font-mono font-bold tracking-widest uppercase">
+                  Kompromis: {matchScores.compromiseReason}
+                </span>
               </div>
             )}
 
