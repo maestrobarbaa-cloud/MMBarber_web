@@ -64,6 +64,28 @@ export function Services() {
     return () => window.removeEventListener('mmbarber-tracker-update', handleTrackerUpdate);
   }, []);
 
+  const [globalSettings, setGlobalSettings] = useState<Record<string, string>>({});
+  
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/settings', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          const parsedSettings: Record<string, string> = {};
+          Object.entries(data.values).forEach(([k, val]) => {
+            const v = String(val).toLowerCase();
+            parsedSettings[k] = (v === 'false' || v === 'hidden' || v === 'skryté') ? 'hidden' : ((v === 'locked' || v === 'zamčené') ? 'locked' : ((v === 'dev' || v === 've vývoji') ? 'dev' : 'visible'));
+          });
+          setGlobalSettings(parsedSettings);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   const handleCardClick = (id: string, originalClick: () => void) => {
     const key = `mmbarber_service_${id}_clicks`;
     const current = parseInt(localStorage.getItem(key) || '0', 10);
@@ -90,9 +112,13 @@ export function Services() {
         description: lang === 'cs' ? 'NAŠI OPERATIVCI' : 'OUR OPERATIVES',
         onClick: () => { router.push('/seznamka'); trackEvent("nav_seznamka_click"); }
       }
-    ];
+    ].map(card => {
+      const status = globalSettings[`visibility_card_${card.id === 'dating' ? 'seznamka' : card.id}`];
+      if (status === 'hidden') return null;
+      return { ...card, devMode: status === 'dev', disabled: status === 'locked' };
+    }).filter(Boolean) as any[];
     return cards.sort((a, b) => (trackerScores[a.id] || 0) - (trackerScores[b.id] || 0));
-  }, [lang, t, trackerScores, router]);
+  }, [lang, t, trackerScores, router, globalSettings]);
 
   const otherCards = useMemo(() => {
     const cards = [
@@ -168,7 +194,11 @@ export function Services() {
         description: t?.others?.community?.description || (lang === 'cs' ? 'PŘIDEJ SE K NÁM' : 'JOIN US'),
         onClick: () => { router.push('/komunita'); trackEvent("open_community_page"); }
       }
-    ];
+    ].map(card => {
+      const status = globalSettings[`visibility_card_${card.id === 'gallery' ? 'galerie' : card.id === 'members' ? 'rodina' : card.id === 'housing' ? 'zajimavosti' : card.id === 'hidden' ? 'skryta_mista' : card.id === 'vouchers' ? 'vouchery' : card.id === 'pece' ? 'pece' : card.id === 'community' ? 'komunita' : card.id}`];
+      if (status === 'hidden') return null;
+      return { ...card, devMode: status === 'dev', disabled: status === 'locked' };
+    }).filter(Boolean) as any[];
     
     // Zviditělnit komunitu pouze pokud má uživatel v komunitním battlepassu alespoň 100 XP (level 1)
     const currentCommunityXp = chapterXp['community'] || 0;
@@ -177,7 +207,7 @@ export function Services() {
       : cards.filter(c => c.id !== 'community');
 
     return filteredCards.sort((a, b) => (trackerScores[a.id] || 0) - (trackerScores[b.id] || 0));
-  }, [lang, t, trackerScores, router, chapterXp]);
+  }, [lang, t, trackerScores, router, chapterXp, globalSettings]);
 
   const playCardSound = () => {
     playSound("/sounds/card.mp3", 0.9);
@@ -218,6 +248,8 @@ export function Services() {
               title={card.title}
               icon={card.icon}
               description={card.description}
+              devMode={card.devMode}
+              disabled={card.disabled}
               onClick={() => handleCardClick(card.id, card.onClick)}
               index={idx}
               total={arr.length}
@@ -247,8 +279,11 @@ export function Services() {
                   variant="simple"
                   title={card.title}
                   icon={card.iconMobile}
+                  devMode={card.devMode}
+                  disabled={card.disabled}
                   onClick={() => handleCardClick(card.id, card.onClick)}
                   onHover={playCardSound}
+                  className="aspect-square w-full"
                 />
               </motion.div>
             ))}
@@ -271,6 +306,8 @@ export function Services() {
               title={card.title}
               icon={card.icon}
               description={card.description}
+              devMode={card.devMode}
+              disabled={card.disabled}
               onClick={() => handleCardClick(card.id, card.onClick)}
               index={idx}
               total={arr.length}
@@ -296,6 +333,8 @@ export function Services() {
                    variant="simple"
                    title={card.titleMobile}
                    icon={card.iconMobile}
+                   devMode={card.devMode}
+                   disabled={card.disabled}
                    onClick={() => handleCardClick(card.id, card.onClick)}
                  />
                </motion.div>
@@ -682,7 +721,9 @@ const MenuCard = React.memo(function MenuCard({
   active = false,
   onHover = () => {},
   onHoverEnd = () => {},
-  isAnyHovered = false
+  isAnyHovered = false,
+  devMode = false,
+  disabled = false
 }: { 
   title: string, 
   icon: React.ReactNode, 
@@ -696,7 +737,9 @@ const MenuCard = React.memo(function MenuCard({
   active?: boolean,
   onHover?: () => void,
   onHoverEnd?: () => void,
-  isAnyHovered?: boolean
+  isAnyHovered?: boolean,
+  devMode?: boolean,
+  disabled?: boolean
 }) {
   const { lang } = useTranslation();
   const [localHover, setLocalHover] = useState(false);
@@ -751,6 +794,7 @@ const MenuCard = React.memo(function MenuCard({
   const isFlipped = !isLowTier && (!isMobile || isMobileEffectsEnabled) && (localHover || active);
 
   const handleCardClick = () => {
+    if (disabled) return;
     if (isMobile && isMobileEffectsEnabled) {
        setIsScanning(true);
        setTimeout(() => setIsScanning(false), 1000);
@@ -775,7 +819,7 @@ const MenuCard = React.memo(function MenuCard({
       onMouseEnter={() => { if (!isMobile) { setLocalHover(true); onHover(); } }}
       onMouseLeave={() => { if (!isMobile) { setLocalHover(false); onHoverEnd(); } }}
       onClick={handleCardClick}
-      className={`menu-card ${variant === 'fanned' ? 'absolute' : 'relative flex-shrink-0'} cursor-pointer transition-all duration-300 transform-gpu overflow-visible`}
+      className={`menu-card ${variant === 'fanned' ? 'absolute' : 'relative flex-shrink-0'} ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'} transition-all duration-300 transform-gpu overflow-visible`}
       style={{
         willChange: 'transform, opacity',
         ...(variant === 'fanned' ? { 
@@ -802,7 +846,7 @@ const MenuCard = React.memo(function MenuCard({
           damping: 25,
           mass: 1.2
         }}
-        className={`relative h-full w-full ${className || ""} antialiased transform-gpu gpu-accelerate`}
+        className={`relative h-full w-full ${className || ""} antialiased transform-gpu gpu-accelerate ${disabled ? 'opacity-40 grayscale' : ''}`}
         style={{ transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d" }}
       >
         {/* FRONT SIDE */}
@@ -825,6 +869,12 @@ const MenuCard = React.memo(function MenuCard({
                </div>
             </div>
             
+            {devMode && (
+              <span className="text-[8px] md:text-[9px] font-mono bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 uppercase tracking-widest rounded-sm whitespace-nowrap">
+                {lang === 'cs' ? 'Ve vývoji' : 'In Dev'}
+              </span>
+            )}
+
             <h3 className={`text-lg md:text-2xl font-heading font-black uppercase tracking-[0.2em] leading-tight transition-colors duration-500 ${isMobile && isMobileEffectsEnabled ? 'text-mafia-gold drop-shadow-[0_0_8px_rgba(var(--color-mafia-gold-rgb),0.5)]' : 'text-mafia-gold/60'}`}>
               {title}
             </h3>
@@ -866,6 +916,14 @@ const MenuCard = React.memo(function MenuCard({
               </>
             )}
           </AnimatePresence>
+
+          {/* DISABLED LOCK OVERLAY */}
+          {disabled && (
+            <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/60 rounded-lg pointer-events-none">
+              <Lock size={32} className="text-white/40 mb-2" />
+              <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.3em]">{lang === 'cs' ? 'Nedostupné' : 'Unavailable'}</span>
+            </div>
+          )}
         </div>
         )}
 
@@ -888,6 +946,11 @@ const MenuCard = React.memo(function MenuCard({
                 </div>
                 
                 <div className="space-y-1">
+                  {devMode && (
+                    <span className="text-[8px] md:text-[9px] font-mono bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 uppercase tracking-widest rounded-sm whitespace-nowrap mb-1 inline-block">
+                      {lang === 'cs' ? 'Ve vývoji' : 'In Dev'}
+                    </span>
+                  )}
                   <h3 className="text-xl sm:text-2xl font-heading font-black text-mafia-gold uppercase tracking-widest leading-tight" style={{ color: 'var(--user-accent-color)' }}>
                     {title}
                   </h3>
@@ -905,17 +968,29 @@ const MenuCard = React.memo(function MenuCard({
                 )}
               </div>
 
-              <div className="w-full flex flex-col items-center mt-auto pb-2 relative z-50">
+            <div className="w-full flex flex-col items-center mt-auto pb-2 relative z-50">
                 <div className="h-px bg-mafia-gold/30 mb-4 w-full" style={{ backgroundColor: 'var(--user-accent-color)' }}></div>
                 <button 
-                  onClick={(e) => { e.stopPropagation(); if (onClick) onClick(); }}
-                  className="w-full py-3 bg-mafia-gold text-mafia-black font-black uppercase tracking-widest text-sm hover:bg-white transition-colors"
-                  style={{ backgroundColor: accentColor }}
+                  onClick={(e) => { e.stopPropagation(); if (!disabled && onClick) onClick(); }}
+                  disabled={disabled}
+                  className={`w-full py-3 font-black uppercase tracking-widest text-sm transition-colors ${disabled ? 'bg-white/10 text-white/30 cursor-not-allowed' : 'bg-mafia-gold text-mafia-black hover:bg-white'}`}
+                  style={disabled ? {} : { backgroundColor: accentColor }}
                 >
-                  {lang === 'cs' ? (title === 'SEZNAMKA' ? "OTEVŘÍT" : "VÍCE / DETAIL") : "OPEN / MORE"}
+                  {disabled 
+                    ? (lang === 'cs' ? 'NEDOSTUPNÉ' : 'UNAVAILABLE')
+                    : (lang === 'cs' ? (title === 'SEZNAMKA' ? "OTEVŘÍT" : "VÍCE / DETAIL") : "OPEN / MORE")
+                  }
                 </button>
               </div>
             </div>
+
+            {/* DISABLED LOCK OVERLAY - LITE */}
+            {disabled && (
+              <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/50 rounded-lg pointer-events-none">
+                <Lock size={32} className="text-white/40 mb-2" />
+                <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.3em]">{lang === 'cs' ? 'Nedostupné' : 'Unavailable'}</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -962,31 +1037,40 @@ const MenuCard = React.memo(function MenuCard({
 
             <div className="w-full flex flex-col items-center mt-auto pb-2 relative z-50">
               <div className="h-px bg-mafia-gold/30 mb-4 w-full" style={{ backgroundColor: 'var(--user-accent-color)' }}></div>
-              <motion.button 
-                onClick={(e) => { e.stopPropagation(); if (onClick) onClick(); }}
-                initial={{
-                   backgroundColor: "rgba(0,0,0,0)",
-                   color: accentColor,
-                   borderColor: accentColor
-                }}
-                animate={{
-                   backgroundColor: isFlipped ? accentColor : "rgba(0,0,0,0)",
-                   color: isFlipped ? "#000" : accentColor,
-                   borderColor: accentColor
-                }}
-                transition={{
-                   delay: 0.1,
-                   duration: 0.4,
-                   type: "spring",
-                   stiffness: 100
-                }}
-                className={`flex items-center justify-center gap-2 py-2 px-8 border transition-all shadow-[0_0_20px_rgba(0,0,0,0.5)]`}
-              >
-                <span className="text-[10px] font-black uppercase tracking-[0.3em]">
-                  {openLabel}
-                </span>
-                <ChevronRight size={14} />
-              </motion.button>
+              {disabled ? (
+                <div className="flex items-center justify-center gap-2 py-2 px-8 border border-white/20 bg-white/5 cursor-not-allowed">
+                  <Lock size={12} className="text-white/30" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">
+                    {lang === 'cs' ? 'Nedostupné' : 'Unavailable'}
+                  </span>
+                </div>
+              ) : (
+                <motion.button 
+                  onClick={(e) => { e.stopPropagation(); if (onClick) onClick(); }}
+                  initial={{
+                     backgroundColor: "rgba(0,0,0,0)",
+                     color: accentColor,
+                     borderColor: accentColor
+                  }}
+                  animate={{
+                     backgroundColor: isFlipped ? accentColor : "rgba(0,0,0,0)",
+                     color: isFlipped ? "#000" : accentColor,
+                     borderColor: accentColor
+                  }}
+                  transition={{
+                     delay: 0.1,
+                     duration: 0.4,
+                     type: "spring",
+                     stiffness: 100
+                  }}
+                  className={`flex items-center justify-center gap-2 py-2 px-8 border transition-all shadow-[0_0_20px_rgba(0,0,0,0.5)]`}
+                >
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em]">
+                    {openLabel}
+                  </span>
+                  <ChevronRight size={14} />
+                </motion.button>
+              )}
             </div>
           </div>
 

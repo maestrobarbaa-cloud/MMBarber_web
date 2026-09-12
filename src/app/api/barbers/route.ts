@@ -22,7 +22,8 @@ export async function GET() {
         nextRankIn: b.rankNextIn
       } : undefined,
       bookingSystemType: b.bookingSystemType || 'internal',
-      structuredSchedule: b.structuredSchedule ? JSON.parse(b.structuredSchedule) : null
+      structuredSchedule: b.structuredSchedule ? JSON.parse(b.structuredSchedule) : null,
+      startedCuttingYear: b.startedCuttingYear ?? null
     }));
     
     return NextResponse.json({ barbers: formattedBarbers });
@@ -35,7 +36,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, role, image, desc, schedule, bookingLink, specializations, bookingSystemType, structuredSchedule, isHidden, quotes, quoteTiming } = body;
+    const { name, role, image, desc, schedule, bookingLink, specializations, bookingSystemType, structuredSchedule, isHidden, quotes, quoteTiming, startedCuttingYear } = body;
     
     if (!name || !role || !image || !desc || !schedule) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -74,7 +75,8 @@ export async function POST(request: Request) {
       rankStatus: null,
       rankNextIn: null,
       bookingSystemType: bookingSystemType || 'external',
-      structuredSchedule: structuredSchedule ? JSON.stringify(structuredSchedule) : null
+      structuredSchedule: structuredSchedule ? JSON.stringify(structuredSchedule) : null,
+      startedCuttingYear: startedCuttingYear || null
     });
     saveDb();
 
@@ -88,7 +90,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed, isHidden, bookingSystemType, structuredSchedule, quotes, quoteTiming } = body;
+    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed, isHidden, bookingSystemType, structuredSchedule, quotes, quoteTiming, startedCuttingYear } = body;
     
     if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
 
@@ -119,7 +121,8 @@ export async function PUT(request: Request) {
       quotes: quotes ? JSON.stringify(quotes) : current.quotes,
       quoteTiming: quoteTiming ? JSON.stringify(quoteTiming) : current.quoteTiming,
       bookingSystemType: bookingSystemType !== undefined ? bookingSystemType : current.bookingSystemType,
-      structuredSchedule: structuredSchedule ? JSON.stringify(structuredSchedule) : current.structuredSchedule
+      structuredSchedule: structuredSchedule ? JSON.stringify(structuredSchedule) : current.structuredSchedule,
+      startedCuttingYear: startedCuttingYear !== undefined ? startedCuttingYear : current.startedCuttingYear
     };
     saveDb();
 

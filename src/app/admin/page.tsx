@@ -18,7 +18,8 @@ import {
   Heart,
   Bell,
   Eye,
-  Scissors
+  Scissors,
+  Briefcase
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -32,28 +33,14 @@ export default function AdminDashboardPage() {
   const [newVouchersCount, setNewVouchersCount] = useState(0);
   const [newSeznamkaCount, setNewSeznamkaCount] = useState(0);
   const [newNovinkyCount, setNewNovinkyCount] = useState(0);
+  const [newRecruitmentCount, setNewRecruitmentCount] = useState(0);
 
   const ADMIN_PASSWORD = "MAFIA_PROTOCOL_737";
-
-  const checkVouchers = () => {
-    const saved = localStorage.getItem("mmbarber_voucher_requests");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        const _new = parsed.filter((r: any) => r.status === "new").length;
-        setNewVouchersCount(_new);
-      } catch (e) {}
-    }
-  };
 
   useEffect(() => {
     if (sessionStorage.getItem("mmbarber_admin_auth") === "true") {
       setIsAuthenticated(true);
-      checkVouchers();
     }
-
-    window.addEventListener("storage", checkVouchers);
-    return () => window.removeEventListener("storage", checkVouchers);
   }, []);
 
   // Polling for new items
@@ -62,9 +49,10 @@ export default function AdminDashboardPage() {
 
     const fetchCounts = async () => {
       try {
-        const [seznamkaRes, novinkyRes] = await Promise.all([
+        const [seznamkaRes, novinkyRes, recruitmentRes] = await Promise.all([
           fetch('/api/seznamka?status=new'),
-          fetch('/api/novinky')
+          fetch('/api/novinky'),
+          fetch('/api/admin/recruitment')
         ]);
         
         if (seznamkaRes.ok) {
@@ -75,6 +63,14 @@ export default function AdminDashboardPage() {
         if (novinkyRes.ok) {
           const novinkyData = await novinkyRes.json();
           setNewNovinkyCount(novinkyData.filter((n: any) => n.status === "new").length);
+        }
+
+        if (recruitmentRes.ok) {
+          const recruitmentData = await recruitmentRes.json();
+          const pending = Array.isArray(recruitmentData)
+            ? recruitmentData.filter((r: any) => r.status === 'COMPLETED' || r.status === 'IN_PROGRESS').length
+            : 0;
+          setNewRecruitmentCount(pending);
         }
       } catch (e) {
         console.error("Failed to fetch counts", e);
@@ -92,7 +88,6 @@ export default function AdminDashboardPage() {
       setIsAuthenticated(true);
       sessionStorage.setItem("mmbarber_admin_auth", "true");
       window.dispatchEvent(new Event("mmbarber_admin_auth_changed"));
-      checkVouchers();
     } else {
       alert("ACCESS DENIED: INVALID CLEARANCE");
       setPassword("");
@@ -140,14 +135,14 @@ export default function AdminDashboardPage() {
 
   const adminModules = [
     {
-      id: 'vouchery',
-      title: 'OBJEDNÁVKY VOUCHERŮ',
-      subtitle: 'VOUCHER_REQUESTS',
-      desc: 'Zpracování žádostí o dárkové poukazy a kontrola úhrad.',
-      icon: <Ticket className="text-mafia-gold" size={40} />,
-      link: '/admin/vouchery',
-      color: 'rgba(197, 160, 89, 0.25)',
-      badge: newVouchersCount > 0 ? newVouchersCount : undefined
+      id: 'nabor',
+      title: 'NÁBOR & PŘIHLÁŠKY',
+      subtitle: 'RECRUITMENT_PROTOCOL',
+      desc: 'Přehled uchazečů, vyhodnocení odpovědí z dotazníků a rozhodnutí o přijetí nebo odmítnutí.',
+      icon: <Briefcase className="text-mafia-gold" size={40} />,
+      link: '/admin/nabor',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.35)',
+      badge: newRecruitmentCount > 0 ? newRecruitmentCount : undefined
     },
     {
       id: 'chat',
@@ -184,15 +179,6 @@ export default function AdminDashboardPage() {
       icon: <BookOpen className="text-mafia-gold" size={40} />,
       link: '/admin/rezervace',
       color: 'rgba(var(--color-mafia-gold-rgb), 0.2)'
-    },
-    {
-      id: 'historky',
-      title: 'SPRÁVA HISTOREK',
-      subtitle: 'CONTENT_MODERATION',
-      desc: 'Schvalování a úprava komunitních příspěvků a zážitků.',
-      icon: <BookOpen className="text-mafia-gold" size={40} />,
-      link: '/admin/komunita/historky',
-      color: 'rgba(255, 255, 255, 0.05)'
     },
     {
       id: 'sin-slavy',

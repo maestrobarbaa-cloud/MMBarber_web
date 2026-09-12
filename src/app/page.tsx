@@ -70,7 +70,8 @@ export default function Home() {
           const parsed: Record<string, boolean> = {};
           if (data.values) {
             Object.entries(data.values).forEach(([key, val]) => {
-              parsed[key] = val === 'true';
+              const v = String(val).toLowerCase();
+              parsed[key] = !(v === 'false' || v === 'skryté' || v === 'hidden');
             });
           }
           setVisibility(parsed);

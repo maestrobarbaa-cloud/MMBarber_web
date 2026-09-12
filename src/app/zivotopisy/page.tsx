@@ -139,7 +139,8 @@ export default function BiographiesPage() {
           const parsed: Record<string, boolean> = {};
           if (data.values) {
             Object.entries(data.values).forEach(([key, val]) => {
-              parsed[key] = val === 'true';
+              const v = String(val).toLowerCase();
+              parsed[key] = !(v === 'false' || v === 'skryté' || v === 'hidden');
             });
           }
           setVisibility(parsed);
@@ -621,9 +622,9 @@ export default function BiographiesPage() {
                              </span>
                            </div>
                            <div className="flex items-center justify-between pl-7">
-                             {effectiveTotalCollected < 12 ? (
+                             {effectiveTotalCollected < 10 ? (
                                 <div className="text-[8px] font-mono text-mafia-gold font-bold uppercase tracking-widest bg-mafia-gold/20 border border-mafia-gold/50 px-2 py-0.5 rounded shadow-[0_0_10px_rgba(197,160,89,0.2)]">
-                                  {lang === 'cs' ? 'Vyžaduje 12 fragmentů' : 'Requires 12 fragments'}
+                                  {lang === 'cs' ? 'Vyžaduje 10 fragmentů' : 'Requires 10 fragments'}
                                 </div>
                              ) : (
                                 <>
@@ -661,7 +662,7 @@ export default function BiographiesPage() {
                       <div className="flex flex-wrap gap-2 mb-4">
                         {nicknamesDb?.[activeBarberSafe.id as 'tomas'|'nella']?.suggestions && 
                          Object.entries(nicknamesDb[activeBarberSafe.id as 'tomas'|'nella'].suggestions)
-                           .sort((a, b) => b[1] - a[1])
+                           .sort((a, b) => Number(b[1]) - Number(a[1]))
                            .slice(0, 5) // Show top 5
                            .map(([name, votes]) => (
                              <button

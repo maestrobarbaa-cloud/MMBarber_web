@@ -138,6 +138,27 @@ export default function BarberAdminPage() {
     } catch (e) {}
   };
 
+  const handleSetExperience = async (b: any) => {
+    const currentYear = new Date().getFullYear();
+    const currentStartYear = b.startedCuttingYear || currentYear;
+    const val = prompt(`Zadejte rok, od kterého ${b.name} stříhá (např. 2017 pro praxi ${currentYear - 2017} let):`, currentStartYear.toString());
+    if (val === null) return;
+    const year = parseInt(val);
+    if (isNaN(year) || year < 1950 || year > currentYear + 1) {
+      alert("Neplatný rok.");
+      return;
+    }
+    
+    try {
+      const res = await fetch("/api/barbers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: b.id, startedCuttingYear: year })
+      });
+      if (res.ok) await refreshBarbers();
+    } catch (e) {}
+  };
+
   const openQuotesModal = (b: any) => {
     setQuotesModalBarber(b);
     setEditingQuotes(b.quotes || []);
@@ -438,6 +459,9 @@ export default function BarberAdminPage() {
                     </button>
                     <button onClick={() => openQuotesModal(b)} className="text-white/30 hover:text-blue-400 transition p-2 border border-white/10" title="Citáty a hlášky">
                       <MessageCircle size={16} />
+                    </button>
+                    <button onClick={() => handleSetExperience(b)} className={`transition p-2 border ${b.startedCuttingYear ? 'text-mafia-gold border-mafia-gold/50 bg-mafia-gold/10' : 'text-white/30 border-white/10 hover:text-white'}`} title={b.startedCuttingYear ? `Praxe od roku ${b.startedCuttingYear} (${new Date().getFullYear() - b.startedCuttingYear} let)` : 'Nastavit praxi'}>
+                      <CalendarDays size={16} />
                     </button>
                     <button onClick={() => openStatusModal(b)} className="text-white/30 hover:text-green-500 transition p-2 border border-white/10" title="Status operativce (Kalendář / Online)">
                       <Activity size={16} />

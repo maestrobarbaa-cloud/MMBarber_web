@@ -3,88 +3,165 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
 
+// score: 0 = špatná odpověď, 1 = průměrná, 2 = výborná
 const PHASE1_QUESTIONS = [
   {
     id: 1,
-    type: 'open',
-    question: 'Co byla podle vás vaše největší profesní chyba za poslední rok a jak jste ji vyřešil/a?'
+    type: 'choice',
+    question: 'Co byla podle vás vaše největší profesní chyba za poslední rok a jak jste ji vyřešil/a?',
+    options: [
+      { label: 'Udělal/a jsem chybu a čekal/a, jestli si toho zákazník všimne sám.', score: 0 },
+      { label: 'Chybu jsem si uvědomil/a, ale neřekl/a jsem nic a snažil/a se to zamaskovat.', score: 0 },
+      { label: 'Chybu jsem přiznal/a zákazníkovi, omluvil/a se a nabídl/a bezplatnou opravu.', score: 2 },
+      { label: 'Chybu jsem si uvědomil/a až zpětně, ale příště jsem to udělal/a jinak.', score: 1 },
+    ]
   },
   {
     id: 2,
-    type: 'open',
-    question: 'Zákazník se na konci stříhání podívá do zrcadla, usměje se, zaplatí, ale za dvě hodiny vám na Instagram napíše agresivní zprávu, že je to katastrofa a chce peníze zpět. Jak zareagujete? Napište přesné znění odpovědi.'
+    type: 'choice',
+    question: 'Zákazník se na konci stříhání usměje, zaplatí, ale za dvě hodiny napíše agresivní zprávu, že je to katastrofa a chce peníze zpět. Jak zareagujete?',
+    options: [
+      { label: 'Zprávu ignoruji nebo nahlásím jako spam.', score: 0 },
+      { label: 'Napíšu, že to tak nevypadalo a odmítnu vrácení peněz.', score: 0 },
+      { label: 'Omluvím se, pozvu ho znovu a nabídnu bezplatnou úpravu – bez vrácení peněz.', score: 2 },
+      { label: 'Vrátím peníze a blokuji ho – nechci problémy.', score: 1 },
+    ]
   },
   {
     id: 3,
-    type: 'choice_with_explanation',
+    type: 'choice',
     question: 'Pokud se vám měsíc nedaří a máte málo zákazníků, čí je to podle vás chyba?',
     options: [
-      'A) Je špatný měsíc (krize, lidi šetří).',
-      'B) Holičství nedělá dobrý marketing.',
-      'C) Je to moje chyba a musím přidat.',
-      'D) Je to kombinace všeho výše uvedeného.'
+      { label: 'Je špatný měsíc – krize, lidi šetří.', score: 0 },
+      { label: 'Holičství nedělá dobrý marketing.', score: 0 },
+      { label: 'Je to moje chyba a musím přidat.', score: 2 },
+      { label: 'Je to kombinace všeho výše uvedeného.', score: 1 },
     ]
   },
   {
     id: 4,
-    type: 'open',
-    question: 'Pracujete jako OSVČ a onemocníte na 10 dní. Znamená to nula peněz a spoustu zrušených klientů. Popište krok za krokem, co přesně uděláte hned ten den, kdy zjistíte, že nemůžete do práce.'
+    type: 'choice',
+    question: 'Pracujete jako OSVČ a onemocníte na 10 dní (nula peněz, zrušení klienti). Co uděláte HNED ten den?',
+    options: [
+      { label: 'Počkám, jestli se to zlepší, a teprve pak řeším klienty.', score: 0 },
+      { label: 'Dám story na Instagram, ať si klienti sami napíší.', score: 0 },
+      { label: 'Hned ráno kontaktuji všechny klienty, nabídnu náhradní termíny a aktivuji finanční zálohu.', score: 2 },
+      { label: 'Zruším vše přes systém a pošlu hromadnou SMS.', score: 1 },
+    ]
   },
   {
     id: 5,
     type: 'scale',
-    question: 'Jak moc potřebujete, aby vám šéf přesně říkal, co máte daný den dělat? (1 = vůbec, jsem svůj pán, 10 = potřebuji přesné úkoly a kontrolu)'
+    question: 'Jak moc potřebujete, aby vám šéf přesně říkal, co máte daný den dělat? (1 = vůbec, jsem svůj pán / 10 = potřebuji přesné úkoly a kontrolu)'
   },
   {
     id: 6,
-    type: 'open',
-    question: 'Přijdete ráno do práce jako první a zjistíte, že kolega večer před vámi zapomněl zapnout pračku a vy nemáte čisté ručníky pro prvního klienta. Co uděláte?'
+    type: 'choice',
+    question: 'Přijdete ráno jako první a zjistíte, že kolega zapomněl zapnout pračku – nemáte čisté ručníky pro prvního klienta. Co uděláte?',
+    options: [
+      { label: 'Zavolám šéfovi a řeknu, že nemohu pracovat.', score: 0 },
+      { label: 'Počkám, až přijde kolega, a nechám to na něm.', score: 0 },
+      { label: 'Spustím pračku, provizorně použiji papírové ručníky/vlastní a zákazníkovi vysvětlím situaci.', score: 2 },
+      { label: 'Zákazníkovi posunu čas a spustím pračku.', score: 1 },
+    ]
   },
   {
     id: 7,
-    type: 'open',
-    question: 'Co na práci holiče upřímně nesnášíte? (Odpověď „nic, všechno miluju“ nebereme).'
+    type: 'choice',
+    question: 'Co na práci holiče upřímně nesnášíte?',
+    options: [
+      { label: 'Vůbec nic – vše miluju. (Fajn, ale nebereme to vážně.)', score: 0 },
+      { label: 'Zákazníci, kteří nevědí, co chtějí, a pak jsou nespokojení.', score: 1 },
+      { label: 'Administrativa, účty, pojistné – ta byrokracie mě stojí energii.', score: 2 },
+      { label: 'Musím stát celý den a to fyzicky bolí.', score: 1 },
+    ]
   },
   {
     id: 8,
-    type: 'choice_with_explanation',
+    type: 'choice',
     question: 'Jste spíše týmový hráč (hrajete za značku a kolegy), nebo vlk samotář (zajímá vás jen vaše křeslo a vaši klienti)?',
-    options: ['Týmový hráč', 'Vlk samotář']
+    options: [
+      { label: 'Čistý vlk samotář – zajímám se jen o své křeslo a klienty.', score: 0 },
+      { label: 'Týmový hráč – přikládám ruku k dílu pro celou značku i kolegy.', score: 2 },
+      { label: 'Záleží na situaci – umím obojí.', score: 1 },
+    ]
   },
   {
     id: 9,
-    type: 'open',
-    question: 'Křeslo si pronajímáte a k tomu si musíte platit sociální a zdravotní pojištění. Máte rezervu na měsíce, kdy přijde slabší sezóna (např. únor)? Jak k penězům přistupujete?'
+    type: 'choice',
+    question: 'Jako OSVČ musíte platit sociální a zdravotní pojištění. Máte rezervu na slabší měsíce?',
+    options: [
+      { label: 'Ne, žiji z měsíce na měsíc a doufám, že bude dobře.', score: 0 },
+      { label: 'Rodina mi pomůže v nouzi – ale nic formálního nemám.', score: 0 },
+      { label: 'Mám rezervu alespoň na 2–3 měsíce a pravidelně spořím.', score: 2 },
+      { label: 'Nemám rezervu, ale mám jiný stabilní příjem vedle.', score: 1 },
+    ]
   },
   {
     id: 10,
-    type: 'open',
-    question: 'Jste lepší holič než 80 % ostatních lidí v oboru? Podle čeho to soudíte?'
+    type: 'choice',
+    question: 'Jste lepší holič než 80 % ostatních v oboru? Podle čeho to soudíte?',
+    options: [
+      { label: 'Ano, samozřejmě! Vždy patřím k těm nejlepším.', score: 0 },
+      { label: 'Ne, pořád se učím a nejsem si jistý/á.', score: 1 },
+      { label: 'Myslím, že ano – dokazují mi to opakující se klienti a jejich doporučení.', score: 2 },
+      { label: 'Nevím, nemám jak to srovnat s ostatními.', score: 0 },
+    ]
   },
   {
     id: 11,
-    type: 'open',
-    question: 'Popište situaci, kdy vám někdo z nadřízených nebo kolegů dal tvrdou, možná i nepříjemnou zpětnou vazbu. Jaká byla vaše první reakce a co jste s tím nakonec udělal/a?'
+    type: 'choice',
+    question: 'Někdo z nadřízených nebo kolegů vám dal tvrdou, možná nepříjemnou zpětnou vazbu. Jaká byla vaše první reakce?',
+    options: [
+      { label: 'Naštval/a jsem se a bránil/a se – měli chybu, ne já.', score: 0 },
+      { label: 'Bylo mi to jedno – kritika nic neznamená.', score: 0 },
+      { label: 'Bolelo to, ale poděkoval/a jsem a nad tím přemýšlel/a.', score: 2 },
+      { label: 'Přijal/a jsem to klidně na povrchu, ale vnitřně jsem se cítil/a špatně.', score: 1 },
+    ]
   },
   {
     id: 12,
-    type: 'open',
-    question: 'Máte 4 hodiny "okno" – zrušili se vám klienti. Sedíte na telefonu a scrolujete TikTok, nebo uděláte něco jiného? Buďte upřímní, co konkrétně byste dělali?'
+    type: 'choice',
+    question: 'Máte 4 hodiny „okno" – zrušili se vám klienti. Co budete dělat?',
+    options: [
+      { label: 'Sedím na telefonu a scroluju TikTok nebo Reels.', score: 0 },
+      { label: 'Jdu domů odpočívat – zasloužím si klid.', score: 0 },
+      { label: 'Aktivně oslovím klienty s nabídkou termínu, vyčistím nástroje nebo se něco naučím.', score: 2 },
+      { label: 'Zajdu na kávu s kolegou nebo si prohlídnu sociální sítě konkurence.', score: 1 },
+    ]
   },
   {
     id: 13,
-    type: 'open',
-    question: 'V čem jako holič aktuálně nejvíce zaostáváte? (Technika, komunikace, sociální sítě, organizace...?)'
+    type: 'choice',
+    question: 'V čem jako holič aktuálně nejvíce zaostáváte?',
+    options: [
+      { label: 'V ničem – jsem komplexní profesionál.', score: 0 },
+      { label: 'V technice – některé střihy mi nejdou na 100 %.', score: 2 },
+      { label: 'V komunikaci se zákazníky a prodeji.', score: 2 },
+      { label: 'Na sociálních sítích – nemám čas ani chuť řešit obsah.', score: 1 },
+    ]
   },
   {
     id: 14,
-    type: 'open',
-    question: 'Kolega z vedlejšího křesla si opakovaně půjčuje váš strojek a vrací ho nevyčištěný. Jak přesně to vyřešíte? (Uveďte konkrétní větu, kterou mu řeknete).'
+    type: 'choice',
+    question: 'Kolega z vedlejšího křesla si opakovaně půjčuje váš strojek a vrací ho nevyčištěný. Jak to vyřešíte?',
+    options: [
+      { label: 'Mlčím a jen se zlobím uvnitř.', score: 0 },
+      { label: 'Stěžuji si šéfovi, ať to za mě vyřeší.', score: 0 },
+      { label: 'Řeknu mu přímo: „Kamaráde, prosím tě, vrať strojek vyčištěný – to je základ."', score: 2 },
+      { label: 'Strojek prostě přestanu půjčovat bez jakéhokoli vysvětlení.', score: 1 },
+    ]
   },
   {
     id: 15,
-    type: 'open',
-    question: 'Proč jste se vůbec rozhodl/a jít na OSVČ a nebýt zaměstnanec na HPP s jistým platem a dovolenou?'
+    type: 'choice',
+    question: 'Proč jste se rozhodl/a jít na OSVČ a nebýt zaměstnanec na HPP s jistým platem?',
+    options: [
+      { label: 'Nevybrali mě na HPP, tak jsem šel/šla na OSVČ.', score: 0 },
+      { label: 'Chci svobodu – pracuji kdy a jak chci, bez šéfa nad hlavou.', score: 1 },
+      { label: 'Chci vydělávat přímo úměrně svému výkonu a budovat si vlastní klientelu.', score: 2 },
+      { label: 'Kamarád/ka mi to poradil/a, bylo to pohodlnější.', score: 0 },
+    ]
   }
 ];
 
@@ -177,72 +254,85 @@ export function RecruitmentPhase1() {
           </motion.div>
         ) : (
           <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 max-w-2xl mx-auto">
+            {/* Progress bar */}
+            <div className="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-mafia-gold"
+                initial={{ width: 0 }}
+                animate={{ width: `${((step + 1) / PHASE1_QUESTIONS.length) * 100}%` }}
+                transition={{ duration: 0.4 }}
+              />
+            </div>
+
             <div className="text-mafia-gold font-mono text-xs uppercase tracking-widest">Otázka {step + 1} / {PHASE1_QUESTIONS.length}</div>
             <h3 className="text-xl md:text-2xl text-white font-heading font-black uppercase tracking-wide leading-snug">{currentQ.question}</h3>
 
-            {currentQ.type === 'open' && (
-              <textarea 
-                rows={5}
-                className="w-full bg-black/50 border border-white/20 p-5 text-white font-mono focus:border-mafia-gold outline-none resize-none mt-4 transition-colors"
-                placeholder="Tvoje upřímná odpověď..."
-                value={answers[currentQ.id]?.text || ''}
-                onChange={e => setAnswers({...answers, [currentQ.id]: { text: e.target.value }})}
-              />
-            )}
-
-            {currentQ.type === 'scale' && (
-              <div className="flex justify-between gap-1 md:gap-2 mt-6">
-                {[1,2,3,4,5,6,7,8,9,10].map(n => (
-                  <button 
-                    key={n}
-                    onClick={() => setAnswers({...answers, [currentQ.id]: { value: n }})}
-                    className={`flex-1 py-3 md:py-4 border font-mono transition-colors ${answers[currentQ.id]?.value === n ? 'bg-mafia-gold text-black border-mafia-gold font-bold' : 'bg-black/50 border-white/20 text-white/50 hover:border-white/50 hover:text-white'}`}
-                  >
-                    {n}
-                  </button>
-                ))}
+            {currentQ.type === 'choice' && (
+              <div className="flex flex-col gap-3 mt-2">
+                {(currentQ as any).options?.map((opt: { label: string; score: number }, i: number) => {
+                  const isSelected = answers[currentQ.id]?.choice === opt.label;
+                  return (
+                    <motion.button
+                      key={i}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      onClick={() => setAnswers({...answers, [currentQ.id]: { choice: opt.label, score: opt.score }})}
+                      className={`p-4 text-left border font-mono transition-all duration-200 rounded-lg ${
+                        isSelected
+                          ? 'bg-mafia-gold/20 border-mafia-gold text-mafia-gold shadow-[0_0_15px_rgba(212,175,55,0.15)]'
+                          : 'bg-black/50 border-white/20 text-white/70 hover:border-white/50 hover:text-white'
+                      }`}
+                    >
+                      <span className="flex items-start gap-3">
+                        <span className={`mt-0.5 w-5 h-5 min-w-[1.25rem] rounded-full border-2 flex items-center justify-center transition-colors ${
+                          isSelected ? 'border-mafia-gold bg-mafia-gold' : 'border-white/30'
+                        }`}>
+                          {isSelected && <span className="w-2 h-2 rounded-full bg-black" />}
+                        </span>
+                        {opt.label}
+                      </span>
+                    </motion.button>
+                  );
+                })}
               </div>
             )}
 
-            {currentQ.type === 'choice_with_explanation' && (
-              <div className="flex flex-col gap-3 mt-4">
-                {currentQ.options?.map((opt, i) => (
-                  <button 
-                    key={i}
-                    onClick={() => setAnswers({...answers, [currentQ.id]: { ...answers[currentQ.id], choice: opt }})}
-                    className={`p-4 text-left border font-mono transition-colors ${answers[currentQ.id]?.choice === opt ? 'bg-mafia-gold/20 border-mafia-gold text-mafia-gold' : 'bg-black/50 border-white/20 text-white/70 hover:border-white/50'}`}
-                  >
-                    {opt}
-                  </button>
-                ))}
-                <AnimatePresence>
-                  {answers[currentQ.id]?.choice && (
-                    <motion.textarea 
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      rows={3}
-                      className="w-full mt-4 bg-black/50 border border-mafia-gold/50 p-5 text-white font-mono focus:border-mafia-gold outline-none resize-none transition-colors"
-                      placeholder="Proč jsi vybral/a tuto možnost? (Prosím rozveď)"
-                      value={answers[currentQ.id]?.explanation || ''}
-                      onChange={e => setAnswers({...answers, [currentQ.id]: { ...answers[currentQ.id], explanation: e.target.value }})}
-                    />
-                  )}
-                </AnimatePresence>
+            {currentQ.type === 'scale' && (
+              <div className="mt-4">
+                <div className="flex justify-between gap-1 md:gap-2">
+                  {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                    <button
+                      key={n}
+                      onClick={() => setAnswers({...answers, [currentQ.id]: { value: n, score: n <= 3 ? 2 : n <= 6 ? 1 : 0 }})}
+                      className={`flex-1 py-3 md:py-4 border font-mono transition-colors rounded ${
+                        answers[currentQ.id]?.value === n
+                          ? 'bg-mafia-gold text-black border-mafia-gold font-bold'
+                          : 'bg-black/50 border-white/20 text-white/50 hover:border-white/50 hover:text-white'
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex justify-between mt-2 text-white/30 font-mono text-xs">
+                  <span>Svůj pán</span>
+                  <span>Potřebuji vedení</span>
+                </div>
               </div>
             )}
 
             <div className="flex justify-between items-center mt-10">
-              <button 
-                onClick={() => setStep(s => s - 1)} 
+              <button
+                onClick={() => setStep(s => s - 1)}
                 disabled={step === 0}
                 className="flex items-center gap-2 text-white/30 font-mono uppercase text-xs tracking-widest hover:text-white transition-colors disabled:opacity-0"
               >
                 <ArrowLeft size={16} /> Zpět
               </button>
 
-              <button 
+              <button
                 onClick={handleNext}
-                disabled={submitting || (currentQ.type === 'open' && !answers[currentQ.id]?.text) || (currentQ.type === 'scale' && !answers[currentQ.id]?.value) || (currentQ.type === 'choice_with_explanation' && (!answers[currentQ.id]?.choice || !answers[currentQ.id]?.explanation))}
+                disabled={submitting || (currentQ.type === 'scale' && !answers[currentQ.id]?.value) || (currentQ.type === 'choice' && !answers[currentQ.id]?.choice)}
                 className="flex items-center gap-2 px-8 py-4 bg-mafia-gold text-black font-black uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white transition-colors"
               >
                 {submitting ? 'Vyhodnocuji...' : (step === PHASE1_QUESTIONS.length - 1 ? 'Dokončit a vyhodnotit' : 'Další otázka')}

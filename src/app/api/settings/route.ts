@@ -22,14 +22,20 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { key, value } = body;
-
-    if (!key || value === undefined) {
-      return NextResponse.json({ error: 'Missing key or value' }, { status: 400 });
-    }
+    const { key, value, updates } = body;
 
     const db = getDb();
-    db.settings[key] = String(value);
+    
+    if (updates && typeof updates === 'object') {
+      Object.entries(updates).forEach(([k, v]) => {
+        db.settings[k] = String(v);
+      });
+    } else if (key && value !== undefined) {
+      db.settings[key] = String(value);
+    } else {
+      return NextResponse.json({ error: 'Missing key/value or updates object' }, { status: 400 });
+    }
+
     saveDb();
 
     return NextResponse.json({ success: true });

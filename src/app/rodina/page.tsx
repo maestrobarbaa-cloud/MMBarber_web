@@ -34,8 +34,9 @@ import { FamilyIntelligence } from "@/components/FamilyIntelligence";
 import { FamilySEOInterlink } from "@/components/FamilySEOInterlink";
 import { FamilyFAQ } from "@/components/FamilyFAQ";
 import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
+import { RodinaAdminModals } from "@/components/RodinaAdminModals";
 
-function MemberCard({ m, lang }: { m: any, lang: string }) {
+function MemberCard({ m, lang, isAdmin, onEdit, onDelete }: { m: any, lang: string, isAdmin?: boolean, onEdit?: () => void, onDelete?: () => void }) {
   const [showContact, setShowContact] = useState(false);
   const role = lang === 'cs' ? m.role : m.roleEn;
   const link = m.link || "";
@@ -44,6 +45,12 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
 
   return (
     <div key={m.name} className="group bg-mafia-black/80 border border-mafia-gold/20 p-3 md:p-8 flex flex-col items-center justify-center backdrop-blur-xl hover:border-mafia-gold transition-all relative overflow-hidden">
+      {isAdmin && (
+        <div className="absolute top-2 right-2 flex gap-2 z-20">
+          <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); onEdit?.(); }} className="p-1 bg-mafia-gold/20 hover:bg-mafia-gold/50 text-white rounded"><FileText size={12} /></button>
+          <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); onDelete?.(); }} className="p-1 bg-red-500/20 hover:bg-red-500/50 text-white rounded"><X size={12} /></button>
+        </div>
+      )}
       <Image src={m.img} alt={m.name} width={100} height={100} unoptimized className="w-12 h-12 md:w-24 md:h-24 object-contain mb-3 md:mb-6 grayscale group-hover:grayscale-0 transition-all" priority={m.year === 2025} />
       <h3 className="text-sm md:text-xl font-heading font-black text-smoke-white uppercase mb-1 md:mb-2 text-center leading-tight">{m.name}</h3>
       <p className="text-mafia-gold font-mono text-[7px] md:text-[9px] tracking-widest uppercase mb-3 md:mb-6 text-center">{role}</p>
@@ -102,186 +109,44 @@ function MemberCard({ m, lang }: { m: any, lang: string }) {
   );
 }
 
-const divisions = [
-  { id: "auto", name: "Auto Detailing", nameEn: "Auto Detailing", icon: <Star className="w-5 h-5" /> },
-  { id: "voda", name: "Vodaři / Vodo-Topo", nameEn: "Plumbers", icon: <Droplets className="w-5 h-5" /> },
-  { id: "elektro", name: "Elektrikáři", nameEn: "Electricians", icon: <Zap className="w-5 h-5" /> },
-  { id: "stavebnictvi", name: "Stavebnictví & Reality", nameEn: "Construction & Reality", icon: <Building2 className="w-5 h-5" /> },
-  { id: "gastro", name: "Gastronomie", nameEn: "Gastronomy", icon: <UtensilsCrossed className="w-5 h-5" /> },
-  { id: "kreativci", name: "Fotografové", nameEn: "Photographers", icon: <Camera className="w-5 h-5" /> },
-  { id: "umelci", name: "Umělci", nameEn: "Artists", icon: <Music className="w-5 h-5" /> },
-  { id: "okna-vrata", name: "Okna / Vrata", nameEn: "Windows & Gates", icon: <Hammer className="w-5 h-5" /> },
-  { id: "obaly", name: "Obaly", nameEn: "Packaging", icon: <Package className="w-5 h-5" /> },
-  { id: "support", name: "Podpora", nameEn: "Support", icon: <HeartHandshake className="w-5 h-5" /> },
-  { id: "ucetni", name: "Účetní", nameEn: "Accounting", icon: <Calculator className="w-5 h-5" /> },
-  { id: "kola", name: "Jízdní kola", nameEn: "Bicycles", icon: <Bike className="w-5 h-5" /> },
-  { id: "it", name: "IT & Sítě", nameEn: "IT & Networks", icon: <Monitor className="w-5 h-5" /> },
-  { id: "team", name: "Tým MMBarber", nameEn: "MMBarber Team", icon: <Users className="w-5 h-5" /> },
-];
+export interface Division {
+  id: string;
+  name: string;
+  nameEn: string;
+  icon: string;
+}
 
-const members = [
-  {
-    name: "Detailing",
-    div: "auto",
-    role: "Prémiová péče o auta", roleEn: "Premium Car Care",
-    img: "/loga_partneri/detailing.png",
-    link: "https://www.detailing4u.cz/",
-    year: 2026,
-    specialHover: "Protože auto má vypadat stejně dobře, jako ty po návštěvě barbera.",
-    specialHoverEn: "Because a car should look as good as you do after a barber visit."
-  },
-  {
-    name: "Vodo Topo Jahoda",
-    div: "voda",
-    role: "Expertíza a Tradice", roleEn: "Expertise & Tradition",
-    img: "/loga_partneri/jahoda.png",
-    link: "https://www.jahodavodotopo.cz/",
-    year: 2025,
-    specialHover: "Ten frajer hraje i na bubny..",
-    specialHoverEn: "This guy even plays the drums.."
-  },
-  {
-    name: "O Shawarma Beef",
-    div: "gastro",
-    role: "Nejlepší maso ve městě", roleEn: "Best Beef in Town",
-    img: "/loga_partneri/ShawmaBeef.png",
-    link: "https://www.instagram.com/o.shawarmabeef",
-    year: 2025,
-    specialHover: "Na tohoto to napráskám, to je ten co měl dole kebab. Ten jak byl na všechny milý... jo a nezapomeň říct, že jdeš od nás!",
-    specialHoverEn: "I'll spill the beans on this one, he's the one who had the kebab place downstairs. The one who was nice to everyone... and don't forget to say you're from us!"
-  },
-  { name: "Poe Poe", div: "gastro", role: "Kvalitní posezení", roleEn: "Quality Dining", img: "/loga_partneri/poe.png", link: "https://www.poe-poe.cz/", year: 2025 },
-  {
-    name: "Dvůr pod Starýma Horama",
-    div: "gastro",
-    role: "Víno a Zážitky", roleEn: "Wine & Experiences",
-    img: "/loga_partneri/DvurPodHorama.png",
-    link: "https://dvurpodstarymahorama.cz/",
-    year: 2025,
-    specialHover: "Sem tam nějaká Brigadička pro mladého? nebo nějaké vínko z moravy ?",
-    specialHoverEn: "Every now and then a little gig for the young one? Or some wine from Moravia?"
-  },
-  {
-    name: "Malina Photo",
-    div: "kreativci",
-    role: "Profesionální Foto", roleEn: "Professional Photo",
-    img: "/loga_partneri/malinaphoto.gif",
-    link: "https://malinaphoto.cz/",
-    year: 2025,
-    specialHover: "Před pár lety jsme se setkali v Brně na Olympii, kde ji fotil. Netušil jsem, že bude ještě fotit i nás..",
-    specialHoverEn: "A few years ago we met in Brno at Olympia where he photographed her. I had no idea he would be photographing us too.."
-  },
-  {
-    name: "Comites",
-    div: "stavebnictvi",
-    role: "Stavebnictví / Reality / Finance", roleEn: "Construction / Reality / Finance",
-    img: "/loga_partneri/comites.png",
-    link: "https://comites.cz/",
-    year: 2025,
-    specialHover: "Zase ti kluci z Hradiště co dělají věci jinak. Od cihel až po pojištění tvého klidu.",
-    specialHoverEn: "Those guys from Hradiště who do things differently. From bricks to insuring your peace of mind."
-  },
-  { name: "Šimon Král", div: "umelci", role: "Hudba & Eventy", roleEn: "Music & Events", img: "/loga_partneri/djKing.png", link: "https://simonkral.cz/", year: 2025 },
-  {
-    name: "Argema",
-    div: "umelci",
-    role: "Rocková Legenda", roleEn: "Rock Legend",
-    img: "/loga_partneri/argema.png",
-    link: "https://www.argema.cz/",
-    year: 2025,
-    specialHover: "To snad nemusím ani představovat...",
-    specialHoverEn: "I probably don't even need to introduce this..."
-  },
-  { name: "Kofipack", div: "obaly", role: "Obalová Řešení", roleEn: "Packaging Solutions", img: "/loga_partneri/kofipack.png", link: "https://kofipack.cz/", year: 2025 },
-  { name: "Sluneční Reality", div: "stavebnictvi", role: "Reality s úsměvem", roleEn: "Real Estate Experts", img: "/loga_partneri/slunecniReality.png", link: "https://slunecnireality.cz/", year: 2025 },
-  {
-    name: "Dětský domov UH",
-    div: "support",
-    role: "Společenská Odpovědnost", roleEn: "Community Support",
-    img: "/loga_partneri/detskydomov.png",
-    link: "https://www.detskydomovuh.cz/",
-    year: 2026,
-    specialHover: "Co třeba neřešit vše jen penězma a nefotit se, ale darovat jim zážitek nebo koupit zmrzlinu? Možná stačí jen malá změna.",
-    specialHoverEn: "How about not focusing just on money? Give them an experience instead. Maybe a small change is all it takes."
-  },
-  {
-    name: "Zdeněk Mička",
-    div: "voda",
-    role: "Voda / Topo / Bílovice", roleEn: "Plumbing & Heating",
-    img: "/logo.png",
-    link: "tel:+420739080968",
-    phone: "+420 739 080 968",
-    year: 2025,
-    specialHover: "Potřebuješ vodu nebo topení vyřešit hned? Zdeněk je tvoje spojka.",
-    specialHoverEn: "Need plumbing or heating solved right now? Zdeněk is your contact."
-  },
-  {
-    name: "Kudielka",
-    div: "okna-vrata",
-    role: "Stínící technika & Vrata", roleEn: "Shading & Gates",
-    img: "/logo.png",
-    link: "https://www.kudielka.cz/stinici-technika/plise-zaluzie.html",
-    year: 2025,
-    specialHover: "Potřebuješ se schovat před světem nebo před šéfem? Tyto žaluzie tě podrží.",
-    specialHoverEn: "Need to hide from the world or your boss?"
-  },
-  {
-    name: "Roman Jakubčák",
-    div: "elektro",
-    role: "Elektro / Revize", roleEn: "Electric / Revision",
-    img: "/logo.png",
-    link: "/rodina/remesla",
-    phone: "+420 732 169 799",
-    year: 2026,
-    specialHover: "Když to nejde silou, jde to Jakubčákem...",
-    specialHoverEn: "When force doesn't work, Jakubčák does..."
-  },
-  {
-    name: "Tomáš Mička",
-    div: "team",
-    role: "Web designer | Grafik", roleEn: "Web Designer | Graphic Designer",
-    img: "/logo.png",
-    link: "tel:+420577544073",
-    year: 2025
-  },
-  {
-    name: "Adam Hronák",
-    div: "team",
-    role: "Webový vývojář", roleEn: "Web Developer",
-    img: "/logo.png",
-    link: "tel:+420577544073",
-    year: 2025
-  },
-  {
-    name: "Petr Svoboda",
-    div: "it",
-    role: "Správa sítí a IT", roleEn: "Networking & IT",
-    img: "/logo.png",
-    link: "tel:+420606724310",
-    phone: "+420 606 724 310",
-    year: 2026,
-    specialHover: "Když potřebuješ internet, co nepadá a síť, co dává smysl. Petr je náš IT mág, na kterého je vždy spoleh.",
-    specialHoverEn: "When you need internet that doesn't drop and a network that makes sense. Petr is our reliable IT wizard."
-  },
-  {
-    name: "Romana Mičková",
-    div: "ucetni",
-    role: "Samostatná účetní", roleEn: "Independent Accountant",
-    img: "/logo.png",
-    link: "tel:+420774640332",
-    phone: "+420 774 640 332",
-    ico: "IČO: 65814266",
-    year: 2026
-  },
-  {
-    name: "O Kolečko víc",
-    div: "kola",
-    role: "Jízdní kola a servis", roleEn: "Bicycles and Service",
-    img: "/loga_partneri/okoleckovic.png",
-    link: "https://www.okoleckovic.cz/",
-    year: 2026
-  },
-];
+export interface Member {
+  name: string;
+  div: string;
+  role: string;
+  roleEn: string;
+  img: string;
+  link: string;
+  phone?: string;
+  ico?: string;
+  year?: number;
+  specialHover?: string;
+  specialHoverEn?: string;
+}
+
+const ICONS_MAP: Record<string, React.ReactNode> = {
+  Star: <Star className="w-5 h-5" />,
+  Droplets: <Droplets className="w-5 h-5" />,
+  Zap: <Zap className="w-5 h-5" />,
+  Building2: <Building2 className="w-5 h-5" />,
+  UtensilsCrossed: <UtensilsCrossed className="w-5 h-5" />,
+  Camera: <Camera className="w-5 h-5" />,
+  Music: <Music className="w-5 h-5" />,
+  Hammer: <Hammer className="w-5 h-5" />,
+  Package: <Package className="w-5 h-5" />,
+  HeartHandshake: <HeartHandshake className="w-5 h-5" />,
+  Calculator: <Calculator className="w-5 h-5" />,
+  Bike: <Bike className="w-5 h-5" />,
+  Monitor: <Monitor className="w-5 h-5" />,
+  Users: <Users className="w-5 h-5" />,
+  Home: <Home className="w-5 h-5" />
+};
 
 export default function FamilyPage() {
   const { t, lang } = useTranslation();
@@ -294,6 +159,42 @@ export default function FamilyPage() {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
+  const [divisions, setDivisions] = useState<Division[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const fetchRodina = async () => {
+    try {
+      const res = await fetch('/api/rodina');
+      if (res.ok) {
+        const data = await res.json();
+        setDivisions(data.divisions || []);
+        setMembers(data.members || []);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const saveRodina = async () => {
+    if (!isAdmin) return;
+    setIsSaving(true);
+    try {
+      await fetch('/api/rodina', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ divisions, members })
+      });
+      alert('Změny byly úspěšně uloženy.');
+    } catch (e) {
+      console.error(e);
+      alert('Chyba při ukládání.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const playDoorbell = () => {
     playSound("/sounds/zvonek.mp3", 0.4);
   };
@@ -301,6 +202,10 @@ export default function FamilyPage() {
   useEffect(() => {
     setIsMounted(true);
     trackEvent("view_family_page");
+    if (sessionStorage.getItem("mmbarber_admin_auth") === "true") {
+      setIsAdmin(true);
+    }
+    fetchRodina();
   }, []);
 
   // Camera control via Mouse Movement
@@ -335,12 +240,52 @@ export default function FamilyPage() {
     };
   }, [viewMode]);
 
+  const handleEditMember = (m: Member) => {
+    // To be implemented by Admin Editor Component
+    window.dispatchEvent(new CustomEvent('mmbarber_edit_member', { detail: m }));
+  };
+
+  const handleDeleteMember = (m: Member) => {
+    if (!confirm('Opravdu chcete smazat ' + m.name + '?')) return;
+    setMembers(prev => prev.filter(x => x.name !== m.name));
+  };
+
+  const handleEditDivision = (div: Division) => {
+    window.dispatchEvent(new CustomEvent('mmbarber_edit_division', { detail: div }));
+  };
+
+  const handleDeleteDivision = (div: Division) => {
+    if (!confirm('Opravdu chcete smazat ' + div.name + '?')) return;
+    setDivisions(prev => prev.filter(x => x.id !== div.id));
+  };
+
   if (!isMounted) return null;
 
   const filteredMembers = members.filter(m => activeDivision === 'all' ? m.div !== 'team' : m.div === activeDivision);
 
   return (
     <section className="min-h-screen bg-mafia-black text-smoke-white pt-32 pb-24 px-6 relative overflow-x-hidden lg:cursor-crosshair touch-pan-y">
+      {isAdmin && (
+        <div className="fixed top-24 right-4 z-50 flex gap-2">
+           <button 
+             onClick={saveRodina}
+             disabled={isSaving}
+             className="bg-mafia-gold text-black px-6 py-3 font-black uppercase tracking-widest text-xs hover:bg-white transition-colors shadow-2xl flex items-center gap-2"
+           >
+             <FileText size={16} /> {isSaving ? 'UKLÁDÁM...' : 'ULOŽIT ZMĚNY'}
+           </button>
+        </div>
+      )}
+      
+      {isAdmin && (
+        <RodinaAdminModals 
+          divisions={divisions} 
+          setDivisions={setDivisions} 
+          members={members} 
+          setMembers={setMembers} 
+        />
+      )}
+      
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,20,20,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none"></div>
 
@@ -402,21 +347,27 @@ export default function FamilyPage() {
                     {divisions.map((div) => (
                       <div key={div.id}>
                         <button
-                          onClick={() => {
-                            if (activeDivision !== div.id) {
-                              setActiveDivision(div.id);
-                              playDoorbell();
-                            }
-                          }}
-                          className={`w-full group relative overflow-hidden border-2 p-6 text-left transition-all duration-500 cursor-pointer ${activeDivision === div.id ? 'border-mafia-gold bg-mafia-gold/10 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.3)]' : 'border-white/5 bg-white/[0.02] hover:border-mafia-gold/40'
+                          onClick={() => { setActiveDivision(div.id); playDoorbell(); }}
+                          className={`w-full group flex items-center justify-between p-4 transition-all duration-500 border ${activeDivision === div.id
+                            ? 'border-mafia-gold/30 bg-mafia-gold/5 backdrop-blur-md'
+                            : 'border-transparent hover:border-white/10 hover:bg-white/[0.02]'
                             }`}
                         >
-                          <div className="relative z-10 flex items-center justify-between">
-                            <span className={`font-heading font-bold text-lg uppercase tracking-widest transition-colors ${activeDivision === div.id ? 'text-mafia-gold' : 'text-smoke-white/60 group-hover:text-smoke-white'}`}>
+                          <div className="flex items-center gap-4">
+                            <div className={`w-1.5 h-1.5 rounded-full transition-colors ${activeDivision === div.id ? 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.8)]' : 'bg-transparent group-hover:bg-white/20'}`} />
+                            <span className={`font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] transition-colors ${activeDivision === div.id ? 'text-mafia-gold font-bold' : 'text-smoke-white/60 group-hover:text-smoke-white'}`}>
                               {lang === 'cs' ? div.name : div.nameEn}
                             </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {isAdmin && (
+                              <div className="opacity-0 group-hover/div:opacity-100 flex items-center gap-1 transition-opacity z-20">
+                                <span onClick={(e) => { e.stopPropagation(); handleEditDivision(div); }} className="p-1 hover:bg-mafia-gold/20 text-white rounded cursor-pointer"><FileText size={12}/></span>
+                                <span onClick={(e) => { e.stopPropagation(); handleDeleteDivision(div); }} className="p-1 hover:bg-red-500/20 text-white rounded cursor-pointer"><X size={12}/></span>
+                              </div>
+                            )}
                             <div className={activeDivision === div.id ? 'text-mafia-gold' : 'text-smoke-white/20'}>
-                              {div.icon && <div className="scale-125">{div.icon}</div>}
+                              {div.icon && <div className="scale-125">{ICONS_MAP[div.icon] || <Star className="w-5 h-5"/>}</div>}
                             </div>
                           </div>
                         </button>
@@ -458,8 +409,18 @@ export default function FamilyPage() {
                     className="grid grid-cols-1 md:grid-cols-2 gap-8"
                   >
                     {members.filter(m => (activeDivision === 'all' ? m.div !== 'team' : m.div === activeDivision)).map(m => (
-                      <MemberCard key={m.name} m={m} lang={lang} />
+                      <MemberCard key={m.name} m={m} lang={lang} isAdmin={isAdmin} onEdit={() => handleEditMember(m)} onDelete={() => handleDeleteMember(m)} />
                     ))}
+                    
+                    {isAdmin && activeDivision !== 'all' && (
+                      <div 
+                        onClick={() => window.dispatchEvent(new CustomEvent('mmbarber_edit_member', { detail: { div: activeDivision } }))}
+                        className="group bg-mafia-gold/5 border border-dashed border-mafia-gold/30 hover:border-mafia-gold/70 p-3 md:p-8 flex flex-col items-center justify-center backdrop-blur-xl transition-all cursor-pointer min-h-[250px]"
+                      >
+                         <span className="text-mafia-gold font-heading font-black text-4xl mb-4">+</span>
+                         <span className="font-mono text-xs uppercase tracking-widest text-mafia-gold/50 group-hover:text-mafia-gold transition-colors">PŘIDAT ČLENA</span>
+                      </div>
+                    )}
                   </motion.div>
                 </AnimatePresence>
               </div>

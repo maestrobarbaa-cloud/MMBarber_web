@@ -792,50 +792,101 @@ export default function StoryPage() {
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-mafia-gold/5 via-transparent to-mafia-black/40" />
       </div>
 
+      {/* ── Star Wars crawl keyframes injected inline for guaranteed availability ── */}
+      <style>{`
+        @keyframes sw-crawl {
+          0%   { transform: rotateX(38deg) translateY(110%);  opacity: 0; }
+          5%   { opacity: 1; }
+          90%  { opacity: 1; }
+          100% { transform: rotateX(38deg) translateY(-400%); opacity: 0; }
+        }
+      `}</style>
+
       <div className="w-full lg:w-[320px] xl:w-[400px] h-[45vh] lg:h-full bg-transparent relative z-40 flex flex-col pointer-events-none">
-        <div className="p-8 pt-24 lg:pt-12 flex flex-col h-full items-center text-center pointer-events-none">
-          <div className="flex items-center gap-3 mb-10 opacity-30">
-            <div className="w-8 h-px bg-mafia-gold/40" />
-            <div className="text-mafia-gold font-mono text-[9px] tracking-[0.6em] uppercase">Archiv_812</div>
-            <div className="w-8 h-px bg-mafia-gold/40" />
-          </div>
 
-          <div className="flex-1 w-full flex flex-col justify-end pb-12">
-            <AnimatePresence mode="wait">
-              {selectedNode && (
-                <motion.div 
-                  key={`${selectedNode.id}-${lang}`} 
-                  initial={{ opacity: 0, x: -20 }} 
-                  animate={{ opacity: 1, x: 0 }} 
-                  exit={{ opacity: 0, x: 20 }} 
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="space-y-6 pointer-events-auto relative z-50"
-                >
-                  <span className="text-mafia-gold/40 font-mono text-[10px] tracking-widest block uppercase">
-                    {(t.story?.hud?.period || "PERIOD") + " " + (selectedNode.year || "...")}
-                  </span>
-                  <h2 className="text-4xl font-heading font-black text-white uppercase italic leading-tight" style={{ textShadow: "0 0 20px rgba(212,175,55,0.3)", fontFamily: "var(--font-playfair), serif" }}>
-                    {selectedNode.title}
-                  </h2>
-                  <p className="text-white/80 text-lg italic leading-relaxed" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.5)", fontFamily: "var(--font-inter), sans-serif" }}>
-                    {selectedNode.content}
-                  </p>
+        {/* ── STAR WARS CRAWL ────────────────────────── */}
+        <div
+          className="flex-1 w-full overflow-hidden relative"
+          style={{
+            perspective: '350px',
+            perspectiveOrigin: '50% 8%',
+          }}
+        >
+          {/* Top fade – text dissolves at the horizon */}
+          <div
+            className="absolute top-0 left-0 right-0 z-20 pointer-events-none"
+            style={{ height: '55%', background: 'linear-gradient(to bottom, #020202 15%, transparent 100%)' }}
+          />
+          {/* Bottom fade */}
+          <div
+            className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none"
+            style={{ height: '10%', background: 'linear-gradient(to top, #020202 0%, transparent 100%)' }}
+          />
 
-                  {selectedNode.type === 'secret' && !isSecretRevealed ? (
-                    <button onClick={handleRevealSecret} className="w-full py-4 border border-mafia-red/40 text-mafia-red font-mono text-[10px] uppercase hover:bg-mafia-red hover:text-white transition-all">
-                      {hackingProgress > 0 ? `${t.story?.hud.hacking} ${hackingProgress}%` : t.story?.hud.startHacking}
-                    </button>
-                  ) : isSecretRevealed && selectedNode.secretContent && (
-                    <div className="p-6 border border-mafia-red/20 bg-mafia-red/5 text-mafia-red italic rounded-sm">
-                      <div className="text-[9px] font-mono mb-2 opacity-50">{t.story?.hud.decryptedData}</div>
-                      {selectedNode.secretContent}
-                    </div>
-                  )}
-                </motion.div>
+          {selectedNode && (
+            /* key on this div forces DOM remount → CSS animation restarts cleanly */
+            <div
+              key={`crawl-${selectedNode.id}-${lang}`}
+              className="px-6 pb-8 pointer-events-auto"
+              style={{
+                transformOrigin: '50% 100%',
+                transformStyle: 'preserve-3d',
+                animation: 'sw-crawl 90s linear forwards',
+                textAlign: 'center',
+              }}
+            >
+              {/* Archiv header */}
+              <div className="flex items-center justify-center gap-3 mb-6 opacity-30">
+                <div className="w-8 h-px bg-mafia-gold/40" />
+                <div className="text-mafia-gold font-mono text-[9px] tracking-[0.6em] uppercase">Archiv_812</div>
+                <div className="w-8 h-px bg-mafia-gold/40" />
+              </div>
+
+              <span className="text-mafia-gold/60 font-mono text-[9px] tracking-[0.5em] block uppercase mb-3">
+                {(t.story?.hud?.period || "PERIOD") + " " + (selectedNode.year || "...")}
+              </span>
+
+              <h2
+                className="text-3xl lg:text-4xl font-heading font-black uppercase italic leading-tight mb-4"
+                style={{
+                  color: 'var(--color-mafia-gold)',
+                  textShadow: '0 0 30px rgba(212,175,55,0.9), 0 0 80px rgba(212,175,55,0.4)',
+                  fontFamily: 'var(--font-playfair), serif',
+                }}
+              >
+                {selectedNode.title}
+              </h2>
+
+              <div className="w-20 h-px bg-mafia-gold/40 mx-auto mb-5" />
+
+              <p
+                className="text-white/80 text-base italic leading-loose"
+                style={{
+                  textShadow: '0 2px 14px rgba(0,0,0,0.95)',
+                  fontFamily: 'var(--font-inter), sans-serif',
+                }}
+              >
+                {selectedNode.content}
+              </p>
+
+              {selectedNode.type === 'secret' && !isSecretRevealed ? (
+                <button onClick={handleRevealSecret} className="mt-8 w-full py-4 border border-mafia-red/40 text-mafia-red font-mono text-[10px] uppercase hover:bg-mafia-red hover:text-white transition-all">
+                  {hackingProgress > 0 ? `${t.story?.hud.hacking} ${hackingProgress}%` : t.story?.hud.startHacking}
+                </button>
+              ) : isSecretRevealed && selectedNode.secretContent && (
+                <div className="mt-8 p-6 border border-mafia-red/20 bg-mafia-red/5 text-mafia-red italic rounded-sm">
+                  <div className="text-[9px] font-mono mb-2 opacity-50">{t.story?.hud.decryptedData}</div>
+                  {selectedNode.secretContent}
+                </div>
               )}
-            </AnimatePresence>
-          </div>
+
+              {/* Spacer so text has room to crawl past */}
+              <div className="h-[60vh]" />
+            </div>
+          )}
         </div>
+        {/* ─────────────────────────────────────────────── */}
+
       </div>
 
       <div ref={containerRef} className="absolute inset-0 z-0 bg-[#020202] overflow-hidden cursor-crosshair" onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>

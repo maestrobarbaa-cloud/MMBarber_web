@@ -1,6 +1,27 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+function evaluateAnswers(answers: Record<string, any>): { score: number; maxScore: number; percentage: number; status: 'PASSED' | 'BORDERLINE' | 'FAILED' } {
+  let totalScore = 0;
+  let maxScore = 0;
+
+  for (const key of Object.keys(answers)) {
+    const answer = answers[key];
+    if (typeof answer?.score === 'number') {
+      totalScore += answer.score;
+      maxScore += 2; // max score per question is 2
+    } else if (typeof answer?.value === 'number' && typeof answer?.score === 'number') {
+      totalScore += answer.score;
+      maxScore += 2;
+    }
+  }
+
+  const percentage = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
+  const status = percentage >= 60 ? 'PASSED' : percentage >= 40 ? 'BORDERLINE' : 'FAILED';
+
+  return { score: totalScore, maxScore, percentage, status };
+}
+
 export async function POST(req: Request) {
   try {
     const { phase, answers, contact } = await req.json();
@@ -25,27 +46,41 @@ export async function POST(req: Request) {
     }
 
     if (phase === 1) {
+      const evaluation = evaluateAnswers(answers);
       await prisma.recruitmentApplication.update({
         where: { id: application.id },
         data: {
           phase1Answers: JSON.stringify(answers),
-          phase1Status: 'PASSED', // Zjednodušeno pro ruční hodnocení
+          phase1Status: evaluation.status,
           status: 'IN_PROGRESS'
         }
       });
-      return NextResponse.json({ status: 'PASSED', summary: 'Fáze 1 uložena.' });
+      return NextResponse.json({
+        status: evaluation.status,
+        score: evaluation.score,
+        maxScore: evaluation.maxScore,
+        percentage: evaluation.percentage,
+        summary: `Fáze 1 vyhodnocena. Skóre: ${evaluation.score}/${evaluation.maxScore} (${evaluation.percentage}%)`
+      });
     }
 
     if (phase === 3) {
+      const evaluation = evaluateAnswers(answers);
       await prisma.recruitmentApplication.update({
         where: { id: application.id },
         data: {
           phase3Answers: JSON.stringify(answers),
-          phase3Status: 'PENDING_REVIEW', // Čeká na hodnocení majitelem
+          phase3Status: 'PENDING_REVIEW',
           status: 'COMPLETED'
         }
       });
-      return NextResponse.json({ status: 'PASSED', summary: 'Fáze 3 odeslána k hodnocení.' });
+      return NextResponse.json({
+        status: 'PASSED',
+        score: evaluation.score,
+        maxScore: evaluation.maxScore,
+        percentage: evaluation.percentage,
+        summary: `Fáze 3 odeslána k hodnocení. Předběžné skóre: ${evaluation.score}/${evaluation.maxScore} (${evaluation.percentage}%)`
+      });
     }
     
     return NextResponse.json({ error: 'Neznámá fáze' }, { status: 400 });
@@ -55,3 +90,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Interní chyba serveru' }, { status: 500 });
   }
 }
+

@@ -67,6 +67,30 @@ button, a {
   transform-style: preserve-3d;
 }
 
+/* ─── STAR WARS CRAWL ────────────────────────────────────── */
+@keyframes sw-crawl {
+  0%   { transform: rotateX(38deg) translateY(120%);  opacity: 0; }
+  6%   { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { transform: rotateX(38deg) translateY(-380%); opacity: 0; }
+}
+
+.sw-crawl-container {
+  /* Camera: vanishing point sits near the top of the panel */
+  perspective: 350px;
+  perspective-origin: 50% 8%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sw-crawl-text {
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+  animation: sw-crawl 24s linear forwards;
+  text-align: center;
+}
+/* ─────────────────────────────────────────────────────────── */
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

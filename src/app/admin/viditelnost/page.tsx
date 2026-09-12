@@ -18,13 +18,27 @@ import { useRouter } from "next/navigation";
 
 // Define the keys we'll manage
 const VISIBILITY_KEYS = [
-  { key: 'visibility_barber_tomas', label: 'Barber: Tomáš', category: 'barbers', icon: <Users size={16} /> },
-  { key: 'visibility_barber_nella', label: 'Barber: Nella', category: 'barbers', icon: <Users size={16} /> },
-  { key: 'visibility_services', label: 'Sekce: Služby / Ceník', category: 'sections', icon: <Layout size={16} /> },
-  { key: 'visibility_partners', label: 'Sekce: Partneři', category: 'sections', icon: <Layout size={16} /> },
-  { key: 'visibility_reviews', label: 'Sekce: Google Recenze', category: 'sections', icon: <MessageSquare size={16} /> },
-  { key: 'visibility_contact', label: 'Sekce: Kontakt', category: 'sections', icon: <Layout size={16} /> },
-  { key: 'visibility_intelligence', label: 'Sekce: Terminál (Intelligence)', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_intro_rezervace', label: 'Hlavní menu: Rezervace', category: 'intro', icon: <Layout size={16} /> },
+  { key: 'visibility_intro_galerie', label: 'Hlavní menu: Galerie', category: 'intro', icon: <Layout size={16} /> },
+  { key: 'visibility_intro_vice', label: 'Hlavní menu: Více o podniku', category: 'intro', icon: <Layout size={16} /> },
+  { key: 'visibility_intro_komunita', label: 'Hlavní menu: Rodina MM Barber', category: 'intro', icon: <Layout size={16} /> },
+  { key: 'visibility_intro_kontakt', label: 'Hlavní menu: Kontakt', category: 'intro', icon: <Layout size={16} /> },
+  { key: 'visibility_seznamka', label: 'Hlavní menu: Seznamka', category: 'intro', icon: <Layout size={16} /> },
+  { key: 'visibility_card_services', label: 'Karta: Ceník a Služby', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_card_seznamka', label: 'Karta: Seznamka', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_card_vouchery', label: 'Karta: Vouchery', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_card_galerie', label: 'Karta: Galerie', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_card_rodina', label: 'Karta: Rodina', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_card_zajimavosti', label: 'Karta: Zajímavosti', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_card_skryta_mista', label: 'Karta: Skrytá místa', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_card_system', label: 'Karta: Systém a Návštěva', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_card_pece', label: 'Karta: Péče o sebe', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_card_komunita', label: 'Karta: Komunita', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_services', label: 'Celá sekce: Služby / Ceník', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_partners', label: 'Celá sekce: Partneři', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_reviews', label: 'Celá sekce: Google Recenze', category: 'sections', icon: <MessageSquare size={16} /> },
+  { key: 'visibility_contact', label: 'Celá sekce: Kontakt', category: 'sections', icon: <Layout size={16} /> },
+  { key: 'visibility_intelligence', label: 'Celá sekce: Terminál (Intelligence)', category: 'sections', icon: <Layout size={16} /> },
   { key: 'visibility_komunita_grafika', label: 'Komunita: Grafika', category: 'community', icon: <Layout size={16} /> },
   { key: 'visibility_komunita_nabor', label: 'Komunita: Nábor', category: 'community', icon: <Layout size={16} /> },
   { key: 'visibility_komunita_chat', label: 'Komunita: Chat', category: 'community', icon: <Layout size={16} /> },
@@ -34,17 +48,15 @@ const VISIBILITY_KEYS = [
   { key: 'visibility_komunita_projekty', label: 'Komunita: Projekty', category: 'community', icon: <Layout size={16} /> },
   { key: 'visibility_komunita_sin_slavy', label: 'Komunita: Síň slávy', category: 'community', icon: <Layout size={16} /> },
   { key: 'visibility_komunita_zlepseni', label: 'Komunita: Zlepšení', category: 'community', icon: <Layout size={16} /> },
-  { key: 'visibility_seznamka', label: 'Sekce: Seznamka', category: 'community', icon: <Layout size={16} /> },
   { key: 'visibility_akademie', label: 'Sekce: Akademie', category: 'community', icon: <Layout size={16} /> },
   { key: 'visibility_vip_club', label: 'Sekce: VIP Club', category: 'community', icon: <Layout size={16} /> },
-  { key: 'visibility_vouchery', label: 'Sekce: Vouchery', category: 'community', icon: <Layout size={16} /> },
   { key: 'visibility_kariera', label: 'Sekce: Kariéra', category: 'community', icon: <Layout size={16} /> },
 ];
 
 export default function AdminVisibilityPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [settings, setSettings] = useState<Record<string, boolean>>({});
+  const [settings, setSettings] = useState<Record<string, string>>({});
   const [savedMessage, setSavedMessage] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -59,42 +71,48 @@ export default function AdminVisibilityPage() {
 
   const fetchSettings = async () => {
     try {
-      const res = await fetch('/api/settings');
+      const res = await fetch('/api/settings', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
-        const initialSettings: Record<string, boolean> = {};
+        const initialSettings: Record<string, string> = {};
         
-        // Populate settings from DB, default to true if not found
         VISIBILITY_KEYS.forEach(item => {
           const val = data.values[item.key];
-          initialSettings[item.key] = val === null || val === undefined ? true : val === 'true';
+          if (val === 'false') initialSettings[item.key] = 'hidden';
+          else if (val === 'dev') initialSettings[item.key] = 'dev';
+          else if (val === 'locked') initialSettings[item.key] = 'locked';
+          else if (val === 'hidden') initialSettings[item.key] = 'hidden';
+          else initialSettings[item.key] = 'visible';
         });
         
         setSettings(initialSettings);
-        setLoading(false);
       }
     } catch (e) {
       console.error(e);
+    } finally {
       setLoading(false);
     }
   };
 
-  const toggleSetting = (key: string) => {
-    setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+  const cycleSetting = (key: string) => {
+    setSettings(prev => {
+      const current = prev[key];
+      let next = 'visible';
+      if (current === 'visible') next = 'locked';
+      else if (current === 'locked') next = 'hidden';
+      else if (current === 'hidden') next = 'dev';
+      else next = 'visible';
+      return { ...prev, [key]: next };
+    });
   };
 
   const handleSave = async () => {
     try {
-      // Save each setting one by one (or we could modify API to accept batch, but for ~7 items this is fine)
-      const promises = Object.entries(settings).map(([key, value]) => 
-        fetch('/api/settings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key, value: value ? 'true' : 'false' })
-        })
-      );
-      
-      await Promise.all(promises);
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updates: settings })
+      });
       
       setSavedMessage(true);
       setTimeout(() => setSavedMessage(false), 3000);
@@ -147,36 +165,49 @@ export default function AdminVisibilityPage() {
           <div className="mb-10 p-4 border border-mafia-gold/20 bg-mafia-gold/5 flex gap-4 items-start">
             <ShieldAlert className="text-mafia-gold shrink-0 mt-1" size={20} />
             <p className="font-mono text-xs text-smoke-white/60 leading-relaxed uppercase tracking-wider">
-              Zde můžeš globálně zapínat a vypínat celé bloky webu. Vypnutá karta nebo sekce se okamžitě přestane zobrazovat všem návštěvníkům webu.
+              Zde můžeš globálně nastavovat viditelnost prvků. Lze volit mezi těmito stavy: <strong>VIDITELNÉ</strong>, <strong>ZAMČENÉ</strong> (karta zůstane, ale je neaktivní s ikonou zámku), <strong>SKRYTÉ</strong> (úplně zmizí) a <strong>VE VÝVOJI</strong>.
             </p>
           </div>
 
           <div className="space-y-12 relative z-10">
             
-            {/* Barbeři */}
+            {/* Hlavní Menu Karta */}
             <div>
               <h3 className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 flex items-center gap-2">
-                <Users size={14} /> OPERATIVCI (KARTY BARBERŮ)
+                <Layout size={14} /> KARTY V HLAVNÍM MENU
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {VISIBILITY_KEYS.filter(k => k.category === 'barbers').map(item => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {VISIBILITY_KEYS.filter(k => k.category === 'intro').map(item => (
                   <button 
                     key={item.key}
-                    onClick={() => toggleSetting(item.key)}
+                    onClick={() => cycleSetting(item.key)}
                     className={`p-6 border transition-all flex items-center justify-between text-left ${
-                      settings[item.key] ? 'border-mafia-gold bg-mafia-gold/10' : 'border-white/10 bg-black/40 opacity-50 hover:opacity-100'
+                      settings[item.key] === 'visible' ? 'border-mafia-gold bg-mafia-gold/10' : 
+                      settings[item.key] === 'dev' ? 'border-blue-500 bg-blue-500/10' : 
+                      settings[item.key] === 'locked' ? 'border-red-500 bg-red-500/10' :
+                      'border-white/10 bg-black/40 opacity-50 hover:opacity-100'
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-3 h-3 rounded-full ${settings[item.key] ? 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.8)]' : 'bg-white/20'}`}></div>
+                      <div className={`w-3 h-3 rounded-full ${
+                        settings[item.key] === 'visible' ? 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.8)]' : 
+                        settings[item.key] === 'dev' ? 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]' : 
+                        settings[item.key] === 'locked' ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]' :
+                        'bg-white/20'
+                      }`}></div>
                       <div>
                         <div className="font-heading font-black tracking-widest uppercase mb-1">{item.label}</div>
                         <div className="font-mono text-[9px] uppercase tracking-widest text-white/40">
-                          {settings[item.key] ? 'VIDITELNÝ' : 'SKRYTÝ'}
+                          {settings[item.key] === 'visible' ? 'VIDITELNÉ' : 
+                           settings[item.key] === 'dev' ? 'VE VÝVOJI' : 
+                           settings[item.key] === 'locked' ? 'ZAMČENÉ' : 'SKRYTÉ'}
                         </div>
                       </div>
                     </div>
-                    {settings[item.key] ? <Eye size={20} className="text-mafia-gold" /> : <EyeOff size={20} className="text-white/40" />}
+                    {settings[item.key] === 'visible' ? <Eye size={20} className="text-mafia-gold" /> : 
+                     settings[item.key] === 'dev' ? <Save size={20} className="text-blue-500" /> : 
+                     settings[item.key] === 'locked' ? <ShieldAlert size={20} className="text-red-500" /> :
+                     <EyeOff size={20} className="text-white/40" />}
                   </button>
                 ))}
               </div>
@@ -191,21 +222,34 @@ export default function AdminVisibilityPage() {
                 {VISIBILITY_KEYS.filter(k => k.category === 'sections').map(item => (
                   <button 
                     key={item.key}
-                    onClick={() => toggleSetting(item.key)}
+                    onClick={() => cycleSetting(item.key)}
                     className={`p-6 border transition-all flex items-center justify-between text-left ${
-                      settings[item.key] ? 'border-mafia-gold bg-mafia-gold/10' : 'border-white/10 bg-black/40 opacity-50 hover:opacity-100'
+                      settings[item.key] === 'visible' ? 'border-mafia-gold bg-mafia-gold/10' : 
+                      settings[item.key] === 'dev' ? 'border-blue-500 bg-blue-500/10' : 
+                      settings[item.key] === 'locked' ? 'border-red-500 bg-red-500/10' :
+                      'border-white/10 bg-black/40 opacity-50 hover:opacity-100'
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-3 h-3 rounded-full ${settings[item.key] ? 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.8)]' : 'bg-white/20'}`}></div>
+                      <div className={`w-3 h-3 rounded-full ${
+                        settings[item.key] === 'visible' ? 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.8)]' : 
+                        settings[item.key] === 'dev' ? 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]' : 
+                        settings[item.key] === 'locked' ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]' :
+                        'bg-white/20'
+                      }`}></div>
                       <div>
                         <div className="font-heading font-black tracking-widest uppercase mb-1">{item.label}</div>
                         <div className="font-mono text-[9px] uppercase tracking-widest text-white/40">
-                          {settings[item.key] ? 'VIDITELNÉ' : 'SKRYTÉ'}
+                          {settings[item.key] === 'visible' ? 'VIDITELNÉ' : 
+                           settings[item.key] === 'dev' ? 'VE VÝVOJI' : 
+                           settings[item.key] === 'locked' ? 'ZAMČENÉ' : 'SKRYTÉ'}
                         </div>
                       </div>
                     </div>
-                    {settings[item.key] ? <Eye size={20} className="text-mafia-gold" /> : <EyeOff size={20} className="text-white/40" />}
+                    {settings[item.key] === 'visible' ? <Eye size={20} className="text-mafia-gold" /> : 
+                     settings[item.key] === 'dev' ? <Save size={20} className="text-blue-500" /> : 
+                     settings[item.key] === 'locked' ? <ShieldAlert size={20} className="text-red-500" /> :
+                     <EyeOff size={20} className="text-white/40" />}
                   </button>
                 ))}
               </div>
@@ -220,21 +264,34 @@ export default function AdminVisibilityPage() {
                 {VISIBILITY_KEYS.filter(k => k.category === 'community').map(item => (
                   <button 
                     key={item.key}
-                    onClick={() => toggleSetting(item.key)}
+                    onClick={() => cycleSetting(item.key)}
                     className={`p-6 border transition-all flex items-center justify-between text-left ${
-                      settings[item.key] ? 'border-mafia-gold bg-mafia-gold/10' : 'border-white/10 bg-black/40 opacity-50 hover:opacity-100'
+                      settings[item.key] === 'visible' ? 'border-mafia-gold bg-mafia-gold/10' : 
+                      settings[item.key] === 'dev' ? 'border-blue-500 bg-blue-500/10' : 
+                      settings[item.key] === 'locked' ? 'border-red-500 bg-red-500/10' :
+                      'border-white/10 bg-black/40 opacity-50 hover:opacity-100'
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-3 h-3 rounded-full ${settings[item.key] ? 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.8)]' : 'bg-white/20'}`}></div>
+                      <div className={`w-3 h-3 rounded-full ${
+                        settings[item.key] === 'visible' ? 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,0.8)]' : 
+                        settings[item.key] === 'dev' ? 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]' : 
+                        settings[item.key] === 'locked' ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]' :
+                        'bg-white/20'
+                      }`}></div>
                       <div>
                         <div className="font-heading font-black tracking-widest uppercase mb-1">{item.label}</div>
                         <div className="font-mono text-[9px] uppercase tracking-widest text-white/40">
-                          {settings[item.key] ? 'VIDITELNÉ' : 'SKRYTÉ'}
+                          {settings[item.key] === 'visible' ? 'VIDITELNÉ' : 
+                           settings[item.key] === 'dev' ? 'VE VÝVOJI' : 
+                           settings[item.key] === 'locked' ? 'ZAMČENÉ' : 'SKRYTÉ'}
                         </div>
                       </div>
                     </div>
-                    {settings[item.key] ? <Eye size={20} className="text-mafia-gold" /> : <EyeOff size={20} className="text-white/40" />}
+                    {settings[item.key] === 'visible' ? <Eye size={20} className="text-mafia-gold" /> : 
+                     settings[item.key] === 'dev' ? <Save size={20} className="text-blue-500" /> : 
+                     settings[item.key] === 'locked' ? <ShieldAlert size={20} className="text-red-500" /> :
+                     <EyeOff size={20} className="text-white/40" />}
                   </button>
                 ))}
               </div>

@@ -7,6 +7,7 @@ import Image from "./OptimizedImage";
 import gsap from "gsap";
 import { useTranslation } from "../hooks/useTranslation";
 import { useGame } from "../contexts/GameContext";
+import { useBarbers } from "@/contexts/BarberContext";
 import { playSound } from "../utils/audio";
 import { getVocative } from "../utils/nameInflection";
 
@@ -41,11 +42,14 @@ interface MenuItem {
   titleCs: string;
   titleEn: string;
   titleZh?: string;
+  devMode?: boolean;
+  disabled?: boolean;
 }
 
 export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) => void }) {
   const { t, lang, switchLanguage } = useTranslation();
   const { totalCollected } = useGame();
+  const { barbers } = useBarbers();
   const [isActuallyMobile, setIsActuallyMobile] = useState(false);
   const [nickname, setNickname] = useState("");
   const [showIntro, setShowIntro] = useState(false);
@@ -54,6 +58,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
   const [isFullyOpen, setIsFullyOpen] = useState(false);
   const [isLowTier, setIsLowTier] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string>("rezervace");
+  const [globalSettings, setGlobalSettings] = useState<Record<string, boolean>>({});
 
   const grainRef = useRef<HTMLDivElement>(null);
   const flickerRef = useRef<HTMLDivElement>(null);
@@ -66,9 +71,36 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
     { id: "komunita", titleCs: "Rodina MM Barber", titleEn: "MM Barber Family", titleZh: "MM Barber 家族" },
     { id: "kontakt", titleCs: "Kontakt", titleEn: "Contact", titleZh: "联系我们" },
     { id: "seznamka", titleCs: "Seznamka", titleEn: "Dating", titleZh: "交友" },
-  ];
+  ].map(item => {
+    // Map to intro settings keys (start and seznamka have special keys or no keys)
+    let key = `visibility_intro_${item.id}`;
+    if (item.id === 'seznamka') key = 'visibility_seznamka';
+    if (item.id === 'start') return item; // Start is always visible
+
+    const status = globalSettings[key];
+    if (status === 'hidden') return null;
+    return { ...item, devMode: status === 'dev', disabled: status === 'locked' };
+  }).filter(Boolean) as MenuItem[];
 
   useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/settings', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          const parsedSettings: Record<string, string> = {};
+          Object.entries(data.values).forEach(([k, val]) => {
+            const v = String(val).toLowerCase();
+            parsedSettings[k] = (v === 'false' || v === 'hidden' || v === 'skryté') ? 'hidden' : ((v === 'locked' || v === 'zamčené') ? 'locked' : ((v === 'dev' || v === 've vývoji') ? 'dev' : 'visible'));
+          });
+          setGlobalSettings(parsedSettings);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchSettings();
+    
     const savedName = localStorage.getItem("mmbarber_client_nickname");
     if (savedName) setNickname(savedName);
 
@@ -117,7 +149,13 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
     playSound("/sounds/click.mp3", 0.15);
   };
 
-  const handleMenuSelect = (itemId: string) => {
+  const handleMenuSelect = (item: MenuItem) => {
+    if (item.devMode) {
+      // Don't navigate if in dev mode, maybe play a different sound
+      playSound("/sounds/click.mp3", 0.1);
+      return;
+    }
+    
     playSound("/sounds/magnum.mp3", 0.3);
     
     // Add a flash/shake effect to the body for screen feedback
@@ -136,7 +174,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
     window.dispatchEvent(new Event("introDismissed"));
     
     // Call dismiss with selected action
-    onDismiss?.(itemId);
+    onDismiss?.(item.id);
   };
 
   const renderRightColumnContent = () => {
@@ -182,7 +220,9 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
                 <Image src="/obr/tomasmicka.png" alt="Tomáš" width={300} height={300} priority className="w-40 h-40 md:w-56 md:h-56 object-cover rounded-sm border border-mafia-gold/30 shadow-[0_0_20px_rgba(197,160,89,0.15)]" />
                 <div className="text-center">
                   <h4 className="text-3xl font-heading font-black text-smoke-white uppercase tracking-wider">Tomáš</h4>
-                  <p className="text-xs font-mono text-smoke-white/50 uppercase tracking-widest mt-1">{lang === 'cs' ? "7 let praxe" : "7 years of exp."}</p>
+                  <p className="text-xs font-mono text-smoke-white/50 uppercase tracking-widest mt-1">
+                    {lang === 'cs' ? `${Math.max(0, new Date().getFullYear() - (barbers.find(b => b.id === 'tomas')?.startedCuttingYear || 2017))} let praxe` : `${Math.max(0, new Date().getFullYear() - (barbers.find(b => b.id === 'tomas')?.startedCuttingYear || 2017))} years of exp.`}
+                  </p>
                 </div>
                 <a href="https://mm.inthechair.com/micka" target="_blank" rel="noopener noreferrer" className="bg-mafia-gold text-black w-full max-w-[280px] md:w-auto px-10 py-4 md:px-8 md:py-3 mt-2 font-black uppercase tracking-widest text-lg md:text-sm text-center hover:bg-white transition-colors shadow-lg">
                   {lang === 'cs' ? "Rezervovat" : "Book"}
@@ -193,7 +233,9 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
                 <Image src="/obr/nellapelikanova.png" alt="Nella" width={300} height={300} priority className="w-40 h-40 md:w-56 md:h-56 object-cover rounded-sm border border-mafia-gold/30 shadow-[0_0_20px_rgba(197,160,89,0.15)]" />
                 <div className="text-center">
                   <h4 className="text-3xl font-heading font-black text-smoke-white uppercase tracking-wider">Nella</h4>
-                  <p className="text-xs font-mono text-smoke-white/50 uppercase tracking-widest mt-1">{lang === 'cs' ? "3 roky praxe" : "3 years of exp."}</p>
+                  <p className="text-xs font-mono text-smoke-white/50 uppercase tracking-widest mt-1">
+                    {lang === 'cs' ? `${Math.max(0, new Date().getFullYear() - (barbers.find(b => b.id === 'nella')?.startedCuttingYear || 2021))} roky praxe` : `${Math.max(0, new Date().getFullYear() - (barbers.find(b => b.id === 'nella')?.startedCuttingYear || 2021))} years of exp.`}
+                  </p>
                 </div>
                 <a href="https://mmbarberx.setmore.com" target="_blank" rel="noopener noreferrer" className="bg-mafia-gold text-black w-full max-w-[280px] md:w-auto px-10 py-4 md:px-8 md:py-3 mt-2 font-black uppercase tracking-widest text-lg md:text-sm text-center hover:bg-white transition-colors shadow-lg">
                   {lang === 'cs' ? "Rezervovat" : "Book"}
@@ -436,18 +478,27 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
                   key={item.id}
                   onMouseEnter={() => handleMouseEnter(item.id)}
                   onClick={(e) => {
+                    if (item.disabled) {
+                      e.preventDefault();
+                      return;
+                    }
+                    if (item.devMode) {
+                      e.preventDefault();
+                      handleMenuSelect(item);
+                      return;
+                    }
                     if (item.id === 'start') {
-                      handleMenuSelect(item.id);
+                      handleMenuSelect(item);
                     } else if (window.innerWidth < 1024) {
                       setHoveredItem(item.id);
                       setTimeout(() => {
                         document.getElementById('intro-right-col')?.scrollIntoView({ behavior: 'smooth' });
                       }, 100);
                     } else {
-                      handleMenuSelect(item.id);
+                      handleMenuSelect(item);
                     }
                   }}
-                  className="group flex flex-col md:flex-row items-center md:items-center gap-1 md:gap-4 py-2 md:text-left text-center relative focus:outline-none w-full md:w-fit"
+                  className={`group flex flex-col md:flex-row items-center md:items-center gap-1 md:gap-4 py-2 md:text-left text-center relative focus:outline-none w-full md:w-fit ${item.devMode ? 'opacity-50' : ''} ${item.disabled ? 'opacity-30 cursor-not-allowed' : ''}`}
                 >
                   {/* Bullet / Line Selector */}
                   <div 
@@ -462,13 +513,23 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
                     }`}>
                       0{index + 1}
                     </span>
-                    <span className={`text-2xl md:text-2xl w-full md:w-auto font-heading font-black tracking-[0.2em] uppercase transition-all duration-300 ${
-                      hoveredItem === item.id 
-                        ? "bg-mafia-gold text-mafia-black px-6 py-2 md:px-4 md:py-1 md:translate-x-2 shadow-[0_0_20px_rgba(197,160,89,0.4)]" 
-                        : "text-smoke-white/50 hover:text-smoke-white/80"
-                    }`}>
-                      {lang === 'zh' ? (item.titleZh || item.titleEn) : lang === 'cs' ? item.titleCs : item.titleEn}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      {item.devMode && (
+                        <span className="text-[8px] md:text-[9px] font-mono bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 uppercase tracking-widest rounded-sm whitespace-nowrap">
+                          {lang === 'cs' ? 'Ve vývoji' : 'In Dev'}
+                        </span>
+                      )}
+                      {item.disabled && (
+                        <Lock size={14} className="text-white/30 shrink-0" />
+                      )}
+                      <span className={`text-2xl md:text-2xl w-full md:w-auto font-heading font-black tracking-[0.2em] uppercase transition-all duration-300 ${
+                        hoveredItem === item.id 
+                          ? "bg-mafia-gold text-mafia-black px-6 py-2 md:px-4 md:py-1 md:translate-x-2 shadow-[0_0_20px_rgba(197,160,89,0.4)]" 
+                          : "text-smoke-white/50 hover:text-smoke-white/80"
+                      }`}>
+                        {lang === 'zh' ? (item.titleZh || item.titleEn) : lang === 'cs' ? item.titleCs : item.titleEn}
+                      </span>
+                    </div>
                   </div>
                 </button>
               ))}

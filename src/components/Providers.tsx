@@ -7,7 +7,7 @@ import { FragmentsProvider } from '@/contexts/FragmentsContext';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
+    <SessionProvider basePath="/api/auth" refetchOnWindowFocus={false}>
       <UIProvider>
         <FragmentsProvider>
           {children}
