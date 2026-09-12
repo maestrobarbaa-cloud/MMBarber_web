@@ -9,6 +9,8 @@ export interface MatchScores {
   communication: number;
   intimacy: number;
   intellect: number;
+  isRelaxed?: boolean;
+  compromiseReason?: string;
 }
 
 // Astrological compatibility table (simplified)
@@ -70,7 +72,7 @@ function compareArrays(arr1: string[] | undefined, arr2: string[] | undefined, s
   return pct; // mirror / closest / default
 }
 
-export function calculateCompatibility(user: ProfileData, partner: ProfileData, forcedStrategy?: string): MatchScores {
+export function calculateCompatibility(user: ProfileData, partner: ProfileData, forcedStrategy?: string, isRelaxedMode?: boolean): MatchScores {
   const strategy = forcedStrategy || user.matchStrategy || 'closest';
 
   // --- 1. RANDOM STRATEGY ---
@@ -111,6 +113,8 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
   }
 
   let penalty = 0;
+  let isRelaxed = false;
+  let compromiseReason: string | undefined = undefined;
 
   // --- DEALBREAKERS (Apply to all normal strategies) ---
   if (user.prefAgeMin || user.prefAgeMax) {
@@ -118,7 +122,14 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
      if (!isNaN(partnerAge)) {
        const min = user.prefAgeMin ? parseInt(user.prefAgeMin) : 18;
        const max = user.prefAgeMax ? parseInt(user.prefAgeMax) : 99;
-       if (partnerAge < min || partnerAge > max) penalty += 100;
+       if (partnerAge < min || partnerAge > max) {
+         if (isRelaxedMode && partnerAge >= min - 5 && partnerAge <= max + 5) {
+           isRelaxed = true;
+           compromiseReason = `Věk mimo preference (${partnerAge} let)`;
+         } else {
+           penalty += 100;
+         }
+       }
      }
   }
   
@@ -289,7 +300,9 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
     practical: Math.round(Math.max(0, Math.min(100, finalPracPct))),
     communication: Math.round(Math.max(0, Math.min(100, finalCommPct))),
     intimacy: Math.round(Math.max(0, Math.min(100, finalIntPct))),
-    intellect: Math.round(Math.max(0, Math.min(100, finalIntelPct)))
+    intellect: Math.round(Math.max(0, Math.min(100, finalIntelPct))),
+    isRelaxed,
+    compromiseReason
   };
 
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { MessageCircleHeart, X, Send, Heart, Star, ThumbsDown, Sparkles, MapPin, Camera, Clock, Check, CheckCheck, Eye } from "lucide-react";
+import { MessageCircle, X, Send, Heart, Star, ThumbsDown, Sparkles, MapPin, Camera, Clock, Check, CheckCheck, Eye } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ProfileData } from "./ProfileCard";
 import { motion, AnimatePresence } from "framer-motion";
@@ -342,7 +342,7 @@ export function Matches({ matches = [] }: MatchesProps) {
   if (matches.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <MessageCircleHeart size={48} className="text-mafia-gold/30 mb-6" />
+        <MessageCircle size={48} className="text-mafia-gold/30 mb-6" />
         <h3 className="text-2xl font-heading font-black text-mafia-gold uppercase tracking-[0.2em] mb-2">
           {lang === 'cs' ? 'Zatím žádné zprávy' : 'No messages yet'}
         </h3>
@@ -409,7 +409,7 @@ export function Matches({ matches = [] }: MatchesProps) {
       <div className={`w-full md:w-2/3 h-full flex flex-col relative ${!activeChat ? 'hidden md:flex bg-black/20' : 'bg-black/60'}`}>
         {!activeChat ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-            <MessageCircleHeart size={48} className="text-mafia-gold/20 mb-4" />
+            <MessageCircle size={48} className="text-mafia-gold/20 mb-4" />
             <p className="text-smoke-white/50 text-sm font-mono uppercase tracking-widest">
               {lang === 'cs' ? 'Vyber si kontakt vlevo a začni chatovat.' : 'Select a match on the left to start chatting.'}
             </p>
