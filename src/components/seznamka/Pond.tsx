@@ -216,13 +216,47 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
           counterpartProfiles = [...uiMocks, ...counterpartProfiles];
           // END MOCKS
 
-          // Fallback: If strict filtering returns no one, show everyone except the current user
-          if (counterpartProfiles.length === 0) {
-            counterpartProfiles = data.filter(p => p.id !== currentUser?.id && p.name !== currentUser?.name);
+          let finalProfiles = counterpartProfiles;
+          
+          if (finalProfiles.length < 2) {
+            // RELAXED SEARCH: If strict filtering returns very few people, loosen constraints
+            const relaxedProfiles = data.filter(p => {
+              if (p.id === currentUser?.id || p.name === currentUser?.name) return false;
+              if (p.id && currentUser?.linkedUserIds?.includes(p.id)) return false;
+              if (p.name && currentUser?.linkedUserIds?.includes(p.name)) return false;
+              
+              // Zde bychom v budoucnu ignorovali vk/vzdlenost, 
+              // prozatm ignorujeme alespo? jednstrann preference
+              const myGender = currentUser?.gender || 'male';
+              const theirGender = p.gender || 'female';
+              
+              const isMatch = myGender !== theirGender; // Simple opposite gender check as relaxed
+              return isMatch;
+            }).map(p => ({
+              ...p,
+              isRelaxedMatch: true,
+              relaxedReason: 'Rozeno: Ignorovn pesnch preferenc'
+            }));
+            
+            // Filter out those we already have
+            const existingIds = new Set(finalProfiles.map(p => p.id));
+            const newRelaxed = relaxedProfiles.filter(p => !existingIds.has(p.id));
+            
+            finalProfiles = [...finalProfiles, ...newRelaxed];
           }
 
-          setAllProfiles(counterpartProfiles);
-          setProfiles(counterpartProfiles);
+          // WAITLIST LOGIC: If even relaxed search returns nothing
+          if (finalProfiles.length === 0) {
+              fetch('/api/seznamka/waitlist', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' }
+              }).catch(e => console.error("Waitlist error:", e));
+              
+              // We could set a special state here, but for now we just show an empty UI
+          }
+
+          setAllProfiles(finalProfiles);
+          setProfiles(finalProfiles);
         }
         setLoading(false);
       })

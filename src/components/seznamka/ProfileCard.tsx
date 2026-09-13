@@ -1450,12 +1450,19 @@ export const ProfileCard = React.memo(function ProfileCard({
               src={displayPhotos[currentPhotoIndex]}
               alt={`${profile.name} photo`}
               fill
-              className={`object-cover ${profile.isBlurredMode || matchScores?.isRelaxed || (eventPhase === 'PEAK' && currentPhotoIndex > 0) ? 'blur-3xl scale-125' : ''}`}
+              className={`object-cover ${profile.isBlurredMode || profile.isRelaxedMatch || matchScores?.isRelaxed || (eventPhase === 'PEAK' && currentPhotoIndex > 0) ? 'blur-[8px] scale-110' : ''}`}
               sizes="(max-width: 768px) 100vw, 400px"
               priority={currentPhotoIndex === 0}
             />
-            {(profile.isBlurredMode || matchScores?.isRelaxed || (eventPhase === 'PEAK' && currentPhotoIndex > 0)) && (
+            {(profile.isBlurredMode || profile.isRelaxedMatch || matchScores?.isRelaxed || (eventPhase === 'PEAK' && currentPhotoIndex > 0)) && (
               <div className="absolute inset-0 flex items-center justify-center flex-col bg-black/40 z-10 pointer-events-none p-6 text-center">
+                {profile.isRelaxedMatch && (
+                    <div className="bg-mafia-gold/20 backdrop-blur-md p-4 rounded-xl border border-mafia-gold/50 shadow-lg mt-10">
+                        <p className="text-mafia-gold font-bold uppercase tracking-widest text-xs mb-1">Mimo hlavní okruh</p>
+                        <div className="w-full h-px bg-mafia-gold/30 my-2"></div>
+                        <p className="text-white text-sm font-sans">{profile.relaxedReason}</p>
+                    </div>
+                )}
                 {profile.isBlurredMode ? (
                   <>
                     <EyeOff size={48} className="text-white/50 mb-2" />

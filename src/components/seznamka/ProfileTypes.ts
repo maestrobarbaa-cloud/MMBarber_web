@@ -215,6 +215,8 @@ export interface GroupMember {
 }
 
 export interface ProfileData {
+  isRelaxedMatch?: boolean;
+  relaxedReason?: string;
     boundaries?: { infidelityDef?: string; };
   id?: string;
   userId?: string;
