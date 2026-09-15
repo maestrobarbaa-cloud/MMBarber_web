@@ -29,7 +29,6 @@ import { HistoricalEvents } from "@/components/HistoricalEvents";
 import { ProgressWidget } from "@/components/ProgressWidget";
 import { AdminWidget } from "@/components/AdminWidget";
 
-export const dynamic = 'force-dynamic';
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin", "latin-ext"],
