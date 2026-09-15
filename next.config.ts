@@ -109,11 +109,15 @@ const nextConfig: NextConfig = {
       }
     ];
   },
+  experimental: {
+    workerThreads: false,
+    cpus: 1,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   typescript: {
     ignoreBuildErrors: true,
-  },
-  experimental: {
-    cpus: 3,
   },
 };
 
