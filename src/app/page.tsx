@@ -149,7 +149,9 @@ export default function Home() {
         {showContent && (
           <motion.div initial={{ opacity: 1 }} animate={{ opacity: 1 }} className="flex flex-col w-full">
             <CinematicSequence737 />
-            <Hero />
+            <div className="hidden xl:block">
+              <Hero />
+            </div>
             
             <div className="relative bg-transparent w-full border-y border-mafia-gold/10 overflow-hidden">
               <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>

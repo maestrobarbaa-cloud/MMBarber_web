@@ -3,16 +3,21 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2023-10-16' as any, // specify recent API version
-});
-
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('Stripe Checkout Error: STRIPE_SECRET_KEY is not defined in environment variables.');
+      return NextResponse.json({ error: 'Stripe API is not configured on the server.' }, { status: 500 });
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+      apiVersion: '2023-10-16' as any,
+    });
 
     const body = await req.json();
     const { amount } = body;

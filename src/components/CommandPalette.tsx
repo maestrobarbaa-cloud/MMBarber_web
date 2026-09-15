@@ -8,7 +8,7 @@ import { Search, Home, Users, Target, Scissors, Globe, UserSquare2, Ticket, Box,
 const commands = [
   { id: 'home', title: 'Domů', keywords: ['home', 'hlavni'], icon: <Home className="w-5 h-5 text-mafia-gold" />, path: '/' },
   { id: 'booking', title: 'Ceník a rezervace', keywords: ['cenik', 'cena', 'booking'], icon: <Target className="w-5 h-5 text-mafia-gold" />, path: '/cenik' },
-  { id: 'seznamka', title: 'Seznamka', keywords: ['seznamka', 'poznej'], icon: <Users className="w-5 h-5 text-mafia-gold" />, path: '/seznamka' },
+  // { id: 'seznamka', title: 'Seznamka', keywords: ['seznamka', 'poznej'], icon: <Users className="w-5 h-5 text-mafia-gold" />, path: '/seznamka' },
   { id: 'gallery', title: 'Galerie', keywords: ['galerie', 'foto'], icon: <UserSquare2 className="w-5 h-5 text-mafia-gold" />, path: '/galerie' },
   { id: 'vouchers', title: 'Dárkové vouchery', keywords: ['voucher', 'darkovy', 'gift'], icon: <Ticket className="w-5 h-5 text-mafia-gold" />, path: '/vouchery' },
   { id: 'family', title: 'Rodina (Náš Tým)', keywords: ['tym', 'rodina', 'barberi'], icon: <Scissors className="w-5 h-5 text-mafia-gold" />, path: '/rodina' },

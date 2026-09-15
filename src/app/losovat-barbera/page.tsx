@@ -188,22 +188,36 @@ export default function BarberLotteryPage() {
         </div>
 
         {/* Dynamic slot machine roulette */}
-        <div className="w-full max-w-lg bg-mafia-black/90 border border-white/10 p-8 flex flex-col items-center relative overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+        <div className="w-full max-w-lg bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] p-2 rounded-xl relative shadow-[0_0_50px_rgba(0,0,0,1)] border-4 border-[#2c2825]">
+          {/* Metallic machine frame */}
+          <div className="absolute inset-0 rounded-xl border-2 border-mafia-gold/20 pointer-events-none"></div>
+          {/* Screws */}
+          <div className="absolute top-3 left-3 w-2 h-2 rounded-full bg-mafia-gold/30 border border-mafia-gold/50"></div>
+          <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-mafia-gold/30 border border-mafia-gold/50"></div>
+          <div className="absolute bottom-3 left-3 w-2 h-2 rounded-full bg-mafia-gold/30 border border-mafia-gold/50"></div>
+          <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full bg-mafia-gold/30 border border-mafia-gold/50"></div>
+          
+          <div className="bg-mafia-black/90 border border-white/10 p-6 flex flex-col items-center relative overflow-hidden backdrop-blur-xl rounded-lg">
           
           {/* Decorative scanner line */}
-          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-mafia-gold/20 to-transparent pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-mafia-gold/50 to-transparent pointer-events-none shadow-[0_0_10px_var(--color-mafia-gold)]" />
 
           {/* Slot screen containing images */}
-          <div className="w-full h-64 bg-black border-2 border-mafia-gold/30 relative overflow-hidden rounded mb-8 flex items-center justify-center">
+          <div className="w-full h-72 bg-[#050505] border-[6px] border-[#111] relative overflow-hidden rounded-md mb-8 flex items-center justify-center shadow-inner">
             
+            {/* Depth shadows (top and bottom) */}
+            <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-black via-black/80 to-transparent z-30 pointer-events-none"></div>
+            <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-black via-black/80 to-transparent z-30 pointer-events-none"></div>
+
             {/* Dark inner felt textures */}
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-25 z-0" />
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 z-0" />
             
             {/* Target lines indicator */}
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-mafia-gold/40 z-20 pointer-events-none" />
-            <div className="absolute inset-y-0 left-6 right-6 border-y border-mafia-gold/10 z-20 pointer-events-none flex items-center justify-between">
-              <span className="text-[8px] font-mono text-mafia-gold/50 tracking-widest pl-2">SELECT</span>
-              <span className="text-[8px] font-mono text-mafia-gold/50 tracking-widest pr-2">TARGET</span>
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[2px] bg-mafia-gold z-40 shadow-[0_0_10px_var(--color-mafia-gold-glow)] pointer-events-none" />
+            
+            <div className="absolute inset-y-0 left-4 right-4 border-y border-mafia-gold/30 z-20 pointer-events-none flex items-center justify-between">
+              <div className="w-4 h-4 border-t-2 border-l-2 border-mafia-gold"></div>
+              <div className="w-4 h-4 border-t-2 border-r-2 border-mafia-gold"></div>
             </div>
 
             {/* Animations for roulette */}
@@ -212,13 +226,13 @@ export default function BarberLotteryPage() {
                 /* Rapid spinning flow */
                 <motion.div 
                   key="spinning-slot"
-                  animate={{ y: [-400, 0] }}
-                  transition={{ repeat: Infinity, duration: 0.35, ease: "linear" }}
-                  className="flex flex-col gap-6 items-center py-4"
+                  animate={{ y: [-600, 0] }}
+                  transition={{ repeat: Infinity, duration: 0.25, ease: "linear" }}
+                  className="flex flex-col gap-4 items-center py-4 z-10"
                 >
                   {/* Repeatedly render barbers to simulate spinning wheel */}
-                  {Array(8).fill(barbers[0]).map((b, idx) => (
-                    <div key={idx} className="w-40 h-40 relative rounded overflow-hidden grayscale opacity-45 border border-white/5 shrink-0">
+                  {Array(10).fill(barbers[0]).map((b, idx) => (
+                    <div key={idx} className="w-44 h-44 relative rounded-xl overflow-hidden opacity-60 border-2 border-mafia-gold/20 shrink-0 blur-[1px]">
                       <Image src={b.image} alt={b.name} fill className="object-cover" />
                     </div>
                   ))}
@@ -227,12 +241,13 @@ export default function BarberLotteryPage() {
                 /* Static winner display */
                 <motion.div
                   key="winner-slot"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 100, damping: 12 }}
-                  className="relative flex flex-col items-center justify-center z-10"
+                  initial={{ scale: 0.5, opacity: 0, rotateX: 90 }}
+                  animate={{ scale: 1, opacity: 1, rotateX: 0 }}
+                  transition={{ type: "spring", stiffness: 150, damping: 15 }}
+                  className="relative flex flex-col items-center justify-center z-20"
                 >
-                  <div className="w-48 h-48 relative rounded-full border-4 border-mafia-gold overflow-hidden shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.25)]">
+                  <div className="absolute inset-0 bg-mafia-gold/20 animate-ping rounded-full blur-xl"></div>
+                  <div className="w-56 h-56 relative rounded-2xl border-4 border-mafia-gold overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.8)] z-10">
                     <Image 
                       src={winnerBarber.image} 
                       alt={winnerBarber.name} 
@@ -248,11 +263,13 @@ export default function BarberLotteryPage() {
                   key="idle-slot"
                   initial={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col items-center justify-center gap-3 relative z-10 text-white/30"
+                  className="flex flex-col items-center justify-center gap-4 relative z-10 text-mafia-gold/50"
                 >
-                  <HelpCircle size={48} className="animate-pulse text-mafia-gold/30" />
-                  <span className="text-[10px] font-mono uppercase tracking-[0.3em]">
-                    {lang === 'cs' ? "Čekání na spuštění" : "System Idle"}
+                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-mafia-gold/30 flex items-center justify-center animate-[spin_10s_linear_infinite]">
+                    <HelpCircle size={40} className="animate-pulse" />
+                  </div>
+                  <span className="text-[10px] font-mono uppercase tracking-[0.4em]">
+                    {lang === 'cs' ? "Čekání na systém" : "System Idle"}
                   </span>
                 </motion.div>
               )}
@@ -290,22 +307,23 @@ export default function BarberLotteryPage() {
                 </p>
 
                 {/* Booking reserve button */}
-                <div className="pt-2 flex flex-col gap-3">
+                <div className="pt-4 flex flex-col gap-4">
                   <a
                     href={winnerBarber.bookingLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-4 bg-mafia-gold text-mafia-black font-heading font-black tracking-[0.25em] uppercase text-xs flex items-center justify-center gap-2 rounded shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.25)] hover:bg-white hover:border-white transition-all cursor-pointer"
+                    className="relative group w-full py-5 bg-gradient-to-r from-mafia-gold via-[#e8c678] to-mafia-gold text-mafia-black font-heading font-black tracking-[0.25em] uppercase text-sm flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:shadow-[0_0_50px_rgba(197,160,89,0.8)] transition-all cursor-pointer border-2 border-transparent hover:border-white overflow-hidden rounded-sm"
                   >
-                    <Calendar size={14} />
-                    <span>{lang === 'cs' ? "REZERVOVAT KŘESLO" : "BOOK CHAIR MISSION"}</span>
+                    <div className="absolute inset-0 w-[200%] translate-x-[-150%] bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    <Calendar size={18} className="relative z-10" />
+                    <span className="relative z-10">{lang === 'cs' ? "REZERVOVAT KŘESLO" : "BOOK CHAIR MISSION"}</span>
                   </a>
 
                   <button
                     onClick={handleStartDraw}
-                    className="w-full py-3.5 bg-transparent border border-white/10 hover:border-white/30 text-white/60 hover:text-white font-mono text-[10px] uppercase tracking-[0.25em] flex items-center justify-center gap-2 transition-all cursor-pointer rounded"
+                    className="group w-full py-4 bg-transparent border-2 border-white/10 hover:border-mafia-gold hover:bg-mafia-gold/5 text-white/60 hover:text-mafia-gold font-mono text-[11px] uppercase tracking-[0.3em] flex items-center justify-center gap-2 transition-all cursor-pointer rounded-sm"
                   >
-                    <RotateCw size={12} />
+                    <RotateCw size={14} className="group-hover:rotate-180 transition-transform duration-500" />
                     <span>{lang === 'cs' ? "SPUSTIT ZNOVU" : "RE-DRAW CHAIR"}</span>
                   </button>
                 </div>
@@ -315,20 +333,32 @@ export default function BarberLotteryPage() {
 
           {/* Draw Button for Idle State */}
           {!isDecided && (
-            <button
-              onClick={handleStartDraw}
-              disabled={isRandomizing}
-              className={`w-full py-4 font-heading font-black tracking-[0.25em] uppercase text-xs border rounded transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-                isRandomizing 
-                  ? "bg-white/5 border-white/10 text-white/30 cursor-not-allowed"
-                  : "bg-mafia-gold text-mafia-black border-mafia-gold hover:bg-white hover:border-white shadow-[0_0_25px_rgba(var(--color-mafia-gold-rgb),0.25)]"
-              }`}
-            >
-              <Sparkles size={14} className={isRandomizing ? "animate-spin" : ""} />
-              <span>{isRandomizing ? (lang === 'cs' ? "LOSUJI..." : "DRAWING...") : (lang === 'cs' ? "SPUSTIT LOSOVÁNÍ" : "SPIN ROULETTE")}</span>
-            </button>
+             <div className="w-full relative group p-[2px]">
+               {/* Fancy borders */}
+               <div className="absolute inset-0 border border-mafia-gold/20 group-hover:border-mafia-gold/50 transition-colors duration-500 skew-x-[-10deg]"></div>
+               <div className="absolute inset-[-6px] border border-mafia-gold/10 group-hover:border-mafia-gold/30 transition-colors duration-500 skew-x-[-10deg]"></div>
+               <div className="absolute top-[-4px] left-[-4px] w-4 h-4 border-t-2 border-l-2 border-mafia-gold opacity-60 group-hover:opacity-100 transition-opacity"></div>
+               <div className="absolute top-[-4px] right-[-4px] w-4 h-4 border-t-2 border-r-2 border-mafia-gold opacity-60 group-hover:opacity-100 transition-opacity"></div>
+               <div className="absolute bottom-[-4px] left-[-4px] w-4 h-4 border-b-2 border-l-2 border-mafia-gold opacity-60 group-hover:opacity-100 transition-opacity"></div>
+               <div className="absolute bottom-[-4px] right-[-4px] w-4 h-4 border-b-2 border-r-2 border-mafia-gold opacity-60 group-hover:opacity-100 transition-opacity"></div>
+               
+              <button
+                onClick={handleStartDraw}
+                disabled={isRandomizing}
+                className={`relative w-full py-5 font-heading font-black tracking-[0.3em] uppercase text-sm md:text-base border border-mafia-gold/40 transition-all duration-500 flex items-center justify-center gap-3 overflow-hidden ${
+                  isRandomizing 
+                    ? "bg-black/50 text-white/30 cursor-not-allowed"
+                    : "bg-gradient-to-br from-black/80 to-[#111] hover:from-mafia-gold hover:to-[#a37e3d] text-mafia-gold hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:shadow-[0_0_40px_rgba(197,160,89,0.7)]"
+                }`}
+              >
+                {!isRandomizing && <div className="absolute inset-0 w-[200%] translate-x-[-150%] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1.5s_infinite]"></div>}
+                
+                <Sparkles size={18} className={`relative z-10 ${isRandomizing ? "animate-spin" : ""}`} />
+                <span className="relative z-10 drop-shadow-md">{isRandomizing ? (lang === 'cs' ? "LOSUJI..." : "DRAWING...") : (lang === 'cs' ? "SPUSTIT LOSOVÁNÍ" : "SPIN ROULETTE")}</span>
+              </button>
+            </div>
           )}
-
+          </div>
         </div>
 
       </div>

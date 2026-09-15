@@ -6,6 +6,74 @@ import { ACHIEVEMENTS } from "@/data/achievements";
 import { Trophy, Lock, Zap, Shield, Crown, ChevronLeft, Package, Users, EyeOff, CheckCircle2, Play, Star, Gift, Settings } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUI } from "@/contexts/UIContext";
+
+const PremiumMafiaBackground = () => {
+  const { isBloodMode } = useUI();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return <div className="fixed inset-0 bg-[#050505] z-0"></div>;
+
+  const particles = Array.from({ length: 25 });
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-[#050505]">
+      {/* Základní texturované pozadí (jemný elegantní vzor) */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.83v58.34l-.83.83H5.373l-.83-.83V.83l.83-.83h49.254zM53.8 58.34V1.66H6.2v56.68h47.6zM30 54.34c-13.434 0-24.34-10.906-24.34-24.34S16.566 5.66 30 5.66s24.34 10.906 24.34 24.34-10.906 24.34-24.34 24.34zM30 7.32c-12.518 0-22.68 10.162-22.68 22.68S17.482 52.68 30 52.68 52.68 42.518 52.68 30 42.518 7.32 30 7.32z' fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+          backgroundSize: '120px 120px'
+        }}
+      ></div>
+
+      {/* Velmi jemné rohové nasvícení (hladké vykreslování přes radial-gradient místo blur) */}
+      <div className={`absolute -top-1/4 -right-1/4 w-[1200px] h-[1200px] opacity-[0.15] transition-colors duration-1000 ${isBloodMode ? 'bg-[radial-gradient(circle_at_center,rgba(200,16,46,0.6)_0%,transparent_60%)]' : 'bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.6)_0%,transparent_60%)]'}`}></div>
+      <div className={`absolute -bottom-1/4 -left-1/4 w-[1200px] h-[1200px] opacity-[0.15] transition-colors duration-1000 ${isBloodMode ? 'bg-[radial-gradient(circle_at_center,rgba(200,16,46,0.6)_0%,transparent_60%)]' : 'bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.6)_0%,transparent_60%)]'}`}></div>
+
+      {/* Jemná mlha/kouř u země */}
+      <div className={`absolute bottom-0 left-0 w-full h-[50vh] transition-colors duration-1000 ${isBloodMode ? 'bg-gradient-to-t from-[#c8102e]/5 to-transparent' : 'bg-gradient-to-t from-[#d4af37]/5 to-transparent'}`}></div>
+
+      {/* Žhavé jiskry letící jedním směrem (zleva dole -> doprava nahoru) */}
+      {particles.map((_, i) => {
+        const startX = Math.random() * 120 - 20; // Začátek rozptýlený od -20vw do 100vw
+        const distanceX = Math.random() * 40 + 20; // Každá jiskra uletí doprava o 20 až 60vw
+        const width = Math.random() * 2 + 1.5; // Velikost 1.5 - 3.5px
+        return (
+          <motion.div
+            key={`elegant-dust-${i}`}
+            className={`absolute rounded-full shadow-[0_0_10px_2px_currentColor] ${isBloodMode ? 'bg-mafia-red text-mafia-red' : 'bg-[#ffd700] text-[#ffd700]'}`}
+            style={{
+              width: `${width}px`,
+              height: `${width}px`,
+              filter: `blur(${Math.random() * 0.5}px)`,
+            }}
+            initial={{ 
+               y: '110vh', 
+               x: `${startX}vw`,
+               opacity: 0
+            }}
+            animate={{
+              y: '-10vh',
+              x: `${startX + distanceX}vw`,
+              opacity: [0, Math.random() * 0.5 + 0.3, 0]
+            }}
+            transition={{
+              duration: 12 + Math.random() * 15, // Přirozená rychlost letu
+              repeat: Infinity,
+              ease: "linear", // Stálý vítr
+              delay: Math.random() * 20
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
 // Generátor 30 úrovní pro každou kapitolu
 const generateLevels = (chapterId: string) => {
@@ -94,9 +162,9 @@ const CHAPTERS = [
     title: "Nastavení webu",
     description: "Objevte naši kosmetiku a vybavení. Získávejte exkluzivní slevy.",
     icon: Package,
-    color: "from-mafia-gold/10 to-mafia-black/50",
-    borderColor: "border-mafia-gold/30",
-    textColor: "text-mafia-gold",
+    color: "from-mafia-gold/10 theme-blood:from-mafia-red/10 noir-mode:from-white/10 to-mafia-black/50",
+    borderColor: "border-mafia-gold/30 theme-blood:border-mafia-red/30 noir-mode:border-white/30",
+    textColor: "text-mafia-gold theme-blood:text-mafia-red noir-mode:text-white",
     locked: false,
     levels: generateLevels("products")
   },
@@ -173,27 +241,23 @@ export default function PostupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-mafia-black text-white pt-32 pb-24 px-4 relative overflow-hidden font-sans">
-      {/* Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-mafia-gold/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-white/5 rounded-full blur-[100px]" />
-      </div>
+    <div className="min-h-screen bg-transparent text-white pt-32 pb-24 px-4 relative overflow-hidden font-sans">
+      <PremiumMafiaBackground />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <Link href="/" className="inline-flex items-center text-mafia-gold hover:text-white transition-colors mb-8 group">
+        <Link href="/" className="inline-flex items-center text-mafia-gold theme-blood:text-mafia-red noir-mode:text-white hover:text-white theme-blood:hover:text-white noir-mode:hover:text-gray-300 transition-colors mb-8 group">
           <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           <span className="font-mono text-xs uppercase tracking-widest ml-2">Zpět na základnu</span>
         </Link>
 
         <div className="mb-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-black font-heading tracking-widest text-mafia-gold mb-6 uppercase drop-shadow-[0_0_15px_rgba(197,160,89,0.3)]">
+          <h1 className="text-4xl md:text-5xl font-black font-heading tracking-widest text-mafia-gold theme-blood:text-mafia-red noir-mode:text-white mb-6 uppercase drop-shadow-[0_0_15px_rgba(197,160,89,0.3)] theme-blood:drop-shadow-[0_0_15px_rgba(200,16,46,0.3)] noir-mode:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
             Váš postup
           </h1>
           <p className="text-slate-400 max-w-xl mx-auto text-sm md:text-base font-light mb-4">
             Plň úkoly, získávej XP a postupuj v hierarchii. Vyber si cestu, která tě zajímá, a odemykej si exkluzivní odměny úroveň po úrovni.
           </p>
-          <div className="inline-flex items-center gap-2 bg-mafia-gold/10 border border-mafia-gold/30 px-4 py-2 rounded-full text-mafia-gold text-xs font-mono uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 bg-mafia-gold/10 theme-blood:bg-mafia-red/10 noir-mode:bg-white/10 border border-mafia-gold/30 theme-blood:border-mafia-red/30 noir-mode:border-white/30 px-4 py-2 rounded-full text-mafia-gold theme-blood:text-mafia-red noir-mode:text-white text-xs font-mono uppercase tracking-widest">
             <Zap size={14} /> Tvé Celkové XP: {totalCollected.toLocaleString()}
           </div>
         </div>
@@ -219,17 +283,17 @@ export default function PostupPage() {
                       setViewedChapterId(chapter.id);
                     }
                   }}
-                  className={`group relative p-8 rounded-2xl text-left transition-all duration-500 overflow-hidden flex flex-col h-full border backdrop-blur-sm
+                  className={`group relative p-8 rounded-2xl text-left transition-all duration-500 overflow-hidden flex flex-col h-full border backdrop-blur-xl
                     ${chapter.locked ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-2'}
-                    ${isViewed ? `border-white/30 bg-white/5 scale-[1.02] z-10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)]` : `border-white/5 bg-black/40 hover:bg-black/60 hover:border-white/20`}
-                    ${isActive ? 'ring-1 ring-offset-4 ring-offset-mafia-black ring-mafia-gold' : ''}
+                    ${isViewed ? `border-white/20 bg-white/[0.07] scale-[1.02] z-10 shadow-[0_20px_40px_-15px_rgba(0,0,0,1)]` : `border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10`}
+                    ${isActive ? 'ring-1 ring-offset-4 ring-offset-mafia-black ring-mafia-gold/50 theme-blood:ring-mafia-red/50 noir-mode:ring-white/50' : ''}
                   `}
                 >
                   {/* Background overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-b ${chapter.color} opacity-20 transition-opacity duration-500 group-hover:opacity-40`} />
+                  <div className={`absolute inset-0 bg-gradient-to-b ${chapter.color} opacity-10 transition-opacity duration-500 group-hover:opacity-20`} />
                   
                   {isActive && (
-                    <div className="absolute top-5 right-5 bg-mafia-gold text-black text-[10px] font-bold px-3 py-1.5 rounded-sm uppercase tracking-[0.2em] flex items-center gap-1.5 shadow-[0_0_15px_rgba(197,160,89,0.5)]">
+                    <div className="absolute top-5 right-5 bg-mafia-gold theme-blood:bg-mafia-red noir-mode:bg-white text-black theme-blood:text-white noir-mode:text-black text-[10px] font-bold px-3 py-1.5 rounded-sm uppercase tracking-[0.2em] flex items-center gap-1.5 shadow-[0_0_15px_rgba(197,160,89,0.5)] theme-blood:shadow-[0_0_15px_rgba(200,16,46,0.5)] noir-mode:shadow-[0_0_15px_rgba(255,255,255,0.5)]">
                       <Zap size={10} /> Aktivní
                     </div>
                   )}
@@ -240,7 +304,7 @@ export default function PostupPage() {
                     </div>
                   )}
 
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-8 transition-colors duration-500 border ${isViewed ? 'border-white/20 bg-white/10' : chapter.borderColor + ' bg-black/50 group-hover:border-white/30'}`}>
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-8 transition-colors duration-500 border ${isViewed ? 'border-white/20 bg-white/10' : 'border-white/10 bg-white/5 group-hover:border-white/20'}`}>
                     <Icon size={24} className={`${chapter.locked ? 'text-white/20' : chapter.textColor} transition-transform duration-500 group-hover:scale-110`} />
                   </div>
                   
@@ -270,11 +334,11 @@ export default function PostupPage() {
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="mt-16 overflow-hidden"
             >
-              <div className={`p-10 rounded-3xl bg-gradient-to-b from-white/5 to-black/80 border ${viewedChapter.borderColor} backdrop-blur-xl relative shadow-2xl`}>
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+              <div className={`p-8 md:p-12 rounded-3xl bg-[#0a0a0a]/80 border border-white/5 backdrop-blur-2xl relative shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)]`}>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
                   <div>
-                    <h3 className="text-4xl font-light text-white tracking-wide mb-3 flex items-center gap-4">
-                      <viewedChapter.icon className={viewedChapter.textColor} size={32} />
+                    <h3 className="text-3xl font-light text-white tracking-wide mb-4 flex items-center gap-4">
+                      <viewedChapter.icon className={viewedChapter.textColor} size={28} />
                       {viewedChapter.title}
                     </h3>
                     <p className="text-white/50 font-light text-lg max-w-2xl">
@@ -311,16 +375,15 @@ export default function PostupPage() {
 
                 {/* The Horizontal Timeline s 30 levely */}
                 <div 
-                  className="relative py-12 px-4 md:px-8 overflow-x-auto custom-scrollbar"
+                  className="relative py-16 px-4 md:px-8 overflow-x-auto custom-scrollbar"
                   ref={scrollContainerRef}
                 >
                   <div className="flex items-center min-w-max gap-6 md:gap-10 relative px-10">
                     {/* Background Line */}
                     <div className="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-[2px] bg-white/5" />
                     
-                    {/* Active Line Progress */}
                     <div 
-                      className={`absolute left-10 top-1/2 -translate-y-1/2 h-[2px] shadow-[0_0_15px_rgba(197,160,89,0.8)] transition-all duration-1000 ease-out ${activeChapterId === viewedChapter.id ? 'bg-mafia-gold' : 'bg-white/30'}`}
+                      className={`absolute left-10 top-1/2 -translate-y-1/2 h-[2px] shadow-[0_0_15px_rgba(197,160,89,0.8)] theme-blood:shadow-[0_0_15px_rgba(200,16,46,0.8)] noir-mode:shadow-[0_0_15px_rgba(255,255,255,0.8)] transition-all duration-1000 ease-out ${activeChapterId === viewedChapter.id ? 'bg-mafia-gold theme-blood:bg-mafia-red noir-mode:bg-white' : 'bg-white/30'}`}
                       style={{ 
                         width: `calc(${Math.min(100, ((chapterXp[viewedChapter.id] || 0) / (viewedChapter.levels.length > 0 ? viewedChapter.levels[viewedChapter.levels.length - 1].xpRequired : 1)) * 100)}% - 40px)` 
                       }} 
@@ -338,7 +401,7 @@ export default function PostupPage() {
                           
                           {/* XP Tooltip / Badge - Always visible for milestone, hover for small ones */}
                           <div className={`absolute -top-12 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-black/90 text-[10px] font-mono tracking-widest border whitespace-nowrap transition-all duration-300
-                            ${isCompleted || isNext ? 'border-mafia-gold/30 text-mafia-gold' : 'border-white/5 text-white/30 group-hover:border-white/20 group-hover:text-white/60'}
+                            ${isCompleted || isNext ? 'border-mafia-gold/30 text-mafia-gold theme-blood:border-mafia-red/30 theme-blood:text-mafia-red noir-mode:border-white/30 noir-mode:text-white' : 'border-white/5 text-white/30 group-hover:border-white/20 group-hover:text-white/60'}
                             ${!isMilestone && !isNext && !isCompleted ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'}
                           `}>
                             {level.xpRequired} Návštěv
@@ -347,7 +410,7 @@ export default function PostupPage() {
                           {/* Level Node (Bigger for milestones, smaller for regular) */}
                           <div className={`rounded-full flex items-center justify-center transition-all duration-500 relative bg-black backdrop-blur-md
                             ${isMilestone ? 'w-14 h-14' : 'w-6 h-6'}
-                            ${isCompleted ? (isMilestone ? 'border-2 border-mafia-gold text-mafia-gold shadow-[0_0_20px_rgba(197,160,89,0.3)]' : 'bg-mafia-gold border-none shadow-[0_0_10px_rgba(197,160,89,0.5)]') : 'border border-white/10 text-white/30'}
+                            ${isCompleted ? (isMilestone ? 'border-2 border-mafia-gold text-mafia-gold shadow-[0_0_20px_rgba(197,160,89,0.3)] theme-blood:border-mafia-red theme-blood:text-mafia-red theme-blood:shadow-[0_0_20px_rgba(200,16,46,0.3)] noir-mode:border-white noir-mode:text-white noir-mode:shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-mafia-gold theme-blood:bg-mafia-red noir-mode:bg-white border-none shadow-[0_0_10px_rgba(197,160,89,0.5)] theme-blood:shadow-[0_0_10px_rgba(200,16,46,0.5)] noir-mode:shadow-[0_0_10px_rgba(255,255,255,0.5)]') : 'border border-white/10 text-white/30'}
                             ${isNext ? (isMilestone ? 'border-2 border-white text-white scale-110 shadow-[0_0_30px_rgba(255,255,255,0.2)] animate-pulse' : 'bg-white scale-125 shadow-[0_0_15px_rgba(255,255,255,0.4)] animate-pulse') : ''}
                             ${!isCompleted && !isNext ? 'group-hover:border-white/30 group-hover:text-white/60 group-hover:scale-110' : ''}
                           `}>
@@ -372,14 +435,14 @@ export default function PostupPage() {
                                 {isCompleted && viewedChapter.id === 'secret' && (
                                   <Link 
                                     href="/nastaveni"
-                                    className="mt-4 px-4 py-1.5 border border-mafia-gold/30 text-mafia-gold font-mono text-[9px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-colors rounded-full inline-block"
+                                    className="mt-4 px-4 py-1.5 border border-mafia-gold/30 text-mafia-gold font-mono text-[9px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-colors rounded-full inline-block theme-blood:border-mafia-red/30 theme-blood:text-mafia-red theme-blood:hover:bg-mafia-red noir-mode:border-white/30 noir-mode:text-white noir-mode:hover:bg-white noir-mode:hover:text-black"
                                   >
                                     Spravovat
                                   </Link>
                                 )}
                                 {isCompleted && viewedChapter.id === 'products' && level.id === 30 && (
                                   <div 
-                                    className="mt-4 px-4 py-1.5 border border-mafia-gold/20 text-mafia-gold/50 font-mono text-[9px] uppercase tracking-widest rounded-full inline-flex items-center gap-1.5 cursor-not-allowed bg-black/50"
+                                    className="mt-4 px-4 py-1.5 border border-mafia-gold/20 text-mafia-gold/50 theme-blood:border-mafia-red/20 theme-blood:text-mafia-red/50 noir-mode:border-white/20 noir-mode:text-white/50 font-mono text-[9px] uppercase tracking-widest rounded-full inline-flex items-center gap-1.5 cursor-not-allowed bg-black/50"
                                     title="Modul je momentálně ve vývoji a není dostupný."
                                   >
                                     <Lock size={10} /> Editor Města (Ve vývoji)
@@ -388,7 +451,7 @@ export default function PostupPage() {
                                 {isCompleted && viewedChapter.id === 'community' && level.id === 33 && (
                                   <Link 
                                     href="/physics-demo"
-                                    className="mt-4 px-4 py-1.5 border border-mafia-gold/30 text-mafia-gold font-mono text-[9px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-colors rounded-full inline-block"
+                                    className="mt-4 px-4 py-1.5 border border-mafia-gold/30 text-mafia-gold font-mono text-[9px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-colors rounded-full inline-block theme-blood:border-mafia-red/30 theme-blood:text-mafia-red theme-blood:hover:bg-mafia-red noir-mode:border-white/30 noir-mode:text-white noir-mode:hover:bg-white noir-mode:hover:text-black"
                                   >
                                     Hrát Město
                                   </Link>
@@ -396,7 +459,7 @@ export default function PostupPage() {
                                 {isCompleted && viewedChapter.id === 'community' && level.id !== 33 && (
                                   <Link 
                                     href="/komunita"
-                                    className="mt-4 px-4 py-1.5 border border-mafia-gold/30 text-mafia-gold font-mono text-[9px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-colors rounded-full inline-block"
+                                    className="mt-4 px-4 py-1.5 border border-mafia-gold/30 text-mafia-gold font-mono text-[9px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-colors rounded-full inline-block theme-blood:border-mafia-red/30 theme-blood:text-mafia-red theme-blood:hover:bg-mafia-red noir-mode:border-white/30 noir-mode:text-white noir-mode:hover:bg-white noir-mode:hover:text-black"
                                   >
                                     Vstoupit
                                   </Link>
@@ -411,7 +474,7 @@ export default function PostupPage() {
                                 )}
                               </>
                             ) : (
-                              <div className={`text-[9px] uppercase font-mono tracking-widest ${isCompleted || isNext ? 'text-mafia-gold/70' : 'text-white/40'}`}>
+                              <div className={`text-[9px] uppercase font-mono tracking-widest ${isCompleted || isNext ? 'text-mafia-gold/70 theme-blood:text-mafia-red/70 noir-mode:text-white/70' : 'text-white/40'}`}>
                                 {level.reward}
                               </div>
                             )}
@@ -447,8 +510,20 @@ export default function PostupPage() {
           background: rgba(197,160,89,0.3);
           border-radius: 4px;
         }
+        html.theme-blood .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(200,16,46,0.3);
+        }
+        html.noir-mode .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255,255,255,0.3);
+        }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: rgba(197,160,89,0.6);
+        }
+        html.theme-blood .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(200,16,46,0.6);
+        }
+        html.noir-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255,255,255,0.6);
         }
       `}} />
     </div>

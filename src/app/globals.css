@@ -144,6 +144,10 @@ img {
   -moz-user-drag: none;
   -o-user-drag: none;
   pointer-events: none;
+  outline: none !important;
+  border: none !important;
+  text-indent: -10000px; /* Zabránění zobrazení alt-text rámečku při načítání */
+  -webkit-tap-highlight-color: transparent !important;
 }
 
 html[data-graphics-tier='lite'] body,

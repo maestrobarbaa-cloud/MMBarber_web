@@ -494,5 +494,34 @@
       "link": "https://www.okoleckovic.cz/",
       "year": 2026
     }
+  ],
+  "zajimavosti_people": [
+    {
+      "id": 4,
+      "name": "Hana",
+      "role": "Utajená rodačka",
+      "description": "\"Dobrý den. Jmenuji se Hana a jsem rodačkou z Mařatic. Ví to jen málokdo, a vy teď patříte mezi ně. Aktuálně pracuji pro Gen Digital Inc. a právě odtud částečně tvořím weby pro globální software.\"",
+      "image": "",
+      "link": "",
+      "isMystery": true
+    },
+    {
+      "id": 5,
+      "name": "Tomáš",
+      "role": "Spisovatel z Jarošova",
+      "description": "\"Dobrý den. Jmenuji se Tomáš, jsem hrdý rodák z Jarošova a aktuálně pracuji na knize o osudech letců z druhé světové války. Je to běh na dlouhou trať, ale až bude kniha konečně na světě, pevně věřím, že ji společně pokřtíme právě tady, v našem podniku.\"",
+      "image": "",
+      "link": "",
+      "isMystery": true
+    },
+    {
+      "id": 1789467650844,
+      "name": "tomáš",
+      "role": "ss",
+      "description": "sdsadasd",
+      "image": "",
+      "link": "",
+      "isMystery": false
+    }
   ]
 }

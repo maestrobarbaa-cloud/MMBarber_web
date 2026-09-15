@@ -7,6 +7,7 @@ import { ChevronRight, Lock } from "lucide-react";
 import { getMegaMenuData, type MegaMenuData } from "@/data/megaMenuData";
 import { useGame } from "@/contexts/GameContext";
 import { type Language } from "@/hooks/useTranslation";
+import { useUI } from "@/contexts/UIContext";
 
 interface DesktopMegaMenuProps {
   lang: Language;
@@ -28,6 +29,11 @@ export const DesktopMegaMenu = React.memo(function DesktopMegaMenu({
   const megaMenuData = getMegaMenuData(lang);
   const currentCategory = hoveredCategory as keyof typeof megaMenuData;
   const { totalCollected, chapterXp } = useGame();
+  const { isBloodMode } = useUI();
+  
+  // Zamezíme chybám při hydrataci tím, že počkáme na mount pro jiskry
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => setIsMounted(true), []);
 
   return (
     <AnimatePresence>
@@ -41,7 +47,45 @@ export const DesktopMegaMenu = React.memo(function DesktopMegaMenu({
           onMouseEnter={() => setHoveredCategory(hoveredCategory)}
           onMouseLeave={() => setHoveredCategory(null)}
         >
-          <div className="max-w-7xl mx-auto px-12 py-12 flex justify-center gap-24">
+          {/* Žhavé jiskry v pozadí megamenu */}
+          {isMounted && (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-[0] opacity-50">
+              {Array.from({ length: 15 }).map((_, i) => {
+                const startX = Math.random() * 120 - 20;
+                const distanceX = Math.random() * 20 + 10;
+                const width = Math.random() * 2 + 1;
+                return (
+                  <motion.div
+                    key={`megamenu-spark-${i}`}
+                    className={`absolute rounded-full shadow-[0_0_8px_1px_currentColor] ${isBloodMode ? 'bg-mafia-red text-mafia-red' : (typeof document !== 'undefined' && document.documentElement.classList.contains('noir-mode')) ? 'bg-white text-white' : 'bg-[#ffd700] text-[#ffd700]'}`}
+                    style={{
+                      width: `${width}px`,
+                      height: `${width}px`,
+                      filter: `blur(${Math.random() * 0.5}px)`,
+                    }}
+                    initial={{ 
+                       y: '300px',
+                       x: `${startX}vw`,
+                       opacity: 0
+                    }}
+                    animate={{
+                      y: '-20px',
+                      x: `${startX + distanceX}vw`,
+                      opacity: [0, Math.random() * 0.5 + 0.3, 0]
+                    }}
+                    transition={{
+                      duration: 6 + Math.random() * 8,
+                      repeat: Infinity,
+                      ease: "linear",
+                      delay: Math.random() * 10
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
+
+          <div className="max-w-7xl mx-auto px-12 py-12 flex justify-center gap-24 relative z-10">
             {megaMenuData[currentCategory].groups.map((group, idx) => (
               <div key={idx} className="flex flex-col">
                 <h3 className="text-mafia-gold/60 text-[10px] font-mono tracking-widest uppercase mb-6">

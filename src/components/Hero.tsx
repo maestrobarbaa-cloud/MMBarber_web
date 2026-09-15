@@ -320,12 +320,11 @@ export function Hero() {
   }, []);
 
   const heroImage = 
-    isBloodMode ? "/obr/main-hero-blood.png" :
     activeHero === 1 ? "/obr/main-hero.png" : 
     activeHero === 2 ? "/obr/hero-2.png" : 
     "/obr/hero-3.png";
 
-  const isBloodImage = heroImage.includes('blood');
+  const isBloodImage = isBloodMode;
 
   return (
     <section id="hero" data-no-click-effect="true" className="relative w-full min-h-[100dvh] xl:min-h-screen flex flex-col items-center justify-start xl:justify-center px-0 xl:px-4 pt-28 xl:pt-28 pb-0 overflow-x-hidden">
@@ -450,8 +449,8 @@ export function Hero() {
             animate={{ 
               opacity: 1, 
               scale: (isMobile || graphicsTier === 'lite' || graphicsTier === 'low' || graphicsTier === 'medium') ? 1 : 1.03,
-              filter: (isBloodMode && activeHero === 1)
-                ? "grayscale(0) brightness(1.1) contrast(1.1)"
+              filter: isBloodMode
+                ? "hue-rotate(-45deg) saturate(1.5) contrast(1.1)"
                 : (isGlitching ? "brightness(1.1) blur(4px)" : "none") 
             }}
             exit={{ opacity: 0 }}
@@ -479,14 +478,11 @@ export function Hero() {
                   priority
                   unoptimized={graphicsTier !== 'lite' && graphicsTier !== 'low' && graphicsTier !== 'medium'}
                   fill
-                  className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${heroImage.includes('blood') ? 'hero-blood-img' : ''}`}
-                  style={{ 
-                    filter: heroImage.includes('blood') ? 'blur(2.5px)' : undefined 
-                  }}
+                  className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${isBloodMode ? 'hero-blood-img' : ''}`}
                 />
                 {/* Overlay Gradient - Minimized for absolute maximum clarity and vibrant colors */}
-                <div className={`absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/75 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
-                <div className={`absolute inset-0 bg-black/5 z-1 ${heroImage.includes('blood') ? 'opacity-0' : 'opacity-100'}`} />
+                <div className={`absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/75 z-1 opacity-100`} />
+                <div className={`absolute inset-0 bg-black/5 z-1 opacity-100`} />
               </>
             )}
           </motion.div>

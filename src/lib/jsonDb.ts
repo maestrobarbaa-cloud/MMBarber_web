@@ -12,6 +12,7 @@ export interface DbSchema {
   barber_novinky: any[];
   suggestions: any[];
   hall_of_fame: any[];
+  zajimavosti_people: any[];
   settings: Record<string, string>;
   user_fragments: any[];
   game_winners: any[];
@@ -35,6 +36,7 @@ const defaultDb: DbSchema = {
   barber_novinky: [],
   suggestions: [],
   hall_of_fame: [],
+  zajimavosti_people: [],
   settings: {},
   user_fragments: [],
   game_winners: [],

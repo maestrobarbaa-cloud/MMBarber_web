@@ -37,7 +37,6 @@ import {
   hasStatLikedToday
 } from "@/utils/barberXp";
 
-// Attribute rating configurations with static baseline levels
 const BARBER_STATS_METADATA: Record<string, { label: string; base: number; color: string }[]> = {
   tomas: [
     { label: "PŘESNOST BŘITVY", base: 0, color: "var(--user-accent-color, #c5a059)" },
@@ -46,14 +45,6 @@ const BARBER_STATS_METADATA: Record<string, { label: string; base: number; color
     { label: "CHARISMA A LIDSKÝ PŘÍSTUP", base: 0, color: "var(--user-accent-color, #c5a059)" },
     { label: "POKEC A SMYSL PRO HUMOR", base: 0, color: "var(--user-accent-color, #c5a059)" },
     { label: "OCHOTA A BRATRSKÝ VIBE", base: 0, color: "var(--user-accent-color, #c5a059)" }
-  ],
-  nella: [
-    { label: "KREATIVNÍ TEXTURA", base: 0, color: "var(--user-accent-color, #c5a059)" },
-    { label: "TRADIČNÍ STYLING", base: 0, color: "var(--user-accent-color, #c5a059)" },
-    { label: "TAKTIKA A RYCHLOST", base: 0, color: "var(--user-accent-color, #c5a059)" },
-    { label: "EMPATIE A PŘÁTELSKÁ AURA", base: 0, color: "var(--user-accent-color, #c5a059)" },
-    { label: "DOBRÁ NÁLADA A POKEC", base: 0, color: "var(--user-accent-color, #c5a059)" },
-    { label: "TRPĚLIVOST A PÉČE", base: 0, color: "var(--user-accent-color, #c5a059)" }
   ]
 };
 
@@ -77,11 +68,8 @@ export default function RatingPage() {
 
   // Barber customizable names states
   const [customTomasName, setCustomTomasName] = useState<string>("Tomáš");
-  const [customNellaName, setCustomNellaName] = useState<string>("Nella");
   const [isEditingTomasName, setIsEditingTomasName] = useState<boolean>(false);
-  const [isEditingNellaName, setIsEditingNellaName] = useState<boolean>(false);
   const [tomasInputName, setTomasInputName] = useState<string>("Tomáš");
-  const [nellaInputName, setNellaInputName] = useState<string>("Nella");
 
   useEffect(() => {
     setIsClient(true);
@@ -105,11 +93,6 @@ export default function RatingPage() {
     if (savedTomas) {
       setCustomTomasName(savedTomas);
       setTomasInputName(savedTomas);
-    }
-    const savedNella = localStorage.getItem("mmbarber_custom_name_nella");
-    if (savedNella) {
-      setCustomNellaName(savedNella);
-      setNellaInputName(savedNella);
     }
 
     // Load simple nickname from local storage
@@ -188,20 +171,6 @@ export default function RatingPage() {
     playSound("/sounds/reload.mp3", 0.4);
   };
 
-  const handleSaveNellaName = () => {
-    const trimmed = nellaInputName.trim();
-    if (trimmed) {
-      localStorage.setItem("mmbarber_custom_name_nella", trimmed);
-      setCustomNellaName(trimmed);
-    } else {
-      localStorage.removeItem("mmbarber_custom_name_nella");
-      setCustomNellaName("Nella");
-      setNellaInputName("Nella");
-    }
-    setIsEditingNellaName(false);
-    playSound("/sounds/reload.mp3", 0.4);
-  };
-
   if (loading) return null;
 
   const getBarberRatingData = async (barberId: string) => {
@@ -248,6 +217,9 @@ export default function RatingPage() {
     const mapKey = `${barberId}_${statIndex}`;
     if (statLikedMap[mapKey]) return;
 
+    // Save snapshot for rollback
+    const previousGlobalStats = { ...globalStats };
+
     // Optimistic local update
     setStatLikedMap(prev => ({ ...prev, [mapKey]: true }));
     setGlobalStats(prev => {
@@ -278,10 +250,12 @@ export default function RatingPage() {
 
     try {
       await addVoteToBarberStat(barberId, statIndex);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to add stat vote:", err);
       // Rollback
       setStatLikedMap(prev => ({ ...prev, [mapKey]: false }));
+      setGlobalStats(previousGlobalStats);
+      alert(err.message || "Hlasování selhalo (pravděpodobně jste již z této IP dnes hlasoval/a).");
     }
   };
 
@@ -368,7 +342,7 @@ export default function RatingPage() {
 
         {/* TEAM CARDS GRID WITH REAL-TIME STAT RATINGS */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 relative pb-40">
-          {barbers.map((barber, idx) => {
+          {barbers.filter(b => b.id !== 'nella').map((barber, idx) => {
             const stats = globalStats[barber.id] || { xp: 0, likes: 0, stat1: 0, stat2: 0, stat3: 0, stat4: 0, stat5: 0, stat6: 0 };
             const globalXp = stats.xp;
             const globalLikes = stats.likes;
@@ -404,7 +378,7 @@ export default function RatingPage() {
                     <div className="flex-grow space-y-1">
                       <span className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em]">{lang === 'cs' ? 'OPERATIVNÍ ČLEN' : 'OPERATIVE MEMBER'}</span>
                       <div className="flex items-center gap-2">
-                        {barber.id === 'tomas' ? (
+                        {barber.id === 'tomas' && (
                           isEditingTomasName ? (
                             <div className="flex items-center gap-2 mt-1">
                               <input 
@@ -429,39 +403,6 @@ export default function RatingPage() {
                               </h3>
                               <button 
                                 onClick={() => setIsEditingTomasName(true)}
-                                className="text-[9px] font-mono text-white/40 hover:text-mafia-gold flex items-center gap-1 transition-all duration-300 opacity-0 group-hover/name:opacity-100 focus:opacity-100 cursor-pointer bg-transparent border-none"
-                                title="Změnit jméno"
-                              >
-                                <Edit3 size={11} />
-                                <span>[ PŘEPSAT ]</span>
-                              </button>
-                            </div>
-                          )
-                        ) : (
-                          isEditingNellaName ? (
-                            <div className="flex items-center gap-2 mt-1">
-                              <input 
-                                type="text"
-                                value={nellaInputName}
-                                onChange={(e) => setNellaInputName(e.target.value)}
-                                className="bg-black/80 border border-mafia-gold text-white px-2 py-0.5 rounded text-xl font-heading w-40 md:w-56 focus:outline-none uppercase"
-                                autoFocus
-                                onKeyDown={(e) => { if (e.key === 'Enter') handleSaveNellaName(); }}
-                              />
-                              <button 
-                                onClick={handleSaveNellaName}
-                                className="text-[10px] font-mono text-mafia-gold hover:text-white border border-mafia-gold/40 px-2 py-0.5 rounded transition bg-mafia-gold/10"
-                              >
-                                OK
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="flex items-baseline gap-2 group/name select-none">
-                              <h3 className="text-3xl md:text-4xl font-heading font-black text-white uppercase tracking-wider italic">
-                                {customNellaName}
-                              </h3>
-                              <button 
-                                onClick={() => setIsEditingNellaName(true)}
                                 className="text-[9px] font-mono text-white/40 hover:text-mafia-gold flex items-center gap-1 transition-all duration-300 opacity-0 group-hover/name:opacity-100 focus:opacity-100 cursor-pointer bg-transparent border-none"
                                 title="Změnit jméno"
                               >

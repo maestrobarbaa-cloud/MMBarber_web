@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "@/components/OptimizedImage";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUI } from "../contexts/UIContext";
 import {
   Instagram,
   Facebook,
@@ -420,15 +421,33 @@ const FooterLink = ({ href, children, isExternal, isBordered, isRed, onClick }: 
   return <Link href={href} onClick={onClick} className="block">{content}</Link>;
 };
 
+const AnimatedVersionBadge = () => {
+  const { isBloodMode } = useUI();
+  return (
+    <div className="relative z-10 flex items-center justify-center cursor-default group">
+      <span className={`text-[10px] md:text-xs font-black tracking-[0.3em] transition-all duration-500 group-hover:opacity-0 ${isBloodMode ? 'text-mafia-red drop-shadow-[0_0_8px_rgba(200,16,46,0.9)]' : 'text-mafia-gold drop-shadow-[0_0_8px_rgba(212,175,55,0.9)]'}`}>
+        V 3.5.2
+      </span>
+      <span className={`absolute text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-500 opacity-0 group-hover:opacity-100 ${isBloodMode ? 'text-mafia-red' : 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]'}`}>
+        Ve vývoji
+      </span>
+    </div>
+  );
+};
+
 export function Footer() {
   const { t, lang, switchLanguage } = useTranslation();
+  const { isBloodMode } = useUI();
+  const particles = Array.from({ length: 30 });
   const [showContactOverlay, setShowContactOverlay] = React.useState(false);
   const [showResponsibleModal, setShowResponsibleModal] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = React.useState(false);
   const [views, setViews] = React.useState<number | null>(null);
+  const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
+    setIsMounted(true);
     fetch('/api/views', { method: 'POST' })
       .then(res => res.json())
       .then(data => {
@@ -458,9 +477,45 @@ export function Footer() {
   return (
     <footer className="w-full bg-[#050505] border-t border-mafia-gold/10 pt-24 pb-12 px-6 text-center z-10 relative mt-0 overflow-hidden">
 
-      {/* AMBIENT BACKGROUND */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+      {/* AMBIENT BACKGROUND & PARTICLES OVER THE ENTIRE FOOTER */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)] pointer-events-none z-0"></div>
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none z-0"></div>
+      
+      {/* FLOATING SPARKS & COMETS */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {isMounted && particles.map((_, i) => {
+          const startX = Math.random() * 120 - 20;
+          const distanceX = Math.random() * 20 + 10;
+          const width = Math.random() * 2 + 1;
+          return (
+            <motion.div
+              key={`footer-spark-${i}`}
+              className={`absolute rounded-full shadow-[0_0_8px_1px_currentColor] ${isBloodMode ? 'bg-mafia-red text-mafia-red' : 'bg-[#ffd700] text-[#ffd700]'}`}
+              style={{
+                width: `${width}px`,
+                height: `${width}px`,
+                filter: `blur(${Math.random() * 0.5}px)`,
+              }}
+              initial={{ 
+                 top: '110%',
+                 left: `${startX}vw`,
+                 opacity: 0
+              }}
+              animate={{
+                top: '-10%',
+                left: `${startX + distanceX}vw`,
+                opacity: [0, Math.random() * 0.5 + 0.3, 0]
+              }}
+              transition={{
+                duration: 8 + Math.random() * 15,
+                repeat: Infinity,
+                ease: "linear",
+                delay: Math.random() * 10
+              }}
+            />
+          );
+        })}
+      </div>
 
 
 
@@ -772,7 +827,7 @@ export function Footer() {
               >
                 © 2024–{new Date().getFullYear()} MMBARBER
               </span>
-              <span className="text-mafia-red text-[9px] font-black tracking-[0.2em] px-2 py-0.5 border border-mafia-red/20">V 3.5.2</span>
+              <AnimatedVersionBadge />
             </div>
           </div>
         </div>

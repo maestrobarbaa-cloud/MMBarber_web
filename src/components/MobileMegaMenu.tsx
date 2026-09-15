@@ -188,6 +188,10 @@ export const MobileMegaMenu = React.memo(function MobileMegaMenu({
                          <Users size={24} className="text-white/40" />
                          <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.aboutUs || 'O Nás'}</span>
                       </Link>
+                      <Link href="/zivotopisy" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
+                         <Briefcase size={24} className="text-white/40" />
+                         <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'Životopisy Týmu' : 'Team CVs'}</span>
+                      </Link>
                       <Link href="/#services" onClick={(e) => { handleNavLinkClick(); if (pathname === "/") { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); } }} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                          <Briefcase size={24} className="text-white/40" />
                          <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.services || 'Služby'}</span>

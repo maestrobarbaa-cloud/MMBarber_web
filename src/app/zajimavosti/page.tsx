@@ -1,46 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/hooks/useTranslation";
-import { ArrowLeft, ChevronRight, UserSquare2, ExternalLink, HelpCircle, Lock, Unlock, ShieldAlert } from "lucide-react";
+import { ArrowLeft, ChevronRight, UserSquare2, ExternalLink, HelpCircle, Lock, ShieldAlert, Edit, Trash, Plus, Save, X } from "lucide-react";
 import Link from "next/link";
 import Image from "@/components/OptimizedImage";
 import { Footer } from "@/components/Footer";
 
-// Ukázková data
-const PEOPLE = [
-  {
-    id: 1,
-    name: "Jan Novák",
-    role: "Mistr řemesla",
-    description: "Honza se věnuje tradičnímu zpracování kůže. Jeho dílna v centru Hradiště je místem, kde ožívají staré postupy. S MM Barberem ho pojí smysl pro detail a preciznost.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&auto=format&fit=crop&q=80",
-    link: "#"
-  },
-  {
-    id: 2,
-    name: "Eliška Svobodová",
-    role: "Kavárnice & Vizionářka",
-    description: "Eliška vybudovala komunitní espresso bar. Spojuje lidi u dobré kávy a často u ní probíráme nápady na rozvoj města. Každý její šálek má příběh.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&auto=format&fit=crop&q=80",
-    link: "#"
-  },
-  {
-    id: 3,
-    name: "Tomáš Hrubý",
-    role: "Urbanista",
-    description: "Tomáš se zajímá o veřejný prostor. Pomáhá formovat vizuální tvář Slovácka tak, aby byla moderní, ale neztratila svou duši. Je častým hostem u nás v křesle.",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&auto=format&fit=crop&q=80",
-    link: "#"
-  },
+// Default people (non-fake)
+const DEFAULT_PEOPLE = [
   {
     id: 4,
     name: "Hana",
     role: "Utajená rodačka",
     description: "\"Dobrý den. Jmenuji se Hana a jsem rodačkou z Mařatic. Ví to jen málokdo, a vy teď patříte mezi ně. Aktuálně pracuji pro Gen Digital Inc. a právě odtud částečně tvořím weby pro globální software.\"",
-    image: null,
-    link: "#",
+    image: "",
+    link: "",
     isMystery: true
   },
   {
@@ -48,13 +24,13 @@ const PEOPLE = [
     name: "Tomáš",
     role: "Spisovatel z Jarošova",
     description: "\"Dobrý den. Jmenuji se Tomáš, jsem hrdý rodák z Jarošova a aktuálně pracuji na knize o osudech letců z druhé světové války. Je to běh na dlouhou trať, ale až bude kniha konečně na světě, pevně věřím, že ji společně pokřtíme právě tady, v našem podniku.\"",
-    image: null,
-    link: "#",
+    image: "",
+    link: "",
     isMystery: true
   }
 ];
 
-function PersonCard({ person, index, isRevealed, onReveal }: { person: any, index: number, isRevealed: boolean, onReveal: () => void }) {
+function PersonCard({ person, index, isRevealed, onReveal, isAdmin, onEdit, onDelete }: { person: any, index: number, isRevealed: boolean, onReveal: () => void, isAdmin: boolean, onEdit: () => void, onDelete: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -63,6 +39,13 @@ function PersonCard({ person, index, isRevealed, onReveal }: { person: any, inde
       transition={{ duration: 0.8, delay: index * 0.1 }}
       className={`group relative flex flex-col bg-mafia-black border transition-all duration-500 overflow-hidden ${isRevealed ? 'border-mafia-gold/30' : 'border-mafia-gold/10'}`}
     >
+      {isAdmin && (
+        <div className="absolute top-2 right-2 z-50 flex gap-2">
+          <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className="p-2 bg-mafia-gold text-mafia-black hover:bg-white rounded shadow-lg"><Edit size={14} /></button>
+          <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="p-2 bg-red-500 text-white hover:bg-red-400 rounded shadow-lg"><Trash size={14} /></button>
+        </div>
+      )}
+      
       {/* Image Container */}
       <div className="relative aspect-[4/5] overflow-hidden bg-mafia-black cursor-pointer" onClick={!isRevealed ? onReveal : undefined}>
         {person.isMystery ? (
@@ -72,12 +55,18 @@ function PersonCard({ person, index, isRevealed, onReveal }: { person: any, inde
         ) : (
           <>
             <div className={`absolute inset-0 transition-colors duration-700 z-10 ${isRevealed ? 'bg-transparent' : 'bg-mafia-black/70 backdrop-blur-sm'}`} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              src={person.image} 
-              alt={isRevealed ? person.name : "Neznámý"}
-              className={`object-cover w-full h-full transition-all duration-1000 ${isRevealed ? 'grayscale-0 scale-105' : 'grayscale scale-100 blur-[2px]'}`}
-            />
+            {person.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img 
+                src={person.image} 
+                alt={isRevealed ? person.name : "Neznámý"}
+                className={`object-cover w-full h-full transition-all duration-1000 ${isRevealed ? 'grayscale-0 scale-105' : 'grayscale scale-100 blur-[2px]'}`}
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                 <UserSquare2 size={64} className="text-mafia-gold/20" />
+              </div>
+            )}
           </>
         )}
         <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-mafia-black via-mafia-black/80 to-transparent z-20 pointer-events-none" />
@@ -119,7 +108,7 @@ function PersonCard({ person, index, isRevealed, onReveal }: { person: any, inde
           {isRevealed ? person.description : 'Tento záznam je uzamčen. Pro zobrazení detailů a příběhu této osobnosti je nutné prolomit bezpečnostní ochranu kliknutím na obrazovku.'}
         </p>
         
-        {person.link !== "#" && isRevealed && (
+        {person.link && person.link !== "#" && isRevealed && (
           <a href={person.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-mafia-gold hover:text-smoke-white transition-colors mt-auto pointer-events-auto">
             PROZKOUMAT <ExternalLink size={14} />
           </a>
@@ -132,6 +121,30 @@ function PersonCard({ person, index, isRevealed, onReveal }: { person: any, inde
 export default function ZajimavostiPage() {
   const { t } = useTranslation();
   const [revealedIds, setRevealedIds] = useState<number[]>([]);
+  const [people, setPeople] = useState<any[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [editingPerson, setEditingPerson] = useState<any | null>(null);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("mmbarber_admin_auth") === "true") {
+      setIsAdmin(true);
+    }
+
+    fetch('/api/zajimavosti')
+      .then(r => r.json())
+      .then(data => {
+        if (data.people && data.people.length > 0) {
+          setPeople(data.people);
+        } else {
+          setPeople(DEFAULT_PEOPLE);
+        }
+      })
+      .catch(e => {
+        console.error("Error fetching people", e);
+        setPeople(DEFAULT_PEOPLE);
+      });
+  }, []);
 
   const handleReveal = (id: number) => {
     if (!revealedIds.includes(id)) {
@@ -139,7 +152,40 @@ export default function ZajimavostiPage() {
     }
   };
 
-  const progressPercentage = Math.round((revealedIds.length / PEOPLE.length) * 100);
+  const handleSaveAll = async () => {
+    setIsSaving(true);
+    try {
+      await fetch('/api/zajimavosti', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ people })
+      });
+      alert('Změny uloženy na server.');
+    } catch(e) {
+      alert('Chyba při ukládání.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDelete = (id: number) => {
+    if(confirm('Opravdu chcete smazat tento profil?')) {
+      setPeople(prev => prev.filter(p => p.id !== id));
+    }
+  };
+
+  const handleSaveModal = (e: React.FormEvent) => {
+    e.preventDefault();
+    if(editingPerson.id === 'new') {
+      const newPerson = { ...editingPerson, id: Date.now() };
+      setPeople(prev => [...prev, newPerson]);
+    } else {
+      setPeople(prev => prev.map(p => p.id === editingPerson.id ? editingPerson : p));
+    }
+    setEditingPerson(null);
+  };
+
+  const progressPercentage = people.length > 0 ? Math.round((revealedIds.length / people.length) * 100) : 0;
 
   const content = (t as any).zajimavosti || {
     return: "ZPĚT NA ZÁKLADNU",
@@ -155,6 +201,65 @@ export default function ZajimavostiPage() {
   return (
     <div className="min-h-screen bg-black text-smoke-white overflow-x-hidden relative selection:bg-mafia-gold selection:text-mafia-black">
       
+      {isAdmin && (
+        <div className="fixed top-24 right-4 z-[100] flex gap-2">
+          <button 
+            onClick={() => setEditingPerson({ id: 'new', name: '', role: '', description: '', image: '', link: '', isMystery: false })}
+            className="bg-mafia-gold text-black px-4 py-2 font-black uppercase tracking-widest text-[10px] hover:bg-white flex items-center gap-2 rounded"
+          >
+            <Plus size={14} /> PŘIDAT PROFIL
+          </button>
+          <button 
+            onClick={handleSaveAll}
+            disabled={isSaving}
+            className="bg-blue-600 text-white px-4 py-2 font-black uppercase tracking-widest text-[10px] hover:bg-blue-500 flex items-center gap-2 rounded"
+          >
+            <Save size={14} /> {isSaving ? 'UKLÁDÁM...' : 'ULOŽIT ZMĚNY NA SERVER'}
+          </button>
+        </div>
+      )}
+
+      {/* Modal for editing */}
+      <AnimatePresence>
+        {editingPerson && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="bg-mafia-dark border-2 border-mafia-gold p-8 w-full max-w-xl max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-black text-mafia-gold uppercase">{editingPerson.id === 'new' ? 'Nový profil' : 'Upravit profil'}</h3>
+                <button type="button" onClick={() => setEditingPerson(null)} className="text-white hover:text-red-500"><X size={20} /></button>
+              </div>
+              <form onSubmit={handleSaveModal} className="flex flex-col gap-4">
+                <div>
+                  <label className="text-[10px] text-mafia-gold uppercase">Jméno</label>
+                  <input type="text" required value={editingPerson.name} onChange={e => setEditingPerson({...editingPerson, name: e.target.value})} className="w-full bg-black border border-mafia-gold/30 p-2 text-white" />
+                </div>
+                <div>
+                  <label className="text-[10px] text-mafia-gold uppercase">Role</label>
+                  <input type="text" required value={editingPerson.role} onChange={e => setEditingPerson({...editingPerson, role: e.target.value})} className="w-full bg-black border border-mafia-gold/30 p-2 text-white" />
+                </div>
+                <div>
+                  <label className="text-[10px] text-mafia-gold uppercase">Popis</label>
+                  <textarea required value={editingPerson.description} onChange={e => setEditingPerson({...editingPerson, description: e.target.value})} className="w-full bg-black border border-mafia-gold/30 p-2 text-white h-32" />
+                </div>
+                <div>
+                  <label className="text-[10px] text-mafia-gold uppercase">Odkaz na obrázek (URL)</label>
+                  <input type="text" value={editingPerson.image || ''} onChange={e => setEditingPerson({...editingPerson, image: e.target.value})} className="w-full bg-black border border-mafia-gold/30 p-2 text-white" />
+                </div>
+                <div>
+                  <label className="text-[10px] text-mafia-gold uppercase">Odkaz (link na profil - nepovinné)</label>
+                  <input type="text" value={editingPerson.link || ''} onChange={e => setEditingPerson({...editingPerson, link: e.target.value})} className="w-full bg-black border border-mafia-gold/30 p-2 text-white" />
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="checkbox" id="isMystery" checked={editingPerson.isMystery} onChange={e => setEditingPerson({...editingPerson, isMystery: e.target.checked})} className="accent-mafia-gold w-4 h-4" />
+                  <label htmlFor="isMystery" className="text-[10px] text-mafia-gold uppercase cursor-pointer">Je to tajemná osoba (ikonka s otazníkem místo fotky)?</label>
+                </div>
+                <button type="submit" className="mt-4 bg-mafia-gold text-black py-3 font-black uppercase hover:bg-white transition-colors">Uložit do náhledu</button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Cinematic Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--color-mafia-gold-rgb),0.08)_0%,transparent_70%)]"></div>
@@ -232,7 +337,7 @@ export default function ZajimavostiPage() {
               transition={{ duration: 1, ease: "easeOut" }}
             />
           </div>
-          {progressPercentage === 100 && (
+          {progressPercentage === 100 && people.length > 0 && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -245,13 +350,16 @@ export default function ZajimavostiPage() {
 
         {/* People Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 mb-32">
-          {PEOPLE.map((person, index) => (
+          {people.map((person, index) => (
             <PersonCard 
               key={person.id} 
               person={person} 
               index={index} 
               isRevealed={revealedIds.includes(person.id)}
               onReveal={() => handleReveal(person.id)}
+              isAdmin={isAdmin}
+              onEdit={() => setEditingPerson(person)}
+              onDelete={() => handleDelete(person.id)}
             />
           ))}
         </div>

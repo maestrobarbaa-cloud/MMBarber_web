@@ -250,22 +250,12 @@ export const TOMAS_SKILLS: SkillNode[] = [
 
 export function TomasSkillTree({ 
   totalCollected, 
-  lang,
-  isBloodMode = false,
-  isNoirMode = false
+  lang 
 }: { 
   totalCollected: number;
   lang: string;
-  isBloodMode?: boolean;
-  isNoirMode?: boolean;
 }) {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const primaryColorHex = isBloodMode ? '200,16,46' : isNoirMode ? '255,255,255' : '197,160,89';
-  const tc = isBloodMode ? 'text-mafia-red' : isNoirMode ? 'text-white' : 'text-mafia-gold';
-  const bc = isBloodMode ? 'border-mafia-red' : isNoirMode ? 'border-white' : 'border-mafia-gold';
-  const bgc = isBloodMode ? 'bg-mafia-red' : isNoirMode ? 'bg-white' : 'bg-mafia-gold';
-  const rc = isBloodMode ? 'ring-mafia-red' : isNoirMode ? 'ring-white' : 'ring-mafia-gold';
-  const shadowColor = isBloodMode ? 'rgba(200,16,46,0.8)' : isNoirMode ? 'rgba(255,255,255,0.8)' : 'rgba(197,160,89,0.8)';
   const [skillLevels, setSkillLevels] = useState<Record<string, number>>({});
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -369,17 +359,16 @@ export function TomasSkillTree({
         
         {/* Ambient AC-style Background */}
         <div className="absolute inset-0 pointer-events-none opacity-40" style={{
-           backgroundImage: `radial-gradient(circle at center, rgba(${primaryColorHex},0.25) 0%, transparent 70%)`,
+           backgroundImage: "radial-gradient(circle at center, rgba(197,160,89,0.25) 0%, transparent 70%)",
         }}></div>
         
         {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: `linear-gradient(rgba(${primaryColorHex},1) 1px, transparent 1px), linear-gradient(90deg, rgba(${primaryColorHex},1) 1px, transparent 1px)`, backgroundSize: '40px 40px' }}></div>
-        <div className="absolute inset-0 opacity-10 bg-[url('/images/noise.png')] opacity-[0.15] mix-blend-overlay"></div>
+        <div className="absolute inset-0 opacity-10 bg-[linear-gradient(rgba(197,160,89,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.2)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
 
         {/* Header */}
         <div className="absolute top-0 left-0 w-full p-6 lg:p-10 flex flex-col lg:flex-row justify-between items-start z-20 pointer-events-none gap-4">
            <div className="flex flex-col">
-              <div className="${tc} font-heading uppercase tracking-widest text-2xl lg:text-4xl drop-shadow-[0_0_15px_${shadowColor}]">
+              <div className="text-mafia-gold font-heading uppercase tracking-widest text-2xl lg:text-4xl drop-shadow-[0_0_15px_rgba(197,160,89,0.8)]">
                  {lang === 'cs' ? 'STROM DOVEDNOSTĂŤ' : 'SKILL TREE'}
               </div>
               <div className="text-white/40 font-mono text-[10px] lg:text-xs uppercase tracking-[0.3em] mt-2">
@@ -394,13 +383,13 @@ export function TomasSkillTree({
                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/50">
                       {lang === 'cs' ? 'MAXIMĂLNĂŤ ODEMÄŚENĂŤ' : 'MAXIMUM UNLOCK'}
                    </span>
-                   <span className="text-[10px] font-mono ${tc} font-bold">
+                   <span className="text-[10px] font-mono text-mafia-gold font-bold">
                       {completionPercentage}%
                    </span>
                 </div>
                 <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
                    <div 
-                      className="h-full ${bgc} transition-all duration-1000 shadow-[0_0_10px_${shadowColor}]"
+                      className="h-full bg-mafia-gold transition-all duration-1000 shadow-[0_0_10px_rgba(197,160,89,0.8)]"
                       style={{ width: `${completionPercentage}%` }}
                    />
                 </div>
@@ -412,7 +401,7 @@ export function TomasSkillTree({
         </div>
 
         {/* Connection Lines Canvas */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" style={{ filter: "drop-shadow(0 0 6px ${primaryColorHex},0.6)" }}>
+        <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" style={{ filter: "drop-shadow(0 0 6px rgba(197,160,89,0.6))" }}>
            {TOMAS_SKILLS.map(node => {
               if (!node.dependencies) return null;
               return node.dependencies.map(depId => {
@@ -423,8 +412,8 @@ export function TomasSkillTree({
                  const isLinePartiallyUnlocked = unlockedNodes.has(depId) && !isLineUnlocked;
                  
                  let strokeColor = "rgba(255,255,255,0.05)";
-                 if (isLineUnlocked) strokeColor = `rgba(${primaryColorHex},0.8)`;
-                 else if (isLinePartiallyUnlocked) strokeColor = `rgba(${primaryColorHex},0.4)`;
+                 if (isLineUnlocked) strokeColor = "rgba(197,160,89,0.8)";
+                 else if (isLinePartiallyUnlocked) strokeColor = "rgba(197,160,89,0.4)";
 
                  return (
                     <line 
@@ -460,13 +449,13 @@ export function TomasSkillTree({
               let nodeClass = "";
               let glowEffect = "";
               if (isUnlocked) {
-                 nodeClass = `bg-black ${bc} ${currentLevel > 1 ? 'text-white' : tc}`;
+                 nodeClass = `bg-black border-mafia-gold ${currentLevel > 1 ? 'text-white' : 'text-mafia-gold'}`;
                  // ZvĂ˝ĹˇenĂ˝ glow pro max level
                  const glowStrength = isMaxed ? '0_0_40px' : '0_0_25px';
-                 glowEffect = `shadow-[${glowStrength}_rgba(${primaryColorHex},0.8)] inset-shadow-[0_0_10px_rgba(${primaryColorHex},0.5)]`;
+                 glowEffect = `shadow-[${glowStrength}_rgba(197,160,89,0.8)] inset-shadow-[0_0_10px_rgba(197,160,89,0.5)]`;
               } else if (isAvailableButLocked) {
-                 nodeClass = `bg-black text-white/80 ${bc}/50 border-dashed animate-pulse hover:${bc} hover:${bgc}/10`;
-                 glowEffect = `shadow-[0_0_10px_rgba(${primaryColorHex},0.3)]`;
+                 nodeClass = "bg-black text-white/80 border-mafia-gold/50 border-dashed animate-pulse hover:border-mafia-gold hover:bg-mafia-gold/10";
+                 glowEffect = "shadow-[0_0_10px_rgba(197,160,89,0.3)]";
               } else {
                  nodeClass = "bg-black text-white/20 border-white/10 hover:border-white/30";
               }
@@ -478,18 +467,18 @@ export function TomasSkillTree({
                     className="absolute group flex flex-col items-center justify-center transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-30 transition-all duration-500"
                     style={{ left: `${node.position.x}%`, top: `${node.position.y}%` }}
                  >
-                    <div className={`w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rotate-45 border-[2px] shadow-[inset_0_0_15px_rgba(0,0,0,0.8)] flex items-center justify-center transition-all duration-300 ${nodeClass} ${glowEffect} ${isSelected ? `ring-4 ${rc}/40 scale-110` : 'hover:scale-105'} ${isMaxed ? `${bgc}/20` : ''}`}>
-                       {isCompletelyLocked ? <Lock size={24} className="opacity-30" /> : <div className="-rotate-45 flex items-center justify-center"><node.icon size={isUnlocked ? 32 : 28} className={isUnlocked ? `drop-shadow-[0_0_8px_rgba(${primaryColorHex},0.9)]` : ""} /></div>}
+                    <div className={`w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 ${nodeClass} ${glowEffect} ${isSelected ? 'ring-4 ring-mafia-gold/40 scale-110' : 'hover:scale-105'} ${isMaxed ? 'bg-mafia-gold/20' : ''}`}>
+                       {isCompletelyLocked ? <Lock size={24} className="opacity-30" /> : <node.icon size={isUnlocked ? 32 : 28} className={isUnlocked ? "drop-shadow-[0_0_8px_rgba(197,160,89,0.9)]" : ""} />}
                        
                        {/* Level indicator (jen pokud je odemÄŤeno, nebo se dĂˇ odemknout) */}
                        {(isUnlocked || isAvailableButLocked) && (
-                         <div className={`absolute -top-6 md:-top-7 bg-black border px-2 py-0.5 rounded text-[9px] md:text-[10px] font-mono font-bold ${isMaxed ? 'border-yellow-400 text-yellow-400' : isUnlocked ? '${bc} ${tc}' : 'border-white/30 text-white/50'}`}>
+                         <div className={`absolute -top-6 md:-top-7 bg-black border px-2 py-0.5 rounded text-[9px] md:text-[10px] font-mono font-bold ${isMaxed ? 'border-yellow-400 text-yellow-400' : isUnlocked ? 'border-mafia-gold text-mafia-gold' : 'border-white/30 text-white/50'}`}>
                            LVL {isUnlocked ? currentLevel : 1}
                          </div>
                        )}
                     </div>
                     {/* NĂˇzev schopnosti pod uzlem */}
-                    <div className="mt-3 md:mt-4 lg:mt-5 text-center font-heading uppercase tracking-widest text-[9px] md:text-[10px] text-white/60 group-hover:${tc} transition-colors text-shadow-sm max-w-[120px]">
+                    <div className="mt-3 md:mt-4 lg:mt-5 text-center font-heading uppercase tracking-widest text-[9px] md:text-[10px] text-white/60 group-hover:text-mafia-gold transition-colors text-shadow-sm max-w-[120px]">
                        {lang === 'cs' ? node.title.cs : node.title.en}
                     </div>
                  </div>
@@ -506,7 +495,7 @@ export function TomasSkillTree({
                     disabled={availableSP < 1}
                     className={`w-full py-4 px-6 flex items-center justify-between rounded-sm uppercase tracking-[0.2em] font-black text-xs transition-all ${
                        availableSP >= 1 
-                       ? `${bgc} text-black hover:bg-white hover:scale-[1.02] shadow-[0_0_20px_rgba(${primaryColorHex},0.4)]` 
+                       ? 'bg-mafia-gold text-black hover:bg-white hover:scale-[1.02] shadow-[0_0_20px_rgba(197,160,89,0.4)]' 
                        : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
                     }`}
                  >
@@ -554,44 +543,39 @@ export function TomasSkillTree({
                animate={{ width: "100%", maxWidth: "450px", opacity: 1 }}
                exit={{ width: 0, opacity: 0 }}
                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-               className="h-full bg-black/95 backdrop-blur-xl border-t-2 md:border-t-0 md:border-l-2 ${bc}/60 z-40 flex-shrink-0 relative overflow-hidden"
+               className="h-full bg-black/95 backdrop-blur-xl border-t-2 md:border-t-0 md:border-l-2 border-mafia-gold/60 z-40 flex-shrink-0 relative overflow-hidden"
             >
                <div className="w-full md:w-[450px] h-full p-6 lg:p-10 overflow-y-auto absolute top-0 left-0 flex flex-col scrollbar-thin scrollbar-thumb-mafia-gold/20">
                  
                  <button 
                     onClick={() => setSelectedNodeId(null)}
-                    className="absolute top-4 right-4 lg:top-6 lg:right-6 text-white/40 hover:${tc} transition-colors font-mono text-sm border border-transparent hover:${bc}/30 px-2 py-1 rounded"
+                    className="absolute top-4 right-4 lg:top-6 lg:right-6 text-white/40 hover:text-mafia-gold transition-colors font-mono text-sm border border-transparent hover:border-mafia-gold/30 px-2 py-1 rounded"
                  >
                     [ZAVĹĂŤT]
                  </button>
 
-                 {/* Dossier Header */}
-                 <div className="flex justify-between items-start w-full opacity-60 pointer-events-none mb-4">
-                    <span className={`font-heading text-4xl ${tc} border-4 ${bc} px-2 py-1 rotate-[-5deg] inline-block`}>DOSSIER</span>
-                 </div>
-
                  {/* Ikona a Header */}
                  <div className="flex gap-4 items-center mt-6 lg:mt-8 mb-6">
-                   <div className={`w-16 h-16 lg:w-20 lg:h-20 rounded-lg border-2 flex items-center justify-center shrink-0 ${isSelectedUnlocked ? 'bg-mafia-gold/10 ${bc} ${tc} shadow-[0_0_30px_rgba(197,160,89,0.5)]' : 'bg-white/5 border-white/20 text-white/30'}`}>
-                      <selectedNode.icon size={36} className={isSelectedUnlocked ? "drop-shadow-[0_0_15px_rgba(${primaryColorHex},0.9)]" : ""} />
+                   <div className={`w-16 h-16 lg:w-20 lg:h-20 rounded-lg border-2 flex items-center justify-center shrink-0 ${isSelectedUnlocked ? 'bg-mafia-gold/10 border-mafia-gold text-mafia-gold shadow-[0_0_30px_rgba(197,160,89,0.5)]' : 'bg-white/5 border-white/20 text-white/30'}`}>
+                      <selectedNode.icon size={36} className={isSelectedUnlocked ? "drop-shadow-[0_0_15px_rgba(197,160,89,0.9)]" : ""} />
                    </div>
                    <div className="flex flex-col">
                      <div className={`font-mono font-bold text-xs uppercase tracking-widest mb-1 ${currentSelectedLevel >= selectedNode.maxLevel ? 'text-yellow-400' : 'text-white/40'}`}>
                         LVL {isSelectedUnlocked ? currentSelectedLevel : 1} {currentSelectedLevel >= selectedNode.maxLevel && '(MAX)'}
                      </div>
-                     <h3 className={`text-xl lg:text-3xl font-heading font-black uppercase tracking-widest leading-tight ${isSelectedUnlocked ? '${tc} drop-shadow-md' : 'text-white/60'}`}>
+                     <h3 className={`text-xl lg:text-3xl font-heading font-black uppercase tracking-widest leading-tight ${isSelectedUnlocked ? 'text-mafia-gold text-shadow-md' : 'text-white/60'}`}>
                         {lang === 'cs' ? selectedNode.title.cs : selectedNode.title.en}
                      </h3>
                    </div>
                  </div>
                  
-                 <div className="w-full h-[2px] bg-gradient-to-r from-${bgc.replace('bg-','')}/60 via-${bgc.replace('bg-','')}/20 to-transparent mb-6"></div>
+                 <div className="w-full h-[2px] bg-gradient-to-r from-mafia-gold/60 via-mafia-gold/20 to-transparent mb-6"></div>
 
                  {/* Lore Section */}
                  <div className="flex-grow flex flex-col space-y-6">
                     {/* ZĂKLADNĂŤ POPIS (LVL 1) */}
                     <div className="flex flex-col">
-                       <span className="text-[9px] font-mono ${tc}/60 uppercase tracking-[0.2em] mb-1">
+                       <span className="text-[9px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em] mb-1">
                           {lang === 'cs' ? 'ZĂˇkladnĂ­ znalost' : 'Basic Knowledge'} (LVL 1)
                        </span>
                        <p className={`text-sm lg:text-base font-sans leading-relaxed ${isSelectedUnlocked ? 'text-smoke-white' : 'text-white/40'}`}>
@@ -611,7 +595,7 @@ export function TomasSkillTree({
                              key={`lore-${requiredLevel}`}
                              initial={{ opacity: 0, height: 0 }}
                              animate={{ opacity: 1, height: 'auto' }}
-                             className={`flex flex-col border-l-2 pl-4 transition-all duration-500 ${isLoreUnlocked ? (isFutureLore ? 'border-red-500/50 bg-red-900/10' : '${bc}/80 ${bgc}/5') : 'border-white/10 opacity-40'} py-2`}
+                             className={`flex flex-col border-l-2 pl-4 transition-all duration-500 ${isLoreUnlocked ? (isFutureLore ? 'border-red-500/50 bg-red-900/10' : 'border-mafia-gold/80 bg-mafia-gold/5') : 'border-white/10 opacity-40'} py-2`}
                           >
                              <span className={`text-[9px] font-mono uppercase tracking-[0.2em] mb-1 flex items-center gap-2 ${isLoreUnlocked ? (isFutureLore ? 'text-red-400' : 'text-mafia-gold') : 'text-white/40'}`}>
                                 {isLoreUnlocked ? <CheckCircle2 size={10} /> : <Lock size={10} />}
@@ -631,7 +615,7 @@ export function TomasSkillTree({
                     })}
 
                     {selectedNode.statBoost && isSelectedUnlocked && (
-                       <div className="inline-flex items-center self-start gap-3 ${bgc}/15 px-5 py-3 border ${bc}/40 rounded-sm text-sm font-mono font-bold text-mafia-gold tracking-widest uppercase mt-4 shadow-[0_0_15px_rgba(${primaryColorHex},0.2)]">
+                       <div className="inline-flex items-center self-start gap-3 bg-mafia-gold/15 px-5 py-3 border border-mafia-gold/40 rounded-sm text-sm font-mono font-bold text-mafia-gold tracking-widest uppercase mt-4 shadow-[0_0_15px_rgba(197,160,89,0.2)]">
                           <Star size={16} /> {selectedNode.statBoost} 
                           {currentSelectedLevel > 1 && <span className="text-yellow-400"> (x{currentSelectedLevel})</span>}
                        </div>

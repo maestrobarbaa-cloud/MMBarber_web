@@ -82,6 +82,14 @@ export function useHeaderSearch({
             setIsConsoleOpen(false);
             window.dispatchEvent(new Event("mmbarber-trigger-intro"));
           }, 1800);
+        } else if (query === "dev") {
+          const current = localStorage.getItem("mmbarber_dev_mode") === "true";
+          localStorage.setItem("mmbarber_dev_mode", String(!current));
+          window.dispatchEvent(new Event("mmbarber-dev-mode-toggle"));
+          setConsoleOutput(prev => [...prev, lang === 'cs' ? (!current ? "DEV MÓD AKTIVOVÁN." : "DEV MÓD DEAKTIVOVÁN.") : (!current ? "DEV MODE ACTIVATED." : "DEV MODE DEACTIVATED.")]);
+          playSound("/sounds/success.mp3", 0.5);
+          trackEvent("header_search_dev", { enabled: !current });
+          setTimeout(() => setIsConsoleOpen(false), 2000);
         } else if (query === "odkrýt" || query === "odkryt" || query === "reveal") {
           setConsoleOutput(prev => [...prev, lang === 'cs' ? "PŘÍSTUP POVOLEN." : "ACCESS GRANTED.", lang === 'cs' ? "Dešifrování operativních souborů..." : "Decrypting operative files...", lang === 'cs' ? "Profily odhaleny." : "Profiles revealed."]);
           window.dispatchEvent(new Event("mmbarber-reveal-barbers"));
@@ -120,7 +128,7 @@ export function useHeaderSearch({
     const query = searchQuery.toLowerCase().trim();
     if (!query) return;
 
-    if (query === "intro" || query === "menu" || query === "welcome" || query === "odkrýt" || query === "odkryt" || query === "reveal" || query === "admin") {
+    if (query === "intro" || query === "menu" || query === "welcome" || query === "odkrýt" || query === "odkryt" || query === "reveal" || query === "admin" || query === "dev") {
       runCommand(query);
       setSearchQuery("");
       setIsSearchOpen(false);
@@ -140,16 +148,6 @@ export function useHeaderSearch({
       window.dispatchEvent(new CustomEvent("mmbarber-stealth-update", { detail: !current }));
       setSearchQuery("");
       setIsSearchOpen(false);
-      return;
-    }
-
-    if (query === "dev") {
-      const current = localStorage.getItem("mmbarber_dev_mode") === "true";
-      localStorage.setItem("mmbarber_dev_mode", String(!current));
-      window.dispatchEvent(new Event("mmbarber-dev-mode-toggle"));
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      trackEvent("header_search_dev", { enabled: !current });
       return;
     }
 

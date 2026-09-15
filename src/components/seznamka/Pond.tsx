@@ -1456,15 +1456,6 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
             )}
           </AnimatePresence>
 
-          <AnimatePresence>
-            <CoinPurchaseModal="w-full bg-mafia-gold text-black font-black font-heading tracking-widest py-3 rounded-lg hover:bg-[#a68648] transition-all hover:scale-105 shadow-[0_0_20px_rgba(197,160,89,0.4)] uppercase"
-                  >
-                    {lang === 'cs' ? 'Pokračovat' : 'Continue'}
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           <AnimatePresence>
             <CoinPurchaseModal

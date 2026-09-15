@@ -55,8 +55,6 @@ export const getMegaMenuData = (lang: Language): MegaMenuData => ({
         items: [
           { name: lang === 'cs' ? "Jak to chodí" : "How it works", path: "/jak-to-chodi" },
           { name: lang === 'cs' ? "Příběh podniku" : "Company Story", path: "/pribeh?v=2" },
-          { name: lang === 'cs' ? "Osobní životopis" : "Personal CV", path: "/zivotopisy" },
-          { name: lang === 'cs' ? "Speciální mise" : "Special Mission", path: "/barbergames" },
         ]
       },
       {
@@ -64,7 +62,6 @@ export const getMegaMenuData = (lang: Language): MegaMenuData => ({
         items: [
           { name: lang === 'cs' ? "Náš tým (Rodina)" : "Our Team (Family)", path: "/rodina" },
           { name: lang === 'cs' ? "Galerie" : "Gallery", path: "/galerie" },
-          { name: lang === 'cs' ? "Komunita" : "Community", path: "/komunita", requiredXP: 100 },
         ]
       },
       {
@@ -72,6 +69,12 @@ export const getMegaMenuData = (lang: Language): MegaMenuData => ({
         items: [
           { name: lang === 'cs' ? "Kudy k nám" : "Find Us", path: "/#kontakt" },
           { name: lang === 'cs' ? "Skrytá místa" : "Hidden Places", path: "/skryta-mista" },
+        ]
+      },
+      {
+        title: lang === 'cs' ? "Životopisy & Tým" : "CVs & Team",
+        items: [
+          { name: lang === 'cs' ? "Životopisy barberů" : "Barber CVs", path: "/zivotopisy" },
         ]
       }
     ]

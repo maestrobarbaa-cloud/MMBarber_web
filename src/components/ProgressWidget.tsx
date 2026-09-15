@@ -57,6 +57,8 @@ export const ProgressWidget = () => {
   return (
     <Link href="/postup">
       <motion.button
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         className="hidden md:flex fixed bottom-24 left-6 md:bottom-32 md:left-10 z-40 p-3 md:p-4 rounded-full bg-black/80 border border-mafia-gold/50 theme-blood:border-red-500/50 noir-mode:border-white/50 shadow-[0_0_20px_rgba(197,160,89,0.3)] theme-blood:shadow-[0_0_20px_rgba(239,68,68,0.3)] text-mafia-gold theme-blood:text-red-500 noir-mode:text-white backdrop-blur-sm group overflow-visible items-center justify-center"

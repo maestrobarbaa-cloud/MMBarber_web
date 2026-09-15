@@ -6,59 +6,82 @@ import { X } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { playSound } from "../utils/audio";
 
+import { useUI } from "../contexts/UIContext";
+
 interface LetterData {
   id: string;
   title: string;
   content: string;
 }
 
-const WaxSealIcon = ({ size = 80 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 100 80" fill="none" className="drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
-    {/* Envelope Main Body */}
-    <path d="M5 10 L95 10 L95 70 L5 70 Z" fill="var(--color-mafia-gold)" fillOpacity="0.2" stroke="var(--color-mafia-gold)" strokeWidth="1.5" />
-    {/* Flap Shadows */}
-    <path d="M5 10 L50 45 L95 10" stroke="#1a1a1a" strokeWidth="1.5" strokeOpacity="0.3" />
-    <path d="M5 70 L40 40 M60 40 L95 70" stroke="#1a1a1a" strokeWidth="1" strokeOpacity="0.2" />
-    {/* High-End Wax Seal */}
-    <circle cx="50" cy="45" r="14" fill="#a00000" className="animate-pulse" />
-    <path d="M42 45 Q50 35 58 45 Q50 55 42 45" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" fill="none" />
-    <circle cx="50" cy="45" r="10" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
-  </svg>
-);
+const getEnvelopeColors = (isBloodMode: boolean, isNoirMode: boolean) => {
+  if (isBloodMode) return { main: 'rgba(200,16,46,0.2)', stroke: 'rgba(200,16,46,1)', glow: 'rgba(200,16,46,0.6)' };
+  if (isNoirMode) return { main: 'rgba(255,255,255,0.2)', stroke: 'rgba(255,255,255,1)', glow: 'rgba(255,255,255,0.6)' };
+  return { main: 'rgba(197,160,89,0.2)', stroke: 'rgba(197,160,89,1)', glow: 'rgba(197,160,89,0.6)' };
+};
 
-const OpenedLetterIcon = ({ size = 80 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 100 80" fill="none" className="drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
-    {/* Opened Envelope Body */}
-    <path d="M5 30 L95 30 L95 75 L5 75 Z" fill="var(--color-mafia-gold)" fillOpacity="0.1" stroke="var(--color-mafia-gold)" strokeWidth="1.5" />
-    {/* Paper sticking out */}
-    <rect x="15" y="10" width="70" height="40" fill="white" className="animate-float-subtle" stroke="#d1d1d1" strokeWidth="0.5" />
-    <path d="M20 20 H80 M20 28 H60 M20 36 H75" stroke="#1a1a1a" strokeWidth="0.5" strokeOpacity="0.4" />
-    {/* Opened Flap */}
-    <path d="M5 30 L50 5 L95 30" fill="var(--color-mafia-gold)" fillOpacity="0.3" stroke="var(--color-mafia-gold)" strokeWidth="1.5" />
-  </svg>
-);
+const EncryptedCardIcon = ({ size = 80, isBloodMode = false, isNoirMode = false }: { size?: number, isBloodMode?: boolean, isNoirMode?: boolean }) => {
+  const colors = getEnvelopeColors(isBloodMode, isNoirMode);
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 80" fill="none" className={`drop-shadow-[0_15px_25px_${colors.glow}]`}>
+      {/* Envelope Main Body */}
+      <path d="M5 10 L95 10 L95 70 L5 70 Z" fill={colors.main} stroke={colors.stroke} strokeWidth="1.5" />
+      {/* Flap Shadows */}
+      <path d="M5 10 L50 45 L95 10" stroke="#1a1a1a" strokeWidth="1.5" strokeOpacity="0.3" />
+      <path d="M5 70 L40 40 M60 40 L95 70" stroke="#1a1a1a" strokeWidth="1" strokeOpacity="0.2" />
+      {/* Decrypt Button Instead of Seal */}
+      <rect x="35" y="38" width="30" height="14" rx="2" fill="#111" stroke={colors.stroke} strokeWidth="1" />
+      <text x="50" y="47" fontSize="6" fontFamily="monospace" fill={colors.stroke} textAnchor="middle" className="animate-pulse tracking-widest">DECRYPT</text>
+    </svg>
+  );
+};
 
-const FolderIcon = ({ size = 48 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className="drop-shadow-2xl">
-    <path d="M4 10 H18 L22 6 H44 V42 H4 Z" fill="#2a2a2a" stroke="var(--color-mafia-gold)" strokeWidth="2" />
-    <path d="M4 16 H44" stroke="var(--color-mafia-gold)" strokeWidth="1" opacity="0.4" />
-    <path d="M30 25 L38 25 M30 31 L38 31" stroke="var(--color-mafia-gold)" strokeWidth="2" />
-    <circle cx="15" cy="28" r="4" stroke="var(--color-mafia-gold)" strokeWidth="2" />
-  </svg>
-);
+const OpenedLetterIcon = ({ size = 80, isBloodMode = false, isNoirMode = false }: { size?: number, isBloodMode?: boolean, isNoirMode?: boolean }) => {
+  const colors = getEnvelopeColors(isBloodMode, isNoirMode);
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 80" fill="none" className={`drop-shadow-[0_15px_25px_${colors.glow}]`}>
+      {/* Opened Envelope Body */}
+      <path d="M5 30 L95 30 L95 75 L5 75 Z" fill={colors.main} stroke={colors.stroke} strokeWidth="1.5" />
+      {/* Paper sticking out */}
+      <rect x="15" y="10" width="70" height="40" fill="white" className="animate-float-subtle" stroke="#d1d1d1" strokeWidth="0.5" />
+      <path d="M20 20 H80 M20 28 H60 M20 36 H75" stroke="#1a1a1a" strokeWidth="0.5" strokeOpacity="0.4" />
+      {/* Opened Flap */}
+      <path d="M5 30 L50 5 L95 30" fill={colors.main} stroke={colors.stroke} strokeWidth="1.5" />
+    </svg>
+  );
+};
+
+const FolderIcon = ({ size = 48, isBloodMode = false, isNoirMode = false }: { size?: number, isBloodMode?: boolean, isNoirMode?: boolean }) => {
+  const colors = getEnvelopeColors(isBloodMode, isNoirMode);
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className="drop-shadow-2xl">
+      <path d="M4 10 H18 L22 6 H44 V42 H4 Z" fill="#2a2a2a" stroke={colors.stroke} strokeWidth="2" />
+      <path d="M4 16 H44" stroke={colors.stroke} strokeWidth="1" opacity="0.4" />
+      <path d="M30 25 L38 25 M30 31 L38 31" stroke={colors.stroke} strokeWidth="2" />
+      <circle cx="15" cy="28" r="4" stroke={colors.stroke} strokeWidth="2" />
+    </svg>
+  );
+};
 
 export function WelcomeLetters() {
   const { t, lang } = useTranslation();
+  const { isBloodMode, isNoirMode } = useUI();
   const [activeLetter, setActiveLetter] = useState<LetterData | null>(null);
   const [openedIds, setOpenedIds] = useState<string[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
     
-    // Skip for everyone as requested by user
-    setIsVisible(false);
-    localStorage.setItem("mmbarber_welcome_letters_seen_v13", "true");
+    // Check if dismissed forever
+    const isDismissed = localStorage.getItem("mmbarber_welcome_letters_seen_v13") === "true";
+    if (!isDismissed) {
+      // Randomly show cards sometimes
+      if (Math.random() > 0.5) {
+        setIsVisible(true);
+      }
+    }
   }, []);
 
   const handleDismissPermanently = () => {
@@ -79,15 +102,22 @@ export function WelcomeLetters() {
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (e?: React.MouseEvent) => {
     setActiveLetter(null);
     if (openedIds.length === 3) {
       localStorage.setItem("mmbarber_welcome_letters_seen_v13", "true");
-      // Hide immediately as requested
       setIsVisible(false);
-      // Notify other components to clean up (like the intro logo loop)
       window.dispatchEvent(new Event("welcomeLettersFinished"));
     }
+
+    // Trigger particle burst effect behind the envelope
+    let burstX = window.innerWidth / 2;
+    let burstY = window.innerHeight / 2;
+    if (e) {
+      burstX = e.clientX;
+      burstY = e.clientY;
+    }
+    window.dispatchEvent(new CustomEvent('particle-burst', { detail: { x: burstX, y: burstY } }));
   };
 
   const playFireSound = () => {
@@ -153,22 +183,24 @@ export function WelcomeLetters() {
                     }`}
                   >
                     <div className="filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
-                      {openedIds.includes(letter.id) ? <OpenedLetterIcon /> : <WaxSealIcon />}
+                      {openedIds.includes(letter.id) ? <OpenedLetterIcon isBloodMode={isBloodMode} isNoirMode={isNoirMode} /> : <EncryptedCardIcon isBloodMode={isBloodMode} isNoirMode={isNoirMode} />}
                     </div>
                 
-                {/* Noble Golden Exclamation Badge */}
+                {/* Noble Exclamation Badge */}
                 {!openedIds.includes(letter.id) && (
                   <motion.div 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-tr from-mafia-gold to-white flex items-center justify-center z-30 shadow-[0_0_20px_var(--color-mafia-gold-glow)] border border-mafia-black/20"
+                    className={`absolute -top-3 -left-3 w-8 h-8 rounded-full flex items-center justify-center z-30 border border-mafia-black/20 ${isBloodMode ? 'bg-gradient-to-tr from-mafia-red to-white shadow-[0_0_20px_rgba(200,16,46,0.6)]' : isNoirMode ? 'bg-gradient-to-tr from-white to-gray-300 shadow-[0_0_20px_rgba(255,255,255,0.6)]' : 'bg-gradient-to-tr from-mafia-gold to-white shadow-[0_0_20px_var(--color-mafia-gold-glow)]'}`}
                   >
                     <span className="text-mafia-black font-serif italic font-black text-xl leading-none">!</span>
                   </motion.div>
                 )}
                 
                 <span className={`absolute -bottom-10 left-1/2 -translate-x-1/2 text-[10px] font-mono uppercase tracking-[0.3em] font-black whitespace-nowrap px-2 py-1 ${
-                   openedIds.includes(letter.id) ? "opacity-30 text-mafia-gold" : "bg-mafia-black text-mafia-gold opacity-100"
+                   openedIds.includes(letter.id) 
+                     ? (isBloodMode ? "opacity-30 text-mafia-red" : isNoirMode ? "opacity-30 text-white" : "opacity-30 text-mafia-gold") 
+                     : (isBloodMode ? "bg-mafia-black text-mafia-red opacity-100" : isNoirMode ? "bg-mafia-black text-white opacity-100" : "bg-mafia-black text-mafia-gold opacity-100")
                 }`}>
                   {openedIds.includes(letter.id) ? (lang === 'cs' ? "VŠE VÍTE" : "AUTHORIZED") : (lang === 'cs' ? "DŮVĚRNÉ" : "CONFIDENTIAL")}
                 </span>
@@ -206,9 +238,12 @@ export function WelcomeLetters() {
                 <X size={24} />
               </button>
 
-              <div className="flex flex-col gap-8 relative z-10">
+              {/* Click in space to close */}
+              <div className="absolute inset-0 z-0" onClick={handleClose}></div>
+
+              <div className="flex flex-col gap-8 relative z-10 pointer-events-none">
                 <div className="flex items-center gap-4 border-b border-mafia-black/10 pb-4">
-                  <FolderIcon size={40} />
+                  <FolderIcon size={40} isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
                   <div>
                     <h3 className="text-mafia-black font-heading font-black text-2xl uppercase tracking-widest">{activeLetter.title}</h3>
                     <span className="text-[10px] font-mono text-mafia-red font-black uppercase tracking-widest">{t?.welcome?.authorized || "AUTHORIZED"}</span>
@@ -225,8 +260,8 @@ export function WelcomeLetters() {
                 </div>
 
                 <button 
-                  onClick={() => { handleClose(); playFireSound(); }}
-                  className="group relative w-full bg-mafia-black text-[#f0e6d2] py-4 font-sans font-black uppercase tracking-[0.5em] overflow-hidden"
+                  onClick={(e) => { handleClose(e); playFireSound(); }}
+                  className="group relative w-full bg-mafia-black text-[#f0e6d2] py-4 font-sans font-black uppercase tracking-[0.5em] overflow-hidden pointer-events-auto"
                 >
                   <motion.div 
                     className="absolute inset-0 bg-mafia-red transform -translate-x-[101%] group-hover:translate-x-0 transition-transform duration-500 ease-out skew-x-[-15deg]"

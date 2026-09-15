@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Award, Medal, Crosshair, Shield, Swords, Zap } from "lucide-react";
+import { X, Award, Medal, Crosshair, Shield, Swords, Zap, ChevronDown, MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "./OptimizedImage";
 import { playSound } from "../utils/audio";
@@ -11,6 +11,11 @@ interface DossierMedal {
   title: string;
   year: string;
   desc: string;
+}
+
+interface DossierQA {
+  q: string;
+  a: string;
 }
 
 interface BarberProfile {
@@ -48,6 +53,7 @@ const BARBER_DOSSIER_DATA: Record<string, {
   weapon: { name: string; type: string };
   secondary: { name: string; type: string };
   medals: DossierMedal[];
+  qa?: DossierQA[];
 }> = {
   tomas: {
     codename: { cs: "HLAVA RODINY", en: "THE DON" },
@@ -60,6 +66,12 @@ const BARBER_DOSSIER_DATA: Record<string, {
     medals: [
       { title: "Řád Zlaté Břitvy", year: "2023", desc: "Uděleno za bezcitnou preciznost a stabilní vedení rodinného podniku." },
       { title: "Medaile za loajalitu", year: "2024", desc: "Ocenění za stoprocentní dodržování kodexu mlčení v Uherském Hradišti." }
+    ],
+    qa: [
+      { q: "Proč jsi vlastně barber?", a: "Našel jsem v tom spojení řemesla a psychologie. Nejde jen o střih, ale o to, že chlap odchází silnější, než přišel." },
+      { q: "Jaký máš názor na moderní trendy?", a: "Trendy přicházejí a odcházejí. Klasika a preciznost zůstávají. Mým úkolem není z tebe udělat klon z TikToku, ale chlapa s vlastním stylem." },
+      { q: "Co je na tvé práci nejtěžší?", a: "Vytvořit prostor, kde klienti odloží štíty. Většina chlapů je neustále ve střehu. U mě v křesle ale nemusí na nic hrát." },
+      { q: "Jak se stavíš ke kompromisům?", a: "V byznysu možná, u křesla nikdy. Výsledek musí být 100%. Pokud chceš něco polovičatého, musíš jinam." }
     ]
   },
   nella: {
@@ -141,6 +153,41 @@ function HUDTypewriter({ text, delay = 15 }: { text: string; delay?: number }) {
   }, [text, delay]);
 
   return <p className="font-mono text-xs md:text-sm text-smoke-white/80 leading-relaxed whitespace-pre-line tracking-wide">{displayedText}</p>;
+}
+
+function QAAcordion({ q, a }: { q: string; a: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen) playSound("/sounds/bullet-hit.mp3", 0.1);
+  };
+  
+  return (
+    <div className="border border-white/5 bg-black/40 rounded-sm overflow-hidden">
+      <button 
+        onClick={handleToggle}
+        className="w-full p-3 flex justify-between items-center text-left hover:bg-white/5 transition-colors group"
+      >
+        <span className="text-[10px] font-mono text-smoke-white font-bold uppercase tracking-wider pr-4 group-hover:text-mafia-gold transition-colors">{q}</span>
+        <ChevronDown size={14} className={`text-mafia-gold transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden bg-mafia-gold/5"
+          >
+            <div className="p-4 border-t border-mafia-gold/10">
+              <HUDTypewriter text={a} delay={15} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 export function OperativeModal({ barber, isOpen, onClose, lang }: OperativeModalProps) {
@@ -356,6 +403,21 @@ export function OperativeModal({ barber, isOpen, onClose, lang }: OperativeModal
                               <p className="text-[9px] font-mono text-white/50 uppercase tracking-widest mt-1 leading-normal">{medal.desc}</p>
                             </div>
                           </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Interrogation / Q&A Log */}
+                  {extraData.qa && extraData.qa.length > 0 && (
+                    <div className="border-t border-white/5 pt-4">
+                      <h3 className="text-xs font-mono font-bold text-mafia-gold uppercase tracking-[0.25em] mb-3 flex items-center gap-2">
+                        <MessageSquare size={14} />
+                        {lang === 'cs' ? "ZÁZNAM VÝSLECHU" : "INTERROGATION LOG"}
+                      </h3>
+                      <div className="space-y-2">
+                        {extraData.qa.map((item, i) => (
+                          <QAAcordion key={i} q={item.q} a={item.a} />
                         ))}
                       </div>
                     </div>

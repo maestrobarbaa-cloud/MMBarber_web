@@ -80,9 +80,11 @@ export default function JobsPage() {
             <p className="font-mono text-xs text-white/60 mb-8 max-w-[250px]">
               Tato sekce je dostupná pouze uživatelům, kteří ve svém profilu odsouhlasili poskytnutí B2B údajů a zaškrtli zájem o pracovní nabídky.
             </p>
+            {/*
             <a href="/seznamka/profile" className="px-6 py-3 bg-mafia-gold hover:bg-white text-black font-heading font-black uppercase tracking-widest text-sm transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)]">
               Upravit profil
             </a>
+            */}
           </div>
         ) : jobs.length > 0 && currentIndex < jobs.length ? (
           <div className="relative w-full h-full">

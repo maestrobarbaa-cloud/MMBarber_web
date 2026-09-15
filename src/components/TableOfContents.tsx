@@ -37,11 +37,21 @@ export function TableOfContents() {
   const [isIntroActive, setIsIntroActive] = useState(false);
   const [clickStats, setClickStats] = useState<Record<number, number>>({});
   const [justOpened, setJustOpened] = useState(false);
+  const [isBloodMode, setIsBloodMode] = useState(false);
+  const [isNoirMode, setIsNoirMode] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     setIsMounted(true);
+
+    const checkModes = () => {
+      setIsBloodMode(document.documentElement.classList.contains('theme-blood'));
+      setIsNoirMode(document.documentElement.classList.contains('noir-mode'));
+    };
+    checkModes();
+    const observer = new MutationObserver(checkModes);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 1280;
     const hasVisited = typeof window !== 'undefined' && localStorage.getItem("mmbarber_visited") === "true";
@@ -96,6 +106,7 @@ export function TableOfContents() {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("mmbarber-sound-update-remote", readSound);
       window.removeEventListener("introDismissed", handleIntroDismissed);
+      observer.disconnect();
     };
   }, [isOpen]);
 
@@ -242,6 +253,12 @@ export function TableOfContents() {
 
   const activeHoveredItem = hoveredIndex !== null ? hudItems[hoveredIndex] : null;
 
+  const accentColor = isBloodMode ? "#c8102e" : isNoirMode ? "#ffffff" : "#c5a059";
+  const accentRgba = isBloodMode ? "rgba(200, 16, 46, 0.4)" : isNoirMode ? "rgba(255, 255, 255, 0.4)" : "rgba(197, 160, 89, 0.4)";
+  const accentRgbaStrong = isBloodMode ? "rgba(200, 16, 46, 0.6)" : isNoirMode ? "rgba(255, 255, 255, 0.6)" : "rgba(197, 160, 89, 0.6)";
+  const accentRgbaFaint = isBloodMode ? "rgba(200, 16, 46, 0.15)" : isNoirMode ? "rgba(255, 255, 255, 0.15)" : "rgba(197, 160, 89, 0.15)";
+  const accentShadow = isBloodMode ? "rgba(200, 16, 46, 0.3)" : isNoirMode ? "rgba(255, 255, 255, 0.3)" : "rgba(197, 160, 89, 0.3)";
+
   if (!isMounted) return null;
   if (pathname !== "/") return null;
   if (isIntroActive) return null;
@@ -302,10 +319,10 @@ export function TableOfContents() {
             {/* HUD HEADER */}
             <div className="absolute top-10 left-12 right-12 flex items-center justify-between border-b border-white/10 pb-6 z-20">
               <div className="flex items-center gap-4">
-                <Target className="w-8 h-8 text-mafia-gold animate-[spin_8s_linear_infinite]" />
+                <Target className="w-8 h-8 animate-[spin_8s_linear_infinite]" style={{ color: accentColor }} />
                 <div className="flex flex-col">
                   <span className="text-white font-heading font-black text-2xl uppercase tracking-widest text-shadow-glow">MMBARBER NAVIGACE</span>
-                  <span className="text-[10px] text-mafia-gold/60 uppercase tracking-wider">WEAPON WHEEL</span>
+                  <span className="text-[10px] uppercase tracking-wider" style={{ color: accentColor, opacity: 0.6 }}>WEAPON WHEEL</span>
                 </div>
               </div>
               <button 
@@ -313,7 +330,22 @@ export function TableOfContents() {
                   playSound("/sounds/click.mp3", 0.2);
                   setIsOpen(false);
                 }}
-                className="fixed top-6 right-6 md:top-10 md:right-12 z-[100] px-4 md:px-6 py-2 md:py-3 bg-black/50 border border-white/10 text-white hover:bg-mafia-gold hover:text-black hover:border-mafia-gold transition-all duration-300 font-mono text-[10px] md:text-xs uppercase tracking-widest rounded-sm shadow-[0_0_10px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(197,160,89,0.5)] backdrop-blur-md flex items-center gap-2 group"
+                className="fixed top-6 right-6 md:top-10 md:right-12 z-[100] px-4 md:px-6 py-2 md:py-3 bg-black/50 border border-white/10 text-white hover:text-black transition-all duration-300 font-mono text-[10px] md:text-xs uppercase tracking-widest rounded-sm shadow-[0_0_10px_rgba(255,255,255,0.05)] backdrop-blur-md flex items-center gap-2 group"
+                style={{
+                  '--hover-bg': accentColor,
+                  '--hover-border': accentColor,
+                  '--hover-shadow': `0 0 20px ${accentColor}`
+                } as React.CSSProperties}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = accentColor;
+                  e.currentTarget.style.borderColor = accentColor;
+                  e.currentTarget.style.boxShadow = `0 0 20px ${accentRgbaStrong}`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                  e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.05)';
+                }}
               >
                 <X size={14} className="group-hover:rotate-90 transition-transform" />
                 <span className="hidden md:inline">[ ESC ] ZAVŘÍT</span>
@@ -351,12 +383,12 @@ export function TableOfContents() {
                           animate={{ x: popX, y: popY }}
                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
                           d={getWedgePath(240, 240, 95, 235, startAngle, endAngle)}
-                          fill={isHovered ? item.color : "rgba(20, 20, 20, 0.75)"}
-                          stroke={isHovered ? "var(--color-mafia-gold)" : (isFavorite && !isHovered ? "rgba(197, 160, 89, 0.4)" : "rgba(255, 255, 255, 0.08)")}
+                          fill={isHovered ? (item.color.includes("rgba(197") ? accentRgba : item.color) : "rgba(20, 20, 20, 0.75)"}
+                          stroke={isHovered ? accentColor : (isFavorite && !isHovered ? accentRgba : "rgba(255, 255, 255, 0.08)")}
                           strokeWidth={isHovered ? 2.5 : (isFavorite ? 2 : 1)}
                           className="cursor-pointer transition-colors duration-300 ease-out"
                           style={{
-                            filter: isHovered ? `drop-shadow(0 0 15px ${item.color})` : (isFavorite ? 'drop-shadow(0 0 8px rgba(197,160,89,0.3))' : 'none')
+                            filter: isHovered ? `drop-shadow(0 0 15px ${item.color.includes("rgba(197") ? accentRgba : item.color})` : (isFavorite ? `drop-shadow(0 0 8px ${accentShadow})` : 'none')
                           }}
                           onMouseEnter={() => {
                             setHoveredIndex(i);
@@ -398,10 +430,10 @@ export function TableOfContents() {
                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
                       className="absolute w-14 h-14 rounded-full border flex items-center justify-center z-20 cursor-pointer"
                       style={{
-                        backgroundColor: isHovered ? "var(--color-mafia-gold)" : (isFavorite ? "rgba(197, 160, 89, 0.15)" : "rgba(10, 10, 10, 0.9)"),
-                        borderColor: isHovered ? "white" : (isFavorite ? "rgba(197, 160, 89, 0.6)" : "rgba(255, 255, 255, 0.15)"),
-                        color: isHovered ? "black" : "var(--color-mafia-gold)",
-                        boxShadow: isHovered ? "0 0 25px var(--color-mafia-gold)" : (isFavorite ? "0 0 15px rgba(197,160,89,0.2)" : "none"),
+                        backgroundColor: isHovered ? accentColor : (isFavorite ? accentRgbaFaint : "rgba(10, 10, 10, 0.9)"),
+                        borderColor: isHovered ? "white" : (isFavorite ? accentRgbaStrong : "rgba(255, 255, 255, 0.15)"),
+                        color: isHovered ? "black" : accentColor,
+                        boxShadow: isHovered ? `0 0 25px ${accentColor}` : (isFavorite ? `0 0 15px ${accentShadow}` : "none"),
                         transform: `translate(-50%, -50%) scale(${isHovered ? 1.15 : 1.0})`
                       }}
                     >
@@ -410,12 +442,11 @@ export function TableOfContents() {
                   );
                 })}
 
-                {/* Inner HUD Circular Card (Center Focal Point) */}
                 <div 
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] rounded-full bg-mafia-black border-2 flex flex-col items-center justify-center p-4 text-center z-30 transition-all duration-300 shadow-[inset_0_0_30px_rgba(0,0,0,0.9)]"
                   style={{
-                    borderColor: activeHoveredItem ? "var(--color-mafia-gold)" : "rgba(255, 255, 255, 0.1)",
-                    boxShadow: activeHoveredItem ? `0 0 45px ${activeHoveredItem.color}, inset 0 0 30px ${activeHoveredItem.color}` : "none"
+                    borderColor: activeHoveredItem ? accentColor : "rgba(255, 255, 255, 0.1)",
+                    boxShadow: activeHoveredItem ? `0 0 45px ${activeHoveredItem.color.includes("rgba(197") ? accentRgba : activeHoveredItem.color}, inset 0 0 30px ${activeHoveredItem.color.includes("rgba(197") ? accentRgba : activeHoveredItem.color}` : "none"
                   }}
                 >
                   <AnimatePresence mode="wait">
@@ -428,7 +459,7 @@ export function TableOfContents() {
                         transition={{ duration: 0.2 }}
                         className="flex flex-col items-center justify-center h-full"
                       >
-                        <div className="text-mafia-gold mb-2 drop-shadow-[0_0_8px_rgba(197,160,89,0.9)]">
+                        <div className="mb-2" style={{ color: accentColor, filter: `drop-shadow(0 0 8px ${accentColor})` }}>
                           {React.cloneElement(activeHoveredItem.icon as React.ReactElement<{ size?: number }>, { size: 36 })}
                         </div>
                         <span className="text-[10px] text-white/70 uppercase tracking-wider font-semibold mb-1">

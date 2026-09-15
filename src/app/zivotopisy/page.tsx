@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBarbers } from "@/contexts/BarberContext";
 import { useGame } from "@/contexts/GameContext";
+import { useUI } from "@/contexts/UIContext";
 import { playSound } from "@/utils/audio";
 import { trackEvent } from "@/utils/analytics";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -35,13 +36,34 @@ import {
 } from "lucide-react";
 import { TomasSkillTree } from "@/components/TomasSkillTree";
 import { HiddenSeoArchive } from "@/components/HiddenSEOArchive";
+import { InteractiveParticles } from "@/components/InteractiveParticles";
 
 export default function BiographiesPage() {
   const { lang } = useTranslation();
   const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
+  const [previewBarberId, setPreviewBarberId] = useState<string | null>(null);
   const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
   const { barbers, loading } = useBarbers();
   const { isTomasUnlocked, isNellaUnlocked, totalCollected } = useGame();
+  
+  const [isBloodMode, setIsBloodMode] = useState(false);
+  const [isNoirMode, setIsNoirMode] = useState(false);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      if (typeof document !== 'undefined') {
+        setIsBloodMode(document.documentElement.classList.contains('theme-blood') || document.documentElement.classList.contains('mode-blood'));
+        setIsNoirMode(document.documentElement.classList.contains('noir-mode'));
+      }
+    };
+    checkTheme();
+    
+    if (typeof document !== 'undefined') {
+      const observer = new MutationObserver(checkTheme);
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      return () => observer.disconnect();
+    }
+  }, []);
   
   // Custom names overrides from localStorage
   const [customTomasName, setCustomTomasName] = useState("Tomáš");
@@ -57,9 +79,104 @@ export default function BiographiesPage() {
   const [passwordInput, setPasswordInput] = useState("");
   const [isExtendedUnlocked, setIsExtendedUnlocked] = useState(false);
   const [secretContent, setSecretContent] = useState("");
+  const [activeTomasQuote, setActiveTomasQuote] = useState("");
+
+  const tomasQuotes = [
+    { cs: "Já nerozhoduji o osudu. Já ho píšu.", en: "I don't decide fate. I write it.", la: "Ego de fato non decerno. Ego id scribo." },
+    { cs: "Největší věci se nestaví slovy. Staví se v tichu.", en: "The greatest things aren't built with words. They are built in silence.", la: "Maximae res verbis non struuntur. In silentio aedificantur." },
+    { cs: "Mlčím ne proto, že nemám co říct. Mlčím, protože pracuji na tom, co ostatní teprve pochopí.", en: "I am silent not because I have nothing to say. I am silent because I'm working on what others have yet to understand.", la: "Taceo non quia nihil dicere habeo. Taceo quia id ago quod alii mox intellegent." },
+    { cs: "Mlčení není prázdnota. Je to prostor, ve kterém vznikají věci, o kterých se jednou bude mluvit.", en: "Silence is not emptiness. It's the space where things are created that will one day be talked about.", la: "Silentium non est inane. Spatium est ubi res creantur de quibus olim dicetur." },
+    { cs: "Nechte ostatní mluvit. Já mám práci.", en: "Let others talk. I have work to do.", la: "Sinite alios loqui. Ego opus habeo." },
+    { cs: "Nemluvím o tom, co přijde. Konám tak, aby to přišlo.", en: "I don't talk about what's coming. I act so that it comes.", la: "Non loquor de eo quod veniet. Ago ut veniat." },
+    { cs: "Nejtišší muž u stolu bývá často ten, kterého by ostatní měli poslouchat nejvíc.", en: "The quietest man at the table is often the one others should listen to the most.", la: "Vir quietissimus ad mensam saepe is est quem alii maxime audire debent." },
+    { cs: "Nikdy neukazuj světu, co buduješ. Až to uvidí, už bude pozdě.", en: "Never show the world what you are building. By the time they see it, it will be too late.", la: "Numquam ostende mundo quid aedifices. Cum videbunt, iam sero erit." },
+    { cs: "Naši předkové nepotřebovali vysvětlovat své jméno. Historie to udělala za ně.", en: "Our ancestors didn't need to explain their name. History did it for them.", la: "Maiores nostri nomen suum explicare non egebant. Historia pro eis id fecit." },
+    { cs: "Nemusím nikomu dokazovat, kdo jsem. Moji předkové to dokázali už dávno.", en: "I don't have to prove who I am to anyone. My ancestors proved it long ago.", la: "Nemini probare debeo quis sim. Maiores mei id iam pridem probaverunt." },
+    { cs: "Život naučí člověka všechno. Jen každého jiným způsobem.", en: "Life teaches a man everything. Just each in a different way.", la: "Vita hominem omnia docet. Sed unumquemque alio modo." },
+    { cs: "Život je učitel, který nikdy neopakuje lekci.", en: "Life is a teacher that never repeats a lesson.", la: "Vita magister est qui lectionem numquam repetit." },
+    { cs: "Čas naučí to, co mládí nechce slyšet.", en: "Time teaches what youth doesn't want to hear.", la: "Tempus docet id quod iuventus audire non vult." },
+    { cs: "Každá chyba něco stojí. Každá zkušenost má svou cenu.", en: "Every mistake costs something. Every experience has its price.", la: "Omnis error aliquid constat. Omnis experientia pretium suum habet." },
+    { cs: "Život člověka nezkouší proto, aby ho zlomil, ale aby ukázal, z čeho je.", en: "Life tests a man not to break him, but to show what he is made of.", la: "Vita hominem non probat ut eum frangat, sed ut ostendat ex quo sit." },
+    { cs: "Člověk se nenarodí moudrý. Moudrým se stává tím, co přežije.", en: "A man is not born wise. He becomes wise through what he survives.", la: "Homo sapiens non nascitur. Sapiens fit per ea quae superat." },
+    { cs: "To, co tě dnes bolí, tě zítra naučí, komu věřit.", en: "What hurts you today will teach you who to trust tomorrow.", la: "Quod te hodie laedit, cras te docebit cui credas." },
+    { cs: "Nejtěžší lekce života bývají ty, které si člověk zapamatuje navždy.", en: "The hardest lessons in life are the ones a man remembers forever.", la: "Gravissimae vitae lectiones eae sunt quas homo in aeternum meminit." },
+    { cs: "Čas prověří každého. Jméno prověří staletí.", en: "Time tests everyone. A name is tested by centuries.", la: "Tempus omnes probat. Nomen saecula probant." },
+    { cs: "Některé lekce se dědí. Jiné se musí prožít.", en: "Some lessons are inherited. Others must be lived.", la: "Quaedam lectiones hereditate relinquuntur. Aliae vivendae sunt." },
+    { cs: "Čest se neříká. Čest se dědí, žije a předává.", en: "Honor isn't spoken. Honor is inherited, lived, and passed down.", la: "Honor non dicitur. Honor hereditate accipitur, vivitur et traditur." },
+    { cs: "Život tě naučí všemu. Nejprve tě ale naučí, komu nemáš věřit.", en: "Life will teach you everything. But first, it will teach you who not to trust.", la: "Vita te omnia docebit. Sed primum te docebit cui non credas." },
+    { cs: "Život člověka naučí mlčet. Čas ho naučí, proč.", en: "Life teaches a man to be silent. Time teaches him why.", la: "Vita hominem tacere docet. Tempus eum docet cur." },
+    { cs: "Každý muž jednou pochopí, že největší lekce mu nedali učitelé, ale lidé, kteří ho zklamali.", en: "Every man will eventually understand that his greatest lessons didn't come from teachers, but from the people who disappointed him.", la: "Omnis vir aliquando intelleget maximas lectiones non a magistris, sed a decepturis datas esse." },
+    { cs: "Život tě naučí, že ne každá prohra je porážka a ne každé vítězství je výhra.", en: "Life will teach you that not every loss is a defeat, and not every victory is a win.", la: "Vita te docebit non omnem cladem esse ruinam nec omnem victoriam esse triumphum." },
+    { cs: "Život tě naučí všechno, co potřebuješ vědět. Jen některé lekce pochopíš až příliš pozdě.", en: "Life will teach you everything you need to know. You'll just understand some lessons too late.", la: "Vita te docebit omnia quae scire debes. Sed quasdam lectiones nimis sero intelleges." },
+    { cs: "Nejhlasitější lidé často nemají co říct.", en: "The loudest people often have nothing to say.", la: "Homines clamosissimi saepe nihil dicere habent." },
+    { cs: "Někteří ukazují světu každý svůj krok. My jsme se naučili, že ty nejdůležitější kroky se dělají v tichosti.", en: "Some show the world every step they take. We learned that the most important steps are taken in silence.", la: "Quidam mundo omnem gressum suum ostendunt. Nos didicimus gravissimos gressus in silentio fieri." },
+    { cs: "Kdo má skutečnou hodnotu, nepotřebuje ji vystavovat.", en: "He who has true value doesn't need to display it.", la: "Qui verum valorem habet, eum ostentare non eget." },
+    { cs: "Výstřednost přitahuje oči. Charakter přitahuje respekt.", en: "Eccentricity attracts eyes. Character attracts respect.", la: "Eccentricitas oculos trahit. Mores respectum trahunt." }
+  ];
+
+  // Unikátní karetní systém pro pokládání otázek (Latina -> Čeština/Angličtina)
+  const tomasCards = [
+    { 
+      suit: "♠", value: "A", name_cs: "PIKOVÉ ESO", name_en: "ACE OF SPADES", 
+      q_cs: "Co děláš s těmi, co nedrží slovo?", q_en: "What do you do with those who break their word?", q_la: "Quid agis cum iis qui verbum non tenent?",
+      a_cs: "Dám jim šanci odejít. Pokud ji nevyužijí... už o nich nikdo neuslyší.",
+      a_en: "I give them a chance to leave. If they don't take it... no one will ever hear from them again.",
+      a_la: "Do illis occasionem abeundi. Si eam non capiunt... nemo de illis audiet." 
+    },
+    { 
+      suit: "♣", value: "K", name_cs: "KŘÍŽOVÝ KRÁL", name_en: "KING OF CLUBS", 
+      q_cs: "Jakou cenu má věrnost?", q_en: "What is the price of loyalty?", q_la: "Quod est pretium fidei?",
+      a_cs: "Věrnost se nedá koupit penězi. Tu si musíš zasloužit krví a časem.",
+      a_en: "Loyalty cannot be bought with money. You must earn it with blood and time.",
+      a_la: "Fides pecunia emi non potest. Sanguine et tempore merenda est." 
+    },
+    { 
+      suit: "♥", value: "J", name_cs: "SRDCOVÝ SPODEK", name_en: "JACK OF HEARTS", 
+      q_cs: "Děláš někdy výjimky z pravidel?", q_en: "Do you ever make exceptions to the rules?", q_la: "Facisne umquam exceptiones a regulis?",
+      a_cs: "Pravidla drží tenhle svět pohromadě. Kdo je poruší, padá. Žádné výjimky.",
+      a_en: "Rules hold this world together. Whoever breaks them, falls. No exceptions.",
+      a_la: "Regulae hunc mundum continent. Qui eas frangit, cadit. Nulla exceptio." 
+    },
+    { 
+      suit: "♦", value: "Q", name_cs: "KÁROVÁ DÁMA", name_en: "QUEEN OF DIAMONDS", 
+      q_cs: "Co je tvá největší slabina?", q_en: "What is your greatest weakness?", q_la: "Quae est tua maxima infirmitas?",
+      a_cs: "Slabiny mají jen ti, kteří se bojí něco ztratit. Já už jsem obětoval vše.",
+      a_en: "Only those who fear losing something have weaknesses. I have already sacrificed everything.",
+      a_la: "Infirmitates habent tantum qui aliquid amittere timent. Ego iam omnia sacrificavi." 
+    }
+  ];
+
   const [secretArticles, setSecretArticles] = useState<any[]>([]);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
+  const [activeTomasQuoteCz, setActiveTomasQuoteCz] = useState("");
+  const [isTomasTranslated, setIsTomasTranslated] = useState(false);
+  const [interrogationMode, setInterrogationMode] = useState<'cards' | 'envelope' | null>(null);
+
+  // Select quote randomly on page load and when previewing
+  useEffect(() => {
+    if (previewBarberId === 'tomas' || previewBarberId === null) {
+      const randomQuote = tomasQuotes[Math.floor(Math.random() * tomasQuotes.length)];
+      setActiveTomasQuote(randomQuote.la);
+      setActiveTomasQuoteCz(lang === 'en' ? randomQuote.en : randomQuote.cs);
+      setIsTomasTranslated(false);
+      
+      if (previewBarberId === 'tomas') {
+        // Zaručené střídání obálky a karet, aby si uživatel obojího užil
+        setInterrogationMode(prev => prev === 'envelope' ? 'cards' : 'envelope');
+      }
+    }
+  }, [lang, previewBarberId]);
+
+  // The sand/dust effect is now handled purely by framer-motion stagger, 
+  // so we don't need the setInterval slice logic anymore.
+  // We just use activeTomasQuote directly in the render.
+
+  const [isUnlockingArticle, setIsUnlockingArticle] = useState(false);
   
   // New State for Folders
   const [activeFolderId, setActiveFolderId] = useState('main_bio');
@@ -183,6 +300,12 @@ export default function BiographiesPage() {
     trackEvent("biography_select", { barberId: id });
   };
 
+  const handlePreviewBarber = (id: string) => {
+    setPreviewBarberId(id);
+    playSound("/sounds/click.mp3", 0.4);
+  };
+
+
   const handleBackToSelection = () => {
     setSelectedBarberId(null);
     playSound("/sounds/click.mp3", 0.2);
@@ -263,11 +386,24 @@ export default function BiographiesPage() {
   const hiddenText = textParts.slice(textPartsToShow).join(' ');
 
   return (
-    <main className="min-h-screen bg-[#050505] text-smoke-white overflow-x-hidden selection:bg-mafia-gold selection:text-mafia-black relative flex flex-col justify-between">
+    <main 
+      className="min-h-screen bg-[#050505] text-smoke-white overflow-x-hidden selection:bg-mafia-gold selection:text-mafia-black relative flex flex-col justify-between"
+      onClick={() => {
+        if (previewBarberId) {
+          setPreviewBarberId(null);
+          const burstX = window.innerWidth <= 768 ? window.innerWidth / 2 : window.innerWidth * 0.35;
+          const burstY = window.innerHeight * 0.45;
+          window.dispatchEvent(new CustomEvent('particle-burst', { detail: { x: burstX, y: burstY } }));
+        }
+      }}
+    >
       {/* Ambient background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_15%,rgba(var(--color-mafia-gold-rgb),0.03)_0%,transparent_60%)] opacity-80" />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02]" />
+        
+        {/* Floating Sparks/Particles that interact with mouse */}
+        <InteractiveParticles />
       </div>
 
       {/* Header section */}
@@ -283,7 +419,7 @@ export default function BiographiesPage() {
       </header>
 
       {/* Main Container */}
-      <div className={`flex-grow mx-auto w-full px-4 md:px-6 py-12 md:py-16 z-10 flex flex-col justify-center gap-12 ${selectedBarberId && activeBarberSafe.id === 'tomas' ? 'max-w-[1800px] w-[95vw]' : 'max-w-6xl'}`}>
+      <div className={`flex-grow mx-auto w-full px-4 md:px-6 py-12 md:py-16 z-10 flex flex-col justify-start gap-12 ${selectedBarberId && activeBarberSafe.id === 'tomas' ? 'max-w-[1800px] w-[95vw]' : 'max-w-6xl'}`}>
         
         <AnimatePresence mode="wait">
           {!selectedBarberId ? (
@@ -298,14 +434,14 @@ export default function BiographiesPage() {
               {/* Title Block */}
               <div className="text-center space-y-4 max-w-xl mx-auto">
                 <span className="text-mafia-gold text-[10px] font-mono tracking-[0.4em] uppercase block">
-                  {lang === 'cs' ? "DOKUMENTACE OPERATIVCŮ" : "OPERATIVE PERSONNEL REGISTRY"}
+                  {lang === 'cs' ? "STRUKTURA A ROLE" : "STRUCTURE AND ROLES"}
                 </span>
                 <h1 className="text-4xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-tight leading-none">
-                  {lang === 'cs' ? "ŽIVOTOPISY BARBERŮ" : "BARBERS' BIOGRAPHIES"}
+                  {lang === 'cs' ? "HIERARCHIE V RODINĚ" : "FAMILY HIERARCHY"}
                 </h1>
                 <p className="text-xs text-white/40 leading-relaxed max-w-sm mx-auto">
                   {lang === 'cs'
-                    ? "Vyberte si složku jednoho z našich kadeřnických operativců pro detailní taktický životopis, přehled dovedností a hodnocení."
+                    ? "Vyberte si složku jednoho z našich operativců pro detailní taktický životopis, přehled dovedností a hodnocení."
                     : "Select a profile folder for an in-depth dossier covering tactical backgrounds, community reviews, and combat skills."}
                 </p>
               </div>
@@ -333,134 +469,501 @@ export default function BiographiesPage() {
                 </motion.div>
               )}
 
-              {/* Hierarchy Tree */}
-              <div className="w-full flex flex-col items-center relative py-8 px-4 mx-auto">
-                 {/* LEVEL 1: Boss */}
-                 {isTomasVisible && (
-                   <div className="w-full flex justify-center relative z-20">
-                      {(() => {
-                         const tomas = barbers.find(b => b.id === "tomas");
-                       if (!tomas) return null;
-                       const customName = customTomasName;
-                       
-                       const isTomasHierarchyUnlocked = effectiveTotalCollected >= 1;
-                       
-                       if (!isTomasHierarchyUnlocked) {
-                         return (
-                           <div className="flex flex-col items-center opacity-60">
-                             <div className="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-mafia-gold/30 overflow-hidden mx-auto bg-black flex items-center justify-center relative">
+              {/* Central Hierarchy Layout */}
+              <div className="w-full max-w-5xl mx-auto flex flex-col items-center relative py-12 px-4">
+                
+                {/* LEVEL 1: Boss (Tomáš) */}
+                {isTomasVisible && (
+                  <div className="w-full flex justify-center relative z-20 mb-8 md:mb-16">
+                    {(() => {
+                      const isTomasHierarchyUnlocked = effectiveTotalCollected >= 1;
+                      
+                      if (!isTomasHierarchyUnlocked) {
+                        return (
+                          <div className="flex flex-col items-center opacity-60">
+                             <div className="w-64 h-[400px] md:h-[600px] bg-black border border-mafia-gold/30 rounded-md flex flex-col items-center justify-center">
                                <span className="text-6xl font-heading font-black text-mafia-gold/20 italic animate-pulse">?</span>
+                               <span className="text-mafia-gold/40 text-[10px] font-mono mt-4">DATA ENCRYPTED</span>
                              </div>
-                             <div className="mt-6 text-center">
-                               <span className="text-mafia-gold/40 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLEDANÝ REKRUT</span>
-                               <h2 className="text-2xl font-heading font-black text-white/50 uppercase tracking-widest italic">???</h2>
-                             </div>
-                           </div>
-                         );
-                       }
-                       
-                       return (
-                         <div 
-                           onClick={() => handleSelectBarber("tomas")}
-                           className="flex flex-col items-center group cursor-pointer"
-                         >
-                           <div className="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-mafia-gold overflow-hidden mx-auto transition-colors relative shadow-[0_0_20px_rgba(197,160,89,0.3)] group-hover:shadow-[0_0_40px_rgba(197,160,89,0.6)]">
-                             <Image src={tomas.image} alt={customName} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                           </div>
-                           <div className="mt-6 text-center">
-                              <span className="text-mafia-gold/60 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">{getDailyRole("tomas", lang)}</span>
-                              <h2 className="text-3xl font-heading font-black text-white group-hover:text-mafia-gold transition-colors uppercase tracking-widest italic">{customName}</h2>
-                           </div>
-                         </div>
-                       );
-                      })()}
-                   </div>
-                 )}
+                          </div>
+                        );
+                      }
+                      
+                      const hour = new Date().getHours();
+                      const jacketSrc = (hour >= 6 && hour < 18) ? '/hierarchie/tomáš-sako-den.png' : '/hierarchie/tomáš-sako-večer.png';
+                      const isPreviewActive = previewBarberId === 'tomas';
 
-                 {/* SVG SPOJNICE */}
-                 <div className="hidden md:block w-full max-w-[800px] h-[80px] relative -my-4 z-10 pointer-events-none">
-                    <svg className="w-full h-full" preserveAspectRatio="none">
-                       <line x1="50%" y1="0" x2="50%" y2="50%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
-                       <line x1="16.66%" y1="50%" x2="83.33%" y2="50%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
-                       <line x1="16.66%" y1="50%" x2="16.66%" y2="100%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
-                       <line x1="50%" y1="50%" x2="50%" y2="100%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
-                       <line x1="83.33%" y1="50%" x2="83.33%" y2="100%" stroke="var(--color-mafia-gold)" strokeWidth="2" strokeOpacity="0.4" strokeDasharray="6,4" />
-                    </svg>
-                 </div>
-                 <div className="md:hidden w-px h-16 bg-gradient-to-b from-mafia-gold/40 to-transparent my-4"></div>
-
-                 {/* LEVEL 2: Underbosses */}
-                 <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-center items-center md:items-start gap-12 relative z-20">
-                    
-                    {/* Nella */}
-                    {isNellaVisible && (
-                      <div className="flex-1 flex justify-center">
-                         {(() => {
-                           const nella = barbers.find(b => b.id === "nella");
-                         if (!nella) return null;
-                         const customName = customNellaName;
-                         
-                         const isNellaHierarchyUnlocked = true;
-
-                         if (!isNellaHierarchyUnlocked) {
-                           return (
-                             <div className="flex flex-col items-center opacity-60">
-                               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-mafia-gold/30 overflow-hidden mx-auto bg-black flex items-center justify-center relative">
-                                 <span className="text-6xl font-heading font-black text-mafia-gold/20 italic animate-pulse">?</span>
-                               </div>
-                               <div className="mt-6 text-center">
-                                 <span className="text-mafia-gold/40 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLEDANÝ REKRUT</span>
-                                 <h2 className="text-2xl font-heading font-black text-white/50 uppercase tracking-widest italic">???</h2>
-                               </div>
-                             </div>
-                           );
-                         }
-
-                         return (
+                      return (
+                        <div className="relative flex flex-col items-center">
                            <div 
-                             onClick={() => handleSelectBarber("nella")}
-                             className="flex flex-col items-center group cursor-pointer"
+                             onClick={(e) => { e.stopPropagation(); handlePreviewBarber("tomas"); }}
+                             className={`relative cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] outline-none focus:outline-none select-none ${isPreviewActive ? 'scale-105 md:scale-110 z-30' : 'hover:scale-105 z-10'}`}
+                             style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
                            >
-                             <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-mafia-gold overflow-hidden mx-auto transition-colors relative shadow-[0_0_20px_rgba(197,160,89,0.3)] group-hover:shadow-[0_0_40px_rgba(197,160,89,0.6)]">
-                               <Image src={nella.image} alt={customName} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                             </div>
-                             <div className="mt-6 text-center">
-                                <span className="text-mafia-gold/60 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">{getDailyRole("nella", lang)}</span>
-                                <h2 className="text-2xl font-heading font-black text-white group-hover:text-mafia-gold transition-colors uppercase tracking-widest italic">{customName}</h2>
-                             </div>
+                             <Image 
+                               src={jacketSrc}
+                               alt="Tomáš"
+                               width={600}
+                               height={800}
+                               priority={true}
+                               draggable={false}
+                               style={{ border: 'none', outline: 'none', background: 'transparent' }}
+                               className={`object-contain w-full max-w-[220px] md:max-w-[300px] lg:max-w-[350px] h-auto transition-all duration-500 drop-shadow-[0_0_20px_rgba(0,0,0,0.8)] text-transparent border-none outline-none focus:outline-none ${isPreviewActive ? (isBloodMode ? 'drop-shadow-[0_0_15px_rgba(200,16,46,0.5)]' : isNoirMode ? 'drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'drop-shadow-[0_0_15px_rgba(197,160,89,0.5)]') + ' scale-[1.02]' : ''} ${isBloodMode ? 'grayscale sepia-[1] hue-rotate-[320deg] saturate-[5]' : isNoirMode ? 'grayscale' : ''}`}
+                             />
                            </div>
-                         );
-                       })()}
-                      </div>
-                    )}
 
-                    {/* Unknown 1 */}
-                    <div className="flex-1 flex justify-center">
-                         <div className="flex flex-col items-center opacity-60">
-                           <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-mafia-gold/30 overflow-hidden mx-auto bg-black flex items-center justify-center relative">
-                              <span className="text-6xl font-heading font-black text-mafia-gold/20 italic animate-pulse">?</span>
-                           </div>
-                           <div className="mt-6 text-center">
-                              <span className="text-mafia-gold/40 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLEDANÝ REKRUT</span>
-                              <h2 className="text-2xl font-heading font-black text-white/50 uppercase tracking-widest italic">???</h2>
-                           </div>
-                         </div>
-                    </div>
+                           {/* Citáty po levé straně s luxusním efektem a interaktivním Q&A */}
+                           <AnimatePresence>
+                             {isPreviewActive && activeTomasQuote && (
+                               <motion.div 
+                                 initial={{ opacity: 0, filter: 'blur(10px)' }}
+                                 animate={{ opacity: 1, filter: 'blur(0px)' }}
+                                 exit={{ opacity: 0, filter: 'blur(10px)' }}
+                                 transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                                 className="absolute top-[15%] lg:top-[25%] left-[-40px] md:left-[-220px] lg:left-[-320px] flex flex-col items-end z-40 w-[240px] md:w-[320px]"
+                               >
+                                  <div className="relative w-full">
+                                    {interrogationMode === 'envelope' ? (
+                                      /* REŽIM: OBÁLKA (DOSSIER) */
+                                      <div className="relative w-full max-w-[320px] pointer-events-auto mt-4 drop-shadow-2xl">
+                                        <motion.div 
+                                          initial={false}
+                                          animate={{ height: isTomasTranslated ? 'auto' : '180px' }}
+                                          className={`relative w-full border-y-2 border-x shadow-[0_20px_50px_rgba(0,0,0,0.95),inset_0_2px_15px_rgba(255,255,255,0.03)] overflow-hidden flex flex-col rounded-sm ${isBloodMode ? 'bg-gradient-to-br from-[#2a0505] to-[#0a0000] border-[#4a0a0a]' : isNoirMode ? 'bg-gradient-to-br from-[#1a1a1a] to-[#050505] border-[#333333]' : 'bg-gradient-to-br from-[#1c1a17] to-[#0a0908] border-[#3a2e1d]'}`}
+                                        >
+                                          {/* Background Noise for Noir Folder */}
+                                          <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-20 mix-blend-overlay pointer-events-none z-0"></div>
+                                          
+                                          {/* Subtle Watermark Stamp */}
+                                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-[-15deg] opacity-[0.03] pointer-events-none z-0">
+                                            <span className="font-heading font-black text-6xl text-mafia-red uppercase tracking-widest whitespace-nowrap border-4 border-mafia-red px-6 py-2 rounded-sm">
+                                              CONFIDENTIAL
+                                            </span>
+                                          </div>
 
-                    {/* Unknown 2 */}
-                    <div className="flex-1 flex justify-center">
-                         <div className="flex flex-col items-center opacity-60">
-                           <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-mafia-gold/30 overflow-hidden mx-auto bg-black flex items-center justify-center relative">
-                              <span className="text-6xl font-heading font-black text-mafia-gold/20 italic animate-pulse">?</span>
-                           </div>
-                           <div className="mt-6 text-center">
-                              <span className="text-mafia-gold/40 text-[10px] font-mono tracking-[0.3em] uppercase block mb-1">HLEDANÝ REKRUT</span>
-                              <h2 className="text-2xl font-heading font-black text-white/50 uppercase tracking-widest italic">???</h2>
-                           </div>
-                         </div>
-                    </div>
+                                          {/* Envelope Label */}
+                                          <div className="p-4 border-b border-mafia-gold/10 relative z-20 flex justify-between items-center bg-black/60 shadow-lg">
+                                            <div>
+                                              <div className="flex items-center gap-2 mb-1">
+                                                <div className="relative flex items-center justify-center w-2 h-2">
+                                                   <div className={`absolute inset-0 rounded-full border animate-ping ${isBloodMode ? 'border-mafia-red/50' : isNoirMode ? 'border-white/50' : 'border-mafia-gold/50'}`}></div>
+                                                   <div className={`w-1 h-1 rounded-full ${isBloodMode ? 'bg-mafia-red shadow-[0_0_8px_rgba(200,16,46,1)]' : isNoirMode ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,1)]' : 'bg-mafia-gold shadow-[0_0_8px_rgba(197,160,89,1)]'}`}></div>
+                                                </div>
+                                                <span className={`text-[9px] font-mono font-bold uppercase tracking-[0.3em] ${isBloodMode ? 'text-mafia-red/90' : isNoirMode ? 'text-white/90' : 'text-mafia-gold/90'}`}>
+                                                  {lang === 'en' ? 'TOP SECRET' : 'PŘÍSNĚ TAJNÉ'}
+                                                </span>
+                                              </div>
+                                              <span className="text-[8px] font-mono text-white/40 tracking-[0.2em]">
+                                                {lang === 'en' ? 'WIRETAP DOSSIER' : 'SPIS ODPOSLECHU'}
+                                              </span>
+                                            </div>
+                                            <span className={`font-serif text-xl ${isBloodMode ? 'text-mafia-red/30' : isNoirMode ? 'text-white/30' : 'text-mafia-gold/30'}`}>M</span>
+                                          </div>
 
-                 </div>
+                                          {/* Content Area */}
+                                          <div className="relative flex-1 flex flex-col items-center justify-center p-6 min-h-[120px]">
+                                            {!isTomasTranslated ? (
+                                              // Closed State: Just the Wax Seal
+                                              <motion.button
+                                                initial={{ scale: 0.8 }}
+                                                animate={{ scale: 1 }}
+                                                transition={{ type: "spring" }}
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setIsTomasTranslated(true);
+                                                  playSound("/sounds/magnum.mp3", 0.3);
+                                                }}
+                                                className="relative cursor-pointer group flex flex-col items-center justify-center bg-transparent border-none outline-none"
+                                              >
+                                                {/* Wax Seal */}
+                                                <div className={`relative w-16 h-16 rounded-full border shadow-[0_5px_15px_rgba(0,0,0,0.8),inset_0_2px_5px_rgba(255,255,255,0.3)] flex items-center justify-center group-hover:scale-110 group-active:scale-95 transition-transform duration-500 overflow-hidden ${isBloodMode ? 'bg-gradient-to-br from-[#990000] to-[#4a0000] border-[#ff6b6b]/20 hover:shadow-[0_0_20px_rgba(153,0,0,0.6)]' : isNoirMode ? 'bg-gradient-to-br from-[#444] to-[#111] border-[#fff]/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.6)]' : 'bg-gradient-to-br from-[#b89454] to-[#6b552e] border-[#ffe6b3]/20 hover:shadow-[0_0_20px_rgba(197,160,89,0.6)]'}`}>
+                                                  <div className={`w-12 h-12 rounded-full border border-black/40 flex items-center justify-center shadow-[inset_0_2px_5px_rgba(0,0,0,0.5)] ${isBloodMode ? 'bg-gradient-to-br from-[#7a0000] to-[#3a0000]' : isNoirMode ? 'bg-gradient-to-br from-[#333] to-[#0a0a0a]' : 'bg-gradient-to-br from-[#8f723e] to-[#47371c]'}`}>
+                                                    <span className={`font-serif font-bold text-3xl tracking-tighter mix-blend-overlay ${isBloodMode ? 'text-[#ffb8b8]/40' : isNoirMode ? 'text-white/40' : 'text-[#ffe6b3]/40'}`}>T</span>
+                                                  </div>
+                                                  <div className={`absolute -bottom-1 right-2 w-2 h-3 rounded-full blur-[0.5px] ${isBloodMode ? 'bg-[#6a0000]' : isNoirMode ? 'bg-[#222]' : 'bg-[#5e4922]'}`}></div>
+                                                </div>
+                                                <div className="mt-4">
+                                                  <span className={`text-[8px] font-mono uppercase tracking-[0.3em] transition-all ${isBloodMode ? 'text-white/40 group-hover:text-mafia-red' : isNoirMode ? 'text-white/40 group-hover:text-white' : 'text-white/40 group-hover:text-mafia-gold'}`}>
+                                                    {lang === 'en' ? 'BREAK TO OPEN' : 'PORUŠIT PEČEŤ'}
+                                                  </span>
+                                                </div>
+                                              </motion.button>
+                                            ) : (
+                                              // Open State: The Sand Text inside dossier
+                                              <motion.div 
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="w-full relative z-10"
+                                              >
+                                                <p className="text-sm md:text-md font-mono text-white/90 leading-relaxed text-left">
+                                                  {(() => {
+                                                    let runningIndex = 0;
+                                                    const textToRender = activeTomasQuoteCz; // Always translated inside envelope
+                                                    return textToRender.split(' ').map((word, wIdx) => {
+                                                      const chars = word.split('').map((char, cIdx) => ({
+                                                        char,
+                                                        globalIndex: runningIndex + cIdx
+                                                      }));
+                                                      runningIndex += word.length + 1;
+
+                                                      return (
+                                                        <span key={wIdx} className="inline-block mr-[0.25em] whitespace-nowrap">
+                                                          {chars.map((item) => (
+                                                            <motion.span
+                                                              key={`env-${textToRender}-${item.globalIndex}`}
+                                                              initial={{ opacity: 0, filter: "blur(5px)" }}
+                                                              animate={{ opacity: 1, filter: "blur(0px)" }}
+                                                              transition={{ duration: 0.8, delay: item.globalIndex * 0.02 }}
+                                                              className={`inline-block ${isBloodMode ? 'text-mafia-red/90 drop-shadow-[0_0_5px_rgba(200,16,46,0.3)]' : isNoirMode ? 'text-white/90 drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]' : 'text-mafia-gold/90 drop-shadow-[0_0_5px_rgba(197,160,89,0.3)]'}`}
+                                                            >
+                                                              {item.char}
+                                                            </motion.span>
+                                                          ))}
+                                                        </span>
+                                                      );
+                                                    });
+                                                  })()}
+                                                </p>
+                                              </motion.div>
+                                            )}
+                                          </div>
+                                        </motion.div>
+                                      </div>
+                                    ) : (
+                                      /* REŽIM: KARTY (PŮVODNÍ) */
+                                      <div className="relative w-full pointer-events-none flex flex-col items-end">
+                                        <div className="absolute -inset-4 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.8)_0%,transparent_70%)] z-[-1] blur-md mix-blend-multiply"></div>
+                                        <div className="flex items-center gap-2 mb-2 justify-end">
+                                           <div className="relative flex items-center justify-center w-3 h-3">
+                                              <div className={`absolute inset-0 rounded-full border animate-ping ${isBloodMode ? 'border-mafia-red/50' : isNoirMode ? 'border-white/50' : 'border-mafia-gold/50'}`}></div>
+                                              <div className={`w-1.5 h-1.5 rounded-full ${isBloodMode ? 'bg-mafia-red shadow-[0_0_8px_rgba(200,16,46,1)]' : isNoirMode ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,1)]' : 'bg-mafia-gold shadow-[0_0_8px_rgba(197,160,89,1)]'}`}></div>
+                                           </div>
+                                           <span className="text-[10px] md:text-xs font-mono text-white/90 font-bold uppercase tracking-[0.3em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                                             {lang === 'en' ? 'WIRETAP RECORDS' : 'ZÁZNAMY ODPOSLECHŮ'}
+                                           </span>
+                                        </div>
+                                        <p className="text-sm md:text-lg lg:text-xl font-heading font-black text-white italic leading-relaxed text-right drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] min-h-[80px]">
+                                          {(() => {
+                                            let runningIndex = 0;
+                                            const textToRender = isTomasTranslated ? activeTomasQuoteCz : activeTomasQuote;
+                                            return textToRender.split(' ').map((word, wIdx) => {
+                                              const chars = word.split('').map((char, cIdx) => ({
+                                                char,
+                                                globalIndex: runningIndex + cIdx
+                                              }));
+                                              runningIndex += word.length + 1;
+
+                                              return (
+                                                <span key={wIdx} className="inline-block mr-[0.25em] whitespace-nowrap">
+                                                  {chars.map((item) => (
+                                                    <motion.span
+                                                      key={`${textToRender}-${item.globalIndex}`}
+                                                      initial={{ opacity: 0, filter: "blur(10px)", x: 20, y: -10, textShadow: "0 0 20px rgba(197, 160, 89, 1)" }}
+                                                      animate={{ opacity: 1, filter: "blur(0px)", x: 0, y: 0, textShadow: "0 2px 10px rgba(0, 0, 0, 0.9)" }}
+                                                      transition={{ duration: 1.2, delay: item.globalIndex * 0.035, ease: [0.23, 1, 0.32, 1] }}
+                                                      className="inline-block"
+                                                    >
+                                                      {item.char}
+                                                    </motion.span>
+                                                  ))}
+                                                </span>
+                                              );
+                                            });
+                                          })()}
+                                        </p>
+                                        
+                                        <AnimatePresence>
+                                          {!isTomasTranslated && (
+                                            <motion.button
+                                              initial={{ opacity: 0, y: 10 }}
+                                              animate={{ opacity: 1, y: 0 }}
+                                              exit={{ opacity: 0, scale: 0.9 }}
+                                              transition={{ delay: activeTomasQuote.length * 0.035 + 0.2 }}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                setIsTomasTranslated(true);
+                                                playSound("/sounds/magnum.mp3", 0.2);
+                                              }}
+                                              className={`mt-4 mb-2 flex items-center gap-2 px-4 py-1.5 border backdrop-blur-sm mx-auto rounded-sm transition-all duration-300 group ${isBloodMode ? 'border-mafia-red/50 text-mafia-red hover:bg-mafia-red hover:text-black hover:shadow-[0_0_15px_rgba(200,16,46,0.6)]' : isNoirMode ? 'border-white/50 text-white hover:bg-white hover:text-black hover:shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'border-mafia-gold/50 text-mafia-gold hover:bg-mafia-gold hover:text-black hover:shadow-[0_0_15px_rgba(197,160,89,0.6)]'}`}
+                                            >
+                                              <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
+                                              <span className="text-[10px] md:text-xs font-mono font-bold uppercase tracking-[0.2em]">
+                                                {lang === 'en' ? 'DECIPHER' : 'DEŠIFROVAT'}
+                                              </span>
+                                            </motion.button>
+                                          )}
+                                        </AnimatePresence>
+
+
+                                        <motion.div 
+                                          initial={{ opacity: 0, y: 20 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          transition={{ duration: 0.8, ease: "easeOut", delay: activeTomasQuote.length * 0.035 + 0.5 }}
+                                          className="mt-8 flex flex-col items-center w-full max-w-[350px] relative z-50 pointer-events-auto"
+                                        >
+                                          <div className="mb-4 w-full flex justify-center">
+                                            <span className={`text-[9px] font-mono text-white/50 uppercase tracking-[0.4em] bg-black/60 px-3 py-1 border rounded-sm ${isBloodMode ? 'drop-shadow-[0_0_5px_rgba(200,16,46,0.5)] border-mafia-red/20' : isNoirMode ? 'drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] border-white/20' : 'drop-shadow-[0_0_5px_rgba(197,160,89,0.5)] border-mafia-gold/20'}`}>
+                                              {lang === 'en' ? 'CHOOSE A FATE CARD' : 'VYBER SI KARTU OSUDU'}
+                                            </span>
+                                          </div>
+                                          
+                                          <div className="flex justify-center gap-[-10px] sm:gap-2 w-full perspective-1000 mt-6">
+                                            {tomasCards.map((card, i) => {
+                                              const isFlipped = activeTomasQuote === card.a_la || activeTomasQuoteCz === card.a_cs || activeTomasQuoteCz === card.a_en;
+                                              const rotation = (i - 1.5) * 8; 
+                                              const translateY = Math.abs(i - 1.5) * 5; 
+                                              
+                                              return (
+                                                <motion.div 
+                                                  key={i}
+                                                  initial={false}
+                                                  animate={{ 
+                                                    rotateY: isFlipped ? 180 : 0,
+                                                    rotateZ: isFlipped ? 0 : rotation,
+                                                    y: isFlipped ? -20 : translateY,
+                                                    scale: isFlipped ? 1.1 : 1,
+                                                    zIndex: isFlipped ? 50 : 10 + i
+                                                  }}
+                                                  whileHover={!isFlipped ? { y: translateY - 15, scale: 1.05, zIndex: 40 } : {}}
+                                                  transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                                                  className="relative w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 cursor-pointer drop-shadow-2xl"
+                                                  style={{ transformStyle: "preserve-3d", transformOrigin: "bottom center", marginLeft: i !== 0 ? "-20px" : "0" }}
+                                                  onClick={(e) => { 
+                                                    e.stopPropagation(); 
+                                                    setActiveTomasQuote(card.a_la); 
+                                                    setActiveTomasQuoteCz(lang === 'en' ? card.a_en : card.a_cs);
+                                                    setIsTomasTranslated(false);
+                                                    playSound("/sounds/cards-shuffle.mp3", 0.5); 
+                                                  }}
+                                                >
+                                                  <div 
+                                                    className={`absolute inset-0 bg-[#0a0a0a] border-2 rounded-md flex items-center justify-center overflow-hidden ${isBloodMode ? 'border-mafia-red/40 shadow-[inset_0_0_15px_rgba(200,16,46,0.2)]' : isNoirMode ? 'border-white/40 shadow-[inset_0_0_15px_rgba(255,255,255,0.2)]' : 'border-mafia-gold/40 shadow-[inset_0_0_15px_rgba(197,160,89,0.2)]'}`}
+                                                    style={{ backfaceVisibility: "hidden" }}
+                                                  >
+                                                    <div className={`absolute inset-1 border rounded-[4px] ${isBloodMode ? 'border-mafia-red/20' : isNoirMode ? 'border-white/20' : 'border-mafia-gold/20'}`}></div>
+                                                    <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-20 mix-blend-overlay"></div>
+                                                    <span className={`text-2xl md:text-3xl lg:text-4xl ${isBloodMode ? 'text-mafia-red/30' : isNoirMode ? 'text-white/30' : 'text-mafia-gold/30'}`}>{card.suit}</span>
+                                                  </div>
+                                                  <div 
+                                                    className="absolute inset-0 bg-gradient-to-br from-[#e2d5c3] to-[#c8b69b] border border-[#a69273] rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.1)] flex flex-col p-1 md:p-2"
+                                                    style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+                                                  >
+                                                    <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-10 mix-blend-overlay"></div>
+                                                    
+                                                    <div className="flex justify-between w-full">
+                                                      <span className="text-[10px] md:text-xs font-serif font-bold text-black/80">{card.value}</span>
+                                                      <span className="text-[10px] md:text-xs font-serif font-bold text-mafia-red/80">{card.suit}</span>
+                                                    </div>
+                                                    
+                                                    <div className="flex-1 flex flex-col items-center justify-center p-2 text-center mt-3">
+                                                      <span className="text-[6px] md:text-[8px] font-mono text-black/40 uppercase tracking-widest mb-1">{!isTomasTranslated ? "IGNOTUM" : (lang === 'en' ? card.name_en : card.name_cs)}</span>
+                                                      <p className="text-[8px] md:text-[9px] font-sans font-bold text-black/80 leading-tight">
+                                                        "{!isTomasTranslated ? card.q_la : (lang === 'en' ? card.q_en : card.q_cs)}"
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                </motion.div>
+                                              );
+                                            })}
+                                          </div>
+                                        </motion.div>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                </motion.div>
+                             )}
+                           </AnimatePresence>
+
+                           {/* Zlatá pacička UI (Shows only when clicked/previewed) */}
+                           <AnimatePresence>
+                             {isPreviewActive && (
+                               <motion.div 
+                                 initial={{ opacity: 0, x: -20 }}
+                                 animate={{ opacity: 1, x: 0 }}
+                                 exit={{ opacity: 0, x: -20 }}
+                                 transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                                 className="absolute top-[40%] right-[-20px] md:right-[-120px] lg:right-[-180px] flex items-center pointer-events-none z-40"
+                               >
+                                 <div className="flex items-center gap-0">
+                                   {/* Konektor - vodorovná zlatá linka */}
+                                   <div className={`w-8 md:w-16 h-[2px] bg-gradient-to-r from-transparent relative ${isBloodMode ? 'to-mafia-red' : isNoirMode ? 'to-white' : 'to-mafia-gold'}`}>
+                                      <div className={`absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full ${isBloodMode ? 'bg-mafia-red shadow-[0_0_10px_rgba(200,16,46,1)]' : isNoirMode ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,1)]'}`}></div>
+                                   </div>
+                                   
+                                   <button 
+                                     onClick={(e) => { e.stopPropagation(); handleSelectBarber('tomas'); }}
+                                     className={`pointer-events-auto px-6 md:px-8 py-2 md:py-3 bg-black border font-black uppercase tracking-[0.2em] text-xs md:text-sm transition-all duration-300 flex items-center justify-center group relative overflow-hidden rounded-sm ${isBloodMode ? 'border-mafia-red/50 text-mafia-red hover:bg-mafia-red hover:text-black shadow-[0_0_15px_rgba(200,16,46,0.3)] hover:shadow-[0_0_30px_rgba(200,16,46,0.6)]' : isNoirMode ? 'border-white/50 text-white hover:bg-white hover:text-black shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)]' : 'border-mafia-gold/50 text-mafia-gold hover:bg-mafia-gold hover:text-black shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:shadow-[0_0_30px_rgba(197,160,89,0.6)]'}`}
+                                   >
+                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out"></div>
+                                     <span className="block group-hover:scale-105 transition-transform relative z-10">{lang === 'cs' ? 'ŽIVOTOPIS' : 'DOSSIER'}</span>
+                                   </button>
+                                 </div>
+                               </motion.div>
+                             )}
+                           </AnimatePresence>
+                           
+                           {/* Dim Background overlay when previewing */}
+                           {isPreviewActive && (
+                             <div 
+                               className="fixed inset-0 bg-black/70 z-[-1] backdrop-blur-[2px]" 
+                               onClick={(e) => { e.stopPropagation(); setPreviewBarberId(null); }}
+                             />
+                           )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
+                {/* PROPOJOVACÍ LINIE & SLOTY (Perfektně centrované) */}
+                <div className="w-full flex flex-col items-center relative -mt-4 md:-mt-8 z-10 pointer-events-none">
+                  {/* Hlavní svislá linie z Toma */}
+                  <div className="w-[2px] h-12 md:h-20 bg-gradient-to-b from-mafia-gold via-mafia-gold/50 to-mafia-gold/20 shadow-[0_0_10px_rgba(197,160,89,0.5)]"></div>
+                  
+                  {/* Vodorovná rozbočovací linie */}
+                  <div className="w-[280px] md:w-[480px] h-[2px] bg-mafia-gold/30 relative">
+                     {/* Zářivé body na krajích a uprostřed */}
+                     <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-mafia-gold shadow-[0_0_8px_rgba(197,160,89,0.8)]"></div>
+                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-mafia-gold shadow-[0_0_8px_rgba(197,160,89,0.8)]"></div>
+                     <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-mafia-gold shadow-[0_0_8px_rgba(197,160,89,0.8)]"></div>
+                  </div>
+
+                  {/* Svislé linky a samotné sloty zabalené k sobě pro 100% zarovnání */}
+                  <div className="w-[280px] md:w-[480px] flex justify-between relative">
+                     
+                     {/* ============================================================== */}
+                     {/* LEVÁ VĚTEV (Rekrut + 2 Učňové) */}
+                     <div className="flex flex-col items-center -translate-x-1/2 pointer-events-auto">
+                        <div className="w-[2px] h-10 md:h-16 bg-gradient-to-b from-mafia-gold/30 to-mafia-gold/20 pointer-events-none"></div>
+                        <div className="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity mt-[-5px]">
+                          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-mafia-gold/30 overflow-hidden bg-black/80 flex items-center justify-center relative shadow-[0_0_20px_rgba(0,0,0,0.9)] backdrop-blur-sm group cursor-pointer">
+                             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
+                             <span className="text-xl font-heading font-black text-mafia-gold/20 italic group-hover:text-mafia-gold/50 transition-colors">?</span>
+                          </div>
+                          <div className="mt-4 text-center">
+                             <span className="text-mafia-gold/40 text-[8px] md:text-[9px] font-mono tracking-[0.3em] uppercase block mb-1">VOLNÝ SLOT</span>
+                             <h2 className="text-xs md:text-sm font-heading font-black text-white/40 uppercase tracking-widest italic">REKRUT</h2>
+                          </div>
+                        </div>
+
+                        {/* Podvětev - levá */}
+                        <div className="flex flex-col items-center relative -mt-2 pointer-events-none z-10 w-[120px] md:w-[180px]">
+                           <div className="w-[2px] h-8 md:h-12 bg-gradient-to-b from-mafia-gold/20 to-mafia-gold/10"></div>
+                           <div className="w-full h-[2px] bg-mafia-gold/10 relative">
+                               <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-mafia-gold/50 shadow-[0_0_8px_rgba(197,160,89,0.3)]"></div>
+                               <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-mafia-gold/50 shadow-[0_0_8px_rgba(197,160,89,0.3)]"></div>
+                           </div>
+                           <div className="w-full flex justify-between relative">
+                              <div className="flex flex-col items-center -translate-x-1/2 pointer-events-auto">
+                                 <div className="w-[2px] h-8 md:h-10 bg-gradient-to-b from-mafia-gold/10 to-transparent pointer-events-none"></div>
+                                 <div className="flex flex-col items-center opacity-40 hover:opacity-80 transition-opacity mt-[-5px]">
+                                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-mafia-gold/20 overflow-hidden bg-black/80 flex items-center justify-center relative backdrop-blur-sm group cursor-pointer">
+                                       <span className="text-lg font-heading font-black text-mafia-gold/10 italic group-hover:text-mafia-gold/30 transition-colors">?</span>
+                                    </div>
+                                    <div className="mt-2 text-center">
+                                       <span className="text-mafia-gold/30 text-[7px] font-mono tracking-[0.2em] uppercase block">UČEŇ</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div className="flex flex-col items-center translate-x-1/2 pointer-events-auto">
+                                 <div className="w-[2px] h-8 md:h-10 bg-gradient-to-b from-mafia-gold/10 to-transparent pointer-events-none"></div>
+                                 <div className="flex flex-col items-center opacity-40 hover:opacity-80 transition-opacity mt-[-5px]">
+                                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-mafia-gold/20 overflow-hidden bg-black/80 flex items-center justify-center relative backdrop-blur-sm group cursor-pointer">
+                                       <span className="text-lg font-heading font-black text-mafia-gold/10 italic group-hover:text-mafia-gold/30 transition-colors">?</span>
+                                    </div>
+                                    <div className="mt-2 text-center">
+                                       <span className="text-mafia-gold/30 text-[7px] font-mono tracking-[0.2em] uppercase block">UČEŇ</span>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* ============================================================== */}
+                     {/* PROSTŘEDNÍ VĚTEV (Rekrut + 1 Učeň) */}
+                     <div className="flex flex-col items-center pointer-events-auto">
+                        <div className="w-[2px] h-10 md:h-16 bg-gradient-to-b from-mafia-gold/30 to-mafia-gold/20 pointer-events-none"></div>
+                        <div className="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity mt-[-5px]">
+                          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-mafia-gold/30 overflow-hidden bg-black/80 flex items-center justify-center relative shadow-[0_0_20px_rgba(0,0,0,0.9)] backdrop-blur-sm group cursor-pointer">
+                             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
+                             <span className="text-xl font-heading font-black text-mafia-gold/20 italic group-hover:text-mafia-gold/50 transition-colors">?</span>
+                          </div>
+                          <div className="mt-4 text-center">
+                             <span className="text-mafia-gold/40 text-[8px] md:text-[9px] font-mono tracking-[0.3em] uppercase block mb-1">VOLNÝ SLOT</span>
+                             <h2 className="text-xs md:text-sm font-heading font-black text-white/40 uppercase tracking-widest italic">REKRUT</h2>
+                          </div>
+                        </div>
+
+                        {/* Podvětev - střední */}
+                        <div className="flex flex-col items-center relative -mt-2 pointer-events-none z-10">
+                           <div className="w-[2px] h-8 md:h-12 bg-gradient-to-b from-mafia-gold/20 to-transparent"></div>
+                           <div className="flex flex-col items-center pointer-events-auto">
+                               <div className="flex flex-col items-center opacity-40 hover:opacity-80 transition-opacity mt-[-5px]">
+                                  <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-mafia-gold/20 overflow-hidden bg-black/80 flex items-center justify-center relative backdrop-blur-sm group cursor-pointer">
+                                     <span className="text-lg font-heading font-black text-mafia-gold/10 italic group-hover:text-mafia-gold/30 transition-colors">?</span>
+                                  </div>
+                                  <div className="mt-2 text-center">
+                                     <span className="text-mafia-gold/30 text-[7px] font-mono tracking-[0.2em] uppercase block">UČEŇ</span>
+                                  </div>
+                               </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* ============================================================== */}
+                     {/* PRAVÁ VĚTEV (Rekrut + 2 Učňové) */}
+                     <div className="flex flex-col items-center translate-x-1/2 pointer-events-auto">
+                        <div className="w-[2px] h-10 md:h-16 bg-gradient-to-b from-mafia-gold/30 to-mafia-gold/20 pointer-events-none"></div>
+                        <div className="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity mt-[-5px]">
+                          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-mafia-gold/30 overflow-hidden bg-black/80 flex items-center justify-center relative shadow-[0_0_20px_rgba(0,0,0,0.9)] backdrop-blur-sm group cursor-pointer">
+                             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
+                             <span className="text-xl font-heading font-black text-mafia-gold/20 italic group-hover:text-mafia-gold/50 transition-colors">?</span>
+                          </div>
+                          <div className="mt-4 text-center">
+                             <span className="text-mafia-gold/40 text-[8px] md:text-[9px] font-mono tracking-[0.3em] uppercase block mb-1">VOLNÝ SLOT</span>
+                             <h2 className="text-xs md:text-sm font-heading font-black text-white/40 uppercase tracking-widest italic">REKRUT</h2>
+                          </div>
+                        </div>
+
+                        {/* Podvětev - pravá */}
+                        <div className="flex flex-col items-center relative -mt-2 pointer-events-none z-10 w-[120px] md:w-[180px]">
+                           <div className="w-[2px] h-8 md:h-12 bg-gradient-to-b from-mafia-gold/20 to-mafia-gold/10"></div>
+                           <div className="w-full h-[2px] bg-mafia-gold/10 relative">
+                               <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-mafia-gold/50 shadow-[0_0_8px_rgba(197,160,89,0.3)]"></div>
+                               <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-mafia-gold/50 shadow-[0_0_8px_rgba(197,160,89,0.3)]"></div>
+                           </div>
+                           <div className="w-full flex justify-between relative">
+                              <div className="flex flex-col items-center -translate-x-1/2 pointer-events-auto">
+                                 <div className="w-[2px] h-8 md:h-10 bg-gradient-to-b from-mafia-gold/10 to-transparent pointer-events-none"></div>
+                                 <div className="flex flex-col items-center opacity-40 hover:opacity-80 transition-opacity mt-[-5px]">
+                                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-mafia-gold/20 overflow-hidden bg-black/80 flex items-center justify-center relative backdrop-blur-sm group cursor-pointer">
+                                       <span className="text-lg font-heading font-black text-mafia-gold/10 italic group-hover:text-mafia-gold/30 transition-colors">?</span>
+                                    </div>
+                                    <div className="mt-2 text-center">
+                                       <span className="text-mafia-gold/30 text-[7px] font-mono tracking-[0.2em] uppercase block">UČEŇ</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div className="flex flex-col items-center translate-x-1/2 pointer-events-auto">
+                                 <div className="w-[2px] h-8 md:h-10 bg-gradient-to-b from-mafia-gold/10 to-transparent pointer-events-none"></div>
+                                 <div className="flex flex-col items-center opacity-40 hover:opacity-80 transition-opacity mt-[-5px]">
+                                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-mafia-gold/20 overflow-hidden bg-black/80 flex items-center justify-center relative backdrop-blur-sm group cursor-pointer">
+                                       <span className="text-lg font-heading font-black text-mafia-gold/10 italic group-hover:text-mafia-gold/30 transition-colors">?</span>
+                                    </div>
+                                    <div className="mt-2 text-center">
+                                       <span className="text-mafia-gold/30 text-[7px] font-mono tracking-[0.2em] uppercase block">UČEŇ</span>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     
+                  </div>
+                </div>
+
               </div>
             </motion.div>
           ) : activeBarberSafe.id === 'tomas' ? (
@@ -480,7 +983,7 @@ export default function BiographiesPage() {
                 <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
                 <span>{lang === 'cs' ? "Zpět na hierarchii" : "Back to Hierarchy"}</span>
               </button>
-              <TomasSkillTree totalCollected={effectiveTotalCollected} lang={lang} />
+              <TomasSkillTree totalCollected={effectiveTotalCollected} lang={lang} isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
             </motion.div>
           ) : (
             /* DOSSIER DETAIL MODE */
@@ -744,6 +1247,15 @@ export default function BiographiesPage() {
                                    {lang === 'cs' ? "Úspěšně sestaveno z útržků" : "Successfully assembled from fragments"}
                                  </div>
                               )}
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className="relative flex items-center justify-center w-3 h-3">
+                                   <div className="absolute inset-0 rounded-full border border-mafia-red/50 animate-ping"></div>
+                                   <div className="w-1.5 h-1.5 rounded-full bg-mafia-red shadow-[0_0_8px_rgba(200,16,46,1)]"></div>
+                                </div>
+                                <span className="text-[10px] md:text-xs font-mono text-white/90 font-bold uppercase tracking-[0.3em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                                  {lang === 'en' ? 'WIRETAP RECORDS' : 'ZÁZNAMY ODPOSLECHŮ'}
+                                </span>
+                              </div>
                               <div className="text-base text-smoke-white/90 font-sans leading-relaxed relative flex flex-wrap gap-1 whitespace-pre-wrap">
                                 {visibleText && <span className="animate-fade-in-up">{visibleText}</span>}
                                 {!isFullyUnlocked && hiddenText && (
@@ -1010,9 +1522,10 @@ export default function BiographiesPage() {
           )}
         </AnimatePresence>
       </div>
-
-      <Footer />
-      <HiddenSeoArchive lang={lang} />
+      <div className="mt-auto w-full z-10 relative">
+        <Footer />
+        <HiddenSeoArchive lang={lang} mode="seo-hidden" />
+      </div>
     </main>
   );
 }

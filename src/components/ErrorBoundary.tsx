@@ -28,15 +28,24 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
+      // Detekce Blood Mode přímo přes DOM, protože ErrorBoundary nemůže používat Hooks (např. useUI)
+      const isBloodMode = typeof document !== 'undefined' && document.documentElement.classList.contains('theme-blood');
+      
+      const borderColor = isBloodMode ? 'border-mafia-red/50' : 'border-mafia-gold/50';
+      const shadowColor = isBloodMode ? 'rgba(139,0,0,0.3)' : 'rgba(212,175,55,0.3)';
+      const iconColor = isBloodMode ? 'text-mafia-red' : 'text-mafia-gold';
+      const textColor = isBloodMode ? 'text-mafia-red' : 'text-mafia-gold';
+      const bgButtonColor = isBloodMode ? 'bg-mafia-red text-white' : 'bg-mafia-gold text-mafia-black';
+
       return (
         <div className="min-h-screen bg-black flex items-center justify-center p-6 text-center">
-          <div className="max-w-md w-full bg-mafia-black border-2 border-mafia-red/50 p-10 shadow-[0_0_50px_rgba(139,0,0,0.3)] relative overflow-hidden">
+          <div className={`max-w-md w-full bg-mafia-black border-2 ${borderColor} p-10 relative overflow-hidden`} style={{ boxShadow: `0 0 50px ${shadowColor}` }}>
             {/* Scanlines Effect */}
             <div className="absolute inset-0 pointer-events-none z-50 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.15)_0px,rgba(0,0,0,1)_1px,transparent_1px,transparent_2px)] opacity-20"></div>
             
-            <AlertTriangle className="text-mafia-red mx-auto mb-6 animate-pulse" size={64} />
+            <AlertTriangle className={`${iconColor} mx-auto mb-6 animate-pulse`} size={64} />
             
-            <h2 className="text-mafia-red font-heading font-black text-2xl uppercase tracking-[0.2em] mb-4">
+            <h2 className={`${textColor} font-heading font-black text-2xl uppercase tracking-[0.2em] mb-4`}>
               KRITICKÁ CHYBA SYSTÉMU
             </h2>
             
@@ -47,7 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col gap-4">
               <button 
                 onClick={() => window.location.reload()}
-                className="w-full py-4 bg-mafia-red text-white font-heading font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all"
+                className={`w-full py-4 ${bgButtonColor} font-heading font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all`}
               >
                 <RefreshCw size={18} />
                 RESTARTOVAT SYSTÉM

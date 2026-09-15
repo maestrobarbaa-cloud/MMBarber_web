@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Users, X, AlertTriangle } from "lucide-react";
 import { playSound } from "@/utils/audio";
 import { useBarbers } from "@/contexts/BarberContext";
+import { useUI } from "@/contexts/UIContext";
 
 const LOCAL_CITIES = [
   "Uherského Hradiště", "Starého Města", "Kunovic", "Uherského Brodu", "Zlína",
@@ -20,6 +21,7 @@ const LOCAL_CITIES = [
 
 export function CorporateTricks() {
   const { barbers } = useBarbers();
+  const { isBloodMode } = useUI();
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
   const [showExitModal, setShowExitModal] = useState(false);
   const [isHidden, setIsHidden] = useState(() => {
@@ -54,7 +56,7 @@ export function CorporateTricks() {
     // Generate a random booking toast every few minutes
 
     const triggerToast = () => {
-      const validBarbers = barbers?.filter(b => !b.missionFailed) || [];
+      const validBarbers = barbers?.filter(b => !b.missionFailed && b.id !== 'nella' && b.name?.toLowerCase() !== 'nella') || [];
       const activeBarbers = validBarbers.length > 0 ? validBarbers : [{ name: "Tomáš" }];
       const barber = activeBarbers[Math.floor(Math.random() * activeBarbers.length)].name;
       
@@ -144,18 +146,18 @@ export function CorporateTricks() {
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, x: 50, y: 50 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className={`hidden md:block fixed right-8 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 p-6 shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.25)] max-w-md rounded-sm transition-all duration-500 ${isRadioActive ? 'bottom-40' : 'bottom-8'}`}
+            className={`hidden md:block fixed right-8 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 theme-blood:border-red-500/80 noir-mode:border-white/80 p-6 shadow-[0_0_40px_rgba(197,160,89,0.25)] theme-blood:shadow-[0_0_40px_rgba(239,68,68,0.25)] noir-mode:shadow-[0_0_40px_rgba(255,255,255,0.25)] max-w-md rounded-sm transition-all duration-500 ${isRadioActive ? 'bottom-40' : 'bottom-8'}`}
           >
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-mafia-gold/10 rounded-full shrink-0">
-                <Users className="text-mafia-gold" size={28} />
+              <div className="p-3 bg-mafia-gold/10 theme-blood:bg-red-500/10 noir-mode:bg-white/10 rounded-full shrink-0">
+                <Users className="text-mafia-gold theme-blood:text-red-500 noir-mode:text-white" size={28} />
               </div>
               <div>
                 <h4 className="text-lg font-heading font-black text-white uppercase mb-1 tracking-wider drop-shadow-md">Žhavá Aktivita</h4>
                 <p className="text-sm text-smoke-white/80 font-sans leading-relaxed">{toast.message}</p>
               </div>
             </div>
-            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-mafia-gold/50 via-transparent to-transparent"></div>
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-mafia-gold/50 theme-blood:from-red-500/50 noir-mode:from-white/50 via-transparent to-transparent"></div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -173,17 +175,17 @@ export function CorporateTricks() {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-[#050505] border border-mafia-red max-w-xl w-full p-8 relative shadow-[0_0_50px_rgba(138,7,7,0.3)]"
+              className={`bg-[#050505] border ${isBloodMode ? 'border-mafia-red shadow-[0_0_50px_rgba(138,7,7,0.3)]' : 'border-mafia-gold shadow-[0_0_50px_rgba(212,175,55,0.3)]'} max-w-xl w-full p-8 relative`}
             >
               <button 
                 onClick={() => setShowExitModal(false)}
-                className="absolute top-4 right-4 text-white/50 hover:text-mafia-red transition-colors"
+                className={`absolute top-4 right-4 text-white/50 transition-colors ${isBloodMode ? 'hover:text-mafia-red' : 'hover:text-mafia-gold'}`}
               >
                 <X size={24} />
               </button>
 
               <div className="flex flex-col items-center text-center">
-                <AlertTriangle className="text-mafia-red mb-6" size={48} />
+                <AlertTriangle className={`${isBloodMode ? 'text-mafia-red' : 'text-mafia-gold'} mb-6`} size={48} />
                 <h2 className="text-3xl font-heading font-black text-white uppercase tracking-[0.2em] mb-4">
                   Kam si myslíš, že jdeš?
                 </h2>
@@ -197,7 +199,7 @@ export function CorporateTricks() {
                       setShowExitModal(false);
                       document.getElementById("operativi")?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className="flex-1 py-4 bg-mafia-red text-white hover:bg-mafia-dark font-black uppercase tracking-widest text-sm transition-colors border border-mafia-red"
+                    className={`flex-1 py-4 ${isBloodMode ? 'bg-mafia-red border-mafia-red text-white hover:bg-mafia-dark' : 'bg-mafia-gold border-mafia-gold text-mafia-black hover:bg-mafia-gold/90'} font-black uppercase tracking-widest text-sm transition-colors border`}
                   >
                     Omlouvám se, jdu se objednat
                   </button>

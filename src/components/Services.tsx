@@ -104,6 +104,7 @@ export function Services() {
         description: lang === 'cs' ? 'CENÍK A REZERVACE' : 'PRICING & BOOKING',
         onClick: () => { router.push('/cenik'); trackEvent("open_pricing_menu"); }
       },
+      /*
       {
         id: 'dating',
         title: t?.header?.seznamka || (lang === 'cs' ? 'SEZNAMKA' : 'DATING'),
@@ -112,6 +113,7 @@ export function Services() {
         description: lang === 'cs' ? 'NAŠI OPERATIVCI' : 'OUR OPERATIVES',
         onClick: () => { router.push('/seznamka'); trackEvent("nav_seznamka_click"); }
       }
+      */
     ].map(card => {
       const status = globalSettings[`visibility_card_${card.id === 'dating' ? 'seznamka' : card.id}`];
       if (status === 'hidden') return null;
@@ -219,16 +221,37 @@ export function Services() {
       <GameFragment id="services_frag_1" className="top-40 left-8 md:left-24" size={35} delay={1000} />
       <GameFragment id="services_frag_2" className="bottom-24 right-16 md:right-32" size={30} delay={3000} />
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="xl:hidden flex justify-center mb-16 px-4">
+        <div className="flex lg:hidden justify-center mb-16 px-4">
           <button 
             onClick={() => {
               router.push('/rodina');
               trackEvent("cta_main_rodina");
             }}
-            className="w-full max-w-sm py-5 bg-mafia-gold text-mafia-black font-heading font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] border-2 border-mafia-gold hover:bg-mafia-black hover:text-mafia-gold transition-all duration-300"
+            className="group relative w-full max-w-sm py-5 bg-mafia-black text-mafia-gold font-heading font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] border-2 border-mafia-gold transition-all duration-300 overflow-hidden hover:shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.6)]"
           >
-            <Users size={24} />
-            {lang === 'cs' ? "Rodina MMBarberu" : "MMBarber Family"}
+            {/* SPARK EFFECT INSIDE BUTTON */}
+            <div className="absolute inset-0 pointer-events-none opacity-80">
+              {Array.from({ length: 12 }).map((_, i) => {
+                const startX = Math.random() * 120 - 20;
+                const distanceX = Math.random() * 30 + 10;
+                const width = Math.random() * 2 + 1;
+                return (
+                  <motion.div
+                    key={`btn-spark-${i}`}
+                    className="absolute rounded-full shadow-[0_0_8px_1px_currentColor] bg-[#ffd700] text-[#ffd700]"
+                    style={{ width: `${width}px`, height: `${width}px`, filter: `blur(${Math.random() * 0.5}px)` }}
+                    initial={{ top: '150%', left: `${startX}%`, opacity: 0 }}
+                    animate={{ top: '-20%', left: `${startX + distanceX}%`, opacity: [0, Math.random() * 0.8 + 0.4, 0] }}
+                    transition={{ duration: 3 + Math.random() * 5, repeat: Infinity, ease: "linear", delay: Math.random() * 5 }}
+                  />
+                );
+              })}
+            </div>
+
+            <span className="relative z-10 flex items-center gap-4 group-hover:scale-105 transition-transform duration-300">
+              <Users size={24} />
+              {lang === 'cs' ? "Rodina MMBarberu" : "MMBarber Family"}
+            </span>
           </button>
         </div>
         

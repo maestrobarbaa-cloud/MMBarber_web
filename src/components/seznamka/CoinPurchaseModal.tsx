@@ -32,17 +32,23 @@ export const CoinPurchaseModal = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount }),
       });
-      const data = await response.json();
-      if (data.url) {
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error('Invalid response from server');
+      }
+
+      if (response.ok && data?.url) {
         window.location.href = data.url;
       } else {
-        console.error('Checkout error:', data.error);
-        setErrorMsg(lang === 'cs' ? 'Chyba při vytvoření platby.' : 'Checkout error.');
+        console.error('Checkout error:', data?.error || 'Unknown error');
+        setErrorMsg(data?.error || (lang === 'cs' ? 'Chyba při vytvoření platby.' : 'Checkout error.'));
         setIsLoading(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setErrorMsg(lang === 'cs' ? 'Chyba při vytvoření platby.' : 'Checkout error.');
+      setErrorMsg(error.message || (lang === 'cs' ? 'Chyba při vytvoření platby.' : 'Checkout error.'));
       setIsLoading(false);
     }
   };

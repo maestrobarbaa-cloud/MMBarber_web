@@ -96,6 +96,16 @@ const nextConfig: NextConfig = {
         source: '/fade-gallery',
         destination: '/',
         permanent: true,
+      },
+      {
+        source: '/seznamka/:path*',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/seznamka',
+        destination: '/',
+        permanent: false,
       }
     ];
   },

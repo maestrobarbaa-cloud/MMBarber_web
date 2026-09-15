@@ -467,24 +467,48 @@ export function Profiles() {
                                       </span>
                                   </Link>
                               </motion.div>
-                            ) : (
-                              <Link 
-                                  href="/losovat-barbera"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="px-6 py-3 bg-mafia-gold/5 border border-mafia-gold/30 hover:border-mafia-gold hover:bg-mafia-gold text-mafia-gold hover:text-mafia-black font-heading font-black tracking-[0.2em] uppercase text-xs transition-all duration-300 rounded shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:shadow-[0_0_25px_rgba(197,160,89,0.4)] flex items-center gap-2 group cursor-pointer"
-                                  onClick={() => playSound("/sounds/hover.mp3", 0.4)}
-                              >
-                                  <span>{lang === 'cs' ? 'Losovat barbera' : 'Draw a barber'}</span>
-                                  <motion.span 
-                                    animate={{ x: [0, 4, 0] }}
-                                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                                    className="inline-block font-sans font-bold"
-                                  >
-                                    ➔
-                                  </motion.span>
-                              </Link>
-                            )}
+                            ) : visibleBarbers.length > 1 ? (
+                              <div className="relative group p-[2px] mt-2">
+                                {/* Outer frame elements */}
+                                <div className="absolute inset-0 border border-mafia-gold/20 theme-blood:border-red-500/20 noir-mode:border-white/20 group-hover:border-mafia-gold/50 theme-blood:group-hover:border-red-500/50 noir-mode:group-hover:border-white/50 transition-colors duration-500 skew-x-[-10deg]"></div>
+                                <div className="absolute inset-[-6px] border border-mafia-gold/10 theme-blood:border-red-500/10 noir-mode:border-white/10 group-hover:border-mafia-gold/30 theme-blood:group-hover:border-red-500/30 noir-mode:group-hover:border-white/30 transition-colors duration-500 skew-x-[-10deg]"></div>
+                                
+                                {/* Corner brackets */}
+                                <div className="absolute top-[-4px] left-[-4px] w-4 h-4 border-t-2 border-l-2 border-mafia-gold theme-blood:border-red-500 noir-mode:border-white opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="absolute top-[-4px] right-[-4px] w-4 h-4 border-t-2 border-r-2 border-mafia-gold theme-blood:border-red-500 noir-mode:border-white opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="absolute bottom-[-4px] left-[-4px] w-4 h-4 border-b-2 border-l-2 border-mafia-gold theme-blood:border-red-500 noir-mode:border-white opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="absolute bottom-[-4px] right-[-4px] w-4 h-4 border-b-2 border-r-2 border-mafia-gold theme-blood:border-red-500 noir-mode:border-white opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                                
+                                {/* Inner animated glow */}
+                                <div className="absolute inset-0 bg-mafia-gold/0 theme-blood:bg-red-500/0 noir-mode:bg-white/0 group-hover:bg-mafia-gold/10 theme-blood:group-hover:bg-red-500/10 noir-mode:group-hover:bg-white/10 transition-colors duration-500 blur-md"></div>
+                                
+                                <Link 
+                                    href="/losovat-barbera"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="relative block px-8 py-4 bg-gradient-to-br from-black/80 to-[#111] border border-mafia-gold/40 theme-blood:border-red-500/40 noir-mode:border-white/40 hover:from-mafia-gold theme-blood:hover:from-red-600 noir-mode:hover:from-gray-300 hover:to-[#a37e3d] theme-blood:hover:to-red-900 noir-mode:hover:to-gray-500 text-mafia-gold theme-blood:text-red-500 noir-mode:text-white hover:text-black theme-blood:hover:text-white font-heading font-black tracking-[0.25em] uppercase text-sm md:text-base transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)] theme-blood:shadow-[0_0_20px_rgba(239,68,68,0.2)] noir-mode:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_40px_rgba(197,160,89,0.7)] theme-blood:hover:shadow-[0_0_40px_rgba(239,68,68,0.7)] noir-mode:hover:shadow-[0_0_40px_rgba(255,255,255,0.7)] flex items-center justify-center gap-4 cursor-pointer z-10 overflow-hidden"
+                                    onClick={() => playSound("/sounds/hover.mp3", 0.4)}
+                                >
+                                    {/* Reflection effect */}
+                                    <div className="absolute inset-0 w-[200%] translate-x-[-150%] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                                    
+                                    <span className="relative z-10 flex items-center gap-2 drop-shadow-md">
+                                      <svg className="w-5 h-5 opacity-80 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                      </svg>
+                                      {lang === 'cs' ? 'Losovat barbera' : 'Draw a barber'}
+                                    </span>
+                                    
+                                    <motion.span 
+                                      animate={{ x: [0, 5, 0] }}
+                                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                                      className="relative z-10 inline-block font-sans font-bold text-lg group-hover:text-black"
+                                    >
+                                      ➔
+                                    </motion.span>
+                                </Link>
+                              </div>
+                            ) : null}
                         </div>
                     </div>
                 </div>

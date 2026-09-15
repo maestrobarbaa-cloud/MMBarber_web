@@ -795,10 +795,10 @@ export default function StoryPage() {
       {/* ── Star Wars crawl keyframes injected inline for guaranteed availability ── */}
       <style>{`
         @keyframes sw-crawl {
-          0%   { transform: rotateX(38deg) translateY(110%);  opacity: 0; }
-          5%   { opacity: 1; }
+          0%   { transform: rotateX(38deg) translateY(50vh);  opacity: 0; }
+          3%   { opacity: 1; }
           90%  { opacity: 1; }
-          100% { transform: rotateX(38deg) translateY(-400%); opacity: 0; }
+          100% { transform: rotateX(38deg) translateY(-150vh); opacity: 0; }
         }
       `}</style>
 
@@ -827,11 +827,11 @@ export default function StoryPage() {
             /* key on this div forces DOM remount → CSS animation restarts cleanly */
             <div
               key={`crawl-${selectedNode.id}-${lang}`}
-              className="px-6 pb-8 pointer-events-auto"
+              className="px-6 pb-8 pointer-events-auto mt-[20vh] lg:mt-[30vh]"
               style={{
                 transformOrigin: '50% 100%',
                 transformStyle: 'preserve-3d',
-                animation: 'sw-crawl 90s linear forwards',
+                animation: 'sw-crawl 45s linear forwards',
                 textAlign: 'center',
               }}
             >

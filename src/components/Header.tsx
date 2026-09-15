@@ -551,6 +551,44 @@ export function Header() {
               : "translate-y-0 opacity-100 pointer-events-auto"
           }`}
       >
+        {/* Žhavé jiskry v pozadí hlavičky pro silnější grafiky */}
+        {isMounted && (isScrolled || pathname !== '/' || hoveredCategory || isMobile || isMenuOpen) && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none z-[-1] opacity-60">
+            {Array.from({ length: 15 }).map((_, i) => {
+              const startX = Math.random() * 120 - 20;
+              const distanceX = Math.random() * 20 + 10;
+              const width = Math.random() * 2 + 1;
+              return (
+                <motion.div
+                  key={`header-spark-${i}`}
+                  className={`absolute rounded-full shadow-[0_0_8px_1px_currentColor] ${isBloodMode ? 'bg-mafia-red text-mafia-red' : isNoirMode ? 'bg-white text-white' : 'bg-[#ffd700] text-[#ffd700]'}`}
+                  style={{
+                    width: `${width}px`,
+                    height: `${width}px`,
+                    filter: `blur(${Math.random() * 0.5}px)`,
+                  }}
+                  initial={{ 
+                     y: '100px',
+                     x: `${startX}vw`,
+                     opacity: 0
+                  }}
+                  animate={{
+                    y: '-20px',
+                    x: `${startX + distanceX}vw`,
+                    opacity: [0, Math.random() * 0.5 + 0.3, 0]
+                  }}
+                  transition={{
+                    duration: 6 + Math.random() * 8,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: Math.random() * 10
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
+
         <div className="flex items-center">
           <button
             onClick={handleLogoClick}
@@ -681,7 +719,7 @@ export function Header() {
                 playSound("/sounds/naboje.mp3", 0.2);
                 router.push("/rodina");
             }}
-            className={`group relative overflow-hidden bg-mafia-dark border px-6 md:px-8 py-3.5 transition-all duration-300 header-booking-btn flex items-center gap-3 ${isMounted && shouldFlashFamily && (!isMobile || isMobileEffectsEnabled) && !activeMode ? 'animate-[pulse_1.5s_ease-in-out_infinite]' : ''}`}
+            className={`group relative overflow-hidden bg-transparent border px-6 md:px-8 py-3.5 transition-all duration-300 header-booking-btn flex items-center gap-3 ${isMounted && shouldFlashFamily && (!isMobile || isMobileEffectsEnabled) && !activeMode ? 'animate-[pulse_1.5s_ease-in-out_infinite]' : ''}`}
             style={{ 
               borderColor: 'var(--color-mafia-gold)',
               boxShadow: !isMounted ? 'none' : (isMobile && !isMobileEffectsEnabled) ? 'none' : (activeMode || !shouldFlashFamily ? (shouldFlashFamily ? `0 0 10px var(--color-mafia-gold)` : 'none') : '0 0 15px var(--color-mafia-gold), inset 0 0 10px var(--color-mafia-gold)'),
@@ -689,6 +727,28 @@ export function Header() {
             }}
           >
             <div className="absolute inset-0 block -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0" style={{ backgroundColor: 'var(--color-mafia-gold)' }}></div>
+            
+            {/* SPARK EFFECT INSIDE BUTTON */}
+            {isMounted && hoveredCategory && (
+              <div className="absolute inset-0 pointer-events-none opacity-80 z-[1] group-hover:opacity-0 transition-opacity duration-300">
+                {Array.from({ length: 8 }).map((_, i) => {
+                  const startX = Math.random() * 120 - 20;
+                  const distanceX = Math.random() * 30 + 10;
+                  const width = Math.random() * 2 + 1;
+                  return (
+                    <motion.div
+                      key={`header-btn-spark-${i}`}
+                      className="absolute rounded-full shadow-[0_0_8px_1px_currentColor] bg-[#ffd700] text-[#ffd700]"
+                      style={{ width: `${width}px`, height: `${width}px`, filter: `blur(${Math.random() * 0.5}px)` }}
+                      initial={{ top: '150%', left: `${startX}%`, opacity: 0 }}
+                      animate={{ top: '-20%', left: `${startX + distanceX}%`, opacity: [0, Math.random() * 0.8 + 0.4, 0] }}
+                      transition={{ duration: 3 + Math.random() * 5, repeat: Infinity, ease: "linear", delay: Math.random() * 5 }}
+                    />
+                  );
+                })}
+              </div>
+            )}
+
             <Users size={20} className="relative z-10 transition-colors group-hover:text-black" style={{ color: 'var(--color-mafia-gold)' }} />
             <span className="relative z-10 font-sans uppercase tracking-[0.25em] font-black group-hover:!text-black transition-colors whitespace-nowrap header-booking-btn-text text-xs md:text-sm" style={{ color: 'var(--color-mafia-gold)' }}>
               {lang === 'cs' ? "Rodina MMBarberu" : "MMBarber Family"}
