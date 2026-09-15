@@ -18,13 +18,13 @@ if (os.platform() === 'linux') {
 
 console.log(`Executing: ${command} ${args.join(' ')}`);
 
-const result = spawnSync(command, args, { stdio: 'inherit' });
+const result = spawnSync(command, args, { stdio: 'inherit', shell: true });
 
 if (result.error || result.status !== 0) {
   // If taskset is not installed on the Linux system, gracefully fallback to the normal command
   if (result.error && result.error.code === 'ENOENT' && command === 'taskset') {
     console.warn('taskset command not found on this system! Falling back to normal unrestricted build...');
-    const fallback = spawnSync('npx', ['cross-env', 'NODE_OPTIONS=--max-old-space-size=1536', 'next', 'build'], { stdio: 'inherit' });
+    const fallback = spawnSync('npx', ['cross-env', 'NODE_OPTIONS=--max-old-space-size=1536', 'next', 'build'], { stdio: 'inherit', shell: true });
     process.exit(fallback.status || 0);
   }
   
