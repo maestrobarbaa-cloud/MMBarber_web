@@ -156,7 +156,7 @@ export function ProfilesTab() {
             </div>
             <div className="text-sm space-y-1 mb-6 flex-1 text-white/70">
                 <p>Město: <span className="text-white">{profile.city || '?'}</span></p>
-                <p>Gender: <span className="text-white">{profile.gender}</span></p>
+                <p>Gender: <span className="text-white">{profile.gender === 'male' || profile.gender === 'Male' ? 'Muž' : profile.gender === 'female' || profile.gender === 'Female' ? 'Žena' : profile.gender}</span></p>
                 <p>Hledá: <span className="text-white">{profile.seeking}</span></p>
             </div>
             

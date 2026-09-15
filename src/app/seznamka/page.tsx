@@ -173,10 +173,10 @@ export default function SeznamkaPage() {
         )}
       </AnimatePresence>
       
-      {/* Header */}
+    {/* Header */}
       {!isEmbed && (
         <header className="sticky top-0 z-[150] bg-black/80 backdrop-blur-xl border-b border-white/5">
-          <div className="max-w-[1600px] mx-auto px-6 h-24 flex items-center justify-between">
+          <div className="max-w-[1600px] mx-auto px-6 h-24 flex items-center justify-between relative">
             <button
               onClick={() => { window.location.href = "/"; }}
               className="group flex items-center gap-4 text-mafia-gold hover:text-white transition-all duration-500 relative z-[160]"
@@ -190,25 +190,28 @@ export default function SeznamkaPage() {
             </button>
 
             {/* Share Button (Center) */}
-            <button 
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.origin + "/seznamka");
-                setShowShareToast(true);
-                setTimeout(() => setShowShareToast(false), 3000);
-              }}
-              className="flex items-center gap-2 px-4 py-2 border border-mafia-gold/30 rounded-full hover:bg-mafia-gold/10 hover:border-mafia-gold transition-colors text-mafia-gold group"
-              title={lang === 'cs' ? 'Zkopírovat odkaz na Síť' : 'Copy Network Link'}
-            >
-              {showShareToast ? <Check size={16} className="text-green-500" /> : <Share2 size={16} className="group-hover:scale-110 transition-transform" />}
-              <span className="text-[10px] font-mono uppercase tracking-widest hidden sm:inline-block">
-                {showShareToast 
-                  ? (lang === 'cs' ? 'Zkopírováno' : 'Copied') 
-                  : (lang === 'cs' ? 'Pozvat známé' : 'Invite friends')}
-              </span>
-            </button>
+            <div className="absolute left-1/2 -translate-x-1/2 z-[160]">
+              <button 
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.origin + "/seznamka");
+                  setShowShareToast(true);
+                  setTimeout(() => setShowShareToast(false), 3000);
+                }}
+                className="flex items-center gap-2 px-4 py-2 border border-mafia-gold/30 rounded-full hover:bg-mafia-gold/10 hover:border-mafia-gold transition-colors text-mafia-gold group"
+                title={lang === 'cs' ? 'Zkopírovat odkaz na Síť' : 'Copy Network Link'}
+              >
+                {showShareToast ? <Check size={16} className="text-green-500" /> : <Share2 size={16} className="group-hover:scale-110 transition-transform" />}
+                <span className="text-[10px] font-mono uppercase tracking-widest hidden sm:inline-block">
+                  {showShareToast 
+                    ? (lang === 'cs' ? 'Zkopírováno' : 'Copied') 
+                    : (lang === 'cs' ? 'Pozvat známé' : 'Invite friends')}
+                </span>
+              </button>
+            </div>
+            
             <button 
               onClick={() => setShowGuide(true)}
-              className="group flex items-center gap-4 text-mafia-gold hover:text-white transition-all duration-500 relative z-[160]"
+              className="group flex items-center gap-4 text-mafia-gold hover:text-white transition-all duration-500 relative z-[160] ml-auto"
               title={lang === 'cs' ? 'Otevřít průvodce' : 'Open Guide'}
             >
               <span className="font-mono text-xs uppercase tracking-[0.4em] font-bold hidden md:inline-block">
@@ -270,7 +273,7 @@ export default function SeznamkaPage() {
                    >
                      {lang === 'cs' ? 'Ctitelé' : 'Admirers'}
                      {admirers.length > 0 && (
-                       <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-500 rounded-full text-black text-[9px] font-black flex items-center justify-center shadow-[0_0_10px_rgba(239,68,68,0.8)] animate-pulse">
+                       <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-500 rounded-full text-black text-[9px] font-black flex items-center justify-center shadow-[0_0_10px_rgba(239,68,68,0.8)] animate-pulse pointer-events-none">
                          {admirers.length}
                        </span>
                      )}

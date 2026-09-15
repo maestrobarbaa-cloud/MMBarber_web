@@ -647,21 +647,21 @@ export function Pond({ currentUser, onEditProfile, onMatch, onGoToMessages, }: P
 
   return (
     <div className="w-full flex flex-col items-center py-4 px-4 h-full">
-      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row h-[calc(100vh-60px)] md:h-[calc(100vh-140px)] gap-6">
-
-        {/* Dynamic Event Banner */}
-        {eventStatus.phase !== 'NORMAL' && (
-          <div className="absolute top-0 left-0 right-0 z-50 flex justify-center -mt-4 pointer-events-none">
-            <div className={`px-4 py-1.5 rounded-b-xl shadow-lg border-b border-x flex items-center gap-2 backdrop-blur-md ${
-              eventStatus.phase === 'HOLIDAY' ? 'bg-mafia-gold/20 border-mafia-gold/50 text-mafia-gold' : 
-              eventStatus.phase === 'PEAK' ? 'bg-orange-900/40 border-orange-500/50 text-orange-400' : 
-              'bg-blue-900/40 border-blue-400/50 text-blue-400'
-            }`}>
-              {eventStatus.phase === 'HOLIDAY' ? <Sparkles size={14} /> : eventStatus.phase === 'PEAK' ? <Flame size={14} /> : <Zap size={14} />}
-              <span className="font-heading uppercase tracking-widest text-xs font-bold">{eventStatus.eventName}</span>
-            </div>
+      {/* Dynamic Event Banner */}
+      {eventStatus.phase !== 'NORMAL' && (
+        <div className="w-full flex justify-center mb-4 pointer-events-none z-50">
+          <div className={`px-6 py-2 rounded-xl shadow-lg border flex items-center gap-2 backdrop-blur-md ${
+            eventStatus.phase === 'HOLIDAY' ? 'bg-mafia-gold/20 border-mafia-gold/50 text-mafia-gold' : 
+            eventStatus.phase === 'PEAK' ? 'bg-orange-900/40 border-orange-500/50 text-orange-400' : 
+            'bg-blue-900/40 border-blue-400/50 text-blue-400'
+          }`}>
+            {eventStatus.phase === 'HOLIDAY' ? <Sparkles size={16} /> : eventStatus.phase === 'PEAK' ? <Flame size={16} /> : <Zap size={16} />}
+            <span className="font-heading uppercase tracking-widest text-xs font-bold">{eventStatus.eventName}</span>
           </div>
-        )}
+        </div>
+      )}
+
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row h-[calc(100vh-60px)] md:h-[calc(100vh-140px)] gap-6">
 
         {/* LEFT COLUMN: SWIPER */}
         <div className="flex flex-col md:flex-row items-center gap-3 relative z-[100]">

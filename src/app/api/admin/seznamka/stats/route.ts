@@ -11,6 +11,28 @@ export async function GET(request: Request) {
     const maleCount = await prisma.profile.count({ where: { gender: { in: ['Muž', 'muž', 'Male', 'male'] } } });
     const femaleCount = await prisma.profile.count({ where: { gender: { in: ['Žena', 'žena', 'Female', 'female'] } } });
 
+    // Seeking Categories
+    const seekingGroup = await prisma.profile.groupBy({
+      by: ['seeking'],
+      _count: {
+        seeking: true,
+      },
+    });
+    const categories = seekingGroup.map(g => ({
+      name: g.seeking || 'Nezadáno',
+      value: g._count.seeking
+    }));
+
+    // Active Fragment Spawn
+    const activeSpawn = await prisma.fragmentSpawn.findFirst({
+      where: {
+        expiresAt: { gt: new Date() },
+        status: 'ACTIVE'
+      },
+      orderBy: { createdAt: 'desc' },
+      select: { locationId: true, expiresAt: true }
+    });
+
     // Settings
     const settings = await prisma.systemSettings.findMany({
       where: {
@@ -29,7 +51,9 @@ export async function GET(request: Request) {
         totalMatches,
         totalSwipes,
         maleCount,
-        femaleCount
+        femaleCount,
+        categories,
+        activeSpawn
       },
       settings: settingsMap
     });
