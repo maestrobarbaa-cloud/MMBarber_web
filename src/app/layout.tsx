@@ -14,7 +14,7 @@ import { DynamicSEO } from "@/components/DynamicSEO";
 import { TableOfContents } from "@/components/TableOfContents";
 import { BarberProvider } from "@/contexts/BarberContext";
 import { GameProvider } from "@/contexts/GameContext";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import { Providers } from "@/components/Providers";
 import { BugReporter } from "@/components/BugReporter";
 import { AntiTheft } from "@/components/AntiTheft";
