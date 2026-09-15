@@ -112,6 +112,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    cpus: 3,
+  },
 };
 
 export default nextConfig;
