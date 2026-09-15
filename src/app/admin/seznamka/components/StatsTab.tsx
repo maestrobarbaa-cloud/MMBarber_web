@@ -84,11 +84,34 @@ export function StatsTab() {
                   <div className="text-4xl font-bold text-mafia-gold font-mono">{data.totalMatches}</div>
               </div>
               
+              <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+                  <div className="flex items-center gap-2 text-white/50 mb-2">
+                      <MousePointerClick size={16} /> Celkem Zpráv
+                  </div>
+                  <div className="text-4xl font-bold text-white font-mono">{data.totalMessages}</div>
+              </div>
+
+              <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+                  <div className="flex items-center gap-2 text-white/50 mb-2">
+                      <Activity size={16} /> Nahlášení
+                  </div>
+                  <div className="text-4xl font-bold text-red-500 font-mono">{data.totalReports}</div>
+              </div>
+
               <div className="bg-white/5 border border-white/10 p-6 rounded-lg col-span-2">
                   <div className="flex items-center gap-2 text-white/50 mb-2">
                       <MousePointerClick size={16} /> Celkem Swipů (Lajků/Odmítnutí)
                   </div>
                   <div className="text-4xl font-bold text-white font-mono">{data.totalSwipes}</div>
+                  <div className="flex items-center gap-4 text-xs mt-2">
+                      <span className="text-green-500">Lajky: {data.likesCount}</span>
+                      <span className="text-red-500">Odmítnutí: {data.passesCount}</span>
+                      {data.totalSwipes > 0 && (
+                          <span className="text-white/40 border-l border-white/10 pl-4">
+                              Win rate: {((data.likesCount / data.totalSwipes) * 100).toFixed(1)}%
+                          </span>
+                      )}
+                  </div>
               </div>
           </div>
         </div>
@@ -111,37 +134,96 @@ export function StatsTab() {
           </div>
         </div>
 
-        {/* Categories Pie Chart */}
+        {/* Charts Container */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Categories Pie Chart */}
+            <div>
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-mafia-gold">
+                <PieChartIcon size={18} /> Hledá
+            </h2>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-lg h-[250px]">
+                {data.categories && data.categories.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={data.categories}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={false}
+                                outerRadius={60}
+                                fill="#8884d8"
+                                dataKey="value"
+                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            >
+                                {data.categories.map((entry: any, index: number) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <RechartsTooltip 
+                                contentStyle={{ backgroundColor: '#1A202C', borderColor: '#333' }}
+                                itemStyle={{ color: '#fff' }}
+                            />
+                        </PieChart>
+                    </ResponsiveContainer>
+                ) : (
+                    <div className="flex h-full items-center justify-center text-white/40">Zatím žádná data</div>
+                )}
+            </div>
+            </div>
+
+            {/* Age Groups Chart */}
+            <div>
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-mafia-gold">
+                <PieChartIcon size={18} /> Věkové Rozložení
+            </h2>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-lg h-[250px]">
+                {data.ageGroups && data.ageGroups.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={data.ageGroups}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={false}
+                                outerRadius={60}
+                                fill="#8884d8"
+                                dataKey="value"
+                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            >
+                                {data.ageGroups.map((entry: any, index: number) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <RechartsTooltip 
+                                contentStyle={{ backgroundColor: '#1A202C', borderColor: '#333' }}
+                                itemStyle={{ color: '#fff' }}
+                            />
+                        </PieChart>
+                    </ResponsiveContainer>
+                ) : (
+                    <div className="flex h-full items-center justify-center text-white/40">Zatím žádná data</div>
+                )}
+            </div>
+            </div>
+        </div>
+
+        {/* Top Cities */}
         <div>
           <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-mafia-gold">
-              <PieChartIcon /> Oblíbené kategorie (Hledá)
+              <Activity /> Top Města
           </h2>
-          <div className="bg-white/5 border border-white/10 p-6 rounded-lg h-[300px]">
-              {data.categories && data.categories.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                          <Pie
-                              data={data.categories}
-                              cx="50%"
-                              cy="50%"
-                              labelLine={false}
-                              outerRadius={80}
-                              fill="#8884d8"
-                              dataKey="value"
-                              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                          >
-                              {data.categories.map((entry: any, index: number) => (
-                                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                              ))}
-                          </Pie>
-                          <RechartsTooltip 
-                              contentStyle={{ backgroundColor: '#1A202C', borderColor: '#333' }}
-                              itemStyle={{ color: '#fff' }}
-                          />
-                      </PieChart>
-                  </ResponsiveContainer>
+          <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+              {data.topCities && data.topCities.length > 0 ? (
+                  <div className="space-y-3">
+                      {data.topCities.map((city: any, idx: number) => (
+                          <div key={idx} className="flex justify-between items-center border-b border-white/5 pb-2">
+                              <span className="text-white">{city.name}</span>
+                              <span className="text-mafia-gold font-mono font-bold">{city.value} profilů</span>
+                          </div>
+                      ))}
+                  </div>
               ) : (
-                  <div className="flex h-full items-center justify-center text-white/40">Zatím žádná data</div>
+                  <div className="text-white/40 italic">Zatím žádná data o městech.</div>
               )}
           </div>
         </div>

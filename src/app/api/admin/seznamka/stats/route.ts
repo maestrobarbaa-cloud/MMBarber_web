@@ -23,6 +23,45 @@ export async function GET(request: Request) {
       value: g._count.seeking
     }));
 
+    // Action Breakdown (Like vs Pass)
+    const likesCount = await prisma.swipe.count({ where: { action: 'like' } });
+    const passesCount = await prisma.swipe.count({ where: { action: 'pass' } });
+
+    // Reports and Messages
+    const totalReports = await prisma.profile.aggregate({ _sum: { reportsCount: true } });
+    const totalMessages = await prisma.message.count();
+
+    // Top Cities
+    const cityGroup = await prisma.profile.groupBy({
+      by: ['city'],
+      _count: { city: true },
+      orderBy: { _count: { city: 'desc' } },
+      take: 5
+    });
+    const topCities = cityGroup.map(g => ({
+      name: g.city || 'Nezadáno',
+      value: g._count.city
+    }));
+
+    // Age Groups (simple map)
+    const allAges = await prisma.profile.findMany({ select: { age: true } });
+    let age1824 = 0;
+    let age2534 = 0;
+    let age35plus = 0;
+    allAges.forEach(p => {
+        const a = parseInt(p.age);
+        if (!isNaN(a)) {
+            if (a < 25) age1824++;
+            else if (a < 35) age2534++;
+            else age35plus++;
+        }
+    });
+    const ageGroups = [
+        { name: '18-24', value: age1824 },
+        { name: '25-34', value: age2534 },
+        { name: '35+', value: age35plus },
+    ];
+
     // Active Fragment Spawn
     const activeSpawn = await prisma.fragmentSpawn.findFirst({
       where: {
@@ -53,6 +92,12 @@ export async function GET(request: Request) {
         maleCount,
         femaleCount,
         categories,
+        likesCount,
+        passesCount,
+        totalReports: totalReports._sum.reportsCount || 0,
+        totalMessages,
+        topCities,
+        ageGroups,
         activeSpawn
       },
       settings: settingsMap
