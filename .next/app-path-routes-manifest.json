@@ -83,6 +83,7 @@
   "/api/profiles/rate/route": "/api/profiles/rate",
   "/api/profiles/route": "/api/profiles",
   "/api/progress/route": "/api/progress",
+  "/api/recruitment/status/route": "/api/recruitment/status",
   "/api/recruitment/submit/route": "/api/recruitment/submit",
   "/api/reviews/employer/route": "/api/reviews/employer",
   "/api/rewards/activity/route": "/api/rewards/activity",

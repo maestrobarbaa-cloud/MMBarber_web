@@ -636,6 +636,12 @@
       "namedRegex": "^/api/progress(?:/)?$"
     },
     {
+      "page": "/api/recruitment/status",
+      "regex": "^/api/recruitment/status(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/recruitment/status(?:/)?$"
+    },
+    {
       "page": "/api/recruitment/submit",
       "regex": "^/api/recruitment/submit(?:/)?$",
       "routeKeys": {},
