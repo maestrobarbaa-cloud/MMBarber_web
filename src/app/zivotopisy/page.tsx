@@ -327,9 +327,9 @@ export default function BiographiesPage() {
     setIsVoting(false);
   };
 
-  const isTomasFullyUnlocked = isTomasUnlocked || cheatUnlocked;
-  const isNellaFullyUnlocked = isNellaUnlocked || cheatUnlocked;
-  const effectiveTotalCollected = cheatUnlocked ? 99 : totalCollected;
+  const isTomasFullyUnlocked = true; // was: isTomasUnlocked || cheatUnlocked;
+  const isNellaFullyUnlocked = true; // was: isNellaUnlocked || cheatUnlocked;
+  const effectiveTotalCollected = 10; // was: cheatUnlocked ? 99 : totalCollected;
   
   // Need activeBarber safe fallback early if loading is done
   const activeBarberTemp = barbers.find(b => b.id === selectedBarberId) || barbers[0] || { id: "tomas" };
