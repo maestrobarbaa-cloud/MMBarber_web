@@ -23,7 +23,7 @@ export async function ensureHiddenFragment(userId: string) {
   // Zkontrolujeme, kdy byl vytvořen poslední spawn (abychom zabránili neustálému spawnování)
   const lastSpawn = await prisma.fragmentSpawn.findFirst({
     where: { userId },
-    orderBy: { createdAt: 'desc' }
+    orderBy: { spawnedAt: 'desc' }
   });
 
   if (lastSpawn) {
