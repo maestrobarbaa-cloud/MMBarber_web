@@ -362,26 +362,13 @@ export default function BiographiesPage() {
 
   const activeRating = getBarberRatingData(activeBarberSafe.id);
 
-  const isPhotoUnlocked = activeBarberSafe.id === "tomas" ? effectiveTotalCollected >= 2 : (activeBarberSafe.id === "nella" ? true : false);
-  const isFullyUnlocked = activeBarberSafe.id === "tomas" ? isTomasFullyUnlocked : (activeBarberSafe.id === "nella" ? true : false);
+  const isPhotoUnlocked = true;
+  const isFullyUnlocked = true;
   
   // Calculate how many text parts to show
   // Fallback to match to avoid Safari syntax error on lookbehinds
   const textParts = activeBarberSafe.desc.match(/.*?[.?!](?:\s+|$)|.+/g)?.map(s => s.trim()) || [activeBarberSafe.desc];
-  let textPartsToShow = 0;
-  
-  if (activeBarberSafe.id === "tomas") {
-    if (effectiveTotalCollected >= 3) textPartsToShow = Math.ceil(textParts.length / 2);
-    if (effectiveTotalCollected >= 4) textPartsToShow = textParts.length;
-  } else if (activeBarberSafe.id === "nella") {
-    if (effectiveTotalCollected >= 6) textPartsToShow = Math.floor(textParts.length / 3);
-    if (effectiveTotalCollected >= 8) textPartsToShow = Math.floor(textParts.length * (2/3));
-    if (effectiveTotalCollected >= 10) textPartsToShow = textParts.length;
-  }
-  
-  if (cheatUnlocked) {
-    textPartsToShow = textParts.length;
-  }
+  let textPartsToShow = textParts.length;
   
   const visibleText = textParts.slice(0, textPartsToShow).join(' ');
   const hiddenText = textParts.slice(textPartsToShow).join(' ');
