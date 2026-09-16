@@ -804,6 +804,13 @@ export default function BiographiesPage() {
                   </div>
                 )}
 
+                {/* DNA Model for Tomas */}
+                {isTomasVisible && isFullyUnlocked && (
+                  <div className="w-full relative flex justify-center items-center h-[500px] z-0 mb-8 pointer-events-auto">
+                    <AnimusDNA3D isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
+                  </div>
+                )}
+
                 {/* PROPOJOVACÍ LINIE & SLOTY (Perfektně centrované) */}
                 <div className="w-full flex flex-col items-center relative -mt-4 md:-mt-8 z-10 pointer-events-none">
                   {/* Hlavní svislá linie z Toma */}
@@ -972,13 +979,6 @@ export default function BiographiesPage() {
                 <span>{lang === 'cs' ? "Zpět na hierarchii" : "Back to Hierarchy"}</span>
               </button>
               <TomasSkillTree totalCollected={effectiveTotalCollected} lang={lang} isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
-              
-              {/* DNA Model for Tomas */}
-              {isFullyUnlocked && (
-                <div className="w-full my-8 relative flex justify-center items-center">
-                  <AnimusDNA3D isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
-                </div>
-              )}
             </motion.div>
           ) : (
             /* DOSSIER DETAIL MODE */
