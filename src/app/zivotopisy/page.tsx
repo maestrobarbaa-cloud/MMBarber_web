@@ -37,6 +37,7 @@ import {
 import { TomasSkillTree } from "@/components/TomasSkillTree";
 import { HiddenSeoArchive } from "@/components/HiddenSEOArchive";
 import { InteractiveParticles } from "@/components/InteractiveParticles";
+import { AnimusDNA3D } from "@/components/AnimusDNA3D";
 
 export default function BiographiesPage() {
   const { lang } = useTranslation();
@@ -1385,6 +1386,13 @@ export default function BiographiesPage() {
                       </motion.div>
                     )}
                   </AnimatePresence>
+
+                  {/* DNA Model */}
+                  {isFullyUnlocked && (
+                    <div className="w-full my-8 relative flex justify-center items-center">
+                      <AnimusDNA3D isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
+                    </div>
+                  )}
 
                   {/* Call to action & switch bar */}
                   <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row gap-4">
