@@ -19,7 +19,6 @@ import { trackEvent } from "../utils/analytics";
 import { EvasiveButton } from "./EvasiveButton";
 import { type Language } from "../hooks/useTranslation";
 import { ChevronDown } from "lucide-react";
-import { GameFragment } from "./GameFragment";
 
 const CzFlag = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" className="w-4 h-3 rounded-[2px] shadow-sm shrink-0">
@@ -832,8 +831,6 @@ export function Footer() {
           </div>
         </div>
       </div>
-
-      <GameFragment id="footer_frag_1" className="bottom-20 right-12 md:right-24" size={35} delay={1500} />
     </footer>
   );
 }

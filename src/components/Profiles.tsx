@@ -8,7 +8,6 @@ import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { playSound } from "../utils/audio";
-import { GameFragment } from "./GameFragment";
 import { useBarbers } from "@/contexts/BarberContext";
 import { useGame } from "@/contexts/GameContext";
 import { OperativeModal } from "./OperativeModal";
@@ -402,9 +401,6 @@ export function Profiles() {
       className={`relative w-full pt-10 md:pt-20 pb-4 md:pb-8 px-4 md:px-12 bg-transparent flex flex-col items-center scroll-mt-32 ${graphicsTier !== 'lite' ? 'border-t-8 border-mafia-dark' : ''}`}
     >
       {graphicsTier !== 'lite' && <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/black-paper.png')" }}></div>}
-      
-      {graphicsTier !== 'lite' && <GameFragment id="hero_frag_1" className="top-48 left-12 md:left-24" size={40} delay={2000} />}
-      {graphicsTier !== 'lite' && <GameFragment id="hero_frag_2" className="bottom-40 right-16 md:right-32" size={30} delay={4500} />}
       <div className="relative z-10 w-full flex flex-col items-center">
         <div className="max-w-[1600px] mx-auto w-full">
             <div className="w-full">

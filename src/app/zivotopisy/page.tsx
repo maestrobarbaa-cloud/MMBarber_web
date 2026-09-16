@@ -972,6 +972,13 @@ export default function BiographiesPage() {
                 <span>{lang === 'cs' ? "Zpět na hierarchii" : "Back to Hierarchy"}</span>
               </button>
               <TomasSkillTree totalCollected={effectiveTotalCollected} lang={lang} isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
+              
+              {/* DNA Model for Tomas */}
+              {isFullyUnlocked && (
+                <div className="w-full my-8 relative flex justify-center items-center">
+                  <AnimusDNA3D isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
+                </div>
+              )}
             </motion.div>
           ) : (
             /* DOSSIER DETAIL MODE */

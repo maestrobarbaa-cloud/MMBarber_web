@@ -23,7 +23,6 @@ import { useUI } from "@/contexts/UIContext";
 import { trackEvent } from "../utils/analytics";
 import { playSound } from "../utils/audio";
 import { getUserRatingsData } from "@/utils/voting";
-import { GameFragment } from "./GameFragment";
 import { useGame } from "@/contexts/GameContext";
 import { getMegaMenuData } from "@/data/megaMenuData";
 
