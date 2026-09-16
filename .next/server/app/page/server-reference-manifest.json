@@ -1,6 +1,6 @@
 {
   "node": {
-    "70b81f7257f135fe7e1f533d03ceab05af0a81755c": {
+    "706e9aeb0853ac0232b7202fede8b69f4131acfd4f": {
       "workers": {
         "app/page": {
           "moduleId": 249336,
@@ -12,7 +12,7 @@
       "exportedName": "getHistoricalEvents",
       "filename": "src/actions/fetchHistoricalEvents.ts"
     },
-    "00a9143dd04d774f0fa87f685edd368a0673c88ede": {
+    "00bc65020b4fc51cbbe0322ef6aaeab6a6907d1cc1": {
       "workers": {
         "app/page": {
           "moduleId": 249336,
@@ -24,7 +24,7 @@
       "exportedName": "getGlobalStatsAction",
       "filename": "src/app/actions/barberXp.ts"
     },
-    "60ef0a738b9723566ebcd665e94b6d7bb974cc9a11": {
+    "60400d56462f6d5d0686db69e38334c6d7116b4686": {
       "workers": {
         "app/page": {
           "moduleId": 249336,
@@ -36,7 +36,7 @@
       "exportedName": "addVoteToBarberStatAction",
       "filename": "src/app/actions/barberXp.ts"
     },
-    "00c8337f78387774504e0b3dc20bcd76f88a1dbbf5": {
+    "00d8bd853054853f2c4bcbf2919a0bc4c693b2949c": {
       "workers": {
         "app/page": {
           "moduleId": 249336,
@@ -48,7 +48,7 @@
       "exportedName": "getStatusAction",
       "filename": "src/app/actions/status.ts"
     },
-    "40aea1e02b3f2c98eb3704372e72dca07277062ca0": {
+    "40873d248559d29857d160232c92be9a5caf1bb5a8": {
       "workers": {
         "app/page": {
           "moduleId": 249336,
@@ -60,7 +60,7 @@
       "exportedName": "setStatusAction",
       "filename": "src/app/actions/status.ts"
     },
-    "00d7e4b079db1d92ba0e8f2556b464c577da39d74f": {
+    "004b5152e891eff815c0321da2df179d100a93310b": {
       "workers": {
         "app/page": {
           "moduleId": 249336,
@@ -72,7 +72,7 @@
       "exportedName": "getNicknamesAction",
       "filename": "src/app/actions/nicknames.ts"
     },
-    "60da366c8b599c3b9082841c64ee4239e3ce70dfce": {
+    "6053e609cf77b94a06304cea637c253f69c2c6e9ad": {
       "workers": {
         "app/page": {
           "moduleId": 249336,

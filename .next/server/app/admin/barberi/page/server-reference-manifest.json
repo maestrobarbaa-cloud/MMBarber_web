@@ -1,6 +1,6 @@
 {
   "node": {
-    "70b81f7257f135fe7e1f533d03ceab05af0a81755c": {
+    "706e9aeb0853ac0232b7202fede8b69f4131acfd4f": {
       "workers": {
         "app/admin/barberi/page": {
           "moduleId": 655804,
@@ -12,7 +12,7 @@
       "exportedName": "getHistoricalEvents",
       "filename": "src/actions/fetchHistoricalEvents.ts"
     },
-    "00c8337f78387774504e0b3dc20bcd76f88a1dbbf5": {
+    "00d8bd853054853f2c4bcbf2919a0bc4c693b2949c": {
       "workers": {
         "app/admin/barberi/page": {
           "moduleId": 655804,
@@ -24,7 +24,7 @@
       "exportedName": "getStatusAction",
       "filename": "src/app/actions/status.ts"
     },
-    "40aea1e02b3f2c98eb3704372e72dca07277062ca0": {
+    "40873d248559d29857d160232c92be9a5caf1bb5a8": {
       "workers": {
         "app/admin/barberi/page": {
           "moduleId": 655804,

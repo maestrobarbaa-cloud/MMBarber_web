@@ -192,6 +192,11 @@ export function RecruitmentPhase1() {
         body: JSON.stringify({ phase: 1, answers, contact: contactInfo })
       });
       const data = await response.json();
+      
+      if (data.applicantId) {
+        localStorage.setItem('mmbarber_applicant_id', data.applicantId);
+      }
+
       if (data.status === 'PASSED' || data.status === 'BORDERLINE') {
         setResult('PASSED');
       } else {

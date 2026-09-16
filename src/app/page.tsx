@@ -31,6 +31,7 @@ import { CinematicSequence737 } from "@/components/CinematicSequence737";
 import { MafiaClickEffects } from "@/components/MafiaClickEffects";
 import { HiddenSeoArchive } from '@/components/HiddenSEOArchive';
 import { useTranslation } from "@/hooks/useTranslation";
+import { RecruitmentNotification } from "@/components/RecruitmentNotification";
 
 // SectionReveal defined outside to prevent re-initialization on parent render
 const SectionReveal = ({ children, delay = 0, isMobile, isMobileEffectsEnabled }: { children: React.ReactNode, delay?: number, isMobile: boolean, isMobileEffectsEnabled: boolean }) => {
@@ -110,6 +111,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen relative">
       <MafiaClickEffects />
+      <RecruitmentNotification />
       
       {!isIntroDismissed && (
         <CinematicIntro onDismiss={(action) => {

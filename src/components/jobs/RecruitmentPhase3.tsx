@@ -172,6 +172,9 @@ export function RecruitmentPhase3({ email }: { email: string }) {
         body: JSON.stringify({ phase: 3, answers, contact: { email } })
       });
       const data = await response.json();
+      if (data.applicantId) {
+        localStorage.setItem('mmbarber_applicant_id', data.applicantId);
+      }
       setResult('DONE');
     } catch (e) {
       console.error(e);

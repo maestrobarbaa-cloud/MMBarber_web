@@ -83,6 +83,7 @@
   "/api/profiles/rate/route": "app/api/profiles/rate/route.js",
   "/api/profiles/route": "app/api/profiles/route.js",
   "/api/progress/route": "app/api/progress/route.js",
+  "/api/recruitment/status/route": "app/api/recruitment/status/route.js",
   "/api/recruitment/submit/route": "app/api/recruitment/submit/route.js",
   "/api/reviews/employer/route": "app/api/reviews/employer/route.js",
   "/api/rewards/activity/route": "app/api/rewards/activity/route.js",

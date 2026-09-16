@@ -1,6 +1,6 @@
 {
   "node": {
-    "70b81f7257f135fe7e1f533d03ceab05af0a81755c": {
+    "706e9aeb0853ac0232b7202fede8b69f4131acfd4f": {
       "workers": {
         "app/hodnoceni/page": {
           "moduleId": 619155,
@@ -12,7 +12,7 @@
       "exportedName": "getHistoricalEvents",
       "filename": "src/actions/fetchHistoricalEvents.ts"
     },
-    "00a9143dd04d774f0fa87f685edd368a0673c88ede": {
+    "00bc65020b4fc51cbbe0322ef6aaeab6a6907d1cc1": {
       "workers": {
         "app/hodnoceni/page": {
           "moduleId": 619155,
@@ -24,7 +24,7 @@
       "exportedName": "getGlobalStatsAction",
       "filename": "src/app/actions/barberXp.ts"
     },
-    "60ef0a738b9723566ebcd665e94b6d7bb974cc9a11": {
+    "60400d56462f6d5d0686db69e38334c6d7116b4686": {
       "workers": {
         "app/hodnoceni/page": {
           "moduleId": 619155,
