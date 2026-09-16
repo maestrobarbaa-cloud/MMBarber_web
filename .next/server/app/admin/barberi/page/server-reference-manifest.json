@@ -1,0 +1,41 @@
+{
+  "node": {
+    "70b81f7257f135fe7e1f533d03ceab05af0a81755c": {
+      "workers": {
+        "app/admin/barberi/page": {
+          "moduleId": 655804,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        }
+      },
+      "exportedName": "getHistoricalEvents",
+      "filename": "src/actions/fetchHistoricalEvents.ts"
+    },
+    "00c8337f78387774504e0b3dc20bcd76f88a1dbbf5": {
+      "workers": {
+        "app/admin/barberi/page": {
+          "moduleId": 655804,
+          "async": false,
+          "exportedName": "getStatusAction",
+          "filename": "src/app/actions/status.ts"
+        }
+      },
+      "exportedName": "getStatusAction",
+      "filename": "src/app/actions/status.ts"
+    },
+    "40aea1e02b3f2c98eb3704372e72dca07277062ca0": {
+      "workers": {
+        "app/admin/barberi/page": {
+          "moduleId": 655804,
+          "async": false,
+          "exportedName": "setStatusAction",
+          "filename": "src/app/actions/status.ts"
+        }
+      },
+      "exportedName": "setStatusAction",
+      "filename": "src/app/actions/status.ts"
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/provozni-rad/layout,_N_T_/provozni-rad/page,_N_T_/provozni-rad"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/provozni-rad/__PAGE__",
+    "/provozni-rad",
+    "/_index",
+    "/_head"
+  ]
+}

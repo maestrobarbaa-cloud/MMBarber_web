@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/komunita/layout,_N_T_/komunita/chat/layout,_N_T_/komunita/chat/page,_N_T_/komunita/chat"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/komunita/chat/__PAGE__",
+    "/komunita/chat",
+    "/komunita",
+    "/_index",
+    "/_head"
+  ]
+}

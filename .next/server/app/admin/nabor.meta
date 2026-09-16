@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/admin/layout,_N_T_/admin/nabor/layout,_N_T_/admin/nabor/page,_N_T_/admin/nabor"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/admin/nabor/__PAGE__",
+    "/admin/nabor",
+    "/admin",
+    "/_index",
+    "/_head"
+  ]
+}

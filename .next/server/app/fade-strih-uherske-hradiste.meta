@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/fade-strih-uherske-hradiste/layout,_N_T_/fade-strih-uherske-hradiste/page,_N_T_/fade-strih-uherske-hradiste"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/fade-strih-uherske-hradiste/__PAGE__",
+    "/fade-strih-uherske-hradiste",
+    "/_index",
+    "/_head"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/barbershop-stare-mesto/layout,_N_T_/barbershop-stare-mesto/page,_N_T_/barbershop-stare-mesto"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/barbershop-stare-mesto/__PAGE__",
+    "/barbershop-stare-mesto",
+    "/_index",
+    "/_head"
+  ]
+}

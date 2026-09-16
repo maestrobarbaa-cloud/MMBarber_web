@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/region-slovacko/layout,_N_T_/region-slovacko/page,_N_T_/region-slovacko"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/region-slovacko/__PAGE__",
+    "/region-slovacko",
+    "/_index",
+    "/_head"
+  ]
+}

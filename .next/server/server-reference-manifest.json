@@ -1,0 +1,822 @@
+{
+  "node": {
+    "70b81f7257f135fe7e1f533d03ceab05af0a81755c": {
+      "workers": {
+        "app/3d-experience/page": {
+          "moduleId": 562883,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/3d-lab/page": {
+          "moduleId": 504578,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/_not-found/page": {
+          "moduleId": 986936,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/barberi/page": {
+          "moduleId": 655804,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/dashboard/page": {
+          "moduleId": 798839,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/kompromitovane-ucty/page": {
+          "moduleId": 528173,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/komunita/chat/page": {
+          "moduleId": 836206,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/komunita/historky/page": {
+          "moduleId": 856877,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/komunita/novinky/page": {
+          "moduleId": 698427,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/komunita/sin-slavy/page": {
+          "moduleId": 550603,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/komunita/zlepseni/page": {
+          "moduleId": 789245,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/moderation/page": {
+          "moduleId": 407830,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/nabor/page": {
+          "moduleId": 40168,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/page": {
+          "moduleId": 309325,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/rezervace/page": {
+          "moduleId": 491420,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/seznamka/page": {
+          "moduleId": 399021,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/viditelnost/page": {
+          "moduleId": 751072,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/vouchery/page": {
+          "moduleId": 289779,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/vyherci/page": {
+          "moduleId": 730639,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/admin/zivotopis/page": {
+          "moduleId": 779680,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/akademie/page": {
+          "moduleId": 708583,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/auth/compromised/page": {
+          "moduleId": 182130,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbergames/page": {
+          "moduleId": 94266,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-hodonin/page": {
+          "moduleId": 280899,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-kunovice/page": {
+          "moduleId": 781985,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-kyjov/page": {
+          "moduleId": 422610,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-luhacovice/page": {
+          "moduleId": 965171,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-napajedla/page": {
+          "moduleId": 282641,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-otrokovice/page": {
+          "moduleId": 570390,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-stare-mesto/page": {
+          "moduleId": 844757,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-uherske-hradiste/page": {
+          "moduleId": 439681,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-uhersky-brod/page": {
+          "moduleId": 648149,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-veseli-nad-moravou/page": {
+          "moduleId": 641194,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/barbershop-zlin/page": {
+          "moduleId": 706202,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/blackfriday-darkweb/page": {
+          "moduleId": 746547,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/blog/[slug]/page": {
+          "moduleId": 330249,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/blog/page": {
+          "moduleId": 740313,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/cenik/page": {
+          "moduleId": 367858,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/company/register/page": {
+          "moduleId": 428584,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/dashboard/company/page": {
+          "moduleId": 571088,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/dashboard/company/vouchers/page": {
+          "moduleId": 959354,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/donate-wall/page": {
+          "moduleId": 421856,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/fade-gallery/page": {
+          "moduleId": 334912,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/fade-strih-uherske-hradiste/page": {
+          "moduleId": 915024,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/faq/page": {
+          "moduleId": 571219,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/franchise/page": {
+          "moduleId": 382750,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/galerie/page": {
+          "moduleId": 680241,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/global-standards/page": {
+          "moduleId": 956641,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/grafika/page": {
+          "moduleId": 805561,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/halloween-sins/page": {
+          "moduleId": 555750,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/hodnoceni/page": {
+          "moduleId": 619155,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/hry/page": {
+          "moduleId": 266583,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/jak-to-chodi/page": {
+          "moduleId": 425430,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/jobs/page": {
+          "moduleId": 781400,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/kariera/faze3/page": {
+          "moduleId": 228984,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/kariera/page": {
+          "moduleId": 657810,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/komunita/chat/page": {
+          "moduleId": 957107,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/komunita/historky/page": {
+          "moduleId": 350673,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/komunita/hodnoceni/page": {
+          "moduleId": 16657,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/komunita/nabor/page": {
+          "moduleId": 389117,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/komunita/novinky/page": {
+          "moduleId": 899232,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/komunita/page": {
+          "moduleId": 916858,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/komunita/projekty/page": {
+          "moduleId": 470935,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/komunita/sin-slavy/page": {
+          "moduleId": 206463,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/komunita/zlepseni/page": {
+          "moduleId": 334612,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/lokalni-sit/page": {
+          "moduleId": 198213,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/losovat-barbera/page": {
+          "moduleId": 176372,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/moje-cesta/page": {
+          "moduleId": 826253,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/nastaveni/page": {
+          "moduleId": 981330,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/newyear-tarot/page": {
+          "moduleId": 661822,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/obchodni-podminky/page": {
+          "moduleId": 784530,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/ochrana-osobnich-udaju/page": {
+          "moduleId": 409419,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/offline/page": {
+          "moduleId": 946847,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/operativni-denik/page": {
+          "moduleId": 504545,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/oznameni-a-rozhrani/page": {
+          "moduleId": 667308,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/panske-holictvi-maratice/page": {
+          "moduleId": 625371,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/pansky-strih-uherske-hradiste/page": {
+          "moduleId": 32714,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/payment/page": {
+          "moduleId": 55617,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/pece/page": {
+          "moduleId": 154964,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/physics-demo/page": {
+          "moduleId": 54255,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/podminky-pouzivani/page": {
+          "moduleId": 249018,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/postup/page": {
+          "moduleId": 538448,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/prednasky/page": {
+          "moduleId": 96915,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/pribeh/page": {
+          "moduleId": 361530,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/provozni-rad/page": {
+          "moduleId": 922772,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/recenze/page": {
+          "moduleId": 486994,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/region-slovacko/page": {
+          "moduleId": 879003,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/rodina/page": {
+          "moduleId": 31888,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/rodina/remesla/page": {
+          "moduleId": 714996,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/seznamka/akce/page": {
+          "moduleId": 661140,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/seznamka/fronta/page": {
+          "moduleId": 668814,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/seznamka/page": {
+          "moduleId": 13645,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/seznamka/verify/page": {
+          "moduleId": 420741,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/skryta-mista/page": {
+          "moduleId": 124394,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/sluzby/pansky-strih/page": {
+          "moduleId": 355335,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/sluzby/uprava-vousu/page": {
+          "moduleId": 114417,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/specialni-mise/page": {
+          "moduleId": 318648,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/strih-vousy-detail/page": {
+          "moduleId": 924252,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/summer-vice/page": {
+          "moduleId": 733179,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/system-a-navsteva/page": {
+          "moduleId": 687022,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/the-cheats/page": {
+          "moduleId": 47851,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/uprava-vousu-uherske-hradiste/page": {
+          "moduleId": 885688,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/uzivatel/page": {
+          "moduleId": 920631,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/valentynmatch/page": {
+          "moduleId": 508309,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/vip-club/page": {
+          "moduleId": 342645,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/vize/page": {
+          "moduleId": 324752,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/vouchery/page": {
+          "moduleId": 463839,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/xmas-ledger/page": {
+          "moduleId": 627614,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/zajimavosti/page": {
+          "moduleId": 452931,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/zapisnik/page": {
+          "moduleId": 556786,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/zasady-cookies/page": {
+          "moduleId": 324559,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        },
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        }
+      },
+      "filename": "src/actions/fetchHistoricalEvents.ts",
+      "exportedName": "getHistoricalEvents"
+    },
+    "00a9143dd04d774f0fa87f685edd368a0673c88ede": {
+      "workers": {
+        "app/hodnoceni/page": {
+          "moduleId": 619155,
+          "async": false,
+          "exportedName": "getGlobalStatsAction",
+          "filename": "src/app/actions/barberXp.ts"
+        },
+        "app/losovat-barbera/page": {
+          "moduleId": 176372,
+          "async": false,
+          "exportedName": "getGlobalStatsAction",
+          "filename": "src/app/actions/barberXp.ts"
+        },
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "getGlobalStatsAction",
+          "filename": "src/app/actions/barberXp.ts"
+        },
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "getGlobalStatsAction",
+          "filename": "src/app/actions/barberXp.ts"
+        }
+      },
+      "filename": "src/app/actions/barberXp.ts",
+      "exportedName": "getGlobalStatsAction"
+    },
+    "60ef0a738b9723566ebcd665e94b6d7bb974cc9a11": {
+      "workers": {
+        "app/hodnoceni/page": {
+          "moduleId": 619155,
+          "async": false,
+          "exportedName": "addVoteToBarberStatAction",
+          "filename": "src/app/actions/barberXp.ts"
+        },
+        "app/losovat-barbera/page": {
+          "moduleId": 176372,
+          "async": false,
+          "exportedName": "addVoteToBarberStatAction",
+          "filename": "src/app/actions/barberXp.ts"
+        },
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "addVoteToBarberStatAction",
+          "filename": "src/app/actions/barberXp.ts"
+        },
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "addVoteToBarberStatAction",
+          "filename": "src/app/actions/barberXp.ts"
+        }
+      },
+      "filename": "src/app/actions/barberXp.ts",
+      "exportedName": "addVoteToBarberStatAction"
+    },
+    "00c8337f78387774504e0b3dc20bcd76f88a1dbbf5": {
+      "workers": {
+        "app/admin/barberi/page": {
+          "moduleId": 655804,
+          "async": false,
+          "exportedName": "getStatusAction",
+          "filename": "src/app/actions/status.ts"
+        },
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "getStatusAction",
+          "filename": "src/app/actions/status.ts"
+        }
+      },
+      "filename": "src/app/actions/status.ts",
+      "exportedName": "getStatusAction"
+    },
+    "40aea1e02b3f2c98eb3704372e72dca07277062ca0": {
+      "workers": {
+        "app/admin/barberi/page": {
+          "moduleId": 655804,
+          "async": false,
+          "exportedName": "setStatusAction",
+          "filename": "src/app/actions/status.ts"
+        },
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "setStatusAction",
+          "filename": "src/app/actions/status.ts"
+        }
+      },
+      "filename": "src/app/actions/status.ts",
+      "exportedName": "setStatusAction"
+    },
+    "00d7e4b079db1d92ba0e8f2556b464c577da39d74f": {
+      "workers": {
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "getNicknamesAction",
+          "filename": "src/app/actions/nicknames.ts"
+        },
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "getNicknamesAction",
+          "filename": "src/app/actions/nicknames.ts"
+        }
+      },
+      "filename": "src/app/actions/nicknames.ts",
+      "exportedName": "getNicknamesAction"
+    },
+    "60da366c8b599c3b9082841c64ee4239e3ce70dfce": {
+      "workers": {
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "addNicknameVoteAction",
+          "filename": "src/app/actions/nicknames.ts"
+        },
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "addNicknameVoteAction",
+          "filename": "src/app/actions/nicknames.ts"
+        }
+      },
+      "filename": "src/app/actions/nicknames.ts",
+      "exportedName": "addNicknameVoteAction"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "AamdLddnmMRA6Mjq8DpoKcKX9UY9rcnRt/zSnqt1TZU="
+}

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate && node scripts/build.mjs",
+    "build": "npx prisma generate && echo 'Pre-built .next directory is shipped with the repo - skipping next build on server.'",
+    "build:local": "npx prisma generate && node scripts/build.mjs",
     "start": "next start",
     "lint": "eslint"
   },

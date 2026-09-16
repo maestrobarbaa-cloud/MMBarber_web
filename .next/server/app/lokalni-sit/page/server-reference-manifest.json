@@ -1,0 +1,17 @@
+{
+  "node": {
+    "70b81f7257f135fe7e1f533d03ceab05af0a81755c": {
+      "workers": {
+        "app/lokalni-sit/page": {
+          "moduleId": 198213,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        }
+      },
+      "exportedName": "getHistoricalEvents",
+      "filename": "src/actions/fetchHistoricalEvents.ts"
+    }
+  },
+  "edge": {}
+}

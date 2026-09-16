@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/admin/layout,_N_T_/admin/barberi/layout,_N_T_/admin/barberi/page,_N_T_/admin/barberi"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/admin/barberi/__PAGE__",
+    "/admin/barberi",
+    "/admin",
+    "/_index",
+    "/_head"
+  ]
+}

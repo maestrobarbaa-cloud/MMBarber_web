@@ -1,0 +1,3 @@
+module.exports=[532183,a=>{"use strict";var b=a.i(187924);let c=(0,a.i(819721).default)(async()=>{},{loadableGenerated:{modules:[725555]},ssr:!1,loading:()=>(0,b.jsx)("div",{className:"experience-loading",children:(0,b.jsxs)("div",{className:"experience-loading__inner",children:[(0,b.jsx)("div",{className:"experience-loading__spinner"}),(0,b.jsx)("p",{className:"experience-loading__text",children:"Načítám 3D scénu…"})]})})});a.s(["default",0,function(){return(0,b.jsx)("main",{className:"experience-page",children:(0,b.jsx)(c,{})})}])}];
+
+//# sourceMappingURL=src_app_3d-experience_page_tsx_0id0x.k._.js.map

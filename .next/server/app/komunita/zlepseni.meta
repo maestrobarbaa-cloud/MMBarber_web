@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/komunita/layout,_N_T_/komunita/zlepseni/layout,_N_T_/komunita/zlepseni/page,_N_T_/komunita/zlepseni"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/komunita/zlepseni/__PAGE__",
+    "/komunita/zlepseni",
+    "/komunita",
+    "/_index",
+    "/_head"
+  ]
+}

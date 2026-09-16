@@ -1,0 +1,41 @@
+{
+  "node": {
+    "70b81f7257f135fe7e1f533d03ceab05af0a81755c": {
+      "workers": {
+        "app/losovat-barbera/page": {
+          "moduleId": 176372,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        }
+      },
+      "exportedName": "getHistoricalEvents",
+      "filename": "src/actions/fetchHistoricalEvents.ts"
+    },
+    "00a9143dd04d774f0fa87f685edd368a0673c88ede": {
+      "workers": {
+        "app/losovat-barbera/page": {
+          "moduleId": 176372,
+          "async": false,
+          "exportedName": "getGlobalStatsAction",
+          "filename": "src/app/actions/barberXp.ts"
+        }
+      },
+      "exportedName": "getGlobalStatsAction",
+      "filename": "src/app/actions/barberXp.ts"
+    },
+    "60ef0a738b9723566ebcd665e94b6d7bb974cc9a11": {
+      "workers": {
+        "app/losovat-barbera/page": {
+          "moduleId": 176372,
+          "async": false,
+          "exportedName": "addVoteToBarberStatAction",
+          "filename": "src/app/actions/barberXp.ts"
+        }
+      },
+      "exportedName": "addVoteToBarberStatAction",
+      "filename": "src/app/actions/barberXp.ts"
+    }
+  },
+  "edge": {}
+}

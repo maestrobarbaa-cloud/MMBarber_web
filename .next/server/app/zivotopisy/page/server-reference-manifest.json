@@ -1,0 +1,65 @@
+{
+  "node": {
+    "70b81f7257f135fe7e1f533d03ceab05af0a81755c": {
+      "workers": {
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        }
+      },
+      "exportedName": "getHistoricalEvents",
+      "filename": "src/actions/fetchHistoricalEvents.ts"
+    },
+    "00a9143dd04d774f0fa87f685edd368a0673c88ede": {
+      "workers": {
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "getGlobalStatsAction",
+          "filename": "src/app/actions/barberXp.ts"
+        }
+      },
+      "exportedName": "getGlobalStatsAction",
+      "filename": "src/app/actions/barberXp.ts"
+    },
+    "60ef0a738b9723566ebcd665e94b6d7bb974cc9a11": {
+      "workers": {
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "addVoteToBarberStatAction",
+          "filename": "src/app/actions/barberXp.ts"
+        }
+      },
+      "exportedName": "addVoteToBarberStatAction",
+      "filename": "src/app/actions/barberXp.ts"
+    },
+    "00d7e4b079db1d92ba0e8f2556b464c577da39d74f": {
+      "workers": {
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "getNicknamesAction",
+          "filename": "src/app/actions/nicknames.ts"
+        }
+      },
+      "exportedName": "getNicknamesAction",
+      "filename": "src/app/actions/nicknames.ts"
+    },
+    "60da366c8b599c3b9082841c64ee4239e3ce70dfce": {
+      "workers": {
+        "app/zivotopisy/page": {
+          "moduleId": 399532,
+          "async": false,
+          "exportedName": "addNicknameVoteAction",
+          "filename": "src/app/actions/nicknames.ts"
+        }
+      },
+      "exportedName": "addNicknameVoteAction",
+      "filename": "src/app/actions/nicknames.ts"
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/nastaveni/layout,_N_T_/nastaveni/page,_N_T_/nastaveni"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/nastaveni/__PAGE__",
+    "/nastaveni",
+    "/_index",
+    "/_head"
+  ]
+}
