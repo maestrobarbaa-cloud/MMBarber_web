@@ -6,12 +6,12 @@ let args = ['cross-env', 'NODE_OPTIONS=--max-old-space-size=1536', 'next', 'buil
 
 // If running on Linux (which is what aaPanel uses), we forcefully restrict 
 // the CPU affinity of this process and all its children (Turbopack, SWC, Node)
-// to just 2 cores (0 and 1). This effectively caps CPU usage at 25% on an 8-core system,
-// completely bypassing the aaPanel "100% CPU Abuse" kill switch.
+// to 4 cores (0,1,2,3). This effectively caps CPU usage at 50% on an 8-core system,
+// completely bypassing the aaPanel "100% CPU Abuse" kill switch while still being fast enough to bypass the 120s timeout.
 if (os.platform() === 'linux') {
-  console.log('Linux OS detected: Applying OS-level CPU affinity (taskset) to restrict build to 2 cores. This prevents the aaPanel anti-abuse kill switch.');
+  console.log('Linux OS detected: Applying OS-level CPU affinity (taskset) to restrict build to 4 cores. This prevents the aaPanel anti-abuse kill switch.');
   command = 'taskset';
-  args = ['-c', '0,1', 'npx', 'cross-env', 'NODE_OPTIONS=--max-old-space-size=1536', 'next', 'build'];
+  args = ['-c', '0,1,2,3', 'npx', 'cross-env', 'NODE_OPTIONS=--max-old-space-size=1536', 'next', 'build'];
 } else {
   console.log('Non-Linux OS detected: Running normal unrestricted build.');
 }
