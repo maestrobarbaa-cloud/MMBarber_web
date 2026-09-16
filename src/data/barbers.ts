@@ -27,6 +27,6 @@ A pokud tě zajímá víc, stav se na střih. Heslo ti dám osobně. Zbytek si p
     rank: {
       level: 9,
       title: "GENERÁLNÍ ŘEDITEL STŘIHU",
-      status: 'stable'
     }
+  }
 ];
