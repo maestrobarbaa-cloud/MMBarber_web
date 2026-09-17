@@ -1354,3 +1354,18 @@ body:has(.lab-page) main {
 }
 
 
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   LITE MODE GLOBAL OPTIMIZATIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+html.lite-mode-active [class*="bg-[url"] {
+  background-image: none !important;
+}
+
+html.lite-mode-active [class*="mix-blend-"] {
+  mix-blend-mode: normal !important;
+}
+
+html.lite-mode-active .animate-pulse {
+  animation: none !important;
+}

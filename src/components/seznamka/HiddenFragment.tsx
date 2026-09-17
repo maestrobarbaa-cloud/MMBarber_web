@@ -11,8 +11,11 @@ interface HiddenFragmentProps {
 export function HiddenFragment({ onCollect }: HiddenFragmentProps) {
   const [position, setPosition] = useState({ top: 'auto', bottom: '6rem', left: 'auto', right: '2rem' });
   const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    
     // Generate random coordinates (10% to 85% of screen to avoid edges and headers)
     const randomTop = Math.floor(Math.random() * 75) + 10;
     const randomLeft = Math.floor(Math.random() * 75) + 10;
@@ -23,9 +26,13 @@ export function HiddenFragment({ onCollect }: HiddenFragmentProps) {
       right: 'auto'
     });
     setIsMounted(true);
+    
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  if (!isMounted) return null; // Avoid hydration mismatch on initial render
+  if (!isMounted || isMobile) return null; // Avoid hydration mismatch and hide on mobile
 
   return (
     <motion.button

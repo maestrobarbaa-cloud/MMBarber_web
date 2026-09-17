@@ -36,17 +36,9 @@ export function FragmentsProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isLoading && state?.canClaimDaily) {
-      // Auto claim daily
+      // Auto claim daily silently without annoying the user
       claimAction('DAILY_LOGIN').then((res) => {
         if (res && res.success) {
-          setModalState({
-            isOpen: true,
-            type: 'DAILY',
-            fragmentsAdded: 1,
-            currentFragments: res.fragments,
-            fragmentsPerCoin: state.fragmentsPerCoin,
-            coinsAdded: res.coinsAdded
-          });
           fetchState();
         }
       });
@@ -95,9 +87,7 @@ export function FragmentsProvider({ children }: { children: React.ReactNode }) {
     }}>
       {children}
       
-      {state?.activeSpawn && !state.canClaimDaily && (
-        <HiddenFragment onCollect={handleCollectHidden} />
-      )}
+      {/* Hidden fragment spawning disabled as per user request */}
 
       <FragmentRewardModal 
         isOpen={modalState.isOpen}

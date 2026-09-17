@@ -223,10 +223,15 @@ export default function AdminSuggestionsPage() {
                            </div>
 
                            <div className="space-y-3">
-                              {s.points.map((p, idx) => (
-                                <div key={idx} className="flex items-start gap-4">
+                              {s.content && (
+                                <div className="mb-4 bg-mafia-gold/5 p-4 border-l-2 border-mafia-gold/50">
+                                   <p className="text-xl text-white font-sans">{s.content}</p>
+                                </div>
+                              )}
+                              {s.points && s.points.map((p, idx) => (
+                                <div key={idx} className="flex items-start gap-4 opacity-70">
                                    <ChevronRight className="text-mafia-gold mt-1" size={14} />
-                                   <p className="text-lg text-white font-sans italic">{p}</p>
+                                   <p className="text-md text-white font-sans italic">{p}</p>
                                 </div>
                               ))}
                            </div>

@@ -98,6 +98,15 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isNoirMode, isBloodMode]);
 
+  // Sync lite mode class to DOM for global CSS optimizations
+  useEffect(() => {
+    if (graphicsTier === 'lite') {
+      document.documentElement.classList.add("lite-mode-active");
+    } else {
+      document.documentElement.classList.remove("lite-mode-active");
+    }
+  }, [graphicsTier]);
+
   return (
     <UIContext.Provider value={{
       isSoundEnabled, setIsSoundEnabled,

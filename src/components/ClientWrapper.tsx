@@ -25,6 +25,7 @@ const SlotMachine = dynamic(() => import("@/components/SlotMachine").then(mod =>
 const CorporateTricks = dynamic(() => import("@/components/CorporateTricks").then(mod => mod.CorporateTricks), { ssr: false });
 const SeasonalAtmosphere = dynamic(() => import("@/components/SeasonalAtmosphere").then(mod => mod.SeasonalAtmosphere), { ssr: false });
 const MobileCompass = dynamic(() => import("@/components/MobileCompass").then(mod => mod.MobileCompass), { ssr: false });
+const UserFeedbackWidget = dynamic(() => import("@/components/UserFeedbackWidget").then(mod => mod.UserFeedbackWidget), { ssr: false });
 const AchievementUnlocked = dynamic(() => import("@/components/AchievementUnlocked").then(mod => mod.AchievementUnlocked), { ssr: false });
 
 import { useGame } from "@/contexts/GameContext";
@@ -367,6 +368,7 @@ export function ClientWrapper() {
       )}
       
       <MobileCompass />
+      <UserFeedbackWidget />
       <AchievementUnlocked />
     </MotionConfig>
   );

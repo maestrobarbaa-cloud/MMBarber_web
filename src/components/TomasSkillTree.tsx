@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,7 +9,7 @@ export interface SkillNode {
   id: string;
   title: { cs: string; en: string };
   desc: { cs: string; en: string };
-  icon: React.ElementType;
+  icon: React.ElementType<any>;
   requiredFragments: number;
   position: { x: number; y: number }; // Relative positions (0-100)
   dependencies?: string[];

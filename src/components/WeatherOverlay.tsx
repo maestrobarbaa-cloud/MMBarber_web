@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { getLiveWeather, WeatherState } from "../lib/weather";
+import { useUI } from "../contexts/UIContext";
 
 type ExtendedWeatherState = WeatherState | 'loading';
 
 export function WeatherOverlay() {
+  const { graphicsTier } = useUI();
   const [weather, setWeather] = useState<ExtendedWeatherState>('loading');
   const [rainItems, setRainItems] = useState<{id: number, left: number, duration: number, delay: number, opacity: number}[]>([]);
   const [snowItems, setSnowItems] = useState<{id: number, left: number, duration: number, delay: number, size: number, opacity: number}[]>([]);
@@ -19,7 +21,14 @@ export function WeatherOverlay() {
     setIsMobile(window.innerWidth < 1280);
     const handleResize = () => setIsMobile(window.innerWidth < 1280);
     window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
+  if (graphicsTier === 'lite') {
+    return null;
+  }
+
+  useEffect(() => {
     const checkMobileEffects = () => {
         const enabled = localStorage.getItem("mmbarber_mobile_effects_enabled") === "true";
         setIsMobileEffectsEnabled(enabled);
@@ -28,7 +37,6 @@ export function WeatherOverlay() {
     window.addEventListener('mmbarber-mobile-effects-update', ((e: CustomEvent) => setIsMobileEffectsEnabled(e.detail)) as EventListener);
 
     return () => {
-        window.removeEventListener("resize", handleResize);
         window.removeEventListener('mmbarber-mobile-effects-update', ((e: CustomEvent) => setIsMobileEffectsEnabled(e.detail)) as EventListener);
     };
   }, []);

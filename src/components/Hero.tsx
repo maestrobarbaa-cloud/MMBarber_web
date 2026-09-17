@@ -498,40 +498,42 @@ export function Hero() {
         
         {/* MOBILE / TABLET TEXT & BUTTON OVER IMAGE */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-40 px-4 xl:hidden gap-6 sm:gap-8 pointer-events-auto">
-          <div 
-            onMouseEnter={() => setIsSloganHovered(true)}
-            onMouseLeave={() => setIsSloganHovered(false)}
-            className="hidden md:flex min-h-[120px] w-full flex-col items-center justify-center"
-          >
-            <div className="relative">
-              <AnimatePresence mode="wait">
-                <div
-                  key={displayText}
-                  className="flex flex-col items-center"
-                >
-                  <motion.h1
-                    className={`hero-slogan tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 will-change-transform transform-gpu ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-2xl xs:text-3xl sm:text-5xl md:text-6xl`}
-                    style={{
-                      fontFamily: "var(--font-great-vibes), cursive",
-                      filter: (isMobile || graphicsTier === 'low' || graphicsTier === 'lite') ? "drop-shadow(0 4px 6px rgba(0,0,0,0.8))" : (isEasterEgg 
-                        ? "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px var(--user-glow-radius) var(--user-glow-color))"
-                        : "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px 25px rgba(0,0,0,0.8))"),
-                      wordBreak: "break-word"
-                    }}
+          {graphicsTier !== 'lite' && (
+            <div 
+              onMouseEnter={() => setIsSloganHovered(true)}
+              onMouseLeave={() => setIsSloganHovered(false)}
+              className="hidden md:flex min-h-[120px] w-full flex-col items-center justify-center"
+            >
+              <div className="relative">
+                <AnimatePresence mode="wait">
+                  <div
+                    key={displayText}
+                    className="flex flex-col items-center"
                   >
-                    {isMounted && displayText && (
-                      <div className="opacity-[0.85]">
-                        {displayText}
-                      </div>
-                    )}
-                  </motion.h1>
+                    <motion.h1
+                      className={`hero-slogan tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 will-change-transform transform-gpu ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-2xl xs:text-3xl sm:text-5xl md:text-6xl`}
+                      style={{
+                        fontFamily: "var(--font-great-vibes), cursive",
+                        filter: (isMobile || graphicsTier === 'low' || graphicsTier === 'lite') ? "drop-shadow(0 4px 6px rgba(0,0,0,0.8))" : (isEasterEgg 
+                          ? "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px var(--user-glow-radius) var(--user-glow-color))"
+                          : "drop-shadow(0 2px 8px rgba(0,0,0,1)) drop-shadow(0 15px 25px rgba(0,0,0,0.8))"),
+                        wordBreak: "break-word"
+                      }}
+                    >
+                      {isMounted && displayText && (
+                        <div className="opacity-[0.85]">
+                          {displayText}
+                        </div>
+                      )}
+                    </motion.h1>
 
-                  {/* Mobile Perfect Mirror Reflection - Grouped for Sync */}
-                  {/* Mobile Reflection disabled for performance */}
-                </div>
-              </AnimatePresence>
+                    {/* Mobile Perfect Mirror Reflection - Grouped for Sync */}
+                    {/* Mobile Reflection disabled for performance */}
+                  </div>
+                </AnimatePresence>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="min-h-[60px] flex items-center justify-center">
             <motion.a
@@ -577,12 +579,13 @@ export function Hero() {
         }
       `}</style>
 
-      <div 
-        ref={containerRef} 
-        onMouseEnter={() => setIsSloganHovered(true)}
-        onMouseLeave={() => setIsSloganHovered(false)}
-        className="hidden xl:flex relative z-20 flex-col items-center gap-10 w-full max-w-7xl mx-auto text-center px-8 -mt-32 min-h-[160px] group/slogan"
-      >
+      {graphicsTier !== 'lite' && (
+        <div 
+          ref={containerRef} 
+          onMouseEnter={() => setIsSloganHovered(true)}
+          onMouseLeave={() => setIsSloganHovered(false)}
+          className="hidden xl:flex relative z-20 flex-col items-center gap-10 w-full max-w-7xl mx-auto text-center px-8 -mt-32 min-h-[160px] group/slogan"
+        >
         <div className="relative">
           <AnimatePresence mode="wait">
             <motion.div
@@ -694,6 +697,7 @@ export function Hero() {
           </AnimatePresence>
         </div>
       </div>
+      )}
 
       {/* DESKTOP GOLD MOTTO - Moved to Bottom Right with Mirror Effect */}
       {graphicsTier !== 'lite' && graphicsTier !== 'low' && (

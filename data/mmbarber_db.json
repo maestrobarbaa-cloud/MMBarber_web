@@ -63,7 +63,19 @@
     }
   ],
   "barber_novinky": [],
-  "suggestions": [],
+  "suggestions": [
+    {
+      "id": "d6f50369-692b-4fb0-abd7-8f8bebd2d071",
+      "user": "tom",
+      "userId": "test@test.test",
+      "content": "dfsgsfdfd",
+      "points": "[\"Zadáno přes rychlý widget\"]",
+      "userPriority": 5,
+      "status": "PENDING",
+      "likes": "[]",
+      "createdAt": 1789640233816
+    }
+  ],
   "hall_of_fame": [],
   "settings": {
     "visibility_barber_tomas": "true",

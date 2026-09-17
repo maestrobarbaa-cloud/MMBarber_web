@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { getFeedbackAdminAction } from "@/app/actions/feedback";
+import { getCooperationAdminAction } from "@/app/actions/cooperation";
 import { motion } from "framer-motion";
 import { 
   ShieldCheck, 
@@ -19,7 +21,9 @@ import {
   Bell,
   Eye,
   Scissors,
-  Briefcase
+  Briefcase,
+  AlertTriangle,
+  Handshake
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -34,6 +38,9 @@ export default function AdminDashboardPage() {
   const [newSeznamkaCount, setNewSeznamkaCount] = useState(0);
   const [newNovinkyCount, setNewNovinkyCount] = useState(0);
   const [newRecruitmentCount, setNewRecruitmentCount] = useState(0);
+  const [newZlepseniCount, setNewZlepseniCount] = useState(0);
+  const [newChybyCount, setNewChybyCount] = useState(0);
+  const [newSpolupraceCount, setNewSpolupraceCount] = useState(0);
 
   const ADMIN_PASSWORD = "MAFIA_PROTOCOL_737";
 
@@ -49,10 +56,11 @@ export default function AdminDashboardPage() {
 
     const fetchCounts = async () => {
       try {
-        const [seznamkaRes, novinkyRes, recruitmentRes] = await Promise.all([
+        const [seznamkaRes, novinkyRes, recruitmentRes, zlepseniRes] = await Promise.all([
           fetch('/api/seznamka?status=new'),
           fetch('/api/novinky'),
-          fetch('/api/admin/recruitment')
+          fetch('/api/admin/recruitment'),
+          fetch('/api/zlepseni')
         ]);
         
         if (seznamkaRes.ok) {
@@ -72,6 +80,27 @@ export default function AdminDashboardPage() {
             : 0;
           setNewRecruitmentCount(pending);
         }
+
+        if (zlepseniRes.ok) {
+          const zlepseniData = await zlepseniRes.json();
+          const pendingZlepseni = Array.isArray(zlepseniData)
+            ? zlepseniData.filter((s: any) => s.status === 'PENDING').length
+            : 0;
+          setNewZlepseniCount(pendingZlepseni);
+        }
+
+        const chybyRes = await getFeedbackAdminAction();
+        if (chybyRes.success && chybyRes.data) {
+          const pendingChyby = chybyRes.data.filter((f: any) => f.status === 'NEW').length;
+          setNewChybyCount(pendingChyby);
+        }
+
+        const spolupraceRes = await getCooperationAdminAction();
+        if (spolupraceRes.success && spolupraceRes.data) {
+          const pendingSpoluprace = spolupraceRes.data.filter((r: any) => r.status === 'NEW').length;
+          setNewSpolupraceCount(pendingSpoluprace);
+        }
+
       } catch (e) {
         console.error("Failed to fetch counts", e);
       }
@@ -196,7 +225,28 @@ export default function AdminDashboardPage() {
       desc: 'Schvalování návrhů na zlepšení, nastavování priorit a odpovídání komunitě.',
       icon: <Zap className="text-mafia-gold" size={40} />,
       link: '/admin/komunita/zlepseni',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)'
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)',
+      badge: newZlepseniCount > 0 ? newZlepseniCount : undefined
+    },
+    {
+      id: 'chyby',
+      title: 'NAHLÁŠENÉ CHYBY',
+      subtitle: 'BUG_TRACKER',
+      desc: 'Přehled a správa technických chyb a bugů nahlášených komunitou.',
+      icon: <AlertTriangle className="text-mafia-gold" size={40} />,
+      link: '/admin/komunita/chyby',
+      color: 'rgba(239, 68, 68, 0.2)',
+      badge: newChybyCount > 0 ? newChybyCount : undefined
+    },
+    {
+      id: 'spoluprace',
+      title: 'NÁVRHY SPOLUPRÁCE',
+      subtitle: 'COOPERATION_REQ',
+      desc: 'Správa zájemců o spolupráci s podnikem.',
+      icon: <Handshake className="text-mafia-gold" size={40} />,
+      link: '/admin/spoluprace',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.2)',
+      badge: newSpolupraceCount > 0 ? newSpolupraceCount : undefined
     },
     {
       id: 'seznamka',

@@ -176,11 +176,7 @@ function BarberCard({
             {barberDisplayName}
             {graphicsTier !== 'lite' && <StatusDot evaluated={evaluatedStatus} />}
           </h3>
-          {graphicsTier !== 'lite' && (
-            <span className="text-[10px] font-mono uppercase text-white/30 tracking-widest block relative">
-              {barber.role}
-            </span>
-          )}
+
           {graphicsTier !== 'lite' && (
             <div className="flex justify-center mt-2 mb-2">
               <StatusText evaluated={evaluatedStatus} lang={lang} />
@@ -204,15 +200,25 @@ function BarberCard({
             </button>
           )}
           {graphicsTier !== 'lite' && (
-            <div className="mt-4 relative flex justify-center">
-              <BarberRanking 
-                level={globalLevel} 
-                rankTitle={globalRank} 
-                lang={lang} 
-                id={barber.id} 
-                xp={globalXp}
-              />
-            </div>
+              <div className="mt-4 mb-2 relative w-full min-h-[120px] flex items-center justify-center">
+                  <AnimatePresence mode="wait">
+                    {activeSpeaker === (barber.id === 'tomas' ? 'tomas' : 'nella') && (
+                      <motion.div
+                        key={`mobile-${barber.name}-${dialogueIndex}`}
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="text-mafia-gold barber-dialogue-text font-heading italic text-xs tracking-[0.15em] px-4 py-3 leading-relaxed uppercase bg-mafia-gold/5 border border-mafia-gold/10 rounded-none backdrop-blur-sm shadow-[0_5px_15px_rgba(0,0,0,0.5)] w-full max-w-[300px]"
+                      >
+                        <span className="opacity-40 block mb-2 text-[8px] font-mono tracking-[0.5em]">
+                          {lang === 'cs' ? "— ZÁZNAM KOMUNIKACE —" : "— MESSAGE_LOG —"}
+                        </span>
+                        {barber.story}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+              </div>
           )}
           {graphicsTier === 'lite' && (
             <div className="mt-4 text-[10px] text-white/40 uppercase tracking-widest font-mono">
@@ -414,17 +420,19 @@ function BarberCard({
             <div className="flex-grow w-full flex flex-col items-center justify-start relative z-10 pt-16">
                 {barber.id === "nella" ? (
                   <>
-                    <div className={`relative w-56 h-56 rounded-none overflow-hidden transition-all duration-1000 mb-8 flex items-center justify-center ${
-                        isHovered ? "shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]" : ""
-                    }`}>
-                        {barber.image === "question-mark" ? (
-                          <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={220} />
-                        ) : (
-                          <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
-                            <Image src={(barber.image && (barber.image.startsWith("/") || barber.image.startsWith("http"))) ? barber.image : "/obr/placeholder.jpg"} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
-                          </motion.div>
-                        )}
-                    </div>
+                    {graphicsTier !== 'lite' && (
+                      <div className={`relative w-56 h-56 rounded-none overflow-hidden transition-all duration-1000 mb-8 flex items-center justify-center ${
+                          isHovered ? "shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]" : ""
+                      }`}>
+                          {barber.image === "question-mark" ? (
+                            <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={220} />
+                          ) : (
+                            <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
+                              <Image src={(barber.image && (barber.image.startsWith("/") || barber.image.startsWith("http"))) ? barber.image : "/obr/placeholder.jpg"} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
+                            </motion.div>
+                          )}
+                      </div>
+                    )}
                     {getYearsOfExperience(barber.id, lang) && (
                       <div className="text-center mt-[-1.5rem] mb-6 relative z-20 flex justify-center w-full px-4">
                         <div className="flex items-center justify-center gap-4 border-[3px] border-mafia-gold px-6 py-3 bg-black relative w-full max-w-[300px]">
@@ -446,17 +454,19 @@ function BarberCard({
                   </>
                 ) : (
                   <>
-                    <div className={`relative w-56 h-56 rounded-none overflow-hidden transition-all duration-1000 mb-8 flex items-center justify-center ${
-                        isHovered ? "shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]" : ""
-                    }`}>
-                        {barber.image === "question-mark" ? (
-                          <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={220} />
-                        ) : (
-                          <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
-                            <Image src={(barber.image && (barber.image.startsWith("/") || barber.image.startsWith("http"))) ? barber.image : "/obr/placeholder.jpg"} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
-                          </motion.div>
-                        )}
-                    </div>
+                    {graphicsTier !== 'lite' && (
+                      <div className={`relative w-56 h-56 rounded-none overflow-hidden transition-all duration-1000 mb-8 flex items-center justify-center ${
+                          isHovered ? "shadow-[0_0_40px_rgba(var(--color-mafia-gold-rgb),0.2)]" : ""
+                      }`}>
+                          {barber.image === "question-mark" ? (
+                            <UnlockDiagram required={barber.unlockThreshold || 5} collected={totalCollected} size={220} />
+                          ) : (
+                            <motion.div animate={{ scale: isHovered ? 1.1 : 1 }} transition={{ duration: 1.2 }}>
+                              <Image src={(barber.image && (barber.image.startsWith("/") || barber.image.startsWith("http"))) ? barber.image : "/obr/placeholder.jpg"} alt={barber.name} width={300} height={300} priority quality={100} loading="eager" className="w-full h-full object-cover grayscale-[0.2]" />
+                            </motion.div>
+                          )}
+                      </div>
+                    )}
 
                     {getYearsOfExperience(barber.id, lang) && (
                       <div className="text-center mt-[-1.5rem] mb-6 relative z-20 flex justify-center w-full px-4">
@@ -855,5 +865,6 @@ export function ChairWithCard({
     </div>
   );
 }
-
+
+
 

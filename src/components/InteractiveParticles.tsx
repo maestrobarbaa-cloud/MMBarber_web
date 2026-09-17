@@ -4,9 +4,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useUI } from "@/contexts/UIContext";
 
 export function InteractiveParticles() {
+  const { graphicsTier } = useUI();
   const containerRef = useRef<HTMLDivElement>(null);
   const [isBloodMode, setIsBloodMode] = useState(false);
   const [isNoirMode, setIsNoirMode] = useState(false);
+
+  if (graphicsTier === 'lite') {
+    return null;
+  }
 
   useEffect(() => {
     const checkTheme = () => {

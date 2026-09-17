@@ -58,7 +58,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
   const [isFullyOpen, setIsFullyOpen] = useState(false);
   const [isLowTier, setIsLowTier] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string>("rezervace");
-  const [globalSettings, setGlobalSettings] = useState<Record<string, boolean>>({});
+  const [globalSettings, setGlobalSettings] = useState<Record<string, string>>({});
 
   const grainRef = useRef<HTMLDivElement>(null);
   const flickerRef = useRef<HTMLDivElement>(null);
@@ -147,8 +147,12 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
     playSound("/sounds/click.mp3", 0.15);
   };
 
-  const handleMenuSelect = (item: MenuItem) => {
-    if (item.devMode) {
+  const handleMenuSelect = (item: MenuItem | string) => {
+    const isString = typeof item === 'string';
+    const devMode = isString ? false : item.devMode;
+    const itemId = isString ? item : item.id;
+
+    if (devMode) {
       // Don't navigate if in dev mode, maybe play a different sound
       playSound("/sounds/click.mp3", 0.1);
       return;
@@ -172,7 +176,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
     window.dispatchEvent(new Event("introDismissed"));
     
     // Call dismiss with selected action
-    onDismiss?.(item.id);
+    onDismiss?.(itemId);
   };
 
   const renderRightColumnContent = () => {

@@ -75,6 +75,7 @@ export const getMegaMenuData = (lang: Language): MegaMenuData => ({
         title: lang === 'cs' ? "Životopisy & Tým" : "CVs & Team",
         items: [
           { name: lang === 'cs' ? "Životopisy barberů" : "Barber CVs", path: "/zivotopisy" },
+          { name: lang === 'cs' ? "Spolupráce" : "Cooperation", path: "/spoluprace" },
         ]
       }
     ]

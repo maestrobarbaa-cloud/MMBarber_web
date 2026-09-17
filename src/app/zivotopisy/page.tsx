@@ -40,6 +40,7 @@ import { InteractiveParticles } from "@/components/InteractiveParticles";
 import { AnimusDNA3D } from "@/components/AnimusDNA3D";
 
 export default function BiographiesPage() {
+  const { graphicsTier } = useUI();
   const { lang } = useTranslation();
   const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
   const [previewBarberId, setPreviewBarberId] = useState<string | null>(null);
@@ -672,7 +673,7 @@ export default function BiographiesPage() {
                                                 setIsTomasTranslated(true);
                                                 playSound("/sounds/magnum.mp3", 0.2);
                                               }}
-                                              className={`mt-4 mb-2 flex items-center gap-2 px-4 py-1.5 border backdrop-blur-sm mx-auto rounded-sm transition-all duration-300 group ${isBloodMode ? 'border-mafia-red/50 text-mafia-red hover:bg-mafia-red hover:text-black hover:shadow-[0_0_15px_rgba(200,16,46,0.6)]' : isNoirMode ? 'border-white/50 text-white hover:bg-white hover:text-black hover:shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'border-mafia-gold/50 text-mafia-gold hover:bg-mafia-gold hover:text-black hover:shadow-[0_0_15px_rgba(197,160,89,0.6)]'}`}
+                                              className={`pointer-events-auto mt-4 mb-2 flex items-center gap-2 px-4 py-1.5 border backdrop-blur-sm mx-auto rounded-sm transition-all duration-300 group ${isBloodMode ? 'border-mafia-red/50 text-mafia-red hover:bg-mafia-red hover:text-black hover:shadow-[0_0_15px_rgba(200,16,46,0.6)]' : isNoirMode ? 'border-white/50 text-white hover:bg-white hover:text-black hover:shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'border-mafia-gold/50 text-mafia-gold hover:bg-mafia-gold hover:text-black hover:shadow-[0_0_15px_rgba(197,160,89,0.6)]'}`}
                                             >
                                               <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
                                               <span className="text-[10px] md:text-xs font-mono font-bold uppercase tracking-[0.2em]">
@@ -804,9 +805,12 @@ export default function BiographiesPage() {
                   </div>
                 )}
 
-                {/* DNA Model for Tomas */}
-                {isTomasVisible && isFullyUnlocked && (
-                  <div className="w-full relative flex justify-center items-center h-[500px] z-0 mb-8 pointer-events-auto">
+                {/* DNA Model for Tomas (Only in preview) */}
+                {isTomasVisible && isFullyUnlocked && previewBarberId === 'tomas' && graphicsTier !== 'lite' && (
+                  <div 
+                    className="w-full relative flex justify-center items-center h-[500px] z-[30] mb-8 pointer-events-auto transition-opacity duration-1000 animate-in fade-in"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <AnimusDNA3D isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
                   </div>
                 )}
@@ -1382,7 +1386,7 @@ export default function BiographiesPage() {
                   </AnimatePresence>
 
                   {/* DNA Model */}
-                  {isFullyUnlocked && (
+                  {isFullyUnlocked && activeBarberSafe.id === 'tomas' && graphicsTier !== 'lite' && (
                     <div className="w-full my-8 relative flex justify-center items-center">
                       <AnimusDNA3D isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
                     </div>

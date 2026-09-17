@@ -108,6 +108,7 @@ model User {
   linkRequestsSent     LinkRequest[]   @relation("LinkRequestsSent")
   linkRequestsReceived LinkRequest[]   @relation("LinkRequestsReceived")
   bugReports           BugReport[]
+  userFeedbacks        UserFeedback[]
   ratingsGiven         ProfileRating[] @relation("RatingsGiven")
   ratingsReceived      ProfileRating[] @relation("RatingsReceived")
 
@@ -655,4 +656,27 @@ model MatchmakingQueue {
   createdAt   DateTime @default(now())
   lastChecked DateTime @default(now())
   status      String   @default("WAITING") // WAITING, FOUND_MATCHES
+}
+
+model UserFeedback {
+  id        String   @id @default(cuid())
+  userId    String?
+  type      String   // 'IDEA', 'BUG'
+  message   String
+  status    String   @default("NEW") // NEW, REVIEWED, RESOLVED
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model CooperationRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  field     String
+  message   String
+  status    String   @default("NEW") // NEW, IN_PROGRESS, COMPLETED, REJECTED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

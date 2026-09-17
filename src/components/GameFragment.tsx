@@ -19,18 +19,28 @@ export function GameFragment({ id, className = "", size = 32, delay = 0 }: GameF
   const isCollected = collectedIds.includes(id);
 
   const [graphicsTier, setGraphicsTier] = useState<string>("high");
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     const tier = document.documentElement.getAttribute('data-graphics-tier') || "high";
     setGraphicsTier(tier);
     
     if (tier !== 'low' && tier !== 'lite') {
       const t = setTimeout(() => setIsVisible(true), 1000 + delay);
-      return () => clearTimeout(t);
+      return () => {
+        clearTimeout(t);
+        window.removeEventListener('resize', checkMobile);
+      };
     }
+
+    return () => window.removeEventListener('resize', checkMobile);
   }, [delay]);
 
-  if (isCollected || graphicsTier === 'low' || graphicsTier === 'lite' || !isVisible) return null;
+  if (isMobile || isCollected || graphicsTier === 'low' || graphicsTier === 'lite' || !isVisible) return null;
 
   const handleCollect = (e: React.MouseEvent) => {
     e.stopPropagation();

@@ -142,11 +142,10 @@ export function CorporateTricks() {
       <AnimatePresence>
         {toast.visible && (
           <motion.div
-            initial={{ opacity: 0, x: 50, y: 50 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: 50, y: 50 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className={`hidden md:block fixed right-8 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 theme-blood:border-red-500/80 noir-mode:border-white/80 p-6 shadow-[0_0_40px_rgba(197,160,89,0.25)] theme-blood:shadow-[0_0_40px_rgba(239,68,68,0.25)] noir-mode:shadow-[0_0_40px_rgba(255,255,255,0.25)] max-w-md rounded-sm transition-all duration-500 ${isRadioActive ? 'bottom-40' : 'bottom-8'}`}
+            initial={{ opacity: 0, x: 50, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className={`fixed bottom-6 right-6 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 theme-blood:border-red-500/80 noir-mode:border-white/80 p-6 shadow-[0_0_40px_rgba(197,160,89,0.25)] theme-blood:shadow-[0_0_40px_rgba(239,68,68,0.25)] noir-mode:shadow-[0_0_40px_rgba(255,255,255,0.25)] max-w-md rounded-sm transition-all duration-500 ${isRadioActive ? 'bottom-40' : 'bottom-6'}`}
           >
             <div className="flex items-center gap-4">
               <div className="p-3 bg-mafia-gold/10 theme-blood:bg-red-500/10 noir-mode:bg-white/10 rounded-full shrink-0">

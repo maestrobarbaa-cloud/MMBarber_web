@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, Calendar, Phone, Info, ShieldCheck, Compass } from "lucide-react";
+import { X, Calendar, Phone, Info, ShieldCheck, Compass, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
@@ -141,6 +141,14 @@ export function MobileActions() {
                    playBulletHit();
                  }} className="p-4 rounded-full border border-mafia-gold text-mafia-gold active:scale-90 transition-transform hover:bg-mafia-gold hover:text-mafia-black">
                    <Compass size={24} className="animate-pulse" />
+                 </button>
+
+                 <button onClick={() => { 
+                   window.dispatchEvent(new CustomEvent('mmbarber-open-feedback'));
+                   toggleMenu();
+                   playBulletHit();
+                 }} className="p-4 rounded-full border border-mafia-gold text-mafia-gold active:scale-90 transition-transform hover:bg-mafia-gold hover:text-mafia-black" title="Nápady a hlášení chyb">
+                   <MessageSquare size={24} />
                  </button>
               </div>
             </div>
