@@ -51,6 +51,7 @@ const greatVibes = Great_Vibes({
 });
 
 export const metadata: Metadata = {
+  manifest: '/manifest.json',
   metadataBase: new URL("https://mmbarber.cz"),
   title: "MMBARBER | Barbershop Uherské Hradiště – střihy & vousy",
   description: "MMBARBER v Uherském Hradišti – moderní pánské střihy, fade, vousy a styl. Rezervuj si svůj termín ještě dnes.",
@@ -95,7 +96,8 @@ export const metadata: Metadata = {
     "venture capital hair care",
     "business expansion barbershop",
     "vlasoví specialisté spolupráce",
-    "investice do prémiových služeb"
+    "investice do prémiových služeb",
+    "Tomáš Mička"
   ],
   authors: [{ name: "Tomáš Mička" }],
   robots: {

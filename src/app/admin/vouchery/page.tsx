@@ -12,7 +12,9 @@ import {
   Phone,
   Clock,
   CreditCard,
-  Gift
+  Gift,
+  Settings,
+  Save
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -33,6 +35,9 @@ export default function AdminVouchersPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [requests, setRequests] = useState<VoucherRequest[]>([]);
+  const [giftPrice, setGiftPrice] = useState("150");
+  const [presetAmounts, setPresetAmounts] = useState("100, 250, 500, 1000, 1500, 2000");
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
 
   useEffect(() => {
     if (sessionStorage.getItem("mmbarber_admin_auth") !== "true") {
@@ -40,8 +45,45 @@ export default function AdminVouchersPage() {
     } else {
       setIsAuthenticated(true);
       loadRequests();
+      loadSettings();
     }
   }, [router]);
+
+  const loadSettings = async () => {
+    try {
+      const resGift = await fetch('/api/settings?key=voucher_gift_price');
+      if (resGift.ok) {
+        const data = await resGift.json();
+        if (data.value) setGiftPrice(data.value);
+      }
+      const resPresets = await fetch('/api/settings?key=voucher_preset_amounts');
+      if (resPresets.ok) {
+        const data = await resPresets.json();
+        if (data.value) setPresetAmounts(data.value);
+      }
+    } catch (e) {}
+  };
+
+  const handleSaveSettings = async () => {
+    setIsSavingSettings(true);
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          updates: {
+            voucher_gift_price: giftPrice,
+            voucher_preset_amounts: presetAmounts
+          }
+        })
+      });
+      alert("Nastavení uloženo.");
+    } catch (e) {
+      alert("Chyba při ukládání.");
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
 
   const loadRequests = () => {
     const saved = localStorage.getItem("mmbarber_voucher_requests");
@@ -71,6 +113,15 @@ export default function AdminVouchersPage() {
       localStorage.setItem("mmbarber_voucher_requests", JSON.stringify(updated));
       window.dispatchEvent(new Event("storage"));
     }
+  };
+
+  const handleApprove = (req: VoucherRequest) => {
+    if (req.delivery === 'electronic') {
+      const subject = encodeURIComponent("Váš dárkový poukaz MMBarber");
+      const body = encodeURIComponent(`Dobrý den,\n\npotvrzujeme přijetí platby za váš dárkový poukaz v hodnotě ${req.amount} Kč.\n\nV příloze tohoto e-mailu naleznete váš poukaz.\n\nTěšíme se na vaši návštěvu,\nMMBarber`);
+      window.location.href = `mailto:${req.email}?subject=${subject}&body=${body}`;
+    }
+    updateRequestStatus(req.id, "done");
   };
 
   if (!isAuthenticated) return null;
@@ -114,6 +165,44 @@ export default function AdminVouchersPage() {
              <span className="text-[10px] font-mono text-white/50 uppercase tracking-[0.2em] leading-relaxed">
                Zpracované žádosti označte jako vyřízené pro vymazání notifikace.
              </span>
+          </div>
+        </div>
+
+        {/* Settings */}
+        <div className="mb-16 bg-white/[0.02] border border-white/10 p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <Settings className="text-mafia-gold" size={20} />
+            <h2 className="text-xl font-heading font-black text-white uppercase tracking-widest italic">Nastavení voucherů</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Cena dárkového balení (Kč)</label>
+              <input 
+                type="number" 
+                value={giftPrice}
+                onChange={(e) => setGiftPrice(e.target.value)}
+                className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Předvolené částky (oddělené čárkou)</label>
+              <input 
+                type="text" 
+                value={presetAmounts}
+                onChange={(e) => setPresetAmounts(e.target.value)}
+                className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none"
+                placeholder="500, 1000, 1500"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <button 
+              onClick={handleSaveSettings}
+              disabled={isSavingSettings}
+              className="flex items-center gap-2 px-8 py-3 bg-mafia-gold text-black font-black uppercase tracking-widest text-xs hover:bg-white transition-colors"
+            >
+              <Save size={14} /> {isSavingSettings ? "Ukládám..." : "Uložit nastavení"}
+            </button>
           </div>
         </div>
 
@@ -187,10 +276,11 @@ export default function AdminVouchersPage() {
                     <div className="flex flex-row md:flex-col justify-end gap-3 md:min-w-[180px]">
                       {req.status === 'new' ? (
                         <button 
-                          onClick={() => updateRequestStatus(req.id, "done")}
-                          className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 bg-mafia-gold text-black font-mono text-[10px] uppercase tracking-widest font-bold hover:bg-white transition-colors"
+                          onClick={() => handleApprove(req)}
+                          className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 bg-mafia-gold text-black font-mono text-[10px] uppercase tracking-widest font-bold hover:bg-white transition-colors text-center"
                         >
-                          <CheckCircle size={14} /> VYŘÍZENO
+                          <CheckCircle size={14} className="shrink-0" /> 
+                          {req.delivery === 'electronic' ? "SCHVÁLIT PLATBU A ODESLAT" : "PŘIPRAVENO K VYZVEDNUTÍ"}
                         </button>
                       ) : (
                         <button 

@@ -57,6 +57,7 @@ export function InteractiveParticles() {
       el.style.height = `${size}px`;
       el.style.filter = `blur(${Math.random() * 0.5}px)`;
       el.style.opacity = '0.6';
+      el.style.willChange = 'transform, opacity';
       // initial position offscreen bottom to flow up
       container.appendChild(el);
       

@@ -23,7 +23,9 @@ import {
   Scissors,
   Briefcase,
   AlertTriangle,
-  Handshake
+  Handshake,
+  Gamepad2,
+  MessageSquare
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -41,6 +43,8 @@ export default function AdminDashboardPage() {
   const [newZlepseniCount, setNewZlepseniCount] = useState(0);
   const [newChybyCount, setNewChybyCount] = useState(0);
   const [newSpolupraceCount, setNewSpolupraceCount] = useState(0);
+  const [newSinSlavyCount, setNewSinSlavyCount] = useState(0);
+  const [newChatCount, setNewChatCount] = useState(0);
 
   const ADMIN_PASSWORD = "MAFIA_PROTOCOL_737";
 
@@ -56,11 +60,13 @@ export default function AdminDashboardPage() {
 
     const fetchCounts = async () => {
       try {
-        const [seznamkaRes, novinkyRes, recruitmentRes, zlepseniRes] = await Promise.all([
+        const [seznamkaRes, novinkyRes, recruitmentRes, zlepseniRes, sinSlavyRes, chatRes] = await Promise.all([
           fetch('/api/seznamka?status=new'),
           fetch('/api/novinky'),
           fetch('/api/admin/recruitment'),
-          fetch('/api/zlepseni')
+          fetch('/api/zlepseni'),
+          fetch('/api/sin-slavy'),
+          fetch('/api/support-chat?admin=true')
         ]);
         
         if (seznamkaRes.ok) {
@@ -89,6 +95,22 @@ export default function AdminDashboardPage() {
           setNewZlepseniCount(pendingZlepseni);
         }
 
+        if (sinSlavyRes.ok) {
+          const sinSlavyData = await sinSlavyRes.json();
+          const pendingSinSlavy = Array.isArray(sinSlavyData)
+            ? sinSlavyData.filter((s: any) => !s.active).length
+            : 0;
+          setNewSinSlavyCount(pendingSinSlavy);
+        }
+
+        if (chatRes.ok) {
+          const chatData = await chatRes.json();
+          const unreadChats = Array.isArray(chatData.messages) 
+            ? chatData.messages.filter((m: any) => m.sender === 'USER' && !m.read).length
+            : 0;
+          setNewChatCount(unreadChats);
+        }
+
         const chybyRes = await getFeedbackAdminAction();
         if (chybyRes.success && chybyRes.data) {
           const pendingChyby = chybyRes.data.filter((f: any) => f.status === 'NEW').length;
@@ -99,6 +121,14 @@ export default function AdminDashboardPage() {
         if (spolupraceRes.success && spolupraceRes.data) {
           const pendingSpoluprace = spolupraceRes.data.filter((r: any) => r.status === 'NEW').length;
           setNewSpolupraceCount(pendingSpoluprace);
+        }
+
+        const savedVouchers = localStorage.getItem("mmbarber_voucher_requests");
+        if (savedVouchers) {
+          try {
+            const parsed = JSON.parse(savedVouchers);
+            setNewVouchersCount(parsed.filter((r: any) => r.status === 'new').length);
+          } catch (e) {}
         }
 
       } catch (e) {
@@ -175,12 +205,13 @@ export default function AdminDashboardPage() {
     },
     {
       id: 'chat',
-      title: 'MODERACE CHATU',
-      subtitle: 'COMMUNITY_WATCH',
-      desc: 'Sledování zpráv, identifikace IP adres a správa přístupů.',
-      icon: <Users className="text-mafia-gold" size={40} />,
+      title: 'LIVE PODPORA - CHATY',
+      subtitle: 'SUPPORT_CENTER',
+      desc: 'Živá komunikace s uživateli, správa aktivních ticketů a blokování IP adres.',
+      icon: <MessageSquare className="text-mafia-gold" size={40} />,
       link: '/admin/komunita/chat',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.1)'
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.1)',
+      badge: newChatCount > 0 ? newChatCount : undefined
     },
     {
       id: 'viditelnost',
@@ -210,13 +241,33 @@ export default function AdminDashboardPage() {
       color: 'rgba(var(--color-mafia-gold-rgb), 0.2)'
     },
     {
+      id: 'vouchery',
+      title: 'DÁRKOVÉ VOUCHERY',
+      subtitle: 'VOUCHER_MANAGEMENT',
+      desc: 'Správa objednávek dárkových voucherů a nastavení cen a částek.',
+      icon: <Ticket className="text-mafia-gold" size={40} />,
+      link: '/admin/vouchery',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.25)',
+      badge: newVouchersCount > 0 ? newVouchersCount : undefined
+    },
+    {
       id: 'sin-slavy',
       title: 'SÍŇ SLÁVY',
       subtitle: 'RECORDS_MANAGEMENT',
       desc: 'Správa jmen podporovatelů a čištění seznamu legend.',
       icon: <Trophy className="text-mafia-gold" size={40} />,
       link: '/admin/komunita/sin-slavy',
-      color: 'rgba(var(--color-mafia-gold-rgb), 0.15)'
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.15)',
+      badge: newSinSlavyCount > 0 ? newSinSlavyCount : undefined
+    },
+    {
+      id: 'projekty',
+      title: 'KOMUNITNÍ PROJEKTY',
+      subtitle: 'COMMUNITY_PROJECTS',
+      desc: 'Správa Minecraft serverů a dalších herních projektů pro komunitu.',
+      icon: <Gamepad2 className="text-mafia-gold" size={40} />,
+      link: '/admin/komunita/projekty',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.1)'
     },
     {
       id: 'zlepseni',

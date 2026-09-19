@@ -475,8 +475,9 @@ export function Hero() {
                   src={heroImage}
                   alt="MMBARBER Background"
                   priority
-                  unoptimized={graphicsTier !== 'lite' && graphicsTier !== 'low' && graphicsTier !== 'medium'}
                   fill
+                  sizes="100vw"
+                  quality={graphicsTier === 'ultra' ? 100 : graphicsTier === 'high' ? 90 : 75}
                   className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${isBloodMode ? 'hero-blood-img' : ''}`}
                 />
                 {/* Overlay Gradient - Minimized for absolute maximum clarity and vibrant colors */}

@@ -70,7 +70,7 @@ export function FragmentsProvider({ children }: { children: React.ReactNode }) {
         type: 'PROFILE',
         fragmentsAdded: 3,
         currentFragments: res.fragments,
-        fragmentsPerCoin: state.fragmentsPerCoin,
+        fragmentsPerCoin: state?.fragmentsPerCoin || 10,
         coinsAdded: res.coinsAdded
       });
       fetchState();

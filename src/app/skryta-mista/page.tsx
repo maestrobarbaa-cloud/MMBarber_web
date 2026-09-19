@@ -100,14 +100,21 @@ export default function HiddenPlacesPage() {
                whileInView={{ opacity: 1 }}
                viewport={{ once: true }}
                transition={{ duration: 1 }}
-               className="lg:col-span-12 xl:col-span-7 relative h-[350px] md:h-[450px] overflow-hidden group bg-black/60 shadow-2xl"
+               className="lg:col-span-12 xl:col-span-7 relative h-[350px] md:h-[450px] overflow-hidden group bg-black/60 shadow-2xl flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-mafia-gold/10"
             >
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2613.9225537201914!2d17.4540922753308!3d49.069106785856086!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47131531393617db%3A0xde68010641623016!2sKomfort%20Lounge%20Bar!5e0!3m2!1scs!2scz!4v1776191505364!5m2!1scs!2scz"
-                width="100%" height="100%" 
-                style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) grayscale(0.8) contrast(1.2) brightness(0.8)' }} 
-                allowFullScreen={false} loading="lazy"
-              ></iframe>
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-mafia-gold/10 via-black/80 to-black"></div>
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
+              
+              <div className="relative z-10 flex flex-col items-center group-hover:scale-105 transition-transform duration-700">
+                <div className="w-24 h-24 rounded-full border border-mafia-gold/30 flex items-center justify-center bg-black/50 shadow-[0_0_50px_rgba(197,160,89,0.2)] mb-6 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-mafia-gold/10 animate-pulse"></div>
+                  <MapPin size={40} className="text-mafia-gold drop-shadow-[0_0_15px_rgba(197,160,89,0.8)] relative z-10" />
+                </div>
+                <h3 className="text-2xl font-heading font-black text-white/80 uppercase tracking-[0.2em] mb-2 drop-shadow-md">Komfort Lounge</h3>
+                <p className="text-mafia-gold/50 font-mono text-[10px] uppercase tracking-widest text-center max-w-[250px]">
+                  {lang === 'cs' ? 'Lokalita zajištěna. Použijte navigaci.' : 'Location secured. Use navigation.'}
+                </p>
+              </div>
             </motion.div>
 
             <div className="lg:col-span-12 xl:col-span-5 p-8 md:p-12 flex flex-col justify-center relative bg-mafia-black/80 backdrop-blur-xl border-l border-mafia-gold/10 overflow-hidden">

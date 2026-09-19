@@ -67,3 +67,15 @@ export async function updateFeedbackStatusAction(id: string, status: string) {
     return { success: false, error: "Failed to update" };
   }
 }
+
+export async function deleteFeedbackAction(id: string) {
+  try {
+    await prisma.userFeedback.delete({
+      where: { id }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting feedback:", error);
+    return { success: false, error: "Failed to delete" };
+  }
+}

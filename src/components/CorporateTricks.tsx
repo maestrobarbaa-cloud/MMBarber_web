@@ -6,6 +6,7 @@ import { Users, X, AlertTriangle } from "lucide-react";
 import { playSound } from "@/utils/audio";
 import { useBarbers } from "@/contexts/BarberContext";
 import { useUI } from "@/contexts/UIContext";
+import { MafiaMinigame } from "./MafiaMinigame";
 
 const LOCAL_CITIES = [
   "Uherského Hradiště", "Starého Města", "Kunovic", "Uherského Brodu", "Zlína",
@@ -21,7 +22,7 @@ const LOCAL_CITIES = [
 
 export function CorporateTricks() {
   const { barbers } = useBarbers();
-  const { isBloodMode } = useUI();
+  const { isBloodMode, isSupportChatOpen } = useUI();
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
   const [showExitModal, setShowExitModal] = useState(false);
   const [isHidden, setIsHidden] = useState(() => {
@@ -140,12 +141,12 @@ export function CorporateTricks() {
     <>
       {/* Toast Notification */}
       <AnimatePresence>
-        {toast.visible && (
+        {!isSupportChatOpen && toast.visible && (
           <motion.div
             initial={{ opacity: 0, x: 50, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className={`fixed bottom-6 right-6 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 theme-blood:border-red-500/80 noir-mode:border-white/80 p-6 shadow-[0_0_40px_rgba(197,160,89,0.25)] theme-blood:shadow-[0_0_40px_rgba(239,68,68,0.25)] noir-mode:shadow-[0_0_40px_rgba(255,255,255,0.25)] max-w-md rounded-sm transition-all duration-500 ${isRadioActive ? 'bottom-40' : 'bottom-6'}`}
+            className={`fixed bottom-28 right-6 z-[9999] bg-[#050505] border-l-4 border-mafia-gold/80 theme-blood:border-red-500/80 noir-mode:border-white/80 p-6 shadow-[0_0_40px_rgba(197,160,89,0.25)] theme-blood:shadow-[0_0_40px_rgba(239,68,68,0.25)] noir-mode:shadow-[0_0_40px_rgba(255,255,255,0.25)] max-w-md rounded-sm transition-all duration-500 ${isRadioActive ? 'bottom-52' : 'bottom-28'}`}
           >
             <div className="flex items-center gap-4">
               <div className="p-3 bg-mafia-gold/10 theme-blood:bg-red-500/10 noir-mode:bg-white/10 rounded-full shrink-0">
@@ -168,48 +169,67 @@ export function CorporateTricks() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className={`bg-[#050505] border ${isBloodMode ? 'border-mafia-red shadow-[0_0_50px_rgba(138,7,7,0.3)]' : 'border-mafia-gold shadow-[0_0_50px_rgba(212,175,55,0.3)]'} max-w-xl w-full p-8 relative`}
+              initial={{ scale: 0.9, y: 50, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 50, opacity: 0 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+              className={`bg-[#030303] border-2 ${isBloodMode ? 'border-mafia-red shadow-[0_0_100px_rgba(138,7,7,0.4)]' : 'border-mafia-gold shadow-[0_0_100px_rgba(212,175,55,0.4)]'} max-w-3xl w-full p-8 relative rounded-sm overflow-hidden`}
             >
+              <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent ${isBloodMode ? 'via-mafia-red' : 'via-mafia-gold'} to-transparent opacity-50`}></div>
+              
               <button 
                 onClick={() => setShowExitModal(false)}
-                className={`absolute top-4 right-4 text-white/50 transition-colors ${isBloodMode ? 'hover:text-mafia-red' : 'hover:text-mafia-gold'}`}
+                className={`absolute top-4 right-4 text-white/50 transition-colors z-20 ${isBloodMode ? 'hover:text-mafia-red' : 'hover:text-mafia-gold'}`}
               >
                 <X size={24} />
               </button>
 
-              <div className="flex flex-col items-center text-center">
-                <AlertTriangle className={`${isBloodMode ? 'text-mafia-red' : 'text-mafia-gold'} mb-6`} size={48} />
-                <h2 className="text-3xl font-heading font-black text-white uppercase tracking-[0.2em] mb-4">
-                  Kam si myslíš, že jdeš?
+              <div className="flex flex-col items-center text-center relative z-10">
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                >
+                  <AlertTriangle className={`${isBloodMode ? 'text-mafia-red drop-shadow-[0_0_10px_rgba(220,38,38,0.8)]' : 'text-mafia-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.8)]'} mb-4`} size={56} />
+                </motion.div>
+                
+                <h2 className="text-4xl sm:text-5xl font-heading font-black text-white uppercase tracking-[0.2em] mb-4 drop-shadow-lg">
+                  Kam si myslíš, <span className={isBloodMode ? 'text-mafia-red' : 'text-mafia-gold'}>že jdeš?</span>
                 </h2>
-                <p className="text-smoke-white/80 font-sans mb-8">
-                  Opustit náš revír bez toho, aniž bys požádal o audienci u křesla, je projev naprosté neúcty k Rodině. Víme o tobě.
+                
+                <p className="text-smoke-white/90 font-sans mb-6 max-w-lg text-lg leading-relaxed">
+                  Opustit náš revír bez toho, aniž bys požádal o audienci u křesla, je projev naprosté neúcty k Rodině. Zkus nám ujet!
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 w-full">
+                {/* Minigame Integration */}
+                <div className="w-full mb-8">
+                  <MafiaMinigame />
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                   <button 
                     onClick={() => {
                       setShowExitModal(false);
                       document.getElementById("operativi")?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className={`flex-1 py-4 ${isBloodMode ? 'bg-mafia-red border-mafia-red text-white hover:bg-mafia-dark' : 'bg-mafia-gold border-mafia-gold text-mafia-black hover:bg-mafia-gold/90'} font-black uppercase tracking-widest text-sm transition-colors border`}
+                    className={`flex-1 sm:flex-none sm:px-12 py-4 ${isBloodMode ? 'bg-mafia-red border-mafia-red text-white hover:bg-red-700' : 'bg-mafia-gold border-mafia-gold text-mafia-black hover:bg-yellow-600'} font-black uppercase tracking-widest text-sm transition-all border shadow-lg hover:scale-105`}
                   >
                     Omlouvám se, jdu se objednat
                   </button>
                   <button 
                     onClick={() => setShowExitModal(false)}
-                    className="flex-1 py-4 bg-transparent text-white/50 hover:text-white border border-white/20 font-black uppercase tracking-widest text-sm transition-colors"
+                    className="flex-1 sm:flex-none sm:px-12 py-4 bg-transparent text-white/50 hover:text-white border border-white/20 font-black uppercase tracking-widest text-sm transition-all hover:border-white/50"
                   >
                     Riskovat a odejít
                   </button>
                 </div>
               </div>
+              
+              {/* Background styling elements */}
+              <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+              <div className={`absolute -top-32 -right-32 w-64 h-64 ${isBloodMode ? 'bg-mafia-red/10' : 'bg-mafia-gold/10'} rounded-full blur-3xl pointer-events-none`}></div>
             </motion.div>
           </motion.div>
         )}

@@ -27,6 +27,7 @@ export default function HallOfFamePage() {
   const { lang } = useTranslation();
   const [supporters, setSupporters] = useState<Supporter[]>([]);
   const [newName, setNewName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [userSupporterId, setUserSupporterId] = useState<string | null>(null);
@@ -36,7 +37,7 @@ export default function HallOfFamePage() {
   useEffect(() => {
     const fetchSupporters = async () => {
       try {
-        const res = await fetch('/api/sin-slavy');
+        const res = await fetch('/api/sin-slavy?active=true');
         if (res.ok) {
           const data = await res.json();
           setSupporters(data);
@@ -52,7 +53,7 @@ export default function HallOfFamePage() {
     const checkExisting = async () => {
       try {
         const ip = await getUserIp();
-        const res = await fetch('/api/sin-slavy');
+        const res = await fetch('/api/sin-slavy'); // We fetch all here to see if user has a pending one
         if (res.ok) {
           const data = await res.json();
           const existing = data.find((s: Supporter) => s.ip === ip);
@@ -82,6 +83,7 @@ export default function HallOfFamePage() {
       
       const payload = {
         name: cleanName,
+        fullName: fullName.trim(),
         ip: ip
       };
 
@@ -236,22 +238,31 @@ export default function HallOfFamePage() {
                  className="w-full max-w-md bg-white/[0.02] border border-white/10 p-8 md:p-12 backdrop-blur-3xl"
                >
                   <h3 className="text-xl font-heading font-black uppercase text-white mb-8 tracking-tighter italic flex items-center gap-3 justify-center">
-                     <Crown className="text-mafia-gold" size={20} /> {userSupporterId ? 'ZMĚNA JMÉNA' : 'TVOJE PŘEZDÍVKA'}
+                     <Crown className="text-mafia-gold" size={20} /> {userSupporterId ? 'ZMĚNA ZÁPISU' : 'ZÁPIS DO SÍNĚ'}
                   </h3>
-                  <input 
-                    type="text" 
-                    value={newName}
-                    onChange={(e) => {
-                      setNewName(e.target.value);
-                      setNameError(null);
-                    }}
-                    placeholder={nameError || "JAK TI ŘÍKAJÍ..."}
-                    maxLength={30}
-                    required
-                    className={`w-full bg-black/40 border px-6 py-4 text-center font-mono tracking-widest uppercase focus:outline-none transition-all mb-8 ${nameError ? 'border-mafia-red text-mafia-red placeholder:text-mafia-red' : 'border-white/10 text-white focus:border-mafia-gold'}`}
-                    autoFocus
-                  />
-                  <div className="flex flex-col gap-4">
+                  <div className="space-y-4">
+                    <input 
+                      type="text" 
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="JMÉNO A PŘÍJMENÍ (Pouze pro naši evidenci)"
+                      className="w-full bg-black/50 border border-white/20 px-6 py-4 text-center text-white font-mono tracking-widest text-sm focus:outline-none focus:border-mafia-gold transition-colors placeholder:text-white/20"
+                      required
+                    />
+                    <input 
+                      type="text" 
+                      value={newName}
+                      onChange={(e) => {
+                        setNewName(e.target.value);
+                        setNameError(null);
+                      }}
+                      placeholder={nameError || "JAK SE ZDE CHCETE ZAPSAT"}
+                      maxLength={30}
+                      className={`w-full bg-black/50 border ${nameError ? 'border-red-500' : 'border-white/20'} px-6 py-4 text-center text-white font-heading font-black text-xl uppercase tracking-tighter focus:outline-none focus:border-mafia-gold transition-colors placeholder:text-white/20 placeholder:font-mono placeholder:tracking-widest placeholder:text-sm`}
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col gap-8 mt-8">
                      <button 
                        type="submit"
                        disabled={isSubmitting}

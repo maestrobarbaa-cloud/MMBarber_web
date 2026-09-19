@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getFeedbackAdminAction, updateFeedbackStatusAction } from "@/app/actions/feedback";
+import { getFeedbackAdminAction, updateFeedbackStatusAction, deleteFeedbackAction } from "@/app/actions/feedback";
 import { useSession } from "next-auth/react";
-import { MessageSquare, CheckCircle, Clock, AlertTriangle, Lightbulb, Bug } from "lucide-react";
+import { MessageSquare, CheckCircle, Clock, AlertTriangle, Lightbulb, Bug, Trash2, ExternalLink } from "lucide-react";
 
 type Feedback = {
   id: string;
@@ -64,6 +64,17 @@ export default function FeedbackAdminPage() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    if (confirm("Opravdu smazat tuto zprávu?")) {
+      const res = await deleteFeedbackAction(id);
+      if (res.success) {
+        setFeedbacks((prev) => prev.filter((f) => f.id !== id));
+      } else {
+        alert("Chyba při mazání.");
+      }
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-6">
@@ -101,7 +112,23 @@ export default function FeedbackAdminPage() {
           </div>
         ) : (
           <div className="grid gap-6">
-            {feedbacks.map((f) => (
+            {feedbacks.map((f) => {
+              // Parse URL and element paths to create a highlighting link
+              const urlMatch = f.message.match(/URL:\s*(.+)/);
+              const paths = Array.from(f.message.matchAll(/Cesta k prvku:\s*(.+)/g)).map(m => m[1]);
+              
+              let highlightUrl = null;
+              if (urlMatch && paths.length > 0) {
+                try {
+                  const url = new URL(urlMatch[1]);
+                  paths.forEach(p => url.searchParams.append('mmbarber_highlight', p));
+                  highlightUrl = url.toString();
+                } catch (e) {
+                  // ignore invalid url
+                }
+              }
+
+              return (
               <div key={f.id} className="bg-black border border-white/10 rounded-lg p-6 relative overflow-hidden group hover:border-mafia-gold/50 transition-colors">
                 <div className={`absolute top-0 left-0 w-1 h-full ${f.type === 'IDEA' ? 'bg-blue-500' : 'bg-red-500'}`} />
                 
@@ -137,12 +164,25 @@ export default function FeedbackAdminPage() {
 
                 <p className="text-white text-lg mb-6 whitespace-pre-wrap">{f.message}</p>
 
+                {highlightUrl && (
+                  <div className="mb-6">
+                    <a 
+                      href={highlightUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase bg-mafia-gold/20 text-mafia-gold hover:bg-mafia-gold hover:text-black border border-mafia-gold px-4 py-2 rounded transition-colors"
+                    >
+                      <ExternalLink size={14} /> Ukázat na webu ({paths.length})
+                    </a>
+                  </div>
+                )}
+
                 <div className="flex justify-between items-end">
                   <div className="text-sm text-white/40">
                     Odesílatel: <span className="text-white/80">{f.user ? `${f.user.name} (${f.user.email})` : 'Anonym'}</span>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
                     {f.status !== 'NEW' && (
                       <button onClick={() => handleUpdateStatus(f.id, 'NEW')} className="text-xs border border-white/20 text-white/50 hover:text-white px-3 py-1.5 rounded transition-colors">
                         Označit jako Nové
@@ -158,10 +198,17 @@ export default function FeedbackAdminPage() {
                         Vyřešit
                       </button>
                     )}
+                    <button 
+                      onClick={() => handleDelete(f.id)} 
+                      className="ml-2 text-xs border border-red-500/30 text-red-500 hover:bg-red-500/10 px-3 py-1.5 rounded transition-colors"
+                      title="Smazat hlášení"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </div>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         )}
       </div>

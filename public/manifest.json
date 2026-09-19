@@ -1,0 +1,16 @@
+{
+  "name": "MMBarber Uherské Hradiště",
+  "short_name": "MMBarber",
+  "description": "Premium barbershop in Uherské Hradiště",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1369,3 +1369,15 @@ html.lite-mode-active [class*="mix-blend-"] {
 html.lite-mode-active .animate-pulse {
   animation: none !important;
 }
+
+/* OPTIMIZATION: Content Visibility */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+}
+
+/* OPTIMIZATION: Section Optimize */
+.section-optimize {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
+}

@@ -36,6 +36,7 @@ import {
   addVoteToBarberStat,
   hasStatLikedToday
 } from "@/utils/barberXp";
+import { BAD_WORDS } from "@/data/badWords";
 
 const BARBER_STATS_METADATA: Record<string, { label: string; base: number; color: string }[]> = {
   tomas: [
@@ -60,6 +61,19 @@ export default function RatingPage() {
   const [isOffline, setIsOffline] = useState(false);
   const [isBloodMode, setIsBloodMode] = useState(false);
   const [isNoirMode, setIsNoirMode] = useState(false);
+  
+  // Profanity Filter States
+  const [profanityStrikes, setProfanityStrikes] = useState(0);
+  const [profanityLocked, setProfanityLocked] = useState(false);
+  const [respectChecked, setRespectChecked] = useState(false);
+
+  const isProfane = (text: string) => {
+    const normalized = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return BAD_WORDS.some(word => {
+      const normWord = word.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return normalized.includes(normWord);
+    });
+  };
   
   // Real-time Global XP and Liking States
   const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
@@ -101,6 +115,15 @@ export default function RatingPage() {
       setClientNickname(savedNickname);
     } else {
       setIsEditingNickname(true); // Edit identity automatically on first visit
+    }
+
+    // Load profanity states
+    const savedStrikes = parseInt(localStorage.getItem("mmbarber_profanity_strikes") || "0");
+    if (savedStrikes >= 3) {
+      setProfanityLocked(true);
+      setProfanityStrikes(savedStrikes);
+    } else {
+      setProfanityStrikes(savedStrikes);
     }
 
     // Real-time listener for global XP stats
@@ -151,14 +174,54 @@ export default function RatingPage() {
     };
   }, [barbers]);
 
+  const handleProfanityViolation = async (word: string, context: string) => {
+    const newStrikes = profanityStrikes + 1;
+    setProfanityStrikes(newStrikes);
+    localStorage.setItem("mmbarber_profanity_strikes", newStrikes.toString());
+
+    try {
+      await fetch('/api/admin/profanity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ word, context })
+      });
+    } catch (e) {}
+
+    if (newStrikes >= 3) {
+      setProfanityLocked(true);
+      alert("Zaznamenali jsme tvou aktivitu. Pro pokračování musíš přijmout podmínky a vybrat povolenou přezdívku.");
+      setClientNickname("Můj Pán");
+      setTomasInputName("Můj Pán");
+    } else {
+      alert(`Nevhodný výraz. Zbývají ti ${3 - newStrikes} pokusy, než budeš zablokován.`);
+    }
+  };
+
   const handleConfirmNickname = () => {
+    if (profanityLocked && !respectChecked) {
+      alert("Musíte zakliknout, že plně respektujete oslovení!");
+      return;
+    }
+    if (isProfane(clientNickname) && !profanityLocked) {
+      handleProfanityViolation(clientNickname, "client_nickname");
+      return;
+    }
     localStorage.setItem("mmbarber_client_nickname", clientNickname);
     setIsEditingNickname(false);
     playSound("/sounds/reload.mp3", 0.4);
+    window.dispatchEvent(new Event("mmbarber_names_updated"));
   };
 
   const handleSaveTomasName = () => {
+    if (profanityLocked && !respectChecked) {
+      alert("Musíte zakliknout, že plně respektujete oslovení!");
+      return;
+    }
     const trimmed = tomasInputName.trim();
+    if (isProfane(trimmed) && !profanityLocked) {
+      handleProfanityViolation(trimmed, "barber_nickname");
+      return;
+    }
     if (trimmed) {
       localStorage.setItem("mmbarber_custom_name_tomas", trimmed);
       setCustomTomasName(trimmed);
@@ -169,6 +232,7 @@ export default function RatingPage() {
     }
     setIsEditingTomasName(false);
     playSound("/sounds/reload.mp3", 0.4);
+    window.dispatchEvent(new Event("mmbarber_names_updated"));
   };
 
   if (loading) return null;
@@ -380,22 +444,40 @@ export default function RatingPage() {
                       <div className="flex items-center gap-2">
                         {barber.id === 'tomas' && (
                           isEditingTomasName ? (
-                            <div className="flex items-center gap-2 mt-1">
-                              <input 
-                                type="text"
-                                value={tomasInputName}
-                                onChange={(e) => setTomasInputName(e.target.value)}
-                                className="bg-black/80 border border-mafia-gold text-white px-2 py-0.5 rounded text-xl font-heading w-40 md:w-56 focus:outline-none uppercase"
-                                autoFocus
-                                onKeyDown={(e) => { if (e.key === 'Enter') handleSaveTomasName(); }}
-                              />
-                              <button 
-                                onClick={handleSaveTomasName}
-                                className="text-[10px] font-mono text-mafia-gold hover:text-white border border-mafia-gold/40 px-2 py-0.5 rounded transition bg-mafia-gold/10"
-                              >
-                                OK
-                              </button>
-                            </div>
+                              <div className="flex flex-col items-start gap-2 mt-1">
+                                {profanityLocked ? (
+                                  <div className="flex flex-col gap-2 bg-mafia-red/10 p-2 border border-mafia-red/30 rounded">
+                                    <span className="text-[10px] text-mafia-red uppercase font-bold">Zablokováno pro nevhodné chování</span>
+                                    <select 
+                                      value={tomasInputName}
+                                      onChange={(e) => setTomasInputName(e.target.value)}
+                                      className="bg-black border border-mafia-red text-white px-2 py-1 outline-none font-mono"
+                                    >
+                                      <option value="Můj Pán">Můj Pán</option>
+                                      <option value="Můj lord">Můj lord</option>
+                                    </select>
+                                    <label className="flex items-center gap-2 text-[10px] font-mono mt-1">
+                                      <input type="checkbox" checked={respectChecked} onChange={(e) => setRespectChecked(e.target.checked)} />
+                                      Plně respektuji oslovení při vstupu do barbershopu.
+                                    </label>
+                                  </div>
+                                ) : (
+                                  <input 
+                                    type="text"
+                                    value={tomasInputName}
+                                    onChange={(e) => setTomasInputName(e.target.value)}
+                                    className="bg-black/80 border border-mafia-gold text-white px-2 py-0.5 rounded text-xl font-heading w-40 md:w-56 focus:outline-none uppercase"
+                                    autoFocus
+                                    onKeyDown={(e) => { if (e.key === 'Enter') handleSaveTomasName(); }}
+                                  />
+                                )}
+                                <button 
+                                  onClick={handleSaveTomasName}
+                                  className="text-[10px] font-mono text-mafia-gold hover:text-white border border-mafia-gold/40 px-2 py-0.5 rounded transition bg-mafia-gold/10"
+                                >
+                                  OK
+                                </button>
+                              </div>
                           ) : (
                             <div className="flex items-baseline gap-2 group/name select-none">
                               <h3 className="text-3xl md:text-4xl font-heading font-black text-white uppercase tracking-wider italic">
@@ -625,18 +707,38 @@ export default function RatingPage() {
                       <span className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.4em] mb-2">
                         {lang === 'cs' ? 'IDENTIFIKACE OPERATIVCE (KLIENTA):' : 'OPERATIVE IDENTIFICATION (CLIENT):'}
                       </span>
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <input 
-                           type="text"
-                           placeholder={lang === 'cs' ? "ZADEJTE JMÉNO..." : "ENTER NAME..."}
-                           value={clientNickname}
-                           onChange={(e) => setClientNickname(e.target.value.toUpperCase())}
-                           autoFocus
-                           className="bg-transparent border-b-2 border-white/20 text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter focus:border-mafia-gold outline-none transition-all flex-grow placeholder:opacity-20"
-                        />
+                      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                        {profanityLocked ? (
+                          <div className="flex flex-col gap-2 w-full max-w-md bg-mafia-red/10 p-4 border border-mafia-red/30 rounded">
+                            <span className="text-[12px] text-mafia-red uppercase font-bold tracking-widest">
+                              Byl jsi zablokován za nevhodné chování. Zaznamenali jsme tvou aktivitu.
+                            </span>
+                            <select 
+                              value={clientNickname}
+                              onChange={(e) => setClientNickname(e.target.value)}
+                              className="bg-black border border-mafia-red text-white p-2 outline-none font-mono text-xl"
+                            >
+                              <option value="Můj Pán">Můj Pán</option>
+                              <option value="Můj lord">Můj lord</option>
+                            </select>
+                            <label className="flex items-center gap-2 text-xs font-mono mt-2 text-white/80 cursor-pointer">
+                              <input type="checkbox" checked={respectChecked} onChange={(e) => setRespectChecked(e.target.checked)} className="w-4 h-4 accent-mafia-red" />
+                              Plně respektuji oslovení při vstupu do barbershopu.
+                            </label>
+                          </div>
+                        ) : (
+                          <input 
+                             type="text"
+                             placeholder={lang === 'cs' ? "ZADEJTE JMÉNO..." : "ENTER NAME..."}
+                             value={clientNickname}
+                             onChange={(e) => setClientNickname(e.target.value.toUpperCase())}
+                             autoFocus
+                             className="bg-transparent border-b-2 border-white/20 text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter focus:border-mafia-gold outline-none transition-all flex-grow placeholder:opacity-20 w-full"
+                          />
+                        )}
                         <button 
                            onClick={handleConfirmNickname}
-                           className="px-8 py-4 bg-mafia-gold text-black font-heading font-black uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)]"
+                           className="px-8 py-4 bg-mafia-gold text-black font-heading font-black uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(var(--color-mafia-gold-rgb),0.3)] mt-2 md:mt-0 whitespace-nowrap"
                         >
                            {lang === 'cs' ? 'POTVRDIT' : 'CONFIRM'}
                         </button>

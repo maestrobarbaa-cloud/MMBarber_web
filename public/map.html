@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map Preview</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #000; overflow: hidden; }
+    #map { width: 100%; height: 100vh; }
+  </style>
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var map = new maplibregl.Map({
+        container: 'map',
+        style: 'https://tiles.openfreemap.org/styles/dark',
+        center: [17.4835088, 49.0592272],
+        zoom: 15.5
+      });
+      new maplibregl.Marker({ color: '#c5a059' })
+        .setLngLat([17.4835088, 49.0592272])
+        .addTo(map);
+    });
+  </script>
+</body>
+</html>

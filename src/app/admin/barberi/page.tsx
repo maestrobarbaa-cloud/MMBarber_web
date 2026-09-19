@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Scissors, Plus, Trash2, Save, X, Lock, Unlock, Skull, Eye, EyeOff, MessageCircle, Activity, CalendarDays, Power, ShieldAlert, CheckCircle } from "lucide-react";
+import { ArrowLeft, Scissors, Plus, Trash2, Save, X, Lock, Unlock, Skull, Eye, EyeOff, MessageCircle, Activity, CalendarDays, Power, ShieldAlert, CheckCircle, QrCode } from "lucide-react";
 import Link from "next/link";
 import { useBarbers } from "@/contexts/BarberContext";
 import { getOperativeStatusData, setOperativeStatusData, fetchOperativeStatusData, OperativeStatusData, OperativeStatusConfig } from "@/utils/status";
+import { QRCodeSVG } from 'qrcode.react';
+import { generateSpaydString } from '@/utils/spayd';
 
 const DAYS = [
   { id: 1, label: 'Pondělí' },
@@ -21,6 +23,13 @@ export default function BarberAdminPage() {
   const { barbers, loading, refreshBarbers } = useBarbers();
   const [isAdding, setIsAdding] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [qrModalBarber, setQrModalBarber] = useState<any>(null);
+  const [accountInputMode, setAccountInputMode] = useState<'classic' | 'iban'>('classic');
+  const [editingAccountNumber, setEditingAccountNumber] = useState("");
+  const [editingBankCode, setEditingBankCode] = useState("");
+  const [editingIban, setEditingIban] = useState("");
+  const [editingQrPrices, setEditingQrPrices] = useState<{label: string, amount: number}[]>([]);
+  const [customQrAmount, setCustomQrAmount] = useState<number>(100);
   const [quotesModalBarber, setQuotesModalBarber] = useState<any>(null);
   const [editingQuotes, setEditingQuotes] = useState<string[]>([]);
   const [newQuoteText, setNewQuoteText] = useState("");
@@ -43,6 +52,7 @@ export default function BarberAdminPage() {
     requiresUnlock: false,
     unlockThreshold: 5,
     missionFailed: false,
+    bankAccount: "",
     bookingSystemType: "external",
     structuredSchedule: {
       "Po": { work: true, start: "09:00", end: "18:00" },
@@ -80,6 +90,7 @@ export default function BarberAdminPage() {
         setFormData({ 
           name: "", role: "", image: "/obr/novy_barber.png", desc: "", schedule: "Individuální režim práce.", 
           bookingLink: "", customChatText: "", parentId: "", requiresUnlock: false, unlockThreshold: 5, missionFailed: false,
+          bankAccount: "",
           bookingSystemType: "external",
           structuredSchedule: {
             "Po": { work: true, start: "09:00", end: "18:00" },
@@ -136,6 +147,69 @@ export default function BarberAdminPage() {
       });
       if (res.ok) await refreshBarbers();
     } catch (e) {}
+  };
+
+  const openQrModal = (b: any) => {
+    setQrModalBarber(b);
+    setEditingQrPrices(b.qrPrices || []);
+    setCustomQrAmount(100);
+    const acc = b.bankAccount || "";
+    if (acc.toUpperCase().startsWith("CZ") || /^[A-Z]{2}[0-9]{2}/.test(acc)) {
+      setAccountInputMode('iban');
+      setEditingIban(acc);
+      setEditingAccountNumber("");
+      setEditingBankCode("");
+    } else if (acc.includes("/")) {
+      setAccountInputMode('classic');
+      const [num, bank] = acc.split("/");
+      setEditingAccountNumber(num);
+      setEditingBankCode(bank);
+      setEditingIban("");
+    } else {
+      setAccountInputMode('classic');
+      setEditingAccountNumber(acc);
+      setEditingBankCode("");
+      setEditingIban("");
+    }
+  };
+
+  const closeQrModal = () => {
+    setQrModalBarber(null);
+    setEditingAccountNumber("");
+    setEditingBankCode("");
+    setEditingIban("");
+  };
+
+  const handleSaveBankAccount = async () => {
+    if (!qrModalBarber) return;
+    
+    let combinedAccount = "";
+    if (accountInputMode === 'classic') {
+      if (editingAccountNumber) {
+        combinedAccount = editingBankCode ? `${editingAccountNumber.trim()}/${editingBankCode.trim()}` : editingAccountNumber.trim();
+      }
+    } else {
+      combinedAccount = editingIban.trim();
+    }
+
+    try {
+      const res = await fetch("/api/barbers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: qrModalBarber.id, bankAccount: combinedAccount, qrPrices: editingQrPrices })
+      });
+      if (res.ok) {
+        await refreshBarbers();
+        closeQrModal();
+      }
+    } catch (e) {}
+  };
+
+  const handleClearBankAccount = () => {
+    setEditingAccountNumber("");
+    setEditingBankCode("");
+    setEditingIban("");
+    setEditingQrPrices([]);
   };
 
   const handleSetExperience = async (b: any) => {
@@ -339,6 +413,11 @@ export default function BarberAdminPage() {
                   <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Odkaz na rezervaci (URL) [Pouze pro externí]</label>
                   <input type="text" value={formData.bookingLink} onChange={e => setFormData({...formData, bookingLink: e.target.value})} className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none" disabled={formData.bookingSystemType === 'internal'} />
                 </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Bankovní účet (pro QR platby)</label>
+                  <input type="text" value={formData.bankAccount} onChange={e => setFormData({...formData, bankAccount: e.target.value})} placeholder="Např. 123456789/0100 nebo IBAN" className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none" />
+                </div>
                 
                 <div className="space-y-2 md:col-span-2">
                   <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Stručný popis (zobrazí se v detailu a na kartě)</label>
@@ -466,6 +545,9 @@ export default function BarberAdminPage() {
                     <button onClick={() => openStatusModal(b)} className="text-white/30 hover:text-green-500 transition p-2 border border-white/10" title="Status operativce (Kalendář / Online)">
                       <Activity size={16} />
                     </button>
+                    <button onClick={() => openQrModal(b)} className={`transition p-2 border ${b.bankAccount ? 'text-mafia-gold border-mafia-gold/50 bg-mafia-gold/10' : 'text-white/30 border-white/10 hover:text-white'}`} title={b.bankAccount ? `Účet: ${b.bankAccount}` : 'Nastavit bankovní účet (QR platby)'}>
+                      <QrCode size={16} />
+                    </button>
                     {b.id !== 'tomas' && b.id !== 'nella' && (
                       <button onClick={() => handleDelete(b.id)} className="text-white/30 hover:text-mafia-red transition p-2 border border-white/10">
                         <Trash2 size={16} />
@@ -495,6 +577,149 @@ export default function BarberAdminPage() {
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {qrModalBarber && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="bg-[#0c0c0c] border border-white/10 w-full max-w-2xl max-h-[90vh] flex flex-col relative"
+            >
+              <button onClick={closeQrModal} className="absolute top-4 right-4 text-white/50 hover:text-white">
+                <X size={20} />
+              </button>
+              
+              <div className="p-6 border-b border-white/10 flex items-center gap-4">
+                <QrCode className="text-mafia-gold" size={24} />
+                <div>
+                  <h2 className="text-2xl font-heading font-black tracking-widest uppercase text-mafia-gold">
+                    ÚČET A QR PLATBY - {qrModalBarber.name}
+                  </h2>
+                  <p className="text-xs text-white/50 font-mono mt-1">Nastavení bankovního účtu a testování QR kódu.</p>
+                </div>
+              </div>
+
+              <div className="p-6 overflow-y-auto flex-1 space-y-8 bg-[#050505]">
+                <div className="flex bg-black/50 p-1 border border-white/10 rounded-md">
+                  <button 
+                    onClick={() => setAccountInputMode('classic')}
+                    className={`flex-1 py-2 text-xs font-bold tracking-widest uppercase transition-all rounded ${accountInputMode === 'classic' ? 'bg-mafia-gold text-black' : 'text-white/50 hover:text-white'}`}
+                  >
+                    Klasický formát
+                  </button>
+                  <button 
+                    onClick={() => setAccountInputMode('iban')}
+                    className={`flex-1 py-2 text-xs font-bold tracking-widest uppercase transition-all rounded ${accountInputMode === 'iban' ? 'bg-mafia-gold text-black' : 'text-white/50 hover:text-white'}`}
+                  >
+                    IBAN
+                  </button>
+                </div>
+
+                {accountInputMode === 'classic' ? (
+                  <div className="flex gap-4 items-end">
+                    <div className="space-y-2 flex-1">
+                      <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Číslo účtu (včetně předčíslí)</label>
+                      <input type="text" value={editingAccountNumber} onChange={e => setEditingAccountNumber(e.target.value)} placeholder="např. 123456789" className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none" />
+                    </div>
+                    <div className="text-white/50 font-bold text-xl pb-3">/</div>
+                    <div className="space-y-2 w-32">
+                      <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">Kód banky</label>
+                      <input type="text" value={editingBankCode} onChange={e => setEditingBankCode(e.target.value)} placeholder="0100" className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-mono text-white/50 uppercase tracking-widest">IBAN účet</label>
+                    <input type="text" value={editingIban} onChange={e => setEditingIban(e.target.value)} placeholder="např. CZ1201000000000123456789" className="w-full bg-black/50 border border-white/20 p-3 text-white focus:border-mafia-gold outline-none" />
+                  </div>
+                )}
+
+                <div className="space-y-4 pt-4 border-t border-white/10">
+                  <h3 className="text-sm font-black uppercase text-white">Ceník pro rychlé QR platby</h3>
+                  <div className="space-y-2">
+                    {editingQrPrices.map((qp, idx) => (
+                      <div key={idx} className="flex gap-2">
+                        <input type="text" value={qp.label} onChange={e => { const copy = [...editingQrPrices]; copy[idx].label = e.target.value; setEditingQrPrices(copy); }} placeholder="Název (např. Střih)" className="flex-1 bg-black/50 border border-white/20 p-2 text-white focus:border-mafia-gold outline-none text-xs" />
+                        <input type="number" value={qp.amount} onChange={e => { const copy = [...editingQrPrices]; copy[idx].amount = Number(e.target.value); setEditingQrPrices(copy); }} placeholder="Cena (Kč)" className="w-24 bg-black/50 border border-white/20 p-2 text-white focus:border-mafia-gold outline-none text-xs" />
+                        <button onClick={() => setEditingQrPrices(editingQrPrices.filter((_, i) => i !== idx))} className="px-3 bg-red-900/30 text-red-500 hover:bg-red-500 hover:text-white transition rounded">
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                    <button onClick={() => setEditingQrPrices([...editingQrPrices, { label: "", amount: 0 }])} className="w-full py-2 border border-dashed border-white/20 text-white/50 hover:text-white hover:border-white/50 transition text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                      <Plus size={14} /> Přidat položku do ceníku
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="border border-white/10 p-6 flex flex-col items-center justify-center bg-black/40">
+                  <h3 className="text-sm font-black uppercase text-white mb-6">Testovací QR Kód (Generováno Živě)</h3>
+                  
+                  <div className="w-full flex flex-wrap gap-2 justify-center mb-6">
+                    <div className="flex items-center gap-2 bg-black border border-white/20 px-3 py-1 rounded">
+                      <span className="text-xs text-white/50">Vlastní částka:</span>
+                      <input type="number" value={customQrAmount} onChange={e => setCustomQrAmount(Number(e.target.value))} className="w-20 bg-transparent text-white font-bold text-center outline-none border-b border-white/20 focus:border-mafia-gold" />
+                      <span className="text-xs text-white/50">Kč</span>
+                    </div>
+                    {editingQrPrices.filter(qp => qp.amount > 0).map((qp, idx) => (
+                      <button key={idx} onClick={() => setCustomQrAmount(qp.amount)} className={`text-xs px-3 py-2 border transition rounded ${customQrAmount === qp.amount ? 'bg-mafia-gold text-black border-mafia-gold font-bold' : 'border-white/20 text-white/50 hover:text-white'}`}>
+                        {qp.label} ({qp.amount} Kč)
+                      </button>
+                    ))}
+                  </div>
+
+                  {(() => {
+                    const combinedAccount = accountInputMode === 'classic' 
+                      ? (editingAccountNumber && editingBankCode ? `${editingAccountNumber.trim()}/${editingBankCode.trim()}` : editingAccountNumber.trim())
+                      : editingIban.trim();
+
+                    if (!combinedAccount) {
+                      return <p className="text-xs text-white/30 italic">Zadejte bankovní účet pro náhled QR kódu.</p>;
+                    }
+                    const spayd = generateSpaydString({
+                      account: combinedAccount,
+                      amount: customQrAmount,
+                      message: `${qrModalBarber.name} - Platba za služby`
+                    });
+                    
+                    if (!spayd) {
+                      return <p className="text-xs text-mafia-red italic font-bold">Neplatný formát účtu! Nelze vygenerovat SPAYD.</p>;
+                    }
+                    
+                    return (
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="bg-white p-4">
+                          <QRCodeSVG value={spayd} size={200} />
+                        </div>
+                        <p className="text-[10px] text-white/50 font-mono text-center max-w-sm">SPAYD Řetězec (načtěte bankovní aplikací k otestování platby na {customQrAmount} Kč):<br/><br/><span className="text-mafia-gold break-all">{spayd}</span></p>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className="p-6 border-t border-white/10 flex justify-end gap-4 bg-black/50">
+                <button onClick={handleClearBankAccount} className="px-6 py-2 text-white/50 hover:text-mafia-red uppercase text-xs font-black tracking-widest mr-auto">
+                  Vymazat
+                </button>
+                <button onClick={closeQrModal} className="px-6 py-2 text-white/50 hover:text-white uppercase text-xs font-black tracking-widest">
+                  Zrušit
+                </button>
+                <button onClick={handleSaveBankAccount} className="px-6 py-2 bg-mafia-gold text-black uppercase text-xs font-black tracking-widest flex items-center gap-2 hover:bg-white transition">
+                  <Save size={14} /> Uložit
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {quotesModalBarber && (

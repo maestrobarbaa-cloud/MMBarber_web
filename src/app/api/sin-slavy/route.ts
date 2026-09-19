@@ -36,12 +36,13 @@ export async function POST(request: Request) {
     const db = getDb();
     db.hall_of_fame.push({
       id,
-      name: body.name,
+      name: body.name, // this is "Jak se zde chcete zapsat"
+      fullName: body.fullName || '', // Skutečné jméno
       tier: body.tier,
       message: body.message || '',
       dateJoined: body.dateJoined?.seconds ? body.dateJoined.seconds * 1000 : Date.now(),
       avatarId: body.avatarId || 1,
-      active: body.active !== undefined ? (body.active ? 1 : 0) : 1
+      active: body.active !== undefined ? (body.active ? 1 : 0) : 0 // Výchozí: neschváleno
     });
     saveDb();
 
@@ -54,16 +55,27 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, active } = body;
+    const { id, active, name, fullName } = body;
 
-    if (!id || active === undefined) {
-      return NextResponse.json({ error: 'Missing id or active state' }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: 'Missing id' }, { status: 400 });
     }
 
     const db = getDb();
     const index = db.hall_of_fame.findIndex(h => h.id === id);
     if (index !== -1) {
-      db.hall_of_fame[index].active = active ? 1 : 0;
+      // If admin is just approving/toggling active status:
+      if (active !== undefined) {
+        db.hall_of_fame[index].active = active ? 1 : 0;
+      } 
+      // If user is updating their own entry:
+      if (name !== undefined) {
+        db.hall_of_fame[index].name = name;
+        if (fullName !== undefined) {
+          db.hall_of_fame[index].fullName = fullName;
+        }
+        db.hall_of_fame[index].active = 0; // Requires re-approval
+      }
       saveDb();
     }
 

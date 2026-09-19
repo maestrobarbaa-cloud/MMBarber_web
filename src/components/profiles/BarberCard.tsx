@@ -491,32 +491,6 @@ function BarberCard({
                             )}
                           </div>
                         )}
-
-                        {/* Tracker Fragmentů */}
-                        {barber.id === 'tomas' && (
-                          <div className="mt-6 w-full max-w-[260px] border border-mafia-gold/30 bg-black/50 p-4 rounded-sm flex flex-col items-center gap-2 shadow-[inset_0_0_20px_rgba(197,160,89,0.05)]">
-                             <div className="text-[9px] font-mono text-white/50 uppercase tracking-[0.2em] text-center">
-                               {lang === 'cs' ? 'Nalezené fragmenty (Projekt X)' : 'Fragments Found (Project X)'}
-                             </div>
-                             <div className="flex items-center gap-2">
-                                <span className="text-2xl font-heading font-black text-mafia-gold">{Math.min(totalCollected, 10)}</span>
-                                <span className="text-white/30 text-xl">/</span>
-                                <span className="text-2xl font-heading font-black text-white/50">10</span>
-                             </div>
-                             <div className="w-full bg-white/10 h-1.5 mt-1 relative overflow-hidden rounded-full">
-                               <div className="absolute top-0 left-0 h-full bg-mafia-gold shadow-[0_0_10px_var(--color-mafia-gold)]" style={{ width: `${(Math.min(totalCollected, 10) / 10) * 100}%` }}></div>
-                             </div>
-                             {totalCollected < 10 ? (
-                                <div className="text-[8px] font-mono text-mafia-gold/60 uppercase tracking-widest mt-1">
-                                  {lang === 'cs' ? `Chybí odhalit: ${10 - totalCollected}` : `Missing: ${10 - totalCollected}`}
-                                </div>
-                             ) : (
-                                <div className="text-[9px] font-mono text-mafia-gold uppercase tracking-widest mt-1 animate-pulse font-bold bg-mafia-gold/20 px-2 py-0.5 rounded">
-                                  {lang === 'cs' ? 'DATA ZKOMPLETOVÁNA' : 'DATA COMPLETED'}
-                                </div>
-                             )}
-                          </div>
-                        )}
                     </div>
                   </>
                 )}

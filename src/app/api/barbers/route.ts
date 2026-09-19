@@ -23,7 +23,8 @@ export async function GET() {
       } : undefined,
       bookingSystemType: b.bookingSystemType || 'internal',
       structuredSchedule: b.structuredSchedule ? JSON.parse(b.structuredSchedule) : null,
-      startedCuttingYear: b.startedCuttingYear ?? null
+      startedCuttingYear: b.startedCuttingYear ?? null,
+      qrPrices: b.qrPrices ? JSON.parse(b.qrPrices) : []
     }));
     
     return NextResponse.json({ barbers: formattedBarbers });
@@ -36,7 +37,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, role, image, desc, schedule, bookingLink, specializations, bookingSystemType, structuredSchedule, isHidden, quotes, quoteTiming, startedCuttingYear } = body;
+    const { name, role, image, desc, schedule, bookingLink, specializations, bookingSystemType, structuredSchedule, isHidden, quotes, quoteTiming, startedCuttingYear, bankAccount, qrPrices } = body;
     
     if (!name || !role || !image || !desc || !schedule) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -76,7 +77,9 @@ export async function POST(request: Request) {
       rankNextIn: null,
       bookingSystemType: bookingSystemType || 'external',
       structuredSchedule: structuredSchedule ? JSON.stringify(structuredSchedule) : null,
-      startedCuttingYear: startedCuttingYear || null
+      startedCuttingYear: startedCuttingYear || null,
+      bankAccount: bankAccount || null,
+      qrPrices: qrPrices ? JSON.stringify(qrPrices) : null
     });
     saveDb();
 
@@ -90,7 +93,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed, isHidden, bookingSystemType, structuredSchedule, quotes, quoteTiming, startedCuttingYear } = body;
+    const { id, name, role, image, desc, schedule, bookingLink, specializations, symbol, parentId, customChatText, orderIndex, requiresUnlock, unlockThreshold, missionFailed, isHidden, bookingSystemType, structuredSchedule, quotes, quoteTiming, startedCuttingYear, bankAccount, qrPrices } = body;
     
     if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
 
@@ -122,7 +125,9 @@ export async function PUT(request: Request) {
       quoteTiming: quoteTiming ? JSON.stringify(quoteTiming) : current.quoteTiming,
       bookingSystemType: bookingSystemType !== undefined ? bookingSystemType : current.bookingSystemType,
       structuredSchedule: structuredSchedule ? JSON.stringify(structuredSchedule) : current.structuredSchedule,
-      startedCuttingYear: startedCuttingYear !== undefined ? startedCuttingYear : current.startedCuttingYear
+      startedCuttingYear: startedCuttingYear !== undefined ? startedCuttingYear : current.startedCuttingYear,
+      bankAccount: bankAccount !== undefined ? bankAccount : current.bankAccount,
+      qrPrices: qrPrices ? JSON.stringify(qrPrices) : current.qrPrices
     };
     saveDb();
 

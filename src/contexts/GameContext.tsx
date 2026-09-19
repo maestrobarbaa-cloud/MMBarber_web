@@ -17,6 +17,7 @@ interface GameContextProps {
   resetProgress: () => Promise<void>;
   activeChapter: string;
   changeChapter: (chapterId: string) => Promise<void>;
+  isAdmin: boolean;
 }
 
 const GameContext = createContext<GameContextProps | undefined>(undefined);
@@ -31,8 +32,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [chapterXp, setChapterXp] = useState<Record<string, number>>({ products: 0, community: 0, secret: 0 });
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeChapter, setActiveChapter] = useState("products");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    setIsAdmin(typeof window !== 'undefined' && sessionStorage.getItem("mmbarber_admin_auth") === "true");
+    
     const fetchProgress = async () => {
       try {
         const res = await fetch('/api/progress');
@@ -78,7 +82,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     
     const interval = setInterval(async () => {
       const now = Date.now();
-      if (now - lastActionTime < 60000) {
+      if (now - lastActionTime < 5000) {
         try {
           const res = await fetch('/api/progress', {
             method: 'POST',
@@ -98,7 +102,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           }
         } catch (e) { }
       }
-    }, 60000);
+    }, 5000);
     
     return () => {
       window.removeEventListener('mousemove', handleActivity);
@@ -193,7 +197,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       mafiaRank,
       resetProgress,
       activeChapter,
-      changeChapter
+      changeChapter,
+      isAdmin
     }}>
       {children}
     </GameContext.Provider>

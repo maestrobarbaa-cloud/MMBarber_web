@@ -47,10 +47,10 @@ export async function POST(request: Request) {
     const now = new Date();
     
     if (action === 'ping') {
-      const msSinceLastVisit = now.getTime() - visitor.lastVisitDate.getTime();
-      const COOLDOWN = 5 * 60 * 1000; // 5 minut ochrana proti F5
+      // Limit: 1 návštěva za kalendářní den
+      const isSameDay = now.toDateString() === visitor.lastVisitDate.toDateString();
       
-      if (msSinceLastVisit >= COOLDOWN || visitor.totalVisits === 0) {
+      if (!isSameDay || visitor.totalVisits === 0) {
         const updateData: any = {
           totalVisits: visitor.totalVisits + 1,
           lastVisitDate: now

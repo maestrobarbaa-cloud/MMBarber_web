@@ -28,7 +28,7 @@ export const DesktopMegaMenu = React.memo(function DesktopMegaMenu({
 }: DesktopMegaMenuProps) {
   const megaMenuData = getMegaMenuData(lang);
   const currentCategory = hoveredCategory as keyof typeof megaMenuData;
-  const { totalCollected, chapterXp } = useGame();
+  const { totalCollected, chapterXp, isAdmin } = useGame();
   const { isBloodMode } = useUI();
   
   // Zamezíme chybám při hydrataci tím, že počkáme na mount pro jiskry
@@ -93,7 +93,7 @@ export const DesktopMegaMenu = React.memo(function DesktopMegaMenu({
                 </h3>
                 <ul className="flex flex-col gap-4">
                   {group.items.map((item, itemIdx) => {
-                    const isLocked = item.requiredXP && (
+                    const isLocked = !isAdmin && item.requiredXP && (
                       item.path === '/komunita' 
                         ? (chapterXp['community'] || 0) < item.requiredXP 
                         : totalCollected < item.requiredXP
@@ -105,7 +105,7 @@ export const DesktopMegaMenu = React.memo(function DesktopMegaMenu({
                         <div className="text-white/30 text-sm font-sans flex items-center gap-2 cursor-not-allowed opacity-50">
                           <Lock size={14} className="text-white/30" />
                           {item.name}
-                          <span className="text-[10px] font-mono text-mafia-gold/40 ml-2">{item.requiredXP} XP</span>
+                          <span className="text-[10px] font-mono text-mafia-gold/40 ml-2">{item.requiredXP} Návštěv</span>
                         </div>
                       ) : (
                         <Link

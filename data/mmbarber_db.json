@@ -21,7 +21,8 @@
       "unlockThreshold": 5,
       "missionFailed": 0,
       "quotes": "[\"dss\"]",
-      "quoteTiming": "{\"showFor\":10000,\"waitFor\":12000}"
+      "quoteTiming": "{\"showFor\":10000,\"waitFor\":12000}",
+      "bankAccount": ""
     },
     {
       "id": "nella",
@@ -76,7 +77,17 @@
       "createdAt": 1789640233816
     }
   ],
-  "hall_of_fame": [],
+  "hall_of_fame": [
+    {
+      "id": "e62435e5-f997-4f84-990f-8210e0d71298",
+      "name": "sdfs",
+      "fullName": "fdsdf",
+      "message": "",
+      "dateJoined": 1789753336097,
+      "avatarId": 1,
+      "active": 1
+    }
+  ],
   "settings": {
     "visibility_barber_tomas": "true",
     "visibility_barber_nella": "false",
@@ -113,7 +124,8 @@
     "visibility_card_skryta_mista": "visible",
     "visibility_card_system": "visible",
     "visibility_card_pece": "visible",
-    "visibility_card_komunita": "visible"
+    "visibility_card_komunita": "visible",
+    "admin_last_seen": "1789802289425"
   },
   "user_fragments": [],
   "game_winners": [],
@@ -534,6 +546,58 @@
       "image": "",
       "link": "",
       "isMystery": false
+    }
+  ],
+  "support_sessions": [
+    {
+      "id": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "ip": "::1",
+      "userFullName": "T",
+      "startedAt": 1789754043419,
+      "lastActivity": 1789797057934,
+      "status": "OPEN"
+    }
+  ],
+  "support_messages": [
+    {
+      "id": "a8b3eb58-e901-42e0-9296-cd1f8ce85b12",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "tomas ",
+      "timestamp": 1789754043419,
+      "read": true
+    }
+  ],
+  "support_calls": [
+    {
+      "id": "56b8eb6b-ff43-4b12-9a49-31b9dfef6de7",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "status": "ENDED",
+      "offer": {
+        "type": "offer",
+        "sdp": "v=0\r\no=- 783202239079772744 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS 6b542be7-35f3-4af9-88c6-cfee12d661bd\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111 63 9 0 8 13 110 126\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:WMPE\r\na=ice-pwd:yBW+rX9znjsT2JRmt9zcqt8q\r\na=ice-options:trickle\r\na=fingerprint:sha-256 BB:4E:8C:B8:43:78:E5:8C:A6:B9:CD:AD:2F:5C:D7:54:5C:18:6A:83:BB:A6:07:DD:61:52:3A:C0:9E:87:3A:8D\r\na=setup:actpass\r\na=mid:0\r\na=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level\r\na=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\na=extmap:3 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\na=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=sendrecv\r\na=msid:6b542be7-35f3-4af9-88c6-cfee12d661bd 69591cc1-242a-4081-947a-5d0e5a65218c\r\na=rtcp-mux\r\na=rtcp-rsize\r\na=rtcp-xr:rcvr-rtt=all\r\na=rtcp-fb:111 rrtr\r\na=rtcp-fb:63 rrtr\r\na=rtcp-fb:9 rrtr\r\na=rtcp-fb:0 rrtr\r\na=rtcp-fb:8 rrtr\r\na=rtcp-fb:13 rrtr\r\na=rtcp-fb:110 rrtr\r\na=rtcp-fb:126 rrtr\r\na=rtpmap:111 opus/48000/2\r\na=rtcp-fb:111 transport-cc\r\na=fmtp:111 minptime=10;useinbandfec=1\r\na=rtpmap:63 red/48000/2\r\na=fmtp:63 111/111\r\na=rtpmap:9 G722/8000\r\na=rtpmap:0 PCMU/8000\r\na=rtpmap:8 PCMA/8000\r\na=rtpmap:13 CN/8000\r\na=rtpmap:110 telephone-event/48000\r\na=rtpmap:126 telephone-event/8000\r\na=ssrc:3941246178 cname:IjMW3jLUUI8dc9Kc\r\na=ssrc:3941246178 msid:6b542be7-35f3-4af9-88c6-cfee12d661bd 69591cc1-242a-4081-947a-5d0e5a65218c\r\n"
+      },
+      "candidates": [
+        {
+          "candidate": "candidate:3941238337 1 udp 2122260223 192.168.0.114 57835 typ host generation 0 ufrag WMPE network-id 1 network-cost 10",
+          "sdpMid": "0",
+          "sdpMLineIndex": 0,
+          "usernameFragment": "WMPE"
+        },
+        {
+          "candidate": "candidate:723833099 1 udp 1686052607 91.109.34.133 57835 typ srflx raddr 192.168.0.114 rport 57835 generation 0 ufrag WMPE network-id 1 network-cost 10",
+          "sdpMid": "0",
+          "sdpMLineIndex": 0,
+          "usernameFragment": "WMPE"
+        },
+        {
+          "candidate": "candidate:339759829 1 tcp 1518280447 192.168.0.114 9 typ host tcptype active generation 0 ufrag WMPE network-id 1 network-cost 10",
+          "sdpMid": "0",
+          "sdpMLineIndex": 0,
+          "usernameFragment": "WMPE"
+        }
+      ],
+      "timestamp": 1789766900120
     }
   ]
 }

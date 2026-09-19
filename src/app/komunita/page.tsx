@@ -17,7 +17,8 @@ import {
   Lightbulb,
   Lock,
   CheckCircle2,
-  Gift
+  Gift,
+  Star
 } from "lucide-react";
 import Link from "next/link";
 import Image from "@/components/OptimizedImage";
@@ -31,7 +32,7 @@ const COMMUNITY_LEVELS = [
     desc: 'Stáhni si exkluzivní grafiku a tapety.',
     icon: Camera,
     link: '/grafika',
-    xpRequired: 300
+    xpRequired: 1
   },
   {
     id: 'nabor',
@@ -40,7 +41,7 @@ const COMMUNITY_LEVELS = [
     desc: 'Nábor ambiciózních lidí do týmu.',
     icon: Users,
     link: '/komunita/nabor',
-    xpRequired: 700
+    xpRequired: 1
   },
   {
     id: 'novinky',
@@ -49,7 +50,7 @@ const COMMUNITY_LEVELS = [
     desc: 'Zůstaň v obraze. Nejnovější akce.',
     icon: Bell,
     link: '/komunita/novinky',
-    xpRequired: 1150
+    xpRequired: 1
   },
   {
     id: 'hodnoceni',
@@ -58,7 +59,7 @@ const COMMUNITY_LEVELS = [
     desc: 'Přečti si nebo zanech hodnocení.',
     icon: ShieldCheck,
     link: '/komunita/hodnoceni',
-    xpRequired: 1750
+    xpRequired: 1
   },
   {
     id: 'historky',
@@ -67,7 +68,7 @@ const COMMUNITY_LEVELS = [
     desc: 'Zajímavé příběhy a zákulisí.',
     icon: BookOpen,
     link: '/komunita/historky',
-    xpRequired: 2400
+    xpRequired: 1
   },
   {
     id: 'projekty',
@@ -76,7 +77,7 @@ const COMMUNITY_LEVELS = [
     desc: 'Speciální projekty a kolaborace.',
     icon: Zap,
     link: '/komunita/projekty',
-    xpRequired: 3150
+    xpRequired: 1
   },
   {
     id: 'sin-slavy',
@@ -85,7 +86,7 @@ const COMMUNITY_LEVELS = [
     desc: 'Naši nejvěrnější klienti a legendy.',
     icon: Trophy,
     link: '/komunita/sin-slavy',
-    xpRequired: 4000
+    xpRequired: 1
   },
   {
     id: 'zlepseni',
@@ -94,7 +95,7 @@ const COMMUNITY_LEVELS = [
     desc: 'Máš nápad jak MMBarber vylepšit?',
     icon: Lightbulb,
     link: '/komunita/zlepseni',
-    xpRequired: 4900
+    xpRequired: 1
   },
   {
     id: 'chat',
@@ -103,13 +104,13 @@ const COMMUNITY_LEVELS = [
     desc: 'Živá diskuse jen pro elitu.',
     icon: MessageSquare,
     link: '/komunita/chat',
-    xpRequired: 5950
+    xpRequired: 1
   }
 ];
 
 export default function CommunityPage() {
   const { t, lang } = useTranslation();
-  const { chapterXp } = useGame();
+  const { chapterXp, isAdmin } = useGame();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -119,7 +120,7 @@ export default function CommunityPage() {
 
   if (!mounted) return null;
 
-  const currentCommunityXp = chapterXp['community'] || 0;
+  const currentCommunityXp = isAdmin ? 999999 : (chapterXp['community'] || 0);
   const maxXP = COMMUNITY_LEVELS[COMMUNITY_LEVELS.length - 1].xpRequired;
   const chapterProgress = Math.min(100, (currentCommunityXp / maxXP) * 100);
 
@@ -170,105 +171,70 @@ export default function CommunityPage() {
             </h1>
             
             <p className="text-xl md:text-3xl font-heading text-smoke-white leading-tight uppercase tracking-tight mb-8 max-w-4xl">
-              Tvé místo v rodině se odvíjí od tvých zkušeností. Sbírej XP a odemykej nové možnosti v komunitě.
+              Tvé místo v rodině se odvíjí od tvé loajality. Sbírej návštěvy a odemykej nové možnosti v komunitě.
             </p>
 
             <div className="inline-flex items-center gap-3 bg-white/5 border border-mafia-gold/30 px-8 py-4 rounded-xl text-mafia-gold font-mono uppercase tracking-widest shadow-[0_0_30px_rgba(197,160,89,0.2)] mb-20">
-              <Zap size={20} className="animate-pulse" />
+              <Star size={20} className="animate-pulse" />
               <span className="text-sm">Tvůj vliv v komunitě:</span>
-              <span className="text-2xl font-bold">{currentCommunityXp.toLocaleString()} XP</span>
+              <span className="text-2xl font-bold">{currentCommunityXp.toLocaleString()} Návštěv</span>
             </div>
 
-            {/* Timeline Section */}
-            <div className="w-full relative bg-white/[0.02] border border-white/10 rounded-3xl backdrop-blur-xl p-8 md:p-12 shadow-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-              
-              <div className="flex justify-between items-center mb-12">
-                <h2 className="text-2xl font-light text-white uppercase tracking-[0.3em]">Cesta Komunitou</h2>
-                <div className="text-right">
-                  <div className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-widest mb-1">Celkový postup</div>
-                  <div className="text-3xl font-light text-white">{Math.floor(chapterProgress)}%</div>
-                </div>
-              </div>
+            {/* Grid Section */}
+            <div className="w-full max-w-6xl mx-auto mt-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {COMMUNITY_LEVELS.map((level, idx) => {
+                  const isCompleted = currentCommunityXp >= level.xpRequired;
+                  const Icon = level.icon;
 
-              <div 
-                className="relative py-12 px-4 overflow-x-auto custom-scrollbar"
-                ref={scrollContainerRef}
-              >
-                <div className="flex items-center min-w-max gap-12 md:gap-20 relative px-10">
-                  {/* Background Line */}
-                  <div className="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-[2px] bg-white/10" />
-                  
-                  {/* Active Progress Line */}
-                  <div 
-                    className="absolute left-10 top-1/2 -translate-y-1/2 h-[2px] bg-mafia-gold shadow-[0_0_15px_rgba(197,160,89,0.8)] transition-all duration-1000 ease-out"
-                    style={{ width: `calc(${chapterProgress}% - 40px)` }} 
-                  />
+                  return (
+                    <div 
+                      key={level.id} 
+                      className={`relative group bg-white/[0.02] border border-white/10 rounded-3xl p-8 backdrop-blur-xl transition-all duration-500 overflow-hidden flex flex-col items-center text-center
+                        ${isCompleted ? 'hover:bg-white/[0.05] hover:border-mafia-gold/30 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:-translate-y-2' : 'opacity-60 grayscale'}
+                      `}
+                    >
+                      {/* Background Gradient */}
+                      <div className={`absolute inset-0 bg-gradient-to-b from-mafia-gold/5 to-transparent opacity-0 transition-opacity duration-500 ${isCompleted ? 'group-hover:opacity-100' : ''}`} />
+                      
+                      {/* Icon */}
+                      <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 transition-all duration-500 border relative z-10
+                        ${isCompleted ? 'border-mafia-gold/50 bg-mafia-black text-mafia-gold shadow-[0_0_20px_rgba(197,160,89,0.2)] group-hover:scale-110' : 'border-white/10 bg-white/5 text-white/30'}
+                      `}>
+                        {isCompleted ? <Icon size={32} /> : <Lock size={32} />}
+                      </div>
 
-                  {COMMUNITY_LEVELS.map((level, idx) => {
-                    const isCompleted = currentCommunityXp >= level.xpRequired;
-                    const isNext = !isCompleted && currentCommunityXp < level.xpRequired && (idx === 0 || currentCommunityXp >= COMMUNITY_LEVELS[idx - 1].xpRequired);
-                    const Icon = level.icon;
-
-                    return (
-                      <div key={level.id} className="relative z-10 flex flex-col items-center w-56 shrink-0 group">
-                        
-                        {/* XP Badge */}
-                        <div className={`absolute -top-14 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded bg-black/90 text-[10px] font-mono tracking-widest border whitespace-nowrap transition-all duration-300 shadow-xl
-                          ${isCompleted || isNext ? 'border-mafia-gold/50 text-mafia-gold' : 'border-white/10 text-white/40'}
-                        `}>
-                          {level.xpRequired} XP
+                      {/* Content */}
+                      <div className="relative z-10 flex-grow flex flex-col items-center w-full">
+                        <div className="text-[10px] uppercase tracking-[0.3em] mb-2 font-mono text-mafia-gold/60">
+                          {level.subtitle}
                         </div>
+                        <h3 className="font-black text-2xl uppercase tracking-widest mb-4 text-smoke-white">
+                          {level.title}
+                        </h3>
+                        <p className="text-sm font-light text-smoke-white/60 leading-relaxed mb-8 flex-grow">
+                          {level.desc}
+                        </p>
+                      </div>
 
-                        {/* Node */}
-                        <Link 
-                          href={isCompleted ? level.link : '#'}
-                          onClick={(e) => {
-                            if (!isCompleted) e.preventDefault();
-                          }}
-                          className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500 relative bg-black backdrop-blur-md
-                            ${isCompleted ? 'border-2 border-mafia-gold text-mafia-gold shadow-[0_0_30px_rgba(197,160,89,0.3)] hover:scale-110 hover:bg-mafia-gold/10 cursor-pointer' : 'border border-white/10 text-white/30 cursor-not-allowed'}
-                            ${isNext ? 'border-2 border-white text-white scale-110 shadow-[0_0_30px_rgba(255,255,255,0.2)] animate-pulse' : ''}
-                          `}
-                        >
-                          {isCompleted ? (
-                            <Icon size={32} />
-                          ) : (
-                            isNext ? <Gift size={28} /> : <Lock size={24} />
-                          )}
-                        </Link>
-                        
-                        {/* Reward Info */}
-                        <div className={`mt-8 text-center transition-all duration-500 ${!isCompleted && !isNext ? 'opacity-40' : 'opacity-100'}`}>
-                          <div className="text-xs uppercase tracking-[0.3em] mb-2 font-mono text-mafia-gold/80">
-                            {level.subtitle}
-                          </div>
-                          <div className={`font-black text-xl uppercase tracking-widest mb-3 ${isCompleted || isNext ? 'text-white' : 'text-white/60'}`}>
-                            {level.title}
-                          </div>
-                          <p className="text-sm font-light text-white/50 leading-relaxed">
-                            {level.desc}
-                          </p>
-                        </div>
-                        
-                        {/* Action Button (only if completed) */}
-                        {isCompleted && (
+                      {/* Action Button */}
+                      <div className="relative z-10 mt-auto w-full">
+                        {isCompleted ? (
                           <Link 
                             href={level.link}
-                            className="mt-6 px-6 py-2 border border-mafia-gold/30 text-mafia-gold font-mono text-[10px] uppercase tracking-widest hover:bg-mafia-gold hover:text-black transition-colors rounded-full"
+                            className="block w-full py-4 border border-mafia-gold/30 text-mafia-gold font-mono text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-mafia-gold hover:text-black transition-all duration-300 rounded-xl"
                           >
                             Vstoupit
                           </Link>
-                        )}
-                        {!isCompleted && isNext && (
-                          <div className="mt-6 px-6 py-2 border border-white/10 text-white/30 font-mono text-[10px] uppercase tracking-widest rounded-full">
-                            Zamčeno
+                        ) : (
+                          <div className="w-full py-4 border border-white/10 text-white/30 font-mono text-[11px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-2">
+                            <Lock size={14} /> Zamčeno (Potřebuješ {level.xpRequired} návštěv)
                           </div>
                         )}
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -278,22 +244,6 @@ export default function CommunityPage() {
 
       <Footer />
 
-      <style dangerouslySetInnerHTML={{__html: `
-        .custom-scrollbar::-webkit-scrollbar {
-          height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255,255,255,0.02);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(197,160,89,0.3);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(197,160,89,0.6);
-        }
-      `}} />
     </div>
   );
 }

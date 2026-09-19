@@ -33,6 +33,8 @@ interface UIContextProps {
   setIsBloodMode: (val: boolean) => void;
   networkStatus: NetworkStatus;
   isLowBandwidth: boolean;
+  isSupportChatOpen: boolean;
+  setIsSupportChatOpen: (val: boolean) => void;
 }
 
 const UIContext = createContext<UIContextProps | undefined>(undefined);
@@ -52,6 +54,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   
   const [isNoirMode, setIsNoirMode] = useState(false);
   const [isBloodMode, setIsBloodMode] = useState(false);
+  const [isSupportChatOpen, setIsSupportChatOpen] = useState(false);
 
   const networkStatus = useNetworkStatus();
   const isLowBandwidth = networkStatus.isLowBandwidth;
@@ -121,7 +124,8 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
       accentColor, setAccentColor,
       isNoirMode, setIsNoirMode,
       isBloodMode, setIsBloodMode,
-      networkStatus, isLowBandwidth
+      networkStatus, isLowBandwidth,
+      isSupportChatOpen, setIsSupportChatOpen
     }}>
       {children}
     </UIContext.Provider>

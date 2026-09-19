@@ -19,10 +19,10 @@ export function useActivityTracker() {
       lastActivityRef.current = Date.now();
     };
 
-    window.addEventListener('mousemove', handleActivity);
-    window.addEventListener('keydown', handleActivity);
-    window.addEventListener('scroll', handleActivity);
-    window.addEventListener('click', handleActivity);
+    window.addEventListener('mousemove', handleActivity, { passive: true });
+    window.addEventListener('keydown', handleActivity, { passive: true });
+    window.addEventListener('scroll', handleActivity, { passive: true });
+    window.addEventListener('click', handleActivity, { passive: true });
 
     const activeTimer = setInterval(() => {
       const now = Date.now();

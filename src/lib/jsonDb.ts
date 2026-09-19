@@ -5,6 +5,27 @@ import path from 'path';
 const dbDir = path.join(process.cwd(), 'data');
 const dbPath = path.join(dbDir, 'mmbarber_db.json');
 
+export interface SupportMessage {
+  id: string;
+  sessionId: string;
+  sender: 'USER' | 'ADMIN';
+  text: string;
+  timestamp: number;
+  read: boolean;
+  attachmentUrl?: string;
+  attachmentType?: 'image' | 'video';
+}
+
+export interface SupportCall {
+  id: string;
+  sessionId: string;
+  status: 'RINGING' | 'ACCEPTED' | 'REJECTED' | 'ENDED';
+  offer?: any;
+  answer?: any;
+  candidates: any[];
+  timestamp: number;
+}
+
 export interface DbSchema {
   barbers: any[];
   chat_messages: any[];
@@ -27,6 +48,9 @@ export interface DbSchema {
   dating_friend_requests: any[];
   dating_friendships: any[];
   electrician_prices: Record<string, number>;
+  support_sessions: any[];
+  support_messages: any[];
+  support_calls: any[];
 }
 
 const defaultDb: DbSchema = {
@@ -61,7 +85,10 @@ const defaultDb: DbSchema = {
     hvac: 4500, ev: 8500, induction: 3500,
     surgeProtection: 6500, thermo: 3500, projectDocs: 15000,
     plasteringBase: 100, plasteringMilling: 60, cleanup: 2500, revision: 3500, hours: 550, expressMult: 1.3
-  }
+  },
+  support_sessions: [],
+  support_messages: [],
+  support_calls: []
 };
 
 let memDb: DbSchema | null = null;
@@ -118,7 +145,9 @@ function loadDbSync(): DbSchema {
         orderIndex: index + 1,
         requiresUnlock: 0,
         unlockThreshold: 5,
-        missionFailed: 0
+        missionFailed: 0,
+        bankAccount: null,
+        qrPrices: []
       }));
       fs.writeFileSync(dbPath, JSON.stringify(memDb, null, 2), { encoding: 'utf8', mode: 0o666 });
     } catch (err: any) {

@@ -18,6 +18,8 @@ import { useTranslation } from "@/hooks/useTranslation";
 interface Supporter {
   id: string;
   name: string;
+  fullName?: string;
+  active?: boolean;
   time: any;
 }
 
@@ -76,6 +78,21 @@ export default function AdminHallOfFamePage() {
       setSupporters(prev => prev.filter(s => s.id !== id));
     } catch (error) {
       console.error("Delete failed:", error);
+    }
+  };
+
+  const acceptSupporter = async (id: string) => {
+    try {
+      const res = await fetch('/api/sin-slavy', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, active: true })
+      });
+      if (res.ok) {
+        setSupporters(prev => prev.map(s => s.id === id ? { ...s, active: true } : s));
+      }
+    } catch (error) {
+      console.error("Accept failed:", error);
     }
   };
 
@@ -146,23 +163,37 @@ export default function AdminHallOfFamePage() {
                   <motion.div 
                     layout
                     key={s.id}
-                    className="p-8 border border-white/5 bg-white/[0.02] flex justify-between items-center group hover:border-mafia-gold/20 transition-all"
+                    className={`p-8 border ${!s.active ? 'border-yellow-500/50 bg-yellow-500/5' : 'border-white/5 bg-white/[0.02]'} flex justify-between items-center group hover:border-mafia-gold/20 transition-all`}
                   >
                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-mafia-gold/10 flex items-center justify-center text-mafia-gold">
+                        <div className={`w-10 h-10 rounded-full ${!s.active ? 'bg-yellow-500/20 text-yellow-500' : 'bg-mafia-gold/10 text-mafia-gold'} flex items-center justify-center`}>
                            <User size={18} />
                         </div>
                         <div>
-                           <h3 className="text-xl font-heading font-black text-white uppercase tracking-tighter italic">{s.name}</h3>
+                           <div className="flex items-center gap-2 mb-1">
+                             <h3 className="text-xl font-heading font-black text-white uppercase tracking-tighter italic">{s.name}</h3>
+                             {!s.active && <span className="text-[9px] bg-yellow-500 text-black px-2 py-0.5 rounded font-bold uppercase tracking-widest">Čeká na schválení</span>}
+                           </div>
+                           <p className="text-xs font-mono text-white/50 mb-1">{s.fullName || 'Bez skutečného jména'}</p>
                            <p className="text-[9px] font-mono text-white/20 uppercase">Přidáno: {s.time ? new Date(s.time).toLocaleDateString() : 'Dnes'}</p>
                         </div>
                      </div>
-                     <button 
-                       onClick={() => deleteSupporter(s.id)}
-                       className="p-3 bg-white/5 hover:bg-mafia-red hover:text-white transition-all text-white/20 opacity-0 group-hover:opacity-100"
-                     >
-                        <Trash2 size={16} />
-                     </button>
+                     <div className="flex gap-2">
+                       {!s.active && (
+                         <button 
+                           onClick={() => acceptSupporter(s.id)}
+                           className="px-4 py-2 bg-mafia-gold text-mafia-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-all"
+                         >
+                           Přijmout
+                         </button>
+                       )}
+                       <button 
+                         onClick={() => deleteSupporter(s.id)}
+                         className="p-3 bg-white/5 hover:bg-mafia-red hover:text-white transition-all text-white/20 opacity-0 group-hover:opacity-100"
+                       >
+                          <Trash2 size={16} />
+                       </button>
+                     </div>
                   </motion.div>
                 ))}
              </div>

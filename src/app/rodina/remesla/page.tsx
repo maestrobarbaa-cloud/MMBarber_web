@@ -327,7 +327,7 @@ export default function RemeslaPage() {
                   <div className="flex flex-col md:flex-row gap-12 items-center justify-center h-full max-w-6xl mx-auto">
                     <div className="w-56 h-56 rounded-full border-4 border-cyan-500/40 p-4 shrink-0 bg-slate-950/80 relative shadow-[0_0_50px_rgba(34,211,238,0.2)]">
                       <div className="absolute inset-0 rounded-full border border-cyan-300/50 animate-ping opacity-20" />
-                      <Image src="/logo.png" alt="Roman" width={220} height={220} unoptimized className="w-full h-full object-contain filter brightness-150 contrast-125" />
+                      <Image src="/logo.png" alt="Roman" width={220} height={220} className="w-full h-full object-contain filter brightness-150 contrast-125" />
                     </div>
                     <div className="text-center md:text-left">
                       <h1 className="text-4xl md:text-6xl font-heading font-black text-slate-100 uppercase tracking-tight mb-2 drop-shadow-lg">

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { ACHIEVEMENTS } from "@/data/achievements";
-import { Trophy, Lock, Zap, Shield, Crown, ChevronLeft, Package, Users, EyeOff, CheckCircle2, Play, Star, Gift, Settings } from "lucide-react";
+import { Trophy, Lock, Zap, Shield, Crown, ChevronLeft, Package, Users, EyeOff, CheckCircle2, Play, Star, Gift, Settings, Scissors } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUI } from "@/contexts/UIContext";
@@ -78,18 +78,17 @@ const PremiumMafiaBackground = () => {
 // Generátor 30 úrovní pro každou kapitolu
 const generateLevels = (chapterId: string) => {
   const levels = [];
-  let visits = 0;
-  const maxLevels = chapterId === 'community' ? 33 : 30;
+  const maxLevels = chapterId === 'community' ? 33 : (chapterId.startsWith('barber_') ? 10 : 30);
   for (let i = 1; i <= maxLevels; i++) {
-    visits += 10 + (Math.floor(i / 5) * 5); // 10, pak 15
+    const visits = i; // 1 level = 1 návštěva (místo původních desítek a stovek XP)
     let isMilestone = i % 5 === 0;
     
     let title = isMilestone ? `Milník ${i}` : `Úroveň ${i}`;
     let reward = isMilestone ? "Speciální Odměna" : "Návštěva";
     
     if (chapterId === 'products') {
-      if (i === 1) { title = "Grafika systému"; reward = "Vzhled"; visits = 1; isMilestone = true; }
-      else if (i === 2) { title = "Zvukové produkty"; reward = "Audio"; visits = 2; isMilestone = true; }
+      if (i === 1) { title = "Grafika systému"; reward = "Vzhled"; isMilestone = true; }
+      else if (i === 2) { title = "Zvukové produkty"; reward = "Audio"; isMilestone = true; }
       else if (isMilestone) {
         if (i===5) { title="Základní výbava"; reward="5% Sleva"; }
         if (i===10) { title="Vzorek"; reward="Produkt zdarma"; }
@@ -114,25 +113,15 @@ const generateLevels = (chapterId: string) => {
         title = "Hacking";
       }
     } else if (chapterId === 'community') {
-      const communityMilestone = i % 3 === 0; // custom milestone frequency for community (every 3 levels)
-      if (i === 1) {
-        title = "Vstup do Komunity";
-        reward = "Přístup ke Kartě";
-      } else if (communityMilestone) {
-        if (i===3) { title="Grafika"; reward="Brand Assets"; }
-        if (i===6) { title="Nábor"; reward="Kariéra"; }
-        if (i===9) { title="Novinky"; reward="Aktuality"; }
-        if (i===12) { title="Hodnocení"; reward="Feedback"; }
-        if (i===15) { title="Historky"; reward="Příběhy z křesla"; }
-        if (i===18) { title="Projekty"; reward="Spolupráce"; }
-        if (i===21) { title="Síň Slávy"; reward="Legendy"; }
-        if (i===24) { title="Zlepšení"; reward="Nápady"; }
-        if (i===27) { title="Tajný Chat"; reward="Diskuse"; }
-        if (i===30) { title="Don"; reward="Respekt Rodiny"; }
-        if (i===33) { title="Město"; reward="City Environment"; }
+      // Všechny komunitní funkce jsou nyní odemčeny za 1 návštěvu (na 1. levelu)
+      const isCommunityMilestone = i === 1;
+      
+      if (isCommunityMilestone) {
+        title = "Plný Přístup"; 
+        reward = "Odemčena celá Komunita";
       } else {
-        reward = `${5 * i} Návštěv`;
-        title = "Respekt";
+        reward = `Respekt rodiny`;
+        title = "Loajalita";
       }
       
       levels.push({
@@ -140,7 +129,19 @@ const generateLevels = (chapterId: string) => {
         title,
         reward,
         xpRequired: visits,
-        isMilestone: i === 1 || communityMilestone
+        isMilestone: isCommunityMilestone
+      });
+      continue;
+    } else if (chapterId === 'barber_tomas' || chapterId === 'barber_nella') {
+      const isBarberMilestone = i === 10;
+      title = isBarberMilestone ? "Data Zkompletována" : `Fragment příběhu ${i}`;
+      reward = isBarberMilestone ? "Úplné odhalení" : "Střípek dat";
+      levels.push({
+        id: i,
+        title,
+        reward,
+        xpRequired: visits,
+        isMilestone: isBarberMilestone
       });
       continue;
     }
@@ -189,11 +190,33 @@ const CHAPTERS = [
     textColor: "text-white",
     locked: false,
     levels: generateLevels("settings")
+  },
+  {
+    id: "barber_tomas",
+    title: "Tomáš - Data",
+    description: "Odhalte příběh a skryté fragmenty dat operativce Tomáše.",
+    icon: Scissors,
+    color: "from-mafia-gold/20 to-mafia-black/50",
+    borderColor: "border-mafia-gold/50",
+    textColor: "text-mafia-gold",
+    locked: false,
+    levels: generateLevels("barber_tomas")
+  },
+  {
+    id: "barber_nella",
+    title: "Nella - Data",
+    description: "Odhalte příběh a skryté fragmenty dat operativce Nelly.",
+    icon: Scissors,
+    color: "from-mafia-red/20 to-mafia-black/50",
+    borderColor: "border-mafia-red/50",
+    textColor: "text-mafia-red",
+    locked: false,
+    levels: generateLevels("barber_nella")
   }
 ];
 
 export default function PostupPage() {
-  const { totalCollected, chapterXp, mafiaRank } = useGame();
+  const { totalCollected, chapterXp, mafiaRank, isAdmin } = useGame();
   const [mounted, setMounted] = useState(false);
   
   // Stavy pro kapitoly
@@ -236,7 +259,7 @@ export default function PostupPage() {
   let chapterProgress = 0;
   if (activeChapter && activeChapter.levels.length > 0) {
     const maxXP = activeChapter.levels[activeChapter.levels.length - 1].xpRequired;
-    const currentChapterXp = chapterXp[activeChapter.id] || 0;
+    let currentChapterXp = isAdmin ? 999999 : (activeChapter.id.startsWith('barber_') ? totalCollected : (chapterXp[activeChapter.id] || 0));
     chapterProgress = Math.min(100, (currentChapterXp / maxXP) * 100);
   }
 
@@ -255,10 +278,10 @@ export default function PostupPage() {
             Váš postup
           </h1>
           <p className="text-slate-400 max-w-xl mx-auto text-sm md:text-base font-light mb-4">
-            Plň úkoly, získávej XP a postupuj v hierarchii. Vyber si cestu, která tě zajímá, a odemykej si exkluzivní odměny úroveň po úrovni.
+            Aktivita na webu se počítá. Sbírej návštěvy a postupuj v hierarchii. Vyber si cestu, která tě zajímá, a odemykej si exkluzivní odměny.
           </p>
           <div className="inline-flex items-center gap-2 bg-mafia-gold/10 theme-blood:bg-mafia-red/10 noir-mode:bg-white/10 border border-mafia-gold/30 theme-blood:border-mafia-red/30 noir-mode:border-white/30 px-4 py-2 rounded-full text-mafia-gold theme-blood:text-mafia-red noir-mode:text-white text-xs font-mono uppercase tracking-widest">
-            <Zap size={14} /> Tvé Celkové XP: {totalCollected.toLocaleString()}
+            <Star size={14} /> Tvé Návštěvy: {totalCollected.toLocaleString()}
           </div>
         </div>
 

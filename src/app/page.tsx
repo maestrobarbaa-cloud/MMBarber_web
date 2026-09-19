@@ -6,25 +6,32 @@ import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/Hero";
 
-// Dynamic imports for below-the-fold content
-const Services = dynamic(() => import("@/components/Services").then(mod => mod.Services), { ssr: false });
-const Profiles = dynamic(() => import("@/components/Profiles").then(mod => mod.Profiles), { ssr: false });
-const HolidayCountdown = dynamic(() => import("@/components/HolidayCountdown").then(mod => mod.HolidayCountdown), { ssr: false });
-const Atmosphere = dynamic(() => import("@/components/Atmosphere").then(mod => mod.Atmosphere), { ssr: false });
-const Contact = dynamic(() => import("@/components/Contact").then(mod => mod.Contact), { ssr: false });
-const Partners = dynamic(() => import("@/components/Partners").then(mod => mod.Partners), { ssr: false });
-const Footer = dynamic(() => import("@/components/Footer").then(mod => mod.Footer), { ssr: false });
-const StyleDefinition = dynamic(() => import("@/components/StyleDefinition").then(mod => mod.StyleDefinition), { ssr: false });
-const SEOFAQ = dynamic(() => import("@/components/SEOFAQ").then(mod => mod.SEOFAQ), { ssr: false });
-const BottomTerminalReveal = dynamic(() => import("@/components/BottomTerminalReveal").then(mod => mod.BottomTerminalReveal), { ssr: false });
-const FooterSecrets = dynamic(() => import("@/components/FooterSecrets").then(mod => mod.FooterSecrets), { ssr: false });
-const RegionalSEOCloud = dynamic(() => import("@/components/RegionalSEOCloud").then(mod => mod.RegionalSEOCloud), { ssr: false });
-const GoogleReviewsWall = dynamic(() => import("@/components/GoogleReviewsWall").then(mod => mod.GoogleReviewsWall), { ssr: false });
-const OperationalJournal = dynamic(() => import("@/components/OperationalJournal").then(mod => mod.OperationalJournal), { ssr: false });
-const PersonalVision = dynamic(() => import("@/components/PersonalVision").then(mod => mod.PersonalVision), { ssr: false });
-const GlobalIntelligenceArchive = dynamic(() => import("@/components/GlobalIntelligenceArchive").then(mod => mod.GlobalIntelligenceArchive), { ssr: false });
-const GroomingGuideArchive = dynamic(() => import("@/components/GroomingGuideArchive").then(mod => mod.GroomingGuideArchive), { ssr: false });
-const DailyIntelligence = dynamic(() => import("@/components/DailyIntelligence").then(mod => mod.DailyIntelligence), { ssr: false });
+// Jednoduchý skeleton loader pro plynulejší renderování na slabších zařízeních
+const LoadingSkeleton = () => (
+  <div className="w-full min-h-[30vh] bg-mafia-black/40 animate-pulse flex items-center justify-center border-y border-mafia-gold/5">
+    <div className="w-8 h-8 rounded-full border-t-2 border-l-2 border-mafia-gold animate-spin opacity-30" />
+  </div>
+);
+
+// Dynamic imports for below-the-fold content with Loading Skeletons
+const Services = dynamic(() => import("@/components/Services").then(mod => mod.Services), { ssr: false, loading: () => <LoadingSkeleton /> });
+const Profiles = dynamic(() => import("@/components/Profiles").then(mod => mod.Profiles), { ssr: false, loading: () => <LoadingSkeleton /> });
+const HolidayCountdown = dynamic(() => import("@/components/HolidayCountdown").then(mod => mod.HolidayCountdown), { ssr: false, loading: () => <LoadingSkeleton /> });
+const Atmosphere = dynamic(() => import("@/components/Atmosphere").then(mod => mod.Atmosphere), { ssr: false, loading: () => <LoadingSkeleton /> });
+const Contact = dynamic(() => import("@/components/Contact").then(mod => mod.Contact), { ssr: false, loading: () => <LoadingSkeleton /> });
+const Partners = dynamic(() => import("@/components/Partners").then(mod => mod.Partners), { ssr: false, loading: () => <LoadingSkeleton /> });
+const Footer = dynamic(() => import("@/components/Footer").then(mod => mod.Footer), { ssr: false, loading: () => <LoadingSkeleton /> });
+const StyleDefinition = dynamic(() => import("@/components/StyleDefinition").then(mod => mod.StyleDefinition), { ssr: false, loading: () => <LoadingSkeleton /> });
+const SEOFAQ = dynamic(() => import("@/components/SEOFAQ").then(mod => mod.SEOFAQ), { ssr: false, loading: () => <LoadingSkeleton /> });
+const BottomTerminalReveal = dynamic(() => import("@/components/BottomTerminalReveal").then(mod => mod.BottomTerminalReveal), { ssr: false, loading: () => <LoadingSkeleton /> });
+const FooterSecrets = dynamic(() => import("@/components/FooterSecrets").then(mod => mod.FooterSecrets), { ssr: false, loading: () => <LoadingSkeleton /> });
+const RegionalSEOCloud = dynamic(() => import("@/components/RegionalSEOCloud").then(mod => mod.RegionalSEOCloud), { ssr: false, loading: () => <LoadingSkeleton /> });
+const GoogleReviewsWall = dynamic(() => import("@/components/GoogleReviewsWall").then(mod => mod.GoogleReviewsWall), { ssr: false, loading: () => <LoadingSkeleton /> });
+const OperationalJournal = dynamic(() => import("@/components/OperationalJournal").then(mod => mod.OperationalJournal), { ssr: false, loading: () => <LoadingSkeleton /> });
+const PersonalVision = dynamic(() => import("@/components/PersonalVision").then(mod => mod.PersonalVision), { ssr: false, loading: () => <LoadingSkeleton /> });
+const GlobalIntelligenceArchive = dynamic(() => import("@/components/GlobalIntelligenceArchive").then(mod => mod.GlobalIntelligenceArchive), { ssr: false, loading: () => <LoadingSkeleton /> });
+const GroomingGuideArchive = dynamic(() => import("@/components/GroomingGuideArchive").then(mod => mod.GroomingGuideArchive), { ssr: false, loading: () => <LoadingSkeleton /> });
+const DailyIntelligence = dynamic(() => import("@/components/DailyIntelligence").then(mod => mod.DailyIntelligence), { ssr: false, loading: () => <LoadingSkeleton /> });
 
 import { CinematicIntro } from "@/components/Intro";
 import { CinematicSequence737 } from "@/components/CinematicSequence737";

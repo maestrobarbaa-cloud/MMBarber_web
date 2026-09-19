@@ -7,12 +7,9 @@ import Link from "next/link";
 import { useGame } from "@/contexts/GameContext";
 
 const getLevelFromVisits = (visits: number) => {
-  let requiredVisits = 0;
-  for (let i = 1; i <= 30; i++) {
-    requiredVisits += 10 + (Math.floor(i / 5) * 5); // 10, pak 15, atd.
-    if (visits < requiredVisits) return i;
-  }
-  return 30;
+  if (visits <= 1) return 1;
+  if (visits >= 33) return 33;
+  return Math.floor(visits);
 };
 
 export const ProgressWidget = () => {

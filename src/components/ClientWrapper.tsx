@@ -27,6 +27,7 @@ const SeasonalAtmosphere = dynamic(() => import("@/components/SeasonalAtmosphere
 const MobileCompass = dynamic(() => import("@/components/MobileCompass").then(mod => mod.MobileCompass), { ssr: false });
 const UserFeedbackWidget = dynamic(() => import("@/components/UserFeedbackWidget").then(mod => mod.UserFeedbackWidget), { ssr: false });
 const AchievementUnlocked = dynamic(() => import("@/components/AchievementUnlocked").then(mod => mod.AchievementUnlocked), { ssr: false });
+const SupportChatWidget = dynamic(() => import("@/components/SupportChatWidget"), { ssr: false });
 
 import { useGame } from "@/contexts/GameContext";
 
@@ -41,12 +42,48 @@ export function ClientWrapper() {
   const { lang } = useTranslation();
   const pathname = usePathname();
   const [isSeasonalHidden, setIsSeasonalHidden] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Global Widget Visibility States
+  const [globalWidgets, setGlobalWidgets] = useState({
+    chat: true,
+    feedback: true,
+    activity: true
+  });
 
   useEffect(() => {
     // Check for Noir Mode Achievement
     if (document.documentElement.classList.contains('noir-mode')) {
       unlockAchievement('night_owl');
     }
+    
+    // Check Admin auth
+    const checkAdmin = () => {
+      setIsAdmin(sessionStorage.getItem("mmbarber_admin_auth") === "true");
+    };
+    
+    checkAdmin();
+    window.addEventListener("mmbarber_admin_auth_changed", checkAdmin);
+    
+    // Fetch global visibility settings
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const data = await res.json();
+          setGlobalWidgets({
+            chat: data.values?.widget_chat_enabled !== 'hidden',
+            feedback: data.values?.widget_feedback_enabled !== 'hidden',
+            activity: data.values?.widget_activity_enabled !== 'hidden'
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch settings for widgets", err);
+      }
+    };
+    fetchSettings();
+
+    return () => window.removeEventListener("mmbarber_admin_auth_changed", checkAdmin);
   }, [unlockAchievement]);
 
   useEffect(() => {
@@ -347,7 +384,6 @@ export function ClientWrapper() {
       {/* {showEffects && <BarberGame />} */}
       {/* {showEffects && <BarberChat isOpen={isBarberChatOpen} />} */}
       {showEffects && <Radio />}
-      <CorporateTricks />
       <CookieBanner />
       {activeTheme !== 'default' && !isSeasonalHidden && <SeasonalAtmosphere theme={activeTheme} />}
       {!isActuallyMobile && !isRodinaPage && !isGalaxyVisible && activeTheme === 'default' && graphicsTier !== 'lite' && graphicsTier !== 'low' && <FloatingScissors />}
@@ -368,7 +404,24 @@ export function ClientWrapper() {
       )}
       
       <MobileCompass />
-      <UserFeedbackWidget />
+      {!isAdmin && (
+        <>
+          {/* Left Column widgets: User Feedback (hidden on smaller screens if they overlap, or purely conditional) */}
+          {globalWidgets.feedback && (
+            <UserFeedbackWidget />
+          )}
+          
+          {/* Right Column widgets */}
+          {globalWidgets.activity && (
+            <CorporateTricks />
+          )}
+
+          {/* Support Chat Widget */}
+          {globalWidgets.chat && (
+            <SupportChatWidget />
+          )}
+        </>
+      )}
       <AchievementUnlocked />
     </MotionConfig>
   );

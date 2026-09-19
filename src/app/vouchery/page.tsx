@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Ticket, Scale, Info, Clock, ArrowLeft, ShieldCheck, Zap, Send, QrCode, CreditCard, Gift, ArrowDown } from "lucide-react";
+import { Ticket, Scale, Info, Clock, ArrowLeft, ShieldCheck, Zap, Send, QrCode, CreditCard, Gift, ArrowDown, User, Package } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import Image from "@/components/OptimizedImage";
@@ -21,9 +21,38 @@ export default function VouchersPage() {
     phone: "",
     amount: "1500",
     delivery: "electronic",
+    giftPackaging: false,
+    selectedBarber: "any",
     message: "",
     botField: "" // Honeypot
   });
+
+  const [giftPrice, setGiftPrice] = useState(150);
+  const [presetAmounts, setPresetAmounts] = useState<number[]>([100, 250, 500, 1000, 1500, 2000]);
+  const [barbers, setBarbers] = useState<{id: string, name: string}[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resGift = await fetch('/api/settings?key=voucher_gift_price');
+        if (resGift.ok) {
+          const d = await resGift.json();
+          if (d.value) setGiftPrice(Number(d.value));
+        }
+        const resPresets = await fetch('/api/settings?key=voucher_preset_amounts');
+        if (resPresets.ok) {
+          const d = await resPresets.json();
+          if (d.value) setPresetAmounts(d.value.split(',').map((s: string) => Number(s.trim())).filter((n: number) => !isNaN(n) && n > 0));
+        }
+        const resBarbers = await fetch('/api/barbers');
+        if (resBarbers.ok) {
+          const d = await resBarbers.json();
+          setBarbers(d.filter((b: any) => b.isActive));
+        }
+      } catch (e) {}
+    };
+    fetchData();
+  }, []);
 
   const handleOrderClick = () => {
     setIsFormOpen(true);
@@ -52,9 +81,19 @@ export default function VouchersPage() {
       ? (lang === 'cs' ? 'Elektronicky (e-mailem)' : 'Electronic (email)')
       : (lang === 'cs' ? 'Osobně na salonu' : 'In person at the salon');
 
+    const packagingText = formData.giftPackaging 
+      ? (lang === 'cs' ? `Ano (+${giftPrice} Kč)` : `Yes (+${giftPrice} CZK)`)
+      : (lang === 'cs' ? 'Ne' : 'No');
+
+    const barberName = formData.selectedBarber === 'any' 
+      ? (lang === 'cs' ? 'Kdokoli (bez preference)' : 'Anyone (no preference)')
+      : barbers.find(b => b.id === formData.selectedBarber)?.name || formData.selectedBarber;
+
+    const totalAmount = Number(formData.amount) + (formData.giftPackaging ? giftPrice : 0);
+
     const body = lang === 'cs'
-      ? `Dobrý den,\n\nmám zájem o dárkový poukaz s následujícími údaji:\n\nJméno: ${formData.name}\nE-mail: ${formData.email}\nTelefon: ${formData.phone}\nHodnota voucheru: ${formData.amount} Kč\nZpůsob dodání: ${deliveryText}\n\nZpráva:\n${formData.message}\n\nDěkuji,\n${formData.name}`
-      : `Hello,\n\nI would like to order a gift voucher with the following details:\n\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nVoucher Value: ${formData.amount} CZK\nDelivery: ${deliveryText}\n\nMessage:\n${formData.message}\n\nThank you,\n${formData.name}`;
+      ? `Dobrý den,\n\nmám zájem o dárkový poukaz s následujícími údaji:\n\nJméno: ${formData.name}\nE-mail: ${formData.email}\nTelefon: ${formData.phone}\n\nHodnota voucheru: ${formData.amount} Kč\nDárkové balení: ${packagingText}\nCelková cena k úhradě: ${totalAmount} Kč\n\nVybraný barber: ${barberName}\nZpůsob dodání: ${deliveryText}\n\nZpráva:\n${formData.message}\n\nDěkuji,\n${formData.name}`
+      : `Hello,\n\nI would like to order a gift voucher with the following details:\n\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nVoucher Value: ${formData.amount} CZK\nGift Packaging: ${packagingText}\nTotal Amount: ${totalAmount} CZK\n\nSelected Barber: ${barberName}\nDelivery: ${deliveryText}\n\nMessage:\n${formData.message}\n\nThank you,\n${formData.name}`;
 
     window.location.href = `mailto:mmbarber@mmbarber.cz?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
@@ -68,9 +107,9 @@ export default function VouchersPage() {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      amount: formData.amount,
+      amount: totalAmount.toString(),
       delivery: formData.delivery,
-      message: formData.message
+      message: `Barber: ${barberName} | Balení: ${packagingText} | ${formData.message}`
     });
     
     localStorage.setItem("mmbarber_voucher_requests", JSON.stringify(requests));
@@ -328,16 +367,16 @@ export default function VouchersPage() {
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em]">{lang === 'cs' ? "Částka (Kč)*" : "Amount (CZK)*"}</label>
-                      <input 
-                        required
-                        type="number" 
-                        min="500"
-                        step="1"
+                      <select
                         value={formData.amount}
                         onChange={e => setFormData({...formData, amount: e.target.value})}
-                        className="w-full bg-white/5 border border-white/10 p-4 text-white font-mono focus:border-mafia-gold focus:outline-none transition-colors"
-                      />
-                      <p className="text-[9px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? "Minimálně 500 Kč. Částku lze využít postupně." : "Minimum 500 CZK. Can be used gradually."}</p>
+                        className="w-full bg-black border border-white/10 p-4 text-white font-mono focus:border-mafia-gold focus:outline-none transition-colors appearance-none"
+                      >
+                        {presetAmounts.map((amt) => (
+                          <option key={amt} value={amt}>{amt} Kč</option>
+                        ))}
+                      </select>
+                      <p className="text-[9px] font-mono text-white/30 uppercase tracking-widest">{lang === 'cs' ? "Vyberte požadovanou částku." : "Select desired amount."}</p>
                     </div>
                   </div>
 
@@ -363,6 +402,32 @@ export default function VouchersPage() {
                         className="w-full bg-white/5 border border-white/10 p-4 text-white font-mono focus:border-mafia-gold focus:outline-none transition-colors"
                         placeholder="+420 123 456 789"
                       />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em] flex items-center gap-2"><User size={12}/> {lang === 'cs' ? "Výběr Barbera" : "Select Barber"}</label>
+                      <select
+                        value={formData.selectedBarber}
+                        onChange={e => setFormData({...formData, selectedBarber: e.target.value})}
+                        className="w-full bg-black border border-white/10 p-4 text-white font-mono focus:border-mafia-gold focus:outline-none transition-colors appearance-none"
+                      >
+                        <option value="any">{lang === 'cs' ? "Kdokoli (bez preference)" : "Anyone (no preference)"}</option>
+                        {barbers.map(b => (
+                          <option key={b.id} value={b.id}>{b.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-mono text-mafia-gold/60 uppercase tracking-[0.2em] flex items-center gap-2"><Package size={12}/> {lang === 'cs' ? "Dárkové balení s pečetí" : "Gift Packaging with seal"}</label>
+                      <label className={`w-full flex items-center justify-between border p-4 cursor-pointer transition-all h-[58px] ${formData.giftPackaging ? 'border-mafia-gold bg-mafia-gold/5 text-mafia-gold' : 'border-white/10 bg-white/5 text-white/50 hover:border-white/30 hover:text-white'}`}>
+                        <div className="flex items-center gap-3">
+                          <input type="checkbox" className="w-4 h-4 accent-mafia-gold" checked={formData.giftPackaging} onChange={e => setFormData({...formData, giftPackaging: e.target.checked})} />
+                          <span className="font-heading font-bold uppercase tracking-widest text-sm">{lang === 'cs' ? "Přidat k objednávce" : "Add to order"}</span>
+                        </div>
+                        <span className="font-mono text-xs">+{giftPrice} Kč</span>
+                      </label>
                     </div>
                   </div>
 
@@ -452,8 +517,8 @@ export default function VouchersPage() {
                     
                     <p className="font-mono text-[11px] text-white/50 uppercase tracking-widest leading-relaxed">
                       {lang === 'cs' 
-                        ? `Částka: ${formData.amount} Kč. Naskenujte kód pro rychlou platbu. Jakmile platba dorazí, voucher vám obratem zašleme e-mailem.`
-                        : `Amount: ${formData.amount} CZK. Scan the code for quick payment. Once received, the voucher will be sent to your email.`}
+                        ? `Celková částka: ${Number(formData.amount) + (formData.giftPackaging ? giftPrice : 0)} Kč. Naskenujte kód pro rychlou platbu. Jakmile platba dorazí, voucher vám obratem zašleme e-mailem.`
+                        : `Total Amount: ${Number(formData.amount) + (formData.giftPackaging ? giftPrice : 0)} CZK. Scan the code for quick payment. Once received, the voucher will be sent to your email.`}
                     </p>
                   </div>
                 )}

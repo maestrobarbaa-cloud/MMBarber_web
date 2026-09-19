@@ -11,13 +11,17 @@ import {
   CheckCircle,
   Users,
   Layout,
-  MessageSquare
+  MessageSquare,
+  AlertTriangle
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 // Define the keys we'll manage
 const VISIBILITY_KEYS = [
+  { key: 'widget_chat_enabled', label: 'Globální: Support Chat', category: 'widgets', icon: <MessageSquare size={16} /> },
+  { key: 'widget_feedback_enabled', label: 'Globální: Nápady a Hlášení chyb', category: 'widgets', icon: <MessageSquare size={16} /> },
+  { key: 'widget_activity_enabled', label: 'Globální: Žhavá aktivita', category: 'widgets', icon: <Layout size={16} /> },
   { key: 'visibility_intro_rezervace', label: 'Hlavní menu: Rezervace', category: 'intro', icon: <Layout size={16} /> },
   { key: 'visibility_intro_galerie', label: 'Hlavní menu: Galerie', category: 'intro', icon: <Layout size={16} /> },
   { key: 'visibility_intro_vice', label: 'Hlavní menu: Více o podniku', category: 'intro', icon: <Layout size={16} /> },
@@ -124,6 +128,36 @@ export default function AdminVisibilityPage() {
 
   if (!isAuthenticated || loading) return null;
 
+  const renderStatusBadge = (key: string) => {
+    const val = settings[key];
+    if (val === 'visible') {
+      return (
+        <button onClick={() => cycleSetting(key)} className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-500 border border-green-500/20 rounded font-mono text-[10px] uppercase tracking-widest hover:bg-green-500/20 transition-colors">
+          <Eye size={12} /> Viditelné
+        </button>
+      );
+    }
+    if (val === 'hidden') {
+      return (
+        <button onClick={() => cycleSetting(key)} className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded font-mono text-[10px] uppercase tracking-widest hover:bg-red-500/20 transition-colors">
+          <EyeOff size={12} /> Skryté
+        </button>
+      );
+    }
+    if (val === 'locked') {
+      return (
+        <button onClick={() => cycleSetting(key)} className="flex items-center gap-2 px-3 py-1.5 bg-white/10 text-white/60 border border-white/20 rounded font-mono text-[10px] uppercase tracking-widest hover:bg-white/20 transition-colors">
+          <ShieldAlert size={12} /> Zamčené
+        </button>
+      );
+    }
+    return (
+      <button onClick={() => cycleSetting(key)} className="flex items-center gap-2 px-3 py-1.5 bg-mafia-gold/10 text-mafia-gold border border-mafia-gold/20 rounded font-mono text-[10px] uppercase tracking-widest hover:bg-mafia-gold/20 transition-colors">
+        <AlertTriangle size={12} /> Ve vývoji
+      </button>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-black text-smoke-white p-6 md:p-12 selection:bg-mafia-gold selection:text-mafia-black">
       <div className="max-w-4xl mx-auto">
@@ -171,6 +205,25 @@ export default function AdminVisibilityPage() {
 
           <div className="space-y-12 relative z-10">
             
+            {/* Widgets Category */}
+            <div className="bg-black/40 border border-mafia-gold/20 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(199,156,61,0.05)] hover:shadow-[0_0_30px_rgba(199,156,61,0.1)] transition-shadow">
+              <div className="bg-mafia-gold/10 p-4 border-b border-mafia-gold/20 flex items-center gap-3">
+                <Layout className="text-mafia-gold" size={20} />
+                <h2 className="font-heading font-black tracking-widest text-mafia-gold uppercase">Plovoucí Widgety</h2>
+              </div>
+              <div className="p-4 flex flex-col gap-2">
+                {VISIBILITY_KEYS.filter(k => k.category === 'widgets').map(item => (
+                  <div key={item.key} className="flex justify-between items-center p-3 hover:bg-white/5 rounded-xl transition-colors group">
+                    <div className="flex items-center gap-3 text-white/80 group-hover:text-white">
+                      {item.icon}
+                      <span className="text-sm font-bold tracking-wide">{item.label}</span>
+                    </div>
+                    {renderStatusBadge(item.key)}
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Hlavní Menu Karta */}
             <div>
               <h3 className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 flex items-center gap-2">

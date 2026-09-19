@@ -51,7 +51,7 @@ function MemberCard({ m, lang, isAdmin, onEdit, onDelete }: { m: any, lang: stri
           <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); onDelete?.(); }} className="p-1 bg-red-500/20 hover:bg-red-500/50 text-white rounded"><X size={12} /></button>
         </div>
       )}
-      <Image src={m.img} alt={m.name} width={100} height={100} unoptimized className="w-12 h-12 md:w-24 md:h-24 object-contain mb-3 md:mb-6 grayscale group-hover:grayscale-0 transition-all" priority={m.year === 2025} />
+      <Image src={m.img} alt={m.name} width={100} height={100} className="w-12 h-12 md:w-24 md:h-24 object-contain mb-3 md:mb-6 grayscale group-hover:grayscale-0 transition-all" priority={m.year === 2025} />
       <h3 className="text-sm md:text-xl font-heading font-black text-smoke-white uppercase mb-1 md:mb-2 text-center leading-tight">{m.name}</h3>
       <p className="text-mafia-gold font-mono text-[7px] md:text-[9px] tracking-widest uppercase mb-3 md:mb-6 text-center">{role}</p>
       <div className="flex flex-col items-center w-full gap-2 md:gap-4">

@@ -6,6 +6,7 @@ import { useTranslation } from "../hooks/useTranslation";
 import { trackEvent } from "../utils/analytics";
 import { playSound } from "../utils/audio";
 import { motion, AnimatePresence } from "framer-motion";
+import { OpenFreeMap } from "./OpenFreeMap";
 
 type InfoCategory = "address" | "connection" | "parking" | "transit";
 
@@ -33,50 +34,63 @@ export function Contact() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="space-y-4 flex flex-col items-center text-center"
+            className="w-full flex flex-col items-center gap-12"
           >
-            <div className="flex items-center gap-3 text-mafia-gold">
-                <MapPin size={20} />
-                <h4 className="font-heading font-bold uppercase tracking-widest">{t?.contact?.address || (lang === 'cs' ? 'Adresa' : 'Address')}</h4>
+            {/* Horní část: Mapa přes celou šířku (čisté w-full bez scrollbar bugu) */}
+            <div className="w-full h-[60vh] md:h-[75vh] relative overflow-hidden">
+              <div className="absolute inset-0 bg-mafia-gold/10 mix-blend-color z-10 pointer-events-none transition-opacity duration-500"></div>
+              <OpenFreeMap />
+              <div className="absolute top-0 left-0 w-full h-full shadow-[inset_0_0_50px_rgba(0,0,0,1)] pointer-events-none z-10"></div>
+              
+              {/* Jemné černé přechody zespodu a svrchu pro plynulé splynutí s okolím */}
+              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#0a0a0a] to-transparent pointer-events-none z-20"></div>
+              <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-[#0a0a0a] to-transparent pointer-events-none z-20"></div>
             </div>
-            <div className="address-side-bar font-mono text-xl md:text-2xl text-smoke-white border-y border-mafia-gold/20 py-4 px-8 allow-copy">
-                <p>Mařatice, Sadová 1383</p>
-                <p className="text-mafia-gold/60">Uherské Hradiště</p>
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-4 pt-4 w-full">
-                <a 
-                  href="https://maps.google.com/?q=Sadová+1383,+686+05+Uherské+Hradiště"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => playContactSound("papir.mp3")}
-                  className="flex items-center gap-2 px-6 py-3 bg-mafia-gold/10 border border-mafia-gold/30 hover:bg-mafia-gold hover:text-mafia-black transition-all text-xs font-bold uppercase tracking-widest group"
-                >
-                  <MapPin size={14} className="text-mafia-gold group-hover:text-mafia-black transition-colors" />
-                  <span className="text-smoke-white group-hover:text-mafia-black">GOOGLE MAPS</span>
-                </a>
-                
-                <a 
-                  href="https://mapy.cz/zakladni?q=Sadová%201383%2C%20Uherské%20Hradiště"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => playContactSound("papir.mp3")}
-                  className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:border-mafia-gold transition-all text-xs font-bold uppercase tracking-widest group"
-                >
-                  <MapPin size={14} className="text-mafia-gold group-hover:scale-110 transition-transform" />
-                  <span className="text-smoke-white">MAPY.CZ</span>
-                </a>
 
-                <a 
-                  href="https://waze.com/ul?q=Sadová%201383,%20Uherské%20Hradiště"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => playContactSound("papir.mp3")}
-                  className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:border-mafia-gold transition-all text-xs font-bold uppercase tracking-widest group"
-                >
-                  <Car size={14} className="text-mafia-gold group-hover:scale-110 transition-transform" />
-                  <span className="text-smoke-white">WAZE</span>
-                </a>
+            {/* Dolní část: Adresa a tlačítka (bez rámečků, čistý design) */}
+            <div className="flex flex-col justify-center items-center text-center space-y-8 w-full max-w-4xl px-4">
+              <div className="flex flex-col items-center gap-4 text-mafia-gold">
+                  <MapPin size={24} />
+                  <div className="font-mono text-xl md:text-3xl text-smoke-white allow-copy">
+                    <p>Mařatice, Sadová 1383</p>
+                    <p className="text-mafia-gold/60 mt-2 text-lg md:text-xl">Uherské Hradiště</p>
+                  </div>
+              </div>
+              
+              <div className="flex flex-wrap justify-center gap-6 w-full pt-4">
+                  <a 
+                    href="https://maps.google.com/?q=Sadová+1383,+686+05+Uherské+Hradiště"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => playContactSound("papir.mp3")}
+                    className="flex items-center justify-center gap-3 px-8 py-4 bg-transparent hover:bg-mafia-gold/10 transition-colors text-sm font-bold uppercase tracking-widest group"
+                  >
+                    <MapPin size={18} className="text-mafia-gold group-hover:scale-110 transition-transform shrink-0" />
+                    <span className="text-smoke-white group-hover:text-mafia-gold transition-colors">GOOGLE MAPS</span>
+                  </a>
+                  
+                  <a 
+                    href="https://mapy.cz/zakladni?q=Sadová%201383%2C%20Uherské%20Hradiště"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => playContactSound("papir.mp3")}
+                    className="flex items-center justify-center gap-3 px-8 py-4 bg-transparent hover:bg-mafia-gold/10 transition-colors text-sm font-bold uppercase tracking-widest group"
+                  >
+                    <MapPin size={18} className="text-mafia-gold group-hover:scale-110 transition-transform shrink-0" />
+                    <span className="text-smoke-white group-hover:text-mafia-gold transition-colors">MAPY.CZ</span>
+                  </a>
+
+                  <a 
+                    href="https://waze.com/ul?q=Sadová%201383,%20Uherské%20Hradiště"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => playContactSound("papir.mp3")}
+                    className="flex items-center justify-center gap-3 px-8 py-4 bg-transparent hover:bg-mafia-gold/10 transition-colors text-sm font-bold uppercase tracking-widest group"
+                  >
+                    <Car size={18} className="text-mafia-gold group-hover:scale-110 transition-transform shrink-0" />
+                    <span className="text-smoke-white group-hover:text-mafia-gold transition-colors">WAZE</span>
+                  </a>
+              </div>
             </div>
           </motion.div>
         );
@@ -188,13 +202,13 @@ export function Contact() {
   };
 
   return (
-    <section id="kontakt" className="relative w-full py-24 px-6 md:px-12 bg-transparent border-t border-mafia-gold/10 overflow-hidden">
+    <section id="kontakt" className="relative w-full py-24 bg-transparent border-t border-mafia-gold/10 overflow-hidden">
       
       {/* HUD Background elements */}
       <div className="absolute top-0 left-0 w-64 h-64 border-t border-l border-mafia-gold/5 -translate-x-1/2 -translate-y-1/2 rounded-full"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 border-b border-r border-mafia-gold/5 translate-x-1/2 translate-y-1/2 rounded-full"></div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10 px-6 md:px-12">
         <div className="text-center mb-16 md:mb-24">
           <h2 className="text-4xl md:text-6xl font-heading font-black text-smoke-white mb-4 tracking-[0.2em] uppercase">
             {t?.contact?.title || (lang === 'cs' ? 'KONTAKT' : 'CONTACT')}
@@ -203,9 +217,9 @@ export function Contact() {
           <p className="text-smoke-white/40 font-mono tracking-[0.4em] uppercase text-xs md:text-sm">{t?.contact?.subtitle}</p>
         </div>
 
-        <div className="flex flex-col items-center gap-12 w-full max-w-3xl mx-auto">
+        <div className="flex flex-col items-center gap-12 w-full mx-auto">
           
-          {/* INTERACTIVE ICON GRID & DETAIL VIEWER */}
+          {/* INTERACTIVE ICON GRID */}
           <div className="flex flex-col gap-8 md:gap-12 w-full">
             
             {/* Category Icons */}
@@ -245,25 +259,19 @@ export function Contact() {
                     </button>
                 ))}
             </div>
-
-            {/* Information Viewer (HUD Style) */}
-            <div className="mt-8 md:mt-4 p-8 md:p-12 bg-mafia-dark/30 border-2 border-mafia-gold/10 relative min-h-[380px] flex items-center overflow-hidden">
-                {/* HUD Corners */}
-                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-mafia-gold/20"></div>
-                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-mafia-gold/20"></div>
-                
-                <div className="w-full">
-                    <AnimatePresence mode="wait">
-                        <div key={activeCategory}>
-                            {renderActiveInfo()}
-                        </div>
-                    </AnimatePresence>
-                </div>
-            </div>
-
           </div>
-
         </div>
+      </div>
+
+      {/* Information Viewer (plná šířka pro mapu) */}
+      <div className="mt-8 md:mt-12 w-full relative min-h-[380px] flex flex-col items-center z-10">
+          <div className="w-full">
+              <AnimatePresence mode="wait">
+                  <div key={activeCategory}>
+                      {renderActiveInfo()}
+                  </div>
+              </AnimatePresence>
+          </div>
       </div>
     </section>
   );

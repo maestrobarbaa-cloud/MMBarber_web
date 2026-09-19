@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { playSound } from "@/utils/audio";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useUI } from "@/contexts/UIContext";
 
 interface HUDWeaponItem {
   name: string;
@@ -43,6 +44,7 @@ export function TableOfContents() {
   const router = useRouter();
   const pathname = usePathname();
   const { lang } = useTranslation();
+  const { graphicsTier } = useUI();
 
   useEffect(() => {
     setIsMounted(true);
@@ -284,15 +286,25 @@ export function TableOfContents() {
       >
         <div className="flex flex-col items-center gap-6 transition-all duration-500 -rotate-90 origin-center whitespace-nowrap opacity-100">
           <span className="text-[11px] text-mafia-gold font-black drop-shadow-[0_0_8px_rgba(197,160,89,1)] uppercase tracking-[0.2em] transition-colors duration-300 flex items-center gap-3">
-            <Target size={14} className="animate-[spin_6s_linear_infinite] text-mafia-gold drop-shadow-[0_0_5px_rgba(197,160,89,1)]" />
             {lang === 'cs' ? 'HLAVNÍ MENU' : 'MAIN MENU'}
           </span>
         </div>
 
-        {/* Bottom coordinates coordinate info */}
-        <div className="absolute bottom-10 opacity-50 group-hover:opacity-100 transition-opacity duration-300 text-[9px] text-mafia-gold -rotate-90 origin-center">
-          LOC_0x7F
-        </div>
+        {(graphicsTier === 'high' || graphicsTier === 'ultra') && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none w-full opacity-30 group-hover:opacity-100 transition-opacity duration-500">
+            <motion.div
+              className="absolute left-1/2 -translate-x-1/2 w-[2px] h-[45px] rounded-full bg-gradient-to-t from-transparent via-mafia-gold/80 to-white shadow-[0_0_10px_#C5A059] z-0 will-change-transform will-change-opacity transform-gpu"
+              initial={{ y: "100vh" }}
+              animate={{ y: "-10vh" }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "linear",
+                delay: 2,
+              }}
+            />
+          </div>
+        )}
       </div>
 
       <AnimatePresence>

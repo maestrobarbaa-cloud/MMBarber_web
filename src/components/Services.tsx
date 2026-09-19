@@ -103,6 +103,15 @@ export function Services() {
         description: lang === 'cs' ? 'CENÍK A REZERVACE' : 'PRICING & BOOKING',
         onClick: () => { router.push('/cenik'); trackEvent("open_pricing_menu"); }
       },
+      { 
+        id: 'vouchers',
+        title: lang === 'cs' ? 'DÁRKOVÉ VOUCHERY' : 'GIFT VOUCHERS',
+        titleMobile: lang === 'cs' ? 'VOUCHERY' : 'VOUCHERS',
+        icon: <Ticket size={48} className="text-mafia-gold" />,
+        iconMobile: <Ticket size={32} className="text-mafia-gold" />,
+        description: lang === 'cs' ? 'DÁRKOVÉ BALENÍ S PEČETÍ / PLATNOST 1 ROK' : 'PREMIUM PACKAGING WITH SEAL / 1 YEAR VALIDITY',
+        onClick: () => { router.push('/vouchery'); trackEvent("open_vouchers_page"); }
+      },
       /*
       {
         id: 'dating',
@@ -114,7 +123,7 @@ export function Services() {
       }
       */
     ].map(card => {
-      const status = globalSettings[`visibility_card_${card.id === 'dating' ? 'seznamka' : card.id}`];
+      const status = globalSettings[`visibility_card_${card.id === 'dating' ? 'seznamka' : card.id === 'vouchers' ? 'vouchery' : card.id}`];
       if (status === 'hidden') return null;
       return { ...card, devMode: status === 'dev', disabled: status === 'locked' };
     }).filter(Boolean) as any[];
@@ -123,15 +132,6 @@ export function Services() {
 
   const otherCards = useMemo(() => {
     const cards = [
-      { 
-        id: 'vouchers',
-        title: lang === 'cs' ? 'DÁRKOVÉ VOUCHERY' : 'GIFT VOUCHERS',
-        titleMobile: lang === 'cs' ? 'VOUCHERY' : 'VOUCHERS',
-        icon: <Ticket size={48} className="text-mafia-gold" />,
-        iconMobile: <Ticket size={32} className="text-mafia-gold" />,
-        description: lang === 'cs' ? 'DÁRKOVÉ BALENÍ S PEČETÍ / PLATNOST 1 ROK' : 'PREMIUM PACKAGING WITH SEAL / 1 YEAR VALIDITY',
-        onClick: () => { router.push('/vouchery'); trackEvent("open_vouchers_page"); }
-      },
       { 
         id: 'gallery',
         title: lang === 'cs' ? 'GALERIE' : 'GALLERY',
@@ -201,11 +201,8 @@ export function Services() {
       return { ...card, devMode: status === 'dev', disabled: status === 'locked' };
     }).filter(Boolean) as any[];
     
-    // Zviditělnit komunitu pouze pokud má uživatel v komunitním battlepassu alespoň 100 XP (level 1)
-    const currentCommunityXp = chapterXp['community'] || 0;
-    const filteredCards = currentCommunityXp >= 100 
-      ? cards 
-      : cards.filter(c => c.id !== 'community');
+    // Komunita je nyní viditelná pro všechny (dříve byla závislá na chapterXp >= 100)
+    const filteredCards = cards;
 
     return filteredCards.sort((a, b) => (trackerScores[a.id] || 0) - (trackerScores[b.id] || 0));
   }, [lang, t, trackerScores, router, chapterXp, globalSettings]);

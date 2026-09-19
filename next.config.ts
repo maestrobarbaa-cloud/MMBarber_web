@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   output: 'standalone',
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -64,7 +64,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com/gsi/client https://www.googletagmanager.com; frame-src 'self' https://accounts.google.com/gsi/ https://calendar.google.com; connect-src 'self' https://accounts.google.com/gsi/ https://*.google-analytics.com; font-src 'self' https://fonts.gstatic.com;"
+            value: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com/gsi/client https://www.googletagmanager.com https://unpkg.com; frame-src 'self' https://accounts.google.com/gsi/ https://calendar.google.com; connect-src 'self' https://accounts.google.com/gsi/ https://*.google-analytics.com https://tiles.openfreemap.org; font-src 'self' https://fonts.gstatic.com; worker-src 'self' blob:; child-src 'self' blob:; img-src 'self' data: https://*;"
           }
         ]
       }

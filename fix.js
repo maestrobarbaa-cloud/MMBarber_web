@@ -1,28 +1,37 @@
-﻿const fs = require('fs');
-let content = fs.readFileSync('src/app/rodina/remesla/roman-jakubcak/page.tsx', 'utf8');
+const fs = require('fs');
+const file = 'prisma/schema.prisma';
+const content = fs.readFileSync(file, 'utf8');
+const idx = content.indexOf('model CooperationRequest {');
+if (idx === -1) process.exit(1);
 
-const hooks = `
-  // Handle global mouse move
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      mouseX.set(e.clientX / window.innerWidth);
-      mouseY.set(e.clientY / window.innerHeight);
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
+const base = content.substring(0, idx);
+const rest = `model CooperationRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  field     String
+  message   String
+  status    String   @default("NEW") // NEW, IN_PROGRESS, COMPLETED, REJECTED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-  useEffect(() => {
-    setIsClient(true);
-    const interval = setInterval(() => {
-      const d = new Date();
-      setTime(d.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const [calcTotal, setCalcTotal] = useState(0);
+model CommunityProject {
+  id         String   @id @default(cuid())
+  title      String
+  status     String   @default("PREPARING") // ONLINE, OFFLINE, MAINTENANCE, PREPARING
+  tag        String   @default("GENERAL")
+  desc       String
+  descEn     String?
+  dateLabel  String?
+  icon       String   @default("Folder") // Lucide icon name
+  link       String?
+  details    String?  // JSON string
+  isApproved Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
 `;
-
-content = content.replace('// Handle global mouse move', hooks);
-fs.writeFileSync('src/app/rodina/remesla/roman-jakubcak/page.tsx', content);
+fs.writeFileSync(file, base + rest);
+console.log("Fixed schema.prisma");
