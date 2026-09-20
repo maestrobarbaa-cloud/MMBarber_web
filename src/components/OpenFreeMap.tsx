@@ -23,8 +23,28 @@ export function OpenFreeMap() {
           const res = await fetch('https://tiles.openfreemap.org/styles/dark');
           const style = await res.json();
 
-          // Modifikace stylu: černé budovy s obrysem, tmavě zlaté silnice
-          // Modifikace stylu pro nádherný luxusní černo-zlatý MMBarber vzhled
+          // Zjištění aktuálního tématu pro mapu
+          const isBlood = localStorage.getItem('mmbarber_blood_mode') === 'true';
+          const isNoir = localStorage.getItem('mmbarber_noir_mode') === 'true';
+          
+          let colorGold = '#c5a059';
+          let colorGoldDark = '#a88647';
+          let colorRoadMain = '#8b6914';
+          let colorRoadSub = '#5a4611';
+          
+          if (isBlood) {
+            colorGold = '#e2062c';
+            colorGoldDark = '#9a001a';
+            colorRoadMain = '#7a0012';
+            colorRoadSub = '#4a0008';
+          } else if (isNoir) {
+            colorGold = '#e2e2e2';
+            colorGoldDark = '#a0a0a0';
+            colorRoadMain = '#606060';
+            colorRoadSub = '#404040';
+          }
+
+          // Modifikace stylu pro aktuální téma
           style.layers.forEach((layer: any) => {
             // Skrytí všech textových popisků a ikon na mapě
             if (layer.type === 'symbol') {
@@ -39,24 +59,21 @@ export function OpenFreeMap() {
             }
 
             if (layer.id.includes('building')) {
-              // Zlaté budovy
-              if (layer.paint && layer.paint['fill-color']) layer.paint['fill-color'] = '#c5a059';
-              if (layer.paint && layer.paint['fill-extrusion-color']) layer.paint['fill-extrusion-color'] = '#c5a059';
-              if (layer.paint && layer.paint['line-color']) layer.paint['line-color'] = '#a88647';
+              if (layer.paint && layer.paint['fill-color']) layer.paint['fill-color'] = colorGold;
+              if (layer.paint && layer.paint['fill-extrusion-color']) layer.paint['fill-extrusion-color'] = colorGold;
+              if (layer.paint && layer.paint['line-color']) layer.paint['line-color'] = colorGoldDark;
             }
 
             if (layer.id.includes('transportation') || layer.id.includes('road') || layer.id.includes('highway') || layer.id.includes('street') || layer.id.includes('bridge') || layer.id.includes('tunnel') || layer.id.includes('path') || layer.id.includes('track')) {
-              // Tmavší zlaté cesty
               if (layer.paint && layer.paint['line-color']) {
                 if (layer.id.includes('major') || layer.id.includes('primary') || layer.id.includes('secondary') || layer.id.includes('motorway')) {
-                  layer.paint['line-color'] = '#8b6914'; // Tmavě zlatá pro hlavní
+                  layer.paint['line-color'] = colorRoadMain; 
                 } else {
-                  layer.paint['line-color'] = '#5a4611'; // Ještě tmavší pro vedlejší
+                  layer.paint['line-color'] = colorRoadSub; 
                 }
               }
-              // V některých stylech OpenMapTiles jsou i fill-color pro transportní plochy
               if (layer.paint && layer.paint['fill-color']) {
-                  layer.paint['fill-color'] = '#5a4611';
+                  layer.paint['fill-color'] = colorRoadSub;
               }
             }
           });
@@ -77,19 +94,19 @@ export function OpenFreeMap() {
           el.innerHTML = `
             <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; cursor: pointer;">
               <!-- X značka -->
-              <div style="font-family: 'Brush Script MT', 'Courier New', cursive; font-size: 28px; color: #ffffff; font-weight: bold; transform: rotate(-5deg); text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">X</div>
+              <div style="font-family: 'Brush Script MT', 'Courier New', cursive; font-size: 28px; color: ${colorGold}; font-weight: bold; transform: rotate(-5deg); text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">X</div>
               <!-- Ručně kreslený kruh -->
               <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.8));" viewBox="0 0 100 100">
                 <path d="M 45,15 C 75,10 90,30 85,60 C 80,90 40,95 15,75 C -5,55 10,20 40,15 C 45,14 50,15 50,15" 
                       fill="none" 
-                      stroke="#ffffff" 
+                      stroke="${colorGold}" 
                       stroke-width="5" 
                       stroke-linecap="round"
                       style="transform-origin: center; transform: rotate(15deg);"
                 />
                 <path d="M 40,17 C 45,15 52,16 52,16" 
                       fill="none" 
-                      stroke="#ffffff" 
+                      stroke="${colorGold}" 
                       stroke-width="4" 
                       stroke-linecap="round"
                 />

@@ -28,6 +28,8 @@ export interface BarberProfile {
   unlockThreshold?: number;
   missionFailed?: boolean;
   isHidden?: boolean;
+  startedCuttingYear?: number;
+  bankAccount?: string;
   quotes?: string[];
   quoteTiming?: { showFor: number, waitFor: number };
   bookingSystemType?: 'external' | 'internal';

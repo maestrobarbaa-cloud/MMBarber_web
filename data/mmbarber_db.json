@@ -125,7 +125,7 @@
     "visibility_card_system": "visible",
     "visibility_card_pece": "visible",
     "visibility_card_komunita": "visible",
-    "admin_last_seen": "1789802289425"
+    "admin_last_seen": "1789909036425"
   },
   "user_fragments": [],
   "game_winners": [],
@@ -554,7 +554,7 @@
       "ip": "::1",
       "userFullName": "T",
       "startedAt": 1789754043419,
-      "lastActivity": 1789797057934,
+      "lastActivity": 1789937649749,
       "status": "OPEN"
     }
   ],
@@ -566,6 +566,14 @@
       "text": "tomas ",
       "timestamp": 1789754043419,
       "read": true
+    },
+    {
+      "id": "cff95d44-0711-4f1f-a019-6c4ce0be1a16",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "hello",
+      "timestamp": 1789840636638,
+      "read": false
     }
   ],
   "support_calls": [

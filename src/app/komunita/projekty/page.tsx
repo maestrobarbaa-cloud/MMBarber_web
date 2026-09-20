@@ -247,8 +247,13 @@ export default function ProjectsPage() {
                       )}
 
                       {project.link && project.link !== '#' && (
-                        <Link href={project.link} target="_blank" className="w-full md:w-auto inline-flex px-12 py-5 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.4em] hover:bg-white transition-all duration-500 shadow-2xl items-center justify-center gap-4">
-                           {lang === 'cs' ? "PŘIPOJIT SE" : "JOIN"} <ExternalLink size={18} />
+                        <Link 
+                          href={project.link} 
+                          target={project.link.startsWith('http') ? "_blank" : undefined} 
+                          className="w-full md:w-auto inline-flex px-12 py-5 bg-mafia-gold text-mafia-black font-black uppercase tracking-[0.4em] hover:bg-white transition-all duration-500 shadow-2xl items-center justify-center gap-4"
+                        >
+                           {lang === 'cs' ? "VSTOUPIT" : "ENTER"} 
+                           {project.link.startsWith('http') ? <ExternalLink size={18} /> : <ArrowLeft size={18} className="rotate-180" />}
                         </Link>
                       )}
                     </div>

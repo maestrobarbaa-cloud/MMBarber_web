@@ -17,6 +17,8 @@ export interface BarberProfile {
   isHidden?: boolean;
   missionFailed?: boolean;
   unlockThreshold?: number;
+  startedCuttingYear?: number;
+  bankAccount?: string;
   symbol: string;
   rank?: {
     level: number;

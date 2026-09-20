@@ -14,6 +14,7 @@ const Radio = dynamic(() => import("@/components/Radio").then(mod => mod.Radio),
 const CookieBanner = dynamic(() => import("@/components/CookieBanner").then(mod => mod.CookieBanner), { ssr: false });
 const FloatingScissors = dynamic(() => import("@/components/FloatingScissors").then(mod => mod.FloatingScissors), { ssr: false });
 
+
 const VipControlBar = dynamic(() => import("@/components/VipControlBar").then(mod => mod.VipControlBar), { ssr: false });
 const GlobalSound = dynamic(() => import("@/components/GlobalSound").then(mod => mod.GlobalSound), { ssr: false });
 const MatrixBackground = dynamic(() => import("@/components/MatrixBackground").then(mod => mod.MatrixBackground), { ssr: false });
@@ -22,6 +23,7 @@ const BarberChat = dynamic(() => import("@/components/BarberChat").then(mod => m
 const UserSettingsManager = dynamic(() => import("@/components/UserSettingsManager").then(mod => mod.UserSettingsManager), { ssr: false });
 const ElitaGame = dynamic(() => import("@/components/ElitaGame").then(mod => mod.ElitaGame), { ssr: false });
 const SlotMachine = dynamic(() => import("@/components/SlotMachine").then(mod => mod.SlotMachine), { ssr: false });
+const ScratchCard = dynamic(() => import("@/components/ScratchCard"), { ssr: false });
 const CorporateTricks = dynamic(() => import("@/components/CorporateTricks").then(mod => mod.CorporateTricks), { ssr: false });
 const SeasonalAtmosphere = dynamic(() => import("@/components/SeasonalAtmosphere").then(mod => mod.SeasonalAtmosphere), { ssr: false });
 const MobileCompass = dynamic(() => import("@/components/MobileCompass").then(mod => mod.MobileCompass), { ssr: false });
@@ -394,6 +396,7 @@ export function ClientWrapper() {
       {graphicsTier !== 'lite' && <EarthProtocol isOpen={isEarthProtocolOpen} onClose={() => setIsEarthProtocolOpen(false)} lang={lang} />}
       {graphicsTier !== 'lite' && <ElitaGame />}
       {graphicsTier !== 'lite' && <SlotMachine />}
+      {graphicsTier !== 'lite' && <ScratchCard />}
       
       {/* DATA SAVER INDICATOR */}
       {isLowBandwidth && (
@@ -404,7 +407,7 @@ export function ClientWrapper() {
       )}
       
       <MobileCompass />
-      {!isAdmin && (
+      {!isAdmin && pathname !== '/mc' && !pathname?.startsWith('/hry') && (
         <>
           {/* Left Column widgets: User Feedback (hidden on smaller screens if they overlap, or purely conditional) */}
           {globalWidgets.feedback && (

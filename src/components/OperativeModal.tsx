@@ -30,6 +30,8 @@ interface BarberProfile {
   symbol: string;
   missionFailed?: boolean;
   unlockThreshold?: number;
+  startedCuttingYear?: number;
+  bankAccount?: string;
   rank?: {
     level: number;
     title: string;
