@@ -548,7 +548,7 @@ export default function SupportChatWidget() {
                               
                               {isUser && (
                                 <div className="self-end mt-0.5 flex items-center opacity-70">
-                                  {msg.read ? <CheckCheck size={14} className="text-blue-800" title="Přečteno" /> : <Check size={14} title="Odesláno" />}
+                                  {msg.read ? <span title="Přečteno" className="flex items-center"><CheckCheck size={14} className="text-blue-800" /></span> : <span title="Odesláno" className="flex items-center"><Check size={14} /></span>}
                                 </div>
                               )}
                            </div>

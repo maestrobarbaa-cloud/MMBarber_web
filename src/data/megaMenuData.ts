@@ -77,6 +77,12 @@ export const getMegaMenuData = (lang: Language): MegaMenuData => ({
           { name: lang === 'cs' ? "Životopisy barberů" : "Barber CVs", path: "/zivotopisy" },
           { name: lang === 'cs' ? "Spolupráce" : "Cooperation", path: "/spoluprace" },
         ]
+      },
+      {
+        title: lang === 'cs' ? "Časté dotazy" : "FAQ",
+        items: [
+          { name: lang === 'cs' ? "Otázky a Odpovědi" : "Questions & Answers", path: "/faq" },
+        ]
       }
     ]
   },

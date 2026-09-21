@@ -40,7 +40,7 @@ interface UIContextProps {
 const UIContext = createContext<UIContextProps | undefined>(undefined);
 
 export function UIProvider({ children }: { children: React.ReactNode }) {
-  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(false);
   const [isStealthMode, setIsStealthMode] = useState(false);
   const [graphicsTier, setGraphicsTier] = useState<GraphicsTier>("low");
   const [isDevMode, setIsDevMode] = useState(false);
@@ -60,7 +60,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   const isLowBandwidth = networkStatus.isLowBandwidth;
 
   useEffect(() => {
-    setIsSoundEnabled(localStorage.getItem("mmbarber_sound_enabled") !== "false");
+    setIsSoundEnabled(localStorage.getItem("mmbarber_sound_enabled") === "true");
     setIsStealthMode(localStorage.getItem("mmbarber_stealth_mode") === "true");
     setIsDevMode(localStorage.getItem("mmbarber_dev_mode") === "true");
     

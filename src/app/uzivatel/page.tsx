@@ -116,7 +116,7 @@ export default function UserSettings() {
   const { totalCollected, isTomasUnlocked, isNellaUnlocked, mafiaRank, resetProgress } = useGame();
   
   const [activeTab, setActiveTab] = useState('profile');
-  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(false);
 
   const defaultConfig = {
     accentColor: "var(--color-mafia-gold)",
@@ -138,7 +138,7 @@ export default function UserSettings() {
     }
     
     // Sync sound state
-    setIsSoundEnabled(localStorage.getItem("mmbarber_sound_enabled") !== "false");
+    setIsSoundEnabled(localStorage.getItem("mmbarber_sound_enabled") === "true");
     
     // Also sync from the legacy overrides if they exist independently
     const savedAtmosphere = localStorage.getItem("mmbarber_atmosphere_override");
@@ -202,8 +202,8 @@ export default function UserSettings() {
     localStorage.removeItem("mmbarber_visited");
     localStorage.removeItem("mmbarber_dev_mode");
     localStorage.removeItem("mmbarber_dev_visual_mode");
-    localStorage.setItem("mmbarber_sound_enabled", "true");
-    setIsSoundEnabled(true);
+    localStorage.setItem("mmbarber_sound_enabled", "false");
+    setIsSoundEnabled(false);
     
     // Force reload to completely clear memory
     window.location.href = "/";
@@ -224,6 +224,7 @@ export default function UserSettings() {
     const newVal = !isSoundEnabled;
     setIsSoundEnabled(newVal);
     localStorage.setItem("mmbarber_sound_enabled", String(newVal));
+    window.dispatchEvent(new CustomEvent('mmbarber-sound-update', { detail: newVal }));
     if (newVal) playSound("/sounds/click.mp3", 0.3);
   };
 

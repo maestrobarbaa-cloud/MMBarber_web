@@ -7,6 +7,7 @@ import { trackEvent } from "../utils/analytics";
 import { playSound } from "../utils/audio";
 import { motion, AnimatePresence } from "framer-motion";
 import { OpenFreeMap } from "./OpenFreeMap";
+import { useUI } from "@/contexts/UIContext";
 
 type InfoCategory = "address" | "connection" | "parking" | "transit";
 
@@ -15,6 +16,8 @@ export function Contact() {
   const [activeCategory, setActiveCategory] = useState<InfoCategory>("address");
   const [copied, setCopied] = useState(false);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+  const { graphicsTier, isNoirMode } = useUI();
+  const isWeakerGraphics = ['lite', 'low', 'medium', 'soft'].includes(graphicsTier);
 
   const playContactSound = (soundFile: string) => {
     playSound(`/sounds/${soundFile}`, 0.5);
@@ -38,13 +41,17 @@ export function Contact() {
           >
             {/* Horní část: Mapa přes celou šířku (čisté w-full bez scrollbar bugu) */}
             <div className="w-full h-[60vh] md:h-[75vh] relative overflow-hidden">
-              <div className="absolute inset-0 bg-mafia-gold/10 mix-blend-color z-10 pointer-events-none transition-opacity duration-500"></div>
               <OpenFreeMap />
-              <div className="absolute top-0 left-0 w-full h-full shadow-[inset_0_0_50px_rgba(0,0,0,1)] pointer-events-none z-10"></div>
-              
-              {/* Jemné černé přechody zespodu a svrchu pro plynulé splynutí s okolím */}
-              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#0a0a0a] to-transparent pointer-events-none z-20"></div>
-              <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-[#0a0a0a] to-transparent pointer-events-none z-20"></div>
+              {(!isWeakerGraphics || isNoirMode) && (
+                <>
+                  <div className="absolute inset-0 bg-mafia-gold/10 mix-blend-color z-10 pointer-events-none transition-opacity duration-500"></div>
+                  <div className="absolute top-0 left-0 w-full h-full shadow-[inset_0_0_50px_rgba(0,0,0,1)] pointer-events-none z-10"></div>
+                  
+                  {/* Jemné černé přechody zespodu a svrchu pro plynulé splynutí s okolím */}
+                  <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-mafia-black to-transparent pointer-events-none z-20"></div>
+                  <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-mafia-black to-transparent pointer-events-none z-20"></div>
+                </>
+              )}
             </div>
 
             {/* Dolní část: Adresa a tlačítka (bez rámečků, čistý design) */}

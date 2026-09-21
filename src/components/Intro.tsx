@@ -230,19 +230,7 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
                   {lang === 'cs' ? "Rezervovat" : "Book"}
                 </a>
               </div>
-              <div className="flex flex-col items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
-                <span className="text-[10px] font-mono text-transparent uppercase tracking-[0.3em] font-black select-none hidden md:block">{lang === 'cs' ? "Mezera" : "Space"}</span>
-                <Image src="/obr/nellapelikanova.png" alt="Nella" width={300} height={300} priority className="w-40 h-40 md:w-56 md:h-56 object-cover rounded-sm border border-mafia-gold/30 shadow-[0_0_20px_rgba(197,160,89,0.15)]" />
-                <div className="text-center">
-                  <h4 className="text-3xl font-heading font-black text-smoke-white uppercase tracking-wider">Nella</h4>
-                  <p className="text-xs font-mono text-smoke-white/50 uppercase tracking-widest mt-1">
-                    {lang === 'cs' ? `${Math.max(0, new Date().getFullYear() - (barbers.find(b => b.id === 'nella')?.startedCuttingYear || 2021))} roky praxe` : `${Math.max(0, new Date().getFullYear() - (barbers.find(b => b.id === 'nella')?.startedCuttingYear || 2021))} years of exp.`}
-                  </p>
-                </div>
-                <a href="https://mmbarberx.setmore.com" target="_blank" rel="noopener noreferrer" className="bg-mafia-gold text-black w-full max-w-[280px] md:w-auto px-10 py-4 md:px-8 md:py-3 mt-2 font-black uppercase tracking-widest text-lg md:text-sm text-center hover:bg-white transition-colors shadow-lg">
-                  {lang === 'cs' ? "Rezervovat" : "Book"}
-                </a>
-              </div>
+
             </div>
           </div>
         );

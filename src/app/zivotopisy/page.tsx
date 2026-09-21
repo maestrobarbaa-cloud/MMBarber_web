@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Image from "@/components/OptimizedImage";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,7 +32,9 @@ import {
   CheckCircle2, 
   RefreshCw,
   Compass,
-  Share2
+  Share2,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 import { TomasSkillTree } from "@/components/TomasSkillTree";
 import { HiddenSeoArchive } from "@/components/HiddenSEOArchive";
@@ -42,6 +44,20 @@ import { AnimusDNA3D } from "@/components/AnimusDNA3D";
 export default function BiographiesPage() {
   const { graphicsTier } = useUI();
   const { lang } = useTranslation();
+  
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isAudioPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsAudioPlaying(!isAudioPlaying);
+    }
+  };
   const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
   const [previewBarberId, setPreviewBarberId] = useState<string | null>(null);
   const [globalStats, setGlobalStats] = useState<GlobalBarberStats>({});
@@ -425,9 +441,25 @@ export default function BiographiesPage() {
                 <span className="text-mafia-gold text-[10px] font-mono tracking-[0.4em] uppercase block">
                   {lang === 'cs' ? "STRUKTURA A ROLE" : "STRUCTURE AND ROLES"}
                 </span>
-                <h1 className="text-4xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-tight leading-none">
-                  {lang === 'cs' ? "HIERARCHIE V RODINĚ" : "FAMILY HIERARCHY"}
-                </h1>
+                <div className="flex items-center justify-center gap-4">
+                  <h1 className="text-4xl md:text-5xl font-heading font-black text-smoke-white uppercase tracking-tight leading-none">
+                    {lang === 'cs' ? "HIERARCHIE V RODINĚ" : "FAMILY HIERARCHY"}
+                  </h1>
+                  <button 
+                    onClick={toggleAudio}
+                    className="p-3 rounded-full bg-mafia-gold/10 hover:bg-mafia-gold/20 text-mafia-gold transition-colors border border-mafia-gold/20 shadow-[0_0_15px_rgba(197,160,89,0.15)] flex-shrink-0"
+                    title={lang === 'cs' ? "Přehrát/Pozastavit hudbu" : "Play/Pause music"}
+                  >
+                    {isAudioPlaying ? <Volume2 size={24} /> : <VolumeX size={24} />}
+                  </button>
+                  <audio 
+                    ref={audioRef} 
+                    src="/sounds/Nella Notta Siciliana- web.mp3" 
+                    onEnded={() => setIsAudioPlaying(false)}
+                    onPause={() => setIsAudioPlaying(false)}
+                    onPlay={() => setIsAudioPlaying(true)}
+                  />
+                </div>
                 <p className="text-xs text-white/40 leading-relaxed max-w-sm mx-auto">
                   {lang === 'cs'
                     ? "Vyberte si složku jednoho z našich operativců pro detailní taktický životopis, přehled dovedností a hodnocení."

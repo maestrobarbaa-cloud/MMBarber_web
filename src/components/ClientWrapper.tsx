@@ -153,7 +153,13 @@ export function ClientWrapper() {
 
         (async () => {
            try {
-             const res = await fetch('https://ipapi.co/json/');
+             const controller = new AbortController();
+             const timeoutId = setTimeout(() => controller.abort(), 3000);
+             const res = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+             clearTimeout(timeoutId);
+             
+             if (!res.ok) throw new Error('API response not ok');
+             
              const data = await res.json();
              if (data.country_code === 'CZ') {
                window.dispatchEvent(new CustomEvent('language_changed', { detail: 'cs' }));
@@ -168,13 +174,23 @@ export function ClientWrapper() {
                localStorage.setItem('mmbarber_lang', 'en');
              }
            } catch (e) {
-             console.error("Geo-detection failed", e);
+             // Fallback to browser language if fetch fails (e.g. adblocker)
+             const isCzech = typeof navigator !== 'undefined' && navigator.language.startsWith('cs');
+             const fallbackLang = isCzech ? 'cs' : 'en';
+             window.dispatchEvent(new CustomEvent('language_changed', { detail: fallbackLang }));
+             localStorage.setItem('mmbarber_lang', fallbackLang);
+             console.warn("Geo-detection failed, using browser language fallback:", fallbackLang);
            }
         })();
 
         // First time initialization
         const detectedTier = detectPerformance();
         currentTier = detectedTier;
+        
+        if (detectedTier === "ultra") {
+          localStorage.setItem("mmbarber_noir_mode", "true");
+          window.dispatchEvent(new CustomEvent('mmbarber-force-theme-eval'));
+        }
         
         // Create initial config - MORE CONSERVATIVE
         const initialConfig = {

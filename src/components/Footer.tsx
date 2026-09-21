@@ -477,7 +477,6 @@ export function Footer() {
     <footer className="w-full bg-[#050505] border-t border-mafia-gold/10 pt-24 pb-12 px-6 text-center z-10 relative mt-0 overflow-hidden">
 
       {/* AMBIENT BACKGROUND & PARTICLES OVER THE ENTIRE FOOTER */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)] pointer-events-none z-0"></div>
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none z-0"></div>
       
       {/* FLOATING SPARKS & COMETS */}

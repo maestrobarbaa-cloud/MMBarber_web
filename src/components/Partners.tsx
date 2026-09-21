@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useMotionValue, animate, PanInfo } from "frame
 import { useState, useEffect, useRef } from "react";
 import { playSound } from "../utils/audio";
 import { Fingerprint } from "lucide-react";
+import { useUI } from "@/contexts/UIContext";
 
 const PARTNER_CATEGORIES = [
   {
@@ -184,6 +185,7 @@ export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
   const [graphicsTier, setGraphicsTier] = useState<string>("low");
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
+  const { isNoirMode } = useUI();
 
   useEffect(() => {
     const updateTier = () => {
@@ -230,12 +232,15 @@ export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
 
   return (
     <motion.section 
-      className="w-full py-0 px-4 bg-[#050505] relative overflow-hidden group/partners"
+      className="w-full py-0 px-4 bg-mafia-black relative overflow-hidden group/partners"
     >
       
       {/* Background extended from Footer */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(var(--color-mafia-gold-rgb),0.05)_0%,transparent_70%)] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+      {!isNoirMode && (
+        <>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+        </>
+      )}
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-8 md:mb-12 mt-8 flex flex-col items-center">

@@ -7,6 +7,7 @@ export function OpenFreeMap() {
 
   useEffect(() => {
     let mapInstance: any = null;
+    let isCancelled = false;
 
     if (!document.getElementById('maplibre-css')) {
       const link = document.createElement('link');
@@ -22,10 +23,26 @@ export function OpenFreeMap() {
         try {
           const res = await fetch('https://tiles.openfreemap.org/styles/dark');
           const style = await res.json();
+          
+          if (isCancelled) return;
 
           // Zjištění aktuálního tématu pro mapu
           const isBlood = localStorage.getItem('mmbarber_blood_mode') === 'true';
           const isNoir = localStorage.getItem('mmbarber_noir_mode') === 'true';
+          const graphicsTier = localStorage.getItem('mmbarber_graphics_tier') || 'low';
+          const isWeakerGraphics = ['lite', 'low', 'medium', 'soft'].includes(graphicsTier);
+          
+          let solidBgColor = '#000000';
+          if (isNoir) {
+            solidBgColor = '#000000';
+          } else if (isWeakerGraphics) {
+             if (graphicsTier === 'low') solidBgColor = '#020202';
+             else if (graphicsTier === 'soft') solidBgColor = '#0a0a0a';
+             else solidBgColor = '#1a1a1a'; // lite, medium
+          }
+          
+          const pageBgColor = solidBgColor;
+          const pageBgColorLighter = isWeakerGraphics ? solidBgColor : '#030303';
           
           let colorGold = '#c5a059';
           let colorGoldDark = '#a88647';
@@ -46,16 +63,53 @@ export function OpenFreeMap() {
 
           // Modifikace stylu pro aktuální téma
           style.layers.forEach((layer: any) => {
-            // Skrytí všech textových popisků a ikon na mapě
+            // Skrytí většiny popisků, ale zobrazení kontinentů, ostrovů a vybraných sídel
             if (layer.type === 'symbol') {
-              if (!layer.layout) layer.layout = {};
-              layer.layout.visibility = 'none';
+              const isContinent = layer.id.includes('continent') || layer.id.includes('island') || layer.id.includes('ocean') || layer.id.includes('sea');
+              const isCity = layer.id.includes('city') || layer.id.includes('town') || layer.id.includes('village') || layer.id.includes('capital') || layer.id.includes('place');
+              
+              if (isContinent || isCity) {
+                if (!layer.layout) layer.layout = {};
+                layer.layout.visibility = 'visible';
+                
+                if (layer.paint && layer.layout['text-field']) {
+                  let textColor = isBlood ? '#ff4444' : isNoir ? '#dddddd' : colorGold;
+                  // Města dostanou trochu jemnější/tmavší odstín než kontinenty
+                  if (isCity && !isContinent) {
+                    textColor = isBlood ? '#cc4444' : isNoir ? '#999999' : colorGoldDark;
+                  }
+                  
+                  layer.paint['text-color'] = textColor;
+                  layer.paint['text-halo-color'] = pageBgColor;
+                  layer.paint['text-halo-width'] = isContinent ? 2 : 1;
+                  
+                  // Města necháme plynule vyblednout, když jsme oddálení, aby nekřičela přes kontinenty
+                  if (isCity && !isContinent) {
+                    layer.paint['text-opacity'] = [
+                      'interpolate',
+                      ['linear'],
+                      ['zoom'],
+                      4, 0,   // Na globálním zoomu (4) jsou města neviditelná
+                      6.5, 1  // Při přiblížení nad 6.5 už jsou plně viditelná
+                    ];
+                  }
+                }
+              } else {
+                if (!layer.layout) layer.layout = {};
+                layer.layout.visibility = 'none';
+              }
             }
 
-            // Úprava pozadí a vody
+            // Úprava pozadí a vody (zdůraznění pobřeží a ostrovů)
             if (layer.id === 'background' || layer.id.includes('water')) {
-              if (layer.paint && layer.paint['background-color']) layer.paint['background-color'] = '#030303';
-              if (layer.paint && layer.paint['fill-color']) layer.paint['fill-color'] = '#000000';
+              if (layer.paint && layer.paint['background-color']) layer.paint['background-color'] = pageBgColorLighter;
+              if (layer.paint && layer.paint['fill-color']) layer.paint['fill-color'] = pageBgColor;
+              
+              // Jemný obrys kolem vodních ploch (kreslí hranice ostrovů a kontinentů)
+              if (layer.id.includes('water') && layer.paint && layer.type === 'fill') {
+                 const coastColor = isBlood ? '#550000' : isNoir ? '#222222' : '#4a3a18';
+                 layer.paint['fill-outline-color'] = coastColor;
+              }
             }
 
             if (layer.id.includes('building')) {
@@ -66,14 +120,86 @@ export function OpenFreeMap() {
 
             if (layer.id.includes('transportation') || layer.id.includes('road') || layer.id.includes('highway') || layer.id.includes('street') || layer.id.includes('bridge') || layer.id.includes('tunnel') || layer.id.includes('path') || layer.id.includes('track')) {
               if (layer.paint && layer.paint['line-color']) {
-                if (layer.id.includes('major') || layer.id.includes('primary') || layer.id.includes('secondary') || layer.id.includes('motorway')) {
+                if (layer.id.includes('path') || layer.id.includes('track') || layer.id.includes('pedestrian') || layer.id.includes('footway') || layer.id.includes('dirt')) {
+                  layer.paint['line-color'] = isNoir ? '#111111' : isBlood ? '#1a0000' : '#241a09'; // Tmavší barva pro polní cesty/pěšiny
+                  if (layer.type === 'line') layer.paint['line-width'] = 1; // Ztenčení polních cest
+                } else if (layer.id.includes('major') || layer.id.includes('primary') || layer.id.includes('secondary') || layer.id.includes('motorway')) {
                   layer.paint['line-color'] = colorRoadMain; 
                 } else {
                   layer.paint['line-color'] = colorRoadSub; 
                 }
+                
+                // Skrytí cest při globálním oddálení (aby vynikly kontinenty)
+                if (layer.type === 'line') {
+                  layer.paint['line-opacity'] = [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    4, 0,    // Zcela průhledné na globálním zoomu
+                    7, 1     // Zcela viditelné při přiblížení na kraje/města
+                  ];
+                }
               }
               if (layer.paint && layer.paint['fill-color']) {
                   layer.paint['fill-color'] = colorRoadSub;
+              }
+            }
+
+            // Koleje / Železnice
+            if (layer.id.includes('rail') || layer.id.includes('train') || layer.id.includes('transit')) {
+              if (layer.paint && layer.paint['line-color']) {
+                const railColor = isNoir ? '#444444' : isBlood ? '#4a0000' : '#4a3a18';
+                layer.paint['line-color'] = railColor;
+                if (layer.type === 'line') {
+                  layer.paint['line-width'] = 2;
+                  layer.paint['line-dasharray'] = [2, 2]; // Vzor pražců (přerušovaná čára)
+                }
+              }
+            }
+
+            // Letištní plochy / Runways
+            if (layer.id.includes('aeroway') || layer.id.includes('airport') || layer.id.includes('runway') || layer.id.includes('taxiway')) {
+              const runwayColor = isBlood ? '#ff3333' : isNoir ? '#ffffff' : '#fce883'; // Bright glowing colors
+              
+              if (layer.paint && layer.paint['fill-color']) {
+                layer.paint['fill-color'] = colorRoadSub; // Base concrete color for the polygon
+              }
+              
+              if (layer.paint && layer.paint['line-color']) {
+                layer.paint['line-color'] = runwayColor; // Bright line for the actual runway/taxiway
+                if (layer.type === 'line') {
+                  const maxThick = layer.id.includes('runway') ? 4 : 2;
+                  // Dynamická tloušťka podle zoomu, aby to z dálky nevypadalo ošklivě tlustě
+                  layer.paint['line-width'] = [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    10, 0.5,
+                    16, maxThick
+                  ];
+                }
+              }
+            }
+
+            // Státy a regiony (zvýraznění při oddálení)
+            if (layer.id.includes('admin') || layer.id.includes('boundary') || layer.id.includes('state') || layer.id.includes('country')) {
+              // Vynucení zobrazení i při maximálním oddálení (zrušení limitu zoomu)
+              if (layer.minzoom) layer.minzoom = 3;
+              
+              if (layer.paint && layer.paint['line-color']) {
+                const boundaryColor = isBlood ? '#aa0000' : isNoir ? '#555555' : '#8a733f';
+                layer.paint['line-color'] = boundaryColor;
+                
+                if (layer.type === 'line') {
+                  // Výraznější čáry hranic, když je mapa oddálená
+                  layer.paint['line-width'] = [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    3, 2,   // na zoomu 3 (max oddálení) jsou čáry tlustší
+                    8, 0.5  // na zoomu 8 už jsou tenoučké
+                  ];
+                }
               }
             }
           });
@@ -83,9 +209,10 @@ export function OpenFreeMap() {
             container: mapContainer.current,
             style: style,
             center: [17.4835088, 49.0592272],
-            zoom: 16, // Přiblížíme trochu víc pro lepší 3D efekt
-            pitch: 55, // Naklonění kamery pro dramatický pohled
-            bearing: -15, // Mírné natočení
+            zoom: 14.5, // Výchozí zoom posunut nahoru, aby bylo hned vidět celé město, domy a všechny cesty
+            minZoom: 4, // Zabrání odzoomování příliš daleko (udrží focus na úrovni kontinentů)
+            pitch: 55, // restored original 3D view
+            bearing: -15, // restored original bearing
             attributionControl: false
           });
 
@@ -118,6 +245,54 @@ export function OpenFreeMap() {
           new window.maplibregl.Marker({ element: el })
             .setLngLat([17.4835088, 49.0592272])
             .addTo(mapInstance);
+
+          // @ts-ignore
+          mapInstance.on('load', () => {
+            const runwayLayerIds = style.layers
+              .filter((l: any) => l.id.includes('aeroway') || l.id.includes('airport') || l.id.includes('runway') || l.id.includes('taxiway'))
+              .map((l: any) => l.id);
+
+            // Zrušíme plynulé přechody (transitions) na dasharray, aby nedocházelo ke crossfadu a efekt vypadal ostře jako světlo.
+            runwayLayerIds.forEach((id: string) => {
+              // @ts-ignore
+              if (mapInstance.getLayer(id) && mapInstance.getLayer(id).type === 'line') {
+                // @ts-ignore
+                mapInstance.setPaintProperty(id, 'line-dasharray-transition', { duration: 0, delay: 0 });
+              }
+            });
+
+            // "Running rabbit" efekt (1 bod světla běží po dráze, zbytek tma/mezera)
+            const dashArrays = [
+              [1, 5],
+              [0, 1, 1, 4],
+              [0, 2, 1, 3],
+              [0, 3, 1, 2],
+              [0, 4, 1, 1],
+              [0, 5, 1, 0]
+            ];
+            
+            let step = 0;
+            const blinkInterval = setInterval(() => {
+              if (!mapInstance) {
+                clearInterval(blinkInterval);
+                return;
+              }
+              
+              step = (step + 1) % dashArrays.length;
+              const currentDash = dashArrays[step];
+              
+              runwayLayerIds.forEach((id: string) => {
+                // @ts-ignore
+                if (mapInstance.getLayer(id) && mapInstance.getLayer(id).type === 'line') {
+                  // @ts-ignore
+                  mapInstance.setPaintProperty(id, 'line-dasharray', currentDash);
+                }
+              });
+            }, 80); // Ještě o něco rychlejší, aby to působilo reálněji jako stroboskop
+            
+            // @ts-ignore
+            mapInstance.on('remove', () => clearInterval(blinkInterval));
+          });
             
         } catch (error) {
           console.error("Error loading map style:", error);
@@ -142,6 +317,7 @@ export function OpenFreeMap() {
     }
 
     return () => {
+      isCancelled = true;
       if (mapInstance) {
         mapInstance.remove();
       }
@@ -149,6 +325,6 @@ export function OpenFreeMap() {
   }, []);
 
   return (
-    <div ref={mapContainer} className="w-full h-full mafia-map-container" />
+    <div ref={mapContainer} className="w-full h-full mafia-map-container bg-mafia-black" />
   );
 }

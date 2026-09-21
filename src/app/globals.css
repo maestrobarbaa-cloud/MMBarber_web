@@ -20,6 +20,10 @@ html.theme-blood {
   --gallery-grayscale: 1;
 }
 
+html.noir-mode body {
+  background-color: #000000 !important;
+}
+
 @property --user-glow-color {
   syntax: '<color>';
   inherits: true;
@@ -406,8 +410,26 @@ html:not(.is-mobile-device) {
 html[data-graphics-tier='lite'],
 html[data-graphics-tier='low'],
 html[data-graphics-tier='medium'] {
-  --color-mafia-black: #1a1a1a; /* Lighter gray to prevent 'too dark' feel on low spec */
-  background-color: #1a1a1a !important;
+  --color-mafia-black: #0a0a0a; 
+  background-color: #0a0a0a !important;
+}
+
+/* NOIR MODE FORCES PURE BLACK EVERYWHERE, OVERRIDING WEAK TIERS */
+html.noir-mode,
+html.noir-mode[data-graphics-tier],
+html.noir-mode body {
+  --color-mafia-black: #000000 !important;
+  --color-mafia-dark: #000000 !important;
+  background-color: #000000 !important;
+}
+
+html.noir-mode .bg-mafia-black,
+html.noir-mode .bg-mafia-dark {
+  background-color: #000000 !important;
+}
+
+html.noir-mode .global-carbon-fibre {
+  display: none !important;
 }
 
 html[data-graphics-tier='soft'] {
