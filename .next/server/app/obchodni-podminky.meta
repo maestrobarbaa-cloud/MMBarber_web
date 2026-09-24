@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/obchodni-podminky/layout,_N_T_/obchodni-podminky/page,_N_T_/obchodni-podminky"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/obchodni-podminky/__PAGE__",
+    "/obchodni-podminky",
+    "/_index",
+    "/_head"
+  ]
+}

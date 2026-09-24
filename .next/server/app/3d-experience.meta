@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/3d-experience/layout,_N_T_/3d-experience/page,_N_T_/3d-experience"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/3d-experience/__PAGE__",
+    "/3d-experience",
+    "/_index",
+    "/_head"
+  ]
+}

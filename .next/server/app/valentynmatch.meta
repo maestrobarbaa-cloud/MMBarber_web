@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/valentynmatch/layout,_N_T_/valentynmatch/page,_N_T_/valentynmatch"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/valentynmatch/__PAGE__",
+    "/valentynmatch",
+    "/_index",
+    "/_head"
+  ]
+}

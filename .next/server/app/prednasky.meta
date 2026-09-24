@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/prednasky/layout,_N_T_/prednasky/page,_N_T_/prednasky"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/prednasky/__PAGE__",
+    "/prednasky",
+    "/_index",
+    "/_head"
+  ]
+}

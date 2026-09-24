@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/komunita/layout,_N_T_/komunita/hodnoceni/layout,_N_T_/komunita/hodnoceni/page,_N_T_/komunita/hodnoceni"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/komunita/hodnoceni/__PAGE__",
+    "/komunita/hodnoceni",
+    "/komunita",
+    "/_index",
+    "/_head"
+  ]
+}

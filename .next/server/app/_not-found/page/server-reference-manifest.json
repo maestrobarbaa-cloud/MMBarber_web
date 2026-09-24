@@ -1,0 +1,17 @@
+{
+  "node": {
+    "706e9aeb0853ac0232b7202fede8b69f4131acfd4f": {
+      "workers": {
+        "app/_not-found/page": {
+          "moduleId": 986936,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        }
+      },
+      "exportedName": "getHistoricalEvents",
+      "filename": "src/actions/fetchHistoricalEvents.ts"
+    }
+  },
+  "edge": {}
+}

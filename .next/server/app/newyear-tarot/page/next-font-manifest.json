@@ -1,0 +1,15 @@
+{
+  "pages": {},
+  "app": {
+    "[project]/src/app/newyear-tarot/page": [
+      "static/media/b49b0d9b851e4899-s.p.0yfy_qj1.2qn0.woff2",
+      "static/media/2a65768255d6b625-s.p.14by5b4al-y~f.woff2",
+      "static/media/1bffadaabf893a1e-s.p.16ipb6fqu393i.woff2",
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/0474ff9f7224a0da-s.p.0b9ze1zw0~l1a.woff2",
+      "static/media/f48d461c03e0a8ec-s.p.13m1ppbimti50.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pagesUsingSizeAdjust": false
+}

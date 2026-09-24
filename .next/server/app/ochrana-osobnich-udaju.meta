@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/ochrana-osobnich-udaju/layout,_N_T_/ochrana-osobnich-udaju/page,_N_T_/ochrana-osobnich-udaju"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/ochrana-osobnich-udaju/__PAGE__",
+    "/ochrana-osobnich-udaju",
+    "/_index",
+    "/_head"
+  ]
+}

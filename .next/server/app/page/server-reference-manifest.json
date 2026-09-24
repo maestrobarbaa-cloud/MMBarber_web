@@ -1,0 +1,89 @@
+{
+  "node": {
+    "706e9aeb0853ac0232b7202fede8b69f4131acfd4f": {
+      "workers": {
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "getHistoricalEvents",
+          "filename": "src/actions/fetchHistoricalEvents.ts"
+        }
+      },
+      "exportedName": "getHistoricalEvents",
+      "filename": "src/actions/fetchHistoricalEvents.ts"
+    },
+    "00bc65020b4fc51cbbe0322ef6aaeab6a6907d1cc1": {
+      "workers": {
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "getGlobalStatsAction",
+          "filename": "src/app/actions/barberXp.ts"
+        }
+      },
+      "exportedName": "getGlobalStatsAction",
+      "filename": "src/app/actions/barberXp.ts"
+    },
+    "60400d56462f6d5d0686db69e38334c6d7116b4686": {
+      "workers": {
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "addVoteToBarberStatAction",
+          "filename": "src/app/actions/barberXp.ts"
+        }
+      },
+      "exportedName": "addVoteToBarberStatAction",
+      "filename": "src/app/actions/barberXp.ts"
+    },
+    "00d8bd853054853f2c4bcbf2919a0bc4c693b2949c": {
+      "workers": {
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "getStatusAction",
+          "filename": "src/app/actions/status.ts"
+        }
+      },
+      "exportedName": "getStatusAction",
+      "filename": "src/app/actions/status.ts"
+    },
+    "40873d248559d29857d160232c92be9a5caf1bb5a8": {
+      "workers": {
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "setStatusAction",
+          "filename": "src/app/actions/status.ts"
+        }
+      },
+      "exportedName": "setStatusAction",
+      "filename": "src/app/actions/status.ts"
+    },
+    "004b5152e891eff815c0321da2df179d100a93310b": {
+      "workers": {
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "getNicknamesAction",
+          "filename": "src/app/actions/nicknames.ts"
+        }
+      },
+      "exportedName": "getNicknamesAction",
+      "filename": "src/app/actions/nicknames.ts"
+    },
+    "6053e609cf77b94a06304cea637c253f69c2c6e9ad": {
+      "workers": {
+        "app/page": {
+          "moduleId": 249336,
+          "async": false,
+          "exportedName": "addNicknameVoteAction",
+          "filename": "src/app/actions/nicknames.ts"
+        }
+      },
+      "exportedName": "addNicknameVoteAction",
+      "filename": "src/app/actions/nicknames.ts"
+    }
+  },
+  "edge": {}
+}

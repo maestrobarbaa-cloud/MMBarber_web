@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/recenze/layout,_N_T_/recenze/page,_N_T_/recenze"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/recenze/__PAGE__",
+    "/recenze",
+    "/_index",
+    "/_head"
+  ]
+}

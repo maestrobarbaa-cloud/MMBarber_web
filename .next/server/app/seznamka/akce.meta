@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/seznamka/layout,_N_T_/seznamka/akce/layout,_N_T_/seznamka/akce/page,_N_T_/seznamka/akce"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/seznamka/akce/__PAGE__",
+    "/seznamka/akce",
+    "/seznamka",
+    "/_index",
+    "/_head"
+  ]
+}

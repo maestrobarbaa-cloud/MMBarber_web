@@ -19,6 +19,7 @@ import {
   Settings
 } from "lucide-react";
 import { playSound } from "@/utils/audio";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface HUDWeaponItem {
   name: string;
@@ -41,6 +42,7 @@ export function TableOfContents() {
   const [isNoirMode, setIsNoirMode] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { lang } = useTranslation();
 
   useEffect(() => {
     setIsMounted(true);
@@ -280,10 +282,10 @@ export function TableOfContents() {
         }}
         className={`fixed left-0 top-0 h-screen w-8 bg-gradient-to-r from-mafia-black to-black/80 border-r border-mafia-gold/40 cursor-pointer transition-all duration-500 hover:w-12 hover:bg-mafia-gold/10 flex flex-col items-center justify-center group z-[29000] hidden xl:flex shadow-[5px_0_15px_rgba(197,160,89,0.15)] ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
       >
-        <div className="flex flex-col items-center gap-6 transition-all duration-500 -rotate-90 origin-center whitespace-nowrap opacity-70 group-hover:opacity-100">
-          <span className="text-[10px] text-mafia-gold/70 group-hover:text-mafia-gold uppercase tracking-[0.2em] transition-colors duration-300 flex items-center gap-3">
-            <Target size={14} className="animate-[spin_6s_linear_infinite]" />
-            MENU [ TAB ]
+        <div className="flex flex-col items-center gap-6 transition-all duration-500 -rotate-90 origin-center whitespace-nowrap opacity-100">
+          <span className="text-[11px] text-mafia-gold font-black drop-shadow-[0_0_8px_rgba(197,160,89,1)] uppercase tracking-[0.2em] transition-colors duration-300 flex items-center gap-3">
+            <Target size={14} className="animate-[spin_6s_linear_infinite] text-mafia-gold drop-shadow-[0_0_5px_rgba(197,160,89,1)]" />
+            {lang === 'cs' ? 'HLAVNÍ MENU' : 'MAIN MENU'}
           </span>
         </div>
 

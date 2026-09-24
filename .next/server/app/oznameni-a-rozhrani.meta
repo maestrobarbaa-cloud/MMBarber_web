@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/oznameni-a-rozhrani/layout,_N_T_/oznameni-a-rozhrani/page,_N_T_/oznameni-a-rozhrani"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/oznameni-a-rozhrani/__PAGE__",
+    "/oznameni-a-rozhrani",
+    "/_index",
+    "/_head"
+  ]
+}

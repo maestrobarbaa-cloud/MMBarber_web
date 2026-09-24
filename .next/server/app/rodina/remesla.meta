@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/rodina/layout,_N_T_/rodina/remesla/layout,_N_T_/rodina/remesla/page,_N_T_/rodina/remesla"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/rodina/remesla/__PAGE__",
+    "/rodina/remesla",
+    "/rodina",
+    "/_index",
+    "/_head"
+  ]
+}

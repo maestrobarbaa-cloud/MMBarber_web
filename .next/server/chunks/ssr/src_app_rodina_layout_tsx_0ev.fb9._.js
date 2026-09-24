@@ -1,0 +1,3 @@
+module.exports=[805709,a=>{"use strict";var b=a.i(907997);a.s(["default",0,function({children:a}){return(0,b.jsx)(b.Fragment,{children:a})},"metadata",0,{title:"MMBarber Rodina | Prověření živnostníci a služby Uherské Hradiště",description:"Naše komunita prověřených řemeslníků a služeb v Uherském Hradišti. Vodaři, elektrikáři, gastro, reality a další partneři, kterým důvěřujeme. Spojujeme kvalitu a poctivé řemeslo.",keywords:["živnostníci Uherské Hradiště","služby Uherské Hradiště","vodaři Uherské Hradiště","elektrikáři Uherské Hradiště","reality Uherské Hradiště","gastronomie Uherské Hradiště","MMBarber partneři","MMBarber rodina","řemeslníci Uherské Hradiště"]}])},203423,a=>{a.n(a.i(805709))}];
+
+//# sourceMappingURL=src_app_rodina_layout_tsx_0ev.fb9._.js.map

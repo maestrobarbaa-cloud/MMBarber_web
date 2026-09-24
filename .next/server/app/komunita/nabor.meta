@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/komunita/layout,_N_T_/komunita/nabor/layout,_N_T_/komunita/nabor/page,_N_T_/komunita/nabor"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/komunita/nabor/__PAGE__",
+    "/komunita/nabor",
+    "/komunita",
+    "/_index",
+    "/_head"
+  ]
+}

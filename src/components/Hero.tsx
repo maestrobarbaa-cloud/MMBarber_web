@@ -8,7 +8,6 @@ import { playSound } from "../utils/audio";
 import { WeatherOverlay } from "./WeatherOverlay";
 import NextImage from "@/components/OptimizedImage";
 import Image from "./OptimizedImage";
-import { GameFragment } from "./GameFragment";
 import { translations } from "../locales/translations";
 import { useUI } from "../contexts/UIContext";
 
@@ -775,7 +774,6 @@ export function Hero() {
       </div>
 
       {/* GAME FRAGMENT (Fingerprint) */}
-      <GameFragment id="hero_frag_3" className="top-[30%] right-4 md:right-24" size={35} delay={3000} />
 
     </section>
   );

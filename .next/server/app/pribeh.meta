@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/pribeh/layout,_N_T_/pribeh/page,_N_T_/pribeh"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/pribeh/__PAGE__",
+    "/pribeh",
+    "/_index",
+    "/_head"
+  ]
+}

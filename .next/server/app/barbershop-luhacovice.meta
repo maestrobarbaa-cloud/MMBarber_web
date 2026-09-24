@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/barbershop-luhacovice/layout,_N_T_/barbershop-luhacovice/page,_N_T_/barbershop-luhacovice"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/barbershop-luhacovice/__PAGE__",
+    "/barbershop-luhacovice",
+    "/_index",
+    "/_head"
+  ]
+}

@@ -5,7 +5,6 @@ import { useTranslation } from "../hooks/useTranslation";
 import { motion, AnimatePresence, useMotionValue, animate, PanInfo } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { playSound } from "../utils/audio";
-import { GameFragment } from "./GameFragment";
 import { Fingerprint } from "lucide-react";
 
 const PARTNER_CATEGORIES = [

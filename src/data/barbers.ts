@@ -27,25 +27,6 @@ A pokud tě zajímá víc, stav se na střih. Heslo ti dám osobně. Zbytek si p
     rank: {
       level: 9,
       title: "GENERÁLNÍ ŘEDITEL STŘIHU",
-      status: 'stable'
-    }
-  },
-  {
-    name: "Nella",
-    id: "nella",
-    role: "Mladé ucho",
-    image: "/obr/nellapelikanova.png",
-    desc: "Ochoč si svoji barberku. Čerstvá krev v našem týmu.",
-    schedule: "Individuální režim práce.",
-    bookingSystemType: "internal",
-    bookingLink: "https://mmbarberx.setmore.com",
-    specializations: ["Barvení", "Trvalá ondulace", "Stříhání pánské", "Stříhání dámské", "Děti"],
-    symbol: "Q",
-    rank: {
-      level: 0,
-      title: "KOSMETIK PLOVOUCÍCH KRYTIN",
-      status: 'demoted',
-      nextRankIn: "ČERVEN 2026"
     }
   }
 ];

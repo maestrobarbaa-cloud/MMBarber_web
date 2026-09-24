@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/komunita/layout,_N_T_/komunita/historky/layout,_N_T_/komunita/historky/page,_N_T_/komunita/historky"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/komunita/historky/__PAGE__",
+    "/komunita/historky",
+    "/komunita",
+    "/_index",
+    "/_head"
+  ]
+}

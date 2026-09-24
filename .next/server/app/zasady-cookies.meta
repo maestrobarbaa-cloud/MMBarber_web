@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/zasady-cookies/layout,_N_T_/zasady-cookies/page,_N_T_/zasady-cookies"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/zasady-cookies/__PAGE__",
+    "/zasady-cookies",
+    "/_index",
+    "/_head"
+  ]
+}

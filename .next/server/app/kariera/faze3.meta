@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/kariera/layout,_N_T_/kariera/faze3/layout,_N_T_/kariera/faze3/page,_N_T_/kariera/faze3"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/kariera/faze3/__PAGE__",
+    "/kariera/faze3",
+    "/kariera",
+    "/_index",
+    "/_head"
+  ]
+}

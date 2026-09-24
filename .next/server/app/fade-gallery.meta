@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/fade-gallery/layout,_N_T_/fade-gallery/page,_N_T_/fade-gallery"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/fade-gallery/__PAGE__",
+    "/fade-gallery",
+    "/_index",
+    "/_head"
+  ]
+}

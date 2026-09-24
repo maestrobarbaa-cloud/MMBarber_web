@@ -14,7 +14,14 @@
 /coverage
 
 # next.js
-/.next/
+# Allow pre-built output for server deployment (no build step on server)
+/.next/cache/
+/.next/node_modules/
+/.next/standalone/
+/.next/build/
+/.next/dev/
+/.next/diagnostics/
+/.next/types/
 /out/
 
 # production

@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/jak-to-chodi/layout,_N_T_/jak-to-chodi/page,_N_T_/jak-to-chodi"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/jak-to-chodi/__PAGE__",
+    "/jak-to-chodi",
+    "/_index",
+    "/_head"
+  ]
+}

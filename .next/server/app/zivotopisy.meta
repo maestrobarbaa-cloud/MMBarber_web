@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/zivotopisy/layout,_N_T_/zivotopisy/page,_N_T_/zivotopisy"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/zivotopisy/__PAGE__",
+    "/zivotopisy",
+    "/_index",
+    "/_head"
+  ]
+}

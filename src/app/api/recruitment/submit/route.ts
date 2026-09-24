@@ -60,6 +60,7 @@ export async function POST(req: Request) {
         score: evaluation.score,
         maxScore: evaluation.maxScore,
         percentage: evaluation.percentage,
+        applicantId: application.applicantId,
         summary: `Fáze 1 vyhodnocena. Skóre: ${evaluation.score}/${evaluation.maxScore} (${evaluation.percentage}%)`
       });
     }
@@ -79,6 +80,7 @@ export async function POST(req: Request) {
         score: evaluation.score,
         maxScore: evaluation.maxScore,
         percentage: evaluation.percentage,
+        applicantId: application.applicantId,
         summary: `Fáze 3 odeslána k hodnocení. Předběžné skóre: ${evaluation.score}/${evaluation.maxScore} (${evaluation.percentage}%)`
       });
     }

@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/komunita/layout,_N_T_/komunita/novinky/layout,_N_T_/komunita/novinky/page,_N_T_/komunita/novinky"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/komunita/novinky/__PAGE__",
+    "/komunita/novinky",
+    "/komunita",
+    "/_index",
+    "/_head"
+  ]
+}

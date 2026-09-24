@@ -70,11 +70,9 @@ export function CinematicIntro({ onDismiss }: { onDismiss?: (action?: string) =>
     { id: "vice", titleCs: "Více o podniku", titleEn: "About Us", titleZh: "关于我们" },
     { id: "komunita", titleCs: "Rodina MM Barber", titleEn: "MM Barber Family", titleZh: "MM Barber 家族" },
     { id: "kontakt", titleCs: "Kontakt", titleEn: "Contact", titleZh: "联系我们" },
-    { id: "seznamka", titleCs: "Seznamka", titleEn: "Dating", titleZh: "交友" },
   ].map(item => {
-    // Map to intro settings keys (start and seznamka have special keys or no keys)
+    // Map to intro settings keys (start has special keys or no keys)
     let key = `visibility_intro_${item.id}`;
-    if (item.id === 'seznamka') key = 'visibility_seznamka';
     if (item.id === 'start') return item; // Start is always visible
 
     const status = globalSettings[key];

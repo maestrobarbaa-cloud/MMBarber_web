@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/strih-vousy-detail/layout,_N_T_/strih-vousy-detail/page,_N_T_/strih-vousy-detail"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/strih-vousy-detail/__PAGE__",
+    "/strih-vousy-detail",
+    "/_index",
+    "/_head"
+  ]
+}

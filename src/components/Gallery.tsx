@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
-import { GameFragment } from "./GameFragment";
 import Image from "./OptimizedImage";
 
 const PICS = [

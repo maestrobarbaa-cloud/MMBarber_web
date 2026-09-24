@@ -38,8 +38,8 @@ export default function NastaveniRozcestnik() {
   
   // Odemčené funkce podle milníků v kapitole 'settings' a 'products'
   // Grafika a Audio jsou nyní v kapitole products (Nastavení webu) na levelu 1 (1 XP) a levelu 2 (2 XP)
-  const isVisualsUnlocked = productsXp >= 1;
-  const isAudioUnlocked = productsXp >= 2;
+  const isVisualsUnlocked = true; // productsXp >= 1;
+  const isAudioUnlocked = true; // productsXp >= 2;
   
   // Ostatní zůstávají v settings
   const isWidgetsUnlocked = settingsXp >= calculateXpForLevel(15);

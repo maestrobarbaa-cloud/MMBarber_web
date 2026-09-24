@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /uzivatel/
+
+Sitemap: https://mmbarber.cz/sitemap.xml

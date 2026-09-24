@@ -48,7 +48,7 @@ export function GameFragment({ id, className = "", size = 32, delay = 0 }: GameF
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleCollect}
-        className={`absolute z-[100] cursor-pointer group flex items-center justify-center ${className}`}
+        className={`absolute z-[100] cursor-pointer group hidden md:flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
         title="Odemkni fragment"
       >

@@ -37,6 +37,7 @@ import {
 import { TomasSkillTree } from "@/components/TomasSkillTree";
 import { HiddenSeoArchive } from "@/components/HiddenSEOArchive";
 import { InteractiveParticles } from "@/components/InteractiveParticles";
+import { AnimusDNA3D } from "@/components/AnimusDNA3D";
 
 export default function BiographiesPage() {
   const { lang } = useTranslation();
@@ -327,9 +328,9 @@ export default function BiographiesPage() {
     setIsVoting(false);
   };
 
-  const isTomasFullyUnlocked = isTomasUnlocked || cheatUnlocked;
-  const isNellaFullyUnlocked = isNellaUnlocked || cheatUnlocked;
-  const effectiveTotalCollected = cheatUnlocked ? 99 : totalCollected;
+  const isTomasFullyUnlocked = true; // was: isTomasUnlocked || cheatUnlocked;
+  const isNellaFullyUnlocked = true; // was: isNellaUnlocked || cheatUnlocked;
+  const effectiveTotalCollected = 10; // was: cheatUnlocked ? 99 : totalCollected;
   
   // Need activeBarber safe fallback early if loading is done
   const activeBarberTemp = barbers.find(b => b.id === selectedBarberId) || barbers[0] || { id: "tomas" };
@@ -361,26 +362,13 @@ export default function BiographiesPage() {
 
   const activeRating = getBarberRatingData(activeBarberSafe.id);
 
-  const isPhotoUnlocked = activeBarberSafe.id === "tomas" ? effectiveTotalCollected >= 2 : (activeBarberSafe.id === "nella" ? true : false);
-  const isFullyUnlocked = activeBarberSafe.id === "tomas" ? isTomasFullyUnlocked : (activeBarberSafe.id === "nella" ? true : false);
+  const isPhotoUnlocked = true;
+  const isFullyUnlocked = true;
   
   // Calculate how many text parts to show
   // Fallback to match to avoid Safari syntax error on lookbehinds
   const textParts = activeBarberSafe.desc.match(/.*?[.?!](?:\s+|$)|.+/g)?.map(s => s.trim()) || [activeBarberSafe.desc];
-  let textPartsToShow = 0;
-  
-  if (activeBarberSafe.id === "tomas") {
-    if (effectiveTotalCollected >= 3) textPartsToShow = Math.ceil(textParts.length / 2);
-    if (effectiveTotalCollected >= 4) textPartsToShow = textParts.length;
-  } else if (activeBarberSafe.id === "nella") {
-    if (effectiveTotalCollected >= 6) textPartsToShow = Math.floor(textParts.length / 3);
-    if (effectiveTotalCollected >= 8) textPartsToShow = Math.floor(textParts.length * (2/3));
-    if (effectiveTotalCollected >= 10) textPartsToShow = textParts.length;
-  }
-  
-  if (cheatUnlocked) {
-    textPartsToShow = textParts.length;
-  }
+  let textPartsToShow = textParts.length;
   
   const visibleText = textParts.slice(0, textPartsToShow).join(' ');
   const hiddenText = textParts.slice(textPartsToShow).join(' ');
@@ -813,6 +801,13 @@ export default function BiographiesPage() {
                         </div>
                       );
                     })()}
+                  </div>
+                )}
+
+                {/* DNA Model for Tomas */}
+                {isTomasVisible && isFullyUnlocked && (
+                  <div className="w-full relative flex justify-center items-center h-[500px] z-0 mb-8 pointer-events-auto">
+                    <AnimusDNA3D isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
                   </div>
                 )}
 
@@ -1385,6 +1380,13 @@ export default function BiographiesPage() {
                       </motion.div>
                     )}
                   </AnimatePresence>
+
+                  {/* DNA Model */}
+                  {isFullyUnlocked && (
+                    <div className="w-full my-8 relative flex justify-center items-center">
+                      <AnimusDNA3D isBloodMode={isBloodMode} isNoirMode={isNoirMode} />
+                    </div>
+                  )}
 
                   {/* Call to action & switch bar */}
                   <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row gap-4">

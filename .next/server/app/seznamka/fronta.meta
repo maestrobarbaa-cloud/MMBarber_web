@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/seznamka/layout,_N_T_/seznamka/fronta/layout,_N_T_/seznamka/fronta/page,_N_T_/seznamka/fronta"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/seznamka/fronta/__PAGE__",
+    "/seznamka/fronta",
+    "/seznamka",
+    "/_index",
+    "/_head"
+  ]
+}
