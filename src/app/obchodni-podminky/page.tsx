@@ -131,6 +131,10 @@ export default function ObchodniPodminky() {
                 <p className="font-bold opacity-60">Poukaz je přenosný.</p>
               </div>
             </div>
+            <div className="mt-4 text-xs md:text-sm text-smoke-white/70 p-4 border-l-2 border-mafia-red bg-mafia-red/5 italic">
+              <span className="font-bold text-smoke-white not-italic block mb-1">Odstoupení od smlouvy při nákupu online:</span>
+              V souladu s ustanovením § 1829 občanského zákoníku má klient při zakoupení poukazu prostřednictvím prostředků komunikace na dálku (online) právo odstoupit od kupní smlouvy bez udání důvodu ve lhůtě 14 dnů od jeho obdržení. Storno lze provést zasláním e-mailu na kontaktní adresu. Právo na odstoupení zaniká ve chvíli, kdy byl poukaz již zčásti nebo zcela vyčerpán.
+            </div>
           </section>
 
           <section className="space-y-4">

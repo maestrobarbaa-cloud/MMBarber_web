@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useUI } from '@/contexts/UIContext';
 
 export function OpenFreeMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
+  const [activeEasterEgg, setActiveEasterEgg] = useState<any>(null);
+  const { isHistoryUnlocked, setIsHistoryUnlocked, isBloodMode, isNoirMode } = useUI();
 
   useEffect(() => {
     let mapInstance: any = null;
@@ -26,9 +29,9 @@ export function OpenFreeMap() {
           
           if (isCancelled) return;
 
-          // Zjištění aktuálního tématu pro mapu
-          const isBlood = localStorage.getItem('mmbarber_blood_mode') === 'true';
-          const isNoir = localStorage.getItem('mmbarber_noir_mode') === 'true';
+          // Zjištění aktuálního tématu pro mapu (detekujeme rovnou z DOMu pro maximální spolehlivost + UIContext fallback)
+          const isBlood = isBloodMode || document.documentElement.classList.contains('theme-blood');
+          const isNoir = isNoirMode || document.documentElement.classList.contains('noir-mode');
           const graphicsTier = localStorage.getItem('mmbarber_graphics_tier') || 'low';
           const isWeakerGraphics = ['lite', 'low', 'medium', 'soft'].includes(graphicsTier);
           
@@ -50,10 +53,11 @@ export function OpenFreeMap() {
           let colorRoadSub = '#5a4611';
           
           if (isBlood) {
-            colorGold = '#e2062c';
-            colorGoldDark = '#9a001a';
-            colorRoadMain = '#7a0012';
-            colorRoadSub = '#4a0008';
+            // Domy klasickou červenou, cesty a letiště světlejší
+            colorGold = '#8b0000'; // Temně červená z nadpisů
+            colorGoldDark = '#5a0000'; // Tmavší červená pro obrysy
+            colorRoadMain = '#ff6666'; // Světlejší cesty
+            colorRoadSub = '#ff4d4d'; // Světlejší vedlejší cesty
           } else if (isNoir) {
             colorGold = '#e2e2e2';
             colorGoldDark = '#a0a0a0';
@@ -107,7 +111,7 @@ export function OpenFreeMap() {
               
               // Jemný obrys kolem vodních ploch (kreslí hranice ostrovů a kontinentů)
               if (layer.id.includes('water') && layer.paint && layer.type === 'fill') {
-                 const coastColor = isBlood ? '#550000' : isNoir ? '#222222' : '#4a3a18';
+                 const coastColor = isBlood ? '#9a001a' : isNoir ? '#222222' : '#4a3a18';
                  layer.paint['fill-outline-color'] = coastColor;
               }
             }
@@ -121,7 +125,7 @@ export function OpenFreeMap() {
             if (layer.id.includes('transportation') || layer.id.includes('road') || layer.id.includes('highway') || layer.id.includes('street') || layer.id.includes('bridge') || layer.id.includes('tunnel') || layer.id.includes('path') || layer.id.includes('track')) {
               if (layer.paint && layer.paint['line-color']) {
                 if (layer.id.includes('path') || layer.id.includes('track') || layer.id.includes('pedestrian') || layer.id.includes('footway') || layer.id.includes('dirt')) {
-                  layer.paint['line-color'] = isNoir ? '#111111' : isBlood ? '#1a0000' : '#241a09'; // Tmavší barva pro polní cesty/pěšiny
+                  layer.paint['line-color'] = isNoir ? '#111111' : isBlood ? '#ff9999' : '#241a09'; // Tmavší barva pro polní cesty/pěšiny
                   if (layer.type === 'line') layer.paint['line-width'] = 1; // Ztenčení polních cest
                 } else if (layer.id.includes('major') || layer.id.includes('primary') || layer.id.includes('secondary') || layer.id.includes('motorway')) {
                   layer.paint['line-color'] = colorRoadMain; 
@@ -148,7 +152,7 @@ export function OpenFreeMap() {
             // Koleje / Železnice
             if (layer.id.includes('rail') || layer.id.includes('train') || layer.id.includes('transit')) {
               if (layer.paint && layer.paint['line-color']) {
-                const railColor = isNoir ? '#444444' : isBlood ? '#4a0000' : '#4a3a18';
+                const railColor = isNoir ? '#444444' : isBlood ? '#ffb3b3' : '#4a3a18';
                 layer.paint['line-color'] = railColor;
                 if (layer.type === 'line') {
                   layer.paint['line-width'] = 2;
@@ -159,7 +163,7 @@ export function OpenFreeMap() {
 
             // Letištní plochy / Runways
             if (layer.id.includes('aeroway') || layer.id.includes('airport') || layer.id.includes('runway') || layer.id.includes('taxiway')) {
-              const runwayColor = isBlood ? '#ff3333' : isNoir ? '#ffffff' : '#fce883'; // Bright glowing colors
+              const runwayColor = isBlood ? '#ff9999' : isNoir ? '#ffffff' : '#fce883'; // Bright glowing colors
               
               if (layer.paint && layer.paint['fill-color']) {
                 layer.paint['fill-color'] = colorRoadSub; // Base concrete color for the polygon
@@ -187,7 +191,7 @@ export function OpenFreeMap() {
               if (layer.minzoom) layer.minzoom = 3;
               
               if (layer.paint && layer.paint['line-color']) {
-                const boundaryColor = isBlood ? '#aa0000' : isNoir ? '#555555' : '#8a733f';
+                const boundaryColor = isBlood ? '#8b0000' : isNoir ? '#555555' : '#8a733f';
                 layer.paint['line-color'] = boundaryColor;
                 
                 if (layer.type === 'line') {
@@ -216,24 +220,27 @@ export function OpenFreeMap() {
             attributionControl: false
           });
 
+          // Barva pro značky na mapě (X, tajná schránka atd.)
+          const markerColor = isBlood ? '#ff6666' : isNoir ? '#e2e2e2' : colorGold;
+
           // Vytvoření vlastního "mafiánského" markeru od ruky
           const el = document.createElement('div');
           el.innerHTML = `
             <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; cursor: pointer;">
               <!-- X značka -->
-              <div style="font-family: 'Brush Script MT', 'Courier New', cursive; font-size: 28px; color: ${colorGold}; font-weight: bold; transform: rotate(-5deg); text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">X</div>
+              <div style="font-family: 'Brush Script MT', 'Courier New', cursive; font-size: 28px; color: ${markerColor}; font-weight: bold; transform: rotate(-5deg); text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">X</div>
               <!-- Ručně kreslený kruh -->
               <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.8));" viewBox="0 0 100 100">
                 <path d="M 45,15 C 75,10 90,30 85,60 C 80,90 40,95 15,75 C -5,55 10,20 40,15 C 45,14 50,15 50,15" 
                       fill="none" 
-                      stroke="${colorGold}" 
+                      stroke="${markerColor}" 
                       stroke-width="5" 
                       stroke-linecap="round"
                       style="transform-origin: center; transform: rotate(15deg);"
                 />
                 <path d="M 40,17 C 45,15 52,16 52,16" 
                       fill="none" 
-                      stroke="${colorGold}" 
+                      stroke="${markerColor}" 
                       stroke-width="4" 
                       stroke-linecap="round"
                 />
@@ -245,6 +252,115 @@ export function OpenFreeMap() {
           new window.maplibregl.Marker({ element: el })
             .setLngLat([17.4835088, 49.0592272])
             .addTo(mapInstance);
+
+          // Tajná schránka pro "Dnes v historii" (pokud není odemčena)
+          if (!isHistoryUnlocked) {
+            let lng = localStorage.getItem('mmbarber_history_marker_lng');
+            let lat = localStorage.getItem('mmbarber_history_marker_lat');
+            
+            if (!lng || !lat) {
+              // Vygenerovat náhodnou pozici někde kolem Uherského Hradiště
+              // Rozsah zhruba: Lng (17.45 - 17.50), Lat (49.05 - 49.08)
+              const randomLng = 17.45 + Math.random() * 0.05;
+              const randomLat = 49.05 + Math.random() * 0.03;
+              lng = randomLng.toString();
+              lat = randomLat.toString();
+              localStorage.setItem('mmbarber_history_marker_lng', lng);
+              localStorage.setItem('mmbarber_history_marker_lat', lat);
+            }
+
+            const newspaperEl = document.createElement('div');
+            newspaperEl.innerHTML = `
+              <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" class="hover:scale-125 hover:rotate-3 group" title="Něco starého...">
+                <div style="position: absolute; inset: -5px; background: radial-gradient(circle, rgba(197,160,89,0.4) 0%, transparent 70%); border-radius: 50%; opacity: 0; transition: opacity 0.4s ease;" class="group-hover:opacity-100 group-hover:animate-pulse"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="#000000" stroke="${markerColor}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)) drop-shadow(0 0 8px rgba(197,160,89,0.4));">
+                  <!-- Dokument -->
+                  <path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v18z" fill="#0a0a0a" stroke-width="1.5"/>
+                  <polyline points="14 2 14 8 20 8" fill="#111" stroke-width="1.5"/>
+                  
+                  <!-- Razítko "TOP SECRET" -->
+                  <rect x="3" y="11" width="18" height="4" transform="rotate(-15 12 13)" fill="#0a0a0a" stroke="#e2062c" stroke-width="1" />
+                  <text x="12" y="14" transform="rotate(-15 12 13)" font-family="monospace" font-size="3.2" font-weight="900" fill="#e2062c" stroke="none" text-anchor="middle" letter-spacing="0.5">CLASSIFIED</text>
+                  
+                  <!-- Iniciály MM -->
+                  <text x="12" y="20" font-family="Georgia, serif" font-size="4" font-weight="900" fill="${colorGoldDark}" stroke="none" text-anchor="middle">MM</text>
+                </svg>
+              </div>
+            `;
+            
+            // @ts-ignore
+            const historyMarker = new window.maplibregl.Marker({ element: newspaperEl })
+              .setLngLat([parseFloat(lng), parseFloat(lat)])
+              .addTo(mapInstance);
+              
+            newspaperEl.addEventListener('click', (e) => {
+              e.stopPropagation();
+              historyMarker.remove();
+              localStorage.setItem('mmbarber_history_unlocked', 'true');
+              setIsHistoryUnlocked(true);
+              setActiveEasterEgg({
+                title: "Tajná schránka objevena",
+                text: "Našel jsi starý výtisk MMBarber Times! Od teď máš přístup k historickým událostem v levém dolním rohu obrazovky."
+              });
+            });
+          }
+
+          // Zlikvidovaná konkurence (Vypáleno / Sem nechodit)
+          const competitors = [
+            { name: "SOLO BARBERSHOP", coord: [17.4612420, 49.0688287] },
+            { name: "Performance Barber (UH)", coord: [17.4588110, 49.0706053] },
+            { name: "Oscar's Barbershop", coord: [17.4625563, 49.0688100] },
+            { name: "Robert's Barber Shop", coord: [17.4598511, 49.0688631] },
+            { name: "Studio BarberShop", coord: [17.4635381, 49.0690060] },
+            { name: "SHOHAI barbershop", coord: [17.4651985, 49.0680358] },
+            { name: "Alfa Barbershop", coord: [17.4572550, 49.0711575] },
+            { name: "Kadeřnictví Adam", coord: [17.4631921, 49.0687184] },
+            { name: "Kotas Tattoo & Barber", coord: [17.4510046, 49.0657056] },
+            { name: "6N Cut & Shave Club", coord: [17.4790660, 49.0577954] },
+            { name: "Performance Barber (Staré Město)", coord: [17.4464900, 49.0777550] },
+            { name: "Holičství Falcon (Staré Město)", coord: [17.4394438, 49.0753663] },
+            { name: "Mikulas Tattoo & Barber", coord: [17.4454880, 49.0795132] }
+          ];
+
+          const markerObjects: any[] = [];
+
+          competitors.forEach((comp) => {
+            const compEl = document.createElement('div');
+            // Tmavší barvy, aby ikony více vynikly na světlé/tmavé mapě
+            const skullColor = isBlood ? '#ff6666' : isNoir ? '#505050' : '#a87a20'; 
+            const skullGlow = isBlood ? 'rgba(255,102,102,0.5)' : isNoir ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.8)';
+            const hoverGlow = isBlood ? '#ff9999' : isNoir ? '#ffffff' : '#fce883';
+
+            compEl.innerHTML = `
+              <div style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50px; height: 50px; opacity: 0.9; cursor: not-allowed; transition: all 0.3s ease;" class="hover:scale-125 hover:opacity-100 group" title="${comp.name}">
+                <svg viewBox="0 0 448 512" width="28" height="28" fill="${skullColor}" stroke="#000000" stroke-width="15" style="filter: drop-shadow(0px 2px 4px ${skullGlow}); transition: filter 0.3s ease;" class="group-hover:drop-shadow-[0_0_8px_${hoverGlow}]">
+                  <path d="M439.15 453.06L297.17 384l141.99-69.06c7.9-3.95 11.11-13.56 7.15-21.46L432 264.85c-3.95-7.9-13.56-11.11-21.47-7.16L224 348.41 37.47 257.69c-7.9-3.95-17.51-.75-21.47 7.16L1.69 293.48c-3.95 7.9-.75 17.51 7.15 21.46L150.83 384 8.85 453.06c-7.9 3.95-11.11 13.56-7.15 21.47l14.31 28.63c3.95 7.9 13.56 11.11 21.47 7.15L224 419.59l186.53 90.72c7.9 3.95 17.51 .75 21.47-7.15l14.31-28.63c3.95-7.91 .75-17.52-7.16-21.47zM150 237.28l-5.48 25.87c-2.67 12.62 5.42 24.85 16.45 24.85h126.08c11.03 0 19.12-12.23 16.45-24.85l-5.5-25.87c41.78-22.41 70-62.75 70-109.28C368 57.31 303.53 0 224 0S80 57.31 80 128c0 46.53 28.22 86.87 70 109.28zM280 112c17.65 0 32 14.35 32 32s-14.35 32-32 32-32-14.35-32-32 14.35-32 32-32zm-112 0c17.65 0 32 14.35 32 32s-14.35 32-32 32-32-14.35-32-32 14.35-32 32-32z"/>
+                </svg>
+                <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-5 text-[10px] whitespace-nowrap px-1 rounded" style="background: rgba(0,0,0,0.9); color: ${skullColor}; border: 1px solid ${skullColor}; font-weight: bold; box-shadow: 0 0 5px rgba(0,0,0,1);">${comp.name}</div>
+              </div>
+            `;
+            
+            // @ts-ignore
+            const marker = new window.maplibregl.Marker({ element: compEl })
+              .setLngLat(comp.coord)
+              .addTo(mapInstance);
+              
+            markerObjects.push({ marker, element: compEl, type: 'competitor' });
+          });
+
+          // @ts-ignore
+          mapInstance.on('zoom', () => {
+             // @ts-ignore
+             if (!mapInstance) return;
+             // @ts-ignore
+             const currentZoom = mapInstance.getZoom();
+             const isVisible = currentZoom >= 10; // Viditelné jen když jsme blíže než globální oddálení
+             markerObjects.forEach(obj => {
+                if (obj.type === 'competitor') {
+                  obj.element.style.display = isVisible ? 'flex' : 'none';
+                }
+             });
+          });
 
           // @ts-ignore
           mapInstance.on('load', () => {
@@ -322,9 +438,41 @@ export function OpenFreeMap() {
         mapInstance.remove();
       }
     };
-  }, []);
+  }, [isBloodMode, isNoirMode]);
 
   return (
-    <div ref={mapContainer} className="w-full h-full mafia-map-container bg-mafia-black" />
+    <div className="relative w-full h-full">
+      <div ref={mapContainer} className="w-full h-full mafia-map-container bg-mafia-black" />
+      
+      {/* Vyskakovací okno pro Easter Eggs */}
+      {activeEasterEgg && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={() => setActiveEasterEgg(null)}>
+          <div 
+            className="relative bg-[#121212] border-2 max-w-md w-full p-8 shadow-2xl" 
+            style={{ 
+              borderColor: '#c5a059', 
+              boxShadow: '0 0 30px rgba(197, 160, 89, 0.2)',
+              backgroundImage: 'url("https://www.transparenttextures.com/patterns/old-wall.png")'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setActiveEasterEgg(null)} 
+              className="absolute top-2 right-3 text-[#c5a059] hover:text-white text-2xl font-bold transition-colors"
+            >
+              &times;
+            </button>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-serif font-bold text-[#c5a059] mb-2 border-b border-[#c5a059]/30 pb-4 inline-block">
+                {activeEasterEgg.title}
+              </h2>
+            </div>
+            <p className="text-gray-300 font-serif leading-relaxed text-lg text-justify first-letter:text-4xl first-letter:text-[#c5a059] first-letter:font-bold first-letter:float-left first-letter:mr-2">
+              {activeEasterEgg.text}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

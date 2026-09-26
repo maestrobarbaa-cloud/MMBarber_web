@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent, MotionValue, useMotionValue } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const ScrollDot = ({ index, progress, isBottomReached }: { index: number, progress: MotionValue<number>, isBottomReached: boolean }) => {
   const threshold = index / 6;
@@ -37,6 +37,7 @@ const ScrollDot = ({ index, progress, isBottomReached }: { index: number, progre
 
 export function ScrollIndicator() {
   const router = useRouter();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [isTopReached, setIsTopReached] = useState(true);
   const [isBottomReached, setIsBottomReached] = useState(false);
@@ -254,7 +255,11 @@ export function ScrollIndicator() {
         }}
         onClick={(e) => {
           e.stopPropagation();
-          router.push('/x7q9-p2m4-v8b1-z5c3');
+          if (pathname === '/zivotopisy') {
+            router.push('/v4q1-l9x2-a7d5-k3n8');
+          } else {
+            router.push('/x7q9-p2m4-v8b1-z5c3');
+          }
         }}
       >
         {/* Diamond Visuals */}

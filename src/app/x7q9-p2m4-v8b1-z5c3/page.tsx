@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { SecretOpenFreeMap } from "@/components/SecretOpenFreeMap";
+import { useRouter } from "next/navigation";
 
 // --- POZADÍ (Particles) ---
 function SecretInteractiveParticles() {
@@ -109,11 +111,55 @@ const dialogueTree: Record<string, DialogueNode> = {
     id: "start",
     text: "No neříkej, že ses sem dostal omylem. Vypadáš, jako bys zrovna utekl hrobníkovi z lopaty. Co tu chceš? Mluv, než mi vystydne kafe.",
     options: [
-      { text: "Přišel jsem se vyzpovídat, Done. Mám velkej problém.", nextId: "confession" },
-      { text: "Znáš nějakej dobrej vtip, Done?", nextId: "joke" },
-      { text: "Potřebuju schovat káru... nebo tělo. Co je bezpečnější, řeka Morava nebo stará pískovna?", nextId: "morava" },
-      { text: "Potřebuju krycí jméno. Jdou po mně.", nextId: "alias" }
+      { text: "ZPOVĚĎ (Mám problém)", nextId: "confession" },
+      { text: "HUMOR (Řekni vtip)", nextId: "joke" },
+      { text: "ŠPINAVÁ PRÁCE (Schovat tělo)", nextId: "morava" },
+      { text: "IDENTITA (Krycí jméno)", nextId: "alias" },
+      { text: "STATUS (Jak na tom jsem?)", nextId: "status_ask" },
+      { text: "LOKACE (Soukromé stříhárny)", nextId: "speakeasy" }
+      // { text: "VZPOMÍNKY (Příběh dvou)", nextId: "go_to_story" }
     ]
+  },
+  "speakeasy": {
+    id: "speakeasy",
+    text: "Hledej, turisto. Ptej se místních na soukromé stříhárny. Pocestní ti poradí. Pamatuj na krédo Bratrstva... Pracujeme v temnotě, abychom sloužili světlu.",
+    options: [
+      { text: "Otevřít mapu úkrytů", nextId: "show_map" }
+    ]
+  },
+  "status_ask": {
+    id: "status_ask",
+    text: "Status? Chceš vědět, kam patříš v potravním řetězci? Dobrá. Ale napřed mi řekni, čím se vůbec živíš, frajere?",
+    options: [
+      { text: "Jsem Barber", nextId: "status_anim" },
+      { text: "Jsem Manažer", nextId: "status_anim" },
+      { text: "Jsem Student", nextId: "status_anim" },
+      { text: "Dělám něco jinýho", nextId: "status_anim" }
+    ]
+  },
+  "status_explanation_barber": {
+    id: "status_explanation_barber",
+    text: "Proč pod hnojem? Stříhat vlasy umí každej trouba. Skutečnej byznys se dělá v zákulisí s velkejma prachama. Ale nezoufej, někdo mi tu ofinku zastřihnout musí.",
+    options: [],
+    isEnd: true
+  },
+  "status_explanation_manager": {
+    id: "status_explanation_manager",
+    text: "Manažer? Znáš ten vtip, jak přijde manažer do baru a... vlastně žádnej není, protože jste všichni strašně nudní. Jsi pod hnojem, protože hnůj má aspoň nějaký reálný využití na poli.",
+    options: [],
+    isEnd: true
+  },
+  "status_explanation_student": {
+    id: "status_explanation_student",
+    text: "Student? Někdo ten hnůj prostě kydat musí. Každej musí nějak začít, mladej. Až dostuduješ a vyroste ti plnovous, možná tě povýším na zkušební lopatu.",
+    options: [],
+    isEnd: true
+  },
+  "status_explanation_other": {
+    id: "status_explanation_other",
+    text: "Něco jinýho? Když ani ty nevíš, co jsi pořádně zač, jak tě můžu zařadit jinam než na úplný dno? Buď rád, že jsi vůbec na seznamu.",
+    options: [],
+    isEnd: true
   },
   "joke": {
     id: "joke",
@@ -224,12 +270,75 @@ const TypewriterText = ({ text, onComplete }: { text: string; onComplete: () => 
   return <span>{displayedText}</span>;
 };
 
+const BigHierarchyAnimation = ({ profession, onComplete }: { profession: string; onComplete: () => void }) => {
+  const items = [
+    { title: "BŮH (Kmotr)", scale: 2 },
+    { title: "CAPO (Šéf)", scale: 1.5 },
+    { title: "PĚŠÁK", scale: 1 },
+    { title: "HNŮJ", scale: 0.8 },
+    { title: `TY (${profession.toUpperCase()})`, scale: 0.5, color: "text-red-500" }
+  ];
+
+  const [showButton, setShowButton] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowButton(true), 6000);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden font-heading text-mafia-gold">
+      <motion.div 
+        initial={{ y: "50vh" }}
+        animate={{ y: "-240vh" }}
+        transition={{ duration: 5, ease: "easeInOut" }}
+        className="flex flex-col items-center gap-[40vh] pt-[50vh]"
+      >
+        {items.map((item, idx) => (
+          <div key={idx} className="flex flex-col items-center">
+            <motion.h1 
+              style={{ scale: item.scale }}
+              className={`text-5xl md:text-7xl font-black uppercase tracking-widest text-center ${item.color || "text-mafia-gold"}`}
+            >
+              {item.title}
+            </motion.h1>
+            {idx < items.length - 1 && (
+              <div className="h-[40vh] border-l-4 border-dashed border-mafia-gold/30 my-8 flex items-center justify-center relative">
+                <div className="absolute bottom-0 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[20px] border-t-mafia-gold/30 translate-y-full" />
+              </div>
+            )}
+          </div>
+        ))}
+      </motion.div>
+
+      <AnimatePresence>
+        {showButton && (
+          <motion.button 
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            onClick={onComplete}
+            className="absolute bottom-10 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold tracking-widest uppercase text-xl rounded shadow-[0_0_40px_rgba(255,0,0,0.5)] z-[101] transition-colors"
+          >
+            Proč jsem zařazen tady?!
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 export default function EasterEggPage() {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [isDay, setIsDay] = useState(true);
   const [currentNodeId, setCurrentNodeId] = useState<string>("start");
   const [isTyping, setIsTyping] = useState(true);
   const [inputValue, setInputValue] = useState("");
+  const [hierarchyAnim, setHierarchyAnim] = useState(false);
+  const [selectedStartOption, setSelectedStartOption] = useState("");
+  const [profession, setProfession] = useState("");
+  const [showBigAnim, setShowBigAnim] = useState(false);
+  const [showSecretMap, setShowSecretMap] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -237,11 +346,42 @@ export default function EasterEggPage() {
     setIsDay(hour >= 6 && hour < 18);
   }, []);
 
-  const handleOptionClick = (nextId: string | null) => {
+  const handleOptionClick = (nextId: string | null, text: string = "") => {
+    // if (nextId === "go_to_story") {
+    //   router.push('/q8w2-e4r7-t1y5-u9i3');
+    //   return;
+    // }
+
+    if (nextId === "show_map") {
+      setShowSecretMap(true);
+      return;
+    }
+
+    if (nextId === "status_anim") {
+      if (text.includes("Barber")) setProfession("Barber");
+      else if (text.includes("Manažer")) setProfession("Manažer");
+      else if (text.includes("Student")) setProfession("Student");
+      else setProfession("Něco jinýho");
+      
+      setShowBigAnim(true);
+      return;
+    }
+
     if (nextId && dialogueTree[nextId]) {
       setCurrentNodeId(nextId);
       setIsTyping(true);
     }
+  };
+
+  const handleAnimComplete = () => {
+    setShowBigAnim(false);
+    let nextNode = "status_explanation_other";
+    if (profession === "Barber") nextNode = "status_explanation_barber";
+    if (profession === "Manažer") nextNode = "status_explanation_manager";
+    if (profession === "Student") nextNode = "status_explanation_student";
+    
+    setCurrentNodeId(nextNode);
+    setIsTyping(true);
   };
 
   const handleInputSubmit = () => {
@@ -257,12 +397,71 @@ export default function EasterEggPage() {
 
   if (!mounted) return <div className="min-h-screen bg-black" />;
 
+  if (showSecretMap) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[200] bg-black flex flex-col"
+      >
+        <div className="absolute top-4 left-4 z-[210]">
+          <button 
+            onClick={() => setShowSecretMap(false)} 
+            className="px-6 py-2 bg-black hover:bg-mafia-gold/20 text-mafia-gold border border-mafia-gold uppercase tracking-widest font-bold transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:shadow-[0_0_25px_rgba(197,160,89,0.6)]"
+          >
+            Zpět do úkrytu
+          </button>
+        </div>
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[210] bg-black/80 backdrop-blur-md px-8 py-4 border-y border-mafia-gold/50 shadow-[0_0_30px_rgba(0,0,0,0.9)] text-center w-11/12 md:w-auto pointer-events-none">
+          <span className="text-mafia-gold font-serif italic text-xl md:text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+            „Pracujeme v temnotě, abychom sloužili světlu.“
+          </span>
+        </div>
+        <div className="flex-1 relative">
+          <SecretOpenFreeMap />
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (showBigAnim) {
+    return <BigHierarchyAnimation profession={profession} onComplete={handleAnimComplete} />;
+  }
+
   const currentNode = dialogueTree[currentNodeId];
   const tomasImage = isDay ? '/hierarchie/tomáš-sako-den.png' : '/hierarchie/tomáš-sako-večer.png';
 
   return (
     <div className="min-h-screen bg-black relative flex flex-col items-center justify-center overflow-hidden font-sans">
       <SecretInteractiveParticles />
+
+      {/* Vtipná hierarchie */}
+      <motion.div 
+        className="absolute top-6 right-6 md:top-10 md:right-10 z-50 bg-white/10 backdrop-blur-md border border-white/30 px-6 py-3 rounded-full cursor-pointer overflow-hidden flex flex-col items-center group"
+        onClick={() => setHierarchyAnim(true)}
+        animate={
+          hierarchyAnim 
+          ? { 
+              y: [0, -20, 0, -10, 0, 500], 
+              rotate: [0, -10, 10, -5, 5, 360], 
+              opacity: [1, 1, 1, 1, 1, 0],
+              scale: [1, 1.2, 0.8, 1.1, 1, 0]
+            } 
+          : {}
+        }
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        onAnimationComplete={() => { if (hierarchyAnim) { alert("Byl jsi degradován na krmivo pro ryby."); setHierarchyAnim(false); } }}
+      >
+        <span className="text-[10px] text-white/50 uppercase tracking-widest font-mono mb-1 group-hover:text-white/80 transition-colors">Tvoje Hierarchie</span>
+        <span className="text-sm text-white font-bold uppercase tracking-widest">Podržtaška (Lvl. 1)</span>
+        
+        {hierarchyAnim && (
+          <span className="absolute inset-0 bg-red-600/80 flex items-center justify-center text-white font-black text-xs uppercase animate-pulse">
+            PÁD KE DNU!
+          </span>
+        )}
+      </motion.div>
 
       {/* Hlavní obsah - Z-index navrch */}
       <div className="z-10 w-full max-w-4xl p-6 h-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 relative">
@@ -274,13 +473,10 @@ export default function EasterEggPage() {
           transition={{ duration: 1, ease: "easeOut" }}
           className="relative w-64 h-80 md:w-96 md:h-[500px] shrink-0"
         >
-          <Image 
+          <img 
             src={tomasImage} 
             alt="Don Tomáš" 
-            fill
-            className="object-contain drop-shadow-[0_0_20px_rgba(197,160,89,0.3)] z-10"
-            sizes="(max-width: 768px) 256px, 384px"
-            priority
+            className={`absolute inset-0 w-full h-full object-contain z-10 transition-all duration-500 ${!isDay ? 'drop-shadow-[0_0_25px_rgba(197,160,89,0.3)]' : 'drop-shadow-[0_0_15px_rgba(0,0,0,0.3)]'}`}
           />
         </motion.div>
 
@@ -307,16 +503,48 @@ export default function EasterEggPage() {
             </div>
 
             {/* Volby */}
-            <div className="mt-10 flex flex-col gap-3 min-h-[100px] font-serif text-lg tracking-wider">
+            <div className="mt-10 flex flex-col gap-3 min-h-[100px] font-serif tracking-wider text-lg">
               <AnimatePresence>
-                {!isTyping && !currentNode.isEnd && !currentNode.isInput && currentNode.options.map((option, idx) => (
+                {/* --- Speciální render pro úvodní volbu (Roletka) --- */}
+                {!isTyping && currentNodeId === 'start' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-col gap-4 w-full"
+                  >
+                    <select
+                      value={selectedStartOption}
+                      onChange={(e) => setSelectedStartOption(e.target.value)}
+                      className="w-full p-4 bg-black border border-mafia-gold/40 text-mafia-gold font-serif text-lg focus:outline-none focus:border-mafia-gold appearance-none cursor-pointer"
+                      style={{ backgroundImage: 'linear-gradient(45deg, transparent 50%, #c5a059 50%), linear-gradient(135deg, #c5a059 50%, transparent 50%)', backgroundPosition: 'calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px)', backgroundSize: '5px 5px, 5px 5px', backgroundRepeat: 'no-repeat' }}
+                    >
+                      <option value="" disabled className="bg-black text-white/50">-- Vyber si téma hovoru --</option>
+                      {currentNode.options.map((option, idx) => (
+                        <option key={idx} value={option.nextId!} className="bg-black text-mafia-gold py-2">{option.text}</option>
+                      ))}
+                    </select>
+                    <button
+                      disabled={!selectedStartOption}
+                      onClick={() => {
+                        const opt = currentNode.options.find(o => o.nextId === selectedStartOption);
+                        if (opt) handleOptionClick(selectedStartOption, opt.text);
+                      }}
+                      className="w-full p-4 border border-mafia-gold/40 hover:border-mafia-gold bg-mafia-gold/10 hover:bg-mafia-gold/30 text-mafia-gold transition-all uppercase tracking-widest text-sm font-sans font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Potvrdit téma
+                    </button>
+                  </motion.div>
+                )}
+
+                {/* --- Normální render pro další dialogy --- */}
+                {!isTyping && !currentNode.isEnd && !currentNode.isInput && currentNodeId !== 'start' && currentNode.options.map((option, idx) => (
                   <motion.button
                     key={idx}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ delay: idx * 0.15 }}
-                    onClick={() => handleOptionClick(option.nextId)}
-                    className="w-full text-left p-4 border border-white/10 hover:border-mafia-gold/60 bg-white/5 hover:bg-mafia-gold/10 text-white/70 hover:text-white transition-all duration-300 flex items-center justify-between group"
+                    onClick={() => handleOptionClick(option.nextId, option.text)}
+                    className="w-full text-left p-4 border border-white/10 hover:border-mafia-gold/60 bg-white/5 hover:bg-mafia-gold/10 text-white/70 hover:text-white transition-all duration-300 flex items-center justify-between group text-lg"
                   >
                     <span>{option.text}</span>
                     <span className="opacity-0 group-hover:opacity-100 text-mafia-gold transition-opacity">→</span>

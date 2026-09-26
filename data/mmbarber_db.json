@@ -125,7 +125,8 @@
     "visibility_card_system": "visible",
     "visibility_card_pece": "visible",
     "visibility_card_komunita": "visible",
-    "admin_last_seen": "1789909036425"
+    "admin_last_seen": "1790331860779",
+    "intro_menu_config": "{\"tomasSize\":412,\"tomasTopMargin\":537.7038269042969,\"headerMargin\":-96,\"menuItemsMargin\":21.1851806640625,\"tomasMarginLeft\":1025.555419921875,\"headerMarginLeft\":0,\"menuItemsMarginLeft\":-5.925926208496094,\"rightColMarginTop\":122,\"rightColMarginLeft\":800,\"rightColMargins\":{\"rezervace\":{\"x\":-25.18505859375,\"y\":-247.66677856445312},\"start\":{\"x\":1257.77783203125,\"y\":-166.48153686523438},\"galerie\":{\"x\":1255.463134765625,\"y\":-127.87039947509766},\"vice\":{\"x\":1326.9444580078125,\"y\":-117.96290588378906},\"komunita\":{\"x\":1265.9259033203125,\"y\":-179.51850509643555},\"kontakt\":{\"x\":1274.4443359375,\"y\":-165.09255981445312}},\"tomasBtnMarginTop\":-292.6852397918701,\"tomasBtnMarginLeft\":1019.0740966796875,\"tomasTextMarginTop\":0,\"tomasTextMarginLeft\":0,\"tomasBtnScale\":2,\"tomasNameMarginTop\":2.4073638916015625,\"tomasNameMarginLeft\":859.3518676757812,\"tomasNameScale\":1.9,\"tomasExpMarginTop\":452.1295471191406,\"tomasExpMarginLeft\":1266.0184936523438,\"tomasExpScale\":1.4,\"tomasTitleMarginTop\":394.0740966796875,\"tomasTitleMarginLeft\":846.6665649414062,\"tomasTitleScale\":1,\"adminTestHour\":15,\"flameMarginTop\":-402.4074249267578,\"flameMarginLeft\":-237.68390473184346,\"flameScale\":0.1,\"baseWidth\":2134,\"baseHeight\":1122,\"langMarginTop\":0,\"langMarginLeft\":0,\"layouts\":{\"/obr/start-rano.png\":{\"tomasSize\":412,\"tomasTopMargin\":537.7038269042969,\"tomasMarginLeft\":1025.555419921875,\"tomasBtnMarginTop\":-292.6852397918701,\"tomasBtnMarginLeft\":1019.0740966796875,\"tomasBtnScale\":2,\"tomasNameMarginTop\":2.4073638916015625,\"tomasNameMarginLeft\":859.3518676757812,\"tomasNameScale\":1.9,\"tomasTitleMarginTop\":394.0740966796875,\"tomasTitleMarginLeft\":846.6665649414062,\"tomasTitleScale\":1,\"tomasExpMarginTop\":452.1295471191406,\"tomasExpMarginLeft\":1266.0184936523438,\"tomasExpScale\":1.4,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":21.1851806640625,\"menuItemsMarginLeft\":-5.925926208496094,\"rightColMargins\":{\"rezervace\":{\"x\":-25.18505859375,\"y\":-247.66677856445312},\"start\":{\"x\":937.77783203125,\"y\":-21.481536865234375},\"galerie\":{\"x\":989.6297607421875,\"y\":-163.7037124633789},\"vice\":{\"x\":931.111083984375,\"y\":-89.62959289550781},\"komunita\":{\"x\":925.926025390625,\"y\":-192.85184860229492},\"kontakt\":{\"x\":1004.4443359375,\"y\":-159.25921630859375}},\"flameMarginTop\":-402.4074249267578,\"flameMarginLeft\":-237.68390473184346,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":0,\"sunMarginLeft\":0,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":0,\"moonMarginLeft\":0,\"moonScale\":1,\"ambientLightMarginTop\":-920.8332252502441,\"ambientLightMarginLeft\":936.6666259765625,\"ambientLightScale\":0.6},\"/obr/start-zapad.png\":{\"tomasSize\":412,\"tomasTopMargin\":531.8704528808594,\"tomasMarginLeft\":1070.5556640625,\"tomasBtnMarginTop\":-351.85197257995605,\"tomasBtnMarginLeft\":1061.5740966796875,\"tomasBtnScale\":2,\"tomasNameMarginTop\":-2.5926666259765625,\"tomasNameMarginLeft\":923.5184936523438,\"tomasNameScale\":1.9,\"tomasTitleMarginTop\":394.0740966796875,\"tomasTitleMarginLeft\":846.6665649414062,\"tomasTitleScale\":1,\"tomasExpMarginTop\":447.1295471191406,\"tomasExpMarginLeft\":1291.0184936523438,\"tomasExpScale\":1.4,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":21.1851806640625,\"menuItemsMarginLeft\":-5.925926208496094,\"rightColMargins\":{\"rezervace\":{\"x\":-25.18505859375,\"y\":-247.66677856445312},\"start\":{\"x\":937.77783203125,\"y\":-21.481536865234375},\"galerie\":{\"x\":989.6297607421875,\"y\":-163.7037124633789},\"vice\":{\"x\":931.111083984375,\"y\":-89.62959289550781},\"komunita\":{\"x\":925.926025390625,\"y\":-192.85184860229492},\"kontakt\":{\"x\":1004.4443359375,\"y\":-159.25921630859375}},\"flameMarginTop\":-384.9074249267578,\"flameMarginLeft\":-233.5172177201247,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-87.5,\"sunMarginLeft\":940.8333740234375,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":0,\"moonMarginLeft\":0,\"moonScale\":1,\"ambientLightMarginTop\":-438.3333435058594,\"ambientLightMarginLeft\":814.166748046875,\"ambientLightScale\":0.1},\"/obr/start-noc.png\":{\"tomasSize\":412,\"tomasTopMargin\":531.8704528808594,\"tomasMarginLeft\":1070.5556640625,\"tomasBtnMarginTop\":-345.18531608581543,\"tomasBtnMarginLeft\":1086.5740966796875,\"tomasBtnScale\":2,\"tomasNameMarginTop\":-2.5926666259765625,\"tomasNameMarginLeft\":923.5184936523438,\"tomasNameScale\":1.9,\"tomasTitleMarginTop\":449.073974609375,\"tomasTitleMarginLeft\":1098.3331909179688,\"tomasTitleScale\":1,\"tomasExpMarginTop\":447.1295471191406,\"tomasExpMarginLeft\":1291.0184936523438,\"tomasExpScale\":1.4,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":21.1851806640625,\"menuItemsMarginLeft\":-5.925926208496094,\"rightColMargins\":{\"rezervace\":{\"x\":-25.18505859375,\"y\":-247.66677856445312},\"start\":{\"x\":937.77783203125,\"y\":-21.481536865234375},\"galerie\":{\"x\":989.6297607421875,\"y\":-163.7037124633789},\"vice\":{\"x\":931.111083984375,\"y\":-89.62959289550781},\"komunita\":{\"x\":925.926025390625,\"y\":-192.85184860229492},\"kontakt\":{\"x\":1004.4443359375,\"y\":-159.25921630859375}},\"flameMarginTop\":-406.57411193847656,\"flameMarginLeft\":-246.8505917435622,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":0,\"sunMarginLeft\":0,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-346.6667175292969,\"moonMarginLeft\":867.4998779296875,\"moonScale\":0.4,\"ambientLightMarginTop\":-722.4999771118164,\"ambientLightMarginLeft\":774.1668701171875,\"ambientLightScale\":0.1},\"/obr/start-odpoledne.png\":{\"tomasSize\":412,\"tomasTopMargin\":537.7038269042969,\"tomasMarginLeft\":1025.555419921875,\"tomasBtnMarginTop\":-292.6852397918701,\"tomasBtnMarginLeft\":1019.0740966796875,\"tomasBtnScale\":2,\"tomasNameMarginTop\":2.4073638916015625,\"tomasNameMarginLeft\":859.3518676757812,\"tomasNameScale\":1.9,\"tomasTitleMarginTop\":394.0740966796875,\"tomasTitleMarginLeft\":846.6665649414062,\"tomasTitleScale\":1,\"tomasExpMarginTop\":452.1295471191406,\"tomasExpMarginLeft\":1266.0184936523438,\"tomasExpScale\":1.4,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":21.1851806640625,\"menuItemsMarginLeft\":-5.925926208496094,\"rightColMargins\":{\"rezervace\":{\"x\":-25.18505859375,\"y\":-247.66677856445312},\"start\":{\"x\":1257.77783203125,\"y\":-166.48153686523438},\"galerie\":{\"x\":1255.463134765625,\"y\":-127.87039947509766},\"vice\":{\"x\":1326.9444580078125,\"y\":-117.96290588378906},\"komunita\":{\"x\":1265.9259033203125,\"y\":-179.51850509643555},\"kontakt\":{\"x\":1274.4443359375,\"y\":-165.09255981445312}},\"flameMarginTop\":-402.4074249267578,\"flameMarginLeft\":-237.68390473184346,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":0,\"sunMarginLeft\":0,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":0,\"moonMarginLeft\":0,\"moonScale\":1,\"ambientLightMarginTop\":-739.1666297912598,\"ambientLightMarginLeft\":1834.9998779296875,\"ambientLightScale\":0.6}},\"sunVisible\":false,\"sunMarginTop\":0,\"sunMarginLeft\":0,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":0,\"moonMarginLeft\":0,\"moonScale\":1,\"ambientLightMarginTop\":-739.1666297912598,\"ambientLightMarginLeft\":1834.9998779296875,\"ambientLightScale\":0.6}"
   },
   "user_fragments": [],
   "game_winners": [],
@@ -554,7 +555,7 @@
       "ip": "::1",
       "userFullName": "T",
       "startedAt": 1789754043419,
-      "lastActivity": 1790008811462,
+      "lastActivity": 1790354571662,
       "status": "OPEN"
     }
   ],
@@ -573,6 +574,30 @@
       "sender": "USER",
       "text": "hello",
       "timestamp": 1789840636638,
+      "read": true
+    },
+    {
+      "id": "d022b417-e85a-4fdb-8d0f-0f409999d393",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "vcbhgf",
+      "timestamp": 1790096314014,
+      "read": true
+    },
+    {
+      "id": "921156d4-be34-48df-a7a3-2f98f71dca90",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "vazap",
+      "timestamp": 1790096366312,
+      "read": true
+    },
+    {
+      "id": "c01eea88-1a9a-4511-a465-bfbf5a02501e",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "jak je ?",
+      "timestamp": 1790096426759,
       "read": false
     }
   ],

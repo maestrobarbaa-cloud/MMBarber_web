@@ -521,12 +521,11 @@ export default function BiographiesPage() {
                              className={`relative cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] outline-none focus:outline-none select-none ${isPreviewActive ? 'scale-105 md:scale-110 z-30' : 'hover:scale-105 z-10'}`}
                              style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
                            >
-                             <Image 
+                             <img 
                                src={jacketSrc}
                                alt="Tomáš"
                                width={600}
                                height={800}
-                               priority={true}
                                draggable={false}
                                style={{ border: 'none', outline: 'none', background: 'transparent' }}
                                className={`object-contain w-full max-w-[220px] md:max-w-[300px] lg:max-w-[350px] h-auto transition-all duration-500 drop-shadow-[0_0_20px_rgba(0,0,0,0.8)] text-transparent border-none outline-none focus:outline-none ${isPreviewActive ? (isBloodMode ? 'drop-shadow-[0_0_15px_rgba(200,16,46,0.5)]' : isNoirMode ? 'drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'drop-shadow-[0_0_15px_rgba(197,160,89,0.5)]') + ' scale-[1.02]' : ''} ${isBloodMode ? 'grayscale sepia-[1] hue-rotate-[320deg] saturate-[5]' : isNoirMode ? 'grayscale' : ''}`}

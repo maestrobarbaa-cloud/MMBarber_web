@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Info, X, Clock, Globe } from "lucide-react";
 import { getHistoricalEvents } from "../actions/fetchHistoricalEvents";
+import { useUI } from "@/contexts/UIContext";
 
 interface HistoricalEvent {
   year: string;
@@ -24,6 +25,7 @@ export const HistoricalEvents = () => {
   const [dateStr, setDateStr] = useState("");
   const [isClient, setIsClient] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const { isHistoryUnlocked } = useUI();
 
   useEffect(() => {
     setIsClient(true);
@@ -64,6 +66,7 @@ export const HistoricalEvents = () => {
 
   if (!isClient) return null;
   if (isHidden) return null;
+  if (!isHistoryUnlocked) return null;
 
   return (
     <>

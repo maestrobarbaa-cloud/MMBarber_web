@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, useMotionValue } from "framer-motion";
 import { MousePointer2, Pointer } from "lucide-react";
 
@@ -75,41 +76,44 @@ export function CustomCursor() {
   if (!mounted || window.innerWidth < 1024 || isLowTier || window.location.pathname === '/rodina/remesla') return null;
 
   return (
-    <div className="custom-cursor">
+    <>
       <style jsx global>{`
         * {
           cursor: none !important;
         }
       `}</style>
-      <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[999999] flex items-center justify-center"
-        style={{
-          x: mouseX,
-          y: mouseY,
-          opacity: isVisible ? 1 : 0,
-        }}
-      >
-        <div className="relative">
-          {isPointer ? (
-              <Pointer 
-                size={28} 
-                fill="var(--user-accent-color)" 
-                className="text-mafia-black transition-transform duration-200"
-                style={{
-                  filter: "drop-shadow(0 0 10px var(--user-glow-color))",
-                  transform: "translate(-20%, -10%)"
-                }}
+      {createPortal(
+        <motion.div
+          className="fixed top-0 left-0 pointer-events-none z-[99999999] flex items-center justify-center"
+          style={{
+            x: mouseX,
+            y: mouseY,
+            opacity: isVisible ? 1 : 0,
+          }}
+        >
+          <div className="relative">
+            {isPointer ? (
+                <Pointer 
+                  size={28} 
+                  fill="var(--user-accent-color)" 
+                  className="text-mafia-black transition-transform duration-200"
+                  style={{
+                    filter: "drop-shadow(0 0 10px var(--user-glow-color))",
+                    transform: "translate(-20%, -10%)"
+                  }}
+                />
+            ) : (
+              <MousePointer2 
+                size={24} 
+                fill="black" 
+                className="text-mafia-gold transition-transform duration-200"
+                style={{ filter: "drop-shadow(0 0 8px var(--user-glow-color))" }}
               />
-          ) : (
-            <MousePointer2 
-              size={24} 
-              fill="black" 
-              className="text-mafia-gold transition-transform duration-200"
-              style={{ filter: "drop-shadow(0 0 8px var(--user-glow-color))" }}
-            />
-          )}
-        </div>
-      </motion.div>
-    </div>
+            )}
+          </div>
+        </motion.div>,
+        document.body
+      )}
+    </>
   );
 }

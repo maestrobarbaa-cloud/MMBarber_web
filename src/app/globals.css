@@ -615,6 +615,21 @@ html.mode-blood [style*="background-image"] {
   filter: grayscale(1) brightness(1.1) contrast(1.1) !important;
 }
 
+/* Ensure Intro screen ignores all global mode filters */
+#intro-overlay-screen,
+#intro-overlay-screen *,
+#intro-overlay-screen [style*="background-image"],
+#intro-overlay-screen .bg-cover,
+html.noir-mode #intro-overlay-screen img,
+html.theme-blood #intro-overlay-screen img,
+html.theme-silver #intro-overlay-screen img,
+html.mode-blood #intro-overlay-screen img,
+html.noir-mode #intro-overlay-screen [style*="background-image"],
+html.theme-blood #intro-overlay-screen [style*="background-image"],
+html.mode-blood #intro-overlay-screen [style*="background-image"] {
+  filter: none !important;
+}
+
 /* hero-blood-img — styly aplikovány inline z Hero.tsx */
 
 /* Also ensure hero background div with direct inline style is handled */

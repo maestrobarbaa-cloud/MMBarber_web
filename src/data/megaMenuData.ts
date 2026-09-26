@@ -42,6 +42,7 @@ export const getMegaMenuData = (lang: Language): MegaMenuData => ({
         items: [
           { name: lang === 'cs' ? "Systém a návštěva" : "System & Visit", path: "/system-a-navsteva" },
           { name: lang === 'cs' ? "Ceník a Rezervace" : "Prices & Booking", path: "/cenik" },
+          { name: lang === 'cs' ? "Arzenál (Vybavení)" : "Arsenal (Gear)", path: "/arzenal" },
         ]
       }
     ]

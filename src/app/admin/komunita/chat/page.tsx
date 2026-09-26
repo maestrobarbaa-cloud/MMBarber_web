@@ -21,7 +21,9 @@ import {
   PhoneCall,
   PhoneOff,
   Mic,
-  MicOff
+  MicOff,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -71,6 +73,9 @@ export default function AdminSupportChatPage() {
   const localStreamRef = useRef<MediaStream | null>(null);
   const remoteAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  const [soundsEnabled, setSoundsEnabled] = useState(true);
+  const prevUnreadCountRef = useRef<number>(0);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const ADMIN_PASSWORD = "MAFIA_PROTOCOL_737";
@@ -78,6 +83,10 @@ export default function AdminSupportChatPage() {
   useEffect(() => {
     if (sessionStorage.getItem("mmbarber_admin_auth") === "true") {
       setIsAuthenticated(true);
+    }
+    const savedSounds = localStorage.getItem('mmbarber_admin_chat_sounds');
+    if (savedSounds !== null) {
+      setSoundsEnabled(savedSounds === 'true');
     }
   }, []);
 
@@ -88,6 +97,18 @@ export default function AdminSupportChatPage() {
       const data = await res.json();
       setSessions(data.sessions || []);
       setLoading(false);
+
+      if (data.messages) {
+        const unreadCount = data.messages.filter((m: any) => m.sender === 'USER' && !m.read).length;
+        if (unreadCount > prevUnreadCountRef.current && soundsEnabled) {
+          try {
+            const audio = new Audio('/sounds/chat.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(() => {});
+          } catch(e) {}
+        }
+        prevUnreadCountRef.current = unreadCount;
+      }
 
       if (activeSessionId) {
         const smRes = await fetch(`/api/support-chat?sessionId=${activeSessionId}`);
@@ -442,8 +463,19 @@ export default function AdminSupportChatPage() {
               <p className="text-[10px] font-mono text-white/30 uppercase tracking-[0.4em]">KOMUNIKAČNÍ CENTRUM_V2.0</p>
            </div>
            
-           <div className="flex flex-wrap gap-4">
-              <Link href="/admin" className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 font-mono text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+           <div className="flex flex-wrap gap-4 items-center">
+              <button 
+                onClick={() => {
+                  const newVal = !soundsEnabled;
+                  setSoundsEnabled(newVal);
+                  localStorage.setItem('mmbarber_admin_chat_sounds', String(newVal));
+                }}
+                className="flex items-center justify-center p-4 bg-white/5 border border-white/10 text-white/50 hover:bg-white/10 hover:text-white transition-all rounded-xl"
+                title={soundsEnabled ? "Vypnout zvuky chatu" : "Zapnout zvuky chatu"}
+              >
+                {soundsEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+              </button>
+              <Link href="/admin" className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 font-mono text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all rounded-xl">
                  <ArrowLeft size={16} /> ZPĚT NA DASHBOARD
               </Link>
            </div>

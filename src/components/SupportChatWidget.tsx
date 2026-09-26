@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, User, ChevronDown, CheckCheck, Smile, Paperclip, Loader2, Phone, PhoneOff, Mic, MicOff, Copy, Check } from 'lucide-react';
+import { MessageSquare, X, Send, User, ChevronDown, CheckCheck, Smile, Paperclip, Loader2, Phone, PhoneOff, Mic, MicOff, Copy, Check, Volume2, VolumeX } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { EmojiPicker } from '@/components/EmojiPicker';
 import { useUI } from '@/contexts/UIContext';
@@ -48,6 +48,10 @@ export default function SupportChatWidget() {
   const remoteAudioRef = useRef<HTMLAudioElement | null>(null);
   const callPollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  const [soundsEnabled, setSoundsEnabled] = useState(true);
+  const prevMessagesLengthRef = useRef(0);
+  const initialFetchDoneRef = useRef(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fetchState = async () => {
@@ -60,6 +64,12 @@ export default function SupportChatWidget() {
       if (res.ok) {
         const data = await res.json();
         setSession(data.session);
+        
+        if (!initialFetchDoneRef.current) {
+          prevMessagesLengthRef.current = data.messages?.length || 0;
+          initialFetchDoneRef.current = true;
+        }
+        
         setMessages(data.messages || []);
         setIsAdminOnline(data.isAdminOnline);
         if (data.session && !fullName) {
@@ -86,11 +96,33 @@ export default function SupportChatWidget() {
     checkTheme();
     window.addEventListener('mmbarber-theme-changed', checkTheme); // Volitelné
     
+    const savedSounds = localStorage.getItem('mmbarber_chat_sounds');
+    if (savedSounds !== null) {
+      setSoundsEnabled(savedSounds === 'true');
+    }
+    
     return () => {
       clearInterval(interval);
       window.removeEventListener('mmbarber-theme-changed', checkTheme);
     };
   }, []);
+
+  // Play sound on new admin message
+  useEffect(() => {
+    if (messages.length > prevMessagesLengthRef.current) {
+      const newMessages = messages.slice(prevMessagesLengthRef.current);
+      const hasNewAdminMessage = newMessages.some(m => m.sender === 'ADMIN');
+      
+      if (hasNewAdminMessage && soundsEnabled) {
+        try {
+          const audio = new Audio('/sounds/chat.mp3');
+          audio.volume = 0.5;
+          audio.play().catch(() => {});
+        } catch (e) {}
+      }
+    }
+    prevMessagesLengthRef.current = messages.length;
+  }, [messages, soundsEnabled]);
 
   // -------------------------------------------------------------
   // WEBRTC CALLING LOGIC
@@ -235,8 +267,22 @@ export default function SupportChatWidget() {
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      
+      const unreadAdminMessageIds = messages
+        .filter(m => m.sender === 'ADMIN' && !m.read)
+        .map(m => m.id);
+        
+      if (unreadAdminMessageIds.length > 0 && session) {
+        fetch('/api/support-chat', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'MARK_READ', messageIds: unreadAdminMessageIds })
+        }).then(() => {
+          setMessages(prev => prev.map(m => unreadAdminMessageIds.includes(m.id) ? { ...m, read: true } : m));
+        }).catch(console.error);
+      }
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, session]);
 
   const handleSend = async (textToSend: string) => {
     if (!textToSend.trim() || isSubmitting || isBanned) return;
@@ -364,12 +410,12 @@ export default function SupportChatWidget() {
           
           {/* Unread Indicator */}
           {!isOpen && hasUnreadFromAdmin && (
-            <span className="absolute top-1 right-1 w-4 h-4 bg-red-600 rounded-full border-2 border-black animate-pulse"></span>
+            <span className="absolute top-0 right-0 w-5 h-5 bg-red-600 text-white flex items-center justify-center rounded-full border-2 border-black font-bold text-[12px] animate-bounce shadow-[0_0_10px_rgba(220,38,38,0.8)]">!</span>
           )}
           
           {/* Online Indicator */}
-          {!isOpen && isAdminOnline && !hasUnreadFromAdmin && (
-            <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-black shadow-[0_0_10px_rgba(34,197,94,0.8)]"></span>
+          {!isOpen && !hasUnreadFromAdmin && isAdminOnline && (
+            <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-black bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]"></span>
           )}
         </button>
       </motion.div>
@@ -425,22 +471,35 @@ export default function SupportChatWidget() {
                      <img src="/logo.png" alt="MMBARBER Logo" className="w-6 h-6 object-contain" />
                    </div>
                    {isAdminOnline && (
-                     <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-black"></div>
+                     <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-black bg-green-500"></div>
                    )}
                  </div>
                  <div>
                    <h3 className="font-heading font-black text-white text-lg tracking-widest uppercase italic">MMBARBER SUPPORT</h3>
                    <p className="text-[10px] text-mafia-gold font-mono uppercase tracking-[0.2em] font-bold">
-                     {isAdminOnline ? 'Online & Připraven' : 'Zanechte nám vzkaz'}
+                     {isAdminOnline ? 'Online & Připraven' : 'Nyní jsme offline (Zanechte vzkaz)'}
                    </p>
                  </div>
                </div>
-               <button 
-                 onClick={() => setIsOpen(false)} 
-                 className="p-2 bg-black/40 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/5 relative z-10"
-               >
-                 <X size={16} />
-               </button>
+               <div className="flex items-center gap-2 z-10 relative">
+                 <button 
+                   onClick={() => {
+                     const newVal = !soundsEnabled;
+                     setSoundsEnabled(newVal);
+                     localStorage.setItem('mmbarber_chat_sounds', String(newVal));
+                   }} 
+                   className="p-2 bg-black/40 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/5"
+                   title={soundsEnabled ? "Vypnout zvuky" : "Zapnout zvuky"}
+                 >
+                   {soundsEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+                 </button>
+                 <button 
+                   onClick={() => setIsOpen(false)} 
+                   className="p-2 bg-black/40 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/5"
+                 >
+                   <X size={16} />
+                 </button>
+               </div>
             </div>
 
             {/* Call UI Banner */}

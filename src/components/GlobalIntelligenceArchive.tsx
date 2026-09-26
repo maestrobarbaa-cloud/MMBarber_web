@@ -38,7 +38,7 @@ export function GlobalIntelligenceArchive() {
                 {cat.title}
               </h3>
               <p className="text-[9px] leading-relaxed font-sans text-white/5 group-hover:text-white/30 transition-colors duration-1000 text-justify">
-                {cat.text.replace("{keywords}", cat.keywords)}
+                {cat.text ? cat.text.replace("{keywords}", cat.keywords || "") : ""}
               </p>
             </motion.div>
           ))}

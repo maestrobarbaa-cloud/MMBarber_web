@@ -425,7 +425,7 @@ const AnimatedVersionBadge = () => {
   return (
     <div className="relative z-10 flex items-center justify-center cursor-default group">
       <span className={`text-[10px] md:text-xs font-black tracking-[0.3em] transition-all duration-500 group-hover:opacity-0 ${isBloodMode ? 'text-mafia-red drop-shadow-[0_0_8px_rgba(200,16,46,0.9)]' : 'text-mafia-gold drop-shadow-[0_0_8px_rgba(212,175,55,0.9)]'}`}>
-        V 3.5.2
+        V 3.5.3
       </span>
       <span className={`absolute text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-500 opacity-0 group-hover:opacity-100 ${isBloodMode ? 'text-mafia-red' : 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]'}`}>
         Ve vývoji

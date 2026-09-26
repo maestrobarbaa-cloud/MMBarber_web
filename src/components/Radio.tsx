@@ -13,6 +13,8 @@ export function Radio() {
   const [showCta, setShowCta] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [isCustomTrack, setIsCustomTrack] = useState(false);
+  const [customTrackName, setCustomTrackName] = useState("");
+  const [customTrackColor, setCustomTrackColor] = useState("");
   const pathname = usePathname();
   const isVip = pathname === "/vip-club";
   const [messageIndex, setMessageIndex] = useState(0);
@@ -105,9 +107,15 @@ export function Radio() {
         ))}
         {/* Center Label */}
         <div 
-          className="w-10 h-10 rounded-full shadow-2xl transition-colors duration-500 border border-black/20" 
-          style={{ backgroundColor: centerColor }} 
-        />
+          className="w-10 h-10 rounded-full shadow-2xl transition-colors duration-500 border border-black/20 flex items-center justify-center" 
+          style={{ backgroundColor: (isCustomTrack && customTrackColor) ? customTrackColor : centerColor }} 
+        >
+          {isCustomTrack && customTrackName && (
+             <span className="text-[4px] text-black/80 font-black font-sans uppercase text-center leading-none">
+               {customTrackName.split(' ').map((word, i) => <div key={i}>{word}</div>)}
+             </span>
+          )}
+        </div>
         {/* Hole */}
         <div className="absolute w-1.5 h-1.5 bg-black rounded-full" />
         {/* Cinematic Reflections */}
@@ -134,10 +142,7 @@ export function Radio() {
     return () => clearInterval(interval);
   }, [radioMessages.length]);
 
-  useEffect(() => {
-    // Strictly manual visibility: visible only when playing.
-    setIsVisible(isPlaying);
-  }, [isPlaying]);
+
 
   useEffect(() => {
     const handleRemoteToggle = () => {
@@ -193,12 +198,32 @@ export function Radio() {
       window.dispatchEvent(new CustomEvent('mmbarber-radio-update', { detail: false }));
     };
 
+    const handleSetTrack = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail && detail.track) {
+         setIsCustomTrack(true);
+         setCustomTrackName(detail.name || "");
+         setCustomTrackColor(detail.color || "");
+         if (jazzAudioRef.current) jazzAudioRef.current.src = detail.track;
+      } else {
+         setIsCustomTrack(false);
+         setCustomTrackName("");
+         setCustomTrackColor("");
+         if (jazzAudioRef.current) {
+           jazzAudioRef.current.src = "/jazz-loop.mp3";
+           // Keep playing if it was playing, but it will seamlessly switch since we changed src
+         }
+      }
+    };
+
     window.addEventListener('mmbarber-play-track', handlePlayTrack);
     window.addEventListener('mmbarber-stop-radio', handleStopRadio);
+    window.addEventListener('mmbarber-set-radio-track', handleSetTrack);
     
     return () => {
       window.removeEventListener('mmbarber-play-track', handlePlayTrack);
       window.removeEventListener('mmbarber-stop-radio', handleStopRadio);
+      window.removeEventListener('mmbarber-set-radio-track', handleSetTrack);
     };
   }, []);
   
@@ -303,7 +328,7 @@ export function Radio() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className={`fixed ${isVip ? 'bottom-12' : 'bottom-24'} right-12 z-[100]`}
+          className={`fixed ${isVip ? 'bottom-12' : 'bottom-24'} right-12 z-[9999999]`}
         >
           <div className="relative">
             <NoirLyrics />

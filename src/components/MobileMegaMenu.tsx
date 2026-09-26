@@ -23,6 +23,7 @@ import {
   VolumeX, 
   Phone, 
   Compass, 
+  Crosshair, 
   Search,
   Bell,
   Monitor
@@ -195,6 +196,10 @@ export const MobileMegaMenu = React.memo(function MobileMegaMenu({
                       <Link href="/#services" onClick={(e) => { handleNavLinkClick(); if (pathname === "/") { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); } }} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                          <Briefcase size={24} className="text-white/40" />
                          <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{t?.header?.services || 'Služby'}</span>
+                      </Link>
+                      <Link href="/arzenal" onClick={handleNavLinkClick} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
+                         <Crosshair size={24} className="text-white/40" />
+                         <span className="text-sm md:text-base font-sans font-bold text-smoke-white uppercase">{lang === 'cs' ? 'Arzenál (Vybavení)' : 'Arsenal (Gear)'}</span>
                       </Link>
                       <Link href="/#kontakt" onClick={(e) => { handleNavLinkClick(); if (pathname === "/") { e.preventDefault(); document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth" }); } }} className="py-5 px-6 border border-white/10 flex items-center gap-4 active:scale-95 bg-black/20">
                          <MapPin size={24} className="text-white/40" />

@@ -35,6 +35,8 @@ interface UIContextProps {
   isLowBandwidth: boolean;
   isSupportChatOpen: boolean;
   setIsSupportChatOpen: (val: boolean) => void;
+  isHistoryUnlocked: boolean;
+  setIsHistoryUnlocked: (val: boolean) => void;
 }
 
 const UIContext = createContext<UIContextProps | undefined>(undefined);
@@ -55,6 +57,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   const [isNoirMode, setIsNoirMode] = useState(false);
   const [isBloodMode, setIsBloodMode] = useState(false);
   const [isSupportChatOpen, setIsSupportChatOpen] = useState(false);
+  const [isHistoryUnlocked, setIsHistoryUnlocked] = useState(false);
 
   const networkStatus = useNetworkStatus();
   const isLowBandwidth = networkStatus.isLowBandwidth;
@@ -85,6 +88,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
 
     setIsNoirMode(localStorage.getItem("mmbarber_noir_mode") === "true");
     setIsBloodMode(localStorage.getItem("mmbarber_blood_mode") === "true");
+    setIsHistoryUnlocked(localStorage.getItem("mmbarber_history_unlocked") === "true");
   }, []);
 
   // Sync to DOM when noir or blood mode changes
@@ -125,7 +129,8 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
       isNoirMode, setIsNoirMode,
       isBloodMode, setIsBloodMode,
       networkStatus, isLowBandwidth,
-      isSupportChatOpen, setIsSupportChatOpen
+      isSupportChatOpen, setIsSupportChatOpen,
+      isHistoryUnlocked, setIsHistoryUnlocked
     }}>
       {children}
     </UIContext.Provider>

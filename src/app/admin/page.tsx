@@ -223,6 +223,15 @@ export default function AdminDashboardPage() {
       color: 'rgba(255, 255, 255, 0.1)'
     },
     {
+      id: 'intro_menu',
+      title: 'ÚPRAVA ÚVODNÍHO MENU',
+      subtitle: 'INTRO_MENU_CONTROL',
+      desc: 'Vizuální editor (přesouvání a zvětšování prvků najetím myši).',
+      icon: <Eye className="text-mafia-gold" size={40} />,
+      link: '/admin/intro',
+      color: 'rgba(255, 255, 255, 0.15)'
+    },
+    {
       id: 'barberi',
       title: 'SPRÁVA BARBERŮ',
       subtitle: 'BARBER_MANAGEMENT',
