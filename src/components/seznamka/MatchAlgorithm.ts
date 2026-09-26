@@ -215,6 +215,15 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
     futScore += (user.futurePrefs.lookingFor === partner.futurePrefs.lookingFor ? 1.0 : 0.0);
     futCount++;
   }
+  if (user.timeline?.future && partner.timeline?.future) {
+    const uF = user.timeline.future;
+    const pF = partner.timeline.future;
+    if (uF.includes('family_urgent') && pF.includes('family_urgent')) {
+      futScore += 2.0; futCount++;
+    } else if ((uF.includes('family_urgent') && pF.includes('family')) || (uF.includes('family') && pF.includes('family_urgent'))) {
+      futScore += 1.5; futCount++;
+    }
+  }
   
   let finalFutPct = futCount > 0 ? (futScore / futCount) * 100 : 80;
 
@@ -229,6 +238,17 @@ export function calculateCompatibility(user: ProfileData, partner: ProfileData, 
   if (user.housing?.locationPref && partner.housing?.locationPref) {
     pracScore += (user.housing.locationPref === partner.housing.locationPref ? 1.0 : 0.5);
     pracCount++;
+  }
+
+  // New housing status matching
+  if (user.housingStatus && partner.housingStatus) {
+    const uH = user.housingStatus;
+    const pH = partner.housingStatus;
+    if ((uH === 'rent_alone_seeking' || uH === 'parents_seeking_out') && (pH === 'rent_alone_seeking' || pH === 'parents_seeking_out')) {
+      pracScore += 2.0; pracCount++; // Big bonus for both wanting to move in together
+    } else if ((uH === 'rent_alone_seeking' || uH === 'parents_seeking_out') && (pH === 'rent_alone' || pH === 'parents')) {
+      pracScore -= 0.5; pracCount++; // Slight penalty if one wants to move in but the other is comfortable where they are
+    }
   }
 
   if (user.animals?.havePets && partner.animals?.petsAtHomeBother === 'yes') {

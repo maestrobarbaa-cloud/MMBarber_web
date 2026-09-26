@@ -587,9 +587,11 @@ export const ProfileCard = React.memo(function ProfileCard({
                         {
                           'own_paid': 'Ve vlastním (splaceno)',
                           'own_mortgage': 'Ve vlastním (s hypotékou)',
-                          'rent_alone': 'V nájmu (sám/sama)',
+                          'rent_alone': 'V nájmu (žiju sám a vyhovuje mi to)',
+                          'rent_alone_seeking': 'V nájmu (žiju sám, ale hledám někoho k sobě)',
                           'rent_roommates': 'V nájmu (se spolubydlícími)',
                           'parents': 'U rodičů',
+                          'parents_seeking_out': 'U rodičů (ale chci se s partnerem osamostatnit)',
                           'nomad': 'Digitální nomád / Cestuji',
                           'other': 'Jiná situace'
                         }[profile.housingStatus] || profile.housingStatus
@@ -707,6 +709,7 @@ export const ProfileCard = React.memo(function ProfileCard({
                         const labels: Record<string, string> = {
                           'going_up': 'Mířím vysoko a chci růst',
                           'family': 'Chci založit rodinu a usadit se',
+                          'family_urgent': 'Chci založit rodinu co nejdříve (tlačí mě čas)',
                           'surviving': 'Zatím spíš tak proplouvám',
                           'adventure': 'Chci cestovat a objevovat',
                           'career': 'Soustředím se na kariéru/podnikání',

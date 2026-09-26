@@ -580,9 +580,11 @@ export const StepAssets = ({ formData, setFormData, lang }: StepProps) => (
         options={[
           {value:'own_paid', label:'Ve vlastním (splaceno)'}, 
           {value:'own_mortgage', label:'Ve vlastním (s hypotékou)'}, 
-          {value:'rent_alone', label:'V nájmu (sám/sama)'}, 
+          {value:'rent_alone', label:'V nájmu (žiju sám a vyhovuje mi to)'}, 
+          {value:'rent_alone_seeking', label:'V nájmu (žiju sám, ale hledám někoho k sobě)'}, 
           {value:'rent_roommates', label:'V nájmu (se spolubydlícími)'},
           {value:'parents', label:'U rodičů'},
+          {value:'parents_seeking_out', label:'U rodičů (ale chci se s partnerem osamostatnit)'},
           {value:'nomad', label:'Digitální nomád / Cestuji'},
           {value:'other', label:'Jiná situace'}
         ]} 
@@ -711,6 +713,7 @@ export const StepTimeline = ({ formData, setFormData, lang }: StepProps) => (
             options={[
               {value: 'going_up', label: 'Mířím vysoko a chci růst'},
               {value: 'family', label: 'Chci založit rodinu a usadit se'},
+              {value: 'family_urgent', label: 'Chci založit rodinu co nejdříve (tlačí mě čas)'},
               {value: 'surviving', label: 'Zatím spíš tak proplouvám'},
               {value: 'adventure', label: 'Chci cestovat a objevovat'},
               {value: 'career', label: 'Soustředím se na kariéru/podnikání'},

@@ -1,0 +1,15 @@
+{
+  "pages": {},
+  "app": {
+    "[project]/src/app/sidliste/page": [
+      "static/media/b49b0d9b851e4899-s.p.2zyohmvb-ks7f.woff2",
+      "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
+      "static/media/1bffadaabf893a1e-s.p.3-6t-g6q0vh0a.woff2",
+      "static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2",
+      "static/media/0474ff9f7224a0da-s.p.0_mk8de7o781e.woff2",
+      "static/media/f48d461c03e0a8ec-s.p.3rqg0w444aekk.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pagesUsingSizeAdjust": false
+}

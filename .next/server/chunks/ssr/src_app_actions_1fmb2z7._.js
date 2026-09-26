@@ -1,0 +1,3 @@
+module.exports=[920567,a=>{"use strict";var b=a.i(405050);let c=(0,b.createServerReference)("0012022caeb97b830b7f15375ad9ee3e86001665ef",b.callServer,void 0,b.findSourceMapURL,"getNicknamesAction");a.s(["getNicknamesAction",0,c])},415616,a=>{"use strict";a.s([],617378),a.i(617378);var b=a.i(920567);a.s(["getNicknamesAction",()=>b.getNicknamesAction],415616)}];
+
+//# sourceMappingURL=src_app_actions_1fmb2z7._.js.map

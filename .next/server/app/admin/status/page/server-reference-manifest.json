@@ -1,0 +1,27 @@
+{
+  "node": {
+    "00ea60c51004cfc86e4678b4f825e5e3af9335ba4c": {
+      "workers": {
+        "app/admin/status/page": {
+          "moduleId": 273325,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getStatusAction",
+      "filename": "src/app/actions/status.ts"
+    },
+    "409a429790ee30d2315370042da33ea63b4db96b99": {
+      "workers": {
+        "app/admin/status/page": {
+          "moduleId": 273325,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "setStatusAction",
+      "filename": "src/app/actions/status.ts"
+    }
+  },
+  "edge": {}
+}
