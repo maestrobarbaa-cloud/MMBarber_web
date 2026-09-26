@@ -13,7 +13,7 @@ interface Particle {
   spin: number;
   opacity: number;
   color?: string;
-  type?: 'petal' | 'snow' | 'ember' | 'leaf' | 'orb' | 'lantern';
+  type?: 'petal' | 'snow' | 'ember' | 'leaf' | 'orb' | 'lantern' | 'poppy';
 }
 
 interface SeasonalAtmosphereProps {
@@ -30,28 +30,31 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
   const getThemeConfig = () => {
     switch (theme) {
       case 'winter':
+        return { particle: 'snow', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '160, 196, 255' };
       case 'silvestr':
-        return { particle: 'snow', bg: theme, blend: 'screen', overlay: 'bg-black/30', color: '160, 196, 255' };
+        return { particle: 'snow', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '160, 196, 255' };
       case 'christmas':
-        return { particle: 'snow', bg: 'xmas', blend: 'screen', overlay: 'bg-black/40', color: '46, 125, 50' };
+        return { particle: 'snow', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '46, 125, 50' };
       case 'sakura':
       case 'may':
       case 'spring':
-        return { particle: 'petal', bg: theme, blend: 'screen', overlay: 'bg-black/40', color: '255, 179, 198' };
+        return { particle: 'petal', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 179, 198' };
       case 'valentine':
-        return { particle: 'petal', bg: 'valentine', blend: 'screen', overlay: 'bg-black/60', color: '255, 51, 102' };
+        return { particle: 'petal', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 51, 102' };
+      case 'veterans':
+        return { particle: 'poppy', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '245, 40, 10' };
       case 'witches':
       case 'harvest':
       case 'halloween':
-        return { particle: 'ember', bg: theme, blend: 'screen', overlay: 'bg-black/60', color: '255, 102, 0' };
+        return { particle: 'ember', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 102, 0' };
       case 'cny':
-        return { particle: 'lantern', bg: 'cny', blend: 'screen', overlay: 'bg-black/60', color: '255, 0, 0' };
+        return { particle: 'lantern', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 0, 0' };
       case 'midsummer':
       case 'allsouls':
       case 'easter':
-        return { particle: 'orb', bg: theme, blend: 'screen', overlay: 'bg-black/50', color: '0, 255, 65' };
+        return { particle: 'orb', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '0, 255, 65' };
       case 'summer':
-        return { particle: 'orb', bg: 'summer', blend: 'screen', overlay: 'bg-black/30', color: '255, 202, 40' };
+        return { particle: 'orb', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 202, 40' };
       default:
         return { particle: 'none', bg: 'default', blend: 'normal', overlay: 'bg-transparent', color: '255, 255, 255' };
     }
@@ -129,6 +132,95 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
       gradient.addColorStop(1, `rgba(${c}, ${p.opacity * 0.5})`);
       ctx.fillStyle = gradient;
       ctx.fill();
+      ctx.restore();
+    };
+
+    const drawPoppy = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      
+      const s = p.size * 1.5; // Zvětšíme je, aby vynikly detaily
+      
+      // Gradient pro celý květ: od temného středu po zářivou červeno-oranžovou
+      const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, s);
+      grad.addColorStop(0, `rgba(30, 0, 0, ${p.opacity})`);
+      grad.addColorStop(0.2, `rgba(180, 10, 10, ${p.opacity})`);
+      grad.addColorStop(0.6, `rgba(240, 40, 10, ${p.opacity})`);
+      grad.addColorStop(1, `rgba(255, 60, 20, ${p.opacity})`);
+      
+      ctx.fillStyle = grad;
+      
+      // 4 široké, překrývající se vějířovité lístky (typické pro vlčí mák)
+      for (let i = 0; i < 4; i++) {
+        ctx.save();
+        ctx.rotate((Math.PI / 2) * i + (i % 2 === 0 ? 0.1 : -0.1));
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        // Široký oblý vějíř
+        ctx.bezierCurveTo(s * 1.3, -s * 0.3, s * 1.4, -s * 1.5, 0, -s * 1.4);
+        ctx.bezierCurveTo(-s * 1.4, -s * 1.5, -s * 1.3, -s * 0.3, 0, 0);
+        ctx.fill();
+        
+        // Stíny / vrásky lístků (vytváří texturu papírového okvětního lístku)
+        ctx.strokeStyle = `rgba(150, 0, 0, ${p.opacity * 0.4})`;
+        ctx.lineWidth = s * 0.05;
+        for (let j = -1; j <= 1; j++) {
+           if (j === 0) continue;
+           ctx.beginPath();
+           ctx.moveTo(0, 0);
+           ctx.quadraticCurveTo(j * s * 0.4, -s * 0.5, j * s * 0.6, -s * 1.1);
+           ctx.stroke();
+        }
+        ctx.restore();
+      }
+      
+      // Realistický střed máku:
+      // 1. Černé podloží pod tyčinkami
+      ctx.fillStyle = `rgba(10, 10, 10, ${p.opacity})`;
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.35, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 2. Černé tyčinky se žlutým pylem (pestíky) do všech směrů
+      ctx.strokeStyle = `rgba(15, 15, 15, ${p.opacity})`;
+      ctx.lineWidth = s * 0.03;
+      for (let i = 0; i < 18; i++) {
+         const angle = (Math.PI * 2 / 18) * i;
+         const innerR = s * 0.15;
+         // Lehce nepravidelná délka tyčinek
+         const outerR = s * 0.4 + Math.sin(i * 123) * s * 0.05; 
+         
+         // Vykreslit tyčinku
+         ctx.beginPath();
+         ctx.moveTo(Math.cos(angle) * innerR, Math.sin(angle) * innerR);
+         ctx.lineTo(Math.cos(angle) * outerR, Math.sin(angle) * outerR);
+         ctx.stroke();
+         
+         // Žlutý pyl (prašník) na konci
+         ctx.fillStyle = `rgba(220, 200, 40, ${p.opacity * 0.9})`;
+         ctx.beginPath();
+         ctx.arc(Math.cos(angle) * outerR, Math.sin(angle) * outerR, s * 0.05, 0, Math.PI * 2);
+         ctx.fill();
+      }
+      
+      // 3. Zelená makovice (tobolka) úplně uprostřed
+      ctx.fillStyle = `rgba(80, 120, 40, ${p.opacity})`;
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.18, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 4. Hvězdicovité rýhování na zelené tobolce (hnědo-zelená linka)
+      ctx.strokeStyle = `rgba(40, 60, 20, ${p.opacity})`;
+      ctx.lineWidth = s * 0.02;
+      for (let i = 0; i < 8; i++) {
+         const angle = (Math.PI * 2 / 8) * i;
+         ctx.beginPath();
+         ctx.moveTo(0, 0);
+         ctx.lineTo(Math.cos(angle) * s * 0.18, Math.sin(angle) * s * 0.18);
+         ctx.stroke();
+      }
+      
       ctx.restore();
     };
 
@@ -232,6 +324,7 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
         else if (p.x < -p.size) p.x = width + p.size;
 
         if (config.particle === 'petal') drawPetal(ctx, p);
+        else if (config.particle === 'poppy') drawPoppy(ctx, p);
         else if (config.particle === 'snow') drawSnow(ctx, p);
         else if (config.particle === 'ember') drawEmber(ctx, p);
         else if (config.particle === 'orb') drawOrb(ctx, p);
@@ -257,10 +350,10 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       {/* Background Image */}
-      {config.bg !== 'default' && (
+      {config.bg !== 'default' && config.bg !== 'none' && (
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 transition-opacity duration-1000" 
-          style={{ backgroundImage: `url('/obr/sezona/${config.bg}.jpg')` }}
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${config.bg === 'black' ? 'opacity-100' : 'opacity-40'}`} 
+          style={config.bg === 'black' ? { backgroundColor: '#020202' } : { backgroundImage: `url('/obr/sezona/${config.bg}.jpg')` }}
         ></div>
       )}
       

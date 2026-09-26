@@ -23,7 +23,7 @@ function normalizeDate(date: Date): Date {
   return d;
 }
 
-export type ThemeType = 'default' | 'matrix' | 'valentine' | 'st-patricks' | 'halloween' | 'christmas' | 'newyear' | 'czech' | 'legacy' | 'easter' | 'friday13' | 'witches' | 'victory' | 'childrens-day' | 'winter' | 'cny' | 'spring' | 'may' | 'midsummer' | 'summer' | 'harvest' | 'allsouls' | 'silvestr' | 'sakura';
+export type ThemeType = 'default' | 'matrix' | 'valentine' | 'st-patricks' | 'halloween' | 'christmas' | 'newyear' | 'czech' | 'legacy' | 'easter' | 'friday13' | 'witches' | 'victory' | 'childrens-day' | 'winter' | 'cny' | 'spring' | 'may' | 'midsummer' | 'summer' | 'harvest' | 'allsouls' | 'silvestr' | 'sakura' | 'veterans';
 
 /**
  * Returns the currently active theme based on the provided date (or today).
@@ -85,8 +85,8 @@ export function getActiveTheme(currentDate: Date = new Date()): ThemeType {
     return 'winter';
   }
 
-  // Chinese New Year (Approx. mid Feb, let's set fixed for showcase Feb 8 - Feb 11)
-  if (month === 2 && day >= 8 && day <= 11) {
+  // Chinese New Year (Approx. mid Feb, extended to Feb 1 - Feb 11)
+  if (month === 2 && day >= 1 && day <= 11) {
     return 'cny';
   }
 
@@ -133,6 +133,11 @@ export function getActiveTheme(currentDate: Date = new Date()): ThemeType {
   // All Souls / Dusicky (Nov 1 - Nov 3)
   if (month === 11 && day >= 1 && day <= 3) {
     return 'allsouls';
+  }
+
+  // Veterans Day (Nov 11)
+  if (month === 11 && (day >= 10 && day <= 12)) {
+    return 'veterans';
   }
 
   // Christmas (Dec 20 - Dec 26)

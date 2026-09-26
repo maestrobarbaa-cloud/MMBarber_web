@@ -162,6 +162,7 @@ export function VipControlBar() {
     { id: 'harvest', label: 'Harvest' },
     { id: 'halloween', label: 'Halloween' },
     { id: 'allsouls', label: 'All Souls' },
+    { id: 'veterans', label: 'Veterans' },
     { id: 'christmas', label: 'Xmas' },
     { id: 'silvestr', label: 'NYE' },
     { id: 'galaxy', label: 'Galaxy' },

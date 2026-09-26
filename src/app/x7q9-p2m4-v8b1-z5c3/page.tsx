@@ -129,7 +129,8 @@ const dialogueTree: Record<string, DialogueNode> = {
       { text: "SOCIÁLNÍ SÍTĚ (Citlivky na Instagramu)", nextId: "social_start" },
       { text: "MORÁLKA (Římané a slabý článek)", nextId: "romans_start" },
       { text: "CHARAKTER (Vzorce chování davu)", nextId: "character_start" },
-      { text: "BÁSNÍK (Juliána z Tesca)", nextId: "poem_start" }
+      { text: "BÁSNÍK (Juliána z Tesca)", nextId: "poem_start" },
+      { text: "BALADY (Nové zrození Máje)", nextId: "echoes_1" }
       // { text: "VZPOMÍNKY (Příběh dvou)", nextId: "go_to_story" }
     ]
   },
@@ -195,6 +196,7 @@ const dialogueTree: Record<string, DialogueNode> = {
     text: "Co z toho plyne? Jednoduché... stará ohraná klasika. S vlastním přítelem se už cítila spíš jen jako s kamarádem. Nechala se potetovat, nabarvit vlasy, udělat pořádné řasy a linky, jen aby ukázala světu, že je vážně něco, o co se lidi budou prát. Za jeho zádama jela bomby na Tinderu s partičkou borců, co byli čerstvě po rozchodu. A přitom to přece byla vždycky 'tak hodná holka', aspoň to její mamka říkala. Zkrátka stará klasika, když se chceš dobře prodat na trhu... a reklamačky se neberou. Mezitím se ale musela smířit s naprosto opačným osudem. Teď už si jen nalhává, že udělala ten správný krok. Ale pravda je taková, že ji to jednou semele, lidi totiž nezapomínají a ponese se to s ní celej její život.",
     options: [
       { text: "To dává smysl. A ta původní verze od prababičky?", nextId: "poem_original_1" },
+      { text: "Složil jsi ještě něco?", nextId: "zpev_start" },
       { text: "Běž radši stříhat, Tome.", nextId: "poem_end" }
     ]
   },
@@ -244,7 +246,8 @@ const dialogueTree: Record<string, DialogueNode> = {
     id: "poem_original_7",
     text: "7.\nBratra ještě zachránili, Julianu oběsili.\nNad bratříčkem lidi pláčou, nad sestřičkou vrány skáčou.",
     options: [
-      { text: "Tak ta moje verze je aspoň moderní. Měj se, Tome.", nextId: "poem_end" }
+      { text: "Tak ta moje verze je aspoň moderní. Měj se, Tome.", nextId: "poem_end" },
+      { text: "Složil jsi k tomu tématu ještě něco dalšího?", nextId: "zpev_start" }
     ]
   },
   "poem_end": {
@@ -252,6 +255,62 @@ const dialogueTree: Record<string, DialogueNode> = {
     text: "No, snad jsi ocenil mou poezii. Ale teď už fakt mazej, mám tu další práci. Zmiz.",
     options: [],
     isEnd: true
+  },
+  "zpev_start": {
+    id: "zpev_start",
+    text: "ZPĚV\n\nCo bývalo kdysi slovem „láska“,\nteď v jejích rtech znělo jako žal,\nz něžného snu zůstala vráska,\nkdyž každý z nich už jinam stál.\n\nPrý příliš chtěl a příliš chránil,\nprý svíral křídla, bránil v letu;\non všechno, co měl, jí odevzdal,\na přece byl prý vinou světa.\n\nZa její stopou kráčel dál,\nač každý krok ho uvnitř pálil,\nco včera pevně v rukou měl,\ndnes mezi prsty pomalu ztratil.\n\nJak poutník, který cestu ztratil\na přesto kráčí za světlem,\ntak v každém ránu znovu věřil,\nže včerejšek se vrátí sem.",
+    options: [
+      { text: "Pokračuj...", nextId: "zpev_2" }
+    ]
+  },
+  "zpev_2": {
+    id: "zpev_2",
+    text: "Vždyť láska zvláštní zákon má —\nkdyž bolí, člověk zůstává;\nčím více srdce krvácí,\ntím méně síly odchází.\n\nA ona šla už jinou cestou,\nkde vedle ní šel někdo jiný;\non zůstal stát před vlastní bolestí,\njež neměla jména, neměla viny.\n\nPak spatřil ji — a vedle ní\nse cizí ruka dotýkala.\nV tom jediném krátkém setkání\nse celá minulost mu vzdala.\n\nNejvíc však nebolel ten muž,\njenž kráčel nyní vedle ní,\nspíš obraz, který vytvořila,\nv němž on byl vinou všeho zlého.",
+    options: [
+      { text: "To muselo bolet. Dál?", nextId: "zpev_3" }
+    ]
+  },
+  "zpev_3": {
+    id: "zpev_3",
+    text: "Z muže, jenž chtěl jí život dát,\nse stal prý ten, kdo všechno ničí;\nz rukou, jež chtěly budoucnost stavět,\nse staly ruce, které svírají.\n\nA tak se ptal v té dlouhé noci,\nkde vlastně jejich cesta zhasla,\nkdy z „my“ se stalo pouhé „já“\na kde se ztratila jejich láska.\n\nKdy růže, kterou kdysi nesl,\nse proměnila v ostrý trn,\nkdy z toho krásného, co vzrostlo,\nzůstal jen stín a prázdný sen.\n\nOn chtěl jen stavět — kámen ke kameni,\npro jejich dům a budoucí čas;\nchtěl, aby měli vlastní zázemí,\naby se jednou svět usmál zas.",
+    options: [
+      { text: "A jak jí to vracela?", nextId: "zpev_4" }
+    ]
+  },
+  "zpev_4": {
+    id: "zpev_4",
+    text: "Budoval firmu, budoval svůj sen,\nchtěl z práce vytvořit jejich štěstí,\na místo díků přišel chladný den\na slova ostrá jako hřebíky.\n\nKdyž nejvíc potřeboval její dlaň,\nkdyž sotva stál a docházel mu dech,\nona mu místo blízkosti dala jen zášť\na nechala ho samotného ve zdech.\n\nTak zůstal sám — a kolem ticho,\njen nedokončený sen před ním stál;\nco mělo být kdysi jejich „zítra“,\nteď jako cizí dům tam stálo dál.\n\nŠel vzhůru sám, krok za krokem,\nbez cizí ruky, bez podpory;\nzatímco ona jiným směrem\nsi stavěla své nové obzory.",
+    options: [
+      { text: "Rozdělily se cesty...", nextId: "zpev_5" }
+    ]
+  },
+  "zpev_5": {
+    id: "zpev_5",
+    text: "Jejich sny jak listí větrem vzlétly,\nroznesly se po krajině dál;\nco spolu kdysi pevně spletli,\nčas beze slova rozerval.\n\nA ona změnila svou tvář —\nnové vlasy, nové znamení,\nna kůži vepsaný nový řád,\nnový způsob vlastního vidění.\n\nChtěla být ženou velkých gest,\ntou, která světu ukáže svou sílu,\nchtěla už kráčet bez starých cest\na minulost nechat za svou vírou.\n\nJen pod tím obrazem, pod novou tváří,\nse život neptá, kdo jsi chtěla být;\nsvětlo se může odrážet v záři,\na přesto člověk může uvnitř hnít.",
+    options: [
+      { text: "A on na to všechno jen koukal?", nextId: "zpev_6" }
+    ]
+  },
+  "zpev_6": {
+    id: "zpev_6",
+    text: "I ta, co stála kdysi blízko,\njednoho dne zmizela z jejího světa;\nco bývalo poutem, stalo se nízkým,\njakmile přešla další léta.\n\nA on se vrátil v myšlenkách zpět,\ntam, kde ještě všechno bylo prosté,\nkde jeden smích byl celý svět\na z malých chvil se štěstí rostlo.\n\nVzpomněl si na tu růži v dlani,\nna klíček, kterým ji kdysi rval,\nna dívku stojící při svítání,\nna život, který s ní plánoval.\n\nA najednou mu bylo jasné,\nže některé věci nejdou vrátit,\nže člověk může změnit tvář,\na přesto něco v něm navždy ztratit.",
+    options: [
+      { text: "Silný příběh.", nextId: "zpev_7" }
+    ]
+  },
+  "zpev_7": {
+    id: "zpev_7",
+    text: "Tak dlouho ji nosil v očích,\naž zapomněl, že čas umí brát;\nže z toho, co bývalo nejbližší,\nmůže se stát někdo, koho nepoznáš.\n\nA v tiché noci, bez svědků,\nkdyž měsíc kreslil stín na stěnu,\nse vracel k jediné myšlence,\njež bolela víc než všechno předtím:\n\nKde zmizela ta dívka, kterou znal?\nTa, co se smála nad tou růží?\nKde se ten krásný příběh rozpadal —\na kdo jim zavřel dveře k jejich „my“?\n\nA pak už jenom v duchu řekl,\nbez zloby, která kdysi pálila:\n\n„Tak krásná byla, když jsem ji poznal…\nkdy se ta dívka vlastně změnila?“",
+    options: [
+      { text: "A dál?", nextId: "zpev_8" }
+    ]
+  },
+  "zpev_8": {
+    id: "zpev_8",
+    text: "A noc mu neřekla nic.\n\nJen vítr prošel kolem oken,\njak prochází kolem člověka čas,\na někde hluboko pod tím vším\nzůstal ten první společný hlas.",
+    options: [
+      { text: "To je všechno? Běž stříhat, Tome.", nextId: "poem_end" }
+    ]
   },
   "speakeasy": {
     id: "speakeasy",
@@ -649,7 +708,50 @@ const dialogueTree: Record<string, DialogueNode> = {
     id: "character_strong",
     text: "Téměř ano. Opravdový a pevný charakter si totiž udrží jen těch pár nejsilnějších jedinců. Ti, co se nenechají strhnout tím davem a drží si svůj vlastní kurz navzdory tomu, že kolem nich všichni blázní. Snaž se mezi ně patřit taky. A teď mě omluv, mám tu něco na práci.",
     options: [],
-    isEnd: true
+        isEnd: true
+  },
+  "echoes_1": {
+    id: "echoes_1",
+    text: "Byl jsem svědkem mnoha lidských příběhů. Příběhů, které člověka někdy jen pohladí, jindy znejistí, a některé v něm zůstanou ještě dlouho poté, co jejich poslední věta dozněla. O mnoha baladách a tragických příbězích jsme se učili už ve škole. Četli jsme o lásce, zradě, vině, touze, bolesti i o rozhodnutích, která už nejdou vzít zpět.",
+    options: [
+      { text: "Dneska už je to jiné, ne?", nextId: "echoes_2" }
+    ]
+  },
+  "echoes_2": {
+    id: "echoes_2",
+    text: "Člověk si tehdy říká, že jsou to příběhy dávných časů, vytvořené básníky a spisovateli. Že patří do knih a do minulosti. Netušil jsem však, že jednou budu stát tak blízko příběhům, které jako by vystoupily ze stránek těch známých děl — jen dostaly nový nádech, nové kulisy a kabát jednadvacátého století.",
+    options: [
+      { text: "Máš nějaký konkrétní příklad?", nextId: "echoes_3" }
+    ]
+  },
+  "echoes_3": {
+    id: "echoes_3",
+    text: "Byl jsem svědkem jakéhosi nového zrození Máje. Ne toho ze školních lavic, ale Máje dnešního světa. Místo dávných cest a lesů tu máme sociální sítě a společnost, ve které se všechno děje mnohem rychleji, než stačíme pochopit následky vlastních činů. A přesto se v člověku stále odehrávají ty stejné věci. Láska. Žárlivost. Zrada.",
+    options: [
+      { text: "Co se přesně stalo?", nextId: "echoes_4" }
+    ]
+  },
+  "echoes_4": {
+    id: "echoes_4",
+    text: "Jedním z těch příběhů byl příběh teprve dvacetiletého chlapce. Který věřil své přítelkyni. Jenže ona chodila za jinými a nakonec svedla dokonce otce svého mladého přítele. Kdybych podobný příběh četl v knize, řekl bych si, že je to až příliš neuvěřitelné. Jenže život žádného autora nepotřebuje.",
+    options: [
+      { text: "To je šílený. Co s tím ale chceš dělat?", nextId: "echoes_5" }
+    ]
+  },
+  "echoes_5": {
+    id: "echoes_5",
+    text: "A právě proto si říkám, že bychom možná mohli začít tyto příběhy znovu vyprávět. Ne proto, abychom jejich aktéry soudili, ale abychom pochopili, co se v lidech odehrává. Vzít starou baladu a dát jí nový kabát. Nechat Máj promluvit jazykem jednadvacátého století.",
+    options: [
+      { text: "Takže z toho bude nová sbírka?", nextId: "echoes_6" }
+    ]
+  },
+  "echoes_6": {
+    id: "echoes_6",
+    text: "Třeba jednou všechny tyto příběhy poskládáme vedle sebe. Vznikne tak nová sbírka balad našeho času. Protože možná právě tam, kde končí stránky starých knih, začínají nové příběhy. Jen dnes mají jiný svět, jiná jména a jiný kabát... Ale lidské srdce zůstává překvapivě stejné.",
+    options: [
+      { text: "Složil jsi k tomu tématu něco?", nextId: "zpev_start" },
+      { text: "Silný. Radši půjdu, Tome.", nextId: "poem_end" }
+    ]
   }
 };
 
@@ -961,7 +1063,7 @@ export default function EasterEggPage() {
           <img 
             src={tomasImage} 
             alt="Don Tomáš" 
-            className={`absolute inset-0 w-full h-full object-contain z-10 transition-all duration-500 ${!isDay ? 'drop-shadow-[0_0_25px_rgba(197,160,89,0.3)]' : 'drop-shadow-[0_0_15px_rgba(0,0,0,0.3)]'}`}
+            className={`absolute inset-0 w-full h-full object-contain z-10 transform-gpu [backface-visibility:hidden] [image-rendering:-webkit-optimize-contrast] contrast-105 transition-all duration-500 ${!isDay ? 'drop-shadow-[0_0_25px_rgba(197,160,89,0.3)]' : 'drop-shadow-[0_0_15px_rgba(0,0,0,0.3)]'}`}
           />
         </motion.div>
 

@@ -748,7 +748,7 @@ export function CinematicIntro({ onDismiss, forceShow = false }: { onDismiss?: (
                          <img 
                            src={jacketSrc} 
                            alt="Tomáš" 
-                           className={`h-auto object-contain ${isLiteTier ? 'transition-none' : 'transition-all duration-500'} ${isHighTier ? 'group-hover:scale-[1.03]' : ''} ${!isHighTier ? '' : (!isDay ? 'drop-shadow-[0_0_25px_rgba(197,160,89,0.3)]' : 'drop-shadow-[0_0_15px_rgba(0,0,0,0.3)]')}`} 
+                           className={`h-auto object-contain transform-gpu [backface-visibility:hidden] [image-rendering:-webkit-optimize-contrast] contrast-105 ${isLiteTier ? 'transition-none' : 'transition-all duration-500'} ${isHighTier ? 'group-hover:scale-[1.03]' : ''} ${!isHighTier ? '' : (!isDay ? 'drop-shadow-[0_0_25px_rgba(197,160,89,0.3)]' : 'drop-shadow-[0_0_15px_rgba(0,0,0,0.3)]')}`} 
                            style={{ width: `${getScaled(tomasWidth, 'x')}`, maxWidth: '100vw' }} 
                          />
                        </motion.div>

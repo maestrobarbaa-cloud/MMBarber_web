@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useUI } from '@/contexts/UIContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getActiveTheme } from '@/lib/holidays';
 
 export function OpenFreeMap() {
   const { lang } = useTranslation();
@@ -312,13 +313,31 @@ export function OpenFreeMap() {
             });
           }
 
-          // Hudební easter egg (Nella Notta Siciliana / cina.mp3)
+          // Hudební easter egg (Nella Notta Siciliana / cina.mp3 / war.mp3)
           const savedPlaylist = localStorage.getItem('mmbarber_playlist') || '[]';
           const isSicilianaUnlocked = savedPlaylist.includes('Nella Notta Siciliana.mp3');
           const isCinaUnlocked = savedPlaylist.includes('cina.mp3');
+          const isWarUnlocked = savedPlaylist.includes('war.mp3');
           
-          // Pro čínský režim (C.N.Y.) chytáme 'cina.mp3', jinak 'Nella Notta Siciliana'
-          const shouldSpawnNote = langRef.current === 'zh' ? !isCinaUnlocked : !isSicilianaUnlocked;
+          const currentTheme = getActiveTheme(new Date());
+          
+          let shouldSpawnNote = false;
+          let eventTrack = '';
+          let eventTrackName = '';
+          
+          if (currentTheme === 'veterans') {
+             shouldSpawnNote = !isWarUnlocked;
+             eventTrack = '/sounds/war.mp3';
+             eventTrackName = 'Echoes of Valor';
+          } else if (langRef.current === 'zh') {
+             shouldSpawnNote = !isCinaUnlocked;
+             eventTrack = '/sounds/cina.mp3';
+             eventTrackName = 'Chinese Event';
+          } else {
+             shouldSpawnNote = !isSicilianaUnlocked;
+             eventTrack = '/sounds/Nella Notta Siciliana.mp3';
+             eventTrackName = 'Nella Notta Siciliana';
+          }
 
           if (shouldSpawnNote) {
             const musicEl = document.createElement('div');
@@ -372,8 +391,8 @@ export function OpenFreeMap() {
           
           musicEl.addEventListener('mouseenter', () => {
             if (isCaught) return;
-            // V čínském módu (c.ny) nota neuhýbá, aby šla snadno chytit jako odměna
-            if (lang === 'zh') return;
+            // V čínském módu (c.ny) nebo veterans nota neuhýbá, aby šla snadno chytit jako odměna
+            if (lang === 'zh' || currentTheme === 'veterans') return;
             
             // Uhýbání - neuteče hned, ale letí trochu pryč
             const dodgeAngle = Math.random() * Math.PI * 2;
@@ -395,8 +414,8 @@ export function OpenFreeMap() {
             // Přehrát skladbu
               window.dispatchEvent(new CustomEvent('mmbarber-play-track', { 
                 detail: { 
-                  track: langRef.current === 'zh' ? '/sounds/cina.mp3' : '/sounds/Nella Notta Siciliana.mp3', 
-                  name: langRef.current === 'zh' ? 'Chinese Event' : 'Nella Notta Siciliana', 
+                  track: eventTrack, 
+                  name: eventTrackName, 
                   color: colorGold 
                 } 
               }));

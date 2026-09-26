@@ -68,7 +68,7 @@ export function HeaderSearchBar({
                 />
                 {searchQuery.length > 1 && (
                   <div className="absolute top-full left-0 w-full bg-mafia-black border border-mafia-gold/30 z-[40000] mt-1 shadow-lg">
-                     {["winter", "cny", "valentine", "spring", "easter", "witches", "may", "midsummer", "summer", "harvest", "halloween", "allsouls", "christmas", "silvestr", "sakura", "classic", "dev", "intro", "menu", "reveal"]
+                     {["winter", "cny", "valentine", "spring", "easter", "witches", "may", "midsummer", "summer", "harvest", "halloween", "allsouls", "veterans", "christmas", "silvestr", "sakura", "classic", "dev", "intro", "menu", "reveal"]
                         .filter(c => c.includes(searchQuery.toLowerCase().trim()))
                         .map(suggestion => (
                           <button
