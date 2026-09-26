@@ -20,7 +20,7 @@ export type MegaMenuData = {
 
 export const getMegaMenuData = (lang: Language): MegaMenuData => ({
   services: {
-    title: lang === 'cs' ? "Služby" : "Services",
+    title: lang === 'cs' ? "Služby" : (lang === 'zh' ? "服务" : "Services"),
     path: "/#services",
     groups: [
       {
@@ -34,7 +34,7 @@ export const getMegaMenuData = (lang: Language): MegaMenuData => ({
         title: lang === 'cs' ? "Speciální nabídka" : "Specials",
         items: [
           { name: "VIP Club", path: "/vip-club" },
-          { name: lang === 'cs' ? "Dárkové Vouchery" : "Vouchers", path: "/vouchery" },
+          { name: lang === 'cs' ? "Dárkové Vouchery" : (lang === 'zh' ? "礼品代金券" : "Vouchers"), path: "/vouchery" },
         ]
       },
       {
@@ -48,7 +48,7 @@ export const getMegaMenuData = (lang: Language): MegaMenuData => ({
     ]
   },
   "o-nas": {
-    title: lang === 'cs' ? "O Nás" : "About Us",
+    title: lang === 'cs' ? "O Nás" : (lang === 'zh' ? "关于我们" : "About Us"),
     path: "/pribeh?v=2",
     groups: [
       {

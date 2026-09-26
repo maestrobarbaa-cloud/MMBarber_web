@@ -66,12 +66,7 @@ export function VipControlBar() {
   }, []);
 
   const { unlockAchievement } = useGame();
-  useEffect(() => {
-    if (isDevMode) {
-      unlockAchievement('vip_member');
-    }
-  }, [isDevMode, unlockAchievement]);
-
+  
   const toggleNoirMode = () => {
     const newVal = !isNoirMode;
     setIsNoirMode(newVal);

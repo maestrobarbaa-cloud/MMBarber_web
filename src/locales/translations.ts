@@ -3195,12 +3195,28 @@ export const translations = {
       acceptMission: "进入 (VSTOUPIT)"
     },
     holidayCountdown: {
+      title: "本周最佳 (TO NEJLEPŠÍ Z TÝDNE)",
+      upcoming: "即将举行的活动 (BLÍŽÍCÍ SE UDÁLOSTI)",
       holidays: {
         statehoodDay: {
           name: "捷克建国日 (Den české státnosti)",
           desc: "自豪与风格 (Hrdost a styl.)"
         }
       }
+    },
+    rodina: {
+      title: "家族 (RODINA)"
+    },
+    zajimavosti: {
+      title: "有趣的人 (ZAJÍMAVOSTI)"
+    },
+    others: {
+      title: "其他 (OSTATNÍ)",
+      members: { title: "成员 (ČLENOVÉ)" },
+      hiddenPlaces: { title: "隐藏地点 (SKRYTÁ MÍSTA)" },
+      systemVisit: { title: "系统与访问 (SYSTÉM A NÁVŠTĚVA)", description: "了解如何访问和系统工作原理。" },
+      pece: { title: "护理 (PÉČE)", description: "关于护理与化妆品的杂志 (MAGAZÍN O PÉČI A KOSMETICE)" },
+      community: { title: "社区 (KOMUNITA)", description: "加入我们 (PŘIDEJ SE K NÁM)" }
     }
   }
 };

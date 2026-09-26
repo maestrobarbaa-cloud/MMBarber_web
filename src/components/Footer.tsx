@@ -571,7 +571,7 @@ export function Footer() {
                 className="mt-10 group relative overflow-hidden px-8 py-2 border border-mafia-gold/30 hover:border-mafia-gold transition-all"
               >
                 <span className="relative z-10 font-mono text-[10px] font-black uppercase tracking-[0.3em] text-mafia-gold group-hover:text-mafia-black">
-                  {t?.footer?.close || (lang === 'cs' ? 'ZAVŘÍT' : 'CLOSE')}
+                  {t?.footer?.close || (lang === 'cs' ? 'ZAVŘÍT' : (lang === 'zh' ? '关闭' : 'CLOSE'))}
                 </span>
                 <div className="absolute inset-0 bg-mafia-gold translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
               </button>
@@ -605,7 +605,7 @@ export function Footer() {
               <div className="w-32 h-1 bg-mafia-gold mb-8"></div>
 
               <p className="text-mafia-gold/60 font-mono text-sm md:text-lg uppercase tracking-[0.4em] mb-4">
-                {t?.footer?.callToAction || (lang === 'cs' ? 'ZAVOLEJ NÁM' : 'CALL US')}
+                {t?.footer?.callToAction || (lang === 'cs' ? 'ZAVOLEJ NÁM' : (lang === 'zh' ? '联系我们' : 'CALL US'))}
               </p>
 
               <a
@@ -619,7 +619,7 @@ export function Footer() {
                 onClick={() => setShowContactOverlay(false)}
                 className="mt-20 group relative overflow-hidden px-10 py-4 bg-mafia-gold text-mafia-black font-heading font-black text-sm uppercase tracking-[0.5em] transition-all"
               >
-                {t?.footer?.close || (lang === 'cs' ? 'ZAVŘÍT' : 'CLOSE')}
+                {t?.footer?.close || (lang === 'cs' ? 'ZAVŘÍT' : (lang === 'zh' ? '关闭' : 'CLOSE'))}
               </button>
             </motion.div>
           </motion.div>
@@ -661,7 +661,7 @@ export function Footer() {
 
           <div className="relative p-6 bg-white/[0.02] border-l-2 border-mafia-gold/20 backdrop-blur-sm text-left">
             <p className="font-sans text-smoke-white/50 text-sm leading-relaxed italic">
-              &quot;{t?.footer?.description || (lang === 'cs' ? 'MM BARBER - Víc než jen střih.' : 'MM BARBER - More than just a cut.')}&quot;
+              &quot;{t?.footer?.description || (lang === 'cs' ? 'MM BARBER - Víc než jen střih.' : (lang === 'zh' ? 'MM BARBER - 不仅仅是理发。' : 'MM BARBER - More than just a cut.'))}&quot;
             </p>
           </div>
 
@@ -679,7 +679,7 @@ export function Footer() {
           {/* Column 1: Navigace + Rodina stacked */}
           <div className="flex flex-col space-y-8">
             <div className="flex flex-col space-y-3">
-              <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">{t?.footer?.nav || "NAVIGACE"}</h3>
+              <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">{t?.footer?.nav || (lang === 'zh' ? "导航" : "NAVIGACE")}</h3>
               <FooterLink href="/#operativi">{t?.operatives?.title || "OPERATIVCI"}</FooterLink>
               <FooterLink
                 href="/#kontakt"
@@ -690,22 +690,22 @@ export function Footer() {
                   }
                 }}
               >
-                {t?.footer?.contact || (lang === 'cs' ? "KONTAKT" : "CONTACT")}
+                {t?.footer?.contact || (lang === 'cs' ? "KONTAKT" : (lang === 'zh' ? "联系方式" : "CONTACT"))}
               </FooterLink>
               <FooterLink href="/#holidays">{t?.header?.schedule || "PLÁN"}</FooterLink>
             </div>
 
             <div className="flex flex-col space-y-3">
-              <FooterLink href="/provozni-rad" isBordered>{t?.footer?.rules || "PROVOZNÍ ŘÁD"}</FooterLink>
-              <FooterLink href="/podminky-pouzivani" isBordered>{lang === 'cs' ? "PODMÍNKY POUŽÍVÁNÍ" : "TERMS OF USE"}</FooterLink>
-              <FooterLink href="/ochrana-osobnich-udaju" isBordered>{lang === 'cs' ? "GDPR / OCHRANA OSOBNÍCH ÚDAJŮ" : "GDPR / PRIVACY POLICY"}</FooterLink>
-              <FooterLink href="/zasady-cookies" isBordered>{t?.footer?.cookies || "COOKIES"}</FooterLink>
+              <FooterLink href="/provozni-rad" isBordered>{t?.footer?.rules || (lang === 'zh' ? "运营规则" : "PROVOZNÍ ŘÁD")}</FooterLink>
+              <FooterLink href="/podminky-pouzivani" isBordered>{lang === 'cs' ? "PODMÍNKY POUŽÍVÁNÍ" : (lang === 'zh' ? "使用条款" : "TERMS OF USE")}</FooterLink>
+              <FooterLink href="/ochrana-osobnich-udaju" isBordered>{lang === 'cs' ? "GDPR / OCHRANA OSOBNÍCH ÚDAJŮ" : (lang === 'zh' ? "隐私政策 / GDPR" : "GDPR / PRIVACY POLICY")}</FooterLink>
+              <FooterLink href="/zasady-cookies" isBordered>{t?.footer?.cookies || (lang === 'zh' ? "COOKIES政策" : "COOKIES")}</FooterLink>
             </div>
           </div>
 
           {/* Column 2: Spojení */}
           <div className="flex flex-col space-y-3">
-            <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">{t?.footer?.contact || "KONTAKT"}</h3>
+            <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">{t?.footer?.contact || (lang === 'zh' ? "联系方式" : "KONTAKT")}</h3>
             <FooterLink href="tel:+420577544073" isExternal>+420 577 544 073</FooterLink>
             <FooterLink href="mailto:mmbarber@mmbarber.cz" isExternal>mmbarber@mmbarber.cz</FooterLink>
             <div className="mt-2">
@@ -717,7 +717,7 @@ export function Footer() {
                   trackEvent("click_footer_responsible_person");
                 }}
               >
-                {t?.contact?.responsiblePerson || (lang === 'cs' ? "ODPOVĚDNÁ OSOBA" : "RESPONSIBLE PERSON")}
+                {t?.contact?.responsiblePerson || (lang === 'cs' ? "ODPOVĚDNÁ OSOBA" : (lang === 'zh' ? "负责人" : "RESPONSIBLE PERSON"))}
               </FooterLink>
             </div>
           </div>
@@ -725,29 +725,29 @@ export function Footer() {
           {/* Column 3: Partnerství & Info */}
           <div className="flex flex-col space-y-3">
             <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">
-              {t.footer?.partnerships || "Partnerství"}
+              {t.footer?.partnerships || (lang === 'zh' ? "合作" : "Partnerství")}
             </h3>
             <FooterLink href="/franchise">{t?.header?.franchise || "FRANCHISE"}</FooterLink>
-            <FooterLink href="/payment">{t?.header?.payment || "PLATBA"}</FooterLink>
-            <FooterLink href="/kariera">{t?.header?.career || "KARIÉRA"}</FooterLink>
-            <FooterLink href="/pribeh">{lang === 'cs' ? "PŘÍBĚH" : "STORY"}</FooterLink>
+            <FooterLink href="/payment">{t?.header?.payment || (lang === 'zh' ? "付款" : "PLATBA")}</FooterLink>
+            <FooterLink href="/kariera">{t?.header?.career || (lang === 'zh' ? "职业" : "KARIÉRA")}</FooterLink>
+            <FooterLink href="/pribeh">{lang === 'cs' ? "PŘÍBĚH" : (lang === 'zh' ? "我们的故事" : "STORY")}</FooterLink>
           </div>
 
           {/* Column 4: SEO Landing Pages - Hidden from humans but preserved in DOM for SEO crawl weight */}
           <div className="absolute -z-50 opacity-0 pointer-events-none w-0 h-0 overflow-hidden" aria-hidden="true">
             <h3 className="font-sans font-bold text-smoke-white uppercase tracking-widest text-sm mb-1 opacity-50">
-              {lang === 'cs' ? "SLUŽBY A REGION" : "SERVICES & REGION"}
+              {lang === 'cs' ? "SLUŽBY A REGION" : (lang === 'zh' ? "服务和地区" : "SERVICES & REGION")}
             </h3>
             <FooterLink href="/barbershop-uherske-hradiste">BARBERSHOP UH</FooterLink>
-            <FooterLink href="/pansky-strih-uherske-hradiste">{lang === 'cs' ? "PÁNSKÝ STŘIH" : "HAIRCUT"}</FooterLink>
-            <FooterLink href="/uprava-vousu-uherske-hradiste">{lang === 'cs' ? "ÚPRAVA VOUSŮ" : "BEARD TRIM"}</FooterLink>
+            <FooterLink href="/pansky-strih-uherske-hradiste">{lang === 'cs' ? "PÁNSKÝ STŘIH" : (lang === 'zh' ? "男士理发" : "HAIRCUT")}</FooterLink>
+            <FooterLink href="/uprava-vousu-uherske-hradiste">{lang === 'cs' ? "ÚPRAVA VOUSŮ" : (lang === 'zh' ? "胡须修剪" : "BEARD TRIM")}</FooterLink>
             <FooterLink href="/region-slovacko">SLOVÁCKO</FooterLink>
           </div>
 
           {/* Column 3: Sleduj nás - Modern Premium Grid */}
           <div className="flex flex-col space-y-6 flex-1 min-w-[200px]">
             <h3 className="font-sans font-black text-white uppercase tracking-[0.2em] text-[10px] mb-2 border-b border-mafia-gold/20 pb-2">
-              {t?.footer?.followUs || (lang === 'cs' ? "SLEDUJ NÁS" : "FOLLOW US")}
+              {t?.footer?.followUs || (lang === 'cs' ? "SLEDUJ NÁS" : (lang === 'zh' ? "关注我们" : "FOLLOW US"))}
             </h3>
 
             <div className="grid grid-cols-1 gap-4 items-center">
@@ -809,12 +809,12 @@ export function Footer() {
         <div className="flex flex-col items-center gap-6 w-full max-w-4xl px-4">
           <div className="flex flex-col items-center gap-2">
             <p className="text-[10px] md:text-sm font-heading font-black text-mafia-gold uppercase tracking-[0.3em] text-center mb-4 px-4 max-w-2xl mx-auto">
-              {t?.footer?.mission || "Z LIDÍ VZNIKÁ STYL. ZE STYLU VZNIKÁ ZNAČKA."}
+              {t?.footer?.mission || (lang === 'zh' ? "风格源自人群，品牌源自风格。" : "Z LIDÍ VZNIKÁ STYL. ZE STYLU VZNIKÁ ZNAČKA.")}
             </p>
             <p className="text-[9px] md:text-[10px] font-mono text-smoke-white/40 uppercase tracking-[0.1em] text-center leading-relaxed">
               {lang === 'cs' 
                 ? "Veškeré texty, fotografie, logo a originální obsah webu jsou chráněny autorským právem." 
-                : "All texts, photographs, logo and original content of the website are protected by copyright."}
+                : (lang === 'zh' ? "网站上的所有文字、照片、标志和原创内容均受版权保护。" : "All texts, photographs, logo and original content of the website are protected by copyright.")}
             </p>
             
 

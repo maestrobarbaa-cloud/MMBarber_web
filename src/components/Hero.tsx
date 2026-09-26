@@ -319,9 +319,10 @@ export function Hero() {
   }, []);
 
   const heroImage = 
-    activeHero === 1 ? "/obr/main-hero.png" : 
+    lang === 'zh' ? "/obr/cina.png" :
+    (activeHero === 1 ? "/obr/main-hero.png" : 
     activeHero === 2 ? "/obr/hero-2.png" : 
-    "/obr/hero-3.png";
+    "/obr/hero-3.png");
 
   const isBloodImage = isBloodMode;
 

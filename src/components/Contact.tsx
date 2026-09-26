@@ -41,7 +41,7 @@ export function Contact() {
           >
             {/* Horní část: Mapa přes celou šířku (čisté w-full bez scrollbar bugu) */}
             <div className="w-full h-[60vh] md:h-[75vh] relative overflow-hidden">
-              <OpenFreeMap key={`${isBloodMode}-${isNoirMode}`} />
+              <OpenFreeMap key={`${isBloodMode}-${isNoirMode}-${lang}`} />
               {(!isWeakerGraphics || isNoirMode) && (
                 <>
                   <div className="absolute inset-0 bg-mafia-gold/10 mix-blend-color z-10 pointer-events-none transition-opacity duration-500"></div>

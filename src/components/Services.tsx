@@ -97,19 +97,19 @@ export function Services() {
     const cards = [
       {
         id: 'services',
-        title: t?.services?.title || (lang === 'cs' ? 'SLUŽBY' : 'SERVICES'),
+        title: t?.services?.title || (lang === 'cs' ? 'SLUŽBY' : (lang === 'zh' ? '服务' : 'SERVICES')),
         icon: <Target className="text-mafia-gold" size={48} />,
         iconMobile: <Target className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" size={32} />,
-        description: lang === 'cs' ? 'CENÍK A REZERVACE' : 'PRICING & BOOKING',
+        description: lang === 'cs' ? 'CENÍK A REZERVACE' : (lang === 'zh' ? '价格与预约' : 'PRICING & BOOKING'),
         onClick: () => { router.push('/cenik'); trackEvent("open_pricing_menu"); }
       },
       { 
         id: 'vouchers',
-        title: lang === 'cs' ? 'DÁRKOVÉ VOUCHERY' : 'GIFT VOUCHERS',
-        titleMobile: lang === 'cs' ? 'VOUCHERY' : 'VOUCHERS',
+        title: lang === 'cs' ? 'DÁRKOVÉ VOUCHERY' : (lang === 'zh' ? '礼品代金券' : 'GIFT VOUCHERS'),
+        titleMobile: lang === 'cs' ? 'VOUCHERY' : (lang === 'zh' ? '代金券' : 'VOUCHERS'),
         icon: <Ticket size={48} className="text-mafia-gold" />,
         iconMobile: <Ticket size={32} className="text-mafia-gold" />,
-        description: lang === 'cs' ? 'DÁRKOVÉ BALENÍ S PEČETÍ / PLATNOST 1 ROK' : 'PREMIUM PACKAGING WITH SEAL / 1 YEAR VALIDITY',
+        description: lang === 'cs' ? 'DÁRKOVÉ BALENÍ S PEČETÍ / PLATNOST 1 ROK' : (lang === 'zh' ? '带封条的高级包装 / 有效期一年' : 'PREMIUM PACKAGING WITH SEAL / 1 YEAR VALIDITY'),
         onClick: () => { router.push('/vouchery'); trackEvent("open_vouchers_page"); }
       },
       /*
@@ -134,44 +134,44 @@ export function Services() {
     const cards = [
       { 
         id: 'gallery',
-        title: lang === 'cs' ? 'GALERIE' : 'GALLERY',
-        titleMobile: lang === 'cs' ? 'GALERIE' : 'GALLERY',
+        title: lang === 'cs' ? 'GALERIE' : (lang === 'zh' ? '画廊' : 'GALLERY'),
+        titleMobile: lang === 'cs' ? 'GALERIE' : (lang === 'zh' ? '画廊' : 'GALLERY'),
         icon: <Camera size={48} className="text-mafia-gold" />,
         iconMobile: <Camera size={32} className="text-mafia-gold" />,
-        description: lang === 'cs' ? 'NAHLÉDNĚTE DO SVĚTA MMBARBER' : 'STEP INTO THE WORLD OF MMBARBER',
+        description: lang === 'cs' ? 'NAHLÉDNĚTE DO SVĚTA MMBARBER' : (lang === 'zh' ? '步入 MMBARBER 的世界' : 'STEP INTO THE WORLD OF MMBARBER'),
         onClick: () => { router.push('/galerie'); trackEvent("open_gallery_page"); }
       },
       { 
         id: 'members',
-        title: t?.rodina?.title || (lang === 'cs' ? 'RODINA' : 'FAMILY'),
-        titleMobile: t?.rodina?.list === 'Seznam' ? (lang === 'cs' ? 'RODINA' : 'FAMILY') : (lang === 'cs' ? 'RODINA' : 'FAMILY'),
+        title: t?.rodina?.title || (lang === 'cs' ? 'RODINA' : (lang === 'zh' ? '家族' : 'FAMILY')),
+        titleMobile: t?.rodina?.list === 'Seznam' ? (lang === 'cs' ? 'RODINA' : (lang === 'zh' ? '家族' : 'FAMILY')) : (lang === 'cs' ? 'RODINA' : (lang === 'zh' ? '家族' : 'FAMILY')),
         icon: <Scissors size={48} className="text-mafia-gold" />,
         iconMobile: <Scissors size={32} className="text-mafia-gold" />,
-        description: lang === 'cs' ? 'POZNEJTE NÁŠ TÝM' : 'MEET OUR TEAM',
+        description: lang === 'cs' ? 'POZNEJTE NÁŠ TÝM' : (lang === 'zh' ? '认识我们的团队' : 'MEET OUR TEAM'),
         onClick: () => { router.push('/rodina'); trackEvent("open_family_page"); }
       },
       { 
         id: 'housing',
-        title: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : 'INTERESTING PEOPLE'),
-        titleMobile: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : 'INTERESTING'),
+        title: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : (lang === 'zh' ? '有趣的人' : 'INTERESTING PEOPLE')),
+        titleMobile: t?.zajimavosti?.title || (lang === 'cs' ? 'ZAJÍMAVOSTI' : (lang === 'zh' ? '有趣' : 'INTERESTING')),
         icon: <UserSquare2 size={48} className="text-mafia-gold" />,
         iconMobile: <UserSquare2 size={32} className="text-mafia-gold" />,
-        description: lang === 'cs' ? 'PŘÍBĚHY MÍSTNÍCH' : 'LOCAL STORIES',
+        description: lang === 'cs' ? 'PŘÍBĚHY MÍSTNÍCH' : (lang === 'zh' ? '当地故事' : 'LOCAL STORIES'),
         onClick: () => { router.push('/zajimavosti'); trackEvent("open_interesting_people_page"); }
       },
       { 
         id: 'hidden',
-        title: t?.others?.hiddenPlaces?.title || (lang === 'cs' ? 'SKRYTÁ MÍSTA' : 'HIDDEN PLACES'),
-        titleMobile: lang === 'cs' ? 'SKRYTÁ' : 'HIDDEN',
+        title: t?.others?.hiddenPlaces?.title || (lang === 'cs' ? 'SKRYTÁ MÍSTA' : (lang === 'zh' ? '隐藏地点' : 'HIDDEN PLACES')),
+        titleMobile: lang === 'cs' ? 'SKRYTÁ' : (lang === 'zh' ? '隐藏' : 'HIDDEN'),
         icon: <Globe size={48} className="text-mafia-gold" />,
         iconMobile: <Globe size={32} className="text-mafia-gold" />,
-        description: lang === 'cs' ? 'TAJEMNÉ KOUTY NAŠEHO MĚSTA' : 'DISCOVER HIDDEN URBEX SPOTS',
+        description: lang === 'cs' ? 'TAJEMNÉ KOUTY NAŠEHO MĚSTA' : (lang === 'zh' ? '发现隐藏的探险地点' : 'DISCOVER HIDDEN URBEX SPOTS'),
         onClick: () => { router.push('/skryta-mista'); trackEvent("open_hidden_places_page"); }
       },
       { 
         id: 'system',
-        title: t?.others?.systemVisit?.title || (lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : 'SYSTEM & VISIT'),
-        titleMobile: lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : 'SYSTEM & VISIT',
+        title: t?.others?.systemVisit?.title || (lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : (lang === 'zh' ? '系统与访问' : 'SYSTEM & VISIT')),
+        titleMobile: lang === 'cs' ? 'SYSTÉM A NÁVŠTĚVA' : (lang === 'zh' ? '系统与访问' : 'SYSTEM & VISIT'),
         icon: <Info size={48} className="text-mafia-gold" />,
         iconMobile: <Info size={32} className="text-mafia-gold" />,
         description: t?.others?.systemVisit?.description,
@@ -179,20 +179,20 @@ export function Services() {
       },
       { 
         id: 'pece',
-        title: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : 'CARE'),
-        titleMobile: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : 'CARE'),
+        title: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : (lang === 'zh' ? '护理' : 'CARE')),
+        titleMobile: t?.others?.pece?.title || (lang === 'cs' ? 'PÉČE' : (lang === 'zh' ? '护理' : 'CARE')),
         icon: <Sparkles size={48} className="text-mafia-gold" />,
         iconMobile: <Sparkles size={32} className="text-mafia-gold" />,
-        description: t?.others?.pece?.description || (lang === 'cs' ? 'MAGAZÍN O PÉČI A KOSMETICE' : 'MAGAZINE ABOUT CARE & COSMETICS'),
+        description: t?.others?.pece?.description || (lang === 'cs' ? 'MAGAZÍN O PÉČI A KOSMETICE' : (lang === 'zh' ? '关于护理与化妆品的杂志' : 'MAGAZINE ABOUT CARE & COSMETICS')),
         onClick: () => { router.push('/pece'); trackEvent("open_care_magazine"); }
       },
       { 
         id: 'community',
-        title: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : 'COMMUNITY'),
-        titleMobile: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : 'COMMUNITY'),
+        title: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : (lang === 'zh' ? '社区' : 'COMMUNITY')),
+        titleMobile: t?.others?.community?.title || (lang === 'cs' ? 'KOMUNITA' : (lang === 'zh' ? '社区' : 'COMMUNITY')),
         icon: <Users size={48} className="text-mafia-gold" />,
         iconMobile: <Users size={32} className="text-mafia-gold" />,
-        description: t?.others?.community?.description || (lang === 'cs' ? 'PŘIDEJ SE K NÁM' : 'JOIN US'),
+        description: t?.others?.community?.description || (lang === 'cs' ? 'PŘIDEJ SE K NÁM' : (lang === 'zh' ? '加入我们' : 'JOIN US')),
         onClick: () => { router.push('/komunita'); trackEvent("open_community_page"); }
       }
     ].map(card => {
@@ -244,7 +244,7 @@ export function Services() {
 
             <span className="relative z-10 flex items-center gap-4 group-hover:scale-105 transition-transform duration-300">
               <Users size={24} />
-              {lang === 'cs' ? "Rodina MMBarberu" : "MMBarber Family"}
+              {lang === 'cs' ? "Rodina MMBarberu" : (lang === 'zh' ? "MMBarber 家族" : "MMBarber Family")}
             </span>
           </button>
         </div>
@@ -309,7 +309,7 @@ export function Services() {
 
         <div className="text-center mt-40 mb-16 md:mb-24">
           <h2 className="text-4xl md:text-6xl font-heading font-black text-smoke-white mb-4 tracking-[0.3em] uppercase">
-            {t?.others?.title || (lang === 'cs' ? 'OSTATNÍ' : 'OTHERS')}
+            {t?.others?.title || (lang === 'cs' ? 'OSTATNÍ' : (lang === 'zh' ? '其他' : 'OTHERS'))}
           </h2>
           <div className="section-underline w-16 md:w-24 h-1 bg-gradient-to-r from-mafia-gold/20 via-mafia-gold to-mafia-gold/20 mx-auto mb-4 md:mb-6 shadow-[0_0_20px_var(--color-mafia-gold-glow)]" style={{ background: 'linear-gradient(to right, transparent, var(--user-accent-color), transparent)', boxShadow: '0 0 20px var(--user-glow-color)' }}></div>
         </div>
@@ -760,7 +760,7 @@ const MenuCard = React.memo(function MenuCard({
 }) {
   const { lang } = useTranslation();
   const [localHover, setLocalHover] = useState(false);
-  const openLabel = lang === "cs" ? "Otevřít" : "Open";
+  const openLabel = lang === "cs" ? "Otevřít" : (lang === "zh" ? "打开" : "Open");
   
   const middle = (total - 1) / 2;
   const rotation = variant === 'fanned' ? (index - middle) * 10 : 0;
@@ -908,7 +908,7 @@ const MenuCard = React.memo(function MenuCard({
                 className="w-full py-2 bg-mafia-gold/20 border border-mafia-gold/50 text-mafia-gold font-bold uppercase tracking-widest text-xs hover:bg-mafia-gold hover:text-black transition-colors"
                 style={{ borderColor: accentColor, color: accentColor }}
               >
-                Více / Detail
+                {lang === 'cs' ? 'Více / Detail' : (lang === 'zh' ? '更多 / 详情' : 'More / Detail')}
               </button>
             </div>
           )}
@@ -994,8 +994,8 @@ const MenuCard = React.memo(function MenuCard({
                   style={disabled ? {} : { backgroundColor: accentColor }}
                 >
                   {disabled 
-                    ? (lang === 'cs' ? 'NEDOSTUPNÉ' : 'UNAVAILABLE')
-                    : (lang === 'cs' ? (title === 'SEZNAMKA' ? "OTEVŘÍT" : "VÍCE / DETAIL") : "OPEN / MORE")
+                    ? (lang === 'cs' ? 'NEDOSTUPNÉ' : (lang === 'zh' ? '不可用' : 'UNAVAILABLE'))
+                    : (lang === 'cs' ? (title === 'SEZNAMKA' ? "OTEVŘÍT" : "VÍCE / DETAIL") : (lang === 'zh' ? (title === '约会' ? "打开" : "更多 / 详情") : "OPEN / MORE"))
                   }
                 </button>
               </div>

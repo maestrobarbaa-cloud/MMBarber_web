@@ -215,7 +215,7 @@ export function CinematicIntro({ onDismiss, forceShow = false }: { onDismiss?: (
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const getScaled = (val: number) => `${val}px`;
+  const getScaled = (val: number, axis?: 'x' | 'y' | string) => `${val}px`;
 
   useEffect(() => {
     if (graphicsTier !== 'ultra') return;

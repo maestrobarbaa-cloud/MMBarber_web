@@ -19,6 +19,17 @@ export function Radio() {
   const isVip = pathname === "/vip-club";
   const [messageIndex, setMessageIndex] = useState(0);
   const [activeTheme, setActiveTheme] = useState<'normal' | 'blood' | 'noir'>('normal');
+  const [playlist, setPlaylist] = useState<{name: string, track: string, color: string}[]>([]);
+  const [showPlaylist, setShowPlaylist] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('mmbarber_playlist');
+      if (saved) {
+        setPlaylist(JSON.parse(saved));
+      }
+    } catch (e) {}
+  }, []);
 
   useEffect(() => {
     const updateTheme = () => {
@@ -38,52 +49,7 @@ export function Radio() {
     };
   }, []);
 
-  const NoirLyrics = () => {
-    const [lyricIndex, setLyricIndex] = useState(0);
-    const lyrics = [
-      "Půlnoční stíny na mokré dlažbě...",
-      "Ostrá břitva, tichý slib v každé vazbě...",
-      "Respekt se kupuje krví a loajalitou...",
-      "V MMBarberu najdeš tvář svou skrytou...",
-      "Whisky, kouř a jazz v nočním vzduchu...",
-      "Rodina je víc než jen slova v uchu...",
-      "Tady se píše historie, milimetr po milimetru...",
-      "Vládci UH v každém metru..."
-    ];
 
-    useEffect(() => {
-      if (!isPlaying) return;
-      const interval = setInterval(() => {
-        setLyricIndex(prev => (prev + 1) % lyrics.length);
-      }, 5000);
-      return () => clearInterval(interval);
-    }, [isPlaying]);
-
-    return (
-      <AnimatePresence>
-        {isPlaying && (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="absolute right-full mr-8 top-1/2 -translate-y-1/2 text-right pointer-events-none"
-          >
-            <motion.p
-              key={lyricIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="text-mafia-gold/60 radio-lyrics-text font-serif italic text-lg leading-relaxed whitespace-nowrap tracking-wider"
-              style={{ textShadow: '0 0 20px rgba(var(--color-mafia-gold-rgb),0.3)' }}
-            >
-              {lyrics[lyricIndex]}
-            </motion.p>
-            <div className="h-px w-32 bg-gradient-to-l from-mafia-gold/40 to-transparent ml-auto mt-2" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    );
-  };
 
   const VinylRecord = () => {
     const centerColor = {
@@ -107,13 +73,17 @@ export function Radio() {
         ))}
         {/* Center Label */}
         <div 
-          className="w-10 h-10 rounded-full shadow-2xl transition-colors duration-500 border border-black/20 flex items-center justify-center" 
+          className="w-10 h-10 rounded-full shadow-2xl transition-colors duration-500 border border-black/20 flex items-center justify-center relative" 
           style={{ backgroundColor: (isCustomTrack && customTrackColor) ? customTrackColor : centerColor }} 
         >
           {isCustomTrack && customTrackName && (
-             <span className="text-[4px] text-black/80 font-black font-sans uppercase text-center leading-none">
-               {customTrackName.split(' ').map((word, i) => <div key={i}>{word}</div>)}
-             </span>
+             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+               <div style={{ transform: 'scale(0.35)' }} className="flex flex-col items-center justify-center min-w-[80px]">
+                 <span className="text-[12px] text-black/80 font-black font-sans uppercase text-center leading-[1.1]">
+                   {customTrackName.split(' ').map((word, i) => <div key={i}>{word}</div>)}
+                 </span>
+               </div>
+             </div>
           )}
         </div>
         {/* Hole */}
@@ -183,10 +153,21 @@ export function Radio() {
       if (detail && detail.track && jazzAudioRef.current) {
         setIsVisible(true);
         setIsCustomTrack(true);
+        setCustomTrackName(detail.name || "");
+        setCustomTrackColor(detail.color || "");
         setIsPlaying(true);
         jazzAudioRef.current.src = detail.track;
         jazzAudioRef.current.play().catch(console.error);
         trackEvent("radio_custom_track", { track: detail.track });
+        
+        setPlaylist(prev => {
+          if (!prev.find(p => p.track === detail.track)) {
+            const newList = [...prev, { name: detail.name || "", track: detail.track, color: detail.color || "" }];
+            localStorage.setItem('mmbarber_playlist', JSON.stringify(newList));
+            return newList;
+          }
+          return prev;
+        });
       }
     };
 
@@ -204,14 +185,28 @@ export function Radio() {
          setIsCustomTrack(true);
          setCustomTrackName(detail.name || "");
          setCustomTrackColor(detail.color || "");
-         if (jazzAudioRef.current) jazzAudioRef.current.src = detail.track;
+         if (jazzAudioRef.current) {
+           jazzAudioRef.current.src = detail.track;
+           jazzAudioRef.current.play().then(() => {
+             setIsPlaying(true);
+             setIsVisible(true);
+             window.dispatchEvent(new CustomEvent('mmbarber-radio-update', { detail: true }));
+           }).catch((err) => {
+             console.log("Autoplay prevented:", err);
+             setIsPlaying(false);
+             window.dispatchEvent(new CustomEvent('mmbarber-radio-update', { detail: false }));
+           });
+         }
       } else {
          setIsCustomTrack(false);
          setCustomTrackName("");
          setCustomTrackColor("");
          if (jazzAudioRef.current) {
            jazzAudioRef.current.src = "/jazz-loop.mp3";
-           // Keep playing if it was playing, but it will seamlessly switch since we changed src
+           // If it was playing, we might want to try playing the new src
+           if (isPlaying) {
+             jazzAudioRef.current.play().catch(() => setIsPlaying(false));
+           }
          }
       }
     };
@@ -280,6 +275,23 @@ export function Radio() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [showCta]);
 
+  const currentDisplayName = isCustomTrack && customTrackName ? customTrackName : "MMBarber Jazz Radio";
+
+  const handleNextTrack = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (playlist.length === 0) return;
+    
+    // Find current index
+    const currentIndex = playlist.findIndex(p => p.name === customTrackName);
+    
+    // If we are at the last track, or not currently playing a custom track, play the first one
+    if (currentIndex === -1 || currentIndex >= playlist.length - 1) {
+      window.dispatchEvent(new CustomEvent('mmbarber-play-track', { detail: playlist[0] }));
+    } else {
+      window.dispatchEvent(new CustomEvent('mmbarber-play-track', { detail: playlist[currentIndex + 1] }));
+    }
+  };
+
   const togglePlay = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     setShowCta(false);
@@ -331,7 +343,27 @@ export function Radio() {
           className={`fixed ${isVip ? 'bottom-12' : 'bottom-24'} right-12 z-[9999999]`}
         >
           <div className="relative">
-            <NoirLyrics />
+            {isPlaying && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="absolute right-full mr-8 top-1/2 -translate-y-1/2 text-right flex flex-col items-end pointer-events-auto"
+              >
+                <div className="text-[9px] text-mafia-gold/40 uppercase tracking-[0.3em] font-mono mb-1">
+                  PRÁVĚ HRAJE {playlist.length > 0 && "(KLIKNI PRO DALŠÍ)"}
+                </div>
+                <button 
+                  onClick={handleNextTrack}
+                  className="text-mafia-gold radio-lyrics-text font-serif italic text-lg leading-relaxed whitespace-nowrap tracking-wider hover:text-white transition-colors"
+                  style={{ textShadow: '0 0 20px rgba(197,160,89,0.5)' }}
+                  title={playlist.length > 0 ? "Přepnout skladbu" : ""}
+                >
+                  {currentDisplayName}
+                </button>
+                <div className="h-px w-32 bg-gradient-to-l from-mafia-gold/40 to-transparent ml-auto mt-2" />
+              </motion.div>
+            )}
             
             <button 
               onClick={togglePlay}

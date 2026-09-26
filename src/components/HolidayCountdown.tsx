@@ -380,7 +380,7 @@ export function HolidayCountdown() {
             {t?.holidayCountdown?.upcoming || (lang === 'cs' ? 'BLÍŽÍCÍ SE UDÁLOSTI' : 'UPCOMING EVENTS')}
           </motion.div>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-heading font-black text-smoke-white tracking-[0.2em] uppercase text-center leading-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-            {t?.holidayCountdown?.title || (lang === 'cs' ? 'TO NEJLEPŠÍ Z TÝDNE' : 'BEST OF THE WEEK')}
+            {t?.holidayCountdown?.title || (lang === 'cs' ? 'TO NEJLEPŠÍ Z TÝDNE' : (lang === 'zh' ? '本周最佳' : 'BEST OF THE WEEK'))}
           </h2>
           <div className="section-underline w-24 h-1 bg-gradient-to-r from-transparent via-mafia-gold to-transparent mx-auto mt-8 mb-12 opacity-80" style={{ boxShadow: '0 0 15px var(--user-glow-color)' }}></div>
 

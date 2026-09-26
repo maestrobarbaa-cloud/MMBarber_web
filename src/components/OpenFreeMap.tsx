@@ -2,8 +2,15 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useUI } from '@/contexts/UIContext';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export function OpenFreeMap() {
+  const { lang } = useTranslation();
+  const langRef = useRef(lang);
+  useEffect(() => {
+    langRef.current = lang;
+  }, [lang]);
+
   const mapContainer = useRef<HTMLDivElement>(null);
   const [activeEasterEgg, setActiveEasterEgg] = useState<any>(null);
   const { isHistoryUnlocked, setIsHistoryUnlocked, isBloodMode, isNoirMode } = useUI();
@@ -303,6 +310,104 @@ export function OpenFreeMap() {
                 text: "Našel jsi starý výtisk MMBarber Times! Od teď máš přístup k historickým událostem v levém dolním rohu obrazovky."
               });
             });
+          }
+
+          // Hudební easter egg (Nella Notta Siciliana / cina.mp3)
+          const savedPlaylist = localStorage.getItem('mmbarber_playlist') || '[]';
+          const isSicilianaUnlocked = savedPlaylist.includes('Nella Notta Siciliana.mp3');
+          const isCinaUnlocked = savedPlaylist.includes('cina.mp3');
+          
+          // Pro čínský režim (C.N.Y.) chytáme 'cina.mp3', jinak 'Nella Notta Siciliana'
+          const shouldSpawnNote = langRef.current === 'zh' ? !isCinaUnlocked : !isSicilianaUnlocked;
+
+          if (shouldSpawnNote) {
+            const musicEl = document.createElement('div');
+            musicEl.innerHTML = `
+              <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; cursor: pointer;" class="hover:scale-110 group" title="Chyť mě!">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="${colorGold}" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 8px ${colorGold}); animation: bounce 2s infinite;">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+              </div>
+            `;
+          
+          let musicLng = 17.46 + Math.random() * 0.04;
+          let musicLat = 49.06 + Math.random() * 0.02;
+          let targetLng = musicLng;
+          let targetLat = musicLat;
+          let isCaught = false;
+          
+          // @ts-ignore
+          const musicMarker = new window.maplibregl.Marker({ element: musicEl })
+            .setLngLat([musicLng, musicLat])
+            .addTo(mapInstance);
+
+          const generateNewTarget = () => {
+             // Area: UH, Staré Město, Kunovice, Mařatice, Jarošov
+             targetLng = 17.43 + Math.random() * 0.06;
+             targetLat = 49.04 + Math.random() * 0.04;
+          };
+          generateNewTarget();
+
+          const animateNote = () => {
+             if (isCaught || isCancelled) return;
+             
+             // Pomalý let mapou
+             const speed = 0.00005; // degrees per frame
+             const dlng = targetLng - musicLng;
+             const dlat = targetLat - musicLat;
+             const dist = Math.sqrt(dlng*dlng + dlat*dlat);
+             
+             if (dist < 0.001) {
+                generateNewTarget();
+             } else {
+                musicLng += (dlng / dist) * speed;
+                musicLat += (dlat / dist) * speed;
+                musicMarker.setLngLat([musicLng, musicLat]);
+             }
+             requestAnimationFrame(animateNote);
+          };
+          requestAnimationFrame(animateNote);
+          
+          musicEl.addEventListener('mouseenter', () => {
+            if (isCaught) return;
+            // V čínském módu (c.ny) nota neuhýbá, aby šla snadno chytit jako odměna
+            if (lang === 'zh') return;
+            
+            // Uhýbání - neuteče hned, ale letí trochu pryč
+            const dodgeAngle = Math.random() * Math.PI * 2;
+            const dodgeDist = 0.003; 
+            targetLng = musicLng + Math.cos(dodgeAngle) * dodgeDist;
+            targetLat = musicLat + Math.sin(dodgeAngle) * dodgeDist;
+            
+            // Udržení v hranicích
+            targetLng = Math.max(17.43, Math.min(17.49, targetLng));
+            targetLat = Math.max(49.04, Math.min(49.08, targetLat));
+          });
+          
+          // Přidáme i touchstart pro mobilní zařízení, kde hover zlobí
+          const catchNote = (e: Event) => {
+            e.stopPropagation();
+            if (isCaught) return;
+            isCaught = true;
+            
+            // Přehrát skladbu
+              window.dispatchEvent(new CustomEvent('mmbarber-play-track', { 
+                detail: { 
+                  track: langRef.current === 'zh' ? '/sounds/cina.mp3' : '/sounds/Nella Notta Siciliana.mp3', 
+                  name: langRef.current === 'zh' ? 'Chinese Event' : 'Nella Notta Siciliana', 
+                  color: colorGold 
+                } 
+              }));
+              
+              // Efekt chycení
+              musicEl.innerHTML = `<div style="color: ${colorGold}; font-weight: bold; font-family: monospace; font-size: 16px; text-shadow: 0 0 10px ${colorGold}; white-space: nowrap; animation: ping 1s cubic-bezier(0, 0, 0.2, 1) forwards;">🎵 CHYCENO!</div>`;
+              setTimeout(() => musicMarker.remove(), 1500);
+          };
+          
+          musicEl.addEventListener('click', catchNote);
+          musicEl.addEventListener('touchstart', catchNote);
           }
 
           // Zlikvidovaná konkurence (Vypáleno / Sem nechodit)

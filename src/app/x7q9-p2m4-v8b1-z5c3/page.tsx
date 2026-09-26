@@ -104,6 +104,7 @@ type DialogueNode = {
   options: DialogueOption[];
   isEnd?: boolean;
   isInput?: boolean;
+  hasReviewGenerator?: boolean;
 };
 
 const dialogueTree: Record<string, DialogueNode> = {
@@ -116,9 +117,141 @@ const dialogueTree: Record<string, DialogueNode> = {
       { text: "ŠPINAVÁ PRÁCE (Schovat tělo)", nextId: "morava" },
       { text: "IDENTITA (Krycí jméno)", nextId: "alias" },
       { text: "STATUS (Jak na tom jsem?)", nextId: "status_ask" },
-      { text: "LOKACE (Soukromé stříhárny)", nextId: "speakeasy" }
+      { text: "LOKACE (Soukromé stříhárny)", nextId: "speakeasy" },
+      { text: "RECENZE (Proč je nemám na webu)", nextId: "reviews" },
+      { text: "NÁZOR NA NEJBLIŽŠÍ (Zrada)", nextId: "closest_start" },
+      { text: "ŽENY (Jaká je dnešní realita)", nextId: "women_start" },
+      { text: "VZTAHY (Dědův zápisník)", nextId: "relationships_start" },
+      { text: "BYZNYS (Ředitelé a biče)", nextId: "business_start" },
+      { text: "ŠKOLSTVÍ (Vysoké školy)", nextId: "school_start" },
+      { text: "VÝCHOVA (Odkaz velkých lidí)", nextId: "mentors_start" },
+      { text: "POLITIKA (Národní tragédie)", nextId: "politics_start" },
+      { text: "SOCIÁLNÍ SÍTĚ (Citlivky na Instagramu)", nextId: "social_start" },
+      { text: "MORÁLKA (Římané a slabý článek)", nextId: "romans_start" },
+      { text: "CHARAKTER (Vzorce chování davu)", nextId: "character_start" },
+      { text: "BÁSNÍK (Juliána z Tesca)", nextId: "poem_start" }
       // { text: "VZPOMÍNKY (Příběh dvou)", nextId: "go_to_story" }
     ]
+  },
+  "poem_start": {
+    id: "poem_start",
+    text: "Básně? No jasně. Možná vypadám jako rváč, ale ve skutečnosti jsem sakra dobrý básník a upravovač textů na dnešní dobu. Moje prababička mi kdysi vyprávěla jednu starou báseň. Juliána, krásná panna, tak nějak se to jmenovalo. Vyprávěla to možná o něco líp, ale já vzal ten text a upravil ho pro dnešní dobu. Chceš to slyšet?",
+    options: [
+      { text: "Schválně, ukaž tu moderní verzi.", nextId: "poem_modern_1" },
+      { text: "A jak byla ta původní od prababičky?", nextId: "poem_original_1" }
+    ]
+  },
+  "poem_modern_1": {
+    id: "poem_modern_1",
+    text: "1.\nJuliána krásná panna,\nprala prádlo u Tesca zrána.\nJeli tudy čtyři páni,\nvšichni čerstvě po rozchodu, sami.\n\n„Juliáno, pojeď s námi,\nna Tinderu jsme zklamáni.“\n„Já bych s vámi ráda jela,\nkam bych svého přítele dala?“",
+    options: [
+      { text: "Pokračuj.", nextId: "poem_modern_2" }
+    ]
+  },
+  "poem_modern_2": {
+    id: "poem_modern_2",
+    text: "2.\n„Přítele můžeš opustiti,\nna Tinderu se přihlásiti.“\n„Jak bych já ho otrávila,\nkdyž jsem se to neučila?“\n\n„Jdi do města, tam jsou kluby,\ntam zapomeneš všechny sliby.\nV klubu najdeš zábavy dost,\nzapomeneš na svou starost.“\n\nŠla do města, našla kluby,\ntam už čekali čtyři páni.\nČtyři páni, samé řeči,\nkaždý hledal, která svědčí.",
+    options: [
+      { text: "Dál?", nextId: "poem_modern_3" }
+    ]
+  },
+  "poem_modern_3": {
+    id: "poem_modern_3",
+    text: "3.\nPřítel z práce domů jede,\nna nohou se sotva vede.\n„Pojď, miláčku, pojď k obědu,\nmáme dneska něco z bufetu.“\n\n„Jaká je to divná bašta,\nže je bílá, divně mastná?“\n„To není ryba, to je tráva,\nco nám včera ještě zbyla.“",
+    options: [
+      { text: "A co pak?", nextId: "poem_modern_4" }
+    ]
+  },
+  "poem_modern_4": {
+    id: "poem_modern_4",
+    text: "4.\nPo obědě hlava bolí,\n„Miláčku, zavaž mě jí.“\n„Jdi, miláčku, pro pivečko,\nať okřeje mé srdéčko.“\n\n„Vypij raději vodičku,\nať zhojíme tvou hlavičku.“\nPodala mu vody z louže,\n„Pij, miláčku, to pomůže.“",
+    options: [
+      { text: "To je drsný. Co bylo dál?", nextId: "poem_modern_5" }
+    ]
+  },
+  "poem_modern_5": {
+    id: "poem_modern_5",
+    text: "5.\n„Přines, milá, poduštičku,\nať položím svou hlavičku.“\nPodala mu tvrdý kámen,\n„Spi, miláčku, s Kristem, ámen.“\n\n„Co se to jen se mnou děje?\nBěda, milá, zle je, zle je!“\nA když bylo po milování,\npřítel měl se k umírání.",
+    options: [
+      { text: "Zavolali doktora?", nextId: "poem_modern_6" }
+    ]
+  },
+  "poem_modern_6": {
+    id: "poem_modern_6",
+    text: "6.\nA když bylo po večeři,\npřijeli tam tři doktoři.\n„Oj, vy páni lékařové,\nzachraňte mě, doktorové!“\n\n„Máte žádanku, či ne?“\n„Nemám.“ „Tak to nejde, ne.“\n„Bez ní vás tu nevezmeme,\nna pohotovost pošleme.“\n\n„Pojištění řádně platím,\nproč tu tedy život tratím?“\n„Bez objednání nejde léčit,\nmusíte se jinde svěřit.“",
+    options: [
+      { text: "To je hodně ze života... a konec?", nextId: "poem_modern_7" }
+    ]
+  },
+  "poem_modern_7": {
+    id: "poem_modern_7",
+    text: "7.\nPřítele pak zachránili,\nJuliánu obvinili.\nNad přítelem lidi pláčou,\nnad Juliánou posměšky skáčou.\n\nJuliána, krásná panna,\npo městě i okrese známá.\nJejí pověst letí světem,\nz Tesca rovnou internetem.\n\nKaždý o ní povídá,\nco kde dělá, každý zná.",
+    options: [
+      { text: "A co z toho jako plyne za ponaučení?", nextId: "poem_modern_conclusion" }
+    ]
+  },
+  "poem_modern_conclusion": {
+    id: "poem_modern_conclusion",
+    text: "Co z toho plyne? Jednoduché... stará ohraná klasika. S vlastním přítelem se už cítila spíš jen jako s kamarádem. Nechala se potetovat, nabarvit vlasy, udělat pořádné řasy a linky, jen aby ukázala světu, že je vážně něco, o co se lidi budou prát. Za jeho zádama jela bomby na Tinderu s partičkou borců, co byli čerstvě po rozchodu. A přitom to přece byla vždycky 'tak hodná holka', aspoň to její mamka říkala. Zkrátka stará klasika, když se chceš dobře prodat na trhu... a reklamačky se neberou. Mezitím se ale musela smířit s naprosto opačným osudem. Teď už si jen nalhává, že udělala ten správný krok. Ale pravda je taková, že ji to jednou semele, lidi totiž nezapomínají a ponese se to s ní celej její život.",
+    options: [
+      { text: "To dává smysl. A ta původní verze od prababičky?", nextId: "poem_original_1" },
+      { text: "Běž radši stříhat, Tome.", nextId: "poem_end" }
+    ]
+  },
+  "poem_original_1": {
+    id: "poem_original_1",
+    text: "Tak poslouchej originál, Juliána krásná panna, od prababičky. Ta se s tím nemazala:\n\n1.\nJuliána krásná panna prala prádlo u Jordána.\nJeli tudy 4 páni, Juliáno pojeď s námi.\nJá bych s vámi ráda jela, kam bych bratra, sestru dala?\nSestru můžeš s sebou vzíti a bratříčka otráviti.",
+    options: [
+      { text: "A dál?", nextId: "poem_original_2" }
+    ]
+  },
+  "poem_original_2": {
+    id: "poem_original_2",
+    text: "2.\nJak bych já ho otrávila, když jsem se to neučila?\nJdi do lesa jedlového, najdi hada jedového.\nNakrájej ho na na kousíčky, řekni že to jsou rybičky.\nŠla do lesa jedlového, našla hada jedového.",
+    options: [
+      { text: "Pokračuj.", nextId: "poem_original_3" }
+    ]
+  },
+  "poem_original_3": {
+    id: "poem_original_3",
+    text: "3.\nBratříček už z lesa jede, jedlového dřeva veze,\nPojď bratříčku poď k obědu,máme dneska vzácnou rybu.\nJaká je to divná ryba, že ploutvičky hlavu nemá.\nHlavičku jsem posnídala a ploutvičky kočka vzala.",
+    options: [
+      { text: "Chudák bratr...", nextId: "poem_original_4" }
+    ]
+  },
+  "poem_original_4": {
+    id: "poem_original_4",
+    text: "4.\nPo obědě hlava bolí, Juliano, zavaž mě jí.\nJdi sestřičko pro vínečko, ať okřeje mé srdéčko.\nVypij raději vodičku, ať zhojíme tvou hlavičku.\nPodala mu vody z louže, pij bratříčku, to pomůže.",
+    options: [
+      { text: "Co bylo pak?", nextId: "poem_original_5" }
+    ]
+  },
+  "poem_original_5": {
+    id: "poem_original_5",
+    text: "5.\nPřines, sestro poduštičku, ať položím svou hlavičku.\nPodala mu tvrdý kámen, spi bratříčku, s Kristem pánem.\nCo se to jen se mnou děje, běda, sestro, zle je, zle je!\nA když bylo po klekání bratr měl se k umírání.",
+    options: [
+      { text: "Blíží se konec?", nextId: "poem_original_6" }
+    ]
+  },
+  "poem_original_6": {
+    id: "poem_original_6",
+    text: "6.\nA když bylo po večeři, přijeli tam tři lékaři.\nOj, vy páni lékařové, probodněte srdce moje.\nTělo dejte pod kamení, ať ten oheň více není,\na z kamení do kostnice, ať ta bolest není více.",
+    options: [
+      { text: "Jak to dopadlo?", nextId: "poem_original_7" }
+    ]
+  },
+  "poem_original_7": {
+    id: "poem_original_7",
+    text: "7.\nBratra ještě zachránili, Julianu oběsili.\nNad bratříčkem lidi pláčou, nad sestřičkou vrány skáčou.",
+    options: [
+      { text: "Tak ta moje verze je aspoň moderní. Měj se, Tome.", nextId: "poem_end" }
+    ]
+  },
+  "poem_end": {
+    id: "poem_end",
+    text: "No, snad jsi ocenil mou poezii. Ale teď už fakt mazej, mám tu další práci. Zmiz.",
+    options: [],
+    isEnd: true
   },
   "speakeasy": {
     id: "speakeasy",
@@ -126,6 +259,13 @@ const dialogueTree: Record<string, DialogueNode> = {
     options: [
       { text: "Otevřít mapu úkrytů", nextId: "show_map" }
     ]
+  },
+  "reviews": {
+    id: "reviews",
+    text: "Já nedávam recenze na web pane, protože můj bratr z Kalkaty umět napsat tisíc recenze za pět dolarů. Všechny být pět hvězdiček, velmi dobrý servis, velký spokojenost! On mít sto počítač a dělat klik klik klik. Proč já platit za falešný chvála, když moje nůžky mluvit samy za sebe?",
+    options: [],
+    isEnd: true,
+    hasReviewGenerator: true
   },
   "status_ask": {
     id: "status_ask",
@@ -236,6 +376,280 @@ const dialogueTree: Record<string, DialogueNode> = {
     text: "Na Masarykáči? Jo, a rovnou tomu dáme do ruky kornout zmrzliny, ať je nenápadnej, ne? Ty seš blbější než vypadáš. Zmiz, než si to rozmyslím a udělám z tebe krmení pro holuby na vlakovým nádraží.",
     options: [],
     isEnd: true
+  },
+  "closest_start": {
+    id: "closest_start",
+    text: "Ptáš se, jaký mám názor na nejbližší? Poslouchej pozorně. Zrada od těch nejbližších bolí ze všeho nejvíc. Můžou stát roky po tvém boku, ale právě na ně si musíš dát ten největší pozor.",
+    options: [
+      { text: "Copak se na tyhle věci časem nezapomene?", nextId: "closest_time" },
+      { text: "Proč tě podrazí zrovna oni?", nextId: "closest_why" }
+    ]
+  },
+  "closest_time": {
+    id: "closest_time",
+    text: "Jasně, snaží se svoje zrady maskovat. Obhájit to tím, že už je to dávno. Ale takhle tenhle svět nefunguje! Svoje činy nezamaskují. Lidi zjistí skutečnou pravdu a vzpomenou si i po mnoha letech, protože ta pravda vyjde najevo. Obzvlášť to poznají ti, kteří u toho tehdy byli a viděli, jak to doopravdy bylo.",
+    options: [
+      { text: "Takže spravedlnost je nakonec dožene?", nextId: "closest_consequences" }
+    ]
+  },
+  "closest_why": {
+    id: "closest_why",
+    text: "Víš, co je na tom to nejkrásnější? Zradí tě často těsně před tím, než se odehraje něco velkého. Podcení tě. Netuší, do čeho se pouští, a tímhle si sami v podstatě vykopali hrob.",
+    options: [
+      { text: "A co se stane, když se ta pravda ukáže?", nextId: "closest_consequences" }
+    ]
+  },
+  "closest_consequences": {
+    id: "closest_consequences",
+    text: "Pak se to na určitých místech rozkřikne a s dotyčnýma se to už jen veze. Už nemají kam utéct před svou pověstí. Kdyby měli aspoň trochu rozumu, tak by pro ně bylo nejlepší změnit lokaci a odstěhovat se někam hodně, hodně daleko.",
+    options: [
+      { text: "Máš k tomu nějaký vlastní citát?", nextId: "closest_quote" },
+      { text: "Drsný, ale pravdivý. Díky, Tome.", nextId: "closest_end" }
+    ]
+  },
+  "closest_quote": {
+    id: "closest_quote",
+    text: "Mám. Zapiš si to za uši: 'Největší tmu nezažiješ, když zhasne slunce, ale když tě stínem zakryje ten, komu jsi celou dobu svítil na cestu.'... A teď už běž, tohle zamyšlení mě stojí moc času.",
+    options: [],
+    isEnd: true
+  },
+  "closest_end": {
+    id: "closest_end",
+    text: "Není zač. Ber to jako lekci k nezaplacení. Dávej si pozor na to, koho si pouštíš blízko k tělu. A teď už zmiz.",
+    options: [],
+    isEnd: true
+  },
+  "women_start": {
+    id: "women_start",
+    text: "Ptáš se na dnešní vztahy a realitu? Zlatý časy, kdy lidi uměli ocenit opravdovost, se dneska ztrácí v záplavě povrchnosti na sociálních sítích.",
+    options: [
+      { text: "Jak to přesně myslíš?", nextId: "women_reality" },
+      { text: "Snad nejsou všichni stejní, ne?", nextId: "women_exception" }
+    ]
+  },
+  "women_reality": {
+    id: "women_reality",
+    text: "Dneska spousta lidí hledá spíš dokonalou iluzi na Instagram než reálnýho partnera. Všechno je to o pozlátku a nerealistických očekáváních. Ale když přijde na to stát po boku toho druhýho, když jde opravdu do tuhýho a je potřeba zabrat... najednou jich spousta raději vycouvá.",
+    options: [
+      { text: "Takže co s tím má chlap dělat?", nextId: "women_solution" }
+    ]
+  },
+  "women_exception": {
+    id: "women_exception",
+    text: "Neříkám, že jsou všechny stejný. Pořád se najdou ty pravý, co vědí, co je to loajalita a neřeší jenom značky kabelek. Ale najít takovou je dneska jako hledat jehlu v kupce sena. A ještě k tomu potmě a na minovým poli.",
+    options: [
+      { text: "Máš nějakou radu, jak ji poznat?", nextId: "women_solution" }
+    ]
+  },
+  "women_solution": {
+    id: "women_solution",
+    text: "Moje rada? Nenech se opít rohlíkem a nevymaž si mozek hned první hezkou tvářičkou. Ženská do nepohody se pozná podle toho, že se s tebou nebojí brodit blátem, když se nedaří. Nejen se vézt, když svítí sluníčko.",
+    options: [
+      { text: "Máš k tomu zase nějakej svůj citát?", nextId: "women_quote" },
+      { text: "Díky za pohled na věc, Tome.", nextId: "women_end" }
+    ]
+  },
+  "women_quote": {
+    id: "women_quote",
+    text: "Jasně. 'Krása ti sice otevře všechny dveře, ale jestli za nima vydržíš, záleží jen na tom, jestli uvnitř nejsi úplně prázdná.'... A teď už fakt mazej, začínám tu být z tebe nějakej sentimentální.",
+    options: [],
+    isEnd: true
+  },
+  "women_end": {
+    id: "women_end",
+    text: "Pamatuj si to. Chlap, co si nechá diktovat život, není chlap, ale rohožka. Měj svou hrdost a nenech sebou mávat. A teď už fakt vypadni, mám práci.",
+    options: [],
+    isEnd: true
+  },
+  "relationships_start": {
+    id: "relationships_start",
+    text: "Chceš mluvit o vztazích? O tom, jak to mezi lidma chodí? Hele, já ti řeknu jedno tajemství. Není v tom žádná věda, žádný složitý rovnice. Je to mnohem prostší, než se zdá.",
+    options: [
+      { text: "Tak povídej, jsem jedno ucho.", nextId: "relationships_grandpa" },
+      { text: "Prostší? Dneska mi lidi přijdou hrozně složití.", nextId: "relationships_simple" }
+    ]
+  },
+  "relationships_simple": {
+    id: "relationships_simple",
+    text: "Složití? To si jen myslíš, protože spousta lidí dneska hraje hry a nosí masky. Ale když to osekáš až úplně na dřeň, zbyde ti jen jedno jediný pravidlo.",
+    options: [
+      { text: "A to je jaký pravidlo?", nextId: "relationships_grandpa" }
+    ]
+  },
+  "relationships_grandpa": {
+    id: "relationships_grandpa",
+    text: "Můj děda měl takovej starej otřískanej zápisník. Nosil ho neustále u sebe. Jednou mi z něj přečetl jednu větu. Zněla přesně takhle: 'Jak se chováš k lidem, lidé se budou chovat k tobě.' Je to jak bumerang, mladej. Všechno, co vypustíš do světa, se ti vrátí i s úrokama.",
+    options: [
+      { text: "To zní spravedlivě. Ale co ti, co pořád dělají podrazy?", nextId: "relationships_karma" },
+      { text: "Takže když budu na všechny hodný, tak se mi to vrátí?", nextId: "relationships_naive" }
+    ]
+  },
+  "relationships_karma": {
+    id: "relationships_karma",
+    text: "Ti, co dělají podrazy? Na ty si taky dojde. Možná to nebude hned zítra. Možná to potrvá roky. Ale ten účet jim život jednou vystaví a bude zatraceně tučnej. Věř mi, tenhle systém ještě nikoho neomluvil.",
+    options: [
+      { text: "Díky za připomenutí, Tome.", nextId: "relationships_end" }
+    ]
+  },
+  "relationships_naive": {
+    id: "relationships_naive",
+    text: "Hodný? Neřekl jsem, abys byl slaboch nebo něčí rohožka. Chovat se slušně a s respektem neznamená, že ze sebe necháš dělat hlupáka. Znamená to dát respekt tam, kde si ho lidé zaslouží. A umět tvrdě zabouchnout dveře před těmi, co to zneužívají.",
+    options: [
+      { text: "Díky za upřímnost, Tome.", nextId: "relationships_end" }
+    ]
+  },
+  "relationships_end": {
+    id: "relationships_end",
+    text: "Jenom si na ten dědův zápisník občas vzpomeň. A teď mě už omluv, mám tu další klienty, co potřebují srovnat fazónu... a někteří i ten život. Zmiz.",
+    options: [],
+    isEnd: true
+  },
+  "business_start": {
+    id: "business_start",
+    text: "Úspěch v byznysu? Setkal jsem se s lidma, co měli za sebou fakt velký věci. Ředitelé obřích firem. Ani jeden z nich se nepotřeboval předvádět na Instagramu jako ti špatně placení herci s půjčenýma autama.",
+    options: [
+      { text: "Ale spousta ředitelů se dneska ráda ukazuje.", nextId: "business_directors" }
+    ]
+  },
+  "business_directors": {
+    id: "business_directors",
+    text: "Jo, jenže to nejsou praví lídři. Ti aktuální ředitelé mi často připadají jako přerostlá malá děcka. A popravdě, většinou mají ze mě strach. A to naprosto oprávněně.",
+    options: [
+      { text: "Proč se tě bojí?", nextId: "business_whip" }
+    ]
+  },
+  "business_whip": {
+    id: "business_whip",
+    text: "Jednou jsem se jich zeptal, jak vedou svý lidi, když jde do tuhýho. A víš, co mi ukázali? Tabulky, grafy a nějaký dotazníky spokojenosti. Navrhl jsem jim, ať ty papíry spálí a zkusí se radši bavit s lidma narovinu. Dát jim zodpovědnost a přestat je vodit za ručičku.",
+    options: [
+      { text: "A jak reagovali?", nextId: "business_egypt" }
+    ]
+  },
+  "business_egypt": {
+    id: "business_egypt",
+    text: "Zbledli, jako by viděli ducha. Dnešní manažeři se totiž osobní zodpovědnosti a přímýho jednání bojí víc než čert kříže. Radši se schovají za procesy. Lídr bez odvahy je jenom ouřada s hezkou vizitkou. A od tý doby je radši nepotkávám. Zmiz.",
+    options: [],
+    isEnd: true
+  },
+  "school_start": {
+    id: "school_start",
+    text: "Vysoký školy a princip dnešní výchovy? Je to úplně ujetý. Moc dobře vím, jak se tam ve skutečnosti točí penízky, jen aby si ti nahoře udrželi svoje pohodlný statusy.",
+    options: [
+      { text: "Ale doktoráty přece mají nějakou hodnotu, ne?", nextId: "school_doctorate" }
+    ]
+  },
+  "school_doctorate": {
+    id: "school_doctorate",
+    text: "Hodnotu? Spousta těch jejich doktorátů plodí jenom totální nesmysly a lidi nepoužitelný do reálnýho provozu. Papír ti mozek do hlavy nenaleje. A jestli si myslíš něco jinýho, seš naivní. Běž pryč.",
+    options: [],
+    isEnd: true
+  },
+  "mentors_start": {
+    id: "mentors_start",
+    text: "Když už se bavíme o výchově... Mě vychovali velcí lidé. Kapacity, co za sebou něco zanechaly. Ale víš, co je na tom to nejtěžší?",
+    options: [
+      { text: "Co to je?", nextId: "mentors_value" }
+    ]
+  },
+  "mentors_value": {
+    id: "mentors_value",
+    text: "Že člověk až po delším čase začne doopravdy chápat jejich význam a tu skutečnou hodnotu. Až zpětně ti dojde, co vlastně dokázali vybudovat, i když to hromada lidí kolem nich dodneška ani nevidí.",
+    options: [
+      { text: "K tomu asi člověk musí dozrát.", nextId: "mentors_end" }
+    ]
+  },
+  "mentors_end": {
+    id: "mentors_end",
+    text: "Přesně. Člověk k tomu musí dorůst a zažít si svý. Jinak je to jenom házení perel sviním. A teď mě už nech na pokoji, mám tu důležitější věci na práci.",
+    options: [],
+    isEnd: true
+  },
+  "politics_start": {
+    id: "politics_start",
+    text: "Politika? K tomuhle cirkusu se radši ani nechci moc vyjadřovat. Celej ten dnešní systém je k pláči. To už se fakt nedá nazývat nějakým úspěchem.",
+    options: [
+      { text: "A jak to teda vidíš?", nextId: "politics_tragedy" }
+    ]
+  },
+  "politics_tragedy": {
+    id: "politics_tragedy",
+    text: "Dneska se jedná spíš o jednu velkou národní tragédii. Místo toho, aby to tu šlapalo, se to celý řítí z útesu a ti nahoře u toho s úsměvem stříhají pásky. Hromada lidí to jasně vidí, co se děje. Ne nadarmo bych ti tu s chutí odcitoval Farmu zvířat.",
+    options: [
+      { text: "Všichni jsou si rovni, ale někteří rovnější?", nextId: "politics_pockets" }
+    ]
+  },
+  "politics_pockets": {
+    id: "politics_pockets",
+    text: "Přesně. A to platí dvojnásob, když jdou prachy hezky bokem do správný kapsy. Všichni přece jedou s tou stejnou naivní myšlenkou: 'Však o tom se přece nikdo nikdy nedozví'.",
+    options: [
+      { text: "Důkazy ale vždycky nějaké zbudou, ne?", nextId: "politics_shredders" }
+    ]
+  },
+  "politics_shredders": {
+    id: "politics_shredders",
+    text: "Na důkazy a papíry tu máme tenhle krásnej vynález... skartovačky a zmizíky. Dřív se to aspoň pálilo, ale to dělalo moc kouře. Dneska? Dneska se ty nejdůležitější spisy prostě ztratí během 'běžného úklidu'.",
+    options: [
+      { text: "To jim vážně prochází?", nextId: "politics_covers" }
+    ]
+  },
+  "politics_covers": {
+    id: "politics_covers",
+    text: "Prochází. A víš proč? Protože ruka ruku myje a nikdo nechce být ten, kdo to začne řešit. Alibismus na nejvyšší úrovni. Radši dělají, že se ty dokumenty snad samy odnesly do sběru. A teď už mazej, než nás začne někdo odposlouchávat.",
+    options: [],
+    isEnd: true
+  },
+  "social_start": {
+    id: "social_start",
+    text: "Sociální sítě... Dneska jsou na sebe lidi strašně citliví. Zejména sami k sobě. Pořád se někde hledají na Instagramu a myslí si, že jim to dá smysl života.",
+    options: [
+      { text: "Takže jim jde jenom o falešnou pozornost?", nextId: "social_instagram" }
+    ]
+  },
+  "social_instagram": {
+    id: "social_instagram",
+    text: "Přesně tak. A víš, co je to nejvtipnější zrcadlo? Krásně se ukazuje, o co jim ve skutečnosti jde, už jen podle těch čísel – kolik lidí sledují oni a kolik lidí naopak sleduje je. To je měřítko jejich hodnoty, to na ně působí a formuje to jejich mozek. Tragikomedie.",
+    options: [],
+    isEnd: true
+  },
+  "romans_start": {
+    id: "romans_start",
+    text: "Dnešní lidi, chlapi, ženský... víš co? Od dob starých Římanů jsme se vlastně mentálně nikam moc neposunuli.",
+    options: [
+      { text: "Jak to myslíš? Máme přece technologie.", nextId: "romans_chain" }
+    ]
+  },
+  "romans_chain": {
+    id: "romans_chain",
+    text: "Technologie ti morálku a páteř nenarovnají. Pořád totiž záleží na tom jednom nejslabším článku. Všechno pramení už od rodiny. A když máš v základu jen jeden jedinej slabej článek, začne se ti trhat celej řetěz. Je naprosto jedno, jestli je to rodina, tvoje firma, nebo římská legie.",
+    options: [
+      { text: "Takže chybí pevný základ?", nextId: "romans_discipline" }
+    ]
+  },
+  "romans_discipline": {
+    id: "romans_discipline",
+    text: "Chybí disciplína a morálka! A to nejhorší? Lidi se dneska absolutně neumí omluvit. Udělají botu, ale chybí jim základní slušnost říct 'byla to moje chyba, omlouvám se za svoje činy'. Místo toho radši hledají miliony výmluv a svou vlastní odpovědnost okamžitě shazují na všechny okolo. Svět je prostě plnej alibistů, co si neumí zamést před vlastním prahem. A teď už mazej.",
+    options: [],
+    isEnd: true
+  },
+  "character_start": {
+    id: "character_start",
+    text: "Víš, co mě po těch letech strávených pozorováním naprosto fascinuje? Že se u naprosté většiny lidí v určitých situacích pokaždé aktivují naprosto stejné vzorce chování.",
+    options: [
+      { text: "Jaké vzorce máš přesně na mysli?", nextId: "character_patterns" }
+    ]
+  },
+  "character_patterns": {
+    id: "character_patterns",
+    text: "Stačí, aby něco viděli u ostatních. Ať už nějakou novou blbost, nějakou pózu, nebo naopak zdánlivou zkratku k úspěchu. A najednou cvak! Aktivuje se to a všichni se do jednoho začnou chovat naprosto stejně. Bez rozmyslu. Kopírují se jako ovce.",
+    options: [
+      { text: "Copak lidem už úplně chybí vlastní identita?", nextId: "character_strong" }
+    ]
+  },
+  "character_strong": {
+    id: "character_strong",
+    text: "Téměř ano. Opravdový a pevný charakter si totiž udrží jen těch pár nejsilnějších jedinců. Ti, co se nenechají strhnout tím davem a drží si svůj vlastní kurz navzdory tomu, že kolem nich všichni blázní. Snaž se mezi ně patřit taky. A teď mě omluv, mám tu něco na práci.",
+    options: [],
+    isEnd: true
   }
 };
 
@@ -323,6 +737,103 @@ const BigHierarchyAnimation = ({ profession, onComplete }: { profession: string;
           </motion.button>
         )}
       </AnimatePresence>
+    </div>
+  );
+};
+
+const ReviewGenerator = () => {
+  const [reviews, setReviews] = useState<{name: string, text: string, stars: number}[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const generateReview = () => {
+    const firstNames = [
+      "Arjun", "Raj", "Vikram", "Sanjay", "Amit", // Indian
+      "Hans", "Klaus", "Dieter", "Wolfgang", // German
+      "Giovanni", "Luigi", "Mario", "Marco", // Italian
+      "John", "Michael", "David", "James", // English
+      "Pavel", "Karel", "Jozef", "Dežo", "Milan" // CZ/SK
+    ];
+    const lastNames = [
+      "Patel", "Kumar", "Sharma", "Singh", // Indian
+      "Müller", "Schmidt", "Wagner", "Becker", // German
+      "Rossi", "Russo", "Ferrari", "Esposito", // Italian
+      "Smith", "Johnson", "Williams", "Brown", // English
+      "Novák", "Kováč", "Procházka", "Lakatoš", "Horváth" // CZ/SK
+    ];
+    
+    // Procedural generation parts
+    const intros = [
+      "Můj bratr říkat pravda.",
+      "Očen charašo servis pane!",
+      "Tohle být úplně nejlepší místo na světě.",
+      "Velmi kvalitní práce.",
+      "Moje rodina být velmi spokojená.",
+      "Nejlepší podnik v celém regionu.",
+      "Dlouho jsem hledat dobrý střih.",
+      "Tento obchod je velký luxus."
+    ];
+    
+    const middles = [
+      "Hlava vypadat jako Bollywood star.",
+      "Střih čistý jak zrcadlo.",
+      "Poslat všechny moje bratrance z Dillí k Tomášovi.",
+      "Tento muž stříhat velmi rychle a bezchybně.",
+      "Za pět dolarů já napsat cokoliv, ale tohle je pravda.",
+      "Kvalita jak z německé fabriky, všechno lícovat.",
+      "Moje žena už nechtít jiný muž, jen mě.",
+      "Vonět to tam jako opravdový úspěch.",
+      "Ruce kmitat jako šicí stroj, velmi dobrá technika."
+    ];
+    
+    const outros = [
+      "Děkuji tisíckrát pane!",
+      "Velmi velký spokojenost!",
+      "Pět hvězda pro Tomáš!",
+      "Doporučuji všem lidem na planetě.",
+      "Namaste, vrátím se zítra!",
+      "Nikdy už nepůjdu jinam.",
+      "Velmi dobrý byznys, děkuji.",
+      "A teď jdu na rande s novým účesem."
+    ];
+
+    const randomName = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+    const randomText = `${intros[Math.floor(Math.random() * intros.length)]} ${middles[Math.floor(Math.random() * middles.length)]} ${outros[Math.floor(Math.random() * outros.length)]}`;
+    
+    setReviews(prev => [{ name: randomName, text: randomText, stars: 5 }, ...prev].slice(0, 5));
+    setTotalCount(prev => prev + 1);
+  };
+
+  return (
+    <div className="mt-4 flex flex-col items-center">
+      <div className="text-mafia-gold font-mono text-[10px] mb-2 tracking-widest bg-black px-2 py-1 border border-mafia-gold/30">
+        FALEŠNÉ RECENZE: {totalCount} / 9999999999+
+      </div>
+      <button 
+        onClick={generateReview}
+        className="bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold text-mafia-gold px-4 py-2 rounded text-xs font-heading tracking-widest uppercase transition-all mb-4"
+      >
+        Vygenerovat recenzi od bratra
+      </button>
+
+      <div className="w-full flex flex-col gap-2 font-sans">
+        <AnimatePresence>
+          {reviews.map((rev, idx) => (
+            <motion.div 
+              key={idx + rev.name}
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-black/50 border border-white/10 p-3 rounded flex flex-col gap-1 w-full text-left"
+            >
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-mafia-gold text-xs">{rev.name}</span>
+                <span className="text-mafia-gold text-xs">★★★★★</span>
+              </div>
+              <span className="text-smoke-white/80 text-[11px] italic">"{rev.text}"</span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };
@@ -430,48 +941,22 @@ export default function EasterEggPage() {
   }
 
   const currentNode = dialogueTree[currentNodeId];
-  const tomasImage = isDay ? '/hierarchie/tomáš-sako-den.png' : '/hierarchie/tomáš-sako-večer.png';
+  const isIndianActive = currentNodeId === 'reviews';
+  const tomasImage = isIndianActive ? '/hierarchie/indian.png' : (isDay ? '/hierarchie/tomáš-sako-den.png' : '/hierarchie/tomáš-sako-večer.png');
 
   return (
     <div className="min-h-screen bg-black relative flex flex-col items-center justify-center overflow-hidden font-sans">
       <SecretInteractiveParticles />
 
-      {/* Vtipná hierarchie */}
-      <motion.div 
-        className="absolute top-6 right-6 md:top-10 md:right-10 z-50 bg-white/10 backdrop-blur-md border border-white/30 px-6 py-3 rounded-full cursor-pointer overflow-hidden flex flex-col items-center group"
-        onClick={() => setHierarchyAnim(true)}
-        animate={
-          hierarchyAnim 
-          ? { 
-              y: [0, -20, 0, -10, 0, 500], 
-              rotate: [0, -10, 10, -5, 5, 360], 
-              opacity: [1, 1, 1, 1, 1, 0],
-              scale: [1, 1.2, 0.8, 1.1, 1, 0]
-            } 
-          : {}
-        }
-        transition={{ duration: 1.5, ease: "easeInOut" }}
-        onAnimationComplete={() => { if (hierarchyAnim) { alert("Byl jsi degradován na krmivo pro ryby."); setHierarchyAnim(false); } }}
-      >
-        <span className="text-[10px] text-white/50 uppercase tracking-widest font-mono mb-1 group-hover:text-white/80 transition-colors">Tvoje Hierarchie</span>
-        <span className="text-sm text-white font-bold uppercase tracking-widest">Podržtaška (Lvl. 1)</span>
-        
-        {hierarchyAnim && (
-          <span className="absolute inset-0 bg-red-600/80 flex items-center justify-center text-white font-black text-xs uppercase animate-pulse">
-            PÁD KE DNU!
-          </span>
-        )}
-      </motion.div>
-
       {/* Hlavní obsah - Z-index navrch */}
-      <div className="z-10 w-full max-w-4xl p-6 h-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 relative">
+      <div className="z-10 w-full max-w-4xl p-6 h-full flex flex-col md:flex-row items-center md:items-start justify-center gap-8 md:gap-12 relative mt-20 md:mt-0">
         
         {/* Obrázek Tomáše */}
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="relative w-64 h-80 md:w-96 md:h-[500px] shrink-0"
+          className="relative w-64 h-80 md:w-96 md:h-[500px] shrink-0 md:mt-10"
         >
           <img 
             src={tomasImage} 
@@ -495,7 +980,7 @@ export default function EasterEggPage() {
             </div>
 
             {/* Text dialogu */}
-            <div className="text-mafia-gold/90 text-xl md:text-2xl min-h-[120px] font-serif italic tracking-wide leading-relaxed mt-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+            <div className="text-mafia-gold/90 text-xl md:text-2xl min-h-[120px] font-serif italic tracking-wide leading-relaxed mt-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] whitespace-pre-line">
               <TypewriterText 
                 text={currentNode.text} 
                 onComplete={handleComplete} 
@@ -508,6 +993,7 @@ export default function EasterEggPage() {
                 {/* --- Speciální render pro úvodní volbu (Roletka) --- */}
                 {!isTyping && currentNodeId === 'start' && (
                   <motion.div
+                    key="start-dropdown"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="flex flex-col gap-4 w-full"
@@ -539,7 +1025,7 @@ export default function EasterEggPage() {
                 {/* --- Normální render pro další dialogy --- */}
                 {!isTyping && !currentNode.isEnd && !currentNode.isInput && currentNodeId !== 'start' && currentNode.options.map((option, idx) => (
                   <motion.button
-                    key={idx}
+                    key={`option-${option.nextId || idx}`}
                     initial={{ opacity: 0, scale: 0.9, y: 10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ delay: idx * 0.15 }}
@@ -553,6 +1039,7 @@ export default function EasterEggPage() {
 
                 {!isTyping && currentNode.isInput && (
                   <motion.div
+                    key="dialogue-input"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.1 }}
@@ -573,8 +1060,20 @@ export default function EasterEggPage() {
                   </motion.div>
                 )}
 
+                {!isTyping && currentNode.hasReviewGenerator && (
+                  <motion.div
+                    key="review-generator"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <ReviewGenerator />
+                  </motion.div>
+                )}
+
                 {!isTyping && currentNode.isEnd && (
                   <motion.div
+                    key="end-link"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
