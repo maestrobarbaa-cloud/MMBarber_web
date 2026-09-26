@@ -302,7 +302,7 @@ export function CinematicIntro({ onDismiss, forceShow = false }: { onDismiss?: (
       const baseH = introConfig?.baseHeight || 1080;
       const winW = windowSize.width || window.innerWidth;
       const winH = windowSize.height || window.innerHeight;
-      const scale = Math.max(winW / baseW, winH / baseH);
+      const scale = Math.min(winW / baseW, winH / baseH);
 
       const dx = (e.clientX - dragState.startX) / scale;
       const dy = (e.clientY - dragState.startY) / scale;
@@ -322,10 +322,14 @@ export function CinematicIntro({ onDismiss, forceShow = false }: { onDismiss?: (
     };
 
     const handlePointerUp = (e: PointerEvent) => {
-      const scaleX = windowSize.width / (introConfig?.baseWidth || windowSize.width);
-      const scaleY = windowSize.height / (introConfig?.baseHeight || windowSize.height);
-      const dx = (e.clientX - dragState.startX) / scaleX;
-      const dy = (e.clientY - dragState.startY) / scaleY;
+      const baseW = introConfig?.baseWidth || 1920;
+      const baseH = introConfig?.baseHeight || 1080;
+      const winW = windowSize.width || window.innerWidth;
+      const winH = windowSize.height || window.innerHeight;
+      const scale = Math.min(winW / baseW, winH / baseH);
+
+      const dx = (e.clientX - dragState.startX) / scale;
+      const dy = (e.clientY - dragState.startY) / scale;
 
       const clamp = (val: number, min: number, max: number) => Math.min(Math.max(val, min), max);
       const limitX = 2500;
@@ -1088,7 +1092,7 @@ export function CinematicIntro({ onDismiss, forceShow = false }: { onDismiss?: (
           left: '50%',
           width: `${introConfig?.baseWidth || 1920}px`,
           height: `${introConfig?.baseHeight || 1080}px`,
-          transform: `translate(-50%, -50%) scale(${Math.max((windowSize.width || (typeof window !== 'undefined' ? window.innerWidth : 1920)) / (introConfig?.baseWidth || 1920), (windowSize.height || (typeof window !== 'undefined' ? window.innerHeight : 1080)) / (introConfig?.baseHeight || 1080))})`,
+          transform: `translate(-50%, -50%) scale(${Math.min((windowSize.width || (typeof window !== 'undefined' ? window.innerWidth : 1920)) / (introConfig?.baseWidth || 1920), (windowSize.height || (typeof window !== 'undefined' ? window.innerHeight : 1080)) / (introConfig?.baseHeight || 1080))})`,
           transformOrigin: 'center center',
         }}
         className="flex flex-col md:flex-row items-stretch justify-start"
