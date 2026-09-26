@@ -480,7 +480,7 @@ function EditableProp({ p }: { p: PropData }) {
           }
         }}
       >
-        {content}
+        {visuals}
       </TransformControls>
     );
   }
@@ -489,7 +489,7 @@ function EditableProp({ p }: { p: PropData }) {
 
   return (
     <RigidBody type="fixed" colliders={colliderType}>
-      {content}
+      {visuals}
     </RigidBody>
   );
 }

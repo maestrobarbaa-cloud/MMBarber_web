@@ -34,7 +34,6 @@ export interface BarberProfile {
   quoteTiming?: { showFor: number, waitFor: number };
   bookingSystemType?: 'external' | 'internal';
   structuredSchedule?: Record<string, { work: boolean, start: string, end: string }>;
-  startedCuttingYear?: number;
 }
 
 interface BarberContextType {

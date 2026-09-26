@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Switch } from '@/components/ui/switch';
+
 import { useFragmentsContext } from '@/contexts/FragmentsContext';
 import Cropper from 'react-easy-crop';
 import { ProfileCard, ProfileData, Pet } from "./ProfileCard";

@@ -51,6 +51,8 @@ export interface DbSchema {
   support_sessions: any[];
   support_messages: any[];
   support_calls: any[];
+  rodina_divisions: any[];
+  rodina_members: any[];
 }
 
 const defaultDb: DbSchema = {
