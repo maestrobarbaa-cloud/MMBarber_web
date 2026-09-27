@@ -125,7 +125,7 @@
     "visibility_card_system": "visible",
     "visibility_card_pece": "visible",
     "visibility_card_komunita": "visible",
-    "admin_last_seen": "1790464292874",
+    "admin_last_seen": "1790540257880",
     "intro_menu_config": "{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":893.4566367508769,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61}},\"flameMarginTop\":-526.39739604482,\"flameMarginLeft\":-270.3858861303065,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-407.4485895048462,\"moonMarginLeft\":1026.4570737605804,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1,\"layouts\":{\"/obr/start-zapad.png\":{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":893.4566367508769,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61},\"start\":{\"x\":1342.4910904908556,\"y\":-195.88875453446192},\"galerie\":{\"x\":1274.5829889189088,\"y\":-171.07621881376588},\"vice\":{\"x\":1345.102940551315,\"y\":-86.19105199516325},\"komunita\":{\"x\":1251.0761789600967,\"y\":-201.1124546553809},\"kontakt\":{\"x\":1234.09915356711,\"y\":-219.39540507859735}},\"flameMarginTop\":-453.26560431537155,\"flameMarginLeft\":-245.57323084860303,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":0,\"moonMarginLeft\":0,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1},\"/obr/start-noc.png\":{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":893.4566367508769,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61}},\"flameMarginTop\":-526.39739604482,\"flameMarginLeft\":-270.3858861303065,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-407.4485895048462,\"moonMarginLeft\":1026.4570737605804,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1},\"/obr/start-odpoledne.png\":{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":901.2921869322554,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61},\"vice\":{\"x\":1277.1946795646918,\"y\":-65.29629136515643},\"komunita\":{\"x\":1305.9250302297462,\"y\":-164.546553808948},\"kontakt\":{\"x\":1389.5043915791264,\"y\":-195.88875453446192},\"galerie\":{\"x\":1330.7376058041114,\"y\":-198.50062452175598},\"start\":{\"x\":1351.6325657024638,\"y\":-174.99397397762056}},\"flameMarginTop\":-467.63076968448144,\"flameMarginLeft\":-246.87923558617106,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-407.4485895048462,\"moonMarginLeft\":1026.4570737605804,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1}},\"adminTestHour\":null,\"baseWidth\":1920,\"baseHeight\":827}"
   },
   "user_fragments": [],
@@ -555,7 +555,7 @@
       "ip": "::1",
       "userFullName": "T",
       "startedAt": 1789754043419,
-      "lastActivity": 1790464778598,
+      "lastActivity": 1790540776239,
       "status": "OPEN"
     }
   ],
@@ -599,6 +599,150 @@
       "text": "jak je ?",
       "timestamp": 1790096426759,
       "read": false
+    },
+    {
+      "id": "3d2d8708-9c79-484e-8b63-b95cd9ea8621",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "jaký je tomáš ?",
+      "timestamp": 1790535635236,
+      "read": false
+    },
+    {
+      "id": "86c96ef6-4f74-4e34-bc7c-59d518b79fa3",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] Tomáš je zakladatel a srdce našeho podsvětí. Chová se jako typický Don – o všechny ve své 'rodině' se postará a pro své klienty by udělal první poslední. Traduje se o něm ale jedna věc... v životě ho zradila jeho nejbližší osoba a od té doby se změnil. Místo slov za něj teď mluví činy a jeho práce.",
+      "timestamp": 1790535636267,
+      "read": true
+    },
+    {
+      "id": "656a8486-aa12-4a6b-90f2-40734a75cfd3",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "blbečku",
+      "timestamp": 1790536078506,
+      "read": false
+    },
+    {
+      "id": "d43376e4-0fa8-49ef-bbef-d900dc4fa62c",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] Omlouvám se, ale jsem jen jednoduchý bot. Pro složitější dotazy se přepněte na živou podporu.",
+      "timestamp": 1790536079526,
+      "read": true
+    },
+    {
+      "id": "cd7e2fa4-fa06-4ce3-a1f1-ae12a9e8e757",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "tomáš je debil",
+      "timestamp": 1790537593353,
+      "read": false
+    },
+    {
+      "id": "c14d1ff6-2241-4dde-ac6c-871685f45255",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "tomáš je debil",
+      "timestamp": 1790537603453,
+      "read": false
+    },
+    {
+      "id": "16c09b5c-deba-4e45-ac96-94001abc6d0c",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] V pořádku, vyplač se. Ale radím ti být spíš potichu. Můj pán to zrovna neslyší rád. Sám o sobě kritiku snese, ale musíš mít oprávněný důvod jej urazit. Jinak bych ti doporučil být radši potichoučku.",
+      "timestamp": 1790537604491,
+      "read": true
+    },
+    {
+      "id": "1637ea44-0334-43c5-ab54-8e8c777490c7",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[SYSTÉMOVÉ UPOZORNĚNÍ] Zpráva byla zaznamenána. Administrátor byl upozorněn na nevhodné chování vůči personálu.",
+      "timestamp": 1790537607533,
+      "read": true
+    },
+    {
+      "id": "10cb8054-30f3-41bd-8277-505fc9262a7c",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "spíš ?",
+      "timestamp": 1790538290974,
+      "read": false
+    },
+    {
+      "id": "59892efa-f31e-45e0-98ce-9f35ba84f9d1",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] Dobrá otázka. Bohužel přesnou odpověď na tohle neznám. Bude lepší to probrat s naší živou podporou.",
+      "timestamp": 1790538292004,
+      "read": true
+    },
+    {
+      "id": "1244a091-d47d-4e33-a4fe-800f9a66aaef",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "ahoj",
+      "timestamp": 1790540211147,
+      "read": false
+    },
+    {
+      "id": "277389ac-62e0-4281-8742-ea1a5a15be62",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] V pohodě, zdravím. Tady Daimon. S čím můžu pomoct?",
+      "timestamp": 1790540212934,
+      "read": true
+    },
+    {
+      "id": "13dc946b-721f-4ad1-9ea2-25766ec6663e",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "vyliž si",
+      "timestamp": 1790540221999,
+      "read": false
+    },
+    {
+      "id": "4f8f6e6b-b05e-4f7f-82fd-eb85307ca495",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] Omlouvám se, ale jsem jen virtuální asistent. Na složitější dotazy vám lépe odpoví živá podpora. Zkuste prosím přepnout dole na 'Živou podporu'.",
+      "timestamp": 1790540225189,
+      "read": true
+    },
+    {
+      "id": "c4066bd2-bff4-470f-89c1-9df9dd3df21e",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "blbečku",
+      "timestamp": 1790540236721,
+      "read": false
+    },
+    {
+      "id": "2391be9e-0a7f-4a09-a446-5ef0ed65a318",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] Zkoušíš mou trpělivost? Považuj tohle za své první varování. „S prázdnou hlavou naděláš nejvíc hluku.“ Chovej se slušně.",
+      "timestamp": 1790540239545,
+      "read": true
+    },
+    {
+      "id": "f44dcfbb-e0b1-4ace-83b8-a72147c70968",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "jdi do prdele",
+      "timestamp": 1790540254790,
+      "read": false
+    },
+    {
+      "id": "17154ead-56ed-4e09-bcfd-7e9bf9b2f7bc",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] Tohle byl tvůj druhý přešlap. Běž si léčit komplexy jinam. Ještě jedna podobná zpráva a letíš odtud. „Na hloupou otázku, hloupá odpověď.“",
+      "timestamp": 1790540257880,
+      "read": true
     }
   ],
   "support_calls": [

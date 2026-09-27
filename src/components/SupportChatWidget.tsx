@@ -6,6 +6,7 @@ import { MessageSquare, X, Send, User, ChevronDown, CheckCheck, Smile, Paperclip
 import { useTranslation } from '@/hooks/useTranslation';
 import { EmojiPicker } from '@/components/EmojiPicker';
 import { useUI } from '@/contexts/UIContext';
+import { getDaimonResponse, getDaimonName, isAprilFools } from '@/lib/daimonBot';
 
 interface SupportMessage {
   id: string;
@@ -15,6 +16,7 @@ interface SupportMessage {
   read: boolean;
   attachmentUrl?: string;
   attachmentType?: 'image' | 'video';
+  fullName?: string;
 }
 
 interface SupportSession {
@@ -40,6 +42,10 @@ export default function SupportChatWidget() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
+  // Chat Mode State
+  const [chatMode, setChatMode] = useState<'bot' | 'human'>('bot');
+  const [initialModeSet, setInitialModeSet] = useState(false);
+
   // WebRTC Call State
   const [callStatus, setCallStatus] = useState<'IDLE' | 'CALLING' | 'RINGING' | 'IN_CALL'>('IDLE');
   const [isMuted, setIsMuted] = useState(false);
@@ -51,6 +57,70 @@ export default function SupportChatWidget() {
   const [soundsEnabled, setSoundsEnabled] = useState(true);
   const prevMessagesLengthRef = useRef(0);
   const initialFetchDoneRef = useRef(false);
+
+  const [isBotTyping, setIsBotTyping] = useState(false);
+  const [hasIdleAlert, setHasIdleAlert] = useState(false);
+  const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    idleTimerRef.current = setTimeout(() => {
+      if (!isOpen) {
+        setHasIdleAlert(true);
+      }
+    }, 45000);
+
+    return () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
+  }, [isOpen]);
+
+  const toggleChat = () => {
+    const newIsOpen = !isOpen;
+    setIsOpen(newIsOpen);
+
+    if (newIsOpen) {
+      if (hasIdleAlert) {
+        setHasIdleAlert(false);
+        setChatMode('bot');
+        setTimeout(() => {
+          const cheekyPhrases = [
+            "Co tu vokouníš? Potřebuješ něco?",
+            "Nečuč jak chleba z tašky a něco dělej. Zarezervuj si termín.",
+            "Koukáš na to jak z jara. Potřebuješ poradit se střihem?",
+            "Haló, je tam někdo? Čumíš na to už pěkně dlouho."
+          ];
+          const phrase = cheekyPhrases[Math.floor(Math.random() * cheekyPhrases.length)];
+          setMessages(prev => [...prev, {
+            id: Date.now().toString(),
+            text: `[BOT] ${phrase}`,
+            sender: 'ADMIN',
+            timestamp: new Date().toISOString(),
+            fullName: getDaimonName()
+          }]);
+          setTimeout(() => {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+          
+          const currentLen = prevMessagesLengthRef.current + 1;
+          closeTimerRef.current = setTimeout(() => {
+            if (prevMessagesLengthRef.current <= currentLen) {
+               setIsOpen(false);
+               setMessages(prev => [...prev, {
+                  id: Date.now().toString(),
+                  text: `[BOT] Asi nemáš slov. Zavírám. Čus.`,
+                  sender: 'ADMIN',
+                  timestamp: new Date().toISOString(),
+                  fullName: getDaimonName()
+               }]);
+            }
+          }, 15000);
+        }, 500);
+      }
+    } else {
+       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    }
+  };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -75,6 +145,14 @@ export default function SupportChatWidget() {
         if (data.session && !fullName) {
           setFullName(data.session.userFullName);
         }
+        
+        setInitialModeSet(prev => {
+          if (!prev) {
+            setChatMode(data.isAdminOnline ? 'human' : 'bot');
+            return true;
+          }
+          return prev;
+        });
       }
     } catch (error) {
       console.error("Failed to fetch support chat state", error);
@@ -284,6 +362,162 @@ export default function SupportChatWidget() {
     }
   }, [messages, isOpen, session]);
 
+  const switchMode = (newMode: 'bot' | 'human') => {
+    if (chatMode === newMode) return;
+    setChatMode(newMode);
+    
+    const sysMsgId = Date.now().toString() + Math.random();
+    if (newMode === 'human') {
+      setMessages(prev => [...prev, {
+        id: sysMsgId,
+        sender: 'ADMIN',
+        text: '[SYSTEM] Přepnuli jste na živou podporu. Jakmile bude operátor dostupný, odpoví vám. Děkujeme za trpělivost.',
+        timestamp: Date.now(),
+        read: true,
+      } as any]);
+    } else {
+      const introPhrases = [
+        "Vítejí u nás. Já jsem Daimon, pokorný sluha tohoto podniku a především samotného velkého Dona Tomáše. Ráčíte si přát poradit se střihem, nebo hledáte cestu k Jeho křeslu?",
+        "Buďte zdráv. Mé jméno je Daimon. Sloužím jako strážce tohoto digitálního prahu pro Jeho Excelenci, mistra Tomáše. Co pro vás mohu v tento moment udělat?",
+        "Poklona. Jsem Daimon, dvorní rádce MMBarberu a poslušný stín velkého šéfa, Dona Tomáše. Copak byste od nás ráčili potřebovat?",
+        "Přistupte blíž, ale s úctou. Já jsem Daimon, věrný služebník samotného zakladatele a mistra tohoto domu, velkého Dona Tomáše. Vaše přání?"
+      ];
+      const selectedIntro = introPhrases[Math.floor(Math.random() * introPhrases.length)];
+
+      setMessages(prev => [...prev, {
+        id: sysMsgId,
+        sender: 'ADMIN',
+        text: `[BOT] ${selectedIntro}`,
+        timestamp: Date.now(),
+        read: true,
+        fullName: getDaimonName()
+      } as any]);
+    }
+    
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
+  const handleBotResponse = async (userText: string, sessionId: string) => {
+    const { text: botReply, isVulgar, isInsultingTomas } = getDaimonResponse(userText, parseInt(localStorage.getItem('daimon_strikes') || '0'));
+
+    setIsBotTyping(true);
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
+    
+    // Simulate typing delay: 15ms per character, between 600ms and 2500ms
+    const delay = Math.min(Math.max(botReply.length * 15, 600), 2500);
+    
+    setTimeout(async () => {
+      setIsBotTyping(false);
+      try {
+        const res = await fetch('/api/support-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: `[BOT] ${botReply}`,
+            fullName: getDaimonName(),
+            sender: 'ADMIN',
+            sessionId: sessionId
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setMessages(prev => [...prev, data.message]);
+          setTimeout(() => {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+
+          if (isInsultingTomas) {
+            setTimeout(async () => {
+                let userIp = "Neznámá IP";
+                try {
+                  const ipRes = await fetch('https://api.ipify.org?format=json');
+                  const ipData = await ipRes.json();
+                  userIp = ipData.ip;
+                } catch(e) {}
+
+                // Secretly log to DB for admin, but don't show in UI
+                await fetch('/api/support-chat', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    text: `[TAJNÁ ZPRÁVA PRO ADMINA] Tento uživatel právě urážel Dona Tomáše. Jeho zachycená IP adresa je: ${userIp}`,
+                    fullName: 'Daimon-Bezpečnost',
+                    sender: 'ADMIN',
+                    sessionId: sessionId
+                  })
+                });
+
+                // Public warning message
+                const sysRes = await fetch('/api/support-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      text: `[SYSTÉMOVÉ UPOZORNĚNÍ] Zpráva byla zaznamenána. Administrátor byl upozorněn na nevhodné chování vůči personálu. Vaše připojení bylo monitorováno.`,
+                      fullName: 'Systém',
+                      sender: 'ADMIN',
+                      sessionId: sessionId
+                    })
+                  });
+                  if (sysRes.ok) {
+                    const sysData = await sysRes.json();
+                    setMessages(prev => [...prev, sysData.message]);
+                    setTimeout(() => {
+                      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+                    }, 100);
+                  }
+            }, 3000);
+        }
+
+        if (isVulgar && !isInsultingTomas) {
+          const currentStrikes = parseInt(localStorage.getItem('daimon_strikes') || '0');
+          const newStrikes = currentStrikes + 1;
+          localStorage.setItem('daimon_strikes', newStrikes.toString());
+          
+          if (newStrikes >= 3) {
+            // Drop the hammer on the 3rd strike
+            setTimeout(async () => {
+               const finalRes = await fetch('/api/support-chat', {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({
+                   text: `[BOT] Tohle byla tvoje poslední kapka. Ať už sem ten tvůj prašivý skunk nikdy neleze. Vyhazuju tě za 3... 2... 1...`,
+                   fullName: getDaimonName(),
+                   sender: 'ADMIN',
+                   sessionId: sessionId
+                 })
+               });
+               
+               if (finalRes.ok) {
+                 const finalData = await finalRes.json();
+                 setMessages(prev => [...prev, finalData.message]);
+                 setTimeout(() => {
+                   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+                 }, 100);
+                 
+                 // Wait 4 seconds, then ban and kick
+                 setTimeout(async () => {
+                   await fetch('/api/support-chat', {
+                     method: 'PUT',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify({ action: 'BAN', sessionId: sessionId })
+                   });
+                   window.location.href = "https://www.google.com/search?q=jak+se+chovat+slusne";
+                 }, 4000);
+               }
+            }, 3000);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Bot reply failed", e);
+    }
+  }, delay);
+};
+
   const handleSend = async (textToSend: string) => {
     if (!textToSend.trim() || isSubmitting || isBanned) return;
     if (!session && !fullName.trim()) return;
@@ -316,6 +550,12 @@ export default function SupportChatWidget() {
         setTimeout(() => {
           messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
         }, 100);
+
+        if (chatMode === 'bot') {
+            setTimeout(() => {
+                handleBotResponse(textToSend, data.session?.id || session?.id);
+            }, 1000);
+        }
       }
     } catch (error) {
       console.error("Failed to send message", error);
@@ -393,13 +633,13 @@ export default function SupportChatWidget() {
         transition={{ type: 'spring', damping: 20, stiffness: 300, delay: 0.5 }}
       >
         <button 
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={toggleChat}
           className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 hover:scale-110 group ${
             isOpen ? 'rotate-90 bg-white text-black' : 
             theme === 'blood' ? 'bg-gradient-to-tr from-red-600 to-red-900 text-white shadow-[0_0_30px_rgba(220,38,38,0.3)] hover:shadow-[0_0_50px_rgba(220,38,38,0.6)]' :
             theme === 'noir' ? 'bg-gradient-to-tr from-gray-200 to-gray-500 text-black shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.6)]' :
             'bg-gradient-to-tr from-mafia-gold to-[#c79c3d] text-black shadow-[0_0_30px_rgba(199,156,61,0.3)] hover:shadow-[0_0_50px_rgba(199,156,61,0.6)]'
-          } ${!isOpen && hasUnreadFromAdmin ? (theme === 'blood' ? 'animate-pulse shadow-[0_0_40px_rgba(220,38,38,0.8)]' : theme === 'noir' ? 'animate-pulse shadow-[0_0_40px_rgba(255,255,255,0.8)]' : 'animate-pulse shadow-[0_0_40px_rgba(199,156,61,0.8)]') : ''}`}
+          } ${!isOpen && (hasUnreadFromAdmin || hasIdleAlert) ? (theme === 'blood' ? 'animate-pulse shadow-[0_0_40px_rgba(220,38,38,0.8)]' : theme === 'noir' ? 'animate-pulse shadow-[0_0_40px_rgba(255,255,255,0.8)]' : 'animate-pulse shadow-[0_0_40px_rgba(199,156,61,0.8)]') : ''}`}
         >
           {/* Background glow effect on hover */}
           <div className="absolute inset-0 bg-white/20 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 rounded-full"></div>
@@ -412,9 +652,14 @@ export default function SupportChatWidget() {
           {!isOpen && hasUnreadFromAdmin && (
             <span className="absolute top-0 right-0 w-5 h-5 bg-red-600 text-white flex items-center justify-center rounded-full border-2 border-black font-bold text-[12px] animate-bounce shadow-[0_0_10px_rgba(220,38,38,0.8)]">!</span>
           )}
+
+          {/* Idle Alert Indicator (Large Exclamation Mark) */}
+          {!isOpen && hasIdleAlert && !hasUnreadFromAdmin && (
+            <span className="absolute -top-3 -right-3 w-8 h-8 bg-mafia-gold text-black flex items-center justify-center rounded-full border-2 border-black font-black text-[18px] animate-[bounce_1s_infinite] shadow-[0_0_15px_rgba(199,156,61,0.9)]">!</span>
+          )}
           
           {/* Online Indicator */}
-          {!isOpen && !hasUnreadFromAdmin && isAdminOnline && (
+          {!isOpen && !hasUnreadFromAdmin && !hasIdleAlert && isAdminOnline && (
             <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-black bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]"></span>
           )}
         </button>
@@ -475,9 +720,11 @@ export default function SupportChatWidget() {
                    )}
                  </div>
                  <div>
-                   <h3 className="font-heading font-black text-white text-lg tracking-widest uppercase italic">MMBARBER SUPPORT</h3>
+                   <h3 className="font-heading font-black text-white text-lg tracking-widest uppercase italic">
+                     {chatMode === 'bot' ? 'DAIMON' : 'MMBARBER SUPPORT'}
+                   </h3>
                    <p className="text-[10px] text-mafia-gold font-mono uppercase tracking-[0.2em] font-bold">
-                     {isAdminOnline ? 'Online & Připraven' : 'Nyní jsme offline (Zanechte vzkaz)'}
+                     {chatMode === 'human' ? (isAdminOnline ? 'Online & Připraven' : 'Nyní jsme offline (Zanechte vzkaz)') : 'Virtuální asistent'}
                    </p>
                  </div>
                </div>
@@ -564,8 +811,13 @@ export default function SupportChatWidget() {
               ) : (
                 messages.map((msg, idx) => {
                   const isUser = msg.sender === 'USER';
-                  const isNextSame = messages[idx + 1]?.sender === msg.sender;
-                  const isPrevSame = messages[idx - 1]?.sender === msg.sender;
+                  const isSystem = msg.text.startsWith('[SYSTEM] ');
+                  const isBot = msg.text.startsWith('[BOT] ');
+                  const displayText = msg.text.replace(/\[SYSTEM\] |\[BOT\] /g, '');
+                  const senderName = isUser ? 'Vy' : (isBot ? (msg.fullName || getDaimonName()) : (isSystem ? 'Systém' : 'Podpora'));
+                  
+                  const isNextSame = messages[idx + 1]?.sender === msg.sender && !isSystem && !messages[idx + 1]?.text.startsWith('[SYSTEM] ');
+                  const isPrevSame = messages[idx - 1]?.sender === msg.sender && !isSystem && !messages[idx - 1]?.text.startsWith('[SYSTEM] ');
                   const showHeader = !isPrevSame;
                   
                   return (
@@ -578,13 +830,13 @@ export default function SupportChatWidget() {
                     >
                        {showHeader && (
                          <span className="text-[9px] font-mono text-white/30 uppercase mb-1.5 px-2 tracking-widest">
-                           {isUser ? 'Vy' : 'Podpora'} • {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                           {senderName} • {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                          </span>
                        )}
                        <div className="relative group max-w-[85%] flex items-center gap-2">
                            {isUser && (
                               <button 
-                                onClick={() => navigator.clipboard.writeText(msg.text)}
+                                onClick={() => navigator.clipboard.writeText(displayText)}
                                 className="opacity-0 group-hover:opacity-100 p-1.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all backdrop-blur-md border border-white/10 shrink-0"
                                 title="Kopírovat"
                               >
@@ -593,6 +845,7 @@ export default function SupportChatWidget() {
                            )}
 
                            <div className={`p-3.5 px-4 text-[13px] leading-relaxed shadow-lg overflow-hidden flex flex-col gap-1 ${
+                                isSystem ? 'bg-black/40 border border-mafia-gold/20 text-mafia-gold/80 italic rounded-xl text-center w-full' :
                                 isUser 
                                   ? `bg-mafia-gold text-black ${isNextSame ? 'rounded-2xl rounded-tr-sm rounded-br-sm' : 'rounded-2xl rounded-br-sm'} font-medium` 
                                   : `bg-white/10 backdrop-blur-md border border-white/10 text-white ${isNextSame ? 'rounded-2xl rounded-tl-sm rounded-bl-sm' : 'rounded-2xl rounded-bl-sm'}`
@@ -603,7 +856,7 @@ export default function SupportChatWidget() {
                               {msg.attachmentUrl && msg.attachmentType === 'video' && (
                                 <video src={msg.attachmentUrl} controls className="w-full max-h-48 rounded-lg mb-2" />
                               )}
-                              <span>{msg.text}</span>
+                              <span>{displayText}</span>
                               
                               {isUser && (
                                 <div className="self-end mt-0.5 flex items-center opacity-70">
@@ -612,9 +865,9 @@ export default function SupportChatWidget() {
                               )}
                            </div>
 
-                           {!isUser && (
+                           {!isUser && !isSystem && (
                               <button 
-                                onClick={() => navigator.clipboard.writeText(msg.text)}
+                                onClick={() => navigator.clipboard.writeText(displayText)}
                                 className="opacity-0 group-hover:opacity-100 p-1.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all backdrop-blur-md border border-white/10 shrink-0"
                                 title="Kopírovat"
                               >
@@ -626,12 +879,58 @@ export default function SupportChatWidget() {
                   );
                 })
               )}
+              {isBotTyping && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  className="flex flex-col items-start mb-5"
+                >
+                  <span className="text-[9px] font-mono text-white/30 uppercase mb-1.5 px-2 tracking-widest">
+                    {getDaimonName()} • píše...
+                  </span>
+                  <div className="bg-white/10 backdrop-blur-md border border-white/10 text-white rounded-2xl rounded-bl-sm p-3.5 px-5 shadow-lg flex items-center gap-1.5">
+                    <motion.div 
+                      animate={{ y: [0, -3, 0] }} 
+                      transition={{ repeat: Infinity, duration: 0.6, delay: 0 }}
+                      className="w-1.5 h-1.5 bg-mafia-gold rounded-full"
+                    />
+                    <motion.div 
+                      animate={{ y: [0, -3, 0] }} 
+                      transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }}
+                      className="w-1.5 h-1.5 bg-mafia-gold rounded-full"
+                    />
+                    <motion.div 
+                      animate={{ y: [0, -3, 0] }} 
+                      transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }}
+                      className="w-1.5 h-1.5 bg-mafia-gold rounded-full"
+                    />
+                  </div>
+                </motion.div>
+              )}
               <div ref={messagesEndRef} />
             </div>
 
             {/* Input Area */}
-            <div className="p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 shrink-0 relative z-10">
-               {!session && !fullName ? (
+            <div className="bg-black/80 backdrop-blur-xl shrink-0 relative z-10 flex flex-col">
+               {/* Mode Switcher */}
+               <div className="flex border-t border-b border-white/10">
+                 <button 
+                   onClick={() => switchMode('bot')}
+                   className={`flex-1 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 ${chatMode === 'bot' ? 'text-mafia-gold bg-white/5 border-b-2 border-mafia-gold' : 'text-white/50 hover:text-white/80 bg-transparent'}`}
+                 >
+                   {getDaimonName()}
+                 </button>
+                 <div className="w-[1px] bg-white/10"></div>
+                 <button 
+                   onClick={() => switchMode('human')}
+                   className={`flex-1 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 ${chatMode === 'human' ? 'text-mafia-gold bg-white/5 border-b-2 border-mafia-gold' : 'text-white/50 hover:text-white/80 bg-transparent'}`}
+                 >
+                   Živá podpora
+                 </button>
+               </div>
+
+               <div className="p-4 pt-3">
+                 {!session && !fullName ? (
                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
                    <p className="text-[9px] font-mono text-mafia-gold uppercase mb-2 tracking-widest pl-2">Pro začátek zadejte své jméno:</p>
                    <input 
@@ -645,7 +944,7 @@ export default function SupportChatWidget() {
                ) : null}
                
                <form onSubmit={handleSubmit} className="relative flex items-center group gap-1">
-                 {session && (
+                 {session && chatMode === 'human' && (
                    <div className="flex shrink-0">
                      <button 
                        type="button" 
@@ -694,6 +993,7 @@ export default function SupportChatWidget() {
                    <Send size={14} className="ml-0.5" />
                  </button>
                </form>
+             </div>
             </div>
           </motion.div>
         )}
