@@ -95,7 +95,8 @@ export default function SupportChatWidget() {
             id: Date.now().toString(),
             text: `[BOT] ${phrase}`,
             sender: 'ADMIN',
-            timestamp: new Date().toISOString(),
+            timestamp: Date.now(),
+            read: true,
             fullName: getDaimonName()
           }]);
           setTimeout(() => {
@@ -110,7 +111,8 @@ export default function SupportChatWidget() {
                   id: Date.now().toString(),
                   text: `[BOT] Asi nemáš slov. Zavírám. Čus.`,
                   sender: 'ADMIN',
-                  timestamp: new Date().toISOString(),
+                  timestamp: Date.now(),
+                  read: true,
                   fullName: getDaimonName()
                }]);
             }

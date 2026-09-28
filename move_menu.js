@@ -13,7 +13,7 @@ if (leftMenuStart !== -1 && rightColStart !== -1) {
 
     leftMenuBlock = leftMenuBlock.replace(
         /className=\{`w-\[350px\] flex-none flex flex-col items-center md:items-start justify-center px-4 md:px-10 z-30 relative ([^`]+)`\}/,
-        'className={`fixed left-0 top-[50%] h-[1080px] w-[350px] flex-none flex flex-col items-center md:items-start justify-center px-4 md:px-10 z-[60] $1`}\n          style={{ transform: `translate(0, -50%) scale(${Math.min((windowSize.width || (typeof window !== \\'undefined\\' ? window.innerWidth : 1920)) / 1920, (windowSize.height || (typeof window !== \\'undefined\\' ? window.innerHeight : 1080)) / 1080)})`, transformOrigin: \\'left center\\' }}'
+        `className={\`fixed left-0 top-[50%] h-[1080px] w-[350px] flex-none flex flex-col items-center md:items-start justify-center px-4 md:px-10 z-[60] $1\`}\n          style={{ transform: \`translate(0, -50%) scale(\${Math.min((windowSize.width || (typeof window !== 'undefined' ? window.innerWidth : 1920)) / 1920, (windowSize.height || (typeof window !== 'undefined' ? window.innerHeight : 1080)) / 1080)})\`, transformOrigin: 'left center' }}`
     );
 
     const scaleWrapperStartStr = '<div \n        id="scale-wrapper"';

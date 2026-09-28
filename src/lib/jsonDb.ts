@@ -90,7 +90,9 @@ const defaultDb: DbSchema = {
   },
   support_sessions: [],
   support_messages: [],
-  support_calls: []
+  support_calls: [],
+  rodina_divisions: [],
+  rodina_members: []
 };
 
 let memDb: DbSchema | null = null;

@@ -12,7 +12,7 @@ export interface SearchFilters {
 
 export interface DiscoveryCategory {
   id: string;
-  icon: React.ElementType;
+  icon: any;
   title: Record<'cs' | 'en', string>;
   description: Record<'cs' | 'en', string>;
   color: string;
