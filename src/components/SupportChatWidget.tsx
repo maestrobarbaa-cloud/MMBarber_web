@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, User, ChevronDown, CheckCheck, Smile, Paperclip, Loader2, Phone, PhoneOff, Mic, MicOff, Copy, Check, Volume2, VolumeX } from 'lucide-react';
+import { MessageSquare, X, Send, User, ChevronDown, CheckCheck, Smile, Paperclip, Loader2, Phone, PhoneOff, Mic, MicOff, Copy, Check, Volume2, VolumeX, Maximize2, Minimize2, Download, Settings } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { EmojiPicker } from '@/components/EmojiPicker';
 import { useUI } from '@/contexts/UIContext';
@@ -17,6 +17,7 @@ interface SupportMessage {
   attachmentUrl?: string;
   attachmentType?: 'image' | 'video';
   fullName?: string;
+  silent?: boolean;
 }
 
 interface SupportSession {
@@ -25,14 +26,35 @@ interface SupportSession {
   status: string;
 }
 
+const isOnlyEmojis = (str: string) => {
+  if (!str || str.trim().length === 0) return false;
+  // Regex pro detekci samotných smajlíků
+  const emojiRegex = /^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2B50}\u{2B55}\u{231A}\u{231B}\u{2328}\u{23CF}\u{23E9}-\u{23F3}\u{23F8}-\u{23FA}\u{24C2}\u{25AA}\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{200D}\u{FE0F}\s]+$/u;
+  return emojiRegex.test(str);
+};
+
 export default function SupportChatWidget() {
   const { lang } = useTranslation();
+  
+  const renderTextWithLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.split(urlRegex).map((part, i) => {
+      if (part.match(urlRegex)) {
+        return <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white transition-colors">{part}</a>;
+      }
+      return <span key={i}>{part}</span>;
+    });
+  };
+
   const { isSupportChatOpen: isOpen, setIsSupportChatOpen: setIsOpen } = useUI();
   const [messages, setMessages] = useState<SupportMessage[]>([]);
   const [session, setSession] = useState<SupportSession | null>(null);
   const [isAdminOnline, setIsAdminOnline] = useState(false);
   const [isBanned, setIsBanned] = useState(false);
-  const [theme, setTheme] = useState<'gold' | 'blood' | 'noir'>('gold');
+  const [theme, setTheme] = useState<'gold' | 'blood' | 'noir' | 'neon' | 'ocean' | 'forest'>('gold');
+  const [chatBg, setChatBg] = useState<'particles' | 'grid' | 'clean' | 'ultra' | 'matrix'>('particles');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   
   // Forms state
@@ -169,9 +191,14 @@ export default function SupportChatWidget() {
     }, 5000);
     
     const checkTheme = () => {
-      if (localStorage.getItem('mmbarber_blood_mode') === 'true') setTheme('blood');
+      const savedTheme = localStorage.getItem('mmbarber_chat_theme');
+      if (savedTheme) setTheme(savedTheme as any);
+      else if (localStorage.getItem('mmbarber_blood_mode') === 'true') setTheme('blood');
       else if (localStorage.getItem('mmbarber_noir_mode') === 'true') setTheme('noir');
       else setTheme('gold');
+      
+      const savedBg = localStorage.getItem('mmbarber_chat_bg');
+      if (savedBg) setChatBg(savedBg as any);
     };
     checkTheme();
     window.addEventListener('mmbarber-theme-changed', checkTheme); // Volitelné
@@ -191,7 +218,12 @@ export default function SupportChatWidget() {
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
       const newMessages = messages.slice(prevMessagesLengthRef.current);
-      const hasNewAdminMessage = newMessages.some(m => m.sender === 'ADMIN');
+      const hasNewAdminMessage = newMessages.some(m => 
+        m.sender === 'ADMIN' && 
+        !m.silent && 
+        !m.text.startsWith('[BOT] ') && 
+        !m.text.startsWith('[SYSTEM] ')
+      );
       
       if (hasNewAdminMessage && soundsEnabled) {
         try {
@@ -203,6 +235,24 @@ export default function SupportChatWidget() {
     }
     prevMessagesLengthRef.current = messages.length;
   }, [messages, soundsEnabled]);
+
+  const clearChat = async () => {
+    if (!session) return;
+    if (window.confirm('Opravdu chcete nevratně smazat celou historii chatu?')) {
+      try {
+        await fetch('/api/support-chat', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'CLOSE', sessionId: session.id })
+        });
+        setMessages([]);
+        setSession(null);
+        setIsSettingsOpen(false);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   // -------------------------------------------------------------
   // WEBRTC CALLING LOGIC
@@ -376,6 +426,7 @@ export default function SupportChatWidget() {
         text: '[SYSTEM] Přepnuli jste na živou podporu. Jakmile bude operátor dostupný, odpoví vám. Děkujeme za trpělivost.',
         timestamp: Date.now(),
         read: true,
+        silent: true
       } as any]);
     } else {
       const introPhrases = [
@@ -392,7 +443,8 @@ export default function SupportChatWidget() {
         text: `[BOT] ${selectedIntro}`,
         timestamp: Date.now(),
         read: true,
-        fullName: getDaimonName()
+        fullName: getDaimonName(),
+        silent: true
       } as any]);
     }
     
@@ -623,6 +675,38 @@ export default function SupportChatWidget() {
 
   const hasUnreadFromAdmin = messages.some(m => m.sender === 'ADMIN' && !m.read);
 
+  const exportChat = () => {
+    const textContent = messages.map(m => {
+      const date = new Date(m.timestamp).toLocaleString('cs-CZ');
+      const isBot = m.text.startsWith('[BOT]');
+      const isSystem = m.text.startsWith('[SYSTEM]');
+      const senderName = m.sender === 'USER' ? 'Zákazník' : (isBot ? getDaimonName() : (isSystem ? 'Systém' : 'Operátor'));
+      const text = m.text.replace(/\[SYSTEM\] |\[BOT\] /g, '');
+      return `[${date}] ${senderName}: ${text}`;
+    }).join('\n\n');
+    
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mmbarber_chat_${new Date().toISOString().slice(0,10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const formatDateSeparator = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (date.toDateString() === today.toDateString()) return 'Dnes';
+    if (date.toDateString() === yesterday.toDateString()) return 'Včera';
+    return date.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
+
   if (isBanned) return null; // Don't show anything to banned users
 
   return (
@@ -640,8 +724,11 @@ export default function SupportChatWidget() {
             isOpen ? 'rotate-90 bg-white text-black' : 
             theme === 'blood' ? 'bg-gradient-to-tr from-red-600 to-red-900 text-white shadow-[0_0_30px_rgba(220,38,38,0.3)] hover:shadow-[0_0_50px_rgba(220,38,38,0.6)]' :
             theme === 'noir' ? 'bg-gradient-to-tr from-gray-200 to-gray-500 text-black shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.6)]' :
+            theme === 'neon' ? 'bg-gradient-to-tr from-purple-500 to-pink-500 text-white shadow-[0_0_30px_rgba(168,85,247,0.3)] hover:shadow-[0_0_50px_rgba(168,85,247,0.6)]' :
+            theme === 'ocean' ? 'bg-gradient-to-tr from-blue-500 to-cyan-500 text-white shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:shadow-[0_0_50px_rgba(59,130,246,0.6)]' :
+            theme === 'forest' ? 'bg-gradient-to-tr from-emerald-600 to-green-400 text-white shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_50px_rgba(16,185,129,0.6)]' :
             'bg-gradient-to-tr from-mafia-gold to-[#c79c3d] text-black shadow-[0_0_30px_rgba(199,156,61,0.3)] hover:shadow-[0_0_50px_rgba(199,156,61,0.6)]'
-          } ${!isOpen && (hasUnreadFromAdmin || hasIdleAlert) ? (theme === 'blood' ? 'animate-pulse shadow-[0_0_40px_rgba(220,38,38,0.8)]' : theme === 'noir' ? 'animate-pulse shadow-[0_0_40px_rgba(255,255,255,0.8)]' : 'animate-pulse shadow-[0_0_40px_rgba(199,156,61,0.8)]') : ''}`}
+          } ${!isOpen && (hasUnreadFromAdmin || hasIdleAlert) ? (theme === 'blood' ? 'animate-pulse shadow-[0_0_40px_rgba(220,38,38,0.8)]' : theme === 'noir' ? 'animate-pulse shadow-[0_0_40px_rgba(255,255,255,0.8)]' : theme === 'neon' ? 'animate-pulse shadow-[0_0_40px_rgba(168,85,247,0.8)]' : theme === 'ocean' ? 'animate-pulse shadow-[0_0_40px_rgba(59,130,246,0.8)]' : theme === 'forest' ? 'animate-pulse shadow-[0_0_40px_rgba(16,185,129,0.8)]' : 'animate-pulse shadow-[0_0_40px_rgba(199,156,61,0.8)]') : ''}`}
         >
           {/* Background glow effect on hover */}
           <div className="absolute inset-0 bg-white/20 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 rounded-full"></div>
@@ -675,14 +762,71 @@ export default function SupportChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-28 right-6 w-[380px] max-w-[calc(100vw-3rem)] h-[600px] max-h-[75vh] bg-black/90 backdrop-blur-2xl border border-mafia-gold/40 rounded-2xl shadow-[0_20px_70px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.15)] flex flex-col overflow-hidden z-[9990]"
+            className={`fixed bottom-28 right-6 max-w-[calc(100vw-3rem)] bg-black/90 backdrop-blur-2xl border rounded-2xl shadow-[0_20px_70px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden z-[9990] transition-all duration-300 ease-in-out w-[380px] h-[600px] max-h-[75vh] ${isExpanded ? 'md:w-[700px] md:h-[750px] md:max-h-[85vh]' : ''} ${
+              theme === 'blood' ? 'border-red-600/40 shadow-[0_0_30px_rgba(220,38,38,0.15)]' :
+              theme === 'noir' ? 'border-gray-500/40 shadow-[0_0_30px_rgba(255,255,255,0.1)]' :
+              theme === 'neon' ? 'border-purple-500/40 shadow-[0_0_30px_rgba(168,85,247,0.15)]' :
+              theme === 'ocean' ? 'border-blue-500/40 shadow-[0_0_30px_rgba(59,130,246,0.15)]' :
+              theme === 'forest' ? 'border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.15)]' :
+              'border-mafia-gold/40 shadow-[0_0_30px_rgba(212,175,55,0.15)]'
+            }`}
           >
             {/* Oživující prvek: Zlaté částice (Ambient Particles) */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-              {Array.from({ length: 12 }).map((_, i) => (
+              {chatBg === 'grid' && (
+                <div className={`absolute inset-0 bg-[linear-gradient(var(--grid-color)_1px,transparent_1px),linear-gradient(90deg,var(--grid-color)_1px,transparent_1px)] bg-[size:20px_20px] ${
+                  theme === 'blood' ? '[--grid-color:rgba(220,38,38,0.15)]' :
+                  theme === 'noir' ? '[--grid-color:rgba(255,255,255,0.08)]' :
+                  theme === 'neon' ? '[--grid-color:rgba(168,85,247,0.15)]' :
+                  theme === 'ocean' ? '[--grid-color:rgba(59,130,246,0.15)]' :
+                  theme === 'forest' ? '[--grid-color:rgba(16,185,129,0.15)]' :
+                  '[--grid-color:rgba(212,175,55,0.15)]'
+                }`} />
+              )}
+              {chatBg === 'matrix' && (
+                <div className="absolute inset-0 overflow-hidden opacity-30 flex gap-4 p-2 justify-between pointer-events-none">
+                  {Array.from({ length: 20 }).map((_, i) => (
+                    <motion.div
+                      key={`matrix-${i}`}
+                      initial={{ y: -100, opacity: 0 }}
+                      animate={{ y: 800, opacity: [0, 1, 1, 0] }}
+                      transition={{ duration: Math.random() * 5 + 3, repeat: Infinity, ease: 'linear', delay: Math.random() * 5 }}
+                      className={`w-px h-24 ${
+                        theme === 'blood' ? 'bg-gradient-to-b from-transparent to-red-500' :
+                        theme === 'noir' ? 'bg-gradient-to-b from-transparent to-gray-400' :
+                        theme === 'neon' ? 'bg-gradient-to-b from-transparent to-purple-500' :
+                        theme === 'ocean' ? 'bg-gradient-to-b from-transparent to-cyan-400' :
+                        theme === 'forest' ? 'bg-gradient-to-b from-transparent to-green-500' :
+                        'bg-gradient-to-b from-transparent to-mafia-gold'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+              {chatBg === 'ultra' && (
+                <>
+                  <motion.div 
+                    animate={{ x: [0, 100, -100, 0], y: [0, 50, -50, 0], scale: [1, 1.5, 1] }} 
+                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                    className={`absolute w-72 h-72 rounded-full blur-[90px] opacity-20 top-0 left-0 ${
+                      theme === 'blood' ? 'bg-red-600' : theme === 'noir' ? 'bg-white' : theme === 'neon' ? 'bg-purple-500' : theme === 'ocean' ? 'bg-blue-500' : theme === 'forest' ? 'bg-emerald-500' : 'bg-mafia-gold'
+                    }`}
+                  />
+                  <motion.div 
+                    animate={{ x: [0, -100, 100, 0], y: [0, -50, 50, 0], scale: [1.5, 1, 1.5] }} 
+                    transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                    className={`absolute w-72 h-72 rounded-full blur-[90px] opacity-20 bottom-0 right-0 ${
+                      theme === 'blood' ? 'bg-orange-500' : theme === 'noir' ? 'bg-gray-400' : theme === 'neon' ? 'bg-pink-500' : theme === 'ocean' ? 'bg-cyan-400' : theme === 'forest' ? 'bg-green-400' : 'bg-yellow-500'
+                    }`}
+                  />
+                </>
+              )}
+              {chatBg === 'particles' && Array.from({ length: 12 }).map((_, i) => (
                 <motion.div
                   key={`particle-${i}`}
-                  className="absolute bg-mafia-gold rounded-full"
+                  className={`absolute rounded-full ${
+                    theme === 'blood' ? 'bg-red-500' : theme === 'noir' ? 'bg-gray-400' : theme === 'neon' ? 'bg-purple-400' : theme === 'ocean' ? 'bg-blue-400' : theme === 'forest' ? 'bg-emerald-400' : 'bg-mafia-gold'
+                  }`}
                   initial={{
                     x: Math.random() * 380,
                     y: Math.random() * 600,
@@ -708,13 +852,31 @@ export default function SupportChatWidget() {
             </div>
 
             {/* Header */}
-            <div className="bg-gradient-to-r from-black via-mafia-dark to-black border-b border-mafia-gold/30 p-4 flex justify-between items-center shrink-0 relative overflow-hidden">
-               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(199,156,61,0.15),transparent_60%)]" />
+            <div className={`border-b p-4 flex justify-between items-center shrink-0 relative overflow-hidden ${
+              theme === 'blood' ? 'bg-gradient-to-r from-black via-red-950 to-black border-red-600/30' :
+              theme === 'noir' ? 'bg-gradient-to-r from-black via-gray-900 to-black border-gray-600/30' :
+              theme === 'neon' ? 'bg-gradient-to-r from-black via-purple-950 to-black border-purple-500/30' :
+              theme === 'ocean' ? 'bg-gradient-to-r from-black via-blue-950 to-black border-blue-500/30' :
+              theme === 'forest' ? 'bg-gradient-to-r from-black via-emerald-950 to-black border-emerald-500/30' :
+              'bg-gradient-to-r from-black via-mafia-dark to-black border-mafia-gold/30'
+            }`}>
+               <div className={`absolute inset-0 bg-[radial-gradient(circle_at_top_right,var(--tw-gradient-stops),transparent_60%)] ${
+                 theme === 'blood' ? 'from-red-600/15' : theme === 'noir' ? 'from-white/10' : theme === 'neon' ? 'from-purple-500/20' : theme === 'ocean' ? 'from-blue-500/20' : theme === 'forest' ? 'from-emerald-500/20' : 'from-mafia-gold/15'
+               }`} />
                
                <div className="flex items-center gap-4 relative z-10">
                  <div className="relative group">
-                   <div className="absolute inset-0 bg-mafia-gold/30 rounded-full blur-md animate-pulse"></div>
-                   <div className="w-10 h-10 rounded-full border-2 border-mafia-gold/50 flex items-center justify-center bg-black overflow-hidden shadow-[0_0_15px_rgba(199,156,61,0.3)] relative z-10">
+                   <div className={`absolute inset-0 rounded-full blur-md animate-pulse ${
+                     theme === 'blood' ? 'bg-red-600/30' : theme === 'noir' ? 'bg-white/20' : theme === 'neon' ? 'bg-purple-500/30' : theme === 'ocean' ? 'bg-blue-500/30' : theme === 'forest' ? 'bg-emerald-500/30' : 'bg-mafia-gold/30'
+                   }`}></div>
+                   <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center bg-black overflow-hidden relative z-10 ${
+                     theme === 'blood' ? 'border-red-600/50 shadow-[0_0_15px_rgba(220,38,38,0.3)]' :
+                     theme === 'noir' ? 'border-gray-500/50 shadow-[0_0_15px_rgba(255,255,255,0.2)]' :
+                     theme === 'neon' ? 'border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]' :
+                     theme === 'ocean' ? 'border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.3)]' :
+                     theme === 'forest' ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]' :
+                     'border-mafia-gold/50 shadow-[0_0_15px_rgba(199,156,61,0.3)]'
+                   }`}>
                      <img src="/logo.png" alt="MMBARBER Logo" className="w-6 h-6 object-contain" />
                    </div>
                    {isAdminOnline && (
@@ -725,12 +887,44 @@ export default function SupportChatWidget() {
                    <h3 className="font-heading font-black text-white text-lg tracking-widest uppercase italic">
                      {chatMode === 'bot' ? 'DAIMON' : 'MMBARBER SUPPORT'}
                    </h3>
-                   <p className="text-[10px] text-mafia-gold font-mono uppercase tracking-[0.2em] font-bold">
+                   <p className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold ${
+                     theme === 'blood' ? 'text-red-400' : theme === 'noir' ? 'text-gray-400' : theme === 'neon' ? 'text-purple-400' : theme === 'ocean' ? 'text-blue-400' : theme === 'forest' ? 'text-emerald-400' : 'text-mafia-gold'
+                   }`}>
                      {chatMode === 'human' ? (isAdminOnline ? 'Online & Připraven' : 'Nyní jsme offline (Zanechte vzkaz)') : 'Virtuální asistent'}
                    </p>
                  </div>
                </div>
                <div className="flex items-center gap-2 z-10 relative">
+                 {chatMode === 'human' && callStatus === 'IDLE' && (
+                   <button 
+                     onClick={startCall}
+                     className="p-2 bg-black/40 hover:bg-green-600 rounded-full text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/5"
+                     title="Zavolat (Hlasový hovor)"
+                   >
+                     <Phone size={14} />
+                   </button>
+                 )}
+                 <button 
+                   onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                   className={`p-2 bg-black/40 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/5 ${isSettingsOpen ? 'bg-white/20' : ''}`}
+                   title="Nastavení chatu"
+                 >
+                   <Settings size={14} />
+                 </button>
+                 <button 
+                   onClick={exportChat}
+                   className="hidden md:block p-2 bg-black/40 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/5"
+                   title="Stáhnout historii chatu"
+                 >
+                   <Download size={14} />
+                 </button>
+                 <button 
+                   onClick={() => setIsExpanded(!isExpanded)} 
+                   className="hidden md:block p-2 bg-black/40 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/5"
+                   title={isExpanded ? "Zmenšit" : "Zvětšit"}
+                 >
+                   {isExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                 </button>
                  <button 
                    onClick={() => {
                      const newVal = !soundsEnabled;
@@ -780,15 +974,79 @@ export default function SupportChatWidget() {
               )}
             </AnimatePresence>
 
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-2 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.03),transparent_80%)] custom-scrollbar relative z-10">
-              {messages.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center px-6">
+            {/* Messages Area / Settings Area */}
+            <div className="flex-1 overflow-y-auto relative z-10 flex flex-col">
+              
+              {/* Settings Overlay */}
+              <AnimatePresence>
+                {isSettingsOpen && (
                   <motion.div 
-                    animate={{ y: [0, -10, 0] }} 
-                    transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                    className="w-20 h-20 bg-mafia-gold/5 rounded-full flex items-center justify-center mb-6 border border-mafia-gold/20"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="absolute inset-0 z-50 bg-black/95 backdrop-blur-3xl p-6 overflow-y-auto flex flex-col gap-6"
                   >
+                    <div>
+                      <h4 className="text-white font-heading font-bold uppercase tracking-widest text-sm mb-4">Motiv chatu</h4>
+                      <div className="grid grid-cols-2 gap-3">
+                        {[{id: 'gold', name: 'Zlatý'}, {id: 'blood', name: 'Krvavý'}, {id: 'noir', name: 'Temný'}, {id: 'neon', name: 'Neon'}, {id: 'ocean', name: 'Oceán'}, {id: 'forest', name: 'Les'}].map(t => (
+                          <button 
+                            key={t.id}
+                            onClick={() => { setTheme(t.id as any); localStorage.setItem('mmbarber_chat_theme', t.id); }}
+                            className={`py-3 px-4 rounded-xl border text-xs font-mono uppercase tracking-widest transition-all ${
+                              theme === t.id ? 'bg-white/20 border-white text-white' : 'bg-black/50 border-white/10 text-white/50 hover:bg-white/10'
+                            }`}
+                          >
+                            {t.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-white font-heading font-bold uppercase tracking-widest text-sm mb-4">Pozadí</h4>
+                      <div className="grid grid-cols-1 gap-2">
+                        {[{id: 'particles', name: 'Zlaté částice'}, {id: 'ultra', name: 'Ultra mlhovina (Animace)'}, {id: 'matrix', name: 'Digitální déšť'}, {id: 'grid', name: 'Technická mřížka'}, {id: 'clean', name: 'Čisté pozadí'}].map(b => (
+                          <button 
+                            key={b.id}
+                            onClick={() => { setChatBg(b.id as any); localStorage.setItem('mmbarber_chat_bg', b.id); }}
+                            className={`py-3 px-4 rounded-xl border text-xs text-left font-mono uppercase tracking-widest transition-all ${
+                              chatBg === b.id ? 'bg-white/20 border-white text-white' : 'bg-black/50 border-white/10 text-white/50 hover:bg-white/10'
+                            }`}
+                          >
+                            {b.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="mt-2 pt-6 border-t border-white/10">
+                      <button 
+                        onClick={clearChat}
+                        className="w-full py-3 px-4 rounded-xl border border-red-500/30 text-red-400 text-xs font-mono uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-[0_0_15px_rgba(220,38,38,0.15)]"
+                      >
+                        Vymazat historii chatu
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className={`flex-1 overflow-y-auto p-5 space-y-2 custom-scrollbar ${chatBg !== 'clean' ? 'bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.03),transparent_80%)]' : ''}`}>
+                {messages.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center px-6">
+                    <motion.div 
+                      animate={{ y: [0, -10, 0] }} 
+                      transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                      className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 border ${
+                        theme === 'blood' ? 'bg-red-600/5 border-red-600/20 text-red-500' :
+                        theme === 'noir' ? 'bg-white/5 border-white/20 text-gray-300' :
+                        theme === 'neon' ? 'bg-purple-500/5 border-purple-500/20 text-purple-400' :
+                        theme === 'ocean' ? 'bg-blue-500/5 border-blue-500/20 text-blue-400' :
+                        theme === 'forest' ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400' :
+                        'bg-mafia-gold/5 border-mafia-gold/20 text-mafia-gold'
+                      }`}
+                    >
                     <MessageSquare size={32} className="text-mafia-gold" />
                   </motion.div>
                   <h4 className="font-heading font-black uppercase tracking-widest text-white mb-2">Vítejte v podsvětí</h4>
@@ -801,7 +1059,14 @@ export default function SupportChatWidget() {
                           key={i}
                           onClick={() => handleSend(qr)}
                           disabled={isSubmitting}
-                          className="py-2.5 px-4 rounded-full border border-mafia-gold/30 text-mafia-gold text-xs font-mono hover:bg-mafia-gold/10 transition-colors shadow-sm w-full text-left flex items-center justify-between group disabled:opacity-50"
+                          className={`py-2.5 px-4 rounded-full border text-xs font-mono transition-colors shadow-sm w-full text-left flex items-center justify-between group disabled:opacity-50 ${
+                            theme === 'blood' ? 'border-red-600/30 text-red-400 hover:bg-red-600/10' :
+                            theme === 'noir' ? 'border-white/20 text-gray-300 hover:bg-white/10' :
+                            theme === 'neon' ? 'border-purple-500/30 text-purple-400 hover:bg-purple-500/10' :
+                            theme === 'ocean' ? 'border-blue-500/30 text-blue-400 hover:bg-blue-500/10' :
+                            theme === 'forest' ? 'border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10' :
+                            'border-mafia-gold/30 text-mafia-gold hover:bg-mafia-gold/10'
+                          }`}
                         >
                           <span>{qr}</span>
                           <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
@@ -820,16 +1085,30 @@ export default function SupportChatWidget() {
                   
                   const isNextSame = messages[idx + 1]?.sender === msg.sender && !isSystem && !messages[idx + 1]?.text.startsWith('[SYSTEM] ');
                   const isPrevSame = messages[idx - 1]?.sender === msg.sender && !isSystem && !messages[idx - 1]?.text.startsWith('[SYSTEM] ');
-                  const showHeader = !isPrevSame;
+                  
+                  const currentMsgDate = new Date(msg.timestamp).toDateString();
+                  const prevMsgDate = idx > 0 ? new Date(messages[idx - 1].timestamp).toDateString() : null;
+                  const showDateSeparator = currentMsgDate !== prevMsgDate;
+                  const showHeader = !isPrevSame || showDateSeparator;
+                  
+                  const isLastMessage = idx === messages.length - 1;
+                  const isSticker = isOnlyEmojis(displayText);
                   
                   return (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                      key={msg.id} 
-                      className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} ${isNextSame ? 'mb-1' : 'mb-5'}`}
-                    >
+                    <React.Fragment key={msg.id}>
+                      {showDateSeparator && (
+                        <div className="flex justify-center my-6">
+                          <span className="bg-white/5 border border-white/10 px-3 py-1.2 rounded-full text-[9px] font-mono uppercase tracking-widest text-white/50 backdrop-blur-md shadow-sm">
+                            {formatDateSeparator(msg.timestamp)}
+                          </span>
+                        </div>
+                      )}
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 0.3 }}
+                        className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} ${isNextSame && !showDateSeparator ? 'mb-1' : 'mb-3'}`}
+                      >
                        {showHeader && (
                          <span className="text-[9px] font-mono text-white/30 uppercase mb-1.5 px-2 tracking-widest">
                            {senderName} • {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -846,26 +1125,46 @@ export default function SupportChatWidget() {
                               </button>
                            )}
 
-                           <div className={`p-3.5 px-4 text-[13px] leading-relaxed shadow-lg overflow-hidden flex flex-col gap-1 ${
-                                isSystem ? 'bg-black/40 border border-mafia-gold/20 text-mafia-gold/80 italic rounded-xl text-center w-full' :
+                           <div className={`${isSticker ? 'text-[45px] leading-none tracking-widest' : `p-3.5 px-4 text-[13px] leading-relaxed shadow-lg ${
+                                isSystem ? `bg-black/40 border italic rounded-xl text-center w-full ${
+                                  theme === 'blood' ? 'border-red-600/20 text-red-400' :
+                                  theme === 'noir' ? 'border-white/20 text-gray-400' :
+                                  theme === 'neon' ? 'border-purple-500/20 text-purple-400' :
+                                  theme === 'ocean' ? 'border-blue-500/20 text-blue-400' :
+                                  theme === 'forest' ? 'border-emerald-500/20 text-emerald-400' :
+                                  'border-mafia-gold/20 text-mafia-gold/80'
+                                }` :
                                 isUser 
-                                  ? `bg-mafia-gold text-black ${isNextSame ? 'rounded-2xl rounded-tr-sm rounded-br-sm' : 'rounded-2xl rounded-br-sm'} font-medium` 
+                                  ? `text-black font-medium ${isNextSame ? 'rounded-2xl rounded-tr-sm rounded-br-sm' : 'rounded-2xl rounded-br-sm'} ${
+                                      theme === 'blood' ? 'bg-red-600 text-white' :
+                                      theme === 'noir' ? 'bg-gray-200 text-black' :
+                                      theme === 'neon' ? 'bg-purple-500 text-white' :
+                                      theme === 'ocean' ? 'bg-blue-500 text-white' :
+                                      theme === 'forest' ? 'bg-emerald-500 text-white' :
+                                      'bg-mafia-gold'
+                                    }` 
                                   : `bg-white/10 backdrop-blur-md border border-white/10 text-white ${isNextSame ? 'rounded-2xl rounded-tl-sm rounded-bl-sm' : 'rounded-2xl rounded-bl-sm'}`
-                           }`}>
+                           }`} overflow-hidden flex flex-col gap-1`}>
                               {msg.attachmentUrl && msg.attachmentType === 'image' && (
                                 <img src={msg.attachmentUrl} alt="Attachment" className="w-full h-auto max-h-48 object-cover rounded-lg mb-2 cursor-pointer" onClick={() => window.open(msg.attachmentUrl, '_blank')} />
                               )}
                               {msg.attachmentUrl && msg.attachmentType === 'video' && (
                                 <video src={msg.attachmentUrl} controls className="w-full max-h-48 rounded-lg mb-2" />
                               )}
-                              <span>{displayText}</span>
+                              <div className="break-words">{renderTextWithLinks(displayText)}</div>
                               
-                              {isUser && (
+                              {isUser && !isLastMessage && (
                                 <div className="self-end mt-0.5 flex items-center opacity-70">
                                   {msg.read ? <span title="Přečteno" className="flex items-center"><CheckCheck size={14} className="text-blue-800" /></span> : <span title="Odesláno" className="flex items-center"><Check size={14} /></span>}
                                 </div>
                               )}
                            </div>
+
+                           {isUser && isLastMessage && (
+                             <div className="self-end mt-1 mb-1 mr-1 text-[9px] font-mono text-white/40 uppercase tracking-wider flex items-center gap-1">
+                               {msg.read ? <><CheckCheck size={12} className="text-blue-400" /> Zobrazeno</> : <><Check size={12} /> Doručeno</>}
+                             </div>
+                           )}
 
                            {!isUser && !isSystem && (
                               <button 
@@ -878,6 +1177,7 @@ export default function SupportChatWidget() {
                            )}
                        </div>
                     </motion.div>
+                   </React.Fragment>
                   );
                 })
               )}
@@ -888,28 +1188,59 @@ export default function SupportChatWidget() {
                   className="flex flex-col items-start mb-5"
                 >
                   <span className="text-[9px] font-mono text-white/30 uppercase mb-1.5 px-2 tracking-widest">
-                    {getDaimonName()} • píše...
+                    {chatMode === 'bot' ? getDaimonName() : 'Operátor'} • píše...
                   </span>
                   <div className="bg-white/10 backdrop-blur-md border border-white/10 text-white rounded-2xl rounded-bl-sm p-3.5 px-5 shadow-lg flex items-center gap-1.5">
                     <motion.div 
                       animate={{ y: [0, -3, 0] }} 
                       transition={{ repeat: Infinity, duration: 0.6, delay: 0 }}
-                      className="w-1.5 h-1.5 bg-mafia-gold rounded-full"
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        theme === 'blood' ? 'bg-red-400' : theme === 'noir' ? 'bg-gray-300' : theme === 'neon' ? 'bg-purple-400' : theme === 'ocean' ? 'bg-blue-400' : theme === 'forest' ? 'bg-emerald-400' : 'bg-mafia-gold'
+                      }`}
                     />
                     <motion.div 
                       animate={{ y: [0, -3, 0] }} 
                       transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }}
-                      className="w-1.5 h-1.5 bg-mafia-gold rounded-full"
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        theme === 'blood' ? 'bg-red-400' : theme === 'noir' ? 'bg-gray-300' : theme === 'neon' ? 'bg-purple-400' : theme === 'ocean' ? 'bg-blue-400' : theme === 'forest' ? 'bg-emerald-400' : 'bg-mafia-gold'
+                      }`}
                     />
                     <motion.div 
                       animate={{ y: [0, -3, 0] }} 
                       transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }}
-                      className="w-1.5 h-1.5 bg-mafia-gold rounded-full"
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        theme === 'blood' ? 'bg-red-400' : theme === 'noir' ? 'bg-gray-300' : theme === 'neon' ? 'bg-purple-400' : theme === 'ocean' ? 'bg-blue-400' : theme === 'forest' ? 'bg-emerald-400' : 'bg-mafia-gold'
+                      }`}
                     />
                   </div>
                 </motion.div>
               )}
+              {messages.length > 0 && messages[messages.length - 1].sender === 'ADMIN' && chatMode === 'bot' && !isBotTyping && (
+                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap gap-2 mt-4 mb-2 px-1">
+                  {["Kde vás najdu?", "Ceník", "Chci rezervaci", "Přepnout na člověka"].map((qr, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                         if (qr === "Přepnout na člověka") switchMode('human');
+                         else handleSend(qr);
+                      }}
+                      disabled={isSubmitting}
+                      className={`px-3 py-1.5 rounded-full border text-[10px] font-mono transition-all cursor-pointer whitespace-nowrap active:scale-95 shadow-sm ${
+                        theme === 'blood' ? 'border-red-600/40 text-red-400 hover:bg-red-600 hover:text-white' :
+                        theme === 'noir' ? 'border-white/20 text-gray-300 hover:bg-gray-200 hover:text-black' :
+                        theme === 'neon' ? 'border-purple-500/40 text-purple-400 hover:bg-purple-500 hover:text-white' :
+                        theme === 'ocean' ? 'border-blue-500/40 text-blue-400 hover:bg-blue-500 hover:text-white' :
+                        theme === 'forest' ? 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-white' :
+                        'border-mafia-gold/40 text-mafia-gold hover:bg-mafia-gold hover:text-black'
+                      }`}
+                    >
+                      {qr}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
               <div ref={messagesEndRef} />
+            </div>
             </div>
 
             {/* Input Area */}
@@ -918,14 +1249,32 @@ export default function SupportChatWidget() {
                <div className="flex border-t border-b border-white/10">
                  <button 
                    onClick={() => switchMode('bot')}
-                   className={`flex-1 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 ${chatMode === 'bot' ? 'text-mafia-gold bg-white/5 border-b-2 border-mafia-gold' : 'text-white/50 hover:text-white/80 bg-transparent'}`}
+                   className={`flex-1 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 ${
+                     chatMode === 'bot' ? (
+                        theme === 'blood' ? 'text-red-400 bg-white/5 border-b-2 border-red-500' :
+                        theme === 'noir' ? 'text-gray-200 bg-white/5 border-b-2 border-gray-400' :
+                        theme === 'neon' ? 'text-purple-400 bg-white/5 border-b-2 border-purple-500' :
+                        theme === 'ocean' ? 'text-blue-400 bg-white/5 border-b-2 border-blue-500' :
+                        theme === 'forest' ? 'text-emerald-400 bg-white/5 border-b-2 border-emerald-500' :
+                        'text-mafia-gold bg-white/5 border-b-2 border-mafia-gold'
+                     ) : 'text-white/50 hover:text-white/80 bg-transparent'
+                   }`}
                  >
                    {getDaimonName()}
                  </button>
                  <div className="w-[1px] bg-white/10"></div>
                  <button 
                    onClick={() => switchMode('human')}
-                   className={`flex-1 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 ${chatMode === 'human' ? 'text-mafia-gold bg-white/5 border-b-2 border-mafia-gold' : 'text-white/50 hover:text-white/80 bg-transparent'}`}
+                   className={`flex-1 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 ${
+                     chatMode === 'human' ? (
+                        theme === 'blood' ? 'text-red-400 bg-white/5 border-b-2 border-red-500' :
+                        theme === 'noir' ? 'text-gray-200 bg-white/5 border-b-2 border-gray-400' :
+                        theme === 'neon' ? 'text-purple-400 bg-white/5 border-b-2 border-purple-500' :
+                        theme === 'ocean' ? 'text-blue-400 bg-white/5 border-b-2 border-blue-500' :
+                        theme === 'forest' ? 'text-emerald-400 bg-white/5 border-b-2 border-emerald-500' :
+                        'text-mafia-gold bg-white/5 border-b-2 border-mafia-gold'
+                     ) : 'text-white/50 hover:text-white/80 bg-transparent'
+                   }`}
                  >
                    Živá podpora
                  </button>
@@ -990,7 +1339,14 @@ export default function SupportChatWidget() {
                  <button 
                    type="submit"
                    disabled={isSubmitting || !messageText.trim() || (!session && !fullName.trim())}
-                   className="absolute right-1.5 w-9 h-9 flex items-center justify-center bg-mafia-gold text-black rounded-full hover:bg-white hover:scale-105 transition-all disabled:opacity-0 disabled:scale-75 shadow-lg"
+                   className={`absolute right-1.5 w-9 h-9 flex items-center justify-center text-black rounded-full hover:scale-105 transition-all disabled:opacity-0 disabled:scale-75 shadow-lg ${
+                     theme === 'blood' ? 'bg-red-600 hover:bg-white text-white hover:text-black' :
+                     theme === 'noir' ? 'bg-gray-300 hover:bg-white' :
+                     theme === 'neon' ? 'bg-purple-500 hover:bg-white text-white hover:text-black' :
+                     theme === 'ocean' ? 'bg-blue-500 hover:bg-white text-white hover:text-black' :
+                     theme === 'forest' ? 'bg-emerald-500 hover:bg-white text-white hover:text-black' :
+                     'bg-mafia-gold hover:bg-white'
+                   }`}
                  >
                    <Send size={14} className="ml-0.5" />
                  </button>

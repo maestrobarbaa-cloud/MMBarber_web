@@ -107,10 +107,10 @@ export function getDaimonResponse(userText: string, strikes: number): DaimonResp
             ]
         },
         {
-            keywords: ["tomáš", "tomas", "majitel", "don", "boss", "šéf", "sef"],
+            keywords: ["tomáš", "tomas", "majitel", "don", "boss", "šéf", "sef", "kdo je tomáš", "něco o tomášovi"],
             responses: [
-                "Tomáš? To je náš Don. Mistr s nůžkami a mozek celé téhle operace. Dokonce si i tenhle web staví a programuje sám.",
-                "Don Tomáš se stará o celou rodinu. Zvládá všechno od dokonalého střihu až po kódování těchhle stránek. Pravý boss."
+                "Don Tomáš... to je příběh sám o sobě. Renesanční člověk, co si sám programuje weby, vystudoval kadeřníka, elektrotechniku i sociální pedagogiku. Není gay a nemá žádné tetování. Občas rád hraje hlupáka, ale jeho prostorová inteligence a chápání složitých struktur jsou extrémní. V klasických IQ testech pohořívá z jediného důvodu – u každé otázky vidí tolik různých řešení, že mu zkrátka vyprší čas. Má vytříbený hudební sluch a když ho něco nadchne, jde do toho naplno. Lidé ho mají rádi a umí se bavit s kýmkoliv, ale uvnitř je opatrný. Nikomu nevěří a od žen si drží obzvlášť velký odstup – vždy má tunelové vidění jen na jednu jedinou. Když ho potkáš a on nepozdraví, neber si to osobně; většinou usilovně přemýšlí.",
+                "Ptáš se na našeho bosse? Tomáš je komplikovaný vůdce, který chodí vždy proti davu a nikoho se neprosí. Pokud něco potřebuje, zařídí si to po svém. Jeho život poznamenala velká zrada od někoho, kdo pro něj znamenal všechno na jeho cestě. Dnes kvůli tomu kouří, aby tu bolest utlumil, i když ten pach sám nesnáší. Věří ve vyšší moc a jeho DNA v sobě skrývá zajímavé věci, ze kterých si dřív dělal jen legraci – dokud se nezačaly potvrzovat. Je svým pánem, snaží se všem pomoct, ale je tak zavalený prací, že nemůže být pro všechny. Umí plynule přepínat mezi introvertem a extrovertem. A pamatuj u něj na jedno: věk pro něj rozhodně není známkou inteligence ani zkušeností."
             ]
         },
         {
@@ -401,6 +401,20 @@ export function getDaimonResponse(userText: string, strikes: number): DaimonResp
             responses: [
                 "Zdravá pokožka je základ, ale jestli máš nějakou kožní alergii nebo vyrážku, nebudu si tu hrát na doktora. Určitě to před stříháním radši zmiň přímo barberovi.",
                 "Pokud tě trápí lupy nebo svědění hlavy, srovnáme to kvalitní kosmetikou bez agresivní chemie. Jestli jde ale o alergii, řekni to radši rovnou při příchodu Tomášovi."
+            ]
+        },
+        {
+            keywords: ["seznamka", "seznameni", "seznámení", "láska", "vztah", "rande"],
+            responses: [
+                "Zrovna makáme na nové seznamce! Ještě to ladíme, ale už teď hledáme první odvážlivce, kteří do toho půjdou s námi. Bude tam hned několik kategorií, takže ať už hledáš cokoliv nebo kohokoliv, určitě zapadneš do té správné skupiny. Dej nám ještě chvilku a brzy se dozvíš víc!",
+                "Slyšel jsi dobře, připravujeme zbrusu novou seznamku. Je to ve vývoji a budeme rádi, když se k nám pak přidáš. Chceme, aby si tam každý našel to své, proto chystáme různé kategorie – takže bez obav, určitě se najdeš v té správné partě. Zůstaň na příjmu!"
+            ]
+        },
+        {
+            keywords: ["data", "soukromí", "gdpr", "osobní údaje", "bezpečnost", "co shromažďujete", "informace", "sledování", "ip", "poloha"],
+            responses: [
+                "Jsme naprosto transparentní a hrajeme s otevřenými kartami. Napříč celým webem (nejen na seznamce) shromažďujeme tvoji IP adresu a z ní odvozenou hrubou polohu. Proč? Čistě z bezpečnostních důvodů – chrání nás to před útoky (DDoS), spammery a pomáhá to řídit frontu návštěvnosti na serveru. Při rezervaci u holiče potřebujeme jméno, telefon a e-mail. Na seznamce je to jen to nejnutnější a pokud nahraješ občanku na ověření, systém ji jen přečte a NIKDY neukládá. Pokud sám budeš chtít, můžeme tvoje kontakty předat prověřeným B2B partnerům kvůli práci. Nic víc, nic míň.",
+                "U nás se nic netají, jsme 100% transparentní. Kromě základů jako jméno, e-mail a telefon při rezervacích sbíráme taky tvoji IP adresu a zevrubnou polohu. Je to náš štít proti botům, útokům a pro řízení rychlosti webu (rate-limiting). U seznamky pak dbáme na to, aby se žádné citlivé doklady (jako ID k ověření) nikam neukládaly – po přečtení rovnou mizí. Vše jede podle GDPR a DSA. Pokud chceš, můžeš svoje údaje nasdílet našim partnerům pro pracovní nabídky, ale to už je jen a jen na tobě."
             ]
         },
         {

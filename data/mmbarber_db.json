@@ -125,7 +125,7 @@
     "visibility_card_system": "visible",
     "visibility_card_pece": "visible",
     "visibility_card_komunita": "visible",
-    "admin_last_seen": "1790540257880",
+    "admin_last_seen": "1790626862005",
     "intro_menu_config": "{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":893.4566367508769,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61}},\"flameMarginTop\":-526.39739604482,\"flameMarginLeft\":-270.3858861303065,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-407.4485895048462,\"moonMarginLeft\":1026.4570737605804,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1,\"layouts\":{\"/obr/start-zapad.png\":{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":893.4566367508769,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61},\"start\":{\"x\":1342.4910904908556,\"y\":-195.88875453446192},\"galerie\":{\"x\":1274.5829889189088,\"y\":-171.07621881376588},\"vice\":{\"x\":1345.102940551315,\"y\":-86.19105199516325},\"komunita\":{\"x\":1251.0761789600967,\"y\":-201.1124546553809},\"kontakt\":{\"x\":1234.09915356711,\"y\":-219.39540507859735}},\"flameMarginTop\":-453.26560431537155,\"flameMarginLeft\":-245.57323084860303,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":0,\"moonMarginLeft\":0,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1},\"/obr/start-noc.png\":{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":893.4566367508769,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61}},\"flameMarginTop\":-526.39739604482,\"flameMarginLeft\":-270.3858861303065,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-407.4485895048462,\"moonMarginLeft\":1026.4570737605804,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1},\"/obr/start-odpoledne.png\":{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":901.2921869322554,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61},\"vice\":{\"x\":1277.1946795646918,\"y\":-65.29629136515643},\"komunita\":{\"x\":1305.9250302297462,\"y\":-164.546553808948},\"kontakt\":{\"x\":1389.5043915791264,\"y\":-195.88875453446192},\"galerie\":{\"x\":1330.7376058041114,\"y\":-198.50062452175598},\"start\":{\"x\":1351.6325657024638,\"y\":-174.99397397762056}},\"flameMarginTop\":-467.63076968448144,\"flameMarginLeft\":-246.87923558617106,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-407.4485895048462,\"moonMarginLeft\":1026.4570737605804,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1}},\"adminTestHour\":null,\"baseWidth\":1920,\"baseHeight\":827}"
   },
   "user_fragments": [],
@@ -555,7 +555,7 @@
       "ip": "::1",
       "userFullName": "T",
       "startedAt": 1789754043419,
-      "lastActivity": 1790540836268,
+      "lastActivity": 1790627593229,
       "status": "OPEN"
     }
   ],
@@ -743,6 +743,38 @@
       "text": "[BOT] Tohle byl tvůj druhý přešlap. Běž si léčit komplexy jinam. Ještě jedna podobná zpráva a letíš odtud. „Na hloupou otázku, hloupá odpověď.“",
       "timestamp": 1790540257880,
       "read": true
+    },
+    {
+      "id": "4d9b0127-dc2c-4fe2-8e6d-4484e3b5aa94",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "🇻🇦",
+      "timestamp": 1790624788902,
+      "read": false
+    },
+    {
+      "id": "26e51a10-619c-4144-ab09-421e8fcadcc3",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] Zkuste se rozepsat trošku víc.",
+      "timestamp": 1790624790543,
+      "read": true
+    },
+    {
+      "id": "9204ce5f-957a-41ea-9d62-b0020bd06017",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "USER",
+      "text": "tomáš",
+      "timestamp": 1790626858473,
+      "read": false
+    },
+    {
+      "id": "191d0813-e822-40f7-8ba5-7159265e6b77",
+      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "sender": "ADMIN",
+      "text": "[BOT] Ptáš se na našeho bosse? Tomáš je komplikovaný vůdce, který chodí vždy proti davu a nikoho se neprosí. Pokud něco potřebuje, zařídí si to po svém. Jeho život poznamenala velká zrada od někoho, kdo pro něj znamenal všechno na jeho cestě. Dnes kvůli tomu kouří, aby tu bolest utlumil, i když ten pach sám nesnáší. Věří ve vyšší moc a jeho DNA v sobě skrývá zajímavé věci, ze kterých si dřív dělal jen legraci – dokud se nezačaly potvrzovat. Je svým pánem, snaží se všem pomoct, ale je tak zavalený prací, že nemůže být pro všechny. Umí plynule přepínat mezi introvertem a extrovertem. A pamatuj u něj na jedno: věk pro něj rozhodně není známkou inteligence ani zkušeností.",
+      "timestamp": 1790626862005,
+      "read": true
     }
   ],
   "support_calls": [
@@ -752,29 +784,29 @@
       "status": "ENDED",
       "offer": {
         "type": "offer",
-        "sdp": "v=0\r\no=- 783202239079772744 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS 6b542be7-35f3-4af9-88c6-cfee12d661bd\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111 63 9 0 8 13 110 126\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:WMPE\r\na=ice-pwd:yBW+rX9znjsT2JRmt9zcqt8q\r\na=ice-options:trickle\r\na=fingerprint:sha-256 BB:4E:8C:B8:43:78:E5:8C:A6:B9:CD:AD:2F:5C:D7:54:5C:18:6A:83:BB:A6:07:DD:61:52:3A:C0:9E:87:3A:8D\r\na=setup:actpass\r\na=mid:0\r\na=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level\r\na=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\na=extmap:3 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\na=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=sendrecv\r\na=msid:6b542be7-35f3-4af9-88c6-cfee12d661bd 69591cc1-242a-4081-947a-5d0e5a65218c\r\na=rtcp-mux\r\na=rtcp-rsize\r\na=rtcp-xr:rcvr-rtt=all\r\na=rtcp-fb:111 rrtr\r\na=rtcp-fb:63 rrtr\r\na=rtcp-fb:9 rrtr\r\na=rtcp-fb:0 rrtr\r\na=rtcp-fb:8 rrtr\r\na=rtcp-fb:13 rrtr\r\na=rtcp-fb:110 rrtr\r\na=rtcp-fb:126 rrtr\r\na=rtpmap:111 opus/48000/2\r\na=rtcp-fb:111 transport-cc\r\na=fmtp:111 minptime=10;useinbandfec=1\r\na=rtpmap:63 red/48000/2\r\na=fmtp:63 111/111\r\na=rtpmap:9 G722/8000\r\na=rtpmap:0 PCMU/8000\r\na=rtpmap:8 PCMA/8000\r\na=rtpmap:13 CN/8000\r\na=rtpmap:110 telephone-event/48000\r\na=rtpmap:126 telephone-event/8000\r\na=ssrc:3941246178 cname:IjMW3jLUUI8dc9Kc\r\na=ssrc:3941246178 msid:6b542be7-35f3-4af9-88c6-cfee12d661bd 69591cc1-242a-4081-947a-5d0e5a65218c\r\n"
+        "sdp": "v=0\r\no=- 1170109537494929066 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS 173683e9-aa78-4949-adf0-58b86dc8d5d2\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111 63 9 0 8 13 110 126\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:G3CS\r\na=ice-pwd:4udMdcFu2baje0C7T/X3GpsY\r\na=ice-options:trickle\r\na=fingerprint:sha-256 5B:27:46:B1:23:DE:E4:52:34:BB:47:4D:92:98:27:F3:36:1D:06:53:BB:FE:BC:D2:B1:1A:5C:29:C3:8D:39:8D\r\na=setup:actpass\r\na=mid:0\r\na=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level\r\na=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\na=extmap:3 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\na=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=sendrecv\r\na=msid:173683e9-aa78-4949-adf0-58b86dc8d5d2 925606b7-4ae6-4593-b46c-af6877f16ff0\r\na=rtcp-mux\r\na=rtcp-rsize\r\na=rtcp-xr:rcvr-rtt=all\r\na=rtpmap:111 opus/48000/2\r\na=rtcp-fb:111 transport-cc\r\na=fmtp:111 minptime=10;useinbandfec=1\r\na=rtpmap:63 red/48000/2\r\na=fmtp:63 111/111\r\na=rtpmap:9 G722/8000\r\na=rtpmap:0 PCMU/8000\r\na=rtpmap:8 PCMA/8000\r\na=rtpmap:13 CN/8000\r\na=rtpmap:110 telephone-event/48000\r\na=rtpmap:126 telephone-event/8000\r\na=ssrc:782855602 cname:JRRk+HJJ/7O95Bqd\r\na=ssrc:782855602 msid:173683e9-aa78-4949-adf0-58b86dc8d5d2 925606b7-4ae6-4593-b46c-af6877f16ff0\r\n"
       },
       "candidates": [
         {
-          "candidate": "candidate:3941238337 1 udp 2122260223 192.168.0.114 57835 typ host generation 0 ufrag WMPE network-id 1 network-cost 10",
+          "candidate": "candidate:3941807527 1 udp 2122260223 192.168.0.114 57224 typ host generation 0 ufrag G3CS network-id 1 network-cost 10",
           "sdpMid": "0",
           "sdpMLineIndex": 0,
-          "usernameFragment": "WMPE"
+          "usernameFragment": "G3CS"
         },
         {
-          "candidate": "candidate:723833099 1 udp 1686052607 91.109.34.133 57835 typ srflx raddr 192.168.0.114 rport 57835 generation 0 ufrag WMPE network-id 1 network-cost 10",
+          "candidate": "candidate:1169806489 1 udp 1686052607 91.109.34.133 57224 typ srflx raddr 192.168.0.114 rport 57224 generation 0 ufrag G3CS network-id 1 network-cost 10",
           "sdpMid": "0",
           "sdpMLineIndex": 0,
-          "usernameFragment": "WMPE"
+          "usernameFragment": "G3CS"
         },
         {
-          "candidate": "candidate:339759829 1 tcp 1518280447 192.168.0.114 9 typ host tcptype active generation 0 ufrag WMPE network-id 1 network-cost 10",
+          "candidate": "candidate:2487015231 1 tcp 1518280447 192.168.0.114 9 typ host tcptype active generation 0 ufrag G3CS network-id 1 network-cost 10",
           "sdpMid": "0",
           "sdpMLineIndex": 0,
-          "usernameFragment": "WMPE"
+          "usernameFragment": "G3CS"
         }
       ],
-      "timestamp": 1789766900120
+      "timestamp": 1790624835457
     }
   ]
 }

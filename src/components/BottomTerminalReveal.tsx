@@ -11,7 +11,7 @@ interface BottomTerminalRevealProps {
 }
 
 export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: BottomTerminalRevealProps) {
-  const [unlockLevel, setUnlockLevel] = useState(5); // 0: Locked, 1-4: Stages, 5: Fully Unlocked
+  const [unlockLevel, setUnlockLevel] = useState(0); // 0: Locked, 1-4: Stages, 5: Fully Unlocked
   const [overscrollProgress, setOverscrollProgress] = useState(0);
   const { lang } = useTranslation();
   
