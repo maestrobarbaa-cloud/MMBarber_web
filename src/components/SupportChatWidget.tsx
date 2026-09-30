@@ -15,8 +15,9 @@ interface SupportMessage {
   timestamp: number;
   read: boolean;
   attachmentUrl?: string;
-  attachmentType?: 'image' | 'video';
+  attachmentType?: 'image' | 'video' | 'audio';
   fullName?: string;
+  isBot?: boolean;
   silent?: boolean;
   suggestedActions?: string[];
 }
@@ -1159,8 +1160,9 @@ export default function SupportChatWidget() {
               ) : (
                 messages.map((msg, idx) => {
                   const isUser = msg.sender === 'USER';
-                  const isSystem = msg.text.startsWith('[SYSTEM] ');
-                  const isBot = msg.text.startsWith('[BOT] ');
+                  const isSystem = msg.text.startsWith('[SYSTEM] ') || (msg.sender === 'ADMIN' && msg.fullName?.includes("Systém"));
+                  const isBot = msg.text.startsWith('[BOT] ') || msg.isBot || (msg.sender === 'ADMIN' && msg.fullName === getDaimonName());
+                  const isHumanSupport = msg.sender === 'ADMIN' && !isBot && !isSystem;
                   const displayText = msg.text.replace(/\[SYSTEM\] |\[BOT\] /g, '');
                   const senderName = isUser ? 'Vy' : (isBot ? (msg.fullName || getDaimonName()) : (isSystem ? 'Systém' : 'Podpora'));
                   
@@ -1224,7 +1226,9 @@ export default function SupportChatWidget() {
                                       theme === 'forest' ? 'bg-emerald-500 text-white' :
                                       'bg-mafia-gold'
                                     }` 
-                                  : `bg-white/10 backdrop-blur-md border border-white/10 text-white ${isNextSame ? 'rounded-2xl rounded-tl-sm rounded-bl-sm' : 'rounded-2xl rounded-bl-sm'}`
+                                  : isBot 
+                                    ? `bg-blue-900/30 backdrop-blur-md border border-blue-500/30 text-blue-50 ${isNextSame ? 'rounded-2xl rounded-tl-sm rounded-bl-sm' : 'rounded-2xl rounded-bl-sm'}`
+                                    : `bg-mafia-red/80 backdrop-blur-md border border-mafia-red/50 text-white font-medium shadow-[0_0_15px_rgba(220,38,38,0.3)] ${isNextSame ? 'rounded-2xl rounded-tl-sm rounded-bl-sm' : 'rounded-2xl rounded-bl-sm'}`
                            }`} overflow-hidden flex flex-col gap-1`}>
                               {msg.attachmentUrl && msg.attachmentType === 'image' && (
                                 <img src={msg.attachmentUrl} alt="Attachment" className="w-full h-auto max-h-48 object-cover rounded-lg mb-2 cursor-pointer" onClick={() => window.open(msg.attachmentUrl, '_blank')} />

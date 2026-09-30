@@ -324,7 +324,7 @@ export function ClientWrapper() {
     if (atmosphereOverride === "galaxy") { 
       isGalaxy = true; 
       currentTheme = 'default'; 
-    } else if (atmosphereOverride === "classic") { 
+    } else if (atmosphereOverride === "classic" || atmosphereOverride === "pure_dark" || atmosphereOverride === "auto") { 
       isGalaxy = false; 
       currentTheme = 'default'; 
     } else if (atmosphereOverride && atmosphereOverride !== 'galaxy') {

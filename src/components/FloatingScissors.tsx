@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Scissors, Heart, Snowflake, Flame, Star, Medal, Sparkles } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 /**
  * Custom Clipper SVG Icon
@@ -95,6 +96,8 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
   const itemsRef = useRef<Item[]>([]);
   const requestRef = useRef<number>(undefined);
   const mouseRef = useRef<{ x: number, y: number } | null>(null);
+  const pathname = usePathname();
+  const configRef = useRef({ isChaos: false, isUltra: false, isSettingsPage: false, speedMult: 1 });
 
   const INITIAL_COUNT = countOverride || 8;
 
@@ -118,9 +121,30 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
     };
 
     const isChaos = localStorage.getItem("mmbarber_dev_visual_mode") === 'chaos';
-    const finalCount = isChaos ? (INITIAL_COUNT * 3) : INITIAL_COUNT;
+    const configStr = localStorage.getItem("mmbarber_graphics_config");
+    let isUltra = false;
+    if (configStr) {
+       try {
+          const config = JSON.parse(configStr);
+          if (config.tier === 'ultra') isUltra = true;
+       } catch (e) {}
+    }
+    
+    const isSettingsPage = pathname === '/nastaveni';
 
-    const initialItems: Item[] = Array.from({ length: isMobile ? (isChaos ? 12 : 4) : finalCount }).map((_, i) => ({
+    configRef.current = {
+      isChaos,
+      isUltra,
+      isSettingsPage,
+      speedMult: isChaos ? 4 : 1
+    };
+
+    let finalCount = isChaos ? (INITIAL_COUNT * 3) : INITIAL_COUNT;
+    if (isUltra) {
+      finalCount = 12; // Adjusted down from 25
+    }
+
+    const initialItems: Item[] = Array.from({ length: isMobile ? (isUltra ? 8 : (isChaos ? 12 : 4)) : finalCount }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
@@ -140,6 +164,9 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
     const currentItems = itemsRef.current;
     const width = window.innerWidth;
     const height = window.innerHeight;
+    
+    const { speedMult, isSettingsPage, isUltra } = configRef.current;
+    const bounceMode = isUltra;
 
     for (let i = 0; i < currentItems.length; i++) {
         const item = currentItems[i];
@@ -154,9 +181,6 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
           item.vy += 0.005; // Constant downward drift
           item.vx += (Math.random() - 0.5) * 0.01; // Sidelong drift
         }
-
-        const isChaos = localStorage.getItem("mmbarber_dev_visual_mode") === 'chaos';
-        const speedMult = isChaos ? 4 : 1;
 
         item.vx += (Math.random() - 0.5) * 0.015 * speedMult;
         item.vy += (Math.random() - 0.5) * 0.015 * speedMult;
@@ -187,7 +211,6 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
         item.vy *= 0.97;
         item.vr *= 0.98;
 
-        const padding = 2; 
         if (item.type === 'snowflake') {
           // Wrapped falling for snow
           if (item.y > 105) { 
@@ -196,6 +219,15 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
           }
           if (item.x < -5) item.x = 105;
           if (item.x > 105) item.x = -5;
+        } else if (bounceMode) {
+          // Bouncing mode for Settings Ultra 
+          const bouncePaddingX = (item.size / width) * 100 / 2;
+          const bouncePaddingY = (item.size / height) * 100 / 2;
+          
+          if (item.x < bouncePaddingX) { item.x = bouncePaddingX; item.vx *= -1; item.vr += (Math.random() - 0.5) * 10; }
+          if (item.x > 100 - bouncePaddingX) { item.x = 100 - bouncePaddingX; item.vx *= -1; item.vr += (Math.random() - 0.5) * 10; }
+          if (item.y < bouncePaddingY) { item.y = bouncePaddingY; item.vy *= -1; item.vr += (Math.random() - 0.5) * 10; }
+          if (item.y > 100 - bouncePaddingY) { item.y = 100 - bouncePaddingY; item.vy *= -1; item.vr += (Math.random() - 0.5) * 10; }
         } else {
           // Wrapped floating for others to allow flying off-screen
           if (item.x < -15) item.x = 115;
@@ -239,8 +271,17 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
   };
 
   useEffect(() => {
-    // Disable on mobile for performance
-    if (window.innerWidth < 768) {
+    // Disable on mobile for performance unless ultra settings
+    let isUltra = false;
+    try {
+      const configStr = localStorage.getItem("mmbarber_graphics_config");
+      if (configStr) {
+        const config = JSON.parse(configStr);
+        if (config.tier === 'ultra') isUltra = true;
+      }
+    } catch (e) {}
+
+    if (window.innerWidth < 768 && !isUltra) {
       return;
     }
 
@@ -285,7 +326,7 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
         window.removeEventListener('mmbarber-glitch-start', handleGlitchStart);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [pathname]);
 
   const renderIcon = (item: Item) => {
     const commonClass = "transition-colors drop-shadow-xl text-white/50";
@@ -335,7 +376,7 @@ export function FloatingScissors({ position = "fixed", countOverride }: { positi
   if (isMatrixActive || isOff) return null;
 
   return (
-    <div ref={containerRef} className={`${position} inset-0 z-0 pointer-events-none overflow-hidden mix-blend-screen ${isHoliday ? 'opacity-80' : 'opacity-75'} transition-opacity duration-1000 hidden md:block`}>
+    <div ref={containerRef} className={`${position} inset-0 z-[5] pointer-events-none overflow-hidden mix-blend-screen ${isHoliday ? 'opacity-80' : 'opacity-75'} transition-opacity duration-1000 hidden md:block`}>
       {items.map((item) => (
         <div
           key={item.id}

@@ -113,7 +113,9 @@ export async function POST(request: Request) {
       timestamp: Date.now(),
       read: false,
       attachmentUrl,
-      attachmentType
+      attachmentType,
+      isBot: sender === 'ADMIN' && fullName ? true : false,
+      fullName: fullName
     };
     
     db.support_messages.push(newMessage);

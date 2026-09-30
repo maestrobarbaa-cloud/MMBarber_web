@@ -221,7 +221,7 @@ export default function Home() {
             </div>
             
             {!isMobile && (
-              <div className="relative z-[60] bg-black">
+              <div className="relative z-[40]">
                 <BottomTerminalReveal thresholdMultiplier={100}>
                   {(level) => isVisible('visibility_intelligence') ? (
                     <div className="w-full flex flex-col gap-12 pb-32">

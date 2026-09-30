@@ -37,7 +37,9 @@ interface SupportMessage {
   read: boolean;
   sessionId: string;
   attachmentUrl?: string;
-  attachmentType?: 'image' | 'video';
+  attachmentType?: 'image' | 'video' | 'audio';
+  isBot?: boolean;
+  fullName?: string;
 }
 
 interface SupportSession {
@@ -64,6 +66,7 @@ export default function AdminSupportChatPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [filterType, setFilterType] = useState<'ALL' | 'HUMAN_ONLY' | 'BOT_ONLY'>('ALL');
   
   // WebRTC
   const [incomingCallId, setIncomingCallId] = useState<string | null>(null);
@@ -449,7 +452,12 @@ export default function AdminSupportChatPage() {
   ).sort((a, b) => b.lastActivity - a.lastActivity); // Sort by most recent activity
 
   const activeSession = sessions.find(s => s.id === activeSessionId);
-  const activeMessages = messages.filter(m => m.sessionId === activeSessionId).sort((a, b) => a.timestamp - b.timestamp);
+  const activeMessages = messages.filter(m => m.sessionId === activeSessionId).sort((a, b) => a.timestamp - b.timestamp).filter(m => {
+    if (filterType === 'ALL') return true;
+    if (filterType === 'BOT_ONLY') return m.sender === 'USER' || m.isBot;
+    if (filterType === 'HUMAN_ONLY') return m.sender === 'USER' || !m.isBot;
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-black text-smoke-white p-6 md:p-12 selection:bg-mafia-red selection:text-white flex flex-col">
@@ -485,15 +493,27 @@ export default function AdminSupportChatPage() {
           
           {/* Incoming Call Banner Overlay (if ringing but not in active chat) */}
           {callStatus === 'RINGING' && incomingCallId && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-mafia-gold/90 text-black px-6 py-4 rounded-full shadow-[0_0_50px_rgba(199,156,61,0.5)] flex items-center gap-6 animate-bounce">
-              <div className="flex items-center gap-3">
-                <PhoneCall className="animate-pulse" />
-                <span className="font-bold tracking-widest uppercase">Příchozí Hovor ze Suportu</span>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={acceptCall} className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-full font-bold uppercase text-xs">Přijmout</button>
-                <button onClick={endCall} className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-full font-bold uppercase text-xs">Odmítnout</button>
-              </div>
+            <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center">
+               <div className="bg-mafia-dark border border-mafia-gold/50 p-12 rounded-3xl shadow-[0_0_100px_rgba(199,156,61,0.6)] flex flex-col items-center gap-8 max-w-lg w-full text-center">
+                 <div className="w-24 h-24 bg-mafia-gold/20 rounded-full flex items-center justify-center animate-ping absolute opacity-50"></div>
+                 <div className="w-20 h-20 bg-mafia-gold text-black rounded-full flex items-center justify-center relative z-10 animate-bounce">
+                   <PhoneCall size={40} />
+                 </div>
+                 
+                 <div>
+                   <h2 className="text-3xl font-heading font-black text-mafia-gold uppercase tracking-widest mb-2">PŘÍCHOZÍ HOVOR</h2>
+                   <p className="text-sm font-mono text-white/60">Uživatel žádá o hlasovou podporu</p>
+                 </div>
+                 
+                 <div className="flex gap-4 w-full mt-4">
+                   <button onClick={acceptCall} className="flex-1 bg-green-600 hover:bg-green-500 text-white py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(22,163,74,0.4)]">
+                     Přijmout
+                   </button>
+                   <button onClick={endCall} className="flex-1 bg-red-600 hover:bg-red-500 text-white py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(220,38,38,0.4)]">
+                     Odmítnout
+                   </button>
+                 </div>
+               </div>
             </div>
           )}
 
@@ -534,9 +554,14 @@ export default function AdminSupportChatPage() {
                           className={`w-full text-left p-5 transition-all hover:bg-white/[0.04] border-l-4 ${isActive ? 'bg-white/[0.06] border-mafia-red' : 'border-transparent'}`}
                         >
                           <div className="flex justify-between items-start mb-2">
-                             <h4 className={`font-heading font-black uppercase tracking-wider text-sm truncate pr-2 ${isActive ? 'text-mafia-red' : 'text-white'}`}>
-                               {session.userFullName}
-                             </h4>
+                             <div className="flex items-center gap-2 max-w-[70%]">
+                               {Date.now() - session.lastActivity < 120000 && (
+                                 <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)] animate-pulse shrink-0"></div>
+                               )}
+                               <h4 className={`font-heading font-black uppercase tracking-wider text-sm truncate ${isActive ? 'text-mafia-red' : 'text-white'}`}>
+                                 {session.userFullName}
+                               </h4>
+                             </div>
                              {unreadCount > 0 && (
                                <span className="bg-mafia-red text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.5)]">
                                  {unreadCount}
@@ -565,8 +590,13 @@ export default function AdminSupportChatPage() {
                 {/* Chat Header */}
                 <div className="p-5 md:p-6 border-b border-white/10 bg-gradient-to-r from-mafia-red/20 to-transparent flex justify-between items-center shrink-0">
                    <div>
-                      <h2 className="text-xl font-heading font-black text-white uppercase italic tracking-tighter">
+                      <h2 className="text-xl font-heading font-black text-white uppercase italic tracking-tighter flex items-center gap-3">
                         {activeSession.userFullName}
+                        {Date.now() - activeSession.lastActivity < 120000 && (
+                          <span className="flex items-center gap-1.5 text-xs font-mono font-normal text-green-500 tracking-widest bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> ONLINE
+                          </span>
+                        )}
                       </h2>
                       <div className="flex gap-4 mt-1">
                         <p className="text-[10px] font-mono text-white/40">IP: {activeSession.ip}</p>
@@ -603,6 +633,28 @@ export default function AdminSupportChatPage() {
                    </div>
                 </div>
 
+                 {/* Filters */}
+                 <div className="bg-black border-b border-white/10 p-3 flex flex-wrap justify-center gap-2 shrink-0">
+                    <button 
+                      onClick={() => setFilterType('ALL')}
+                      className={`px-4 py-1.5 text-xs font-mono font-bold uppercase tracking-widest rounded-full transition-all ${filterType === 'ALL' ? 'bg-mafia-red text-white' : 'bg-white/5 text-white/50 hover:bg-white/10'}`}
+                    >
+                      Zobrazit vše
+                    </button>
+                    <button 
+                      onClick={() => setFilterType('HUMAN_ONLY')}
+                      className={`px-4 py-1.5 text-xs font-mono font-bold uppercase tracking-widest rounded-full transition-all ${filterType === 'HUMAN_ONLY' ? 'bg-mafia-red text-white' : 'bg-white/5 text-white/50 hover:bg-white/10'}`}
+                    >
+                      Jen člověk
+                    </button>
+                    <button 
+                      onClick={() => setFilterType('BOT_ONLY')}
+                      className={`px-4 py-1.5 text-xs font-mono font-bold uppercase tracking-widest rounded-full transition-all ${filterType === 'BOT_ONLY' ? 'bg-mafia-red text-white' : 'bg-white/5 text-white/50 hover:bg-white/10'}`}
+                    >
+                      Jen Daimon (Bot)
+                    </button>
+                 </div>
+
                 {/* Active Call UI */}
                 {callStatus === 'IN_CALL' && (incomingCallId === activeSession.id || activeSessionId === incomingCallId) && (
                   <div className="bg-mafia-gold/10 border-b border-mafia-gold/20 p-4 flex justify-between items-center">
@@ -625,22 +677,50 @@ export default function AdminSupportChatPage() {
                 <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.02),transparent_80%)] custom-scrollbar">
                    {activeMessages.map(msg => {
                      const isAdmin = msg.sender === 'ADMIN';
+                     const isBot = msg.isBot;
+                     const isSystem = isAdmin && msg.fullName?.includes("Systém");
+
+                     let bubbleColor = 'bg-white/10 backdrop-blur-md border border-white/10 text-white/90 rounded-bl-sm';
+                     let align = 'items-start';
+                     let label = activeSession.userFullName;
+                     let labelColor = 'text-white/40';
+
+                     if (isAdmin) {
+                       align = 'items-end';
+                       if (isSystem) {
+                         bubbleColor = 'bg-yellow-900/40 border border-yellow-500/50 text-yellow-200 rounded-br-sm font-medium';
+                         label = 'SYSTÉM';
+                         labelColor = 'text-yellow-500';
+                       } else if (isBot) {
+                         bubbleColor = 'bg-blue-900/40 border border-blue-500/50 text-blue-100 rounded-br-sm font-medium';
+                         label = msg.fullName ? `BOT (${msg.fullName})` : 'BOT Daimon';
+                         labelColor = 'text-blue-400';
+                       } else {
+                         bubbleColor = 'bg-mafia-red text-white rounded-br-sm font-medium';
+                         label = 'VY (Admin)';
+                         labelColor = 'text-mafia-red';
+                       }
+                     }
+
                      return (
-                       <div key={msg.id} className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'}`}>
+                       <div key={msg.id} className={`flex flex-col ${align}`}>
                           <div className="flex items-center gap-2 mb-1.5 px-2">
-                             <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest font-bold">
-                               {isAdmin ? 'VY (Admin)' : activeSession.userFullName}
+                             <span className={`text-[10px] font-mono uppercase tracking-widest font-bold ${labelColor}`}>
+                               {label}
                              </span>
                              <span className="text-[10px] font-mono text-white/20">
                                {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                              </span>
                           </div>
-                          <div className={`max-w-[85%] md:max-w-[70%] p-4 px-5 rounded-2xl text-[14px] leading-relaxed shadow-lg overflow-hidden ${isAdmin ? 'bg-mafia-red text-white rounded-br-sm font-medium' : 'bg-white/10 backdrop-blur-md border border-white/10 text-white/90 rounded-bl-sm'}`}>
+                          <div className={`max-w-[85%] md:max-w-[70%] p-4 px-5 rounded-2xl text-[14px] leading-relaxed shadow-lg overflow-hidden ${bubbleColor}`}>
                              {msg.attachmentUrl && msg.attachmentType === 'image' && (
                                <img src={msg.attachmentUrl} alt="Attachment" className="w-full h-auto max-h-64 object-cover rounded-lg mb-3 cursor-pointer" onClick={() => window.open(msg.attachmentUrl, '_blank')} />
                              )}
                              {msg.attachmentUrl && msg.attachmentType === 'video' && (
-                               <video src={msg.attachmentUrl} controls className="w-full max-h-64 rounded-lg mb-3" />
+                               <video src={msg.attachmentUrl} controls className="w-full max-h-64 rounded-lg mb-3 border border-white/10" />
+                             )}
+                             {msg.attachmentUrl && msg.attachmentType === 'audio' && (
+                               <audio src={msg.attachmentUrl} controls className="w-full rounded-lg mb-3" />
                              )}
                              {msg.text}
                           </div>

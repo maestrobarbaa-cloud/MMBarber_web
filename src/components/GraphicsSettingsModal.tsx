@@ -156,7 +156,7 @@ export function GraphicsSettingsModal({ isOpen, onClose }: GraphicsSettingsModal
             tier, grainEnabled: true, blurEnabled: true, parallaxEnabled: true, 
             animationsEnabled: true, crtEnabled: false, glowIntensity: 1.0, 
             vignetteEnabled: true, chromaticAberration: true, letterboxEnabled: false, sharpness: 1.0,
-            atmosphereOverride: 'pure_dark', floatingItems: 'off',
+            atmosphereOverride: 'pure_dark', floatingItems: 'scissors',
             autoDetectEnabled: false
         };
         break;
