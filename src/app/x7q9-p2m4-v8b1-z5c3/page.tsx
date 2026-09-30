@@ -31,7 +31,7 @@ function SecretInteractiveParticles() {
       el.style.opacity = (Math.random() * 0.4 + 0.3).toString();
       el.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
       container.appendChild(el);
-      
+
       particles.push({
         element: el,
         x: Math.random() * window.innerWidth,
@@ -129,8 +129,7 @@ const dialogueTree: Record<string, DialogueNode> = {
       { text: "SOCIÁLNÍ SÍTĚ (Citlivky na Instagramu)", nextId: "social_start" },
       { text: "MORÁLKA (Římané a slabý článek)", nextId: "romans_start" },
       { text: "CHARAKTER (Vzorce chování davu)", nextId: "character_start" },
-      { text: "BÁSNÍK (Juliána z Tesca)", nextId: "poem_start" },
-      { text: "BALADY (Nové zrození Máje)", nextId: "echoes_1" }
+      { text: "BÁSNÍK (Juliána z Tesca)", nextId: "poem_start" }
       // { text: "VZPOMÍNKY (Příběh dvou)", nextId: "go_to_story" }
     ]
   },
@@ -196,7 +195,6 @@ const dialogueTree: Record<string, DialogueNode> = {
     text: "Co z toho plyne? Jednoduché... stará ohraná klasika. S vlastním přítelem se už cítila spíš jen jako s kamarádem. Nechala se potetovat, nabarvit vlasy, udělat pořádné řasy a linky, jen aby ukázala světu, že je vážně něco, o co se lidi budou prát. Za jeho zádama jela bomby na Tinderu s partičkou borců, co byli čerstvě po rozchodu. A přitom to přece byla vždycky 'tak hodná holka', aspoň to její mamka říkala. Zkrátka stará klasika, když se chceš dobře prodat na trhu... a reklamačky se neberou. Mezitím se ale musela smířit s naprosto opačným osudem. Teď už si jen nalhává, že udělala ten správný krok. Ale pravda je taková, že ji to jednou semele, lidi totiž nezapomínají a ponese se to s ní celej její život.",
     options: [
       { text: "To dává smysl. A ta původní verze od prababičky?", nextId: "poem_original_1" },
-      { text: "Složil jsi ještě něco?", nextId: "zpev_start" },
       { text: "Běž radši stříhat, Tome.", nextId: "poem_end" }
     ]
   },
@@ -246,8 +244,7 @@ const dialogueTree: Record<string, DialogueNode> = {
     id: "poem_original_7",
     text: "7.\nBratra ještě zachránili, Julianu oběsili.\nNad bratříčkem lidi pláčou, nad sestřičkou vrány skáčou.",
     options: [
-      { text: "Tak ta moje verze je aspoň moderní. Měj se, Tome.", nextId: "poem_end" },
-      { text: "Složil jsi k tomu tématu ještě něco dalšího?", nextId: "zpev_start" }
+      { text: "Tak ta moje verze je aspoň moderní. Měj se, Tome.", nextId: "poem_end" }
     ]
   },
   "poem_end": {
@@ -255,62 +252,6 @@ const dialogueTree: Record<string, DialogueNode> = {
     text: "No, snad jsi ocenil mou poezii. Ale teď už fakt mazej, mám tu další práci. Zmiz.",
     options: [],
     isEnd: true
-  },
-  "zpev_start": {
-    id: "zpev_start",
-    text: "ZPĚV\n\nCo bývalo kdysi slovem „láska“,\nteď v jejích rtech znělo jako žal,\nz něžného snu zůstala vráska,\nkdyž každý z nich už jinam stál.\n\nPrý příliš chtěl a příliš chránil,\nprý svíral křídla, bránil v letu;\non všechno, co měl, jí odevzdal,\na přece byl prý vinou světa.\n\nZa její stopou kráčel dál,\nač každý krok ho uvnitř pálil,\nco včera pevně v rukou měl,\ndnes mezi prsty pomalu ztratil.\n\nJak poutník, který cestu ztratil\na přesto kráčí za světlem,\ntak v každém ránu znovu věřil,\nže včerejšek se vrátí sem.",
-    options: [
-      { text: "Pokračuj...", nextId: "zpev_2" }
-    ]
-  },
-  "zpev_2": {
-    id: "zpev_2",
-    text: "Vždyť láska zvláštní zákon má —\nkdyž bolí, člověk zůstává;\nčím více srdce krvácí,\ntím méně síly odchází.\n\nA ona šla už jinou cestou,\nkde vedle ní šel někdo jiný;\non zůstal stát před vlastní bolestí,\njež neměla jména, neměla viny.\n\nPak spatřil ji — a vedle ní\nse cizí ruka dotýkala.\nV tom jediném krátkém setkání\nse celá minulost mu vzdala.\n\nNejvíc však nebolel ten muž,\njenž kráčel nyní vedle ní,\nspíš obraz, který vytvořila,\nv němž on byl vinou všeho zlého.",
-    options: [
-      { text: "To muselo bolet. Dál?", nextId: "zpev_3" }
-    ]
-  },
-  "zpev_3": {
-    id: "zpev_3",
-    text: "Z muže, jenž chtěl jí život dát,\nse stal prý ten, kdo všechno ničí;\nz rukou, jež chtěly budoucnost stavět,\nse staly ruce, které svírají.\n\nA tak se ptal v té dlouhé noci,\nkde vlastně jejich cesta zhasla,\nkdy z „my“ se stalo pouhé „já“\na kde se ztratila jejich láska.\n\nKdy růže, kterou kdysi nesl,\nse proměnila v ostrý trn,\nkdy z toho krásného, co vzrostlo,\nzůstal jen stín a prázdný sen.\n\nOn chtěl jen stavět — kámen ke kameni,\npro jejich dům a budoucí čas;\nchtěl, aby měli vlastní zázemí,\naby se jednou svět usmál zas.",
-    options: [
-      { text: "A jak jí to vracela?", nextId: "zpev_4" }
-    ]
-  },
-  "zpev_4": {
-    id: "zpev_4",
-    text: "Budoval firmu, budoval svůj sen,\nchtěl z práce vytvořit jejich štěstí,\na místo díků přišel chladný den\na slova ostrá jako hřebíky.\n\nKdyž nejvíc potřeboval její dlaň,\nkdyž sotva stál a docházel mu dech,\nona mu místo blízkosti dala jen zášť\na nechala ho samotného ve zdech.\n\nTak zůstal sám — a kolem ticho,\njen nedokončený sen před ním stál;\nco mělo být kdysi jejich „zítra“,\nteď jako cizí dům tam stálo dál.\n\nŠel vzhůru sám, krok za krokem,\nbez cizí ruky, bez podpory;\nzatímco ona jiným směrem\nsi stavěla své nové obzory.",
-    options: [
-      { text: "Rozdělily se cesty...", nextId: "zpev_5" }
-    ]
-  },
-  "zpev_5": {
-    id: "zpev_5",
-    text: "Jejich sny jak listí větrem vzlétly,\nroznesly se po krajině dál;\nco spolu kdysi pevně spletli,\nčas beze slova rozerval.\n\nA ona změnila svou tvář —\nnové vlasy, nové znamení,\nna kůži vepsaný nový řád,\nnový způsob vlastního vidění.\n\nChtěla být ženou velkých gest,\ntou, která světu ukáže svou sílu,\nchtěla už kráčet bez starých cest\na minulost nechat za svou vírou.\n\nJen pod tím obrazem, pod novou tváří,\nse život neptá, kdo jsi chtěla být;\nsvětlo se může odrážet v záři,\na přesto člověk může uvnitř hnít.",
-    options: [
-      { text: "A on na to všechno jen koukal?", nextId: "zpev_6" }
-    ]
-  },
-  "zpev_6": {
-    id: "zpev_6",
-    text: "I ta, co stála kdysi blízko,\njednoho dne zmizela z jejího světa;\nco bývalo poutem, stalo se nízkým,\njakmile přešla další léta.\n\nA on se vrátil v myšlenkách zpět,\ntam, kde ještě všechno bylo prosté,\nkde jeden smích byl celý svět\na z malých chvil se štěstí rostlo.\n\nVzpomněl si na tu růži v dlani,\nna klíček, kterým ji kdysi rval,\nna dívku stojící při svítání,\nna život, který s ní plánoval.\n\nA najednou mu bylo jasné,\nže některé věci nejdou vrátit,\nže člověk může změnit tvář,\na přesto něco v něm navždy ztratit.",
-    options: [
-      { text: "Silný příběh.", nextId: "zpev_7" }
-    ]
-  },
-  "zpev_7": {
-    id: "zpev_7",
-    text: "Tak dlouho ji nosil v očích,\naž zapomněl, že čas umí brát;\nže z toho, co bývalo nejbližší,\nmůže se stát někdo, koho nepoznáš.\n\nA v tiché noci, bez svědků,\nkdyž měsíc kreslil stín na stěnu,\nse vracel k jediné myšlence,\njež bolela víc než všechno předtím:\n\nKde zmizela ta dívka, kterou znal?\nTa, co se smála nad tou růží?\nKde se ten krásný příběh rozpadal —\na kdo jim zavřel dveře k jejich „my“?\n\nA pak už jenom v duchu řekl,\nbez zloby, která kdysi pálila:\n\n„Tak krásná byla, když jsem ji poznal…\nkdy se ta dívka vlastně změnila?“",
-    options: [
-      { text: "A dál?", nextId: "zpev_8" }
-    ]
-  },
-  "zpev_8": {
-    id: "zpev_8",
-    text: "A noc mu neřekla nic.\n\nJen vítr prošel kolem oken,\njak prochází kolem člověka čas,\na někde hluboko pod tím vším\nzůstal ten první společný hlas.",
-    options: [
-      { text: "To je všechno? Běž stříhat, Tome.", nextId: "poem_end" }
-    ]
   },
   "speakeasy": {
     id: "speakeasy",
@@ -708,68 +649,25 @@ const dialogueTree: Record<string, DialogueNode> = {
     id: "character_strong",
     text: "Téměř ano. Opravdový a pevný charakter si totiž udrží jen těch pár nejsilnějších jedinců. Ti, co se nenechají strhnout tím davem a drží si svůj vlastní kurz navzdory tomu, že kolem nich všichni blázní. Snaž se mezi ně patřit taky. A teď mě omluv, mám tu něco na práci.",
     options: [],
-        isEnd: true
-  },
-  "echoes_1": {
-    id: "echoes_1",
-    text: "Byl jsem svědkem mnoha lidských příběhů. Příběhů, které člověka někdy jen pohladí, jindy znejistí, a některé v něm zůstanou ještě dlouho poté, co jejich poslední věta dozněla. O mnoha baladách a tragických příbězích jsme se učili už ve škole. Četli jsme o lásce, zradě, vině, touze, bolesti i o rozhodnutích, která už nejdou vzít zpět.",
-    options: [
-      { text: "Dneska už je to jiné, ne?", nextId: "echoes_2" }
-    ]
-  },
-  "echoes_2": {
-    id: "echoes_2",
-    text: "Člověk si tehdy říká, že jsou to příběhy dávných časů, vytvořené básníky a spisovateli. Že patří do knih a do minulosti. Netušil jsem však, že jednou budu stát tak blízko příběhům, které jako by vystoupily ze stránek těch známých děl — jen dostaly nový nádech, nové kulisy a kabát jednadvacátého století.",
-    options: [
-      { text: "Máš nějaký konkrétní příklad?", nextId: "echoes_3" }
-    ]
-  },
-  "echoes_3": {
-    id: "echoes_3",
-    text: "Byl jsem svědkem jakéhosi nového zrození Máje. Ne toho ze školních lavic, ale Máje dnešního světa. Místo dávných cest a lesů tu máme sociální sítě a společnost, ve které se všechno děje mnohem rychleji, než stačíme pochopit následky vlastních činů. A přesto se v člověku stále odehrávají ty stejné věci. Láska. Žárlivost. Zrada.",
-    options: [
-      { text: "Co se přesně stalo?", nextId: "echoes_4" }
-    ]
-  },
-  "echoes_4": {
-    id: "echoes_4",
-    text: "Jedním z těch příběhů byl příběh teprve dvacetiletého chlapce. Který věřil své přítelkyni. Jenže ona chodila za jinými a nakonec svedla dokonce otce svého mladého přítele. Kdybych podobný příběh četl v knize, řekl bych si, že je to až příliš neuvěřitelné. Jenže život žádného autora nepotřebuje.",
-    options: [
-      { text: "To je šílený. Co s tím ale chceš dělat?", nextId: "echoes_5" }
-    ]
-  },
-  "echoes_5": {
-    id: "echoes_5",
-    text: "A právě proto si říkám, že bychom možná mohli začít tyto příběhy znovu vyprávět. Ne proto, abychom jejich aktéry soudili, ale abychom pochopili, co se v lidech odehrává. Vzít starou baladu a dát jí nový kabát. Nechat Máj promluvit jazykem jednadvacátého století.",
-    options: [
-      { text: "Takže z toho bude nová sbírka?", nextId: "echoes_6" }
-    ]
-  },
-  "echoes_6": {
-    id: "echoes_6",
-    text: "Třeba jednou všechny tyto příběhy poskládáme vedle sebe. Vznikne tak nová sbírka balad našeho času. Protože možná právě tam, kde končí stránky starých knih, začínají nové příběhy. Jen dnes mají jiný svět, jiná jména a jiný kabát... Ale lidské srdce zůstává překvapivě stejné.",
-    options: [
-      { text: "Složil jsi k tomu tématu něco?", nextId: "zpev_start" },
-      { text: "Silný. Radši půjdu, Tome.", nextId: "poem_end" }
-    ]
+    isEnd: true
   }
 };
 
 // --- KOMPONENTY PRO DIALOG ---
 const TypewriterText = ({ text, onComplete }: { text: string; onComplete: () => void }) => {
   const [displayedText, setDisplayedText] = useState("");
-  
+
   useEffect(() => {
     setDisplayedText("");
     let currentIndex = 0;
     let isFinished = false;
-    
+
     const intervalId = setInterval(() => {
       if (isFinished) return;
-      
+
       setDisplayedText(text.substring(0, currentIndex + 1));
       currentIndex++;
-      
+
       if (currentIndex >= text.length) {
         isFinished = true;
         clearInterval(intervalId);
@@ -804,7 +702,7 @@ const BigHierarchyAnimation = ({ profession, onComplete }: { profession: string;
 
   return (
     <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden font-heading text-mafia-gold">
-      <motion.div 
+      <motion.div
         initial={{ y: "50vh" }}
         animate={{ y: "-240vh" }}
         transition={{ duration: 5, ease: "easeInOut" }}
@@ -812,7 +710,7 @@ const BigHierarchyAnimation = ({ profession, onComplete }: { profession: string;
       >
         {items.map((item, idx) => (
           <div key={idx} className="flex flex-col items-center">
-            <motion.h1 
+            <motion.h1
               style={{ scale: item.scale }}
               className={`text-5xl md:text-7xl font-black uppercase tracking-widest text-center ${item.color || "text-mafia-gold"}`}
             >
@@ -829,7 +727,7 @@ const BigHierarchyAnimation = ({ profession, onComplete }: { profession: string;
 
       <AnimatePresence>
         {showButton && (
-          <motion.button 
+          <motion.button
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={onComplete}
@@ -844,7 +742,7 @@ const BigHierarchyAnimation = ({ profession, onComplete }: { profession: string;
 };
 
 const ReviewGenerator = () => {
-  const [reviews, setReviews] = useState<{name: string, text: string, stars: number}[]>([]);
+  const [reviews, setReviews] = useState<{ name: string, text: string, stars: number }[]>([]);
   const [totalCount, setTotalCount] = useState(0);
 
   const generateReview = () => {
@@ -862,7 +760,7 @@ const ReviewGenerator = () => {
       "Smith", "Johnson", "Williams", "Brown", // English
       "Novák", "Kováč", "Procházka", "Lakatoš", "Horváth" // CZ/SK
     ];
-    
+
     // Procedural generation parts
     const intros = [
       "Můj bratr říkat pravda.",
@@ -874,7 +772,7 @@ const ReviewGenerator = () => {
       "Dlouho jsem hledat dobrý střih.",
       "Tento obchod je velký luxus."
     ];
-    
+
     const middles = [
       "Hlava vypadat jako Bollywood star.",
       "Střih čistý jak zrcadlo.",
@@ -886,7 +784,7 @@ const ReviewGenerator = () => {
       "Vonět to tam jako opravdový úspěch.",
       "Ruce kmitat jako šicí stroj, velmi dobrá technika."
     ];
-    
+
     const outros = [
       "Děkuji tisíckrát pane!",
       "Velmi velký spokojenost!",
@@ -900,7 +798,7 @@ const ReviewGenerator = () => {
 
     const randomName = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
     const randomText = `${intros[Math.floor(Math.random() * intros.length)]} ${middles[Math.floor(Math.random() * middles.length)]} ${outros[Math.floor(Math.random() * outros.length)]}`;
-    
+
     setReviews(prev => [{ name: randomName, text: randomText, stars: 5 }, ...prev].slice(0, 5));
     setTotalCount(prev => prev + 1);
   };
@@ -910,7 +808,7 @@ const ReviewGenerator = () => {
       <div className="text-mafia-gold font-mono text-[10px] mb-2 tracking-widest bg-black px-2 py-1 border border-mafia-gold/30">
         FALEŠNÉ RECENZE: {totalCount} / 9999999999+
       </div>
-      <button 
+      <button
         onClick={generateReview}
         className="bg-mafia-gold/20 hover:bg-mafia-gold/40 border border-mafia-gold text-mafia-gold px-4 py-2 rounded text-xs font-heading tracking-widest uppercase transition-all mb-4"
       >
@@ -920,7 +818,7 @@ const ReviewGenerator = () => {
       <div className="w-full flex flex-col gap-2 font-sans">
         <AnimatePresence>
           {reviews.map((rev, idx) => (
-            <motion.div 
+            <motion.div
               key={idx + rev.name}
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -975,7 +873,7 @@ export default function EasterEggPage() {
       else if (text.includes("Manažer")) setProfession("Manažer");
       else if (text.includes("Student")) setProfession("Student");
       else setProfession("Něco jinýho");
-      
+
       setShowBigAnim(true);
       return;
     }
@@ -992,7 +890,7 @@ export default function EasterEggPage() {
     if (profession === "Barber") nextNode = "status_explanation_barber";
     if (profession === "Manažer") nextNode = "status_explanation_manager";
     if (profession === "Student") nextNode = "status_explanation_student";
-    
+
     setCurrentNodeId(nextNode);
     setIsTyping(true);
   };
@@ -1012,15 +910,15 @@ export default function EasterEggPage() {
 
   if (showSecretMap) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-[200] bg-black flex flex-col"
       >
         <div className="absolute top-4 left-4 z-[210]">
-          <button 
-            onClick={() => setShowSecretMap(false)} 
+          <button
+            onClick={() => setShowSecretMap(false)}
             className="px-6 py-2 bg-black hover:bg-mafia-gold/20 text-mafia-gold border border-mafia-gold uppercase tracking-widest font-bold transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:shadow-[0_0_25px_rgba(197,160,89,0.6)]"
           >
             Zpět do úkrytu
@@ -1052,30 +950,30 @@ export default function EasterEggPage() {
 
       {/* Hlavní obsah - Z-index navrch */}
       <div className="z-10 w-full max-w-4xl p-6 h-full flex flex-col md:flex-row items-center md:items-start justify-center gap-8 md:gap-12 relative mt-20 md:mt-0">
-        
+
         {/* Obrázek Tomáše */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
           className="relative w-64 h-80 md:w-96 md:h-[500px] shrink-0 md:mt-10"
         >
-          <img 
-            src={tomasImage} 
-            alt="Don Tomáš" 
-            className={`absolute inset-0 w-full h-full object-contain z-10 transform-gpu [backface-visibility:hidden] [image-rendering:-webkit-optimize-contrast] contrast-105 transition-all duration-500 ${!isDay ? 'drop-shadow-[0_0_25px_rgba(197,160,89,0.3)]' : 'drop-shadow-[0_0_15px_rgba(0,0,0,0.3)]'}`}
+          <img
+            src={tomasImage}
+            alt="Don Tomáš"
+            className={`absolute inset-0 w-full h-full object-contain z-10 transition-all duration-500 ${!isDay ? 'drop-shadow-[0_0_25px_rgba(197,160,89,0.3)]' : 'drop-shadow-[0_0_15px_rgba(0,0,0,0.3)]'}`}
           />
         </motion.div>
 
         {/* Dialogové okno */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
           className="flex-1 flex flex-col justify-center w-full min-h-[300px]"
         >
           <div className="bg-black/80 backdrop-blur-md border border-mafia-gold/40 rounded-sm p-6 md:p-8 shadow-[0_0_40px_rgba(197,160,89,0.15)] relative">
-            
+
             {/* Jméno řečníka */}
             <div className="absolute -top-4 left-6 bg-black border border-mafia-gold px-4 py-1 shadow-[0_0_10px_rgba(197,160,89,0.2)]">
               <h2 className="text-mafia-gold font-heading font-black uppercase tracking-widest text-sm">Don Tomáš</h2>
@@ -1083,9 +981,9 @@ export default function EasterEggPage() {
 
             {/* Text dialogu */}
             <div className="text-mafia-gold/90 text-xl md:text-2xl min-h-[120px] font-serif italic tracking-wide leading-relaxed mt-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] whitespace-pre-line">
-              <TypewriterText 
-                text={currentNode.text} 
-                onComplete={handleComplete} 
+              <TypewriterText
+                text={currentNode.text}
+                onComplete={handleComplete}
               />
             </div>
 
@@ -1147,13 +1045,13 @@ export default function EasterEggPage() {
                     transition={{ delay: 0.1 }}
                     className="flex flex-col gap-4 mt-2"
                   >
-                    <textarea 
+                    <textarea
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       placeholder="Vyklop mi to..."
                       className="w-full bg-black/60 border border-mafia-gold/30 p-4 text-smoke-white font-serif italic focus:outline-none focus:border-mafia-gold resize-none h-32"
                     />
-                    <button 
+                    <button
                       onClick={handleInputSubmit}
                       className="w-full text-center p-4 border border-mafia-gold/40 hover:border-mafia-gold bg-mafia-gold/10 hover:bg-mafia-gold/30 text-mafia-gold transition-all uppercase tracking-widest text-sm font-sans font-bold"
                     >
@@ -1181,8 +1079,8 @@ export default function EasterEggPage() {
                     transition={{ delay: 0.5 }}
                     className="flex justify-center mt-4"
                   >
-                    <Link 
-                      href="/" 
+                    <Link
+                      href="/"
                       className="group flex items-center gap-3 text-mafia-gold hover:text-white transition-all duration-500 border border-mafia-gold/30 hover:border-mafia-gold px-8 py-4 bg-mafia-gold/5 hover:bg-mafia-gold/10"
                     >
                       <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform duration-300" />
@@ -1194,7 +1092,7 @@ export default function EasterEggPage() {
             </div>
           </div>
         </motion.div>
-        
+
       </div>
     </div>
   );
