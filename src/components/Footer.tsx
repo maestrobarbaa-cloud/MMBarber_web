@@ -474,7 +474,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="w-full bg-[#050505] border-t border-mafia-gold/10 pt-24 pb-12 px-6 text-center z-10 relative mt-0 overflow-hidden">
+    <footer className="w-full bg-[#050505] border-t border-mafia-gold/10 pt-24 pb-12 px-6 text-center z-[60] relative mt-0 overflow-hidden">
 
       {/* AMBIENT BACKGROUND & PARTICLES OVER THE ENTIRE FOOTER */}
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none z-0"></div>

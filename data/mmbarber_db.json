@@ -125,7 +125,7 @@
     "visibility_card_system": "visible",
     "visibility_card_pece": "visible",
     "visibility_card_komunita": "visible",
-    "admin_last_seen": "1790626862005",
+    "admin_last_seen": "1790763307984",
     "intro_menu_config": "{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":893.4566367508769,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61}},\"flameMarginTop\":-526.39739604482,\"flameMarginLeft\":-270.3858861303065,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-407.4485895048462,\"moonMarginLeft\":1026.4570737605804,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1,\"layouts\":{\"/obr/start-zapad.png\":{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":893.4566367508769,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61},\"start\":{\"x\":1342.4910904908556,\"y\":-195.88875453446192},\"galerie\":{\"x\":1274.5829889189088,\"y\":-171.07621881376588},\"vice\":{\"x\":1345.102940551315,\"y\":-86.19105199516325},\"komunita\":{\"x\":1251.0761789600967,\"y\":-201.1124546553809},\"kontakt\":{\"x\":1234.09915356711,\"y\":-219.39540507859735}},\"flameMarginTop\":-453.26560431537155,\"flameMarginLeft\":-245.57323084860303,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":0,\"moonMarginLeft\":0,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1},\"/obr/start-noc.png\":{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":893.4566367508769,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61}},\"flameMarginTop\":-526.39739604482,\"flameMarginLeft\":-270.3858861303065,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-407.4485895048462,\"moonMarginLeft\":1026.4570737605804,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1},\"/obr/start-odpoledne.png\":{\"tomasSize\":460,\"tomasTopMargin\":214.074736522717,\"tomasMarginLeft\":899.3713243075714,\"tomasBtnMarginTop\":-692.826553772888,\"tomasBtnMarginLeft\":901.2921869322554,\"tomasBtnScale\":1,\"tomasNameMarginTop\":-406.9206803630502,\"tomasNameMarginLeft\":804.0517339535711,\"tomasNameScale\":1,\"tomasTitleMarginTop\":138.50507982583457,\"tomasTitleMarginLeft\":921.7440894818502,\"tomasTitleScale\":1,\"tomasExpMarginTop\":-225.39182444269323,\"tomasExpMarginLeft\":1065.9204160619254,\"tomasExpScale\":1,\"headerMargin\":-96,\"headerMarginLeft\":0,\"menuItemsMargin\":16,\"menuItemsMarginLeft\":0,\"rightColMargins\":{\"rezervace\":{\"x\":61},\"vice\":{\"x\":1277.1946795646918,\"y\":-65.29629136515643},\"komunita\":{\"x\":1305.9250302297462,\"y\":-164.546553808948},\"kontakt\":{\"x\":1389.5043915791264,\"y\":-195.88875453446192},\"galerie\":{\"x\":1330.7376058041114,\"y\":-198.50062452175598},\"start\":{\"x\":1351.6325657024638,\"y\":-174.99397397762056}},\"flameMarginTop\":-467.63076968448144,\"flameMarginLeft\":-246.87923558617106,\"flameScale\":0.1,\"langMarginTop\":0,\"langMarginLeft\":0,\"sunVisible\":false,\"sunMarginTop\":-95.04109696829786,\"sunMarginLeft\":1093.1108842544297,\"sunScale\":1,\"moonVisible\":false,\"moonMarginTop\":-407.4485895048462,\"moonMarginLeft\":1026.4570737605804,\"moonScale\":1,\"ambientLightMarginTop\":0,\"ambientLightMarginLeft\":0,\"ambientLightScale\":1}},\"adminTestHour\":null,\"baseWidth\":1920,\"baseHeight\":827}"
   },
   "user_fragments": [],
@@ -551,229 +551,501 @@
   ],
   "support_sessions": [
     {
-      "id": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "ip": "::1",
-      "userFullName": "T",
-      "startedAt": 1789754043419,
-      "lastActivity": 1790627593229,
+      "userFullName": "j",
+      "startedAt": 1790753469946,
+      "lastActivity": 1790763988626,
       "status": "OPEN"
     }
   ],
   "support_messages": [
     {
-      "id": "a8b3eb58-e901-42e0-9296-cd1f8ce85b12",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "a70716e7-a239-4774-aa8d-b6b7f64b5044",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "tomas ",
-      "timestamp": 1789754043419,
-      "read": true
+      "text": "jakou má web hodnotu ?",
+      "timestamp": 1790753469946,
+      "read": false
     },
     {
-      "id": "cff95d44-0711-4f1f-a019-6c4ce0be1a16",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
-      "sender": "USER",
-      "text": "hello",
-      "timestamp": 1789840636638,
-      "read": true
-    },
-    {
-      "id": "d022b417-e85a-4fdb-8d0f-0f409999d393",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
-      "sender": "USER",
-      "text": "vcbhgf",
-      "timestamp": 1790096314014,
-      "read": true
-    },
-    {
-      "id": "921156d4-be34-48df-a7a3-2f98f71dca90",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "84c6c7ef-6b67-496b-83f8-54c64845cca6",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
-      "text": "vazap",
-      "timestamp": 1790096366312,
+      "text": "[BOT] To byl můj pán. Nejenže umí s nůžkami, ale tenhle web si postavil úplně sám.",
+      "timestamp": 1790753472129,
       "read": true
     },
     {
-      "id": "c01eea88-1a9a-4511-a465-bfbf5a02501e",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "1f4450da-25d2-4f0d-8fa9-324ab146098f",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "jak je ?",
-      "timestamp": 1790096426759,
+      "text": "jakou má web hodnotu?",
+      "timestamp": 1790753497006,
       "read": false
     },
     {
-      "id": "3d2d8708-9c79-484e-8b63-b95cd9ea8621",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
-      "sender": "USER",
-      "text": "jaký je tomáš ?",
-      "timestamp": 1790535635236,
-      "read": false
-    },
-    {
-      "id": "86c96ef6-4f74-4e34-bc7c-59d518b79fa3",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "0f20073c-f99d-4741-9944-236a181e46a0",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
-      "text": "[BOT] Tomáš je zakladatel a srdce našeho podsvětí. Chová se jako typický Don – o všechny ve své 'rodině' se postará a pro své klienty by udělal první poslední. Traduje se o něm ale jedna věc... v životě ho zradila jeho nejbližší osoba a od té doby se změnil. Místo slov za něj teď mluví činy a jeho práce.",
-      "timestamp": 1790535636267,
+      "text": "[BOT] Kdo dělal tenhle web? Můj pán. Mistr přes vlasy i přes kód.",
+      "timestamp": 1790753498926,
       "read": true
     },
     {
-      "id": "656a8486-aa12-4a6b-90f2-40734a75cfd3",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "7920a293-b82c-4551-9556-fef5dac5cb44",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "blbečku",
-      "timestamp": 1790536078506,
+      "text": "jakou má web hodnotu?",
+      "timestamp": 1790753576324,
       "read": false
     },
     {
-      "id": "d43376e4-0fa8-49ef-bbef-d900dc4fa62c",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "72bbe4ed-4fe9-41d6-b9f1-7de668fc986f",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
-      "text": "[BOT] Omlouvám se, ale jsem jen jednoduchý bot. Pro složitější dotazy se přepněte na živou podporu.",
-      "timestamp": 1790536079526,
+      "text": "[BOT] To byl můj pán. Nejenže umí s nůžkami, ale tenhle web si postavil úplně sám.",
+      "timestamp": 1790753578504,
       "read": true
     },
     {
-      "id": "cd7e2fa4-fa06-4ce3-a1f1-ae12a9e8e757",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "32206cbd-3831-4ce1-880d-b9d216258cd4",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "tomáš je debil",
-      "timestamp": 1790537593353,
+      "text": "cena webu",
+      "timestamp": 1790753586142,
       "read": false
     },
     {
-      "id": "c14d1ff6-2241-4dde-ac6c-871685f45255",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
-      "sender": "USER",
-      "text": "tomáš je debil",
-      "timestamp": 1790537603453,
-      "read": false
-    },
-    {
-      "id": "16c09b5c-deba-4e45-ac96-94001abc6d0c",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "51c157ad-a40d-4ccf-8d2c-01463c7c5780",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
-      "text": "[BOT] V pořádku, vyplač se. Ale radím ti být spíš potichu. Můj pán to zrovna neslyší rád. Sám o sobě kritiku snese, ale musíš mít oprávněný důvod jej urazit. Jinak bych ti doporučil být radši potichoučku.",
-      "timestamp": 1790537604491,
+      "text": "[BOT] Cena se počítá podle času a vše je o domluvě. Ceník je orientační, takže fakt neplatíš pětikilo za ustřihnutí jednoho vlasu. Hoď oko na náš rezervační systém, tam je všechno černé na bílém: https://mm.inthechair.com/micka",
+      "timestamp": 1790753589698,
       "read": true
     },
     {
-      "id": "1637ea44-0334-43c5-ab54-8e8c777490c7",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
-      "sender": "ADMIN",
-      "text": "[SYSTÉMOVÉ UPOZORNĚNÍ] Zpráva byla zaznamenána. Administrátor byl upozorněn na nevhodné chování vůči personálu.",
-      "timestamp": 1790537607533,
-      "read": true
-    },
-    {
-      "id": "10cb8054-30f3-41bd-8277-505fc9262a7c",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "cdcef62b-6fbe-464e-9984-3411c20c72f5",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "spíš ?",
-      "timestamp": 1790538290974,
+      "text": "jakou hodnotu mám tento web ?",
+      "timestamp": 1790753606387,
       "read": false
     },
     {
-      "id": "59892efa-f31e-45e0-98ce-9f35ba84f9d1",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "17255d1c-81ff-40e0-bc05-a2355985b455",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
-      "text": "[BOT] Dobrá otázka. Bohužel přesnou odpověď na tohle neznám. Bude lepší to probrat s naší živou podporou.",
-      "timestamp": 1790538292004,
+      "text": "[BOT] To byl můj pán. Nejenže umí s nůžkami, ale tenhle web si postavil úplně sám.",
+      "timestamp": 1790753608568,
       "read": true
     },
     {
-      "id": "1244a091-d47d-4e33-a4fe-800f9a66aaef",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "f5fad5d0-2577-4c4e-b164-6aa8bac432a9",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "ahoj",
-      "timestamp": 1790540211147,
+      "text": "hodnota",
+      "timestamp": 1790753622194,
       "read": false
     },
     {
-      "id": "277389ac-62e0-4281-8742-ea1a5a15be62",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "04e47a9c-bda3-4901-b224-0442d97125e1",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
-      "text": "[BOT] V pohodě, zdravím. Tady Daimon. S čím můžu pomoct?",
-      "timestamp": 1790540212934,
+      "text": "[BOT] Tento web není obyčejná šablona. Je to unikátní systém na Next.js s vlastní umělou inteligencí, WebRTC komunikací, pokročilými 3D animacemi a dynamickým SEO enginem. Aktuální odhadovaná tržní hodnota tohoto ekosystému je zhruba 7 260 500 Kč. A díky neustálému učení algoritmů a přidávání funkcí roste každým dnem.",
+      "timestamp": 1790753625729,
       "read": true
     },
     {
-      "id": "13dc946b-721f-4ad1-9ea2-25766ec6663e",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "56a11628-3c6a-465a-af63-d79e0edb96fb",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "vyliž si",
-      "timestamp": 1790540221999,
+      "text": "hodnota",
+      "timestamp": 1790753647333,
       "read": false
     },
     {
-      "id": "4f8f6e6b-b05e-4f7f-82fd-eb85307ca495",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "1a434e42-c87a-4884-902c-af479896e860",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Ptáš se na cenu tohoto digitálního mistrovského díla? Můj pán (Don Tomáš) ho naprogramoval úplně sám. S ohledem na vlastní AI, živou podporu, pokročilé bezpečnostní mechanismy a robustní architekturu je aktuální tržní hodnota zhruba 7 260 500 Kč. Zeptej se zítra, a to číslo bude zase o něco vyšší.",
+      "timestamp": 1790753650878,
+      "read": true
+    },
+    {
+      "id": "ee0814d2-8044-45da-9ce5-fd30021a4764",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "hodnota webu",
+      "timestamp": 1790753731360,
+      "read": false
+    },
+    {
+      "id": "76555439-42b6-4313-bd39-f31ad1f91cd2",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Kdo dělal tenhle web? Můj pán. Mistr přes vlasy i přes kód.",
+      "timestamp": 1790753733293,
+      "read": true
+    },
+    {
+      "id": "caf21554-c601-4c72-93ee-04921f36d294",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "kolik stojí tento web ¨",
+      "timestamp": 1790753742347,
+      "read": false
+    },
+    {
+      "id": "4ab28c3a-abca-419e-a64f-467ff209aaf8",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Cena se počítá podle času a vše je o domluvě. Ceník je orientační, takže fakt neplatíš pětikilo za ustřihnutí jednoho vlasu. Hoď oko na náš rezervační systém, tam je všechno černé na bílém: https://mm.inthechair.com/micka",
+      "timestamp": 1790753745889,
+      "read": true
+    },
+    {
+      "id": "aeda3b0c-0cf3-4065-b1fb-7925429a0185",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "vouchery",
+      "timestamp": 1790753783210,
+      "read": false
+    },
+    {
+      "id": "6af9913c-11db-4817-aab8-10ba909e6549",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
       "text": "[BOT] Omlouvám se, ale jsem jen virtuální asistent. Na složitější dotazy vám lépe odpoví živá podpora. Zkuste prosím přepnout dole na 'Živou podporu'.",
-      "timestamp": 1790540225189,
+      "timestamp": 1790753786407,
       "read": true
     },
     {
-      "id": "c4066bd2-bff4-470f-89c1-9df9dd3df21e",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "e251e2e9-6ce4-4adb-98a1-427c7b24846b",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "blbečku",
-      "timestamp": 1790540236721,
+      "text": "platba",
+      "timestamp": 1790753799378,
       "read": false
     },
     {
-      "id": "2391be9e-0a7f-4a09-a446-5ef0ed65a318",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "3497dc44-5ef7-44e5-926d-b4342862ea32",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "hodnota webu",
+      "timestamp": 1790753887618,
+      "read": false
+    },
+    {
+      "id": "16c22a16-9d7b-448a-9b1c-e805f7d1a11a",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "hodonita webu",
+      "timestamp": 1790753897499,
+      "read": false
+    },
+    {
+      "id": "fd0a3e0a-752c-46c0-be22-38a9e6b9683f",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
-      "text": "[BOT] Zkoušíš mou trpělivost? Považuj tohle za své první varování. „S prázdnou hlavou naděláš nejvíc hluku.“ Chovej se slušně.",
-      "timestamp": 1790540239545,
+      "text": "[BOT] Don Tomáš... to je příběh sám o sobě. Renesanční člověk, co si sám programuje weby, vystudoval kadeřníka, elektrotechniku i sociální pedagogiku. Není gay a nemá žádné tetování. Občas rád hraje hlupáka, ale jeho prostorová inteligence a chápání složitých struktur jsou extrémní. V klasických IQ testech pohořívá z jediného důvodu – u každé otázky vidí tolik různých řešení, že mu zkrátka vyprší čas. Má vytříbený hudební sluch a když ho něco nadchne, jde do toho naplno. Lidé ho mají rádi a umí se bavit s kýmkoliv, ale uvnitř je opatrný. Nikomu nevěří a od žen si drží obzvlášť velký odstup – vždy má tunelové vidění jen na jednu jedinou. Když ho potkáš a on nepozdraví, neber si to osobně; většinou usilovně přemýšlí.",
+      "timestamp": 1790753901032,
       "read": true
     },
     {
-      "id": "f44dcfbb-e0b1-4ace-83b8-a72147c70968",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "ecf0a189-6cc1-4450-a37a-180611b6d9fa",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "jdi do prdele",
-      "timestamp": 1790540254790,
+      "text": "hodnota webu",
+      "timestamp": 1790753910276,
       "read": false
     },
     {
-      "id": "17154ead-56ed-4e09-bcfd-7e9bf9b2f7bc",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "956cea37-47db-4be0-8b96-415754cd955a",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
-      "text": "[BOT] Tohle byl tvůj druhý přešlap. Běž si léčit komplexy jinam. Ještě jedna podobná zpráva a letíš odtud. „Na hloupou otázku, hloupá odpověď.“",
-      "timestamp": 1790540257880,
+      "text": "[BOT] Tento web není obyčejná šablona. Je to unikátní systém na Next.js s vlastní umělou inteligencí, WebRTC komunikací, pokročilými 3D animacemi a dynamickým SEO enginem. Aktuální odhadovaná tržní hodnota tohoto ekosystému je zhruba 7 260 500 Kč. A díky neustálému učení algoritmů a přidávání funkcí roste každým dnem.",
+      "timestamp": 1790753913811,
       "read": true
     },
     {
-      "id": "4d9b0127-dc2c-4fe2-8e6d-4484e3b5aa94",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "fe29ecf4-7181-4c14-bb70-b090212e6d90",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "🇻🇦",
-      "timestamp": 1790624788902,
+      "text": "kdo vytvářel tento web ?",
+      "timestamp": 1790753938366,
       "read": false
     },
     {
-      "id": "26e51a10-619c-4144-ab09-421e8fcadcc3",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "1a1035be-2a47-4232-a332-39746328ff56",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
-      "text": "[BOT] Zkuste se rozepsat trošku víc.",
-      "timestamp": 1790624790543,
+      "text": "[BOT] To byl můj pán. Nejenže umí s nůžkami, ale tenhle web si postavil úplně sám.",
+      "timestamp": 1790753940551,
       "read": true
     },
     {
-      "id": "9204ce5f-957a-41ea-9d62-b0020bd06017",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "c0b6dfff-77a7-40a7-b2c0-fe4aa2b35f73",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "USER",
-      "text": "tomáš",
-      "timestamp": 1790626858473,
+      "text": "cena u tomáše ?",
+      "timestamp": 1790754562669,
       "read": false
     },
     {
-      "id": "191d0813-e822-40f7-8ba5-7159265e6b77",
-      "sessionId": "0a92ff2e-ab21-4e25-a97c-192144c570e5",
+      "id": "82b51152-ae3a-4a60-8d2b-a5eaa2ea0948",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Cena se odvíjí od času, který v křesle strávíš. Uvedené ceny jsou orientační, všechno je to o domluvě. Za odstřihnutí jednoho vlasu si od tebe pětikilo fakt nevezmeme 😄 Mrkni do rezervačního systému: https://mm.inthechair.com/micka",
+      "timestamp": 1790754566185,
+      "read": true
+    },
+    {
+      "id": "bb19103c-ddfd-4806-b345-0975f89d3c1e",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "jak mám k němu dojít ?",
+      "timestamp": 1790754585003,
+      "read": false
+    },
+    {
+      "id": "cd014818-d704-4bf4-babb-d061309f802d",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Podle toho, co máme napsané na stránkách:  \"Zde můžeš sepisovat své myšlenky, postřehy z trhu nebo psychologie. Všechny tyto záznamy se připojí k základnímu tajnému životopisu.\". Kdyby to nestačilo, zeptej se živé podpory dole!",
+      "timestamp": 1790754588539,
+      "read": true
+    },
+    {
+      "id": "8a771816-56f4-441d-b942-8953929fbf18",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "jaký je tomáš ?",
+      "timestamp": 1790754603968,
+      "read": false
+    },
+    {
+      "id": "88fc2178-ea46-4fcd-86fd-92c521fb9405",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
       "sender": "ADMIN",
       "text": "[BOT] Ptáš se na našeho bosse? Tomáš je komplikovaný vůdce, který chodí vždy proti davu a nikoho se neprosí. Pokud něco potřebuje, zařídí si to po svém. Jeho život poznamenala velká zrada od někoho, kdo pro něj znamenal všechno na jeho cestě. Dnes kvůli tomu kouří, aby tu bolest utlumil, i když ten pach sám nesnáší. Věří ve vyšší moc a jeho DNA v sobě skrývá zajímavé věci, ze kterých si dřív dělal jen legraci – dokud se nezačaly potvrzovat. Je svým pánem, snaží se všem pomoct, ale je tak zavalený prací, že nemůže být pro všechny. Umí plynule přepínat mezi introvertem a extrovertem. A pamatuj u něj na jedno: věk pro něj rozhodně není známkou inteligence ani zkušeností.",
-      "timestamp": 1790626862005,
+      "timestamp": 1790754607504,
+      "read": true
+    },
+    {
+      "id": "522198e7-1773-420a-bbcc-a6a0dfab85ec",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "jak stříhá tomáš ?",
+      "timestamp": 1790754626723,
+      "read": false
+    },
+    {
+      "id": "0acd78ee-457a-4d78-b0d6-db4e4627745c",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Don Tomáš... to je příběh sám o sobě. Renesanční člověk, co si sám programuje weby, vystudoval kadeřníka, elektrotechniku i sociální pedagogiku. Není gay a nemá žádné tetování. Občas rád hraje hlupáka, ale jeho prostorová inteligence a chápání složitých struktur jsou extrémní. V klasických IQ testech pohořívá z jediného důvodu – u každé otázky vidí tolik různých řešení, že mu zkrátka vyprší čas. Má vytříbený hudební sluch a když ho něco nadchne, jde do toho naplno. Lidé ho mají rádi a umí se bavit s kýmkoliv, ale uvnitř je opatrný. Nikomu nevěří a od žen si drží obzvlášť velký odstup – vždy má tunelové vidění jen na jednu jedinou. Když ho potkáš a on nepozdraví, neber si to osobně; většinou usilovně přemýšlí.",
+      "timestamp": 1790754630255,
+      "read": true
+    },
+    {
+      "id": "e1127b1c-5c54-45ff-858a-b30d5789b4f9",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "Kde vás najdu?",
+      "timestamp": 1790756598259,
+      "read": false
+    },
+    {
+      "id": "9104bb7a-462b-495c-aae2-032ae9192705",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Sídlíme v Mařaticích. Zvenku to sice může působit jako bouda, ale to kouzlo a luxus čeká uvnitř. Nesuď podle vzhledu. Mrkni do sekce Kontakt pro přesnou mapu.",
+      "timestamp": 1790756601670,
+      "read": true
+    },
+    {
+      "id": "da96a47d-a84d-4a1e-84fe-b316f04e84ce",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "bpuchery",
+      "timestamp": 1790756934677,
+      "read": false
+    },
+    {
+      "id": "e40613cb-5f32-4828-a687-6e5d1da01d25",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Omlouvám se, ale jsem jen virtuální asistent. Na složitější dotazy vám lépe odpoví živá podpora. Zkuste prosím přepnout dole na 'Živou podporu'.",
+      "timestamp": 1790756937890,
+      "read": true
+    },
+    {
+      "id": "50c11a9f-2ab7-4374-ba78-b92cab37b590",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "vouchery",
+      "timestamp": 1790756946719,
+      "read": false
+    },
+    {
+      "id": "4c526cd3-dc4c-4d80-8141-f0a63d10a713",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Tady je, co vím:  \"title   DÁRKOVÉ VOUCHERY ,\". Kdyby to nestačilo, zeptej se živé podpory dole!",
+      "timestamp": 1790756949229,
+      "read": true
+    },
+    {
+      "id": "95533645-a721-4e74-8e4f-c29662e98245",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "jaký si mám dat učes ?",
+      "timestamp": 1790757860279,
+      "read": false
+    },
+    {
+      "id": "8f5c5dbb-7fad-4c70-b7ca-bd2fc9c9aa99",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Tady je, co vím:  \"Jaký styl vedení by vás donutil odejít?\". Kdyby to nestačilo, zeptej se živé podpory dole!",
+      "timestamp": 1790757862963,
+      "read": true
+    },
+    {
+      "id": "7bf72972-e437-4975-b2cf-bb7dbb992d1d",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "parkování",
+      "timestamp": 1790758193063,
+      "read": false
+    },
+    {
+      "id": "377dca1e-6ed0-4ec3-b358-8316e1731ac5",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] S parkováním je to zdarma v celém okolí, ale záleží na čase. Ráno a dopoledne zaparkuješ hned, ale odpoledne se lidi vrací z práce a bývá to tu dost nacpané. Ideálně se stav ráno a máš klid.",
+      "timestamp": 1790758196602,
+      "read": true
+    },
+    {
+      "id": "37c3ed77-ffb6-4a22-9131-ee0c3c732f5f",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "doprava ",
+      "timestamp": 1790758212643,
+      "read": false
+    },
+    {
+      "id": "7a3a8086-86ba-4c88-97e3-5dea2f5683db",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Jezdí sem k nám pouličky i klasická doprava, takže se sem dostaneš bez problému. Tady si najdi to nejbližší spojení k nám do Mařatic.",
+      "timestamp": 1790758215682,
+      "read": true
+    },
+    {
+      "id": "ede4c25b-d34d-4526-b0c4-350af8fd60e2",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "Ceník",
+      "timestamp": 1790758991092,
+      "read": false
+    },
+    {
+      "id": "1e1abc94-9337-41c9-a5d6-2f8f3e1e47bc",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Jedeme na časový tarif, takže záleží, co všechno budeme dělat. Ceny jsou vždy orientační a jde o domluvu – neboj, za zastřihnutí jednoho vousu ti 500 Kč nenaúčtujeme. Přesnější odhad najdeš u Tomáše v rezervačním systému: https://mm.inthechair.com/micka",
+      "timestamp": 1790758995047,
+      "read": true
+    },
+    {
+      "id": "de505949-3cd1-4149-bc89-8860a17876e6",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "dej mi číslo na tomáše",
+      "timestamp": 1790759135175,
+      "read": false
+    },
+    {
+      "id": "9ab91300-1582-407a-babb-7612fd3a6d9a",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Don Tomáš... to je příběh sám o sobě. Renesanční člověk, co si sám programuje weby, vystudoval kadeřníka, elektrotechniku i sociální pedagogiku. Není gay a nemá žádné tetování. Občas rád hraje hlupáka, ale jeho prostorová inteligence a chápání složitých struktur jsou extrémní. V klasických IQ testech pohořívá z jediného důvodu – u každé otázky vidí tolik různých řešení, že mu zkrátka vyprší čas. Má vytříbený hudební sluch a když ho něco nadchne, jde do toho naplno. Lidé ho mají rádi a umí se bavit s kýmkoliv, ale uvnitř je opatrný. Nikomu nevěří a od žen si drží obzvlášť velký odstup – vždy má tunelové vidění jen na jednu jedinou. Když ho potkáš a on nepozdraví, neber si to osobně; většinou usilovně přemýšlí.",
+      "timestamp": 1790759138710,
+      "read": true
+    },
+    {
+      "id": "c318dd7a-4007-4461-ae79-78c52d0612a3",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "jaké číslo má tomáš ?",
+      "timestamp": 1790759149900,
+      "read": false
+    },
+    {
+      "id": "33d6dc7d-4bef-40bd-bee8-acde7701e65c",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Don Tomáš... to je příběh sám o sobě. Renesanční člověk, co si sám programuje weby, vystudoval kadeřníka, elektrotechniku i sociální pedagogiku. Není gay a nemá žádné tetování. Občas rád hraje hlupáka, ale jeho prostorová inteligence a chápání složitých struktur jsou extrémní. V klasických IQ testech pohořívá z jediného důvodu – u každé otázky vidí tolik různých řešení, že mu zkrátka vyprší čas. Má vytříbený hudební sluch a když ho něco nadchne, jde do toho naplno. Lidé ho mají rádi a umí se bavit s kýmkoliv, ale uvnitř je opatrný. Nikomu nevěří a od žen si drží obzvlášť velký odstup – vždy má tunelové vidění jen na jednu jedinou. Když ho potkáš a on nepozdraví, neber si to osobně; většinou usilovně přemýšlí.",
+      "timestamp": 1790759153446,
+      "read": true
+    },
+    {
+      "id": "f93253e7-671c-44da-b733-52e6b4cba7a7",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "co s vlasama ?",
+      "timestamp": 1790759187847,
+      "read": false
+    },
+    {
+      "id": "22fd734a-0472-4a17-b4dc-175bbdfed81d",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] To zní dobře. Ať už chceš skin fade zkrácený úplně na kůži, texturovaný crop, nebo nechat vršek trochu delší, zvládneme to. Jestli nevíš, co vybrat, popiš mi to a poradím.",
+      "timestamp": 1790759191386,
+      "read": true
+    },
+    {
+      "id": "4a29eef0-e47d-4c85-a3aa-698eb5d9b57c",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "cena webu",
+      "timestamp": 1790763164214,
+      "read": false
+    },
+    {
+      "id": "f3bbd2aa-a2ba-4e8a-bcfc-1c55f1b1a386",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "cena webu",
+      "timestamp": 1790763175338,
+      "read": false
+    },
+    {
+      "id": "f47b875f-a9eb-4382-9ce8-ee45f2d6c51e",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] Ptáš se na cenu tohoto digitálního mistrovského díla? Můj pán (Don Tomáš) ho naprogramoval úplně sám. S ohledem na vlastní AI, živou podporu, pokročilé bezpečnostní mechanismy a robustní architekturu je aktuální tržní hodnota zhruba 7 260 500 Kč. Zeptej se zítra, a to číslo bude zase o něco vyšší.",
+      "timestamp": 1790763178894,
+      "read": true
+    },
+    {
+      "id": "3c49bd60-d346-4f22-a4e6-94f3be8b8f30",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "USER",
+      "text": "jaké je zobrazení na webu ?",
+      "timestamp": 1790763305785,
+      "read": false
+    },
+    {
+      "id": "a57eca81-624e-4ec9-8576-3cafdc2c3a5c",
+      "sessionId": "2fb6373a-aad3-47f0-95e6-a43bdcaa527f",
+      "sender": "ADMIN",
+      "text": "[BOT] To byl můj pán. Nejenže umí s nůžkami, ale tenhle web si postavil úplně sám.",
+      "timestamp": 1790763307984,
       "read": true
     }
   ],
@@ -808,5 +1080,6 @@
       ],
       "timestamp": 1790624835457
     }
-  ]
+  ],
+  "bot_logs": []
 }

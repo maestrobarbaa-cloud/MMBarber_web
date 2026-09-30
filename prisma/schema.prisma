@@ -732,3 +732,77 @@ model BarberToolStat {
 
   tool         BarberTool @relation(fields: [toolId], references: [id], onDelete: Cascade)
 }
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  usage         String?
+  brand         String?
+  price         Float?
+  discountPrice Float?
+  stock         Int      @default(0)
+  rating        Float?   @default(5.0) // Barber rating
+  imageUrl      String?
+
+  categoryId    String?
+  category      ProductCategory? @relation(fields: [categoryId], references: [id])
+
+  isAuction     Boolean  @default(false)
+  auctionEndsAt DateTime?
+
+  reviews       ProductReview[]
+  reservations  ProductReservation[]
+  bids          AuctionBid[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ProductReservation {
+  id             String   @id @default(cuid())
+  productId      String
+  customerName   String
+  pickupDateTime DateTime
+  status         String   @default("NEW") // NEW, COMPLETED, CANCELLED
+
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ProductCategory {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  products  Product[]
+  
+  createdAt DateTime  @default(now())
+}
+
+model ProductReview {
+  id        String   @id @default(cuid())
+  productId String
+  author    String   @default("Anonym")
+  rating    Int      @default(5)
+  comment   String?
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+
+
+model AuctionBid {
+  id             String   @id @default(cuid())
+  productId      String
+  bidderName     String
+  amount         Float
+  pickupDateTime DateTime?
+  
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+}
+ 

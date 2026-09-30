@@ -6,7 +6,7 @@ import { MessageSquare, X, Send, User, ChevronDown, CheckCheck, Smile, Paperclip
 import { useTranslation } from '@/hooks/useTranslation';
 import { EmojiPicker } from '@/components/EmojiPicker';
 import { useUI } from '@/contexts/UIContext';
-import { getDaimonResponse, getDaimonName, isAprilFools } from '@/lib/daimonBot';
+import { getDaimonResponse, getDaimonName, isAprilFools, resetDaimonMemory } from '@/lib/daimonBot';
 
 interface SupportMessage {
   id: string;
@@ -18,6 +18,7 @@ interface SupportMessage {
   attachmentType?: 'image' | 'video';
   fullName?: string;
   silent?: boolean;
+  suggestedActions?: string[];
 }
 
 interface SupportSession {
@@ -36,12 +37,87 @@ const isOnlyEmojis = (str: string) => {
 export default function SupportChatWidget() {
   const { lang } = useTranslation();
   
+  const handleScrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      // Zavřít chat, pokud je na mobilu, aby uživatel viděl kam scroluje?
+      // Nebo jen plynule scrollovat.
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const renderTextWithLinks = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.split(urlRegex).map((part, i) => {
-      if (part.match(urlRegex)) {
-        return <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white transition-colors">{part}</a>;
+    // Hledáme URLs a chytrá klíčová slova pro interakci
+    const regex = /(https?:\/\/[^\s]+|Kontakt[u]?|Služb[yách]|Ceník[u]?|rezervační systém|rezervac[eíích]|map[auy]|Mařaticích|Instagram[u]?|Facebook[u]?|nejbližší spojení)/gi;
+    
+    return text.split(regex).map((part, i) => {
+      if (!part) return null;
+      
+      if (part.match(/^https?:\/\/[^\s]+$/)) {
+        return <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-blue-300 hover:text-white transition-colors">{part}</a>;
       }
+      
+      const lowerPart = part.toLowerCase();
+      let sectionId = '';
+      
+      if (lowerPart.includes('kontakt') || lowerPart.includes('map') || lowerPart.includes('mařatic')) sectionId = 'kontakt';
+      if (lowerPart.includes('služb') || lowerPart.includes('ceník')) sectionId = 'services';
+      
+      if (sectionId) {
+        return (
+          <button 
+            key={i} 
+            onClick={() => handleScrollTo(sectionId)}
+            className="inline-flex items-center gap-1 px-1.5 py-0.5 mx-0.5 rounded bg-black/30 hover:bg-mafia-gold/20 text-mafia-gold transition-all border border-mafia-gold/30 cursor-pointer shadow-sm active:scale-95"
+            title={`Přejít na sekci ${sectionId}`}
+          >
+            {part} 📍
+          </button>
+        );
+      }
+
+      if (lowerPart.includes('spojení')) {
+        return (
+          <a 
+            key={i} 
+            href="https://idos.idnes.cz/vlakyautobusymhdvse/spojeni/?t=Uherské+Hradiště,,Východ+Rudy+Kubíčka"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 px-1.5 py-0.5 mx-0.5 rounded bg-black/30 hover:bg-mafia-gold/20 text-mafia-gold transition-all border border-mafia-gold/30 cursor-pointer shadow-sm active:scale-95"
+          >
+            {part} 🚌
+          </a>
+        );
+      }
+
+      if (lowerPart.includes('rezervac')) {
+        return (
+          <a 
+            key={i} 
+            href="https://mm.inthechair.com/micka"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 px-1.5 py-0.5 mx-0.5 rounded bg-black/30 hover:bg-mafia-gold/20 text-mafia-gold transition-all border border-mafia-gold/30 cursor-pointer shadow-sm active:scale-95"
+          >
+            {part} ✂️
+          </a>
+        );
+      }
+      
+      if (lowerPart.includes('instagram')) {
+        return (
+          <a 
+            key={i} 
+            href="https://www.instagram.com/tomas_micka/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 px-1.5 py-0.5 mx-0.5 rounded bg-black/30 hover:bg-mafia-gold/20 text-mafia-gold transition-all border border-mafia-gold/30 cursor-pointer shadow-sm active:scale-95"
+          >
+            {part} 📸
+          </a>
+        );
+      }
+
       return <span key={i}>{part}</span>;
     });
   };
@@ -248,6 +324,7 @@ export default function SupportChatWidget() {
         setMessages([]);
         setSession(null);
         setIsSettingsOpen(false);
+        resetDaimonMemory(); // Reset bot conversation memory
       } catch (err) {
         console.error(err);
       }
@@ -454,7 +531,7 @@ export default function SupportChatWidget() {
   };
 
   const handleBotResponse = async (userText: string, sessionId: string) => {
-    const { text: botReply, isVulgar, isInsultingTomas } = getDaimonResponse(userText, parseInt(localStorage.getItem('daimon_strikes') || '0'));
+    const { text: botReply, isVulgar, isInsultingTomas, suggestedActions } = getDaimonResponse(userText, parseInt(localStorage.getItem('daimon_strikes') || '0'), lang);
 
     setIsBotTyping(true);
     setTimeout(() => {
@@ -479,7 +556,11 @@ export default function SupportChatWidget() {
         });
         if (res.ok) {
           const data = await res.json();
-          setMessages(prev => [...prev, data.message]);
+          const newMessage = data.message;
+          if (suggestedActions && suggestedActions.length > 0) {
+            newMessage.suggestedActions = suggestedActions;
+          }
+          setMessages(prev => [...prev, newMessage]);
           setTimeout(() => {
             messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
           }, 100);
@@ -1217,7 +1298,7 @@ export default function SupportChatWidget() {
               )}
               {messages.length > 0 && messages[messages.length - 1].sender === 'ADMIN' && chatMode === 'bot' && !isBotTyping && (
                 <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap gap-2 mt-4 mb-2 px-1">
-                  {["Kde vás najdu?", "Ceník", "Chci rezervaci", "Přepnout na člověka"].map((qr, i) => (
+                  {(messages[messages.length - 1].suggestedActions || ["Kde vás najdu?", "Ceník", "Chci rezervaci", "Přepnout na člověka"]).map((qr, i) => (
                     <button
                       key={i}
                       onClick={() => {
@@ -1281,9 +1362,9 @@ export default function SupportChatWidget() {
                </div>
 
                <div className="p-4 pt-3">
-                 {!session && !fullName ? (
+                 {!session ? (
                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
-                   <p className="text-[9px] font-mono text-mafia-gold uppercase mb-2 tracking-widest pl-2">Pro začátek zadejte své jméno:</p>
+                   <p className="text-[9px] font-mono text-mafia-gold uppercase mb-2 tracking-widest pl-2">Pro začátek zadejte své jméno (min. 3 znaky):</p>
                    <input 
                      type="text"
                      value={fullName}
@@ -1332,8 +1413,8 @@ export default function SupportChatWidget() {
                    type="text"
                    value={messageText}
                    onChange={(e) => setMessageText(e.target.value)}
-                   disabled={isSubmitting || (!session && !fullName.trim())}
-                   placeholder={(!session && !fullName.trim()) ? "Zadejte nejprve jméno..." : "Napište zprávu..."}
+                   disabled={isSubmitting || (!session && fullName.trim().length < 3)}
+                   placeholder={(!session && fullName.trim().length < 3) ? "Zadejte celé jméno..." : "Napište zprávu..."}
                    className="w-full bg-white/5 border border-white/10 rounded-full py-3.5 pl-5 pr-14 text-sm text-white focus:outline-none focus:border-mafia-gold focus:bg-white/10 transition-all disabled:opacity-50 placeholder:text-white/30"
                  />
                  <button 

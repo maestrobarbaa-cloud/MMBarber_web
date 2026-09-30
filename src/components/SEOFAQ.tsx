@@ -3,9 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import { useTranslation } from "../hooks/useTranslation";
+import { useGame } from "../contexts/GameContext";
 
 export function SEOFAQ() {
   const { t } = useTranslation();
+  const { isAdmin } = useGame();
 
   if (!t.faqSection) return null;
 
@@ -28,7 +30,7 @@ export function SEOFAQ() {
 
   return (
     <section id="seo-faq-layer" className="w-full py-16 px-6 bg-transparent border-t border-white/5">
-      <div className="max-w-7xl mx-auto text-left opacity-[0.02] blur-[2.5px] hover:opacity-100 hover:blur-none transition-all duration-1000 select-none hover:select-text">
+      <div className={`max-w-7xl mx-auto text-left transition-all duration-1000 ${isAdmin ? 'opacity-100 blur-none select-text' : 'opacity-[0.02] blur-[2.5px] hover:opacity-100 hover:blur-none select-none hover:select-text'}`}>
         <h4 className="text-[10px] font-mono text-mafia-gold uppercase tracking-[0.4em] mb-8 flex items-center gap-2">
           <span className="w-2 h-2 bg-mafia-gold animate-pulse"></span>
           {t.faqSection.title}

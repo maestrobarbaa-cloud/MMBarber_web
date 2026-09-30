@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { getFeedbackAdminAction } from "@/app/actions/feedback";
 import { getCooperationAdminAction } from "@/app/actions/cooperation";
+import { getReservations } from "@/app/admin/produkty/actions";
 import { motion } from "framer-motion";
 import { 
   ShieldCheck, 
@@ -45,6 +46,7 @@ export default function AdminDashboardPage() {
   const [newSpolupraceCount, setNewSpolupraceCount] = useState(0);
   const [newSinSlavyCount, setNewSinSlavyCount] = useState(0);
   const [newChatCount, setNewChatCount] = useState(0);
+  const [newProductsReservationsCount, setNewProductsReservationsCount] = useState(0);
 
   const ADMIN_PASSWORD = "MAFIA_PROTOCOL_737";
 
@@ -130,6 +132,11 @@ export default function AdminDashboardPage() {
             setNewVouchersCount(parsed.filter((r: any) => r.status === 'new').length);
           } catch (e) {}
         }
+
+        try {
+          const res = await getReservations();
+          setNewProductsReservationsCount(res.filter(r => r.status === 'NEW').length);
+        } catch(e) {}
 
       } catch (e) {
         console.error("Failed to fetch counts", e);
@@ -239,6 +246,16 @@ export default function AdminDashboardPage() {
       icon: <Scissors className="text-mafia-gold" size={40} />,
       link: '/admin/barberi',
       color: 'rgba(var(--color-mafia-gold-rgb), 0.3)'
+    },
+    {
+      id: 'produkty',
+      title: 'SPRÁVA PRODUKTŮ',
+      subtitle: 'PRODUCT_MANAGEMENT',
+      desc: 'Přidávání a úprava produktů zobrazených na webu (fotky, ceny, hodnocení).',
+      icon: <Briefcase className="text-mafia-gold" size={40} />,
+      link: '/admin/produkty',
+      color: 'rgba(var(--color-mafia-gold-rgb), 0.2)',
+      badge: newProductsReservationsCount > 0 ? newProductsReservationsCount : undefined
     },
     {
       id: 'rezervace',

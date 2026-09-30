@@ -4,6 +4,13 @@ import { useEffect } from 'react';
 
 export function AntiTheft() {
   useEffect(() => {
+    // Pokud je uživatel admin, ochrana proti kopírování a nástrojům se vypne
+    const isAdmin = sessionStorage.getItem("mmbarber_admin_auth") === "true";
+    if (isAdmin) {
+      document.documentElement.classList.add('admin-mode-active');
+      return;
+    }
+
     // 1. Zamezení pravého kliku (Kontextové menu)
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -58,6 +65,7 @@ export function AntiTheft() {
       document.removeEventListener('contextmenu', handleContextMenu);
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('dragstart', handleDragStart);
+      document.documentElement.classList.remove('admin-mode-active');
     };
   }, []);
 

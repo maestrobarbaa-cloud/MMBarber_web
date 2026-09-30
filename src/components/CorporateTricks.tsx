@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, X, AlertTriangle } from "lucide-react";
 import { playSound } from "@/utils/audio";
@@ -33,6 +34,9 @@ export function CorporateTricks() {
   });
   const [isRadioActive, setIsRadioActive] = useState(false);
 
+  const [productsData, setProductsData] = useState<any[]>([]);
+  const pathname = usePathname();
+
   useEffect(() => {
     const handleUpdate = () => {
       setIsHidden(localStorage.getItem("mmbarber_hide_hot_activity") === "true");
@@ -51,52 +55,80 @@ export function CorporateTricks() {
     };
   }, []);
 
+  useEffect(() => {
+    if (pathname === '/produkty') {
+      import('@/app/admin/produkty/actions').then(({ getProducts }) => {
+        getProducts().then(data => setProductsData(data || []));
+      });
+    }
+  }, [pathname]);
+
   // 1. Social Proof (Booking.com style Toast)
   useEffect(() => {
     if (isHidden) return;
     // Generate a random booking toast every few minutes
 
     const triggerToast = () => {
-      const validBarbers = barbers?.filter(b => !b.missionFailed && b.id !== 'nella' && b.name?.toLowerCase() !== 'nella') || [];
-      const activeBarbers = validBarbers.length > 0 ? validBarbers : [{ name: "Tomáš" }];
-      const barber = activeBarbers[Math.floor(Math.random() * activeBarbers.length)].name;
-      
-      // Pokusíme se načíst reálné město uživatele, pokud ho systém dříve zjistil podle IP
-      const realCity = localStorage.getItem("mmbarber_geo_city");
-      
-      let city = LOCAL_CITIES[Math.floor(Math.random() * LOCAL_CITIES.length)];
-      const rand = Math.random();
-      
-      // 30% šance, že použijeme reálné město uživatele pro maximální FOMO efekt
-      if (realCity && rand > 0.70) {
-        city = realCity;
-      } else if (rand > 0.98) {
-        city = "Prahy";
-      } else if (rand > 0.95) {
-        city = "Brna";
+      let msg = "";
+
+      if (pathname === '/produkty' && productsData.length > 0) {
+        // Find auctions or discounts
+        const hotProducts = productsData.filter(p => p.isAuction || (p.discountPrice && p.price && p.discountPrice < p.price));
+        if (hotProducts.length > 0) {
+          const product = hotProducts[Math.floor(Math.random() * hotProducts.length)];
+          const numPeople = Math.floor(Math.random() * 4) + 2; // 2 to 5
+
+          if (product.isAuction) {
+            msg = `Právě teď ${numPeople} lidé sledují nebo přihazují v aukci na produkt ${product.name}!`;
+          } else {
+            msg = `O produkt ${product.name} ve slevě je velký zájem. Právě si ho prohlíží ${numPeople} zákazníků!`;
+          }
+        }
       }
 
-      const numPeople = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3
-      let messages = [];
+      // Fallback to normal barber messages if no msg was set
+      if (!msg) {
+        const validBarbers = barbers?.filter(b => !b.missionFailed && b.id !== 'nella' && b.name?.toLowerCase() !== 'nella') || [];
+        const activeBarbers = validBarbers.length > 0 ? validBarbers : [{ name: "Tomáš" }];
+        const barber = activeBarbers[Math.floor(Math.random() * activeBarbers.length)].name;
+        
+        // Pokusíme se načíst reálné město uživatele, pokud ho systém dříve zjistil podle IP
+        const realCity = localStorage.getItem("mmbarber_geo_city");
+        
+        let city = LOCAL_CITIES[Math.floor(Math.random() * LOCAL_CITIES.length)];
+        const rand = Math.random();
+        
+        // 30% šance, že použijeme reálné město uživatele pro maximální FOMO efekt
+        if (realCity && rand > 0.70) {
+          city = realCity;
+        } else if (rand > 0.98) {
+          city = "Prahy";
+        } else if (rand > 0.95) {
+          city = "Brna";
+        }
 
-      if (numPeople > 1) {
-        messages = [
-          `Právě teď si ${numPeople} lidé z okolí ${city} prohlíží profil barbera ${barber}.`,
-          `Rezervační systém hlásí zvýšený zájem: ${numPeople} klienti z lokality ${city} hledají termín.`,
-          `Vidíme aktivitu: ${numPeople} lidé ze směru od ${city} právě otevřeli rezervační systém.`,
-          `Náš algoritmus detekoval ${numPeople} uživatele z ${city}, kteří právě tvoří rezervaci.`
-        ];
-      } else {
-        messages = [
-          `Někdo z okolí ${city} si právě prohlíží profil barbera ${barber}.`,
-          `Návštěvník z lokality ${city} zrovna zkoumá naše služby.`,
-          `Někdo ze směru od ${city} právě otevřel rezervační kalendář.`,
-          `Další zájemce z okolí ${city} zvažuje audienci u barbera ${barber}.`,
-          `Zaznamenán pohyb v kalendáři od klienta z ${city}.`
-        ];
+        const numPeople = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3
+        let messages = [];
+
+        if (numPeople > 1) {
+          messages = [
+            `Právě teď si ${numPeople} lidé z okolí ${city} prohlíží profil barbera ${barber}.`,
+            `Rezervační systém hlásí zvýšený zájem: ${numPeople} klienti z lokality ${city} hledají termín.`,
+            `Vidíme aktivitu: ${numPeople} lidé ze směru od ${city} právě otevřeli rezervační systém.`,
+            `Náš algoritmus detekoval ${numPeople} uživatele z ${city}, kteří právě tvoří rezervaci.`
+          ];
+        } else {
+          messages = [
+            `Někdo z okolí ${city} si právě prohlíží profil barbera ${barber}.`,
+            `Návštěvník z lokality ${city} zrovna zkoumá naše služby.`,
+            `Někdo ze směru od ${city} právě otevřel rezervační kalendář.`,
+            `Další zájemce z okolí ${city} zvažuje audienci u barbera ${barber}.`,
+            `Zaznamenán pohyb v kalendáři od klienta z ${city}.`
+          ];
+        }
+        
+        msg = messages[Math.floor(Math.random() * messages.length)];
       }
-      
-      const msg = messages[Math.floor(Math.random() * messages.length)];
 
       setToast({ message: msg, visible: true });
       playSound("/sounds/notification.mp3", 0.3);

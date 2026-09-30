@@ -41,6 +41,13 @@ const DIALOGUES: Message[][] = [
   ],
   [
     { name: "BARBER_AI", text: "Vše pod kontrolou. Jen relaxujte. AI_SYSTEM se postará o zbytek." }
+  ],
+  [
+    { name: "BARBER_AI", text: "Dotaz na platební metody? Preferujeme hotovost nebo okamžité QR platby." },
+    { name: "BARBER_AI", text: "Přijímáme i platební karty, ale je účtována drobná přirážka. Doporučujeme QR." }
+  ],
+  [
+    { name: "BARBER_AI", text: "Potřebujete být neustále online? Vysokorychlostní Wi-Fi je pro naše klienty plně k dispozici." }
   ]
 ];
 

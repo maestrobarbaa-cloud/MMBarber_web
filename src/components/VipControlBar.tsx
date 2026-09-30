@@ -174,6 +174,7 @@ export function VipControlBar() {
     { id: 'noirred', label: 'Hot' },
     { id: 'chaos', label: 'Chaos' },
     { id: 'czech', label: 'CZECH' },
+    { id: 'slovacko', label: 'SLOVÁCKO' },
     { id: 'friday13', label: 'FRIDAY 13' },
     { id: 'secret', label: 'SECRET' },
     { id: 'legacy', label: 'LEGACY' }

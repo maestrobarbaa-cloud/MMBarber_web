@@ -37,7 +37,7 @@ html.noir-mode body {
 }
 
 /* ANTI-COPY & PROTECTION MEASURES */
-html, body {
+html:not(.admin-mode-active), html:not(.admin-mode-active) body {
   user-select: none !important;
   -webkit-user-select: none !important;
   -moz-user-select: none !important;
@@ -1417,4 +1417,19 @@ html.lite-mode-active .animate-pulse {
 .section-optimize {
   content-visibility: auto;
   contain-intrinsic-size: auto 800px;
+}
+
+
+/* Enable selection for admins */
+html.admin-mode-active, html.admin-mode-active body {
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+  -moz-user-select: auto !important;
+  -ms-user-select: auto !important;
+}
+
+
+/* Slovacko Event Override */
+html.slovacko-active footer {
+  background-color: #0b2242 !important;
 }

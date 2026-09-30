@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Terminal, Lock, Unlock, Database, Activity } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
+import { useGame } from "../contexts/GameContext";
 
 interface BottomTerminalRevealProps {
   children: (unlockLevel: number) => React.ReactNode;
@@ -14,6 +15,7 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
   const [unlockLevel, setUnlockLevel] = useState(0); // 0: Locked, 1-4: Stages, 5: Fully Unlocked
   const [overscrollProgress, setOverscrollProgress] = useState(0);
   const { lang } = useTranslation();
+  const { isAdmin } = useGame();
   
   const STAGE_1_THRESHOLD = 3000 * thresholdMultiplier;
   const STAGE_2_THRESHOLD = 5000 * thresholdMultiplier;
@@ -88,6 +90,8 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
         }
     }, 100);
 
+    if (!isAdmin) return; // Do not attach scroll listeners for normal users
+
     window.addEventListener("wheel", handleWheel, { passive: true });
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: true });
@@ -97,22 +101,25 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
         window.removeEventListener("touchmove", handleTouchMove);
         clearInterval(timer);
     };
-  }, [unlockLevel]);
+  }, [unlockLevel, isAdmin]);
+
+  // For normal users, always keep it locked (0). For admin, always fully unlocked (5).
+  const effectiveUnlockLevel = isAdmin ? 5 : 0;
 
   return (
     <div className="relative w-full">
-      {!unlockLevel && (
+      {!effectiveUnlockLevel && (
         <div className="w-full h-12 pointer-events-none" aria-hidden="true" />
       )}
 
       <motion.div
         initial={{ opacity: 0, filter: "blur(20px)", y: 20 }}
-        animate={unlockLevel >= 1 ? { opacity: 1, filter: "blur(0px)", y: 0 } : { opacity: 0, filter: "blur(20px)", y: 20 }}
+        animate={effectiveUnlockLevel >= 1 ? { opacity: 1, filter: "blur(0px)", y: 0 } : { opacity: 0, filter: "blur(20px)", y: 20 }}
         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-        className={unlockLevel === 0 ? "pointer-events-none select-none h-0 overflow-hidden" : "w-full"}
+        className={effectiveUnlockLevel === 0 ? "pointer-events-none select-none h-0 overflow-hidden" : "w-full"}
       >
         <div className="relative">
-          {children(unlockLevel)}
+          {children(effectiveUnlockLevel)}
         </div>
       </motion.div>
     </div>

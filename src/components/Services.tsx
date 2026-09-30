@@ -39,7 +39,7 @@ export function Services() {
   const [showMembers, setShowMembers] = useState(false);
   const [showSupport, setShowSupport] = useState(false);
   const [showVouchers, setShowVouchers] = useState(false);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [graphicsTier, setGraphicsTier] = useState<string>("high");
 
   useEffect(() => {
@@ -102,6 +102,15 @@ export function Services() {
         iconMobile: <Target className="text-mafia-gold group-hover:brightness-125 transition-all duration-500" size={32} />,
         description: lang === 'cs' ? 'CENÍK A REZERVACE' : (lang === 'zh' ? '价格与预约' : 'PRICING & BOOKING'),
         onClick: () => { router.push('/cenik'); trackEvent("open_pricing_menu"); }
+      },
+      { 
+        id: 'products',
+        title: lang === 'cs' ? 'PRODUKTY' : (lang === 'zh' ? '产品' : 'PRODUCTS'),
+        titleMobile: lang === 'cs' ? 'PRODUKTY' : (lang === 'zh' ? '产品' : 'PRODUCTS'),
+        icon: <Star size={48} className="text-mafia-gold" />,
+        iconMobile: <Star size={32} className="text-mafia-gold" />,
+        description: lang === 'cs' ? 'NAŠE VYBRANÉ PRODUKTY' : (lang === 'zh' ? '我们精选的产品' : 'OUR SELECTED PRODUCTS'),
+        onClick: () => { router.push('/produkty'); trackEvent("open_products_page"); }
       },
       { 
         id: 'vouchers',
@@ -272,17 +281,17 @@ export function Services() {
               total={arr.length}
               onHover={() => {
                 if (window.innerWidth >= 1024) {
-                   setHoveredIndex(idx);
+                   setHoveredId(card.id);
                    playCardSound();
                 }
               }}
               onHoverEnd={() => {
                 if (window.innerWidth >= 1024) {
-                   setHoveredIndex(null);
+                   setHoveredId(null);
                 }
               }}
-              active={hoveredIndex === idx}
-              isAnyHovered={hoveredIndex !== null}
+              active={hoveredId === card.id}
+              isAnyHovered={hoveredId !== null}
             />
           ))}
         </div>
@@ -330,13 +339,13 @@ export function Services() {
               total={arr.length}
               onHover={() => {
                 if (window.innerWidth >= 1024) {
-                   setHoveredIndex(idx + 2); // offset index for hovered state so it doesn't conflict with main cards
+                   setHoveredId(card.id);
                    playCardSound();
                 }
               }}
-              onHoverEnd={() => setHoveredIndex(null)}
-              active={hoveredIndex === (idx + 2)}
-              isAnyHovered={hoveredIndex !== null}
+              onHoverEnd={() => setHoveredId(null)}
+              active={hoveredId === card.id}
+              isAnyHovered={hoveredId !== null}
             />
           ))}
         </div>

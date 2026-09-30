@@ -53,6 +53,7 @@ export interface DbSchema {
   support_calls: any[];
   rodina_divisions: any[];
   rodina_members: any[];
+  bot_logs: any[];
 }
 
 const defaultDb: DbSchema = {
@@ -92,7 +93,8 @@ const defaultDb: DbSchema = {
   support_messages: [],
   support_calls: [],
   rodina_divisions: [],
-  rodina_members: []
+  rodina_members: [],
+  bot_logs: []
 };
 
 let memDb: DbSchema | null = null;

@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Radio,
   X,
-  Lock
+  Lock,
+  LayoutGrid
 } from "lucide-react";
 import { useGame } from "@/contexts/GameContext";
 
@@ -45,11 +46,14 @@ export default function NastaveniRozcestnik() {
   const isWidgetsUnlocked = settingsXp >= calculateXpForLevel(15);
   const isAppearanceUnlocked = settingsXp >= calculateXpForLevel(30);
 
+  const [desktopModeEnabled, setDesktopModeEnabled] = useState(false);
+
   useEffect(() => {
     const readSound = () => {
       setSoundEnabled(localStorage.getItem("mmbarber_sound_enabled") === "true");
     };
     readSound();
+    setDesktopModeEnabled(localStorage.getItem("mmbarber_desktop_mode") === "true");
     
     // Listen for remote updates
     window.addEventListener("mmbarber-sound-update-remote", readSound);
@@ -62,6 +66,13 @@ export default function NastaveniRozcestnik() {
     localStorage.setItem("mmbarber_sound_enabled", String(nextState));
     window.dispatchEvent(new CustomEvent('mmbarber-sound-update', { detail: nextState }));
     window.dispatchEvent(new Event('mmbarber-sound-update-remote'));
+  };
+
+  const handleDesktopToggle = () => {
+    const nextState = !desktopModeEnabled;
+    setDesktopModeEnabled(nextState);
+    localStorage.setItem("mmbarber_desktop_mode", String(nextState));
+    window.dispatchEvent(new CustomEvent('mmbarber-desktop-mode-update', { detail: nextState }));
   };
 
   const handleGraphicsOpen = () => {
@@ -295,6 +306,42 @@ export default function NastaveniRozcestnik() {
             <h2 className="text-lg font-heading font-bold text-white uppercase tracking-wider mb-2">MMBarber Rádio</h2>
             <p className="text-sm font-mono text-white/40 leading-relaxed group-hover:text-white/60 transition-colors">
               {isAudioUnlocked ? "Spustit nebo zastavit exkluzivní výběr hudby." : "Pro odemčení pokračuj v Postupu - kapitola Nastavení webu."}
+            </p>
+          </motion.button>
+
+          {/* 6. Desktop Mode (Režim Plochy) */}
+          <motion.button
+            onClick={handleDesktopToggle}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className={`group relative flex flex-col text-left p-6 border transition-all duration-300 overflow-hidden ${
+              desktopModeEnabled
+                ? "border-mafia-gold/30 bg-mafia-gold/10"
+                : "border-white/10 bg-white/5 hover:bg-white/10"
+            }`}
+          >
+            {desktopModeEnabled && (
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-mafia-gold to-transparent opacity-70" />
+            )}
+            <div className="flex justify-between items-start mb-4">
+              <div className={`p-3 rounded-sm transition-colors relative ${desktopModeEnabled ? "bg-mafia-gold/20" : "bg-white/10"}`}>
+                <LayoutGrid size={24} className={desktopModeEnabled ? "text-mafia-gold" : "text-white/50"} />
+              </div>
+              
+              <div className="relative w-12 h-6 rounded-full bg-black/50 border border-white/10 flex items-center px-1">
+                <motion.div
+                  animate={{ x: desktopModeEnabled ? 24 : 0 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  className={`w-4 h-4 rounded-full ${desktopModeEnabled ? "bg-mafia-gold" : "bg-white/30"}`}
+                />
+              </div>
+            </div>
+            <h2 className="text-lg font-heading font-bold text-white uppercase tracking-wider mb-2">Režim Plochy</h2>
+            <p className="text-sm font-mono text-white/40 leading-relaxed">
+              Stav: <span className={desktopModeEnabled ? "text-mafia-gold font-bold" : "text-white/50"}>{desktopModeEnabled ? "ZAPNUTO" : "VYPNUTO"}</span>
+              <br/>
+              <span className="text-xs opacity-60">Změní hlavní stranu na interaktivní Windows plochu.</span>
             </p>
           </motion.button>
 

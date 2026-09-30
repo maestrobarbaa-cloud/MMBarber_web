@@ -23,6 +23,7 @@ const Partners = dynamic(() => import("@/components/Partners").then(mod => mod.P
 const Footer = dynamic(() => import("@/components/Footer").then(mod => mod.Footer), { ssr: false, loading: () => <LoadingSkeleton /> });
 const StyleDefinition = dynamic(() => import("@/components/StyleDefinition").then(mod => mod.StyleDefinition), { ssr: false, loading: () => <LoadingSkeleton /> });
 const SEOFAQ = dynamic(() => import("@/components/SEOFAQ").then(mod => mod.SEOFAQ), { ssr: false, loading: () => <LoadingSkeleton /> });
+const AdvancedSEOEngine = dynamic(() => import("@/components/AdvancedSEOEngine").then(mod => mod.AdvancedSEOEngine), { ssr: false, loading: () => <LoadingSkeleton /> });
 const BottomTerminalReveal = dynamic(() => import("@/components/BottomTerminalReveal").then(mod => mod.BottomTerminalReveal), { ssr: false, loading: () => <LoadingSkeleton /> });
 const FooterSecrets = dynamic(() => import("@/components/FooterSecrets").then(mod => mod.FooterSecrets), { ssr: false, loading: () => <LoadingSkeleton /> });
 const RegionalSEOCloud = dynamic(() => import("@/components/RegionalSEOCloud").then(mod => mod.RegionalSEOCloud), { ssr: false, loading: () => <LoadingSkeleton /> });
@@ -32,6 +33,7 @@ const PersonalVision = dynamic(() => import("@/components/PersonalVision").then(
 const GlobalIntelligenceArchive = dynamic(() => import("@/components/GlobalIntelligenceArchive").then(mod => mod.GlobalIntelligenceArchive), { ssr: false, loading: () => <LoadingSkeleton /> });
 const GroomingGuideArchive = dynamic(() => import("@/components/GroomingGuideArchive").then(mod => mod.GroomingGuideArchive), { ssr: false, loading: () => <LoadingSkeleton /> });
 const DailyIntelligence = dynamic(() => import("@/components/DailyIntelligence").then(mod => mod.DailyIntelligence), { ssr: false, loading: () => <LoadingSkeleton /> });
+const DesktopView = dynamic(() => import("@/components/DesktopView").then(mod => mod.DesktopView), { ssr: false });
 
 import { CinematicIntro } from "@/components/Intro";
 import { CinematicSequence737 } from "@/components/CinematicSequence737";
@@ -39,6 +41,7 @@ import { MafiaClickEffects } from "@/components/MafiaClickEffects";
 import { HiddenSeoArchive } from '@/components/HiddenSEOArchive';
 import { useTranslation } from "@/hooks/useTranslation";
 import { RecruitmentNotification } from "@/components/RecruitmentNotification";
+import { SlovackoEvent } from "@/components/SlovackoEvent";
 
 // SectionReveal defined outside to prevent re-initialization on parent render
 const SectionReveal = ({ children, delay = 0, isMobile, isMobileEffectsEnabled }: { children: React.ReactNode, delay?: number, isMobile: boolean, isMobileEffectsEnabled: boolean }) => {
@@ -67,8 +70,11 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
   const [visibility, setVisibility] = useState<Record<string, boolean>>({});
+  const [isDesktopMode, setIsDesktopMode] = useState(false);
 
   useEffect(() => {
+    setIsDesktopMode(localStorage.getItem("mmbarber_desktop_mode") === "true");
+    
     // Fetch global visibility settings
     const fetchVisibility = async () => {
       try {
@@ -115,8 +121,18 @@ export default function Home() {
 
   const isVisible = (key: string) => visibility[key] ?? true;
 
+  if (isDesktopMode) {
+    return (
+      <div className="flex flex-col min-h-screen relative">
+        <MafiaClickEffects />
+        <DesktopView />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen relative">
+      <SlovackoEvent />
       <MafiaClickEffects />
       <RecruitmentNotification />
       
@@ -205,9 +221,10 @@ export default function Home() {
             </div>
             
             {!isMobile && (
-              <BottomTerminalReveal thresholdMultiplier={100}>
-                {(level) => isVisible('visibility_intelligence') ? (
-                  <div className="w-full flex flex-col gap-12 pb-32">
+              <div className="relative z-[60] bg-black">
+                <BottomTerminalReveal thresholdMultiplier={100}>
+                  {(level) => isVisible('visibility_intelligence') ? (
+                    <div className="w-full flex flex-col gap-12 pb-32">
                     {level >= 1 && (
                       <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
                         <div className="max-w-4xl mx-auto px-6"><DailyIntelligence /></div>
@@ -218,7 +235,7 @@ export default function Home() {
                       <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
                         <div className="w-full flex flex-col gap-12">
                           <FooterSecrets />
-                          <RegionalSEOCloud />
+                          <AdvancedSEOEngine />
                         </div>
                       </SectionReveal>
                     )}
@@ -226,7 +243,6 @@ export default function Home() {
                     {level >= 3 && (
                       <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
                         <div className="w-full flex flex-col gap-12">
-                          <SEOFAQ />
                           {isVisible('visibility_reviews') && <GoogleReviewsWall />}
                         </div>
                       </SectionReveal>
@@ -235,7 +251,6 @@ export default function Home() {
                     {level >= 4 && (
                       <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
                         <div className="w-full flex flex-col gap-12">
-                          <GlobalIntelligenceArchive />
                           <OperationalJournal />
                         </div>
                       </SectionReveal>
@@ -244,14 +259,14 @@ export default function Home() {
                     {level >= 5 && (
                       <SectionReveal isMobile={isMobile} isMobileEffectsEnabled={isMobileEffectsEnabled}>
                         <div className="w-full flex flex-col gap-12">
-                          <GroomingGuideArchive />
                           <PersonalVision />
                         </div>
                       </SectionReveal>
                     )}
                   </div>
                 ) : <div className="pb-32"></div>}
-              </BottomTerminalReveal>
+                </BottomTerminalReveal>
+              </div>
             )}
           </motion.div>
         )}
