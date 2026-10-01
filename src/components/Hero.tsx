@@ -147,7 +147,52 @@ export function Hero() {
       let slogans = t.hero.description;
       let baseSlogans = (translations.cs as any).hero.description;
       
-      if (hour >= 19 && hour <= 23) {
+      if (atmosphereOverride === 'sakura') {
+        slogans = ["桜の美しさ", "永遠の優雅さ", "春の目覚め", "完璧な瞬間", "自然の調和"];
+        baseSlogans = ["Krása sakury", "Věčná elegance", "Jarní probuzení", "Dokonalý okamžik", "Harmonie přírody"];
+      } else if (atmosphereOverride === 'cny' || atmosphereOverride === 'c.n.y') {
+        slogans = ["新年快乐", "恭喜发财", "龙马精神", "万事如意", "岁岁平安"];
+        baseSlogans = ["Šťastný nový rok", "Ať se vám daří", "Síla a vitalita", "Vše podle vašich představ", "Klid a mír po celé roky"];
+      } else if (atmosphereOverride === 'national-cz' || atmosphereOverride === 'czech') {
+        slogans = ["Národní hrdost", "Český lev", "Zlaté české ručičky", "Pravda vítězí", "Tradice a kvalita"];
+        baseSlogans = ["Národní hrdost", "Český lev", "Zlaté české ručičky", "Pravda vítězí", "Tradice a kvalita"];
+      } else if (atmosphereOverride === 'national-sk') {
+        slogans = ["Slovenská hrdosť", "Tatranský orol", "Srdce Európy", "Bratia a sestry", "Kvalita bez kompromisov"];
+        baseSlogans = ["Slovenská hrdost", "Tatranský orel", "Srdce Evropy", "Bratři a sestry", "Kvalita bez kompromisů"];
+      } else if (atmosphereOverride === 'national-usa') {
+        slogans = ["American Dream", "Liberty and Style", "Unstoppable", "Born to Lead", "Ultimate Precision"];
+        baseSlogans = ["Americký sen", "Svoboda a styl", "Nezastavitelný", "Zrozen k vedení", "Absolutní přesnost"];
+      } else if (atmosphereOverride === 'national-uk') {
+        slogans = ["Royal Elegance", "British Heritage", "Keep Calm and Shave", "London Style", "God Save the King"];
+        baseSlogans = ["Královská elegance", "Britské dědictví", "Zachovej klid a hol se", "Londýnský styl", "Bůh ochraňuj krále"];
+      } else if (atmosphereOverride === 'national-de') {
+        slogans = ["Deutsche Präzision", "Perfektion", "Einigkeit und Recht", "Meisterwerk", "Kraft und Stil"];
+        baseSlogans = ["Německá preciznost", "Dokonalost", "Jednota a právo", "Mistrovské dílo", "Síla a styl"];
+      } else if (atmosphereOverride === 'national-at') {
+        slogans = ["Alpen Eleganz", "Wiener Charme", "Tradition trifft Moderne", "Kaiserlicher Stil", "Gipfel der Perfektion"];
+        baseSlogans = ["Alpská elegance", "Vídeňský šarm", "Tradice potkává modernu", "Císařský styl", "Vrchol dokonalosti"];
+      } else if (atmosphereOverride === 'national-it') {
+        slogans = ["Eleganza senza tempo", "Stile perfetto", "L'arte del barbiere", "Passione Italiana", "La Dolce Vita"];
+        baseSlogans = ["Nadčasová elegance", "Dokonalý styl", "Umění holiče", "Italská vášeň", "Sladký život"];
+      } else if (atmosphereOverride === 'national-ch') {
+        slogans = ["Schweizer Präzision", "Gipfelstürmer", "Zeitlose Qualität", "Alpen Kraft", "Meisterklasse"];
+        baseSlogans = ["Švýcarská přesnost", "Dobyvatel vrcholů", "Nadčasová kvalita", "Alpská síla", "Mistrovská třída"];
+      } else if (atmosphereOverride === 'national-es') {
+        slogans = ["Pasión y Estilo", "Fuego Ibérico", "Arte de Sangre", "Elegancia Pura", "Viva la Vida"];
+        baseSlogans = ["Vášeň a styl", "Iberský oheň", "Krevní umění", "Čistá elegance", "Ať žije život"];
+      } else if (atmosphereOverride === 'national-ca') {
+        slogans = ["True North Strong", "Maple Elegance", "Winter Warrior", "Canadian Pride", "Wild and Free"];
+        baseSlogans = ["Silný pravý sever", "Javorová elegance", "Zimní válečník", "Kanadská hrdost", "Divoký a svobodný"];
+      } else if (atmosphereOverride === 'national-tr') {
+        slogans = ["Osmanlı Ruhu", "İstanbul Tarzı", "Mükemmeliyet", "Sonsuz Güç", "Kardeşlik"];
+        baseSlogans = ["Osmanský duch", "Istanbulský styl", "Dokonalost", "Nekonečná síla", "Bratrství"];
+      } else if (atmosphereOverride === 'national-ru') {
+        slogans = ["Русская сила", "Холодная сталь", "Имперский стиль", "Величие", "Сибирский характер"];
+        baseSlogans = ["Ruská síla", "Chladná ocel", "Imperiální styl", "Velikost", "Sibiřský charakter"];
+      } else if (atmosphereOverride === 'investor') {
+        slogans = ["Return on Investment", "Next-Gen Franchise", "Join the Elite", "Global Expansion", "The Future of Grooming"];
+        baseSlogans = ["Návratnost investice", "Franšíza nové generace", "Připojte se k elitě", "Globální expanze", "Budoucnost holičství"];
+      } else if (hour >= 19 && hour <= 23) {
         slogans = t.hero.nightSlogans || slogans;
         baseSlogans = (translations.cs as any).hero.nightSlogans || baseSlogans;
       } else if (hour >= 0 && hour < 6) {
@@ -196,7 +241,7 @@ export function Hero() {
       window.removeEventListener('mmbarber-mobile-effects-update', handleMobileEffectsUpdate as EventListener);
       clearInterval(sloganInterval);
     };
-  }, [t.hero.description, t.hero.easterEggSlogans, t.hero.nightSlogans, t.hero.deepNightSlogans, lang]);
+  }, [t.hero.description, t.hero.easterEggSlogans, t.hero.nightSlogans, t.hero.deepNightSlogans, lang, atmosphereOverride, graphicsTier]);
 
   useEffect(() => {
     // Sync with Dev Menu
@@ -319,6 +364,7 @@ export function Hero() {
   }, []);
 
   const heroImage = 
+    atmosphereOverride === 'halloween' ? "/obr/halloween.png" :
     atmosphereOverride === 'slovacko' ? "/obr/slovácko.png" :
     lang === 'zh' ? "/obr/cina.png" :
     (activeHero === 1 ? "/obr/main-hero.png" : 
@@ -326,6 +372,29 @@ export function Hero() {
     "/obr/hero-3.png");
 
   const isBloodImage = isBloodMode;
+
+  let translatedBookBtn = t.hero.bookBtn;
+  if (atmosphereOverride === 'national-cz' || atmosphereOverride === 'czech' || atmosphereOverride === 'national-sk') {
+    translatedBookBtn = "REZERVOVAT";
+  } else if (atmosphereOverride === 'national-usa' || atmosphereOverride === 'national-uk' || atmosphereOverride === 'national-ca') {
+    translatedBookBtn = "BOOK NOW";
+  } else if (atmosphereOverride === 'national-de' || atmosphereOverride === 'national-at' || atmosphereOverride === 'national-ch') {
+    translatedBookBtn = "RESERVIEREN";
+  } else if (atmosphereOverride === 'national-it') {
+    translatedBookBtn = "PRENOTA";
+  } else if (atmosphereOverride === 'national-es') {
+    translatedBookBtn = "RESERVAR";
+  } else if (atmosphereOverride === 'national-ru') {
+    translatedBookBtn = "ЗАБРОНИРОВАТЬ";
+  } else if (atmosphereOverride === 'national-tr') {
+    translatedBookBtn = "REZERVASYON YAP";
+  } else if (atmosphereOverride === 'sakura') {
+    translatedBookBtn = "予約する";
+  } else if (atmosphereOverride === 'cny' || atmosphereOverride === 'c.n.y') {
+    translatedBookBtn = "立即预订";
+  } else if (atmosphereOverride === 'investor') {
+    translatedBookBtn = "BECOME A PARTNER";
+  }
 
   return (
     <section id="hero" data-no-click-effect="true" className="relative w-full min-h-[100dvh] xl:min-h-screen flex flex-col items-center justify-start xl:justify-center px-0 xl:px-4 pt-28 xl:pt-28 pb-0 overflow-x-hidden">
@@ -480,7 +549,7 @@ export function Hero() {
                   fill
                   sizes="100vw"
                   quality={graphicsTier === 'ultra' ? 100 : graphicsTier === 'high' ? 90 : 75}
-                  className={`absolute inset-0 w-full h-full object-cover xl:object-cover ${['slovacko', 'c.n.y', 'cny'].includes(atmosphereOverride as string) ? 'object-top' : 'object-center'} ${(isBloodMode && !['slovacko', 'c.n.y', 'cny'].includes(atmosphereOverride as string)) ? 'hero-blood-img' : ''}`}
+                  className={`absolute inset-0 w-full h-full object-cover xl:object-cover ${['slovacko'].includes(atmosphereOverride as string) ? 'object-top' : ['c.n.y', 'cny'].includes(atmosphereOverride as string) ? 'object-[center_20%]' : 'object-center'} ${(isBloodMode && !['slovacko', 'c.n.y', 'cny'].includes(atmosphereOverride as string)) ? 'hero-blood-img' : ''}`}
                 />
                 {/* Overlay Gradient - Minimized for absolute maximum clarity and vibrant colors */}
                 <div className={`absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/75 z-1 opacity-100`} />
@@ -554,7 +623,7 @@ export function Hero() {
             >
               <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
               <span className={`relative z-10 ${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold'} font-sans text-sm sm:text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center`} style={{ textShadow: isBloodImage ? "0 0 10px rgba(139,0,0,0.4)" : "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
-                {t.hero.bookBtn}
+                {translatedBookBtn}
               </span>
             </motion.a>
           </div>
@@ -774,7 +843,7 @@ export function Hero() {
               >
                 <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
                 <span className={`relative z-10 ${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold'} font-sans text-lg uppercase tracking-[0.3em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center`} style={{ textShadow: isBloodImage ? "0 0 10px rgba(139,0,0,0.4)" : "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
-                  {t.hero.bookBtn}
+                  {translatedBookBtn}
                 </span>
               </motion.a>
           </AnimatePresence>

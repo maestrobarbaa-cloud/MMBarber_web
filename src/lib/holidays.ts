@@ -23,7 +23,7 @@ function normalizeDate(date: Date): Date {
   return d;
 }
 
-export type ThemeType = 'default' | 'matrix' | 'valentine' | 'st-patricks' | 'halloween' | 'christmas' | 'newyear' | 'czech' | 'legacy' | 'easter' | 'friday13' | 'witches' | 'victory' | 'childrens-day' | 'winter' | 'cny' | 'spring' | 'may' | 'midsummer' | 'summer' | 'harvest' | 'allsouls' | 'silvestr' | 'sakura' | 'veterans';
+export type ThemeType = 'default' | 'matrix' | 'valentine' | 'st-patricks' | 'halloween' | 'christmas' | 'newyear' | 'czech' | 'legacy' | 'easter' | 'friday13' | 'witches' | 'victory' | 'childrens-day' | 'winter' | 'cny' | 'spring' | 'may' | 'midsummer' | 'summer' | 'harvest' | 'allsouls' | 'silvestr' | 'sakura' | 'veterans' | 'slovacko' | 'national-cz' | 'national-sk' | 'national-usa' | 'national-uk' | 'national-de' | 'national-at' | 'national-it' | 'national-ch' | 'national-es' | 'national-ca' | 'national-tr' | 'national-ru' | 'investor';
 
 /**
  * Returns the currently active theme based on the provided date (or today).
@@ -69,81 +69,100 @@ export function getActiveTheme(currentDate: Date = new Date()): ThemeType {
   }
 
   // St. Patrick's Day (March 17)
-  if (month === 3 && (day >= 16 && day <= 18)) {
+  if (month === 3 && day === 17) {
     return 'st-patricks';
   }
 
   // --- NEW SEASONAL CALENDAR ---
 
-  // Silvestr / New Year (Dec 30 - Jan 1)
-  if ((month === 12 && day >= 30) || (month === 1 && day === 1 && hour < 12)) {
+  // Silvestr / New Year (Dec 31 - Jan 1)
+  if ((month === 12 && day === 31) || (month === 1 && day === 1 && hour < 12)) {
     return 'silvestr';
   }
 
-  // Winter / Snow (Jan 2 - Jan 7)
-  if (month === 1 && day >= 2 && day <= 7) {
+  // Winter / Snow (Jan 2 - Jan 3)
+  if (month === 1 && (day === 2 || day === 3)) {
     return 'winter';
   }
 
-  // Chinese New Year (Approx. mid Feb, extended to Feb 1 - Feb 11)
-  if (month === 2 && day >= 1 && day <= 11) {
+  // Chinese New Year (Approx. exact date in Feb)
+  if (month === 2 && day === 6) {
     return 'cny';
   }
 
-  // Valentine's (Feb 12 - Feb 15)
-  if (month === 2 && day >= 12 && day <= 15) {
+  // Valentine's (Feb 14)
+  if (month === 2 && day === 14) {
     return 'valentine';
   }
   
-  // First Flowers / Spring (March 20 - March 24)
-  if (month === 3 && day >= 20 && day <= 24) {
+  // First Flowers / Spring (March 20)
+  if (month === 3 && day === 20) {
     return 'spring';
   }
 
-  // Witches' Night (Walpurgis) (Apr 29 - Apr 30 night)
-  if (month === 4 && (day === 29 || day === 30)) {
+  // Witches' Night (Walpurgis) (Apr 30)
+  if (month === 4 && day === 30) {
     return 'witches';
   }
 
-  // May / Sakura (May 1 - May 5)
-  if (month === 5 && day >= 1 && day <= 5) {
-    return 'may';
+  // May / Sakura (May 1)
+  if (month === 5 && day === 1) {
+    return 'sakura';
   }
 
-  // Midsummer (June 22 - June 25)
-  if (month === 6 && day >= 22 && day <= 25) {
+  // Midsummer (June 21)
+  if (month === 6 && day === 21) {
     return 'midsummer';
   }
 
-  // Summer / Lavender (July 15 - July 20)
-  if (month === 7 && day >= 15 && day <= 20) {
+  // Summer / Lavender (July 21)
+  if (month === 7 && day === 21) {
     return 'summer';
   }
 
-  // Harvest / Dozinky (Sept 1 - Sept 5)
-  if (month === 9 && day >= 1 && day <= 5) {
+  // Harvest / Dozinky (Sept 1)
+  if (month === 9 && day === 1) {
     return 'harvest';
   }
 
-  // Halloween (Oct 29 - Oct 31)
-  if (month === 10 && day >= 29 && day <= 31) {
+  // Slovacko - Slavnosti vína (Sept 7-9) a Hody (Oct 15-17)
+  if ((month === 9 && day >= 7 && day <= 9) || (month === 10 && day >= 15 && day <= 17)) {
+    return 'slovacko';
+  }
+
+  // Halloween (Oct 31)
+  if (month === 10 && day === 31) {
     return 'halloween';
   }
 
-  // All Souls / Dusicky (Nov 1 - Nov 3)
-  if (month === 11 && day >= 1 && day <= 3) {
+  // All Souls / Dusicky (Nov 2)
+  if (month === 11 && day === 2) {
     return 'allsouls';
   }
 
   // Veterans Day (Nov 11)
-  if (month === 11 && (day >= 10 && day <= 12)) {
+  if (month === 11 && day === 11) {
     return 'veterans';
   }
 
-  // Christmas (Dec 20 - Dec 26)
-  if (month === 12 && day >= 20 && day <= 26) {
+  // Christmas (Dec 24 - Dec 26)
+  if (month === 12 && day >= 24 && day <= 26) {
     return 'christmas';
   }
+
+  // --- NÁRODNÍ EVENTY ---
+  if (month === 10 && day === 28) return 'national-cz'; // ČR
+  if (month === 9 && day === 1) return 'national-sk';   // SR
+  if (month === 7 && day === 4) return 'national-usa';  // USA
+  if (month === 4 && day === 23) return 'national-uk';  // UK (St. George)
+  if (month === 10 && day === 3) return 'national-de';  // Německo
+  if (month === 10 && day === 26) return 'national-at'; // Rakousko
+  if (month === 6 && day === 2) return 'national-it';   // Itálie
+  if (month === 8 && day === 1) return 'national-ch';   // Švýcarsko
+  if (month === 10 && day === 12) return 'national-es'; // Španělsko
+  if (month === 7 && day === 1) return 'national-ca';   // Kanada
+  if (month === 10 && day === 29) return 'national-tr'; // Turecko
+  if (month === 6 && day === 12) return 'national-ru';  // Rusko
 
   // Czech National Holidays
   const isCzechHoliday = 

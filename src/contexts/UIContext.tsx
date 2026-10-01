@@ -81,7 +81,61 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
     if (savedFloatingItem) setFloatingItemOverride(savedFloatingItem);
 
     const savedAtmosphere = localStorage.getItem("mmbarber_atmosphere_override");
-    if (savedAtmosphere) setAtmosphereOverride(savedAtmosphere);
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const nationParam = urlParams.get('nation') || urlParams.get('vip');
+    let urlAtmosphere = null;
+    
+    if (nationParam) {
+      const validNations = ['cz', 'sk', 'ru', 'usa', 'uk', 'de', 'at', 'ch', 'es', 'ca', 'tr', 'it'];
+      if (validNations.includes(nationParam.toLowerCase())) {
+        urlAtmosphere = `national-${nationParam.toLowerCase()}`;
+      } else if (nationParam.toLowerCase() === 'czech') {
+        urlAtmosphere = 'national-cz';
+      }
+    }
+
+    if (urlAtmosphere) {
+      setAtmosphereOverride(urlAtmosphere);
+      // Optional: Save to localStorage so it persists across reloads, or leave it temporary per visit
+      // We will save it so the whole experience remains in that mode
+      localStorage.setItem("mmbarber_atmosphere_override", urlAtmosphere);
+    } else if (savedAtmosphere) {
+      setAtmosphereOverride(savedAtmosphere);
+    } else {
+      // GeoIP Detection pro národní eventy
+      if (!localStorage.getItem('mmbarber_country')) {
+        fetch('https://api.country.is/')
+          .then(res => res.json())
+          .then(data => {
+            const country = data.country;
+            if (country) {
+              localStorage.setItem('mmbarber_country', country);
+              const map: Record<string, string> = {
+                'US': 'national-usa', 'GB': 'national-uk', 'DE': 'national-de',
+                'AT': 'national-at', 'IT': 'national-it', 'CH': 'national-ch',
+                'ES': 'national-es', 'CA': 'national-ca', 'TR': 'national-tr',
+                'RU': 'national-ru', 'SK': 'national-sk'
+              };
+              if (map[country]) {
+                setAtmosphereOverride(map[country]);
+              }
+            }
+          })
+          .catch(err => console.error("GeoIP failed", err));
+      } else {
+        const country = localStorage.getItem('mmbarber_country');
+        const map: Record<string, string> = {
+          'US': 'national-usa', 'GB': 'national-uk', 'DE': 'national-de',
+          'AT': 'national-at', 'IT': 'national-it', 'CH': 'national-ch',
+          'ES': 'national-es', 'CA': 'national-ca', 'TR': 'national-tr',
+          'RU': 'national-ru', 'SK': 'national-sk'
+        };
+        if (country && map[country]) {
+          setAtmosphereOverride(map[country]);
+        }
+      }
+    }
 
     const savedAccentColor = localStorage.getItem("mmbarber_dev_accent_color");
     if (savedAccentColor) setAccentColor(savedAccentColor);

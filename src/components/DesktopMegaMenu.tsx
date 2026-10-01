@@ -91,7 +91,7 @@ export const DesktopMegaMenu = React.memo(function DesktopMegaMenu({
               <div className="flex flex-col w-full">
                  <h3 className="text-mafia-gold/60 text-[10px] font-mono tracking-widest uppercase mb-6 text-center">Kalendář nadcházejících eventů</h3>
                  <div className="grid grid-cols-4 gap-6 w-full max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-mafia-gold/20 pb-4">
-                    {getSortedEvents(atmosphereOverride, isBloodMode).map((ev: MMEvent, i: number) => {
+                    {getSortedEvents(atmosphereOverride, isBloodMode, typeof window !== 'undefined' && sessionStorage.getItem("mmbarber_admin_auth") === "true").map((ev: MMEvent, i: number) => {
                        const isActive = (ev.id === atmosphereOverride || (ev.id === 'c.n.y' && atmosphereOverride === 'cny') || (ev.id === 'cny' && atmosphereOverride === 'c.n.y')) && ev.isBloodMode === isBloodMode;
                        return (
                          <div 
@@ -100,6 +100,13 @@ export const DesktopMegaMenu = React.memo(function DesktopMegaMenu({
                              if (typeof window !== 'undefined' && sessionStorage.getItem("mmbarber_admin_auth") === "true") {
                                setAtmosphereOverride(ev.id);
                                setIsBloodMode(ev.isBloodMode || false);
+                               if (ev.id === 'classic') {
+                                 localStorage.setItem("mmbarber_atmosphere_override", "classic");
+                               } else {
+                                 localStorage.setItem("mmbarber_atmosphere_override", ev.id);
+                               }
+                               localStorage.setItem("mmbarber_blood_mode", String(ev.isBloodMode || false));
+                               window.dispatchEvent(new CustomEvent('mmbarber-atmosphere-update', { detail: ev.id }));
                              }
                            }}
                            className={`relative border overflow-hidden transition-all h-[250px] group flex flex-col items-center justify-center ${isActive ? 'border-mafia-gold shadow-[0_0_15px_rgba(197,160,89,0.3)] bg-mafia-gold/5' : 'border-white/10 bg-black/40 hover:border-white/30'} ${typeof window !== 'undefined' && sessionStorage.getItem("mmbarber_admin_auth") === "true" ? 'cursor-pointer' : ''}`}

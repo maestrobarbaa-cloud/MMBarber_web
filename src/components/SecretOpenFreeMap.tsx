@@ -5,7 +5,7 @@ import { useUI } from '@/contexts/UIContext';
 
 export function SecretOpenFreeMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const { isBloodMode, isNoirMode } = useUI();
+  const { isBloodMode, isNoirMode, atmosphereOverride } = useUI();
 
   useEffect(() => {
     let mapInstance: any = null;
@@ -30,6 +30,8 @@ export function SecretOpenFreeMap() {
 
           const isBlood = isBloodMode || document.documentElement.classList.contains('theme-blood');
           const isNoir = isNoirMode || document.documentElement.classList.contains('noir-mode');
+          const isHalloween = atmosphereOverride === 'halloween' || document.documentElement.classList.contains('mode-halloween');
+          const isSakura = atmosphereOverride === 'sakura';
           const graphicsTier = localStorage.getItem('mmbarber_graphics_tier') || 'low';
           const isWeakerGraphics = ['lite', 'low', 'medium', 'soft'].includes(graphicsTier);
           
@@ -60,6 +62,40 @@ export function SecretOpenFreeMap() {
             colorGoldDark = '#a0a0a0';
             colorRoadMain = '#606060';
             colorRoadSub = '#404040';
+          } else if (isHalloween) {
+            colorGold = '#ff6600';
+            colorGoldDark = '#cc5200';
+            colorRoadMain = '#ffa366';
+            colorRoadSub = '#ff8533';
+          } else if (isSakura) {
+            colorGold = '#ffb7c5';
+            colorGoldDark = '#ff8ca3';
+            colorRoadMain = '#ffebf0';
+            colorRoadSub = '#ffd1dc';
+          } else if (atmosphereOverride === 'national-cz' || atmosphereOverride === 'czech' || atmosphereOverride === 'national-sk' || atmosphereOverride === 'national-ru') {
+            colorGold = '#ffffff'; colorGoldDark = '#cccccc'; colorRoadMain = '#d32f2f'; colorRoadSub = '#1976d2'; // CZ/SK/RU colors (Red/Blue/White)
+          } else if (atmosphereOverride === 'national-usa' || atmosphereOverride === 'national-uk') {
+            colorGold = '#0a3161'; colorGoldDark = '#062044'; colorRoadMain = '#b31942'; colorRoadSub = '#ffffff'; // USA/UK colors
+          } else if (atmosphereOverride === 'national-de') {
+            colorGold = '#000000'; colorGoldDark = '#333333'; colorRoadMain = '#dd0000'; colorRoadSub = '#ffce00'; // DE colors
+          } else if (atmosphereOverride === 'national-at' || atmosphereOverride === 'national-ch' || atmosphereOverride === 'national-ca' || atmosphereOverride === 'national-tr') {
+            colorGold = '#ffffff'; colorGoldDark = '#dddddd'; colorRoadMain = '#d32f2f'; colorRoadSub = '#9a0007'; // AT/CH/CA/TR colors (Red/White)
+          } else if (atmosphereOverride === 'national-it') {
+            colorGold = '#009246'; colorGoldDark = '#006226'; colorRoadMain = '#ce2b37'; colorRoadSub = '#ffffff'; // IT colors
+          } else if (atmosphereOverride === 'national-es') {
+            colorGold = '#ffc400'; colorGoldDark = '#b28900'; colorRoadMain = '#c60b1e'; colorRoadSub = '#8c0815'; // ES colors
+          } else if (atmosphereOverride === 'valentine') {
+            colorGold = '#ff4d79'; colorGoldDark = '#cc0033'; colorRoadMain = '#ff1a53'; colorRoadSub = '#ffb3c6';
+          } else if (atmosphereOverride === 'spring' || atmosphereOverride === 'easter' || atmosphereOverride === 'may') {
+            colorGold = '#a3e635'; colorGoldDark = '#4d7c0f'; colorRoadMain = '#65a30d'; colorRoadSub = '#d9f99d';
+          } else if (atmosphereOverride === 'winter' || atmosphereOverride === 'christmas' || atmosphereOverride === 'silvestr') {
+            colorGold = '#e0f2fe'; colorGoldDark = '#7dd3fc'; colorRoadMain = '#38bdf8'; colorRoadSub = '#ffffff';
+          } else if (atmosphereOverride === 'summer' || atmosphereOverride === 'midsummer') {
+            colorGold = '#fde047'; colorGoldDark = '#ca8a04'; colorRoadMain = '#fbbf24'; colorRoadSub = '#fef08a';
+          } else if (atmosphereOverride === 'witches' || atmosphereOverride === 'harvest') {
+            colorGold = '#ea580c'; colorGoldDark = '#9a3412'; colorRoadMain = '#c2410c'; colorRoadSub = '#fdba74';
+          } else if (atmosphereOverride === 'veterans' || atmosphereOverride === 'allsouls') {
+            colorGold = '#71717a'; colorGoldDark = '#27272a'; colorRoadMain = '#a1a1aa'; colorRoadSub = '#d4d4d8';
           }
 
           const cityLayers: string[] = [];
@@ -78,9 +114,9 @@ export function SecretOpenFreeMap() {
                 layer.layout.visibility = 'visible';
                 
                 if (layer.paint && layer.layout['text-field']) {
-                  let textColor = isBlood ? '#ff4444' : isNoir ? '#dddddd' : colorGold;
+                  let textColor = isHalloween ? '#ff8533' : isSakura ? '#ffb7c5' : isBlood ? '#ff4444' : isNoir ? '#dddddd' : colorGold;
                   if (isCity && !isContinent) {
-                    textColor = isBlood ? '#cc4444' : isNoir ? '#999999' : colorGoldDark;
+                    textColor = isHalloween ? '#cc5200' : isSakura ? '#ff8ca3' : isBlood ? '#cc4444' : isNoir ? '#999999' : colorGoldDark;
                   }
                   
                   layer.paint['text-color'] = textColor;
@@ -105,7 +141,7 @@ export function SecretOpenFreeMap() {
               if (layer.paint && layer.paint['fill-color']) layer.paint['fill-color'] = pageBgColor;
               
               if (layer.id.includes('water') && layer.paint && layer.type === 'fill') {
-                 const coastColor = isBlood ? '#9a001a' : isNoir ? '#222222' : '#4a3a18';
+                 const coastColor = isHalloween ? '#803300' : isBlood ? '#9a001a' : isNoir ? '#222222' : '#4a3a18';
                  layer.paint['fill-outline-color'] = coastColor;
               }
             }
@@ -119,7 +155,7 @@ export function SecretOpenFreeMap() {
             if (layer.id.includes('transportation') || layer.id.includes('road') || layer.id.includes('highway') || layer.id.includes('street') || layer.id.includes('bridge') || layer.id.includes('tunnel') || layer.id.includes('path') || layer.id.includes('track')) {
               if (layer.paint && layer.paint['line-color']) {
                 if (layer.id.includes('path') || layer.id.includes('track') || layer.id.includes('pedestrian') || layer.id.includes('footway') || layer.id.includes('dirt')) {
-                  layer.paint['line-color'] = isNoir ? '#111111' : isBlood ? '#ff9999' : '#241a09';
+                  layer.paint['line-color'] = isHalloween ? '#993d00' : isNoir ? '#111111' : isBlood ? '#ff9999' : '#241a09';
                   if (layer.type === 'line') layer.paint['line-width'] = 1;
                 } else if (layer.id.includes('major') || layer.id.includes('primary') || layer.id.includes('secondary') || layer.id.includes('motorway')) {
                   layer.paint['line-color'] = colorRoadMain; 
@@ -352,7 +388,7 @@ export function SecretOpenFreeMap() {
         mapInstance.remove();
       }
     };
-  }, [isBloodMode, isNoirMode]);
+  }, [isBloodMode, isNoirMode, atmosphereOverride]);
 
   return (
     <div className="relative w-full h-full flex-1">

@@ -132,10 +132,22 @@ export default function SupportChatWidget() {
   const [chatBg, setChatBg] = useState<'particles' | 'grid' | 'clean' | 'ultra' | 'matrix'>('particles');
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [settingsTab, setSettingsTab] = useState<'appearance' | 'chat' | 'privacy'>('appearance');
+
+  // User experience preferences
+  const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md');
+  const [compactMode, setCompactMode] = useState(false);
+  const [showTimestamps, setShowTimestamps] = useState(true);
+  const [aiTypingSpeed, setAiTypingSpeed] = useState<'slow' | 'normal' | 'fast'>('normal');
+  const [bubbleStyle, setBubbleStyle] = useState<'rounded' | 'sharp' | 'mixed'>('mixed');
+  const [liveTime, setLiveTime] = useState('');
+  const [serverTime, setServerTime] = useState('');
+  const [timeDiffHours, setTimeDiffHours] = useState(0);
 
   
   // Forms state
   const [fullName, setFullName] = useState("");
+  const [isNameSet, setIsNameSet] = useState(false);
   const [messageText, setMessageText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -260,6 +272,36 @@ export default function SupportChatWidget() {
     }
   };
 
+  // Live HUD clock (Local vs Server)
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      // Local time
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      setLiveTime(`${hh}:${mm}:${ss}`);
+
+      // Server time (Europe/Prague)
+      const pragueTimeStr = now.toLocaleString("en-US", { timeZone: "Europe/Prague" });
+      const pragueDate = new Date(pragueTimeStr);
+      const phh = String(pragueDate.getHours()).padStart(2, '0');
+      const pmm = String(pragueDate.getMinutes()).padStart(2, '0');
+      const pss = String(pragueDate.getSeconds()).padStart(2, '0');
+      setServerTime(`${phh}:${pmm}:${pss}`);
+
+      // Calculate difference in hours
+      let diff = now.getHours() - pragueDate.getHours();
+      // Adjust for day change
+      if (diff > 12) diff -= 24;
+      if (diff < -12) diff += 24;
+      setTimeDiffHours(diff);
+    };
+    tick();
+    const clockInterval = setInterval(tick, 1000);
+    return () => clearInterval(clockInterval);
+  }, []);
+
   useEffect(() => {
     fetchState();
     
@@ -276,9 +318,21 @@ export default function SupportChatWidget() {
       
       const savedBg = localStorage.getItem('mmbarber_chat_bg');
       if (savedBg) setChatBg(savedBg as any);
+
+      const savedFont = localStorage.getItem('mmbarber_chat_font');
+      if (savedFont) setFontSize(savedFont as any);
+      const savedCompact = localStorage.getItem('mmbarber_chat_compact');
+      if (savedCompact) setCompactMode(savedCompact === 'true');
+      const savedTimestamps = localStorage.getItem('mmbarber_chat_timestamps');
+      if (savedTimestamps !== null) setShowTimestamps(savedTimestamps === 'true');
+      const savedSpeed = localStorage.getItem('mmbarber_chat_ai_speed');
+      if (savedSpeed) setAiTypingSpeed(savedSpeed as any);
+      const savedBubble = localStorage.getItem('mmbarber_chat_bubble');
+      if (savedBubble) setBubbleStyle(savedBubble as any);
     };
     checkTheme();
-    window.addEventListener('mmbarber-theme-changed', checkTheme); // Volitelné
+    window.addEventListener('mmbarber-theme-changed', checkTheme);
+
     
     const savedSounds = localStorage.getItem('mmbarber_chat_sounds');
     if (savedSounds !== null) {
@@ -844,7 +898,7 @@ export default function SupportChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`fixed bottom-28 right-6 max-w-[calc(100vw-3rem)] bg-black/90 backdrop-blur-2xl border rounded-2xl shadow-[0_20px_70px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden z-[9990] transition-all duration-300 ease-in-out w-[380px] h-[600px] max-h-[75vh] ${isExpanded ? 'md:w-[700px] md:h-[750px] md:max-h-[85vh]' : ''} ${
+            className={`fixed bottom-28 right-6 max-w-[calc(100vw-3rem)] bg-black/90 backdrop-blur-2xl border rounded-2xl shadow-[0_20px_70px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden z-[9990] transition-all duration-300 ease-in-out w-[440px] h-[680px] max-h-[82vh] ${isExpanded ? 'md:w-[900px] md:h-[820px] md:max-h-[90vh]' : ''} ${
               theme === 'blood' ? 'border-red-600/40 shadow-[0_0_30px_rgba(220,38,38,0.15)]' :
               theme === 'noir' ? 'border-gray-500/40 shadow-[0_0_30px_rgba(255,255,255,0.1)]' :
               theme === 'neon' ? 'border-purple-500/40 shadow-[0_0_30px_rgba(168,85,247,0.15)]' :
@@ -934,7 +988,7 @@ export default function SupportChatWidget() {
             </div>
 
             {/* Header */}
-            <div className={`border-b p-4 flex justify-between items-center shrink-0 relative overflow-hidden ${
+            <div className={`border-b p-4 flex justify-between items-center shrink-0 relative ${
               theme === 'blood' ? 'bg-gradient-to-r from-black via-red-950 to-black border-red-600/30' :
               theme === 'noir' ? 'bg-gradient-to-r from-black via-gray-900 to-black border-gray-600/30' :
               theme === 'neon' ? 'bg-gradient-to-r from-black via-purple-950 to-black border-purple-500/30' :
@@ -975,6 +1029,31 @@ export default function SupportChatWidget() {
                      {chatMode === 'human' ? (isAdminOnline ? 'Online & Připraven' : 'Nyní jsme offline (Zanechte vzkaz)') : 'Virtuální asistent'}
                    </p>
                  </div>
+                 {/* Live HUD Clocks (Local & Server) */}
+                 {timeDiffHours !== 0 && (
+                   <div className="hidden sm:flex flex-col gap-1 ml-auto mr-2 relative group cursor-help z-50">
+                     <div className="flex items-center gap-2 justify-end">
+                       <span className="text-[7px] font-mono text-white/30 uppercase tracking-[0.3em]">LOCAL</span>
+                       <span className={`font-mono text-[10px] font-bold tracking-[0.1em] tabular-nums ${
+                         theme === 'blood' ? 'text-red-400' : theme === 'neon' ? 'text-purple-400' : theme === 'ocean' ? 'text-cyan-400' : theme === 'forest' ? 'text-emerald-400' : 'text-mafia-gold'
+                       }`}>{liveTime}</span>
+                     </div>
+                     <div className="flex items-center gap-2 justify-end">
+                       <span className="text-[7px] font-mono text-white/30 uppercase tracking-[0.3em]">SERVER</span>
+                       <span className="font-mono text-[10px] text-white/70 tabular-nums">{serverTime}</span>
+                     </div>
+                     
+                     {/* Tooltip for time difference */}
+                     <div className="absolute top-full right-0 mt-2 p-3 bg-black/95 border border-white/10 rounded-xl backdrop-blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-[100] shadow-2xl">
+                       <p className="text-xs font-mono text-white/80 font-bold mb-1">
+                         Rozdíl: <span className={timeDiffHours === 0 ? 'text-green-400' : 'text-mafia-gold'}>
+                           {timeDiffHours > 0 ? `+${timeDiffHours} hodin` : timeDiffHours < 0 ? `${timeDiffHours} hodin` : 'Stejný čas'}
+                         </span>
+                       </p>
+                       <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest">Server v CZ vs Váš lokální čas</p>
+                     </div>
+                   </div>
+                 )}
                </div>
                <div className="flex items-center gap-2 z-10 relative">
                  {chatMode === 'human' && callStatus === 'IDLE' && (
@@ -1059,62 +1138,255 @@ export default function SupportChatWidget() {
             {/* Messages Area / Settings Area */}
             <div className="flex-1 overflow-y-auto relative z-10 flex flex-col">
               
-              {/* Settings Overlay */}
+              {/* Settings Overlay – redesigned with tabs */}
               <AnimatePresence>
                 {isSettingsOpen && (
                   <motion.div 
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    className="absolute inset-0 z-50 bg-black/95 backdrop-blur-3xl p-6 overflow-y-auto flex flex-col gap-6"
+                    className="absolute inset-0 z-50 bg-[#0a0a0a]/98 backdrop-blur-3xl overflow-y-auto flex flex-col"
                   >
-                    <div>
-                      <h4 className="text-white font-heading font-bold uppercase tracking-widest text-sm mb-4">Motiv chatu</h4>
-                      <div className="grid grid-cols-2 gap-3">
-                        {[{id: 'gold', name: 'Zlatý'}, {id: 'blood', name: 'Krvavý'}, {id: 'noir', name: 'Temný'}, {id: 'neon', name: 'Neon'}, {id: 'ocean', name: 'Oceán'}, {id: 'forest', name: 'Les'}].map(t => (
-                          <button 
-                            key={t.id}
-                            onClick={() => { setTheme(t.id as any); localStorage.setItem('mmbarber_chat_theme', t.id); }}
-                            className={`py-3 px-4 rounded-xl border text-xs font-mono uppercase tracking-widest transition-all ${
-                              theme === t.id ? 'bg-white/20 border-white text-white' : 'bg-black/50 border-white/10 text-white/50 hover:bg-white/10'
-                            }`}
-                          >
-                            {t.name}
-                          </button>
-                        ))}
+                    {/* Settings Header */}
+                    <div className={`px-5 pt-5 pb-3 border-b flex items-center justify-between shrink-0 ${
+                      theme === 'blood' ? 'border-red-600/20' : theme === 'neon' ? 'border-purple-500/20' : theme === 'ocean' ? 'border-blue-500/20' : 'border-mafia-gold/20'
+                    }`}>
+                      <div>
+                        <h4 className={`font-heading font-black uppercase tracking-[0.2em] text-sm ${
+                          theme === 'blood' ? 'text-red-400' : theme === 'neon' ? 'text-purple-400' : theme === 'ocean' ? 'text-blue-400' : theme === 'forest' ? 'text-emerald-400' : 'text-mafia-gold'
+                        }`}>⚙ NASTAVENÍ CHATU</h4>
+                        <p className="text-[9px] font-mono text-white/30 uppercase tracking-widest mt-0.5">Přizpůsobte si prostředí</p>
                       </div>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-white font-heading font-bold uppercase tracking-widest text-sm mb-4">Pozadí</h4>
-                      <div className="grid grid-cols-1 gap-2">
-                        {[{id: 'particles', name: 'Zlaté částice'}, {id: 'ultra', name: 'Ultra mlhovina (Animace)'}, {id: 'matrix', name: 'Digitální déšť'}, {id: 'grid', name: 'Technická mřížka'}, {id: 'clean', name: 'Čisté pozadí'}].map(b => (
-                          <button 
-                            key={b.id}
-                            onClick={() => { setChatBg(b.id as any); localStorage.setItem('mmbarber_chat_bg', b.id); }}
-                            className={`py-3 px-4 rounded-xl border text-xs text-left font-mono uppercase tracking-widest transition-all ${
-                              chatBg === b.id ? 'bg-white/20 border-white text-white' : 'bg-black/50 border-white/10 text-white/50 hover:bg-white/10'
-                            }`}
-                          >
-                            {b.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="mt-2 pt-6 border-t border-white/10">
-                      <button 
-                        onClick={clearChat}
-                        className="w-full py-3 px-4 rounded-xl border border-red-500/30 text-red-400 text-xs font-mono uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-[0_0_15px_rgba(220,38,38,0.15)]"
-                      >
-                        Vymazat historii chatu
+                      <button onClick={() => setIsSettingsOpen(false)} className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-all">
+                        <X size={14} />
                       </button>
+                    </div>
+
+                    {/* Tab Bar */}
+                    <div className="flex border-b border-white/10 shrink-0">
+                      {([['appearance', '🎨 Vzhled'], ['chat', '💬 Chat'], ['privacy', '🔒 Soukromí']] as const).map(([tab, label]) => (
+                        <button
+                          key={tab}
+                          onClick={() => setSettingsTab(tab)}
+                          className={`flex-1 py-2.5 text-[9px] font-mono uppercase tracking-widest transition-all ${
+                            settingsTab === tab
+                              ? (theme === 'blood' ? 'text-red-400 border-b-2 border-red-500 bg-red-500/5' :
+                                 theme === 'neon' ? 'text-purple-400 border-b-2 border-purple-500 bg-purple-500/5' :
+                                 theme === 'ocean' ? 'text-blue-400 border-b-2 border-blue-500 bg-blue-500/5' :
+                                 theme === 'forest' ? 'text-emerald-400 border-b-2 border-emerald-500 bg-emerald-500/5' :
+                                 'text-mafia-gold border-b-2 border-mafia-gold bg-mafia-gold/5')
+                              : 'text-white/30 hover:text-white/60'
+                          }`}
+                        >{label}</button>
+                      ))}
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
+
+                      {/* ── APPEARANCE TAB ── */}
+                      {settingsTab === 'appearance' && (
+                        <>
+                          {/* Theme picker */}
+                          <div>
+                            <p className="text-[9px] font-mono text-white/40 uppercase tracking-[0.3em] mb-3">Motiv barev</p>
+                            <div className="grid grid-cols-3 gap-2">
+                              {([
+                                {id: 'gold',   name: 'Zlatý',    dot: 'bg-yellow-400',  ring: 'ring-yellow-400'},
+                                {id: 'blood',  name: 'Krvavý',   dot: 'bg-red-500',     ring: 'ring-red-500'},
+                                {id: 'noir',   name: 'Temný',    dot: 'bg-gray-300',    ring: 'ring-gray-300'},
+                                {id: 'neon',   name: 'Neon',     dot: 'bg-purple-500',  ring: 'ring-purple-500'},
+                                {id: 'ocean',  name: 'Oceán',    dot: 'bg-cyan-400',    ring: 'ring-cyan-400'},
+                                {id: 'forest', name: 'Les',      dot: 'bg-emerald-500', ring: 'ring-emerald-500'},
+                              ] as const).map(t => (
+                                <button
+                                  key={t.id}
+                                  onClick={() => { setTheme(t.id); localStorage.setItem('mmbarber_chat_theme', t.id); }}
+                                  className={`relative py-3 px-2 rounded-xl border flex flex-col items-center gap-1.5 transition-all ${
+                                    theme === t.id ? 'border-white/40 bg-white/10 scale-105' : 'border-white/5 bg-black/40 hover:border-white/20'
+                                  }`}
+                                >
+                                  <div className={`w-5 h-5 rounded-full ${t.dot} ${theme === t.id ? `ring-2 ring-offset-1 ring-offset-black ${t.ring}` : ''}`} />
+                                  <span className="text-[9px] font-mono text-white/60 uppercase tracking-widest">{t.name}</span>
+                                  {theme === t.id && <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-white" />}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Background */}
+                          <div>
+                            <p className="text-[9px] font-mono text-white/40 uppercase tracking-[0.3em] mb-3">Pozadí chatu</p>
+                            <div className="flex flex-col gap-2">
+                              {([
+                                {id: 'particles', name: '✦ Zlaté částice',       desc: 'Plovoucí jiskry'},
+                                {id: 'ultra',     name: '◎ Ultra mlhovina',      desc: 'Animované oblaky'},
+                                {id: 'matrix',    name: '⬇ Digitální déšť',     desc: 'Matrix styl'},
+                                {id: 'grid',      name: '⊞ Technická mřížka',   desc: 'HUD grid'},
+                                {id: 'clean',     name: '○ Čisté pozadí',       desc: 'Minimalistické'},
+                              ] as const).map(b => (
+                                <button
+                                  key={b.id}
+                                  onClick={() => { setChatBg(b.id); localStorage.setItem('mmbarber_chat_bg', b.id); }}
+                                  className={`flex items-center justify-between py-2.5 px-4 rounded-xl border text-left transition-all ${
+                                    chatBg === b.id ? 'border-white/30 bg-white/10' : 'border-white/5 bg-black/30 hover:border-white/15'
+                                  }`}
+                                >
+                                  <span className="text-xs font-mono text-white/80">{b.name}</span>
+                                  <span className="text-[9px] font-mono text-white/30">{b.desc}</span>
+                                  {chatBg === b.id && <div className={`ml-2 w-1.5 h-1.5 rounded-full shrink-0 ${
+                                    theme === 'blood' ? 'bg-red-400' : theme === 'neon' ? 'bg-purple-400' : theme === 'ocean' ? 'bg-blue-400' : 'bg-mafia-gold'
+                                  }`} />}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Bubble style */}
+                          <div>
+                            <p className="text-[9px] font-mono text-white/40 uppercase tracking-[0.3em] mb-3">Tvar bubliny</p>
+                            <div className="grid grid-cols-3 gap-2">
+                              {([{id: 'rounded', name: 'Kulatá', preview: 'rounded-2xl'}, {id: 'sharp', name: 'Ostrá', preview: 'rounded-sm'}, {id: 'mixed', name: 'Smíšená', preview: 'rounded-xl rounded-tr-sm'}] as const).map(s => (
+                                <button
+                                  key={s.id}
+                                  onClick={() => { setBubbleStyle(s.id); localStorage.setItem('mmbarber_chat_bubble', s.id); }}
+                                  className={`py-2 px-3 border flex flex-col items-center gap-2 transition-all ${
+                                    bubbleStyle === s.id ? 'border-white/30 bg-white/10' : 'border-white/5 bg-black/30 hover:border-white/15'
+                                  }`}
+                                >
+                                  <div className={`w-8 h-4 bg-mafia-gold/40 ${s.preview}`} />
+                                  <span className="text-[9px] font-mono text-white/50">{s.name}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+                      {/* ── CHAT TAB ── */}
+                      {settingsTab === 'chat' && (
+                        <>
+                          {/* Font size */}
+                          <div>
+                            <p className="text-[9px] font-mono text-white/40 uppercase tracking-[0.3em] mb-3">Velikost textu</p>
+                            <div className="flex gap-2">
+                              {([{id: 'sm', label: 'A', size: 'text-xs'}, {id: 'md', label: 'A', size: 'text-sm'}, {id: 'lg', label: 'A', size: 'text-base'}] as const).map(f => (
+                                <button
+                                  key={f.id}
+                                  onClick={() => { setFontSize(f.id); localStorage.setItem('mmbarber_chat_font', f.id); }}
+                                  className={`flex-1 py-3 rounded-xl border flex items-center justify-center transition-all ${
+                                    fontSize === f.id ? 'border-white/30 bg-white/10' : 'border-white/5 bg-black/30 hover:border-white/15'
+                                  }`}
+                                >
+                                  <span className={`font-bold text-white/70 ${f.size}`}>{f.label}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Compact mode */}
+                          <div className="flex items-center justify-between py-3 px-4 rounded-xl border border-white/5 bg-black/30">
+                            <div>
+                              <p className="text-xs font-mono text-white/70">Kompaktní mód</p>
+                              <p className="text-[9px] font-mono text-white/30">Menší mezery mezi zprávami</p>
+                            </div>
+                            <button
+                              onClick={() => { const v = !compactMode; setCompactMode(v); localStorage.setItem('mmbarber_chat_compact', String(v)); }}
+                              className={`w-11 h-6 rounded-full relative transition-colors duration-300 flex items-center ${
+                                compactMode ? (theme === 'blood' ? 'bg-red-500' : theme === 'neon' ? 'bg-purple-500' : theme === 'ocean' ? 'bg-blue-500' : theme === 'forest' ? 'bg-emerald-500' : 'bg-mafia-gold') : 'bg-white/10'
+                              }`}
+                            >
+                              <motion.div animate={{ x: compactMode ? 22 : 3 }} className="w-4 h-4 rounded-full bg-white shadow-sm" />
+                            </button>
+                          </div>
+
+                          {/* Show timestamps */}
+                          <div className="flex items-center justify-between py-3 px-4 rounded-xl border border-white/5 bg-black/30">
+                            <div>
+                              <p className="text-xs font-mono text-white/70">Zobrazit časová razítka</p>
+                              <p className="text-[9px] font-mono text-white/30">HUD styl čas u každé zprávy</p>
+                            </div>
+                            <button
+                              onClick={() => { const v = !showTimestamps; setShowTimestamps(v); localStorage.setItem('mmbarber_chat_timestamps', String(v)); }}
+                              className={`w-11 h-6 rounded-full relative transition-colors duration-300 flex items-center ${
+                                showTimestamps ? (theme === 'blood' ? 'bg-red-500' : theme === 'neon' ? 'bg-purple-500' : theme === 'ocean' ? 'bg-blue-500' : theme === 'forest' ? 'bg-emerald-500' : 'bg-mafia-gold') : 'bg-white/10'
+                              }`}
+                            >
+                              <motion.div animate={{ x: showTimestamps ? 22 : 3 }} className="w-4 h-4 rounded-full bg-white shadow-sm" />
+                            </button>
+                          </div>
+
+                          {/* AI typing speed */}
+                          <div>
+                            <p className="text-[9px] font-mono text-white/40 uppercase tracking-[0.3em] mb-3">Rychlost AI odpovědi</p>
+                            <div className="flex gap-2">
+                              {([{id: 'slow', label: '🐢 Pomalu'}, {id: 'normal', label: '⚡ Normálně'}, {id: 'fast', label: '🚀 Rychle'}] as const).map(sp => (
+                                <button
+                                  key={sp.id}
+                                  onClick={() => { setAiTypingSpeed(sp.id); localStorage.setItem('mmbarber_chat_ai_speed', sp.id); }}
+                                  className={`flex-1 py-2.5 px-1 rounded-xl border text-[9px] font-mono transition-all ${
+                                    aiTypingSpeed === sp.id ? 'border-white/30 bg-white/10 text-white' : 'border-white/5 bg-black/30 text-white/40 hover:border-white/15'
+                                  }`}
+                                >
+                                  {sp.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Sounds */}
+                          <div className="flex items-center justify-between py-3 px-4 rounded-xl border border-white/5 bg-black/30">
+                            <div>
+                              <p className="text-xs font-mono text-white/70">Zvuky chatu</p>
+                              <p className="text-[9px] font-mono text-white/30">Upozornění na novou zprávu</p>
+                            </div>
+                            <button
+                              onClick={() => { const v = !soundsEnabled; setSoundsEnabled(v); localStorage.setItem('mmbarber_chat_sounds', String(v)); }}
+                              className={`w-11 h-6 rounded-full relative transition-colors duration-300 flex items-center ${
+                                soundsEnabled ? (theme === 'blood' ? 'bg-red-500' : theme === 'neon' ? 'bg-purple-500' : theme === 'ocean' ? 'bg-blue-500' : theme === 'forest' ? 'bg-emerald-500' : 'bg-mafia-gold') : 'bg-white/10'
+                              }`}
+                            >
+                              <motion.div animate={{ x: soundsEnabled ? 22 : 3 }} className="w-4 h-4 rounded-full bg-white shadow-sm" />
+                            </button>
+                          </div>
+                        </>
+                      )}
+
+                      {/* ── PRIVACY TAB ── */}
+                      {settingsTab === 'privacy' && (
+                        <>
+                          <div className="p-4 rounded-xl border border-white/5 bg-black/30">
+                            <p className="text-xs font-mono text-white/70 mb-1">Vaše data</p>
+                            <p className="text-[9px] font-mono text-white/30 leading-relaxed">Zprávy jsou ukládány pouze po dobu aktivní konverzace. Po uzavření konverzace jsou automaticky smazány ze serverů.</p>
+                          </div>
+
+                          <div className="p-4 rounded-xl border border-white/5 bg-black/30">
+                            <p className="text-xs font-mono text-white/70 mb-1">Export konverzace</p>
+                            <p className="text-[9px] font-mono text-white/30 leading-relaxed mb-3">Stáhněte si celou historii chatu jako textový soubor.</p>
+                            <button
+                              onClick={() => { exportChat(); }}
+                              className="w-full py-2.5 px-4 rounded-xl border border-white/10 text-white/60 text-[10px] font-mono uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all flex items-center justify-center gap-2"
+                            >
+                              <Download size={12} /> Stáhnout historii
+                            </button>
+                          </div>
+
+                          <div className="mt-auto pt-4 border-t border-white/10">
+                            <button 
+                              onClick={clearChat}
+                              className="w-full py-3 px-4 rounded-xl border border-red-500/30 text-red-400 text-xs font-mono uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-[0_0_15px_rgba(220,38,38,0.15)] flex items-center justify-center gap-2"
+                            >
+                              🗑 Smazat celou historii
+                            </button>
+                            <p className="text-[8px] font-mono text-white/20 text-center mt-2 uppercase tracking-widest">Tato akce je nevratná</p>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className={`flex-1 overflow-y-auto p-5 space-y-2 custom-scrollbar ${chatBg !== 'clean' ? 'bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.03),transparent_80%)]' : ''}`}>
+              <div className={`flex-1 overflow-y-auto custom-scrollbar ${chatBg !== 'clean' ? 'bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.03),transparent_80%)]' : ''} ${compactMode ? 'p-3 space-y-1' : 'p-5 space-y-2'}`}>
                 {messages.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center px-6">
                     <motion.div 
@@ -1192,9 +1464,12 @@ export default function SupportChatWidget() {
                         transition={{ duration: 0.3 }}
                         className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} ${isNextSame && !showDateSeparator ? 'mb-1' : 'mb-3'}`}
                       >
-                       {showHeader && (
-                         <span className="text-[9px] font-mono text-white/30 uppercase mb-1.5 px-2 tracking-widest">
-                           {senderName} • {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                       {showHeader && showTimestamps && (
+                         <span className="text-[9px] font-mono text-white/30 uppercase mb-1.5 px-2 tracking-widest flex items-center gap-1.5">
+                           <span className={`font-bold ${isUser ? 'text-white/60' : 'text-mafia-gold/70'}`}>[{senderName}]</span>
+                           <span className="opacity-30">|</span>
+                           <span className="opacity-50">T:</span>
+                           <span className="tracking-[0.3em] font-bold">{new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}</span>
                          </span>
                        )}
                        <div className="relative group max-w-[85%] flex items-center gap-2">
@@ -1208,8 +1483,8 @@ export default function SupportChatWidget() {
                               </button>
                            )}
 
-                           <div className={`${isSticker ? 'text-[45px] leading-none tracking-widest' : `p-3.5 px-4 text-[13px] leading-relaxed shadow-lg ${
-                                isSystem ? `bg-black/40 border italic rounded-xl text-center w-full ${
+                           <div className={`${isSticker ? 'text-[45px] leading-none tracking-widest' : `${compactMode ? 'p-2.5 px-3.5' : 'p-3.5 px-4'} ${fontSize === 'sm' ? 'text-xs' : fontSize === 'lg' ? 'text-base' : 'text-sm'} leading-relaxed shadow-lg ${
+                                isSystem ? `bg-black/40 border italic ${bubbleStyle === 'rounded' ? 'rounded-xl' : bubbleStyle === 'sharp' ? 'rounded-sm' : 'rounded-xl'} text-center w-full ${
                                   theme === 'blood' ? 'border-red-600/20 text-red-400' :
                                   theme === 'noir' ? 'border-white/20 text-gray-400' :
                                   theme === 'neon' ? 'border-purple-500/20 text-purple-400' :
@@ -1218,7 +1493,11 @@ export default function SupportChatWidget() {
                                   'border-mafia-gold/20 text-mafia-gold/80'
                                 }` :
                                 isUser 
-                                  ? `text-black font-medium ${isNextSame ? 'rounded-2xl rounded-tr-sm rounded-br-sm' : 'rounded-2xl rounded-br-sm'} ${
+                                  ? `text-black font-medium ${
+                                      bubbleStyle === 'rounded' ? (isNextSame ? 'rounded-2xl rounded-tr-sm rounded-br-sm' : 'rounded-2xl rounded-br-sm') :
+                                      bubbleStyle === 'sharp' ? 'rounded-sm' :
+                                      (isNextSame ? 'rounded-xl rounded-tr-sm rounded-br-sm' : 'rounded-xl rounded-br-sm')
+                                    } ${
                                       theme === 'blood' ? 'bg-red-600 text-white' :
                                       theme === 'noir' ? 'bg-gray-200 text-black' :
                                       theme === 'neon' ? 'bg-purple-500 text-white' :
@@ -1227,8 +1506,16 @@ export default function SupportChatWidget() {
                                       'bg-mafia-gold'
                                     }` 
                                   : isBot 
-                                    ? `bg-blue-900/30 backdrop-blur-md border border-blue-500/30 text-blue-50 ${isNextSame ? 'rounded-2xl rounded-tl-sm rounded-bl-sm' : 'rounded-2xl rounded-bl-sm'}`
-                                    : `bg-mafia-red/80 backdrop-blur-md border border-mafia-red/50 text-white font-medium shadow-[0_0_15px_rgba(220,38,38,0.3)] ${isNextSame ? 'rounded-2xl rounded-tl-sm rounded-bl-sm' : 'rounded-2xl rounded-bl-sm'}`
+                                    ? `bg-blue-900/30 backdrop-blur-md border border-blue-500/30 text-blue-50 ${
+                                        bubbleStyle === 'rounded' ? (isNextSame ? 'rounded-2xl rounded-tl-sm rounded-bl-sm' : 'rounded-2xl rounded-bl-sm') :
+                                        bubbleStyle === 'sharp' ? 'rounded-sm' :
+                                        (isNextSame ? 'rounded-xl rounded-tl-sm rounded-bl-sm' : 'rounded-xl rounded-bl-sm')
+                                      }`
+                                    : `bg-mafia-red/80 backdrop-blur-md border border-mafia-red/50 text-white font-medium shadow-[0_0_15px_rgba(220,38,38,0.3)] ${
+                                        bubbleStyle === 'rounded' ? (isNextSame ? 'rounded-2xl rounded-tl-sm rounded-bl-sm' : 'rounded-2xl rounded-bl-sm') :
+                                        bubbleStyle === 'sharp' ? 'rounded-sm' :
+                                        (isNextSame ? 'rounded-xl rounded-tl-sm rounded-bl-sm' : 'rounded-xl rounded-bl-sm')
+                                      }`
                            }`} overflow-hidden flex flex-col gap-1`}>
                               {msg.attachmentUrl && msg.attachmentType === 'image' && (
                                 <img src={msg.attachmentUrl} alt="Attachment" className="w-full h-auto max-h-48 object-cover rounded-lg mb-2 cursor-pointer" onClick={() => window.open(msg.attachmentUrl, '_blank')} />
@@ -1366,20 +1653,35 @@ export default function SupportChatWidget() {
                </div>
 
                <div className="p-4 pt-3">
-                 {!session ? (
+                 {!session && !isNameSet ? (
                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
-                   <p className="text-[9px] font-mono text-mafia-gold uppercase mb-2 tracking-widest pl-2">Pro začátek zadejte své jméno (min. 3 znaky):</p>
-                   <input 
-                     type="text"
-                     value={fullName}
-                     onChange={(e) => setFullName(e.target.value)}
-                     placeholder="Např. John Doe"
-                     className="w-full bg-white/5 border border-mafia-gold/30 rounded-xl px-4 py-3 text-sm font-mono text-white focus:outline-none focus:border-mafia-gold focus:bg-white/10 transition-all placeholder:text-white/20"
-                   />
+                   <p className="text-[10px] font-mono text-mafia-gold uppercase mb-2 tracking-widest pl-2">Pro začátek zadejte své jméno:</p>
+                   <form onSubmit={(e) => { e.preventDefault(); if (fullName.trim()) setIsNameSet(true); }} className="relative flex items-center group gap-1">
+                     <input 
+                       type="text"
+                       value={fullName}
+                       onChange={(e) => setFullName(e.target.value)}
+                       placeholder="Např. John Doe"
+                       className="w-full bg-white/5 border border-mafia-gold/30 rounded-xl px-4 py-4 pr-16 text-base font-mono text-white focus:outline-none focus:border-mafia-gold focus:bg-white/10 transition-all placeholder:text-white/20"
+                     />
+                     <button
+                       type="submit"
+                       disabled={!fullName.trim()}
+                       className={`absolute right-2 w-11 h-11 flex items-center justify-center text-black rounded-full hover:scale-105 transition-all disabled:opacity-0 disabled:scale-75 shadow-lg ${
+                         theme === 'blood' ? 'bg-red-600 hover:bg-white text-white hover:text-black' :
+                         theme === 'noir' ? 'bg-gray-300 hover:bg-white' :
+                         theme === 'neon' ? 'bg-purple-500 hover:bg-white text-white hover:text-black' :
+                         theme === 'ocean' ? 'bg-blue-500 hover:bg-white text-white hover:text-black' :
+                         theme === 'forest' ? 'bg-emerald-500 hover:bg-white text-white hover:text-black' :
+                         'bg-mafia-gold hover:bg-white'
+                       }`}
+                     >
+                       <Check size={17} />
+                     </button>
+                   </form>
                  </motion.div>
-               ) : null}
-               
-               <form onSubmit={handleSubmit} className="relative flex items-center group gap-1">
+               ) : (
+               <motion.form initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleSubmit} className="relative flex items-center group gap-1">
                  {session && chatMode === 'human' && (
                    <div className="flex shrink-0">
                      <button 
@@ -1388,7 +1690,7 @@ export default function SupportChatWidget() {
                        className="p-2 text-white/50 hover:text-mafia-gold transition-colors relative"
                        disabled={isUploading}
                      >
-                       {isUploading ? <Loader2 size={18} className="animate-spin text-mafia-gold" /> : <Paperclip size={18} />}
+                       {isUploading ? <Loader2 size={20} className="animate-spin text-mafia-gold" /> : <Paperclip size={20} />}
                      </button>
                      <button 
                        type="button" 
@@ -1397,7 +1699,7 @@ export default function SupportChatWidget() {
                        className="p-2 text-white/50 hover:text-mafia-gold transition-colors disabled:opacity-30"
                        title="Zavolat"
                      >
-                       <Phone size={18} />
+                       <Phone size={20} />
                      </button>
                    </div>
                  )}
@@ -1417,14 +1719,14 @@ export default function SupportChatWidget() {
                    type="text"
                    value={messageText}
                    onChange={(e) => setMessageText(e.target.value)}
-                   disabled={isSubmitting || (!session && fullName.trim().length < 3)}
-                   placeholder={(!session && fullName.trim().length < 3) ? "Zadejte celé jméno..." : "Napište zprávu..."}
-                   className="w-full bg-white/5 border border-white/10 rounded-full py-3.5 pl-5 pr-14 text-sm text-white focus:outline-none focus:border-mafia-gold focus:bg-white/10 transition-all disabled:opacity-50 placeholder:text-white/30"
+                   disabled={isSubmitting}
+                   placeholder="Napište zprávu..."
+                   className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-6 pr-16 text-base text-white focus:outline-none focus:border-mafia-gold focus:bg-white/10 transition-all disabled:opacity-50 placeholder:text-white/30"
                  />
                  <button 
                    type="submit"
-                   disabled={isSubmitting || !messageText.trim() || (!session && !fullName.trim())}
-                   className={`absolute right-1.5 w-9 h-9 flex items-center justify-center text-black rounded-full hover:scale-105 transition-all disabled:opacity-0 disabled:scale-75 shadow-lg ${
+                   disabled={isSubmitting || !messageText.trim()}
+                   className={`absolute right-2 w-11 h-11 flex items-center justify-center text-black rounded-full hover:scale-105 transition-all disabled:opacity-0 disabled:scale-75 shadow-lg ${
                      theme === 'blood' ? 'bg-red-600 hover:bg-white text-white hover:text-black' :
                      theme === 'noir' ? 'bg-gray-300 hover:bg-white' :
                      theme === 'neon' ? 'bg-purple-500 hover:bg-white text-white hover:text-black' :
@@ -1433,9 +1735,10 @@ export default function SupportChatWidget() {
                      'bg-mafia-gold hover:bg-white'
                    }`}
                  >
-                   <Send size={14} className="ml-0.5" />
+                   <Send size={17} className="ml-0.5" />
                  </button>
-               </form>
+               </motion.form>
+               )}
              </div>
             </div>
           </motion.div>

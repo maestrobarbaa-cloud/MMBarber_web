@@ -282,7 +282,7 @@ export const MobileMegaMenu = React.memo(function MobileMegaMenu({
                   >
                     <div className="flex flex-col px-6 pb-4 gap-4">
                       
-                      {getSortedEvents(atmosphereOverride, isBloodMode).map((ev: MMEvent, i: number) => {
+                      {getSortedEvents(atmosphereOverride, isBloodMode, typeof window !== 'undefined' && sessionStorage.getItem("mmbarber_admin_auth") === "true").map((ev: MMEvent, i: number) => {
                          const isActive = (ev.id === atmosphereOverride || (ev.id === 'c.n.y' && atmosphereOverride === 'cny') || (ev.id === 'cny' && atmosphereOverride === 'c.n.y')) && ev.isBloodMode === isBloodMode;
                          return (
                            <div 
@@ -291,6 +291,13 @@ export const MobileMegaMenu = React.memo(function MobileMegaMenu({
                                if (typeof window !== 'undefined' && sessionStorage.getItem("mmbarber_admin_auth") === "true") {
                                  setAtmosphereOverride(ev.id);
                                  setIsBloodMode(ev.isBloodMode || false);
+                                 if (ev.id === 'classic') {
+                                   localStorage.setItem("mmbarber_atmosphere_override", "classic");
+                                 } else {
+                                   localStorage.setItem("mmbarber_atmosphere_override", ev.id);
+                                 }
+                                 localStorage.setItem("mmbarber_blood_mode", String(ev.isBloodMode || false));
+                                 window.dispatchEvent(new CustomEvent('mmbarber-atmosphere-update', { detail: ev.id }));
                                  handleNavLinkClick();
                                }
                              }}

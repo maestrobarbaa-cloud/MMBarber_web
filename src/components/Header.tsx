@@ -672,8 +672,11 @@ export function Header() {
                     trackEvent("nav_link_click", { label: key });
                     setHoveredCategory(null);
                     if (data.path.includes('#') && pathname === "/") {
-                      e.preventDefault();
-                      document.querySelector(data.path.replace('/', ''))?.scrollIntoView({ behavior: "smooth" });
+                      const targetId = data.path.replace('/', '');
+                      if (targetId && targetId !== '#') {
+                        e.preventDefault();
+                        document.querySelector(targetId)?.scrollIntoView({ behavior: "smooth" });
+                      }
                     }
                   }} 
                   className={`transition-colors duration-300 py-6 h-full flex items-center ${hoveredCategory === key ? 'text-mafia-gold' : 'hover:text-mafia-gold'}`}
