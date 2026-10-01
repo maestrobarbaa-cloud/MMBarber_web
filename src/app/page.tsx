@@ -40,6 +40,7 @@ import { CinematicSequence737 } from "@/components/CinematicSequence737";
 import { MafiaClickEffects } from "@/components/MafiaClickEffects";
 import { HiddenSeoArchive } from '@/components/HiddenSEOArchive';
 import { useTranslation } from "@/hooks/useTranslation";
+import { useUI } from "@/contexts/UIContext";
 import { RecruitmentNotification } from "@/components/RecruitmentNotification";
 import { SlovackoEvent } from "@/components/SlovackoEvent";
 
@@ -71,6 +72,9 @@ export default function Home() {
   const [isMobileEffectsEnabled, setIsMobileEffectsEnabled] = useState(false);
   const [visibility, setVisibility] = useState<Record<string, boolean>>({});
   const [isDesktopMode, setIsDesktopMode] = useState(false);
+  const { atmosphereOverride, isBloodMode } = useUI();
+
+  const isEventActive = isBloodMode || atmosphereOverride !== 'classic';
 
   useEffect(() => {
     setIsDesktopMode(localStorage.getItem("mmbarber_desktop_mode") === "true");
@@ -174,13 +178,17 @@ export default function Home() {
         {showContent && (
           <motion.div initial={{ opacity: 1 }} animate={{ opacity: 1 }} className="flex flex-col w-full">
             <CinematicSequence737 />
-            <div className="hidden xl:block">
+            <div className="w-full relative z-10">
               <Hero />
             </div>
             
-            <div className="relative bg-transparent w-full border-y border-mafia-gold/10 overflow-hidden">
-              <div className="global-carbon-fibre absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-mafia-black to-transparent z-0 pointer-events-none"></div>
+            <div className={`relative w-full border-y border-mafia-gold/10 overflow-hidden ${isMobile && isEventActive ? 'bg-black' : 'bg-transparent'}`}>
+              {(!isMobile || !isEventActive) && (
+                <>
+                  <div className="global-carbon-fibre absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+                  <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-mafia-black to-transparent z-0 pointer-events-none"></div>
+                </>
+              )}
               {/* Core sections */}
               <div id="operativi" className="section-optimize" style={{ scrollMarginTop: '100px' }}>
                 <Profiles />
@@ -264,7 +272,7 @@ export default function Home() {
                       </SectionReveal>
                     )}
                   </div>
-                ) : <div className="pb-32"></div>}
+                ) : null}
                 </BottomTerminalReveal>
               </div>
             )}

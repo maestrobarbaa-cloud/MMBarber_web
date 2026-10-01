@@ -428,6 +428,16 @@ html.noir-mode .bg-mafia-dark {
   background-color: #000000 !important;
 }
 
+/* SLOVACKO EVENT - BLUE ACCENTS */
+html.slovacko-active,
+html.slovacko-active body {
+  --color-mafia-gold: #2563eb !important;
+  --color-mafia-gold-rgb: 37, 99, 235 !important;
+  --color-mafia-gold-accent: #2563eb !important;
+  --user-accent-color: #2563eb !important; 
+  --user-accent-color-rgb: 37, 99, 235 !important;
+}
+
 html.noir-mode .global-carbon-fibre {
   display: none !important;
 }

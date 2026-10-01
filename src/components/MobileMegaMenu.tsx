@@ -29,7 +29,9 @@ import {
   Monitor
 } from "lucide-react";
 import { useUI } from "@/contexts/UIContext";
+import { getSortedEvents, MMEvent } from '@/lib/eventsList';
 import { type Language } from "@/hooks/useTranslation";
+import { toggleCompass } from "@/utils/compass";
 
 interface MobileMegaMenuProps {
   isMenuOpen: boolean;
@@ -67,7 +69,10 @@ export const MobileMegaMenu = React.memo(function MobileMegaMenu({
   const {
     isStealthMode, setIsStealthMode,
     isMobileEffectsEnabled, setIsMobileEffectsEnabled,
-    isSoundEnabled, setIsSoundEnabled
+    isSoundEnabled, setIsSoundEnabled,
+    atmosphereOverride, setAtmosphereOverride,
+    isBloodMode, setIsBloodMode,
+    graphicsTier, isLowBandwidth
   } = useUI();
 
   const handleNavLinkClick = () => {
@@ -253,6 +258,62 @@ export const MobileMegaMenu = React.memo(function MobileMegaMenu({
               </AnimatePresence>
             </div>
 
+
+            <div className={`border transition-all duration-300 ${activeFolder === 'events' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5'}`}>
+              <button 
+                onClick={() => setActiveFolder(activeFolder === 'events' ? null : 'events')}
+                className="w-full px-6 py-5 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-4">
+                  <Sparkles size={24} className={activeFolder === 'events' ? 'text-mafia-gold' : 'text-white/40'} />
+                  <span className={`font-sans font-black uppercase tracking-widest ${activeFolder === 'events' ? 'text-mafia-gold' : 'text-smoke-white'}`}>
+                    {lang === 'cs' ? 'EVENTY / ATMOSFÉRA' : 'EVENTS / ATMOSPHERE'}
+                  </span>
+                </div>
+                <ChevronDown size={20} className={`transition-transform duration-300 ${activeFolder === 'events' ? 'rotate-180 text-mafia-gold' : 'text-white/20'}`} />
+              </button>
+              <AnimatePresence>
+                {activeFolder === 'events' && (
+                  <motion.div 
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="flex flex-col px-6 pb-4 gap-4">
+                      
+                      {getSortedEvents(atmosphereOverride, isBloodMode).map((ev: MMEvent, i: number) => {
+                         const isActive = (ev.id === atmosphereOverride || (ev.id === 'c.n.y' && atmosphereOverride === 'cny') || (ev.id === 'cny' && atmosphereOverride === 'c.n.y')) && ev.isBloodMode === isBloodMode;
+                         return (
+                           <div 
+                             key={i} 
+                             onClick={() => {
+                               if (typeof window !== 'undefined' && sessionStorage.getItem("mmbarber_admin_auth") === "true") {
+                                 setAtmosphereOverride(ev.id);
+                                 setIsBloodMode(ev.isBloodMode || false);
+                                 handleNavLinkClick();
+                               }
+                             }}
+                             className={`relative border overflow-hidden transition-all text-left p-4 group flex flex-col ${isActive ? 'border-mafia-gold shadow-[0_0_15px_rgba(197,160,89,0.3)] bg-mafia-gold/5' : 'border-white/10 opacity-70 bg-black/40'} ${typeof window !== 'undefined' && sessionStorage.getItem("mmbarber_admin_auth") === "true" ? 'cursor-pointer' : ''}`}
+                           >
+                             {(graphicsTier === 'ultra' || graphicsTier === 'high') && !isLowBandwidth && (
+                                <Image src={ev.image} fill className={`object-cover pointer-events-none transition-all duration-700 ${ev.isBloodMode ? 'opacity-20 filter sepia-[1] hue-rotate-[-50deg] saturate-[5] contrast-[1.2]' : 'opacity-20 grayscale'}`} alt="" />
+                             )}
+                             <span className={`relative z-10 text-sm font-sans font-bold uppercase mb-1 ${ev.isBloodMode ? 'text-red-500' : 'text-mafia-gold'}`}>{ev.name}</span>
+                             <span className="relative z-10 text-[10px] font-mono text-white/50 mb-3">{ev.desc}</span>
+                             <div className={`relative z-10 self-start px-2 py-1 border font-mono text-[9px] uppercase tracking-widest flex items-center gap-2 ${isActive ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'bg-black/60 border-white/30 text-white/70'}`}>
+                               <span>{isActive ? 'Aktuálně Aktivní' : ev.date}</span>
+                             </div>
+                           </div>
+                         );
+                      })}
+
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <div className={`border transition-all duration-300 ${activeFolder === 'settings' ? 'border-mafia-gold bg-mafia-gold/5' : 'border-white/10 bg-white/5'}`}>
               <button 
                 onClick={() => setActiveFolder(activeFolder === 'settings' ? null : 'settings')}
@@ -339,7 +400,7 @@ export const MobileMegaMenu = React.memo(function MobileMegaMenu({
                  <Phone size={24} className="text-mafia-gold" />
                  <span className="text-[10px] font-sans font-black tracking-widest uppercase text-white">{t?.specialProjects?.callUs || 'ZAVOLAT'}</span>
               </button>
-              <button onClick={() => { window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass')); handleNavLinkClick(); }} className="bg-white/5 border border-white/10 p-5 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
+              <button onClick={() => { toggleCompass(); handleNavLinkClick(); }} className="bg-white/5 border border-white/10 p-5 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
                   <Compass size={24} className="text-mafia-gold animate-pulse" />
                   <span className="text-[10px] font-sans font-black tracking-widest uppercase text-white">{t?.header?.navigate || 'NAVIGOVAT'}</span>
               </button>

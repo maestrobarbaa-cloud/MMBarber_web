@@ -24,20 +24,20 @@ const getTomasExperience = () => {
 
 const getWebsiteValue = () => {
     // Base value in CZK (2.5 million CZK)
-    const baseValue = 2500000;
+    const baseValue = 1350000;
     
     // Growth based on time (e.g. from launch date in 2024)
-    const launchDate = new Date(2024, 0, 1).getTime();
+    const launchDate = new Date('2026-03-01T00:00:00Z').getTime();
     const now = Date.now();
     const daysSinceLaunch = Math.floor((now - launchDate) / (1000 * 60 * 60 * 24));
     
     // Daily growth metric (representing SEO growth, new features, user base)
-    const dailyGrowth = daysSinceLaunch * 3500;
+    const dailyGrowth = daysSinceLaunch * 1250;
     
     // Value of complex tech stack (AI, WebRTC, Next.js, SEO Engine)
     const techStackValue = 1250000;
     
-    const totalValue = baseValue + dailyGrowth + techStackValue;
+    const totalValue = baseValue + dailyGrowth;
     
     return new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK', maximumFractionDigits: 0 }).format(totalValue);
 };
@@ -247,8 +247,8 @@ export function getDaimonResponse(userText: string, strikes: number, lang: strin
         {
             keywords: ["hodnota", "hodnotu", "cenu webu", "cena webu", "kolik stál", "kolik stal", "stojí web", "stoji web", "hodnotu stránek", "cena stránek", "kolik stály", "za kolik", "investice do webu", "vývoj webu", "cena aplikace", "hodnota portálu", "vytvoření webu", "cena za web", "cenu za web", "hodnotu tohohle"],
             responses: [
-                `Tento web není obyčejná šablona. Je to unikátní systém na Next.js s vlastní umělou inteligencí, WebRTC komunikací, pokročilými 3D animacemi a dynamickým SEO enginem. Aktuální odhadovaná tržní hodnota tohoto ekosystému je zhruba ${getWebsiteValue()}. A díky neustálému učení algoritmů a přidávání funkcí roste každým dnem.`,
-                `Ptáš se na cenu tohoto digitálního mistrovského díla? Můj pán (Don Tomáš) ho naprogramoval úplně sám. S ohledem na vlastní AI, živou podporu, pokročilé bezpečnostní mechanismy a robustní architekturu je aktuální tržní hodnota zhruba ${getWebsiteValue()}. Zeptej se zítra, a to číslo bude zase o něco vyšší.`
+                `Tento web není obyčejná šablona od agentury, naprogramoval si to náš zakladatel Tomáš sám ve svém volném čase od března 2026. Pokud tě zajímá nacenění takového unikátního Next.js systému s 3D enginem, AI modelem, custom grafikou a dynamickým eventovým enginem – reálná tržní hodnota na zakázku by k dnešnímu dni dělala zhruba ${getWebsiteValue()}. Zeptej se zítra, a bude to zas víc, vývoj nikdy nespí!`,
+                `Ptáš se na cenu tohoto digitálního mistrovského díla? Můj pán (Don Tomáš) ho naprogramoval úplně sám od března 2026. S ohledem na vlastní AI, živou podporu, custom 3D eventy, GTA HUD prvky, částicovou fyziku a robustní architekturu je aktuální živě kalkulovaná tržní hodnota přesně ${getWebsiteValue()}. Zeptej se zítra, a to číslo bude zase o něco vyšší, protože práce na vylepšení se nikdy nezastavila.`
             ],
             suggestedActions: ["Kde vás najdu?", "Chci rezervaci"]
         },

@@ -408,6 +408,28 @@ export const MAGAZINE_CS = [
       { p: 'Žluté lupy (Mastné)', s: 'Šampon s kyselinou salicylovou a protizánětlivými složkami.', w: 'Neškrábejte pokožku, hrozí zanesení infekce.' },
       { p: 'Slábnoucí vlasy', s: 'Kofeinová a biotinová tonika + stimulační šampony.', w: 'Výsledek uvidíte nejdříve po 3 měsících používání.' }
     ]
+  },
+  {
+    type: 'toxic-ingredients',
+    title: 'Nežádoucí Složky',
+    category: 'EXPERT',
+    shortTitle: 'Toxicita',
+    subtitle: 'Co ničí vaše vlasy a pokožku',
+    content: 'Mnoho populárních kosmetických produktů (dokonce i z profesionálních řad) obsahuje složky, které z dlouhodobého hlediska škodí. Zde jsou největší hrozby.',
+    dangers: [
+      { t: 'Chlorid Sodný (Sůl)', d: 'Přidává se do šamponů pro zahuštění a do sprejů pro texturu. Extrémně vysušuje vlasové vlákno a pokožku, což z dlouhodobého hlediska způsobuje křehkost a vypadávání vlasů.' },
+      { t: 'Silikony (Dimethicone)', d: 'Vytvářejí falešný pocit hladkých vlasů, ale uzavírají kutikulu tak neprodyšně, že se dovnitř nedostane hydratace. Vlasy pod vrstvou "plastiku" doslova usychají.' },
+      { t: 'Sulfáty (SLS, SLES)', d: 'Levná, vysoce agresivní pěnidla. Kompletně odstraňují přirozený kožní maz, což vede k podráždění, svědění a nadměrné produkci mazu (paradox mastných vlasů).' },
+      { t: 'Parabeny a Ftaláty', d: 'Konzervanty a fixátory vůní, které prokazatelně narušují hormonální rovnováhu a bariérovou funkci pokožky.' }
+    ]
+  },
+  {
+    type: 'analyzer',
+    title: 'Kalkulačka Složení',
+    category: 'LABORATOŘ',
+    shortTitle: 'Analyzátor',
+    subtitle: 'Ověřte si bezpečnost vaší kosmetiky',
+    content: 'Zkopírujte složení (Ingredients/INCI) z obalu vašeho produktu a vložte ho do našeho analyzátoru. Databáze okamžitě vyhodnotí závažnost (0-10) bez pomoci umělé inteligence.',
   }
 ];
 
@@ -820,6 +842,28 @@ export const MAGAZINE_EN = [
       { p: 'Yellow Dandruff (Oily)', s: 'Shampoo with salicylic acid and anti-inflammatory ingredients.', w: 'Do not scratch the skin; there is a risk of infection.' },
       { p: 'Thinning Hair', s: 'Caffeine and biotin tonics + stimulating shampoos.', w: 'Results will be visible after at least 3 months of use.' }
     ]
+  },
+  {
+    type: 'toxic-ingredients',
+    title: 'Toxic Ingredients',
+    category: 'EXPERT',
+    shortTitle: 'Toxicity',
+    subtitle: 'What ruins your hair and skin',
+    content: 'Many popular cosmetic products contain ingredients that cause long-term damage. Explore the most common threats and how to avoid them.',
+    dangers: [
+      { t: 'Sodium Chloride (Sea Salt)', d: 'Often added to shampoos as a thickener and styling sprays for texture. Extremely dries out the hair fiber and causes breakage and hair loss in the long run.' },
+      { t: 'Silicones (Dimethicone)', d: 'They create a false sense of smooth hair, but seal the cuticle so hydration cannot enter. Hair dries up and dies underneath.' },
+      { t: 'Sulfates (SLS, SLES)', d: 'Cheap foaming agents. They aggressively remove all natural sebum from the skin, leading to dryness, irritation, and dandruff.' },
+      { t: 'Parabens', d: 'Preservatives that can disrupt hormonal balance. If you have sensitive skin, they cause strong allergic reactions.' }
+    ]
+  },
+  {
+    type: 'analyzer',
+    title: 'Ingredient Analyzer',
+    category: 'LABORATORY',
+    shortTitle: 'Analyzer',
+    subtitle: 'Verify the safety of your cosmetics',
+    content: 'Paste the ingredients (INCI) of your shampoo or product and our system will immediately reveal hidden risks based on our database (no AI used).',
   }
 ];
 

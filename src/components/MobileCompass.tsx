@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { Compass, Navigation2, X, Radar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "../hooks/useTranslation";
+import { useUI } from "@/contexts/UIContext";
 
 const TARGET_LAT = 49.0592283;
 const TARGET_LON = 17.4835047;
@@ -19,6 +20,7 @@ interface HUDState {
 
 export function MobileCompass() {
   const { t, lang } = useTranslation();
+  const { isBloodMode, isNoirMode, atmosphereOverride } = useUI();
   const [isEnabled, setIsEnabled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [rotation, setRotation] = useState(0); 
@@ -242,8 +244,8 @@ export function MobileCompass() {
         >
           {/* Background Elements */}
           <div className="fixed inset-0 z-0 pointer-events-none">
-             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-mafia-gold/10 via-transparent to-transparent opacity-40"></div>
-             <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.03)_1px,transparent_1px)] bg-[size:30px_30px]"></div>
+             <div className={`absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'from-mafia-red/20' : atmosphereOverride === 'slovacko' ? 'from-blue-500/20' : 'from-mafia-gold/10'} via-transparent to-transparent opacity-40`}></div>
+             <div className="absolute inset-0 bg-[linear-gradient(rgba(197,160,89,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(197,160,89,0.03)_1px,transparent_1px)] bg-[size:30px_30px]" style={isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? { backgroundImage: 'linear-gradient(rgba(139,0,0,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(139,0,0,0.1) 1px,transparent 1px)' } : atmosphereOverride === 'slovacko' ? { backgroundImage: 'linear-gradient(rgba(59,130,246,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.1) 1px,transparent 1px)' } : undefined}></div>
              <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,1)]"></div>
           </div>
 
@@ -251,7 +253,7 @@ export function MobileCompass() {
             {/* Close Button */}
             <button 
               onClick={closeHUD}
-              className="fixed top-6 right-6 flex items-center gap-2 text-mafia-gold z-50 p-2 pl-4 bg-mafia-black/80 rounded-full border border-mafia-gold/30 shadow-[0_0_20px_rgba(197,160,89,0.3)] active:scale-95 transition-all hover:bg-mafia-gold/10"
+              className={`fixed top-6 right-6 flex items-center gap-2 z-50 p-2 pl-4 bg-mafia-black/80 rounded-full border shadow-[0_0_20px_rgba(currentColor,0.3)] active:scale-95 transition-all ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red border-mafia-red/30 hover:bg-mafia-red/10' : atmosphereOverride === 'slovacko' ? 'text-blue-500 border-blue-500/30 hover:bg-blue-500/10' : 'text-mafia-gold border-mafia-gold/30 hover:bg-mafia-gold/10'}`}
             >
               <span className="text-[10px] font-heading font-black tracking-[0.2em] uppercase">{lang === 'cs' ? 'ZAVŘÍT' : 'CLOSE'}</span>
               <X size={20} />
@@ -294,34 +296,34 @@ export function MobileCompass() {
                 <div className="flex flex-col items-center gap-2 mb-8">
                    <div className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-mafia-red animate-pulse drop-shadow-[0_0_5px_rgba(255,0,0,1)]"></div>
-                      <h2 className="text-mafia-gold font-heading font-black text-sm uppercase tracking-[0.4em] text-center drop-shadow-[0_0_10px_rgba(197,160,89,0.5)]">
+                      <h2 className={`font-heading font-black text-sm uppercase tracking-[0.4em] text-center ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red drop-shadow-[0_0_10px_rgba(139,0,0,0.5)]' : atmosphereOverride === 'slovacko' ? 'text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'text-mafia-gold drop-shadow-[0_0_10px_rgba(197,160,89,0.5)]'}`}>
                          {t.cityGuide?.compass?.label || 'TACTICAL NAVIGATION'}
                       </h2>
                    </div>
-                   <div className="h-[1px] w-40 bg-gradient-to-r from-transparent via-mafia-gold/50 to-transparent"></div>
+                   <div className={`h-[1px] w-40 bg-gradient-to-r from-transparent ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'via-mafia-red/50' : atmosphereOverride === 'slovacko' ? 'via-blue-500/50' : 'via-mafia-gold/50'} to-transparent`}></div>
                 </div>
 
                 {/* Main Compass Area */}
                 <div className="relative w-[70vw] h-[70vw] max-w-[280px] max-h-[280px] flex items-center justify-center mb-10" onClick={() => {
                    if (!isPermissionRequested) requestPermission();
                 }}>
-                   <div className="absolute inset-[-15px] border-2 border-mafia-gold/20 rounded-full shadow-[0_0_50px_rgba(197,160,89,0.1)]"></div>
+                   <div className={`absolute inset-[-15px] border-2 rounded-full ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'border-mafia-red/20 shadow-[0_0_50px_rgba(139,0,0,0.1)]' : atmosphereOverride === 'slovacko' ? 'border-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.1)]' : 'border-mafia-gold/20 shadow-[0_0_50px_rgba(197,160,89,0.1)]'}`}></div>
                    
                    {/* Radar Sweep Effect */}
                    <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
-                      <div className="w-[200%] h-[200%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(from_0deg,transparent_0deg,rgba(197,160,89,0.2)_90deg,transparent_90deg)] animate-radar-sweep origin-center" />
-                      <div className="absolute inset-0 border border-mafia-gold/10 rounded-full"></div>
-                      <div className="absolute inset-8 border border-mafia-gold/5 rounded-full"></div>
-                      <div className="absolute inset-16 border border-mafia-gold/5 rounded-full"></div>
-                      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-mafia-gold/5"></div>
-                      <div className="absolute top-0 left-1/2 w-[1px] h-full bg-mafia-gold/5"></div>
+                      <div className={`w-[200%] h-[200%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(from_0deg,transparent_0deg,${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'rgba(139,0,0,0.2)' : atmosphereOverride === 'slovacko' ? 'rgba(59,130,246,0.2)' : 'rgba(197,160,89,0.2)'}_90deg,transparent_90deg)] animate-radar-sweep origin-center`} />
+                      <div className={`absolute inset-0 border ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'border-mafia-red/10' : atmosphereOverride === 'slovacko' ? 'border-blue-500/10' : 'border-mafia-gold/10'} rounded-full`}></div>
+                      <div className={`absolute inset-8 border ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'border-mafia-red/5' : atmosphereOverride === 'slovacko' ? 'border-blue-500/5' : 'border-mafia-gold/5'} rounded-full`}></div>
+                      <div className={`absolute inset-16 border ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'border-mafia-red/5' : atmosphereOverride === 'slovacko' ? 'border-blue-500/5' : 'border-mafia-gold/5'} rounded-full`}></div>
+                      <div className={`absolute top-1/2 left-0 w-full h-[1px] ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'bg-mafia-red/5' : atmosphereOverride === 'slovacko' ? 'bg-blue-500/5' : 'bg-mafia-gold/5'}`}></div>
+                      <div className={`absolute top-0 left-1/2 w-[1px] h-full ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'bg-mafia-red/5' : atmosphereOverride === 'slovacko' ? 'bg-blue-500/5' : 'bg-mafia-gold/5'}`}></div>
                    </div>
 
                    {/* Rotating Dial (Letters and Target Dot follow Earth) */}
                    <motion.div 
                      animate={{ rotate: userHeading !== null ? -(userHeading - calibrationOffset) : 0 }}
                      transition={{ type: "spring", stiffness: 40, damping: 15 }}
-                     className="absolute inset-0 border-2 border-mafia-gold/30 rounded-full bg-black/50 backdrop-blur-md"
+                     className={`absolute inset-0 border-2 rounded-full bg-black/50 backdrop-blur-md ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'border-mafia-red/30' : atmosphereOverride === 'slovacko' ? 'border-blue-500/30' : 'border-mafia-gold/30'}`}
                    >
                       {[...Array(72)].map((_, i) => (
                         <div 
@@ -329,21 +331,21 @@ export function MobileCompass() {
                           className={`absolute inset-0 flex items-start justify-center`}
                           style={{ transform: `rotate(${i * 5}deg)` }}
                         >
-                          <div className={`w-[2px] ${i % 18 === 0 ? 'h-4 bg-mafia-gold drop-shadow-[0_0_5px_rgba(197,160,89,1)]' : i % 9 === 0 ? 'h-3 bg-mafia-gold/60' : 'h-1.5 bg-mafia-gold/30'} mt-1`} />
+                          <div className={`w-[2px] mt-1 ${i % 18 === 0 ? (isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'h-4 bg-mafia-red drop-shadow-[0_0_5px_rgba(139,0,0,1)]' : atmosphereOverride === 'slovacko' ? 'h-4 bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,1)]' : 'h-4 bg-mafia-gold drop-shadow-[0_0_5px_rgba(197,160,89,1)]') : i % 9 === 0 ? (isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'h-3 bg-mafia-red/60' : atmosphereOverride === 'slovacko' ? 'h-3 bg-blue-500/60' : 'h-3 bg-mafia-gold/60') : (isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'h-1.5 bg-mafia-red/30' : atmosphereOverride === 'slovacko' ? 'h-1.5 bg-blue-500/30' : 'h-1.5 bg-mafia-gold/30')}`} />
                         </div>
                       ))}
 
                       <div className="absolute inset-0 flex items-start justify-center">
-                        <span className="text-2xl font-black text-mafia-gold -translate-y-8 drop-shadow-[0_0_10px_rgba(197,160,89,1)]">N</span>
+                        <span className={`text-2xl font-black -translate-y-8 ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red drop-shadow-[0_0_10px_rgba(139,0,0,1)]' : atmosphereOverride === 'slovacko' ? 'text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,1)]' : 'text-mafia-gold drop-shadow-[0_0_10px_rgba(197,160,89,1)]'}`}>N</span>
                       </div>
                       <div className="absolute inset-0 flex items-end justify-center">
-                        <span className="text-xl font-black text-mafia-gold/60 translate-y-8">S</span>
+                        <span className={`text-xl font-black translate-y-8 ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red/60' : atmosphereOverride === 'slovacko' ? 'text-blue-500/60' : 'text-mafia-gold/60'}`}>S</span>
                       </div>
                       <div className="absolute inset-0 flex items-center justify-end">
-                        <span className="text-xl font-black text-mafia-gold/60 translate-x-8">E</span>
+                        <span className={`text-xl font-black translate-x-8 ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red/60' : atmosphereOverride === 'slovacko' ? 'text-blue-500/60' : 'text-mafia-gold/60'}`}>E</span>
                       </div>
                       <div className="absolute inset-0 flex items-center justify-start">
-                        <span className="text-xl font-black text-mafia-gold/60 -translate-x-8">W</span>
+                        <span className={`text-xl font-black -translate-x-8 ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red/60' : atmosphereOverride === 'slovacko' ? 'text-blue-500/60' : 'text-mafia-gold/60'}`}>W</span>
                       </div>
 
                       {/* Target Dot - Fixed on the Dial at the Target Bearing */}
@@ -362,8 +364,8 @@ export function MobileCompass() {
 
                    {/* Center Reticle */}
                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                       <div className="w-2 h-2 bg-mafia-gold rounded-full shadow-[0_0_10px_rgba(197,160,89,1)] z-30"></div>
-                       <div className="w-12 h-12 border border-mafia-gold/40 rounded-full absolute"></div>
+                       <div className={`w-2 h-2 rounded-full z-30 ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'bg-mafia-red shadow-[0_0_10px_rgba(139,0,0,1)]' : atmosphereOverride === 'slovacko' ? 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,1)]' : 'bg-mafia-gold shadow-[0_0_10px_rgba(197,160,89,1)]'}`}></div>
+                       <div className={`w-12 h-12 border rounded-full absolute ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'border-mafia-red/40' : atmosphereOverride === 'slovacko' ? 'border-blue-500/40' : 'border-mafia-gold/40'}`}></div>
                    </div>
 
                    {/* Rotating Needle */}
@@ -399,15 +401,15 @@ export function MobileCompass() {
                        initial={{ opacity: 0, y: 10 }}
                        animate={{ opacity: 1, y: 0 }}
                        onClick={handleCalibrate}
-                       className="w-full py-2 bg-mafia-black/40 text-mafia-gold/60 border border-mafia-gold/30 text-[9px] font-mono tracking-widest uppercase hover:bg-mafia-gold hover:text-black transition-all"
+                       className={`w-full py-2 bg-mafia-black/40 border text-[9px] font-mono tracking-widest uppercase transition-all ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red/60 border-mafia-red/30 hover:bg-mafia-red hover:text-black' : atmosphereOverride === 'slovacko' ? 'text-blue-500/60 border-blue-500/30 hover:bg-blue-500 hover:text-black' : 'text-mafia-gold/60 border-mafia-gold/30 hover:bg-mafia-gold hover:text-black'}`}
                      >
                        [ KLIKNI ZDE PRO KALIBRACI SEVERU ]
                      </motion.button>
                    )}
 
-                   <div className="bg-mafia-black/80 border border-mafia-gold/30 p-6 backdrop-blur-2xl shadow-[0_0_50px_rgba(197,160,89,0.1)] relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-mafia-gold/50 to-transparent"></div>
-                      <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-mafia-gold/50 to-transparent"></div>
+                   <div className={`bg-mafia-black/80 border p-6 backdrop-blur-2xl relative overflow-hidden ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'border-mafia-red/30 shadow-[0_0_50px_rgba(139,0,0,0.1)]' : atmosphereOverride === 'slovacko' ? 'border-blue-500/30 shadow-[0_0_50px_rgba(59,130,246,0.1)]' : 'border-mafia-gold/30 shadow-[0_0_50px_rgba(197,160,89,0.1)]'}`}>
+                      <div className={`absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'via-mafia-red/50' : atmosphereOverride === 'slovacko' ? 'via-blue-500/50' : 'via-mafia-gold/50'} to-transparent`}></div>
+                      <div className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'via-mafia-red/50' : atmosphereOverride === 'slovacko' ? 'via-blue-500/50' : 'via-mafia-gold/50'} to-transparent`}></div>
                       
                       <div className="grid grid-cols-2 gap-8 mb-6 relative z-10">
                          <div className="flex flex-col gap-1 border-l-2 border-mafia-red pl-4 bg-gradient-to-r from-mafia-red/10 to-transparent py-1">
@@ -416,26 +418,26 @@ export function MobileCompass() {
                               {distanceRaw || (locationTimeout ? '---' : 'SCAN...')}
                             </span>
                          </div>
-                         <div className="flex flex-col gap-1 border-l-2 border-mafia-gold pl-4 bg-gradient-to-r from-mafia-gold/10 to-transparent py-1">
-                            <span className="text-[10px] font-mono text-mafia-gold uppercase tracking-widest drop-shadow-[0_0_5px_rgba(197,160,89,0.8)]">Kurz</span>
+                         <div className={`flex flex-col gap-1 border-l-2 pl-4 bg-gradient-to-r to-transparent py-1 ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'border-mafia-red from-mafia-red/10' : atmosphereOverride === 'slovacko' ? 'border-blue-500 from-blue-500/10' : 'border-mafia-gold from-mafia-gold/10'}`}>
+                            <span className={`text-[10px] font-mono uppercase tracking-widest ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red drop-shadow-[0_0_5px_rgba(139,0,0,0.8)]' : atmosphereOverride === 'slovacko' ? 'text-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.8)]' : 'text-mafia-gold drop-shadow-[0_0_5px_rgba(197,160,89,0.8)]'}`}>Kurz</span>
                             <span className="text-3xl font-black text-white tracking-widest uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
                               {Math.round(targetBearing)}°
                             </span>
                          </div>
                       </div>
 
-                      <div className="pt-4 border-t border-mafia-gold/20 space-y-3 relative z-10">
+                      <div className={`pt-4 border-t space-y-3 relative z-10 ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'border-mafia-red/20' : atmosphereOverride === 'slovacko' ? 'border-blue-500/20' : 'border-mafia-gold/20'}`}>
                          <div className="flex justify-between items-center text-[10px] font-mono">
-                            <span className="text-mafia-gold/50 uppercase tracking-widest flex items-center gap-2">
-                               <Radar size={12} className="text-mafia-gold" /> Geografický Cíl
+                            <span className={`uppercase tracking-widest flex items-center gap-2 ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red/50' : atmosphereOverride === 'slovacko' ? 'text-blue-500/50' : 'text-mafia-gold/50'}`}>
+                               <Radar size={12} className="currentColor" /> Geografický Cíl
                             </span>
-                            <span className="text-mafia-gold tracking-widest">49.0592 N, 17.4835 E</span>
+                            <span className={`tracking-widest ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red' : atmosphereOverride === 'slovacko' ? 'text-blue-500' : 'text-mafia-gold'}`}>49.0592 N, 17.4835 E</span>
                          </div>
                          <div className="flex justify-between items-center text-[10px] font-mono">
-                            <span className="text-mafia-gold/50 uppercase tracking-widest flex items-center gap-2">
-                               <Navigation2 size={12} className="text-mafia-gold" /> HQ Lokalita
+                            <span className={`uppercase tracking-widest flex items-center gap-2 ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red/50' : atmosphereOverride === 'slovacko' ? 'text-blue-500/50' : 'text-mafia-gold/50'}`}>
+                               <Navigation2 size={12} className="currentColor" /> HQ Lokalita
                             </span>
-                            <span className="text-mafia-gold tracking-widest">UHERSKÉ HRADIŠTĚ</span>
+                            <span className={`tracking-widest ${isBloodMode || atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny' ? 'text-mafia-red' : atmosphereOverride === 'slovacko' ? 'text-blue-500' : 'text-mafia-gold'}`}>UHERSKÉ HRADIŠTĚ</span>
                          </div>
                       </div>
                    </div>

@@ -232,7 +232,7 @@ export function Partners({ onOpenRodina }: { onOpenRodina?: () => void }) {
 
   return (
     <motion.section 
-      className="w-full py-0 px-4 bg-mafia-black relative overflow-hidden group/partners"
+      className="w-full py-0 px-4 bg-transparent relative overflow-hidden group/partners"
     >
       
       {/* Background extended from Footer */}

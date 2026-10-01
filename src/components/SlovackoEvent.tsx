@@ -52,12 +52,12 @@ export function SlovackoEvent() {
         >
           {/* Left Image */}
           <div 
-            className="absolute left-0 top-0 bottom-0 w-[15vw] max-w-[200px] bg-repeat-y opacity-30 mix-blend-screen hidden md:block"
+            className="absolute left-0 top-0 bottom-0 w-[20vw] md:w-[15vw] max-w-[200px] bg-repeat-y opacity-30 mix-blend-screen block"
             style={{ backgroundImage: 'url(/slovácko.png)', backgroundSize: 'contain', backgroundPosition: 'top left' }}
           ></div>
           {/* Right Image (Mirrored) */}
           <div 
-            className="absolute right-0 top-0 bottom-0 w-[15vw] max-w-[200px] bg-repeat-y opacity-30 mix-blend-screen hidden md:block"
+            className="absolute right-0 top-0 bottom-0 w-[20vw] md:w-[15vw] max-w-[200px] bg-repeat-y opacity-30 mix-blend-screen block"
             style={{ backgroundImage: 'url(/slovácko.png)', backgroundSize: 'contain', backgroundPosition: 'top right', transform: 'scaleX(-1)' }}
           ></div>
         </motion.div>

@@ -39,7 +39,7 @@ export function Atmosphere() {
       const override = localStorage.getItem("mmbarber_atmosphere_override");
       const tier = document.documentElement.getAttribute('data-graphics-tier');
       
-      if (override === "pure_dark") {
+      if (override === "pure_dark" || override === "slovacko") {
           setAtmosphereMode('pure_dark');
           setIsActive(false);
           return;

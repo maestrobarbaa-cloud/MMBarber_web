@@ -111,7 +111,7 @@ const LATIN_SLOGANS: Record<string, string> = {
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { t, lang } = useTranslation();
-  const { isLowBandwidth, graphicsTier: _graphicsTier } = useUI();
+  const { isLowBandwidth, graphicsTier: _graphicsTier, atmosphereOverride } = useUI();
   const graphicsTier = _graphicsTier as string;
   
   // Dynamic Hero Logic - Random Start
@@ -319,6 +319,7 @@ export function Hero() {
   }, []);
 
   const heroImage = 
+    atmosphereOverride === 'slovacko' ? "/obr/slovácko.png" :
     lang === 'zh' ? "/obr/cina.png" :
     (activeHero === 1 ? "/obr/main-hero.png" : 
     activeHero === 2 ? "/obr/hero-2.png" : 
@@ -439,7 +440,7 @@ export function Hero() {
 
       {/* PREMIUM GAMING ARROWS HIDDEN PER USER REQUEST */}
 
-      <div className="absolute inset-0 w-full h-[100dvh] xl:h-full xl:-z-10 pointer-events-none overflow-hidden hidden md:flex flex-col justify-center xl:rounded-none">
+      <div className="absolute inset-0 w-full h-[100dvh] xl:h-full xl:-z-10 pointer-events-none overflow-hidden flex flex-col justify-center xl:rounded-none">
         {/* Main background image with Clean Transition */}
         {graphicsTier !== 'lite' && (
         <AnimatePresence mode="wait">
@@ -449,7 +450,7 @@ export function Hero() {
             animate={{ 
               opacity: 1, 
               scale: (isMobile || graphicsTier === 'lite' || graphicsTier === 'low' || graphicsTier === 'medium') ? 1 : 1.03,
-              filter: isBloodMode
+              filter: (isBloodMode && !['slovacko', 'c.n.y', 'cny'].includes(atmosphereOverride as string))
                 ? "hue-rotate(-45deg) saturate(1.5) contrast(1.1)"
                 : (isGlitching ? "brightness(1.1) blur(4px)" : "none") 
             }}
@@ -460,7 +461,7 @@ export function Hero() {
                 ? { duration: 0 } 
                 : { duration: 15, ease: "easeOut" }
             }}
-            className={`absolute inset-0 w-full h-full z-0 overflow-hidden will-change-transform will-change-opacity transform-gpu ${isGlitching ? 'animate-glitch' : ''} ${heroImage.includes('blood') ? 'hero-blood-wrapper' : ''}`}
+            className={`absolute inset-0 w-full h-full z-0 overflow-hidden will-change-transform will-change-opacity transform-gpu ${isGlitching ? 'animate-glitch' : ''} ${(heroImage.includes('blood') || isBloodMode) && !['slovacko', 'c.n.y', 'cny'].includes(atmosphereOverride as string) ? 'hero-blood-wrapper' : ''}`}
           >
             {/* DATA SAVER MODE: Rendrujeme pouze CSS gradient, pokud je slabý signál */}
             {isLowBandwidth ? (
@@ -479,7 +480,7 @@ export function Hero() {
                   fill
                   sizes="100vw"
                   quality={graphicsTier === 'ultra' ? 100 : graphicsTier === 'high' ? 90 : 75}
-                  className={`absolute inset-0 w-full h-full object-cover xl:object-cover object-center ${isBloodMode ? 'hero-blood-img' : ''}`}
+                  className={`absolute inset-0 w-full h-full object-cover xl:object-cover ${['slovacko', 'c.n.y', 'cny'].includes(atmosphereOverride as string) ? 'object-top' : 'object-center'} ${(isBloodMode && !['slovacko', 'c.n.y', 'cny'].includes(atmosphereOverride as string)) ? 'hero-blood-img' : ''}`}
                 />
                 {/* Overlay Gradient - Minimized for absolute maximum clarity and vibrant colors */}
                 <div className={`absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/75 z-1 opacity-100`} />
@@ -513,7 +514,7 @@ export function Hero() {
                     className="flex flex-col items-center"
                   >
                     <motion.h1
-                      className={`hero-slogan tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 will-change-transform transform-gpu ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-2xl xs:text-3xl sm:text-5xl md:text-6xl`}
+                      className={`hero-slogan tracking-normal leading-[1.3] w-full max-w-[95vw] text-center transition-all duration-700 will-change-transform transform-gpu ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-mafia-red' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-2xl xs:text-3xl sm:text-5xl md:text-6xl`}
                       style={{
                         fontFamily: "var(--font-great-vibes), cursive",
                         filter: (isMobile || graphicsTier === 'low' || graphicsTier === 'lite') ? "drop-shadow(0 4px 6px rgba(0,0,0,0.8))" : (isEasterEgg 
@@ -552,7 +553,7 @@ export function Hero() {
               className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-8 py-3.5 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)] flex items-center justify-center w-fit mx-auto"
             >
               <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
-              <span className={`relative z-10 ${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-sans text-sm sm:text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center`} style={{ textShadow: isBloodImage ? "0 0 10px rgba(255,255,255,0.4)" : "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
+              <span className={`relative z-10 ${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold'} font-sans text-sm sm:text-base uppercase tracking-[0.2em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center`} style={{ textShadow: isBloodImage ? "0 0 10px rgba(139,0,0,0.4)" : "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
                 {t.hero.bookBtn}
               </span>
             </motion.a>
@@ -598,7 +599,7 @@ export function Hero() {
               className="flex flex-col items-center"
             >
               <motion.h1
-                className={`hero-slogan tracking-normal mb-2 leading-[1.3] w-full max-w-none px-4 whitespace-nowrap transition-all duration-700 will-change-transform transform-gpu ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-white' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-5xl md:text-6xl`}
+                className={`hero-slogan tracking-normal mb-2 leading-[1.3] w-full max-w-none px-4 whitespace-nowrap transition-all duration-700 will-change-transform transform-gpu ${isSloganHovered ? 'scale-[1.02]' : ''} ${isBloodImage ? 'text-mafia-red' : (isEasterEgg ? 'text-mafia-gold drop-shadow-[0_0_15px_var(--user-glow-color)]' : 'text-white')} text-5xl md:text-6xl`}
                 style={{
                   fontFamily: "var(--font-great-vibes), cursive",
                   filter: (isMobile || graphicsTier === 'lite' || graphicsTier === 'low') ? "drop-shadow(0 4px 6px rgba(0,0,0,0.8))" : (isEasterEgg 
@@ -664,7 +665,7 @@ export function Hero() {
                     }}
                   >
                     <h2 
-                      className={`text-5xl md:text-6xl tracking-normal leading-[1.3] whitespace-nowrap ${isBloodImage ? 'text-white/40' : (isEasterEgg ? 'text-mafia-gold' : 'text-white/60')}`}
+                      className={`text-5xl md:text-6xl tracking-normal leading-[1.3] whitespace-nowrap ${isBloodImage ? 'text-mafia-red/40' : (isEasterEgg ? 'text-mafia-gold' : 'text-white/60')}`}
                       style={{ fontFamily: "var(--font-great-vibes), cursive" }}
                     >
                       {isMounted && displayText && (displayText.length > 40 ? (LATIN_SLOGANS[mirroredText] || mirroredText) : (LATIN_SLOGANS[mirroredText] || mirroredText).split("").map((char, i) => (
@@ -772,7 +773,7 @@ export function Hero() {
                 className="group relative overflow-hidden bg-mafia-dark/80 border-2 border-mafia-gold px-10 py-4 transition-all duration-500 hover:shadow-[0_0_var(--user-glow-radius)_var(--user-glow-color)] shadow-[0_0_30px_rgba(var(--color-mafia-gold-rgb),0.2)] flex items-center justify-center w-fit mx-auto"
               >
                 <div className="absolute inset-0 block bg-mafia-gold -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
-                <span className={`relative z-10 ${isBloodImage ? 'text-white' : 'text-mafia-gold'} font-sans text-lg uppercase tracking-[0.3em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center`} style={{ textShadow: isBloodImage ? "0 0 10px rgba(255,255,255,0.4)" : "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
+                <span className={`relative z-10 ${isBloodImage ? 'text-mafia-red' : 'text-mafia-gold'} font-sans text-lg uppercase tracking-[0.3em] font-black group-hover:text-mafia-black transition-colors whitespace-nowrap text-center`} style={{ textShadow: isBloodImage ? "0 0 10px rgba(139,0,0,0.4)" : "0 0 var(--user-glow-radius) var(--user-glow-color)" }}>
                   {t.hero.bookBtn}
                 </span>
               </motion.a>

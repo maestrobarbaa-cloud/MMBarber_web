@@ -25,6 +25,7 @@ import { playSound } from "../utils/audio";
 import { getUserRatingsData } from "@/utils/voting";
 import { useGame } from "@/contexts/GameContext";
 import { getMegaMenuData } from "@/data/megaMenuData";
+import { toggleCompass } from "@/utils/compass";
 
 const DesktopMegaMenu = dynamic(() => import("./DesktopMegaMenu").then(mod => mod.DesktopMegaMenu), { ssr: false });
 const MobileMegaMenu = dynamic(() => import("./MobileMegaMenu").then(mod => mod.MobileMegaMenu), { ssr: false });
@@ -623,7 +624,7 @@ export function Header() {
         <div className="xl:hidden flex items-center gap-2 relative z-[30001]">
           <button
             onClick={() => {
-              window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'));
+              toggleCompass();
               playSound("/sounds/bullet-hit.mp3", 0.4);
             }}
             className="flex items-center gap-2 px-3 py-2.5 bg-mafia-black border-2 border-mafia-gold/50 hover:bg-mafia-gold/20 active:scale-95 transition-all shadow-[0_0_15px_rgba(var(--color-mafia-gold-rgb),0.2)]"

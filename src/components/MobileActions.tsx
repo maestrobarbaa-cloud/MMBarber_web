@@ -8,6 +8,7 @@ import { trackEvent } from "../utils/analytics";
 import Link from "next/link";
 import Image from "@/components/OptimizedImage";
 import { playSound } from "../utils/audio";
+import { toggleCompass } from "../utils/compass";
 
 export function MobileActions() {
   const { t } = useTranslation();
@@ -136,7 +137,7 @@ export function MobileActions() {
                  </button>
 
                  <button onClick={() => { 
-                   window.dispatchEvent(new CustomEvent('mmbarber-toggle-compass'));
+                   toggleCompass();
                    toggleMenu();
                    playBulletHit();
                  }} className="p-4 rounded-full border border-mafia-gold text-mafia-gold active:scale-90 transition-transform hover:bg-mafia-gold hover:text-mafia-black">

@@ -108,9 +108,6 @@ export function BottomTerminalReveal({ children, thresholdMultiplier = 1 }: Bott
 
   return (
     <div className="relative w-full">
-      {!effectiveUnlockLevel && (
-        <div className="w-full h-12 pointer-events-none" aria-hidden="true" />
-      )}
 
       <motion.div
         initial={{ opacity: 0, filter: "blur(20px)", y: 20 }}

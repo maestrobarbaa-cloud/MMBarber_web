@@ -14,7 +14,7 @@ export function OpenFreeMap() {
 
   const mapContainer = useRef<HTMLDivElement>(null);
   const [activeEasterEgg, setActiveEasterEgg] = useState<any>(null);
-  const { isHistoryUnlocked, setIsHistoryUnlocked, isBloodMode, isNoirMode } = useUI();
+  const { isHistoryUnlocked, setIsHistoryUnlocked, isBloodMode, isNoirMode, atmosphereOverride } = useUI();
 
   useEffect(() => {
     let mapInstance: any = null;
@@ -40,6 +40,8 @@ export function OpenFreeMap() {
           // Zjištění aktuálního tématu pro mapu (detekujeme rovnou z DOMu pro maximální spolehlivost + UIContext fallback)
           const isBlood = isBloodMode || document.documentElement.classList.contains('theme-blood');
           const isNoir = isNoirMode || document.documentElement.classList.contains('noir-mode');
+          const isSlovacko = atmosphereOverride === 'slovacko' || document.documentElement.classList.contains('slovacko-active');
+          const isCNY = atmosphereOverride === 'c.n.y' || atmosphereOverride === 'cny';
           const graphicsTier = localStorage.getItem('mmbarber_graphics_tier') || 'low';
           const isWeakerGraphics = ['lite', 'low', 'medium', 'soft'].includes(graphicsTier);
           
@@ -71,6 +73,16 @@ export function OpenFreeMap() {
             colorGoldDark = '#a0a0a0';
             colorRoadMain = '#606060';
             colorRoadSub = '#404040';
+          } else if (isSlovacko) {
+            colorGold = '#ffffff'; // Bílé budovy a detaily
+            colorGoldDark = '#cccccc'; // Světle šedé okraje
+            colorRoadMain = '#3b82f6'; // Jasně modré hlavní cesty
+            colorRoadSub = '#1e3a8a'; // Tmavě modré vedlejší cesty
+          } else if (isCNY) {
+            colorGold = '#d32f2f'; // Červené budovy
+            colorGoldDark = '#9a0007'; // Tmavší červené okraje
+            colorRoadMain = '#ffca28'; // Zlaté/žluté hlavní cesty
+            colorRoadSub = '#ffb300'; // Tmavší zlaté vedlejší cesty
           }
 
           // Modifikace stylu pro aktuální téma
@@ -85,10 +97,10 @@ export function OpenFreeMap() {
                 layer.layout.visibility = 'visible';
                 
                 if (layer.paint && layer.layout['text-field']) {
-                  let textColor = isBlood ? '#ff4444' : isNoir ? '#dddddd' : colorGold;
+                  let textColor = isBlood ? '#ff4444' : isNoir ? '#dddddd' : isSlovacko ? '#ffffff' : isCNY ? '#ffca28' : colorGold;
                   // Města dostanou trochu jemnější/tmavší odstín než kontinenty
                   if (isCity && !isContinent) {
-                    textColor = isBlood ? '#cc4444' : isNoir ? '#999999' : colorGoldDark;
+                    textColor = isBlood ? '#cc4444' : isNoir ? '#999999' : isSlovacko ? '#e2e2e2' : isCNY ? '#ffb300' : colorGoldDark;
                   }
                   
                   layer.paint['text-color'] = textColor;
@@ -119,7 +131,7 @@ export function OpenFreeMap() {
               
               // Jemný obrys kolem vodních ploch (kreslí hranice ostrovů a kontinentů)
               if (layer.id.includes('water') && layer.paint && layer.type === 'fill') {
-                 const coastColor = isBlood ? '#9a001a' : isNoir ? '#222222' : '#4a3a18';
+                 const coastColor = isBlood ? '#9a001a' : isNoir ? '#222222' : isSlovacko ? '#1e3a8a' : isCNY ? '#b71c1c' : '#4a3a18';
                  layer.paint['fill-outline-color'] = coastColor;
               }
             }
@@ -133,7 +145,7 @@ export function OpenFreeMap() {
             if (layer.id.includes('transportation') || layer.id.includes('road') || layer.id.includes('highway') || layer.id.includes('street') || layer.id.includes('bridge') || layer.id.includes('tunnel') || layer.id.includes('path') || layer.id.includes('track')) {
               if (layer.paint && layer.paint['line-color']) {
                 if (layer.id.includes('path') || layer.id.includes('track') || layer.id.includes('pedestrian') || layer.id.includes('footway') || layer.id.includes('dirt')) {
-                  layer.paint['line-color'] = isNoir ? '#111111' : isBlood ? '#ff9999' : '#241a09'; // Tmavší barva pro polní cesty/pěšiny
+                  layer.paint['line-color'] = isNoir ? '#111111' : isBlood ? '#ff9999' : isSlovacko ? '#172554' : isCNY ? '#ff8f00' : '#241a09'; // Tmavší barva pro polní cesty/pěšiny
                   if (layer.type === 'line') layer.paint['line-width'] = 1; // Ztenčení polních cest
                 } else if (layer.id.includes('major') || layer.id.includes('primary') || layer.id.includes('secondary') || layer.id.includes('motorway')) {
                   layer.paint['line-color'] = colorRoadMain; 
@@ -160,7 +172,7 @@ export function OpenFreeMap() {
             // Koleje / Železnice
             if (layer.id.includes('rail') || layer.id.includes('train') || layer.id.includes('transit')) {
               if (layer.paint && layer.paint['line-color']) {
-                const railColor = isNoir ? '#444444' : isBlood ? '#ffb3b3' : '#4a3a18';
+                const railColor = isNoir ? '#444444' : isBlood ? '#ffb3b3' : isSlovacko ? '#60a5fa' : isCNY ? '#ffd54f' : '#4a3a18';
                 layer.paint['line-color'] = railColor;
                 if (layer.type === 'line') {
                   layer.paint['line-width'] = 2;
@@ -171,7 +183,7 @@ export function OpenFreeMap() {
 
             // Letištní plochy / Runways
             if (layer.id.includes('aeroway') || layer.id.includes('airport') || layer.id.includes('runway') || layer.id.includes('taxiway')) {
-              const runwayColor = isBlood ? '#ff9999' : isNoir ? '#ffffff' : '#fce883'; // Bright glowing colors
+              const runwayColor = isBlood ? '#ff9999' : isNoir ? '#ffffff' : isSlovacko ? '#3b82f6' : isCNY ? '#ffca28' : '#fce883'; // Bright glowing colors
               
               if (layer.paint && layer.paint['fill-color']) {
                 layer.paint['fill-color'] = colorRoadSub; // Base concrete color for the polygon
@@ -199,7 +211,7 @@ export function OpenFreeMap() {
               if (layer.minzoom) layer.minzoom = 3;
               
               if (layer.paint && layer.paint['line-color']) {
-                const boundaryColor = isBlood ? '#8b0000' : isNoir ? '#555555' : '#8a733f';
+                const boundaryColor = isBlood ? '#8b0000' : isNoir ? '#555555' : isSlovacko ? '#3b82f6' : isCNY ? '#ffca28' : '#8a733f';
                 layer.paint['line-color'] = boundaryColor;
                 
                 if (layer.type === 'line') {
@@ -229,7 +241,7 @@ export function OpenFreeMap() {
           });
 
           // Barva pro značky na mapě (X, tajná schránka atd.)
-          const markerColor = isBlood ? '#ff6666' : isNoir ? '#e2e2e2' : colorGold;
+          const markerColor = isBlood ? '#ff6666' : isNoir ? '#e2e2e2' : isSlovacko ? '#3b82f6' : isCNY ? '#ffca28' : colorGold;
 
           // Vytvoření vlastního "mafiánského" markeru od ruky
           const el = document.createElement('div');
@@ -451,9 +463,9 @@ export function OpenFreeMap() {
           competitors.forEach((comp) => {
             const compEl = document.createElement('div');
             // Tmavší barvy, aby ikony více vynikly na světlé/tmavé mapě
-            const skullColor = isBlood ? '#ff6666' : isNoir ? '#505050' : '#a87a20'; 
-            const skullGlow = isBlood ? 'rgba(255,102,102,0.5)' : isNoir ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.8)';
-            const hoverGlow = isBlood ? '#ff9999' : isNoir ? '#ffffff' : '#fce883';
+            const skullColor = isBlood ? '#ff6666' : isNoir ? '#505050' : isSlovacko ? '#3b82f6' : '#a87a20'; 
+            const skullGlow = isBlood ? 'rgba(255,102,102,0.5)' : isNoir ? 'rgba(0,0,0,0.8)' : isSlovacko ? 'rgba(59,130,246,0.5)' : 'rgba(0,0,0,0.8)';
+            const hoverGlow = isBlood ? '#ff9999' : isNoir ? '#ffffff' : isSlovacko ? '#60a5fa' : '#fce883';
 
             compEl.innerHTML = `
               <div style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50px; height: 50px; opacity: 0.9; cursor: not-allowed; transition: all 0.3s ease;" class="hover:scale-125 hover:opacity-100 group" title="${comp.name}">
@@ -562,7 +574,7 @@ export function OpenFreeMap() {
         mapInstance.remove();
       }
     };
-  }, [isBloodMode, isNoirMode]);
+  }, [isBloodMode, isNoirMode, atmosphereOverride]);
 
   return (
     <div className="relative w-full h-full">
