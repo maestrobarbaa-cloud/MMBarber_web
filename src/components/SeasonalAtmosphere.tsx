@@ -14,12 +14,23 @@ interface Particle {
   opacity: number;
   color?: string;
   particleColorRGB?: string;
-  type?: 'sakura_petal' | 'heart' | 'snow' | 'ember' | 'leaf' | 'orb' | 'lantern' | 'poppy' | 'candle' | 'neon_dash' | 'linden_leaf' | 'star' | 'gear' | 'olive_leaf' | 'sun' | 'maple_leaf' | 'cross' | 'crescent' | 'music_note' | 'crown' | 'racing_shield' | 'diamond';
+  type?: 'sakura_petal' | 'heart' | 'snow' | 'ember' | 'leaf' | 'orb' | 'lantern' | 'poppy' | 'candle' | 'neon_dash' | 'linden_leaf' | 'star' | 'gear' | 'olive_leaf' | 'sun' | 'maple_leaf' | 'cross' | 'crescent' | 'music_note' | 'crown' | 'racing_shield' | 'diamond' | 'slovak_cross' | 'lion' | 'eagle';
 }
 
 interface SeasonalAtmosphereProps {
   theme: ThemeType;
 }
+
+// CZ fallback
+let czArmsImg: HTMLImageElement | null = null;
+if (typeof window !== 'undefined') {
+  czArmsImg = new Image();
+  czArmsImg.crossOrigin = 'anonymous';
+  czArmsImg.src = 'https://upload.wikimedia.org/wikipedia/commons/e/e3/Coat_of_arms_of_the_Czech_Republic.svg';
+}
+
+const SK_CROSS_PATH = typeof window !== 'undefined' ? new Path2D("M241.4 209c10.7.2 31.6.6 50.1-5.6 0 0-.4 6.7-.4 14.4s.5 14.4.5 14.4c-17-5.7-38.1-5.8-50.2-5.7v41.2h-16.8v-41.2c-12-.1-33.1 0-50.1 5.7 0 0 .5-6.7.5-14.4s-.5-14.4-.5-14.4c18.5 6.2 39.4 5.8 50 5.6v-25.9c-9.7 0-23.7.4-39.6 5.7 0 0 .5-6.6.5-14.4 0-7.7-.5-14.4-.5-14.4 15.9 5.3 29.9 5.8 39.6 5.7-.5-16.4-5.3-37-5.3-37s9.9.7 13.8.7 13.8-.7 13.8-.7-4.8 20.6-5.3 37c9.7.1 23.7-.4 39.6-5.7 0 0-.5 6.7-.5 14.4s.5 14.4.5 14.4a119 119 0 0 0-39.7-5.7v26z") : null;
+const SK_HILLS_PATH = typeof window !== 'undefined' ? new Path2D("M233 263.3c-19.9 0-30.5 27.5-30.5 27.5s-6-13-22.2-13c-11 0-19 9.7-24.2 18.8 20 31.7 51.9 51.3 76.9 63.4 25-12 57-31.7 76.9-63.4-5.2-9-13.2-18.8-24.2-18.8-16.2 0-22.2 13-22.2 13S253 263.3 233 263.3") : null;
 
 export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -59,7 +70,9 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
         return { particle: 'orb', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 202, 40' };
       case 'national-cz':
       case 'czech':
+        return { particle: 'lion', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 255, 255', particleColors: ['255, 0, 0', '255, 255, 255', '0, 100, 255'] };
       case 'national-sk':
+        return { particle: 'slovak_cross', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 255, 255', particleColors: ['255, 0, 0', '255, 255, 255', '0, 100, 255'] };
       case 'national-ru':
         return { particle: 'linden_leaf', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 255, 255', particleColors: ['255, 0, 0', '255, 255, 255', '0, 100, 255'] };
       case 'national-usa':
@@ -128,7 +141,7 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height - height,
-          size: (config.particle === 'lantern' || config.particle === 'maple_leaf' || config.particle === 'linden_leaf' || config.particle === 'gear' || config.particle === 'sun' || config.particle === 'crescent' || config.particle === 'cross' || config.particle === 'crown' || config.particle === 'racing_shield' || config.particle === 'diamond') ? Math.random() * 15 + 10 : config.particle === 'candle' ? Math.random() * 5 + 8 : (config.particle === 'snow' ? Math.random() * 3 + 1 : Math.random() * 8 + 3),
+          size: (config.particle === 'lantern' || config.particle === 'maple_leaf' || config.particle === 'linden_leaf' || config.particle === 'gear' || config.particle === 'sun' || config.particle === 'crescent' || config.particle === 'cross' || config.particle === 'crown' || config.particle === 'racing_shield' || config.particle === 'diamond' || config.particle === 'slovak_cross' || config.particle === 'lion' || config.particle === 'eagle') ? Math.random() * 15 + 10 : config.particle === 'candle' ? Math.random() * 5 + 8 : (config.particle === 'snow' ? Math.random() * 3 + 1 : Math.random() * 8 + 3),
           speedY: (config.particle === 'ember' || config.particle === 'lantern' || config.particle === 'candle') ? -(Math.random() * 1.0 + 0.3) : Math.random() * 1.5 + 0.5,
           speedX: Math.random() * 1 - 0.5,
           angle: Math.random() * 360,
@@ -547,6 +560,92 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
       ctx.restore();
     };
 
+    const drawSlovakCross = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      // Scale based on original SVG viewport size
+      const scale = p.size / 60;
+      ctx.scale(scale, scale);
+      ctx.translate(-233, -245); // Center the path
+      
+      const c = p.particleColorRGB || '255, 255, 255';
+      ctx.fillStyle = `rgba(${c}, ${p.opacity})`;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = `rgba(${c}, 0.5)`;
+      
+      if (SK_CROSS_PATH && SK_HILLS_PATH) {
+        ctx.fill(SK_CROSS_PATH);
+        ctx.fill(SK_HILLS_PATH);
+      }
+      ctx.restore();
+    };
+
+    const drawEagle = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      const c = p.particleColorRGB || '255, 255, 255';
+      ctx.fillStyle = `rgba(${c}, ${p.opacity})`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = `rgba(${c}, 0.5)`;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, p.size * 0.4, p.size * 0.7, 0, 0, Math.PI * 2);
+      ctx.arc(p.size * 0.2, -p.size * 0.8, p.size * 0.3, 0, Math.PI * 2);
+      ctx.moveTo(-p.size * 0.3, -p.size * 0.3); ctx.lineTo(-p.size * 1.5, -p.size * 0.9); ctx.lineTo(-p.size * 1.0, 0); ctx.lineTo(-p.size * 0.3, p.size * 0.3);
+      ctx.moveTo(p.size * 0.3, -p.size * 0.3); ctx.lineTo(p.size * 1.5, -p.size * 0.9); ctx.lineTo(p.size * 1.0, 0); ctx.lineTo(p.size * 0.3, p.size * 0.3);
+      ctx.moveTo(-p.size * 0.4, p.size * 0.5); ctx.lineTo(0, p.size * 1.3); ctx.lineTo(p.size * 0.4, p.size * 0.5);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const drawLion = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      try {
+        if (czArmsImg && czArmsImg.complete && czArmsImg.naturalWidth > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          ctx.globalAlpha = p.opacity;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `rgba(255, 255, 255, 0.5)`;
+          ctx.drawImage(czArmsImg, -p.size, -p.size * 1.15, p.size * 2, p.size * 2.3);
+          ctx.restore();
+          return;
+        }
+      } catch (e) {
+        // Fallback drawing if image fails or gets tainted
+      }
+      
+      // Fallback geometric lion head
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      const c = p.particleColorRGB || '255, 255, 255';
+      ctx.fillStyle = `rgba(${c}, ${p.opacity})`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = `rgba(${c}, 0.5)`;
+      ctx.beginPath();
+      for(let i=0; i<16; i++) {
+        let r = (i%2===0) ? p.size : p.size * 0.75;
+        let a = (i/16) * Math.PI * 2;
+        ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+      }
+      ctx.fill();
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(0, 0, p.size * 0.45, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.beginPath();
+      ctx.arc(-p.size*0.15, -p.size*0.1, p.size*0.12, 0, Math.PI*2);
+      ctx.arc(p.size*0.15, -p.size*0.1, p.size*0.12, 0, Math.PI*2);
+      ctx.moveTo(-p.size*0.1, p.size*0.2);
+      ctx.lineTo(p.size*0.1, p.size*0.2);
+      ctx.lineTo(0, p.size*0.35);
+      ctx.fill();
+      ctx.restore();
+    };
+
     const drawOrb = (ctx: CanvasRenderingContext2D, p: Particle) => {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -646,7 +745,7 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
       const time = Date.now() * 0.001;
       const globalWind = Math.sin(time * 0.5) * 0.5;
       
-      particlesRef.current.forEach(p => {
+      particlesRef.current.forEach((p, index) => {
         p.y += p.speedY;
         p.x += p.speedX + globalWind;
         p.angle += p.spin;
@@ -685,6 +784,11 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
         else if (config.particle === 'music_note') drawMusicNote(ctx, p);
         else if (config.particle === 'crown') drawCrown(ctx, p);
         else if (config.particle === 'diamond') drawDiamond(ctx, p);
+        else if (config.particle === 'slovak_cross') drawSlovakCross(ctx, p);
+        else if (config.particle === 'lion') {
+          if (index % 2 === 0) drawLion(ctx, p);
+          else drawEagle(ctx, p);
+        }
       });
 
       requestRef.current = requestAnimationFrame(animate);
