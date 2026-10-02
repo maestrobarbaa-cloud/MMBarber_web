@@ -56,7 +56,25 @@ export const ALL_EVENTS: MMEvent[] = [
   { id: 'national-es', name: 'Španělsko', desc: 'Fiesta Nacional', date: '12. Října', image: '/obr/main-hero.png', monthIndex: 9, isAdminOnly: true },
   { id: 'national-ca', name: 'Kanada', desc: 'Canada Day', date: '1. Července', image: '/obr/main-hero.png', monthIndex: 6, isAdminOnly: true },
   { id: 'national-tr', name: 'Turecko', desc: 'Den republiky', date: '29. Října', image: '/obr/main-hero.png', monthIndex: 9, isAdminOnly: true },
-  { id: 'national-ru', name: 'Rusko', desc: 'Den Ruska', date: '12. Června', image: '/obr/main-hero.png', monthIndex: 5, isAdminOnly: true }
+  { id: 'national-ru', name: 'Rusko', desc: 'Den Ruska', date: '12. Června', image: '/obr/main-hero.png', monthIndex: 5, isAdminOnly: true },
+  { id: 'national-fr', name: 'Francie', desc: 'Dobytí Bastily', date: '14. Července', image: '/obr/main-hero.png', monthIndex: 6, isAdminOnly: true },
+  { id: 'national-gr', name: 'Řecko', desc: 'Den nezávislosti', date: '25. Března', image: '/obr/main-hero.png', monthIndex: 2, isAdminOnly: true },
+  { id: 'national-pl', name: 'Polsko', desc: 'Svátek nezávislosti', date: '11. Listopadu', image: '/obr/main-hero.png', monthIndex: 10, isAdminOnly: true },
+  { id: 'national-hu', name: 'Maďarsko', desc: 'Vznik státu', date: '20. Srpna', image: '/obr/main-hero.png', monthIndex: 7, isAdminOnly: true },
+  { id: 'national-lt', name: 'Litva', desc: 'Obnovení státnosti', date: '16. Února', image: '/obr/main-hero.png', monthIndex: 1, isAdminOnly: true },
+  { id: 'national-lv', name: 'Lotyšsko', desc: 'Vyhlášení nezávislosti', date: '18. Listopadu', image: '/obr/main-hero.png', monthIndex: 10, isAdminOnly: true },
+  { id: 'national-ee', name: 'Estonsko', desc: 'Den nezávislosti', date: '24. Února', image: '/obr/main-hero.png', monthIndex: 1, isAdminOnly: true },
+  { id: 'national-nl', name: 'Nizozemsko', desc: 'Králův den', date: '27. Dubna', image: '/obr/main-hero.png', monthIndex: 3, isAdminOnly: true },
+  { id: 'national-be', name: 'Belgie', desc: 'Národní den', date: '21. Července', image: '/obr/main-hero.png', monthIndex: 6, isAdminOnly: true },
+  { id: 'national-pt', name: 'Portugalsko', desc: 'Den Portugalska', date: '10. Června', image: '/obr/main-hero.png', monthIndex: 5, isAdminOnly: true },
+  { id: 'national-ro', name: 'Rumunsko', desc: 'Den sjednocení', date: '1. Prosince', image: '/obr/main-hero.png', monthIndex: 11, isAdminOnly: true },
+  { id: 'national-bg', name: 'Bulharsko', desc: 'Den osvobození', date: '3. Března', image: '/obr/main-hero.png', monthIndex: 2, isAdminOnly: true },
+  { id: 'national-hr', name: 'Chorvatsko', desc: 'Den státnosti', date: '30. Května', image: '/obr/main-hero.png', monthIndex: 4, isAdminOnly: true },
+  { id: 'national-si', name: 'Slovinsko', desc: 'Den státnosti', date: '25. Června', image: '/obr/main-hero.png', monthIndex: 5, isAdminOnly: true },
+  { id: 'national-dk', name: 'Dánsko', desc: 'Den ústavy', date: '5. Června', image: '/obr/main-hero.png', monthIndex: 5, isAdminOnly: true },
+  { id: 'national-se', name: 'Švédsko', desc: 'Národní den', date: '6. Června', image: '/obr/main-hero.png', monthIndex: 5, isAdminOnly: true },
+  { id: 'national-fi', name: 'Finsko', desc: 'Den nezávislosti', date: '6. Prosince', image: '/obr/main-hero.png', monthIndex: 11, isAdminOnly: true },
+  { id: 'national-ie', name: 'Irsko', desc: 'Sv. Patrik', date: '17. Března', image: '/obr/main-hero.png', monthIndex: 2, isAdminOnly: true }
 ];
 
 export function getSortedEvents(activeAtmosphere: string, isBlood: boolean, isAdmin: boolean = false): MMEvent[] {

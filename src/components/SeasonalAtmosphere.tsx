@@ -14,19 +14,82 @@ interface Particle {
   opacity: number;
   color?: string;
   particleColorRGB?: string;
-  type?: 'sakura_petal' | 'heart' | 'snow' | 'ember' | 'leaf' | 'orb' | 'lantern' | 'poppy' | 'candle' | 'neon_dash' | 'linden_leaf' | 'star' | 'gear' | 'olive_leaf' | 'sun' | 'maple_leaf' | 'cross' | 'crescent' | 'music_note' | 'crown' | 'racing_shield' | 'diamond' | 'slovak_cross' | 'lion' | 'eagle';
+  type?: string;
 }
 
 interface SeasonalAtmosphereProps {
   theme: ThemeType;
 }
 
-// CZ fallback
-let czArmsImg: HTMLImageElement | null = null;
+// Czech National Symbols
+let czLionImg: HTMLImageElement | null = null;
+let czEagleImg: HTMLImageElement | null = null;
+let czSilesianEagleImg: HTMLImageElement | null = null;
+
+// Other EU Symbols
+let deEagleImg: HTMLImageElement | null = null;
+let atEagleImg: HTMLImageElement | null = null;
+let plEagleImg: HTMLImageElement | null = null;
+
 if (typeof window !== 'undefined') {
-  czArmsImg = new Image();
-  czArmsImg.crossOrigin = 'anonymous';
-  czArmsImg.src = 'https://upload.wikimedia.org/wikipedia/commons/e/e3/Coat_of_arms_of_the_Czech_Republic.svg';
+  czLionImg = new Image();
+  czLionImg.src = '/obr/national/cz_lion.svg';
+  czEagleImg = new Image();
+  czEagleImg.src = '/obr/national/cz_eagle.svg';
+  czSilesianEagleImg = new Image();
+  czSilesianEagleImg.src = '/obr/national/cz_silesian.svg';
+  
+  deEagleImg = new Image();
+  deEagleImg.src = '/obr/national/de_eagle.svg';
+  
+  atEagleImg = new Image();
+  atEagleImg.crossOrigin = 'anonymous';
+  atEagleImg.src = 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Coat_of_arms_of_Austria.svg';
+
+  plEagleImg = new Image();
+  plEagleImg.crossOrigin = 'anonymous';
+  plEagleImg.src = 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Coat_of_arms_of_Poland.svg';
+}
+
+// Extra National Symbols dynamically loaded (zbytek Evropy a světa)
+export const extraNationalSymbols: Record<string, string> = {
+  usa_eagle: '/obr/national/usa_eagle.svg', // Local
+  uk_arms: '/obr/national/uk_arms.svg', // Local
+  it_emblem: '/obr/national/it_emblem.svg', // Local
+  es_shield: 'https://upload.wikimedia.org/wikipedia/commons/8/85/Coat_of_arms_of_Spain.svg', // Remote
+  ca_arms: '/obr/national/ca_arms.svg', // Local
+  ru_eagle: '/obr/national/ru_eagle.svg', // Local
+  lt_vytis: '/obr/national/lt_vytis.svg', // Local
+  lv_arms: '/obr/national/lv_arms.svg', // Local
+  ee_arms: '/obr/national/ee_arms.svg', // Local
+  nl_arms: '/obr/national/nl_arms.svg', // Local
+  be_arms: '/obr/national/be_arms.svg', // Local
+  pt_arms: '/obr/national/pt_arms.svg', // Local
+  ro_arms: '/obr/national/ro_arms.svg', // Local
+  bg_arms: '/obr/national/bg_arms.svg', // Local
+  hr_arms: '/obr/national/hr_arms.svg', // Local
+  si_arms: '/obr/national/si_arms.svg', // Local
+  fr_arms: 'https://upload.wikimedia.org/wikipedia/commons/b/b7/Armoiries_de_la_R%C3%A9publique_fran%C3%A7aise.svg', // Remote
+  gr_arms: '/obr/national/gr_arms.svg', // Local
+  sk_arms: '/obr/national/sk_arms.svg', // Local
+  se_arms: '/obr/national/se_arms.svg', // Local
+  fi_arms: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Coat_of_arms_of_Finland.svg', // Remote
+  dk_arms: 'https://upload.wikimedia.org/wikipedia/commons/1/1a/National_coat_of_arms_of_Denmark.svg', // Remote
+  ie_arms: 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Coat_of_arms_of_Ireland.svg', // Remote
+  ch_arms: '/obr/national/ch_arms.svg', // Local
+  tr_emblem: '/obr/national/tr_emblem.svg' // Local
+};
+
+const extraImages: Record<string, HTMLImageElement> = {};
+if (typeof window !== 'undefined') {
+  Object.entries(extraNationalSymbols).forEach(([key, url]) => {
+     const img = new Image();
+     if (url.startsWith('http')) {
+       img.crossOrigin = 'anonymous';
+     }
+     img.src = url;
+     extraImages[key] = img;
+  });
 }
 
 const SK_CROSS_PATH = typeof window !== 'undefined' ? new Path2D("M241.4 209c10.7.2 31.6.6 50.1-5.6 0 0-.4 6.7-.4 14.4s.5 14.4.5 14.4c-17-5.7-38.1-5.8-50.2-5.7v41.2h-16.8v-41.2c-12-.1-33.1 0-50.1 5.7 0 0 .5-6.7.5-14.4s-.5-14.4-.5-14.4c18.5 6.2 39.4 5.8 50 5.6v-25.9c-9.7 0-23.7.4-39.6 5.7 0 0 .5-6.6.5-14.4 0-7.7-.5-14.4-.5-14.4 15.9 5.3 29.9 5.8 39.6 5.7-.5-16.4-5.3-37-5.3-37s9.9.7 13.8.7 13.8-.7 13.8-.7-4.8 20.6-5.3 37c9.7.1 23.7-.4 39.6-5.7 0 0-.5 6.7-.5 14.4s.5 14.4.5 14.4a119 119 0 0 0-39.7-5.7v26z") : null;
@@ -70,29 +133,64 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
         return { particle: 'orb', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 202, 40' };
       case 'national-cz':
       case 'czech':
-        return { particle: 'lion', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 255, 255', particleColors: ['255, 0, 0', '255, 255, 255', '0, 100, 255'] };
+        return { particle: 'lion', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '17, 69, 126', particleColors: ['255, 0, 0', '255, 255, 255', '0, 100, 255'] };
       case 'national-sk':
-        return { particle: 'slovak_cross', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 255, 255', particleColors: ['255, 0, 0', '255, 255, 255', '0, 100, 255'] };
+      case 'national-hu':
+        return { particle: 'sk_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '11, 78, 162', particleColors: ['255, 0, 0', '255, 255, 255', '0, 100, 255'] };
       case 'national-ru':
-        return { particle: 'linden_leaf', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 255, 255', particleColors: ['255, 0, 0', '255, 255, 255', '0, 100, 255'] };
+        return { particle: 'ru_eagle', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '213, 43, 30', particleColors: ['255, 0, 0', '255, 255, 255', '0, 100, 255'] };
       case 'national-usa':
-        return { particle: 'star', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 255, 255', particleColors: ['255, 0, 0', '255, 255, 255', '0, 0, 150'] };
+        return { particle: 'usa_eagle', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '179, 25, 66', particleColors: ['255, 0, 0', '255, 255, 255', '0, 0, 150'] };
       case 'national-uk':
-        return { particle: 'crown', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 255, 255', particleColors: ['255, 0, 0', '255, 255, 255', '0, 0, 150'] };
+        return { particle: 'uk_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '1, 33, 105', particleColors: ['255, 0, 0', '255, 255, 255', '0, 0, 150'] };
       case 'national-de':
-        return { particle: 'gear', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 204, 0', particleColors: ['150, 150, 150', '255, 0, 0', '255, 204, 0'] };
+        return { particle: 'de_eagle', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '255, 204, 0', particleColors: ['150, 150, 150', '255, 0, 0', '255, 204, 0'] };
       case 'national-at':
-        return { particle: 'music_note', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 0, 0', particleColors: ['255, 0, 0', '255, 255, 255'] };
+        return { particle: 'at_eagle', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '255, 0, 0', particleColors: ['255, 0, 0', '255, 255, 255'] };
       case 'national-ch':
-        return { particle: 'cross', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 0, 0', particleColors: ['255, 0, 0', '255, 255, 255'] };
+        return { particle: 'ch_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '255, 0, 0', particleColors: ['255, 0, 0', '255, 255, 255'] };
       case 'national-ca':
-        return { particle: 'maple_leaf', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 0, 0', particleColors: ['255, 0, 0', '255, 255, 255'] };
+        return { particle: 'ca_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '255, 0, 0', particleColors: ['255, 0, 0', '255, 255, 255'] };
       case 'national-tr':
-        return { particle: 'crescent', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 0, 0', particleColors: ['255, 0, 0', '255, 255, 255'] };
+        return { particle: 'tr_emblem', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '255, 0, 0', particleColors: ['255, 0, 0', '255, 255, 255'] };
       case 'national-it':
-        return { particle: 'racing_shield', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 255, 255', particleColors: ['0, 146, 70', '255, 255, 255', '206, 43, 55'] };
+        return { particle: 'it_emblem', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '0, 146, 70', particleColors: ['0, 146, 70', '255, 255, 255', '206, 43, 55'] };
       case 'national-es':
-        return { particle: 'sun', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 196, 0', particleColors: ['198, 11, 30', '255, 196, 0'] };
+        return { particle: 'es_shield', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '255, 196, 0', particleColors: ['198, 11, 30', '255, 196, 0'] };
+      case 'national-fr':
+        return { particle: 'fr_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '0, 85, 164', particleColors: ['0, 85, 164', '255, 255, 255', '239, 65, 53'] };
+      case 'national-gr':
+        return { particle: 'gr_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '13, 94, 175', particleColors: ['13, 94, 175', '255, 255, 255'] };
+      case 'national-pl':
+        return { particle: 'pl_eagle', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '220, 20, 60', particleColors: ['255, 255, 255', '220, 20, 60'] };
+      case 'national-se':
+        return { particle: 'se_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '255, 204, 2', particleColors: ['0, 106, 167', '254, 204, 2'] };
+      case 'national-fi':
+        return { particle: 'fi_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '0, 47, 108', particleColors: ['255, 255, 255', '0, 47, 108'] };
+      case 'national-dk':
+        return { particle: 'dk_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '198, 12, 48', particleColors: ['198, 12, 48', '255, 255, 255'] };
+      case 'national-ie':
+        return { particle: 'ie_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '22, 155, 98', particleColors: ['22, 155, 98', '255, 255, 255', '255, 136, 62'] };
+      case 'national-lt':
+        return { particle: 'lt_vytis', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '253, 185, 19', particleColors: ['253, 185, 19', '0, 106, 68', '193, 39, 45'] };
+      case 'national-lv':
+        return { particle: 'lv_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '158, 48, 57', particleColors: ['158, 48, 57', '255, 255, 255', '158, 48, 57'] };
+      case 'national-ee':
+        return { particle: 'ee_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '0, 114, 206', particleColors: ['0, 114, 206', '0, 0, 0', '255, 255, 255'] };
+      case 'national-nl':
+        return { particle: 'nl_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '255, 155, 0', particleColors: ['174, 28, 40', '255, 255, 255', '33, 70, 139'] };
+      case 'national-be':
+        return { particle: 'be_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '253, 218, 36', particleColors: ['0, 0, 0', '253, 218, 36', '239, 51, 64'] };
+      case 'national-pt':
+        return { particle: 'pt_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '0, 102, 0', particleColors: ['0, 102, 0', '255, 0, 0', '255, 255, 0'] };
+      case 'national-ro':
+        return { particle: 'ro_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '252, 209, 22', particleColors: ['0, 43, 127', '252, 209, 22', '206, 17, 38'] };
+      case 'national-bg':
+        return { particle: 'bg_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '0, 150, 110', particleColors: ['255, 255, 255', '0, 150, 110', '214, 38, 18'] };
+      case 'national-hr':
+        return { particle: 'hr_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '255, 0, 0', particleColors: ['255, 0, 0', '255, 255, 255', '0, 0, 255'] };
+      case 'national-si':
+        return { particle: 'si_arms', bg: 'black', blend: 'normal', overlay: 'bg-black/80', color: '0, 0, 255', particleColors: ['255, 255, 255', '0, 0, 255', '255, 0, 0'] };
       case 'investor':
         return { particle: 'diamond', bg: 'black', blend: 'screen', overlay: 'bg-black/80', color: '255, 215, 0', particleColors: ['255, 215, 0', '255, 255, 255'] };
       default:
@@ -133,22 +231,45 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
     };
     window.addEventListener('resize', handleResize);
 
+    const nationalKeys = ['lion', 'slovak_cross', 'linden_leaf', 'cross', 'crescent', 'fleur_de_lis', 'pillar', 'de_eagle', 'at_eagle', 'pl_eagle', ...Object.keys(extraNationalSymbols)];
+    const isNationalTheme = (type: string | undefined) => type && nationalKeys.includes(type);
+
     const initParticles = () => {
       const particles: Particle[] = [];
-      const numParticles = width < 768 ? 20 : (config.particle === 'snow' ? 80 : 40);
+      let numParticles = width < 768 ? 20 : (config.particle === 'snow' ? 80 : 40);
+      
+      if (isNationalTheme(config.particle)) {
+         numParticles = width < 768 ? 5 : 10;
+      }
       
       for (let i = 0; i < numParticles; i++) {
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height - height,
-          size: (config.particle === 'lantern' || config.particle === 'maple_leaf' || config.particle === 'linden_leaf' || config.particle === 'gear' || config.particle === 'sun' || config.particle === 'crescent' || config.particle === 'cross' || config.particle === 'crown' || config.particle === 'racing_shield' || config.particle === 'diamond' || config.particle === 'slovak_cross' || config.particle === 'lion' || config.particle === 'eagle') ? Math.random() * 15 + 10 : config.particle === 'candle' ? Math.random() * 5 + 8 : (config.particle === 'snow' ? Math.random() * 3 + 1 : Math.random() * 8 + 3),
-          speedY: (config.particle === 'ember' || config.particle === 'lantern' || config.particle === 'candle') ? -(Math.random() * 1.0 + 0.3) : Math.random() * 1.5 + 0.5,
-          speedX: Math.random() * 1 - 0.5,
-          angle: Math.random() * 360,
-          spin: (Math.random() - 0.5) * 0.1,
-          opacity: Math.random() * 0.6 + 0.2,
-          particleColorRGB: config.particleColors ? config.particleColors[Math.floor(Math.random() * config.particleColors.length)] : undefined
-        });
+        if (isNationalTheme(config.particle)) {
+           particles.push({
+             x: Math.random() * width,
+             y: Math.random() * height,
+             size: Math.random() * 15 + 15,
+             speedY: -(Math.random() * 0.3 + 0.1),
+             speedX: (Math.random() - 0.5) * 0.2,
+             angle: 0,
+             spin: 0,
+             opacity: Math.random() * 0.8,
+             type: config.particle,
+             particleColorRGB: config.particleColors ? config.particleColors[Math.floor(Math.random() * config.particleColors.length)] : undefined
+           });
+        } else {
+           particles.push({
+             x: Math.random() * width,
+             y: Math.random() * height - height,
+             size: (config.particle === 'eagle') ? Math.random() * 20 + 20 : (config.particle === 'lantern' || config.particle === 'maple_leaf' || config.particle === 'linden_leaf' || config.particle === 'gear' || config.particle === 'sun' || config.particle === 'crescent' || config.particle === 'cross' || config.particle === 'crown' || config.particle === 'racing_shield' || config.particle === 'diamond' || config.particle === 'slovak_cross') ? Math.random() * 15 + 10 : config.particle === 'candle' ? Math.random() * 5 + 8 : (config.particle === 'snow' ? Math.random() * 3 + 1 : Math.random() * 8 + 3),
+             speedY: (config.particle === 'ember' || config.particle === 'lantern' || config.particle === 'candle') ? -(Math.random() * 1.0 + 0.3) : Math.random() * 1.5 + 0.5,
+             speedX: Math.random() * 1 - 0.5,
+             angle: Math.random() * 360,
+             spin: (Math.random() - 0.5) * 0.1,
+             opacity: Math.random() * 0.6 + 0.2,
+             type: config.particle,
+             particleColorRGB: config.particleColors ? config.particleColors[Math.floor(Math.random() * config.particleColors.length)] : undefined
+           });
+        }
       }
       particlesRef.current = particles;
     };
@@ -582,6 +703,34 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
     };
 
     const drawEagle = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      try {
+        if (czEagleImg && czEagleImg.complete && czEagleImg.naturalWidth > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          ctx.globalAlpha = p.opacity;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `rgba(0, 80, 200, 0.4)`;
+
+          // Modrý štít (erb) pro moravskou orlici
+          const sw = p.size * 1.1;
+          const sh = p.size * 1.1;
+          ctx.beginPath();
+          ctx.moveTo(-sw, -sh);
+          ctx.lineTo(sw, -sh);
+          ctx.lineTo(sw, sh * 0.2);
+          ctx.quadraticCurveTo(sw, sh * 1.1, 0, sh * 1.4);
+          ctx.quadraticCurveTo(-sw, sh * 1.1, -sw, sh * 0.2);
+          ctx.closePath();
+          ctx.fillStyle = `rgba(0, 60, 160, ${p.opacity * 0.85})`;
+          ctx.fill();
+
+          ctx.drawImage(czEagleImg, -p.size, -p.size, p.size * 2, p.size * 2);
+          ctx.restore();
+          return;
+        }
+      } catch (e) {}
+
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.angle);
@@ -599,16 +748,220 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
       ctx.restore();
     };
 
-    const drawLion = (ctx: CanvasRenderingContext2D, p: Particle) => {
+    const drawSilesianEagle = (ctx: CanvasRenderingContext2D, p: Particle) => {
       try {
-        if (czArmsImg && czArmsImg.complete && czArmsImg.naturalWidth > 0) {
+        if (czSilesianEagleImg && czSilesianEagleImg.complete && czSilesianEagleImg.naturalWidth > 0) {
           ctx.save();
           ctx.translate(p.x, p.y);
           ctx.rotate(p.angle);
           ctx.globalAlpha = p.opacity;
           ctx.shadowBlur = 15;
-          ctx.shadowColor = `rgba(255, 255, 255, 0.5)`;
-          ctx.drawImage(czArmsImg, -p.size, -p.size * 1.15, p.size * 2, p.size * 2.3);
+          ctx.shadowColor = `rgba(255, 204, 0, 0.4)`;
+          
+          // Gold shield backing (erb) for the black eagle to make it visible
+          const sw = p.size * 1.1;
+          const sh = p.size * 1.1;
+          ctx.beginPath();
+          ctx.moveTo(-sw, -sh);
+          ctx.lineTo(sw, -sh);
+          ctx.lineTo(sw, sh * 0.2);
+          ctx.quadraticCurveTo(sw, sh * 1.1, 0, sh * 1.4);
+          ctx.quadraticCurveTo(-sw, sh * 1.1, -sw, sh * 0.2);
+          ctx.closePath();
+          ctx.fillStyle = `rgba(255, 204, 0, ${p.opacity * 0.85})`;
+          ctx.fill();
+
+          ctx.drawImage(czSilesianEagleImg, -p.size, -p.size, p.size * 2, p.size * 2);
+          ctx.restore();
+          return;
+        }
+      } catch (e) {}
+
+      // Fallback
+      drawEagle(ctx, p);
+    };
+
+    const drawFleurDeLis = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      const c = p.particleColorRGB || '255, 255, 255';
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = `rgba(${c}, ${p.opacity})`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = `rgba(${c}, 0.5)`;
+      
+      const s = p.size;
+      ctx.beginPath();
+      ctx.moveTo(0, -s);
+      ctx.quadraticCurveTo(s*0.3, -s*0.3, s*0.6, 0);
+      ctx.quadraticCurveTo(s*0.3, s*0.2, 0, s*0.8);
+      ctx.quadraticCurveTo(-s*0.3, s*0.2, -s*0.6, 0);
+      ctx.quadraticCurveTo(-s*0.3, -s*0.3, 0, -s);
+      
+      ctx.moveTo(-s*0.8, -s*0.3);
+      ctx.quadraticCurveTo(-s*0.2, -s*0.1, -s*0.1, s*0.5);
+      ctx.quadraticCurveTo(-s*0.5, s*0.3, -s*0.8, -s*0.3);
+
+      ctx.moveTo(s*0.8, -s*0.3);
+      ctx.quadraticCurveTo(s*0.2, -s*0.1, s*0.1, s*0.5);
+      ctx.quadraticCurveTo(s*0.5, s*0.3, s*0.8, -s*0.3);
+      
+      ctx.rect(-s*0.5, s*0.4, s, s*0.15);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const drawPillar = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      const c = p.particleColorRGB || '255, 255, 255';
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = `rgba(${c}, ${p.opacity})`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = `rgba(${c}, 0.5)`;
+      
+      const s = p.size;
+      ctx.fillRect(-s*0.8, -s*0.8, s*1.6, s*0.2);
+      ctx.fillRect(-s*0.6, -s*0.6, s*1.2, s*0.2);
+      ctx.fillRect(-s*0.4, -s*0.4, s*0.8, s*1.2);
+      
+      ctx.fillStyle = `rgba(0,0,0,${p.opacity*0.3})`;
+      ctx.fillRect(-s*0.2, -s*0.4, s*0.1, s*1.2);
+      ctx.fillRect(s*0.1, -s*0.4, s*0.1, s*1.2);
+      
+      ctx.fillStyle = `rgba(${c}, ${p.opacity})`;
+      ctx.fillRect(-s*0.6, s*0.8, s*1.2, s*0.2);
+      ctx.fillRect(-s*0.8, s*1.0, s*1.6, s*0.2);
+      
+      ctx.restore();
+    };
+
+    const drawDeEagle = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      try {
+        if (deEagleImg && deEagleImg.complete && deEagleImg.naturalWidth > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          ctx.globalAlpha = p.opacity;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `rgba(255, 204, 0, 0.4)`;
+          ctx.drawImage(deEagleImg, -p.size, -p.size, p.size * 2, p.size * 2);
+          ctx.restore();
+          return;
+        }
+      } catch (e) {}
+    };
+
+    const drawAtEagle = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      try {
+        if (atEagleImg && atEagleImg.complete && atEagleImg.naturalWidth > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          ctx.globalAlpha = p.opacity;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `rgba(255, 0, 0, 0.4)`;
+          ctx.drawImage(atEagleImg, -p.size, -p.size, p.size * 2, p.size * 2);
+          ctx.restore();
+          return;
+        }
+      } catch (e) {}
+    };
+
+    const drawPlEagle = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      try {
+        if (plEagleImg && plEagleImg.complete && plEagleImg.naturalWidth > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          ctx.globalAlpha = p.opacity;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `rgba(255, 255, 255, 0.4)`;
+          
+          const sw = p.size * 1.1;
+          const sh = p.size * 1.1;
+          ctx.beginPath();
+          ctx.moveTo(-sw, -sh);
+          ctx.lineTo(sw, -sh);
+          ctx.lineTo(sw, sh * 0.2);
+          ctx.quadraticCurveTo(sw, sh * 1.1, 0, sh * 1.4);
+          ctx.quadraticCurveTo(-sw, sh * 1.1, -sw, sh * 0.2);
+          ctx.closePath();
+          ctx.fillStyle = `rgba(220, 20, 60, ${p.opacity * 0.85})`;
+          ctx.fill();
+
+          ctx.drawImage(plEagleImg, -p.size, -p.size, p.size * 2, p.size * 2);
+          ctx.restore();
+          return;
+        }
+      } catch (e) {}
+    };
+
+    const drawExtraNationalSymbol = (ctx: CanvasRenderingContext2D, p: Particle, time: number) => {
+      try {
+        const img = extraImages[p.type || ''];
+        if (img && img.complete && img.naturalWidth > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          
+          let pulse = 1;
+          let alphaMultiplier = 1;
+          let customRotate = p.angle;
+          let glowIntensity = 15;
+          
+          // Unikátní efekty podle lokace
+          if (p.type === 'usa_eagle' || p.type === 'uk_arms' || p.type === 'ru_eagle') {
+             // Imperiální / Majestátní - hluboké pomalé dýchání
+             pulse = 1 + Math.sin(time * 0.8) * 0.15;
+             glowIntensity = 25;
+          } else if (p.type === 'it_emblem' || p.type === 'es_shield' || p.type === 'pt_arms' || p.type === 'hr_arms') {
+             // Jižanské / Středomořské - energické pohupování a třpyt
+             customRotate += Math.sin(time * 1.5) * 0.15;
+             pulse = 1 + Math.sin(time * 2.0) * 0.05;
+          } else if (p.type === 'lt_vytis' || p.type === 'lv_arms' || p.type === 'ee_arms' || p.type === 'bg_arms' || p.type === 'ro_arms') {
+             // Východní / Pobaltské - mystické problikávání a silná aura
+             alphaMultiplier = 0.7 + Math.cos(time * 3.0) * 0.3;
+             pulse = 1 + Math.sin(time * 0.5) * 0.05;
+             glowIntensity = 30 + Math.sin(time * 5.0) * 10;
+          } else if (p.type === 'ca_arms' || p.type === 'nl_arms' || p.type === 'be_arms' || p.type === 'si_arms') {
+             // Západní / Střední - elegantní jemné vznášení
+             customRotate += Math.sin(time * 0.5) * 0.1;
+             alphaMultiplier = 0.9 + Math.sin(time * 1.0) * 0.1;
+          } else if (p.type === 'fr_arms' || p.type === 'gr_arms' || p.type === 'sk_arms' || p.type === 'se_arms' || p.type === 'fi_arms' || p.type === 'dk_arms' || p.type === 'ie_arms' || p.type === 'ch_arms' || p.type === 'tr_emblem') {
+             // Zbrusu nový efekt: "Křišťálový třpyt" - symboly pulzují rovnoměrně a ostře problikávají
+             pulse = 1 + Math.sin(time * 1.2) * 0.08 + Math.cos(time * 2.5) * 0.02; // Rovnoměrné dýchání bez deformace
+             customRotate += Math.cos(time * 0.8) * 0.08;
+             glowIntensity = 40 + Math.sin(time * 8.0) * 20; // Extrémně silná tepající záře
+             alphaMultiplier = 0.8 + Math.cos(time * 6.0) * 0.2;
+          }
+
+          ctx.rotate(customRotate);
+          ctx.scale(pulse, pulse);
+          ctx.globalAlpha = Math.min(1, Math.max(0, p.opacity * alphaMultiplier));
+          ctx.shadowBlur = glowIntensity;
+          
+          // Osvětlení ve státních barvách (barvy pocházejí z p.particleColorRGB)
+          const rgb = p.particleColorRGB || '255, 255, 255';
+          ctx.shadowColor = `rgba(${rgb}, ${0.5 * alphaMultiplier})`;
+          
+          ctx.drawImage(img, -p.size, -p.size, p.size * 2, p.size * 2);
+          ctx.restore();
+        }
+      } catch (e) {}
+    };
+
+    const drawLion = (ctx: CanvasRenderingContext2D, p: Particle) => {
+      try {
+        if (czLionImg && czLionImg.complete && czLionImg.naturalWidth > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          ctx.globalAlpha = p.opacity;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `rgba(255, 255, 255, 0.3)`;
+          ctx.drawImage(czLionImg, -p.size, -p.size, p.size * 2, p.size * 2);
           ctx.restore();
           return;
         }
@@ -746,24 +1099,44 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
       const globalWind = Math.sin(time * 0.5) * 0.5;
       
       particlesRef.current.forEach((p, index) => {
-        p.y += p.speedY;
-        p.x += p.speedX + globalWind;
-        p.angle += p.spin;
+        if (isNationalTheme(config.particle)) {
+           p.size += 0.08;
+           p.y += p.speedY;
+           p.x += p.speedX + Math.sin(time * 0.5 + index) * 0.2;
+           p.angle = Math.sin(time * 0.4 + index) * 0.1;
 
-        if (config.particle === 'ember' || config.particle === 'lantern' || config.particle === 'candle') {
-            if (p.y < -p.size * 3) {
-                p.y = height + p.size * 3;
-                p.x = Math.random() * width;
-            }
+           if (p.size < 40) {
+              p.opacity = Math.min(1, p.opacity + 0.005);
+           } else if (p.size > 70) {
+              p.opacity = Math.max(0, p.opacity - 0.008);
+           }
+
+           if (p.opacity <= 0 && p.size > 70) {
+              p.size = Math.random() * 10 + 10;
+              p.x = Math.random() * width;
+              p.y = Math.random() * height;
+              p.opacity = 0;
+           }
         } else {
-            if (p.y > height + p.size) {
-                p.y = -p.size;
-                p.x = Math.random() * width;
-            }
-        }
+           p.y += p.speedY;
+           p.x += p.speedX + globalWind;
+           p.angle += p.spin;
 
-        if (p.x > width + p.size) p.x = -p.size;
-        else if (p.x < -p.size) p.x = width + p.size;
+           if (config.particle === 'ember' || config.particle === 'lantern' || config.particle === 'candle') {
+               if (p.y < -p.size * 3) {
+                   p.y = height + p.size * 3;
+                   p.x = Math.random() * width;
+               }
+           } else {
+               if (p.y > height + p.size) {
+                   p.y = -p.size;
+                   p.x = Math.random() * width;
+               }
+           }
+
+           if (p.x > width + p.size) p.x = -p.size;
+           else if (p.x < -p.size) p.x = width + p.size;
+        }
 
         if (config.particle === 'heart') drawHeart(ctx, p);
         else if (config.particle === 'sakura_petal') drawSakuraPetal(ctx, p);
@@ -785,9 +1158,16 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
         else if (config.particle === 'crown') drawCrown(ctx, p);
         else if (config.particle === 'diamond') drawDiamond(ctx, p);
         else if (config.particle === 'slovak_cross') drawSlovakCross(ctx, p);
+        else if (config.particle === 'fleur_de_lis') drawFleurDeLis(ctx, p);
+        else if (config.particle === 'pillar') drawPillar(ctx, p);
+        else if (config.particle === 'de_eagle') drawDeEagle(ctx, p);
+        else if (config.particle === 'at_eagle') drawAtEagle(ctx, p);
+        else if (config.particle === 'pl_eagle') drawPlEagle(ctx, p);
+        else if (extraNationalSymbols[config.particle as string]) drawExtraNationalSymbol(ctx, p, time);
         else if (config.particle === 'lion') {
-          if (index % 2 === 0) drawLion(ctx, p);
-          else drawEagle(ctx, p);
+          if (index % 3 === 0) drawLion(ctx, p);
+          else if (index % 3 === 1) drawEagle(ctx, p);
+          else drawSilesianEagle(ctx, p);
         }
       });
 
@@ -826,10 +1206,11 @@ export function SeasonalAtmosphere({ theme }: SeasonalAtmosphereProps) {
         className={`absolute inset-0 w-full h-full opacity-90 transition-opacity duration-1000 mix-blend-${config.blend}`}
       />
       {/* Global Color Override */}
-      {config.color !== '255, 255, 255' && (
+      {config.color && (
         <style dangerouslySetInnerHTML={{ __html: `
           :root, html.theme-gold, html.theme-silver, html.theme-blood, html.mode-stealth {
             --color-mafia-gold: rgb(${config.color}) !important;
+            --color-mafia-gold-rgb: ${config.color} !important;
             --color-mafia-gold-glow: rgba(${config.color}, 0.5) !important;
           }
         `}} />

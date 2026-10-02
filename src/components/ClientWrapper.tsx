@@ -161,6 +161,46 @@ export function ClientWrapper() {
              if (!res.ok) throw new Error('API response not ok');
              
              const data = await res.json();
+             
+             // Geo-Theme mapping pro EU státy
+             const geoMap: Record<string, string> = {
+                'SK': 'national-sk',
+                'DE': 'national-de',
+                'AT': 'national-at',
+                'PL': 'national-pl',
+                'HU': 'national-hu',
+                'IT': 'national-it',
+                'ES': 'national-es',
+                'FR': 'national-fr',
+                'GR': 'national-gr',
+                'CH': 'national-ch',
+                'TR': 'national-tr',
+                'UK': 'national-uk',
+                'GB': 'national-uk',
+                'US': 'national-usa',
+                'CA': 'national-ca',
+                'SE': 'national-se',
+                'FI': 'national-fi',
+                'IE': 'national-ie',
+                'LT': 'national-lt',
+                'LV': 'national-lv',
+                'EE': 'national-ee',
+                'PT': 'national-pt',
+                'NL': 'national-nl',
+                'BE': 'national-be',
+                'RO': 'national-ro',
+                'BG': 'national-bg',
+                'HR': 'national-hr',
+                'SI': 'national-si',
+                'DK': 'national-dk'
+             };
+             
+             if (data.country_code !== 'CZ' && geoMap[data.country_code]) {
+                localStorage.setItem('mmbarber_geo_theme', geoMap[data.country_code]);
+             } else {
+                localStorage.removeItem('mmbarber_geo_theme');
+             }
+
              if (data.country_code === 'CZ') {
                window.dispatchEvent(new CustomEvent('language_changed', { detail: 'cs' }));
                localStorage.setItem('mmbarber_lang', 'cs');
@@ -320,6 +360,12 @@ export function ClientWrapper() {
     
     let isGalaxy = hour >= 22 || hour < 4;
     let currentTheme = getActiveTheme();
+    
+    // Použijeme geo-theme z VPN/IP pokud není zrovna jiný aktivní svátek
+    const geoTheme = typeof window !== 'undefined' ? localStorage.getItem('mmbarber_geo_theme') : null;
+    if (currentTheme === 'default' && geoTheme) {
+       currentTheme = geoTheme as any;
+    }
     
     if (atmosphereOverride === "galaxy") { 
       isGalaxy = true; 

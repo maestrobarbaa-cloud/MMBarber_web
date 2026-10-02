@@ -105,9 +105,11 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
     } else {
       // GeoIP Detection pro národní eventy
       if (!localStorage.getItem('mmbarber_country')) {
-        fetch('https://api.country.is/')
-          .then(res => res.json())
-          .then(data => {
+        (async () => {
+          try {
+            const res = await fetch('https://api.country.is/');
+            if (!res.ok) return;
+            const data = await res.json();
             const country = data.country;
             if (country) {
               localStorage.setItem('mmbarber_country', country);
@@ -121,8 +123,10 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
                 setAtmosphereOverride(map[country]);
               }
             }
-          })
-          .catch(err => console.error("GeoIP failed", err));
+          } catch (err) {
+            console.warn('GeoIP detection failed or was blocked by browser.');
+          }
+        })();
       } else {
         const country = localStorage.getItem('mmbarber_country');
         const map: Record<string, string> = {

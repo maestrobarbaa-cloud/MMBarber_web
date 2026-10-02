@@ -10,6 +10,7 @@ import { BottomTerminalReveal } from "@/components/BottomTerminalReveal";
 import { CareSEOArchive } from "@/components/CareSEOArchive";
 import { MAGAZINE_CS, MAGAZINE_EN, SEASONAL_CS, SEASONAL_EN } from '@/locales/magazine_content';
 import { translations } from "@/locales/translations";
+import { getDaimonResponse, getDaimonName } from "@/lib/daimonBot";
 
 function StarField() {
   const [stars, setStars] = useState<{ x: number, y: number, size: number, opacity: number, duration: number, delay: number }[]>([]);
@@ -420,11 +421,10 @@ function AnalyzerComponent({ page, lang }: { page: any, lang: string }) {
         analysis: { toxic: toxicFound, good: goodFound, info: infoFound, food: foodFound }
       });
     } else {
+      const daimonReply = getDaimonResponse(currentUserInput, 0, lang);
       newMessages.push({
         role: 'bot',
-        content: lang === 'cs'
-          ? 'Tohle jsem v naší databázi nenašel. Zkus se mě zeptat na konkrétní věc – třeba na péči o vlasy, střih, vousy, barvení, vypadávání vlasů, výživu, nebo napiš složení svého produktu.'
-          : 'I could not find that in our database. Try asking about hair care, haircuts, beard, coloring, hair loss, nutrition, or paste your product ingredients.'
+        content: daimonReply.text
       });
     }
 
@@ -450,7 +450,7 @@ function AnalyzerComponent({ page, lang }: { page: any, lang: string }) {
                  {msg.role === 'user' ? 'TY' : 'BOT'}
                </div>
                <span className={`text-xs font-mono uppercase tracking-widest ${msg.role === 'user' ? 'text-mafia-gold' : 'text-smoke-white/50'}`}>
-                 {msg.role === 'user' ? 'Zákazník' : 'Barber AI System'}
+                 {msg.role === 'user' ? 'Zákazník' : `${getDaimonName()} AI System`}
                </span>
              </div>
              

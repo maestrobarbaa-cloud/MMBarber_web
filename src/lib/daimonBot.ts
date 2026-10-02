@@ -245,6 +245,14 @@ export function getDaimonResponse(userText: string, strikes: number, lang: strin
 
     const intents = [
         {
+            keywords: ["složení", "chemie", "sulfáty", "parabeny", "silikony", "šampon", "laboratoř", "avokádo", "vejce", "minoxidil", "kofeinový", "kofein", "škodliv", "jídlo", "strav"],
+            responses: [
+                "Pokud tě zajímá, co se skrývá ve tvé kosmetice, nebo jak strava ovlivňuje tvoje vlasy, mrkni přímo do naší Laboratoře a Kalkulačky složení: https://mm.inthechair.com/pece (případně klikni v menu na sekci Péče). Tam provádím detailní rozbor, co tvoje tělo likviduje a co mu naopak dává sílu!",
+                "Na rozbor chemie, sulfátů nebo jídla tu máme celou speciální sekci. Otevři si naši Laboratoř: https://mm.inthechair.com/pece (v menu pod položkou Péče) a vlož tam rovnou složení tvého produktu. Já ti to tam rozložím na atomy a řeknu ti, jestli si tím neničíš hlavu."
+            ],
+            suggestedActions: ["Otevřít Laboratoř", "Kde najdu ceník?"]
+        },
+        {
             keywords: ["hodnota", "hodnotu", "cenu webu", "cena webu", "kolik stál", "kolik stal", "stojí web", "stoji web", "hodnotu stránek", "cena stránek", "kolik stály", "za kolik", "investice do webu", "vývoj webu", "cena aplikace", "hodnota portálu", "vytvoření webu", "cena za web", "cenu za web", "hodnotu tohohle"],
             responses: [
                 `Tento web není obyčejná šablona od agentury, naprogramoval si to náš zakladatel Tomáš sám ve svém volném čase od března 2026. Pokud tě zajímá nacenění takového unikátního Next.js systému s 3D enginem, AI modelem, custom grafikou a dynamickým eventovým enginem – reálná tržní hodnota na zakázku by k dnešnímu dni dělala zhruba ${getWebsiteValue()}. Zeptej se zítra, a bude to zas víc, vývoj nikdy nespí!`,

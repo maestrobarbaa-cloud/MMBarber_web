@@ -23,7 +23,7 @@ function normalizeDate(date: Date): Date {
   return d;
 }
 
-export type ThemeType = 'default' | 'matrix' | 'valentine' | 'st-patricks' | 'halloween' | 'christmas' | 'newyear' | 'czech' | 'legacy' | 'easter' | 'friday13' | 'witches' | 'victory' | 'childrens-day' | 'winter' | 'cny' | 'spring' | 'may' | 'midsummer' | 'summer' | 'harvest' | 'allsouls' | 'silvestr' | 'sakura' | 'veterans' | 'slovacko' | 'national-cz' | 'national-sk' | 'national-usa' | 'national-uk' | 'national-de' | 'national-at' | 'national-it' | 'national-ch' | 'national-es' | 'national-ca' | 'national-tr' | 'national-ru' | 'investor';
+export type ThemeType = 'default' | 'matrix' | 'valentine' | 'st-patricks' | 'halloween' | 'christmas' | 'newyear' | 'czech' | 'legacy' | 'easter' | 'friday13' | 'witches' | 'victory' | 'childrens-day' | 'winter' | 'cny' | 'spring' | 'may' | 'midsummer' | 'summer' | 'harvest' | 'allsouls' | 'silvestr' | 'sakura' | 'veterans' | 'slovacko' | 'national-cz' | 'national-sk' | 'national-usa' | 'national-uk' | 'national-de' | 'national-at' | 'national-it' | 'national-ch' | 'national-es' | 'national-ca' | 'national-tr' | 'national-ru' | 'national-fr' | 'national-gr' | 'national-pl' | 'national-hu' | 'national-se' | 'national-fi' | 'national-dk' | 'national-ie' | 'national-lt' | 'national-lv' | 'national-ee' | 'national-nl' | 'national-be' | 'national-pt' | 'national-ro' | 'national-bg' | 'national-hr' | 'national-si' | 'investor';
 
 /**
  * Returns the currently active theme based on the provided date (or today).
